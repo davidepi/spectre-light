@@ -184,8 +184,6 @@ void Vec2::reflect(const Vec2 centre)
     Vec2::y -= ((2 * dot) * centre.y);
 }
 
-///////////////////////////////////////////
-
 //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
 
 Vec2 Vec2::operator+(const Vec2& v)const
@@ -317,12 +315,13 @@ Vec2 Vec2::operator-()const
 bool Vec2::operator==(const Vec2& v)const
 {
     return std::fabs(Vec2::x-v.x) <= FLT_EPSILON &&
-           std::fabs(Vec2::y-v.y) <= FLT_EPSILON;
+    std::fabs(Vec2::y-v.y) <= FLT_EPSILON;
 }
 
 bool Vec2::operator!=(const Vec2& v)const
 {
     return std::fabs(Vec2::x-v.x) > FLT_EPSILON ||
-           std::fabs(Vec2::y-v.y) > FLT_EPSILON;
+    std::fabs(Vec2::y-v.y) > FLT_EPSILON;
 }
+
 //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥

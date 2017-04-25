@@ -1,13 +1,5 @@
-/*
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                                                                              ║
-║                       Created by Davide Pizzolotto                           ║
-║                                                                              ║
-║                            Created, October 2013                             ║
-║                            Last Edit  8 Apr 2017                             ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-*/
+//Created, October 2013
+//Last Edit  8 Apr 2017
 
 /**
  *  \file vec2.hpp
@@ -15,9 +7,9 @@
  *  \details   A two component vector class
  *  \author    Davide Pizzolotto
  *  \version   1.0
- *  \date      25 May 2015
- *  \warning   Since this is a low level class, some verification are skipped. 
- *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_ 
+ *  \date      8 April 2017
+ *  \warning   Since this is a low level class, some verification are skipped.
+ *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
  *             preprocessor define.
  *             More details are provided for every method
  *  \copyright GNU GPLv3
@@ -59,7 +51,7 @@ public:
      * of the vector
      */
     float y;
-
+    
     
     /**
      *  \brief Default Constructor
@@ -228,7 +220,7 @@ public:
      */
     void reflect(const Vec2 centre);
     
-//♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
     ///The addition operation between two vectors
     Vec2 operator+(const Vec2&)const;
@@ -271,7 +263,7 @@ public:
     ///Check if two vector are different
     bool operator!=(const Vec2&)const;
     
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
 };
 
@@ -451,7 +443,7 @@ inline Vec2 min (const Vec2 vector1, const Vec2 vector2)
 
 /**
  *  \brief Flip the vector according to a pivot
- *  Given a vector as a centre of reflection and a source vector, transform the 
+ *  Given a vector as a centre of reflection and a source vector, transform the
  *  source vector in the reflected vector around that centre of reflection
  *
  *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
