@@ -2,7 +2,7 @@
 //Last Edit 23 Apr 2017
 
 /**
- *  \file Ray.hpp
+ *  \file ray.hpp
  *  \brief Ray class definition
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
@@ -157,6 +157,11 @@ public:
         return ricochet<0;
     }
     
+    /*TODO: probably it will be useful to override the copy constructor,
+            so every time the ray spawns a child, its ricochet value is updated.
+            But I still don't know if I will pass by pointer or by copy, so
+            for now it's just a todo.
+     */
 };
 
 #endif

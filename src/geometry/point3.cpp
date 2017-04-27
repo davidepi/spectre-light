@@ -117,4 +117,5 @@ bool Point3::operator!= (const Point3& p)const
            std::fabs(Point3::y-p.y) > FLT_EPSILON ||
            std::fabs(Point3::z-p.z) > FLT_EPSILON;
 }
+
 //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
