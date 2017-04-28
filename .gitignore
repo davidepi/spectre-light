@@ -1,6 +1,6 @@
 *.xcodeproj
 *.mm
-bin/
+build/
 .DS_Store
 *.o
 *.gch
