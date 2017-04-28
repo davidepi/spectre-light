@@ -5,6 +5,7 @@ file(GLOB spectre_core_sources
     src/utility/*.cpp)
 file(GLOB spectre_core_headers
     src/settings.h
+    src/validator.h
     src/geometry/*.hpp
     src/utility/*.hpp)
 include_directories(src)

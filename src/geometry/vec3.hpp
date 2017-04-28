@@ -8,7 +8,7 @@
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
  *  \version   1.0
- *  \date      14 Aprile 2017
+ *  \date      14 April 2017
  *  \warning   Since this is a low level class, some verification
  *             could be skipped. To enable them compile the project with the
  *             #_LOW_LEVEL_CHECKS_ preprocessor define
