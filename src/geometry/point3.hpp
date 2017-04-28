@@ -25,7 +25,7 @@
 
 /**
  *  \class Point3 point3.hpp "Geometry/point3.hpp"
- *  \brief Three points representing a location in space  
+ *  \brief Three points representing a location in space
  *
  *  Point3 class represents a zero dimensional location in a three dimensional
  *  cartesian space. It is designed as a separate class because by representing
@@ -123,7 +123,7 @@ public:
      */
     void min(const Point3 p);
     
-//♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
     ///Offsets the point along a direction
     Point3 operator+ (const Vec3&  v)const;
@@ -141,15 +141,15 @@ public:
     bool operator!=  (const Point3&)const;
     
     /* Useless operation.
-       i.e.: Cannot offset a point by a point
-       But if I remove these, I will surely forgot why
-    //Point3 operator+ (const Point3& p)const;
-    //void  operator+=(const Point3&  v);
-    //Point3 operator* (const float f)const;
-    //void operator-=(const Point3&  p); <- super useless, point - point = vec
+     i.e.: Cannot offset a point by a point
+     But if I remove these, I will surely forgot why
+     //Point3 operator+ (const Point3& p)const;
+     //void  operator+=(const Point3&  v);
+     //Point3 operator* (const float f)const;
+     //void operator-=(const Point3&  p); <- super useless, point - point = vec
      */
     
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
 };
 

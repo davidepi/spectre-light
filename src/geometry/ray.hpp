@@ -158,9 +158,9 @@ public:
     }
     
     /*TODO: probably it will be useful to override the copy constructor,
-            so every time the ray spawns a child, its ricochet value is updated.
-            But I still don't know if I will pass by pointer or by copy, so
-            for now it's just a todo.
+     so every time the ray spawns a child, its ricochet value is updated.
+     But I still don't know if I will pass by pointer or by copy, so
+     for now it's just a todo.
      */
 };
 
