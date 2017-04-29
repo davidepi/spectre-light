@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit  3 Mar 2016
+//Last Edit 29 Apr 2017
 
 /**
  *  \file matrix4.hpp
@@ -8,9 +8,10 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      03 March 2016
+ *  \date      29 April 2017
  *  \warning   Since this is a low level class, some verification are skipped.
- *             More details are provided for every method
+ *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
+ *             preprocessor define.
  *  \copyright GNU Public License.
  */
 
@@ -18,44 +19,73 @@
 #ifndef __MATRIX4_H__
 #define __MATRIX4_H__
 #include "vec3.hpp"
+#include "point3.hpp"
+#include "utility.hpp"
 #include <cmath>
 
 /**
- *  \class Matrix4 matrix4.hpp "Geometry/matrix4.hpp"
+ *  \class Matrix4 matrix4.hpp "geometry/matrix4.hpp"
  *  \brief A 4 by 4 transformation matrix
  *
  *  The Matrix4 class represents a 4x4 transformation matrix in 3D space. A 4x4
  *  Matrix is usually used to perform transformation such as scaling, rotating
  *  or translating a model (by performing these operations vertex by vertex).
  *  This class contains all the methods to generate such matrices, that can be
- *  further multiplied with the method "TransformCoordinate(...)" contained in
- *  the Vec3 class.
+ *  further multiplied by points, vectors or normals
  *
- *  This Matrix4 consist of a multidimensional array containing floating point
- *  numbers.
+ *  This Matrix4 consist of 16 distinct variables in form mXY where \e X is the
+ *  row 0-based and Y is the column 0-based.
  */
 class Matrix4
 {
 public:
-    float m[4][4];
+    
+    /// matrix[0][0]
+    float m00;
+    /// matrix[0][1]
+    float m01;
+    /// matrix[0][2]
+    float m02;
+    /// matrix[0][3]
+    float m03;
+    /// matrix[1][0]
+    float m10;
+    /// matrix[1][1]
+    float m11;
+    /// matrix[1][2]
+    float m12;
+    /// matrix[1][3]
+    float m13;
+    /// matrix[2][0]
+    float m20;
+    /// matrix[2][1]
+    float m21;
+    /// matrix[2][2]
+    float m22;
+    /// matrix[2][3]
+    float m23;
+    /// matrix[3][0]
+    float m30;
+    /// matrix[3][1]
+    float m31;
+    /// matrix[3][2]
+    float m32;
+    /// matrix[3][3]
+    float m33;
     
     /** \brief Default constructor
-     *  Construct a zero matrix 4 by 4 of single precision floating point
+     *  Allocate a matrix of 4 by 4 single precision floating point, with
+     *  undefined values
+     *
+     *  \warning values are NOT initialized
      */
     Matrix4();
     
-
-    /** \brief  Construct an identity matrix of single precision floating point
-     *   The "identity" parameter is left unused
-     *  
-     *  \param identity This parameter is left unused.
-     */
-    Matrix4(int identity);
-    
-    /** \brief Construct a 4 by 4 matrix with the given array of single 
+    /** \brief Construct a 4 by 4 matrix with the given array of single
      *         precision floating point numbers.
      *
-     * \note The contents of the array values is assumed to be in row-major order
+     * \note The contents of the array values are assumed to be in row-major
+     *       order
      *
      * \param values An array of float containing the values of the matrix
      */
@@ -88,9 +118,109 @@ public:
      */
     float* toArray()const;
     
+    /** \brief set this matrix to a zero-matrix
+     *
+     *  Fill this matrix with 0 values
+     *  \sa setIdentity()
+     */
+    void setZero();
+    
+    /** \brief set this matrix to the identity matrix
+     *
+     *  Set this matrix to the identity matrix (unit matrix), filled with
+     *  1 values in the diagonal and 0 values everywhere else
+     */
+    void setIdentity();
+    
+    /** \brief set this matrix to a translation matrix
+     *
+     *  Set this matrix to a transformation matrix responsible of the
+     *  translation. The input vector will define the magnitude and direction
+     *  of the translation
+     *
+     *  \param[in] direction The vector representing the direction of the
+     *             translation
+     */
+    void setTranslation(Vec3 direction);
+    
+    /** \brief set this matrix to a scale matrix
+     *
+     *  Set this matrix to a transformation matrix responsible of the
+     *  uniform scaling. The input float defines the magnitude of the scaling
+     *
+     *  \param[in] value The float representing the magnitude of the
+     *             scaling
+     */
+    void setScale(float value);
+    
+    /** \brief set this matrix to a scale matrix
+     *
+     *  Set this matrix to a transformation matrix responsible of the
+     *  non-unfirom scaling. The input vector defines the magnitude of the
+     *  scaling factor for each component
+     *
+     *  \param[in] value The vector representing the magnitude of the
+     *             scaling
+     */
+    void setScale(Vec3 value);
+    
+    /** \brief set this matrix to a rotation matrix
+     *
+     *  Set this matrix to a transformation matrix responsible of the rotation
+     *  around the X axis. The input float defines the angle of rotation
+     *  in radians
+     *
+     *  \param[in] value The angle of rotation in radians
+     *
+     *  \sa setRotateY(float value)
+     *  \sa setRotateZ(float value)
+     */
+    void setRotateX(float value);
+    
+    /** \brief set this matrix to a rotation matrix
+     *
+     *  Set this matrix to a transformation matrix responsible of the rotation
+     *  around the Y axis. The input float defines the angle of rotation
+     *  in radians
+     *
+     *  \param[in] value The angle of rotation in radians
+     *
+     *  \sa setRotateX(float value)
+     *  \sa setRotateZ(float value)
+     */
+    void setRotateY(float value);
+    
+    /** \brief set this matrix to a rotation matrix
+     *
+     *  Set this matrix to a transformation matrix responsible of the rotation
+     *  around the Z axis. The input float defines the angle of rotation
+     *  in radians
+     *
+     *  \param[in] value The angle of rotation in radians
+     *
+     *  \sa setRotateX(float value)
+     *  \sa setRotateY(float value)
+     */
+    void setRotateZ(float value);
+    
+    /** \brief set this matrix to a LookAt matrix
+     *
+     *  Set this matrix to a transformation LookAt matrix in a LeftHanded
+     *  system. This matrix is used to align the world with the camera (can be
+     *  seen as a result of placing the camera inside a scene).
+     *
+     *  \note All the coordinates must be in world space
+     *
+     *  \param[in] position The position of the camera
+     *  \param[in] target The point the camera is looking at
+     *  \param[in] up A vector representing the direction poiting upside the
+     *  camera. With the camera parallel to the terrain, this will be (0,1,0)
+     */
+    void setLookAtLH(Point3 position, Point3 target, Vec3 up);
+    
     /**  \brief Returns a new matrix that is the transpose of the current matrix
      *
-     *  \param[out] output A pointer to the allocated area where the new matrix 
+     *  \param[out] output A pointer to the allocated area where the new matrix
      *                     will be written
      */
     void transpose(Matrix4* output)const;
@@ -102,14 +232,14 @@ public:
      *   invertible nothing is written and the function return false.
      *   The inverted matrix is calculated using the Gauss-Jordan elimination
      *
-     *  \param[out] output A pointer to the allocated area where the new matrix 
+     *  \param[out] output A pointer to the allocated area where the new matrix
      *                     will be written
      *  \return A boolean value indicating if the matrix has been inverted or
      *          not
      */
     bool inverse(Matrix4* output)const;
-
-//♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    
+    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
     ///The addition operation between two matrices
     Matrix4 operator+(const Matrix4&)const;
@@ -132,17 +262,24 @@ public:
     ///Checks if two matrices are different
     bool operator!=(const Matrix4&)const;
     
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    ///Apply the transformation matrix to the Point
+    Point3 operator*(Point3)const;
+    ///Apply the transformation matrix to the Vector
+    Vec3 operator*(Vec3)const;
+    ///Apply the transformation matrix to the Normal
+    Normal operator*(Normal)const;
+    
+    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
 };
 
 /**  /brief Sum two matrices together
- *  
+ *
  *  \param[in] input1 The left matrix to sum
  *  \param[in] input2 The right matrix to sum
  *  \param[out] output The resulting matrix
  */
-void sum (const Matrix4* input1, const Matrix4* input2, Matrix4* output);
+void sum(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
 
 /** \brief Subtract two matrices together
  *
@@ -150,7 +287,7 @@ void sum (const Matrix4* input1, const Matrix4* input2, Matrix4* output);
  *  \param[in] input2 The subtracting right matrix
  *  \param[out] output The resulting matrix
  */
-void sub (const Matrix4* input1, const Matrix4* input2, Matrix4* output);
+void sub(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
 
 /**  \brief Multiply two matrices together
  *
@@ -158,25 +295,28 @@ void sub (const Matrix4* input1, const Matrix4* input2, Matrix4* output);
  *  \param[in] input2 The right matrix to multiply
  *  \param[out] output The resulting matrix
  */
-void mull(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
+void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
+
+
+//- - - - - - - - - - - - - - OLD AND UNTESTED - - - - - - - - - - - - - - - - -
 
 __attribute__((deprecated))
-/** \brief Creates a View Space transform matrix with a Left Hand coordinate 
+/** \brief Creates a View Space transform matrix with a Left Hand coordinate
  *         system
  *
  *  \deprecated Embedded into \a Transform class
  *  \param[in] target A Vec3 containing the target point of the camera view
  *  \param[in] position A Vec3 containing the position of the camera
- *  \param[in] up A Vec3 containing the up vector for the camera, 
+ *  \param[in] up A Vec3 containing the up vector for the camera,
  *                usually v(0,1,0)
  *  \param[out] output The resulting Matrix4
  */
 void viewLeftHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
 
 __attribute__((deprecated))
-/** \brief Creates a View Space transform matrix with a Right Hand coordinate 
+/** \brief Creates a View Space transform matrix with a Right Hand coordinate
  *         system
- *  
+ *
  *  \deprecated Embedded into \a Transform class
  *  \param[in] target A Vec3 containing the target point of the camera view
  *  \param[in] position A Vec3 containing the position of the camera
@@ -187,7 +327,7 @@ __attribute__((deprecated))
 void viewRightHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
 
 __attribute__((deprecated))
-/** \brief Creates a Perspective transform matrix with a Left Hand coordinate 
+/** \brief Creates a Perspective transform matrix with a Left Hand coordinate
  *         system
  *
  *  \deprecated Embedded into \a Transform class
@@ -201,7 +341,7 @@ void PerspectiveLeftHand(float fov, float aspectRatio, float nearPlane,
                          float farPlane, Matrix4* output);
 
 __attribute__((deprecated))
-/** \brief Creates a Perspective transform matrix with a Right Hand coordinate 
+/** \brief Creates a Perspective transform matrix with a Right Hand coordinate
  *         system
  *
  *  \deprecated Embedded into \a Transform class
@@ -226,7 +366,7 @@ __attribute__((deprecated))
  *  \param[out] output The resulting matrix
  */
 void OrthographicRightHand(float width, float height, float nearPlane,
-                          float farPlane, Matrix4* output);
+                           float farPlane, Matrix4* output);
 
 __attribute__((deprecated))
 /** \brief Creates a Translation matrix
@@ -241,11 +381,11 @@ __attribute__((deprecated))
 /** \brief Creates a Rotation matrix
  *
  *  \deprecated Embedded into \a Transform class
- *  \param[in] yaw A float containing the yaw value of the rotation 
+ *  \param[in] yaw A float containing the yaw value of the rotation
  *                  (Z-rotation)
- *  \param[in] pitch A float containing the pitch value of the rotation 
+ *  \param[in] pitch A float containing the pitch value of the rotation
  *                  (Y-rotation)
- *  \param[in] roll A float containing the roll value of the rotation 
+ *  \param[in] roll A float containing the roll value of the rotation
  *                  (X-rotation)
  *  \param[out] output The resulting matrix
  */
@@ -259,5 +399,7 @@ __attribute__((deprecated))
  *  \param[out] output The resulting matrix
  */
 void Scale(Vec3* source, Matrix4* output);
+
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #endif

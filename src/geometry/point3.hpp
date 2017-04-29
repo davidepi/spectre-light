@@ -24,7 +24,7 @@
 #include <cmath>
 
 /**
- *  \class Point3 point3.hpp "Geometry/point3.hpp"
+ *  \class Point3 point3.hpp "geometry/point3.hpp"
  *  \brief Three points representing a location in space
  *
  *  Point3 class represents a zero dimensional location in a three dimensional
@@ -32,7 +32,7 @@
  *  a location, and not a direction, it shows a different behaviour in some
  *  situations. Its implementation is a ripoff of the vector class, missing some
  *  methods like dot and cross. However, for the sake of simplicity, it has not
- *  been designed   as an inherited class.
+ *  been designed as an inherited class.
  *
  *  A Point3 consist of three coordinates, usually called x, y and z.
  */

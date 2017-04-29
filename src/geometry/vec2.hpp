@@ -25,7 +25,7 @@
 #include "utility.hpp"
 
 /**
- *  \class Vec2 vec2.hpp "Geometry/vec2.hpp"
+ *  \class Vec2 vec2.hpp "geometry/vec2.hpp"
  *  \brief A vector of two components
  *
  *  Vec2 class represents a vector in 2D space and it is used to represent

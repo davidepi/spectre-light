@@ -31,7 +31,7 @@
 class Normal;
 
 /**
- *  \class Vec3 vec3.hpp "Geometry/vec3.hpp"
+ *  \class Vec3 vec3.hpp "geometry/vec3.hpp"
  *  \brief A vector of three components
  *
  *  Vec3 class represents a vector in 3D space and it is used to represent

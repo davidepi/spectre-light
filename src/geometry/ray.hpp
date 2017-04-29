@@ -19,7 +19,7 @@
 #include "settings.h"
 
 /**
- *  \class Ray ray.hpp "Geometry/ray.hpp"
+ *  \class Ray ray.hpp "geometry/ray.hpp"
  *  \brief A ray composed by two \a Vec3, origin and destination
  *
  *  Ray class represents a semi-infinite line. A Ray is denoted by a Point o,
