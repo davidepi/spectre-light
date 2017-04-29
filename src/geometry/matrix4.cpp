@@ -1267,8 +1267,8 @@ void PerspectiveRightHand(float fX, float fY, float n, float f, Matrix4* out)
     //  [   0   0   C   D   ]
     //  [   0   0   E   0   ]
     
-    float a = atan(fX/2);
-    float b = atan(fY/2);
+    float a = atanf(fX/2);
+    float b = atanf(fY/2);
     float tmp = f - n;
     float c = -((f+n)/tmp);
     float d = -((2*n*f)/tmp);
