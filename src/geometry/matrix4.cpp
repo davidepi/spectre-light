@@ -2,43 +2,38 @@
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 
 Matrix4::Matrix4()
-{
-    Matrix4::m00 = .0f;
-    Matrix4::m01 = .0f;
-    Matrix4::m02 = .0f;
-    Matrix4::m03 = .0f;
-    Matrix4::m10 = .0f;
-    Matrix4::m11 = .0f;
-    Matrix4::m12 = .0f;
-    Matrix4::m13 = .0f;
-    Matrix4::m20 = .0f;
-    Matrix4::m21 = .0f;
-    Matrix4::m22 = .0f;
-    Matrix4::m23 = .0f;
-    Matrix4::m30 = .0f;
-    Matrix4::m31 = .0f;
-    Matrix4::m32 = .0f;
-    Matrix4::m33 = .0f;
-}
+{ }
 
 Matrix4::Matrix4(const float* v)
 {
-    Matrix4::m00 = v[0];
-    Matrix4::m01 = v[1];
-    Matrix4::m02 = v[2];
-    Matrix4::m03 = v[3];
-    Matrix4::m10 = v[4];
-    Matrix4::m11 = v[5];
-    Matrix4::m12 = v[6];
-    Matrix4::m13 = v[7];
-    Matrix4::m20 = v[8];
-    Matrix4::m21 = v[9];
-    Matrix4::m22 = v[10];
-    Matrix4::m23 = v[11];
-    Matrix4::m30 = v[12];
-    Matrix4::m31 = v[13];
-    Matrix4::m32 = v[14];
-    Matrix4::m33 = v[15];
+#ifdef _LOW_LEVEL_CHECKS_
+    if(xyz!=nullptr)
+    {
+        //checking if the values are not NaN or Infinity is too expensive,
+        //so cross your fingers :^)
+#endif
+        Matrix4::m00 = v[0];
+        Matrix4::m01 = v[1];
+        Matrix4::m02 = v[2];
+        Matrix4::m03 = v[3];
+        Matrix4::m10 = v[4];
+        Matrix4::m11 = v[5];
+        Matrix4::m12 = v[6];
+        Matrix4::m13 = v[7];
+        Matrix4::m20 = v[8];
+        Matrix4::m21 = v[9];
+        Matrix4::m22 = v[10];
+        Matrix4::m23 = v[11];
+        Matrix4::m30 = v[12];
+        Matrix4::m31 = v[13];
+        Matrix4::m32 = v[14];
+        Matrix4::m33 = v[15];
+#ifdef _LOW_LEVEL_CHECKS_
+    }
+    else
+        warning("Initializing a Matrix4 with a NULL pointer to array.\
+                Matrix4 was left uninitialized");
+#endif
 }
 
 Matrix4::~Matrix4()

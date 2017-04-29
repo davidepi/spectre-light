@@ -18,9 +18,9 @@
 
 #ifndef __MATRIX4_H__
 #define __MATRIX4_H__
+#include "utility.hpp"
 #include "vec3.hpp"
 #include "point3.hpp"
-#include "utility.hpp"
 #include <cmath>
 
 /**
