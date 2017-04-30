@@ -22,6 +22,8 @@
 #include "vec3.hpp"
 #include "point3.hpp"
 #include <cmath>
+#include <cstring>
+#include <cstdio>
 
 /**
  *  \class Matrix4 matrix4.hpp "geometry/matrix4.hpp"

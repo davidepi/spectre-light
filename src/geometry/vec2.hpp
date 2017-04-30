@@ -20,8 +20,9 @@
 #define __VEC2_HPP__
 
 #include <cmath> //std::sqrt
-#include <iostream> //snprintf
 #include <cfloat> //FLT_EPSILON
+#include <cstring>
+#include <cstdio> //snprintf
 #include "utility.hpp"
 
 /**

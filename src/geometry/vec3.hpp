@@ -20,7 +20,7 @@
 #ifndef __VEC3_HPP__
 #define __VEC3_HPP__
 
-#include <iostream> //snprintf
+#include <cstdio> //snprintf
 #include <cmath> //std::sqrt
 #include <cfloat> //FLT_EPSILON
 #include "vec2.hpp"
