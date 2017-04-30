@@ -14,10 +14,11 @@
 #ifndef __UTILITY_HPP__
 #define __UTILITY_HPP__
 
-#include <iostream>
+#include <cstdio>
 #include <climits>
 #include <cmath>
 #include <cfloat>
+#include <cstdlib> //EXIT_FAILURE
 
 /**
  *  \brief Enables asserts for low level classes
