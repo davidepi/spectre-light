@@ -2,7 +2,7 @@
 AABB::AABB()
 :bmin(INFINITY, INFINITY, INFINITY), bmax(-INFINITY,-INFINITY,-INFINITY)
 {
-
+    
 }
 
 AABB::AABB(const Point3 p)
@@ -47,8 +47,8 @@ bool AABB::overlaps(const AABB* aabb)const
 bool AABB::inside(const Point3* p)const
 {
     return p->x >= AABB::bmin.x && p->x <= AABB::bmax.x &&
-           p->y >= AABB::bmin.y && p->y <= AABB::bmax.y &&
-           p->z >= AABB::bmin.z && p->z <= AABB::bmax.z;
+    p->y >= AABB::bmin.y && p->y <= AABB::bmax.y &&
+    p->z >= AABB::bmin.z && p->z <= AABB::bmax.z;
 }
 
 float AABB::surface()const
@@ -72,13 +72,6 @@ int AABB::longest_axis()
         return 1;
     else
         return 2;
-}
-
-Vec3 AABB::offset(const Point3* p)const
-{
-    return Vec3((p->x - AABB::bmin.x)/(AABB::bmax.x - AABB::bmin.x),
-                (p->y - AABB::bmin.y)/(AABB::bmax.y - AABB::bmin.y),
-                (p->z - AABB::bmin.z)/(AABB::bmax.z - AABB::bmin.z));
 }
 
 //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
