@@ -1,0 +1,6 @@
+language: cpp
+compiler: 
+ - gcc
+ - clang
+script:
+    - mkdir -p build && cd build/ && cmake .. && cmake --build .

@@ -1,0 +1,11 @@
+*.xcodeproj
+*.mm
+build/
+.DS_Store
+*.o
+*.gch
+*.a
+*.out
+*.exe
+*.app
+Makefile
