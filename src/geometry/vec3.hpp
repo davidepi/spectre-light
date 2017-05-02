@@ -20,11 +20,12 @@
 #ifndef __VEC3_HPP__
 #define __VEC3_HPP__
 
+#include "utility.hpp"
+#include "vec2.hpp"
 #include <cstdio> //snprintf
 #include <cmath> //std::sqrt
 #include <cfloat> //FLT_EPSILON
-#include "vec2.hpp"
-#include "utility.hpp"
+
 
 //class Normal is defined after class Vec3. Since they are very similar, they
 //share the same vec3.hpp and vec3.cpp files
@@ -1063,7 +1064,7 @@ inline Normal saturate(const Normal n)
  */
 inline Vec3 max(const Vec3 v1, const Vec3 v2)
 {
-    return Vec3(std::max(v1.x,v2.x),std::max(v1.y,v2.y),std::max(v1.z,v2.z));
+    return Vec3(max(v1.x,v2.x),max(v1.y,v2.y),max(v1.z,v2.z));
 }
 
 /**
@@ -1078,7 +1079,7 @@ inline Vec3 max(const Vec3 v1, const Vec3 v2)
  */
 inline Vec3 min(const Vec3 v1, const Vec3 v2)
 {
-    return Vec3(std::min(v1.x,v2.x),std::min(v1.y,v2.y),std::min(v1.z,v2.z));
+    return Vec3(min(v1.x,v2.x),min(v1.y,v2.y),min(v1.z,v2.z));
 }
 
 /**
@@ -1093,7 +1094,7 @@ inline Vec3 min(const Vec3 v1, const Vec3 v2)
  */
 inline Normal max(const Normal n1, const Normal n2)
 {
-    return Normal(std::max(n1.x,n2.x),std::max(n1.y,n2.y),std::max(n1.z,n2.z));
+    return Normal(max(n1.x,n2.x),max(n1.y,n2.y),max(n1.z,n2.z));
 }
 
 
@@ -1109,7 +1110,7 @@ inline Normal max(const Normal n1, const Normal n2)
  */
 inline Normal min(const Normal n1, const Normal n2)
 {
-    return Normal(std::min(n1.x,n2.x),std::min(n1.y,n2.y),std::min(n1.z,n2.z));
+    return Normal(min(n1.x,n2.x),min(n1.y,n2.y),min(n1.z,n2.z));
 }
 
 /**  \brief Flip the vector according to a pivot

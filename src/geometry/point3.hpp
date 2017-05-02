@@ -20,6 +20,7 @@
 
 #ifndef __POINT_HPP__
 #define __POINT_HPP__
+#include "utility.hpp"
 #include "vec3.hpp"
 #include <cmath>
 
@@ -189,7 +190,7 @@ inline float distance(const Point3 p1, const Point3 p2)
 inline Point3 min(const Point3 p1, const Point3 p2)
 {
     return
-    Point3(std::min(p1.x,p2.x),std::min(p1.y,p2.y),std::min(p1.z,p2.z));
+    Point3(min(p1.x,p2.x),min(p1.y,p2.y),min(p1.z,p2.z));
 }
 
 /**  \brief Compute the max value between two vectors
@@ -205,7 +206,7 @@ inline Point3 min(const Point3 p1, const Point3 p2)
 inline Point3 max(const Point3 p1, const Point3 p2)
 {
     return
-    Point3(std::max(p1.x,p2.x),std::max(p1.y,p2.y),std::max(p1.z,p2.z));
+    Point3(max(p1.x,p2.x),max(p1.y,p2.y),max(p1.z,p2.z));
 }
 
 //----------------------------//----------------//----------------------------//
