@@ -5,6 +5,7 @@
 #define __SHAPE_HPP_
 #include "ray.hpp"
 #include "matrix4.hpp"
+#include "AABB.hpp"
 
 class Shape;
 class Shape
