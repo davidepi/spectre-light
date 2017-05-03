@@ -41,9 +41,9 @@ public:
     
     /** \brief The transformation matrix that should be used on the vertices
      *
-     *  A pointer to the transformation matrix used to scale, translate, rotate
-     *  and project the shape. Since a shape is in object-space this matrix
-     *  MUST be used before rendering the actual shape
+     *  A pointer to the transformation matrix used to scale, translate and 
+     *  rotate and project the shape. Since a shape is in object-space this
+     *  matrix MUST be used before rendering the actual shape
      */
     Matrix4* transformMatrix;
     
@@ -94,13 +94,14 @@ public:
      */
     virtual float surface()const = 0;
     
+protected:
+    //bounding box of the shape
+    AABB aabb;
+    
 private:
     
     //id of the shape
     const unsigned int id;
-    
-    //bounding box of the shape
-    AABB aabb;
 };
 
 #endif
