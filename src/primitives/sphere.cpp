@@ -26,6 +26,13 @@ void Sphere::recomputeAABB()
 
 void Sphere::obj2world()
 {
+#ifdef _LOW_LEVEL_CHECKS_
+    if(transformMatrix==NULL)
+    {
+        severe("Trying to convert a sphere to world-space with a NULL matrix");
+        return;
+    }
+#endif
     Sphere::centre = Point3(Sphere::transformMatrix->m03,
                             Sphere::transformMatrix->m13,
                             Sphere::transformMatrix->m23);
@@ -36,6 +43,13 @@ void Sphere::obj2world()
 
 void Sphere::world2obj()
 {
+#ifdef _LOW_LEVEL_CHECKS_
+    if(transformMatrix==NULL)
+    {
+        severe("Trying to convert a sphere to object-space with a NULL matrix");
+        return;
+    }
+#endif
     Sphere::centre = Point3();
     Sphere::radius /= Vec3(Sphere::transformMatrix->m00,
                            Sphere::transformMatrix->m10,
@@ -52,8 +66,8 @@ bool Sphere::intersect(const Ray *r, float *distance, float *error)const
     float sol2;
     if(equation2(a,b,c,&sol1,&sol2))
     {
-       if(sol2<sol1)
-           swap(&sol1,&sol2);
+        if(sol2<sol1)
+            swap(&sol1,&sol2);
         
         if(sol1>r->maxext || sol2<r->minext)
             return false;

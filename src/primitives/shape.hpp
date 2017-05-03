@@ -41,7 +41,7 @@ public:
     
     /** \brief The transformation matrix that should be used on the vertices
      *
-     *  A pointer to the transformation matrix used to scale, translate and 
+     *  A pointer to the transformation matrix used to scale, translate and
      *  rotate and project the shape. Since a shape is in object-space this
      *  matrix MUST be used before rendering the actual shape
      */
@@ -73,7 +73,7 @@ public:
     /** \brief Recalculate the AABB
      *
      *  In its implementations, this method should replace the current AABB of
-     *  the shape with an updated version. A procedure that have to be performed
+     *  the shape with an updated version. A procedure that has to be performed
      *  after moving or transforming the shape
      *
      *  \sa computeAABB()
@@ -82,8 +82,8 @@ public:
     
     /** \brief Recalculate the AABB
      *
-     *  In its implementations, this method should replace return an AABB that
-     *  can fit well on this shape.
+     *  In its implementations, this method should return an AABB that can fit
+     *  well on this shape.
      *
      *  \return an AABB representing the calculated bounding box
      *
@@ -96,26 +96,23 @@ public:
      *  In its implementations, this method should compute the surface area of
      *  the shape
      *
-     *  \return A float representing the area of the shape in world space units
+     *  \return A float representing the area of the shape in world-space units
      */
     virtual float surface()const = 0;
     
-    /** \brief Apply the transformation from the provided matrix on the shape
+    /** \brief Convert the shape to world-space
      *
      *  In its implementations, this method should replace the object-space
      *  definition of the object with its world-space
      *
-     **  \sa world2obj()
+     *  \sa world2obj()
      */
     virtual void obj2world() = 0;
     
-    /** \brief Apply the transformation from the provided matrix on the shape
+    /** \brief Convert the shape to object-space
      *
      *  In its implementations, this method should replace the world-space
      *  definition of the object with its object-space
-     *
-     *  \note This method is a lot more computationally intensive than the
-     *         opposite one
      *
      *  \sa obj2world()
      */
@@ -126,7 +123,6 @@ protected:
     AABB aabb;
     
 private:
-    
     //id of the shape
     const unsigned int id;
 };

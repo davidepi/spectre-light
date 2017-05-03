@@ -70,7 +70,7 @@ public:
      *
      *  Expand the bounding box by a constant factor
      *
-     *  \param[in] value The magnitude of the expansion, in world space units
+     *  \param[in] value The magnitude of the expansion, in world-space units
      */
     void expand(float value);
     

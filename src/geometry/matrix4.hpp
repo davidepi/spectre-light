@@ -211,7 +211,7 @@ public:
      *  system. This matrix is used to align the world with the camera (can be
      *  seen as a result of placing the camera inside a scene).
      *
-     *  \note All the coordinates must be in world space
+     *  \note All the coordinates must be in world-space
      *
      *  \param[in] position The position of the camera
      *  \param[in] target The point the camera is looking at
