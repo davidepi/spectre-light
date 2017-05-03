@@ -22,7 +22,7 @@
 
 /**
  *  \class Sphere sphere.hpp "primitives/sphere.hpp"
- *  \brief Sphere primitive implementation
+ *  \brief Implementation of a sphere primitive
  *
  *  This class contains the definition of a sphere, centered in (0,0,0) with
  *  a given radius. To center the sphere somewhere else, the
@@ -98,10 +98,14 @@ public:
      *  Modify the sphere radius and centre by using the transformation matrix
      *  and convert the sphere from object-space to world-space
      *
+     *  \parblock
      *  \note If the supplied matrix contains non-uniform scaling, the \a x
      *  value will be chosen
+     *  \endparblock
+     *  \parblock
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
      *  set
+     *  \endparblock
      *
      *  \sa world2obj()
      */
@@ -112,12 +116,16 @@ public:
      *  Modify the sphere radius and centre by using the transformation matrix
      *  and convert the sphere from object-space to world-space
      *
+     *  \parblock
      *  \note If the supplied matrix contains non-uniform scaling, the \a x
      *  value will be chosen
+     *  \endparblock
+     *  \parblock
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
      *  set
+     *  \endparblock
      *
-     *  \sa world2obj()
+     *  \sa obj2world()
      */
     void world2obj();
     
