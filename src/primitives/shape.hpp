@@ -75,6 +75,8 @@ public:
      *  In its implementations, this method should replace the current AABB of
      *  the shape with an updated version. A procedure that have to be performed
      *  after moving or transforming the shape
+     *
+     *  \sa computeAABB()
      */
     virtual void recomputeAABB() = 0;
     
@@ -82,6 +84,10 @@ public:
      *
      *  In its implementations, this method should replace return an AABB that
      *  can fit well on this shape.
+     *
+     *  \return an AABB representing the calculated bounding box
+     *
+     *  \sa recomputeAABB()
      */
     virtual AABB computeAABB()const = 0;
     
@@ -93,6 +99,27 @@ public:
      *  \return A float representing the area of the shape in world space units
      */
     virtual float surface()const = 0;
+    
+    /** \brief Apply the transformation from the provided matrix on the shape
+     *
+     *  In its implementations, this method should replace the object-space
+     *  definition of the object with its world-space
+     *
+     **  \sa world2obj()
+     */
+    virtual void obj2world() = 0;
+    
+    /** \brief Apply the transformation from the provided matrix on the shape
+     *
+     *  In its implementations, this method should replace the world-space
+     *  definition of the object with its object-space
+     *
+     *  \note This method is a lot more computationally intensive than the
+     *         opposite one
+     *
+     *  \sa obj2world()
+     */
+    virtual void world2obj() = 0;
     
 protected:
     //bounding box of the shape
