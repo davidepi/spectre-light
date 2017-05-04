@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit  3 May 2017
+//Last Edit  4 May 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      3 May 2017
+ *  \date      4 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -92,6 +92,15 @@ public:
      *  \sa recomputeAABB()
      */
     AABB computeAABB()const;
+    
+    /** \brief Return the surface of the sphere
+     *
+     *  This method should compute the surface area of the sphere, useful
+     *  if the sphere is a light source.
+     *
+     *  \return A float representing the area of the sphere in world-space units
+     */
+    float surface()const;
     
     /** \brief Convert the sphere to world-space
      *

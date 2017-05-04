@@ -85,3 +85,7 @@ bool Sphere::intersect(const Ray *r, float *distance, float *error)const
         return false;
 }
 
+float Sphere::surface()const
+{
+    return 4.0f*(float)M_PI*Sphere::radius*Sphere::radius;
+}
