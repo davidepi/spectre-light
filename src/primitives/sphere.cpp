@@ -4,6 +4,12 @@ Sphere::Sphere(float rad) :Shape()
     Sphere::radius = rad;
 }
 
+Sphere::Sphere(float rad, Matrix4* m) :Shape()
+{
+    Sphere::radius = rad;
+    Shape::transformMatrix = m;
+}
+
 AABB Sphere::computeAABB()const
 {
     Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
@@ -60,8 +66,8 @@ bool Sphere::intersect(const Ray *r, float *distance, float *error)const
 {
     Vec3 tmp = r->origin - Sphere::centre;
     float a = r->direction.dot(r->direction);
-    float b = r->direction.dot(tmp);
-    float c = tmp.dot(tmp) * Sphere::radius;
+    float b = 2*(r->direction.dot(tmp));
+    float c = tmp.dot(tmp) - (Sphere::radius*Sphere::radius);
     float sol1;
     float sol2;
     if(equation2(a,b,c,&sol1,&sol2))
