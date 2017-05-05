@@ -7,7 +7,7 @@ Matrix4::Matrix4()
 Matrix4::Matrix4(const float* v)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    if(v!=nullptr)
+    if(v!=NULL)
     {
         //checking if the values are not NaN or Infinity is too expensive,
         //so cross your fingers :^)
