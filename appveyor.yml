@@ -8,7 +8,7 @@ platform: x64
 before_build:
     - md c:\projects\spectre-light\build
     - cd c:\projects\spectre-light\build
-    - cmake -G "Visual Studio 14 2015 Win64"
+    - cmake -G "Visual Studio 14 2015 Win64" ..
 build:
     project: c:\projects\spectre-light\spectre-light.sln
     parallel: true
