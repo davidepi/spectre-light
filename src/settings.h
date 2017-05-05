@@ -18,5 +18,11 @@
 #define _LOW_LEVEL_CHECKS_
 //#define _TEST_
 
+
+//for vs
+#ifndef M_PI
+#define M_PI 3.1415f
+#endif
+
 #include "validator.h"
 #endif
