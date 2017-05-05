@@ -48,7 +48,7 @@ Vec3::Vec3(const Vec2 xy,float z)
 Vec3::Vec3(const float* xyz)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    if(xyz!=nullptr)
+    if(xyz!=NULL)
     {
         severe(std::isnan(xyz[0]) || std::isnan(xyz[1]) || std::isnan(xyz[2]),
                "Trying to construct a Vec3 with a NaN value");
@@ -479,7 +479,7 @@ Normal::Normal(const Vec2 xy,float z)
 Normal::Normal(const float* xyz)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    if(xyz != nullptr)
+    if(xyz != NULL)
     {
         severe(std::isnan(xyz[0]) || std::isnan(xyz[1]) || std::isnan(xyz[2]),
                "Trying to construct a Normal with a NaN value");

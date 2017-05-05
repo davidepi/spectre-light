@@ -32,7 +32,7 @@ Vec2::Vec2(float x, float y)
 Vec2::Vec2(const float* xy)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    if(xy != nullptr)
+    if(xy != NULL)
     {
         severe(std::isnan(xy[0]) || std::isnan(xy[1]),
                "Trying to construct a Vec3 with a NaN value");
