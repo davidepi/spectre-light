@@ -19,6 +19,7 @@
 #include <cmath>
 #include <cfloat>
 #include <cstdlib> //EXIT_FAILURE
+#include "settings.h" //M_PI
 
 /**
  *  \brief Enables asserts for low level classes

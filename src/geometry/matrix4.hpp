@@ -302,7 +302,7 @@ void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
 
 //- - - - - - - - - - - - - - OLD AND UNTESTED - - - - - - - - - - - - - - - - -
 
-__attribute__((deprecated))
+
 /** \brief Creates a View Space transform matrix with a Left Hand coordinate
  *         system
  *
@@ -313,9 +313,10 @@ __attribute__((deprecated))
  *                usually v(0,1,0)
  *  \param[out] output The resulting Matrix4
  */
+DEPRECATED
 void viewLeftHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
 
-__attribute__((deprecated))
+DEPRECATED
 /** \brief Creates a View Space transform matrix with a Right Hand coordinate
  *         system
  *
@@ -328,7 +329,7 @@ __attribute__((deprecated))
  */
 void viewRightHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
 
-__attribute__((deprecated))
+DEPRECATED
 /** \brief Creates a Perspective transform matrix with a Left Hand coordinate
  *         system
  *
@@ -342,7 +343,7 @@ __attribute__((deprecated))
 void PerspectiveLeftHand(float fov, float aspectRatio, float nearPlane,
                          float farPlane, Matrix4* output);
 
-__attribute__((deprecated))
+DEPRECATED
 /** \brief Creates a Perspective transform matrix with a Right Hand coordinate
  *         system
  *
@@ -356,7 +357,7 @@ __attribute__((deprecated))
 void PerspectiveRightHand(float fovX, float fovY, float nearPlane,
                           float farPlane, Matrix4* output);
 
-__attribute__((deprecated))
+DEPRECATED
 /** \brief Creates an Orthographic transform matrix with a Right Hand coordinate
  *         system
  *
@@ -370,7 +371,7 @@ __attribute__((deprecated))
 void OrthographicRightHand(float width, float height, float nearPlane,
                            float farPlane, Matrix4* output);
 
-__attribute__((deprecated))
+DEPRECATED
 /** \brief Creates a Translation matrix
  *
  *  \deprecated Embedded into \a Transform class
@@ -379,7 +380,7 @@ __attribute__((deprecated))
  */
 void Translation(Vec3* source, Matrix4* output);
 
-__attribute__((deprecated))
+DEPRECATED
 /** \brief Creates a Rotation matrix
  *
  *  \deprecated Embedded into \a Transform class
@@ -393,7 +394,7 @@ __attribute__((deprecated))
  */
 void YawPitchRollRotation(float yaw, float pitch, float roll, Matrix4* output);
 
-__attribute__((deprecated))
+DEPRECATED
 /** \brief Creates a Scaling matrix
  *
  *  \deprecated Embedded into \a Transform class
