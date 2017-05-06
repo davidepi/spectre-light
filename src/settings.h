@@ -18,10 +18,5 @@
 #define _LOW_LEVEL_CHECKS_
 //#define _TEST_
 
-#ifdef M_PI
-#undef M_PI //define pi as a floating point
-#define M_PI 3.1415926535897932384626433832795028841971693993751058209749445923f
-#endif
-
 #include "validator.h"
 #endif

@@ -28,7 +28,6 @@
  *  functions to perform intersection, AABB computing and surface area
  *  calculation
  */
-class Shape;
 class Shape
 {
 public:
