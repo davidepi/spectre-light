@@ -74,6 +74,47 @@ int AABB::longest_axis()
         return 2;
 }
 
+bool AABB::intersect(const Ray* r, float* p1, float* p2)const
+{
+    float mint;
+    float maxt;
+    //x plane
+    float invr = 1.0f/r->direction.x;
+    float near = (AABB::bmin.x-r->origin.x) * invr;
+    float far = (AABB::bmax.x-r->origin.x) * invr;
+    if(near>far)
+        swap(&near,&far);
+    mint = near;
+    maxt = far;
+    if(mint>maxt)
+        return false;
+    //y plane
+    invr = 1.0f/r->direction.y;
+    near = (AABB::bmin.y-r->origin.y) * invr;
+    far = (AABB::bmax.y-r->origin.y) * invr;
+    if(near>far)
+        swap(&near,&far);
+    mint = near>mint?near:mint;
+    maxt = far<maxt?far:maxt;
+    if(mint>maxt)
+        return false;
+    //z plane
+    invr = 1.0f/r->direction.z;
+    near = (AABB::bmin.z-r->origin.z) * invr;
+    far = (AABB::bmax.z-r->origin.z) * invr;
+    if(near>far)
+        swap(&near,&far);
+    mint = near>mint?near:mint;
+    maxt = far<maxt?far:maxt;
+    if(mint>maxt)
+        return false;
+    if(!isnan(mint))
+        *p1 = mint;
+    if(!isnan(maxt))
+        *p2 = maxt;
+    return true;
+}
+
 //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
 
 AABB AABB::operator+(const Point3& p)const

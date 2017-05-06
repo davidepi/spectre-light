@@ -15,6 +15,7 @@
 #ifndef __AABBOX_HPP__
 #define __AABBOX_HPP__
 #include "point3.hpp"
+#include "ray.hpp"
 
 /**
  * \class AABB AABB.hpp "geometry/AABB.hpp"
@@ -130,6 +131,21 @@ public:
      *  the \y axis or 2 if it is the \a z axis
      */
     int longest_axis();
+    
+    /** \brief Intersection of a Ray and this AABB
+     *
+     *  This method tries to intersect a ray passed as a parameter with the
+     *  AABB, returning true or false if the intersection happened. I this is
+     *  true, the variables \p p1 and \p p2 are set based on the result.
+     *
+     *  \note Ray#minext and Ray#maxext are not considered in the AABB 
+     *  intersection
+     *
+     *  \param[in] r A pointer to the ray used to perform the intersection
+     *  \param[out] p1 The distance of the first point of intersection
+     *  \param[out] p2 The distance of the second point of intersection
+     */
+    bool intersect(const Ray* r, float* p1, float* p2)const;
     
     //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
