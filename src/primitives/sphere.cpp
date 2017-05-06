@@ -12,8 +12,8 @@ Sphere::Sphere(float rad, Matrix4* m) :Shape()
 
 AABB Sphere::computeAABB()const
 {
-    Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
-    Point3 pmax( Sphere::radius, Sphere::radius, Sphere::radius);
+    const Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
+    const Point3 pmax( Sphere::radius, Sphere::radius, Sphere::radius);
     
     //who cares if pmin and pmax are stack-allocated, the AABB constructor is
     //going to copy them anyway
@@ -22,8 +22,8 @@ AABB Sphere::computeAABB()const
 
 void Sphere::recomputeAABB()
 {
-    Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
-    Point3 pmax( Sphere::radius, Sphere::radius, Sphere::radius);
+    const Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
+    const Point3 pmax( Sphere::radius, Sphere::radius, Sphere::radius);
     
     //who cares if pmin and pmax are stack-allocated, the AABB constructor is
     //going to copy them anyway
@@ -64,7 +64,7 @@ void Sphere::world2obj()
 
 bool Sphere::intersect(const Ray *r, float *distance, float *error)const
 {
-    Vec3 tmp = r->origin - Sphere::centre;
+    const Vec3 tmp = r->origin - Sphere::centre;
     float a = r->direction.dot(r->direction);
     float b = 2*(r->direction.dot(tmp));
     float c = tmp.dot(tmp) - (Sphere::radius*Sphere::radius);

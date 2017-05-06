@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 29 Apr 2017
+//Last Edit  6 May 2017
 
 /**
  *  \file aabb.hpp
@@ -7,7 +7,7 @@
  *  \details   An Axis Aligned Bounding Box, used to enclose some geometry
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      29 April 2017
+ *  \date      6 May 2017
  *  \copyright GNU GPLv3
  */
 

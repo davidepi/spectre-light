@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit  4 May 2017
+//Last Edit  6 May 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      4 May 2017
+ *  \date      6 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -76,6 +76,9 @@ public:
      *  This method replaces the current AABB of the sphere with an updated
      *  version. This procedure has to be performed after every obj2world or
      *  world2obj call.
+     *
+     *  \note Despite the name of the function contains the word REcompute, the
+     *  AABB is not implicitly calculated by whichever constructor
      *
      *  \sa computeAABB()
      *  \sa obj2world()
