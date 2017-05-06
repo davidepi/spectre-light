@@ -14,8 +14,11 @@
 #ifndef __SETTINGS_H__
 #define __SETTINGS_H__
 
+///The number of bounces before discarding the ray
 #define DEFAULT_BOUNCES 6
+///If defined performs several checks to avoid Nan values
 #define _LOW_LEVEL_CHECKS_
+///If defined, instead of writing errors in the console, writes them in a struct
 //#define _TEST_
 
 #include "validator.h"
