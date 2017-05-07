@@ -1,19 +1,19 @@
 //Created,   6 May 2017
-//Last Edit  6 May 2017
+//Last Edit  7 May 2017
 
 /**
- *  \file obox.hpp
- *  \brief     Oriented Box primitive definition
+ *  \file box.hpp
+ *  \brief     Box primitive definition
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      6 May 2017
+ *  \date      7 May 2017
  *  \copyright GNU GPLv3
  */
 
 
-#ifndef __OBOX_HPP__
-#define __OBOX_HPP__
+#ifndef __BOX_HPP__
+#define __BOX_HPP__
 
 #include <cstdio> //sprintf
 #include <cstring> //strcpy,strcat
@@ -24,17 +24,17 @@
 #include "AABB.hpp"
 
 /**
- *  \class OBox obox.hpp "primitives/sphere.hpp"
- *  \brief Implementation of an Oriented Box
+ *  \class Box box.hpp "primitives/box.hpp"
+ *  \brief Implementation of a Box
  *
- *  This class contains the definition of an oriented box, a box that is not
+ *  This class contains the definition of a box, a box that is not necessarily
  *  aligned with the world axis. This class expects the bottom left corner and
- *  three Vec3 representing lenght and direction of every edge
+ *  three Vec3 representing lenght of every edge. For this reason, a Box will be
+ *  constructed as an axis aligned box, and then oriented with the transform
+ *  matrix.
  *
- *  Alternatively, by calling the default constructor, an Axis Aligned bounding
- *  Box can be constructed and then oriented by using a transformation matrix
  */
-class OBox : Shape
+class Box : Shape
 {
 public:
     
@@ -43,41 +43,35 @@ public:
      *  Construct an Axis Aligned Box with the bottom left corner in (0,0,0)
      *  and the top right corner in (1,1,1)
      */
-    OBox();
+    Box();
     
-    /* \brief Constructor, given bottom left corner and one vector for each edge
-     *
-     *  Construct an oriented box with the bottom left corner in the given point
-     *  and three vector representing lenght and orientation of each edge
-     *
-     *  \note The three vectors can be also used as a position of the,
-     *  respectively, front-bottom-right corner, front-top-left corner and
-     *  back-bottom-left corner
-     *
-     *  \warning If using #_LOW_LEVEL_CHECKS_, if the box is not consistent
-     *  (i.e. bottom left corner on the right of the bottom right corner) it
-     *  will be rearranged, leading to probably unwanted results
-     *
-     *  \param[in] blcorner The bottom left corner
-     *  \param[in] xedge A vector where the \a x component is the length of the
-     *  x edge, the \a y and \z components are the orientation
-     *  \param[in] yedge A vector where the \a y component is the length of the
-     *  y edge, the \a x and \z components are the orientation
-     */
-    OBox(Point3* blcorner, Vec3* xedge, Vec3* yedge, Vec3* zedge);
-    
-    /* \brief Constructor, given the edges length and the trasnform matrix.
+    /* \brief Constructor, given the edges length and the transform matrix.
      *
      *  Construct an axis aligned box with the bottom left corner in (0,0,0)
      *  and the length of the edges as specified by the component of the vector.
      *  Then stores the transformation matrix, for later use with the
-     *  OBox::obj2world function.
+     *  Box::obj2world function.
      *
      *  \param[in] edges A vector with each component representing the length of
      *  an edge
      *  \param[in] transformation A pointer to the transformation matrix
      */
-    OBox(Vec3* edges, Matrix4* transformation);
+    Box(Vec3* edges, Matrix4* transformation);
+    
+    /* \brief Constructor, given the position, edges length and the transform
+     *  matrix.
+     *
+     *  Construct an axis aligned box with the bottom left corner in the given
+     *  point and the length of the edges as specified by the component of the
+     *  vector. Then stores the transformation matrix, for later use with the
+     *  Box::obj2world function.
+     *
+     *  \param[in] bottom_left Position of the bottom left corner of the box
+     *  \param[in] edges A vector with each component representing the length of
+     *  an edge
+     *  \param[in] transformation A pointer to the transformation matrix
+     */
+    Box(Point3* bottom_left, Vec3* edges, Matrix4* transformation);
     
     /** \brief Intersection of a Ray and this box
      *
@@ -114,7 +108,8 @@ public:
     
     /** \brief Recalculate the AABB
      *
-     *  This method return an AABB that can fit well on this oriented box.
+     *  This method return an AABB that can fit well on this possibly oriented 
+     *  box.
      *
      *  \return an AABB representing the calculated bounding box
      *
