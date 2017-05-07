@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 23 Apr 2017
+//Last Edit  7 May 2017
 
 /**
  *  \file ray.hpp
@@ -7,7 +7,7 @@
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 23 April 2017
+ *  \date 7 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -164,4 +164,29 @@ public:
      */
 };
 
+/**
+ *  \brief Structure used for multiple AABB checking
+ *  
+ *  The AABB intersection routine relies in several computations, which are not
+ *  really time consuming on their own, but when performed on an enourmus amount
+ *  of AABBs can lead to a noticeable performance hit. Since the result of these
+ *  computations is needed only for AABB intersection testing and does not
+ *  change for a given ray, instead of modifying the Ray class, is stored in
+ *  this struct.
+ */
+struct RayProperties
+{
+    ///The inverse of the \a x component of the ray
+    float inverseX;
+    ///The inverse of the \a y component of the ray
+    float inverseY;
+    ///The inverse of the \a z component of the ray
+    float inverseZ;
+    ///true if the sign of the inverse of the \a x component is negative
+    bool isXInvNeg;
+    ///true if the sign of the inverse of the \a y component is negative
+    bool isYInvNeg;
+    ///true if the sign of the inverse of the \a z component is negative
+    bool isZInvNeg;
+};
 #endif
