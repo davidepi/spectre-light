@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit 28 Apr 2017
+//Last Edit  3 May 2017
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 28 April 2017
+ *  \date  3 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -259,7 +259,7 @@ inline float toDeg(const float rad)
  *  \return A float containing the minimum value between \p f1 and \p f2
  *  \sa max(float f1, float f2)
  */
-inline float min(float f1, float f2)
+inline float min(const float f1, const float f2)
 {
     return f1<f2?f1:f2;
 }
@@ -273,7 +273,7 @@ inline float min(float f1, float f2)
  *  \return A float containing the maximum value between \p f1 and \p f2
  *  \sa min(float f1, float f2)
  */
-inline float max(float f1, float f2)
+inline float max(const float f1, const float f2)
 {
     return f1>f2?f1:f2;
 }
@@ -311,6 +311,59 @@ inline float clamp(const float value, const float min, const float max)
 inline bool flt_equal(const float val1, const float val2)
 {
     return std::fabs(val1-val2) <= FLT_EPSILON;
+}
+
+
+/** \brief Solve a linear equation
+ *
+ *  Solve a linear equation in form \f$ax+b=0\f$
+ *
+ *  \note use #_LOW_LEVEL_CHECKS_ to check if \p a is zero
+ *  
+ *  \param[in] a The coefficient of the unknown variable
+ *  \param[in] b The other constant of the equation
+ *  \return The value of the unknown variable
+ */
+inline float equation1(const float a, const float b)
+{
+#ifdef _LOW_LEVEL_CHECKS_
+    if(a==0)
+    {
+        severe("Trying to solve the linear equation ax+b=0 with a=0");
+        return b;
+    }
+#endif
+    return -b/a;
+}
+
+/** \brief Solve a quadratic equation
+ *
+ *  Solve a quadratic equation in form \f$ax^2+bx+c=0\f$
+ *
+ *  \param[in] a The coefficient of the unknown squared variable
+ *  \param[in] b The coefficient of the unknown variable
+ *  \param[in] c The other constant of the equation
+ *  \param[out] sol1 The first solution of the equation
+ *  \param[out] sol2 The second solution of the equation
+ *  \return false if the equation has no solution, true otherwise
+ */
+inline bool equation2(const float a, const float b, const float c,
+                      float* sol1, float* sol2)
+{
+    float delta = b*b-4.0f*a*c;
+    if(delta>=0)//TODO: even with an added epsilon this has some problems if = 0
+    {
+        float q;
+        if(b<0)
+            q = -0.5f*(b-sqrtf(delta));
+        else
+            q = -0.5f*(b+sqrtf(delta));
+        *sol1 = q/a;
+        *sol2 = c/q;
+        return true;
+    }
+    else
+        return false;
 }
 
 //define some structures useful to check if the program fired any kind of errors

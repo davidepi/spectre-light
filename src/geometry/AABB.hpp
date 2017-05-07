@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 29 Apr 2017
+//Last Edit  7 May 2017
 
 /**
  *  \file aabb.hpp
@@ -7,7 +7,7 @@
  *  \details   An Axis Aligned Bounding Box, used to enclose some geometry
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      29 April 2017
+ *  \date      7 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -15,6 +15,7 @@
 #ifndef __AABBOX_HPP__
 #define __AABBOX_HPP__
 #include "point3.hpp"
+#include "ray.hpp"
 
 /**
  * \class AABB AABB.hpp "geometry/AABB.hpp"
@@ -26,13 +27,13 @@
  *  the axis of scene.
  *
  *  This bounding box is defined by two points defined as private variables:
- *  the point on the bottom left of the box and the one on the top right.
+ *  the point on the front bottom left of the box and the one on the back top
+ *  right.
  */
 class AABB
 {
 private:
-    Point3 bmin; //bottom left point
-    Point3 bmax; //top right point
+    Point3 bounds[2]; //0-> bottom left point, 1-> top right point
 public:
     
     /** \brief Default Constructor
@@ -70,7 +71,7 @@ public:
      *
      *  Expand the bounding box by a constant factor
      *
-     *  \param[in] value The magnitude of the expansion, in world space units
+     *  \param[in] value The magnitude of the expansion, in world-space units
      */
     void expand(float value);
     
@@ -127,9 +128,38 @@ public:
      *  or \a z, is the longest.
      *
      *  \return An integer value, 0 if the \a x axis is the longest, 1 if it is
-     *  the \y axis or 2 if it is the \a z axis
+     *  the \a y axis or 2 if it is the \a z axis
      */
     int longest_axis();
+    
+    /** \brief Intersection of a Ray and this AABB
+     *
+     *  This method tries to intersect a ray passed as a parameter with the
+     *  AABB, returning true or false if the intersection happened. If this is
+     *  true, the variables \p p1 and \p p2 are set based on the result.
+     *
+     *  \note Ray#minext and Ray#maxext are not considered in the AABB 
+     *  intersection
+     *
+     *  \param[in] r A pointer to the ray used to perform the intersection
+     *  \param[out] p1 The distance of the first point of intersection
+     *  \param[out] p2 The distance of the second point of intersection
+     */
+    bool intersect(const Ray* r, float* p1, float* p2)const;
+    
+    /** \brief Faster Intersection of a Ray and this AABB
+     *
+     *  This function has the same purpose of 
+     *  AABB::intersect(const Ray* r, float* p1, float* p2)const, however, when
+     *  used on a large amount of AABBs, this one is more efficient
+     *
+     *  \param[in] r A pointer to the ray used to perform the intersection
+     *  \param[in] rp A struct containing the inverse of the ray components
+     *  \param[out] p1 The distance of the first point of intersection
+     *  \param[out] p2 The distance of the second point of intersection
+     */
+    bool intersect(const Ray* r, const RayProperties* rp, float* p1, float* p2)
+    const;
     
     //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     

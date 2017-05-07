@@ -89,7 +89,7 @@ public:
      *  Construct a vector of three elements with the same given value
      *
      *  \param[in] xyz A float representing the x, y and z components
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p \xyz is NaN or Infinity
+     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xyz is NaN or Infinity
      */
     Vec3(float xyz);
     
@@ -427,7 +427,7 @@ public:
      *
      *  \param[in] xy A Vec2 representing the x and y components of the normal
      *  \param[in] z A float representing the z component of the normal
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy or \z are
+     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy or \p z are
      *        NaN or Infinity
      */
     Normal(const Vec2 xy,float z);

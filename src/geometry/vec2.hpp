@@ -78,7 +78,7 @@ public:
      *  Construct a vector of two elements with the same given value
      *
      *  \param[in] xy A float representing the x and y components
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p \xy is NaN or Infinity
+     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy is NaN or Infinity
      */
     Vec2(float xy);
     

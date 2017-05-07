@@ -1,12 +1,12 @@
 //Created,  28 Apr 2017
-//Last Edit  5 May 2017
+//Last Edit  6 May 2017
 
 /**
  *  \file validator.h
  *  \brief Check the consistency of the settings.h file and add some definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 5 May 2017
+ *  \date 6 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -19,14 +19,20 @@
 #endif
 
 //for vs
+#ifdef M_PI
+#undef M_PI //redefine pi as a floating point
+#endif
 #ifndef M_PI
-#define M_PI 3.1415f
+///The number π, redefined as a floating point
+#define M_PI 3.1415926535897932384626433832795028841971693993751058209749445923f
 #endif
 
 //deprecated function, compatible with vs
 #ifdef _MSC_VER
+///Tells the compiler about a deprecated function (Visual Studio style)
 #define DEPRECATED __declspec(deprecated)
 #else
+///Tells the compiler about a deprecated function (GCC style)
 #define DEPRECATED __attribute__((deprecated))
 #endif
 
