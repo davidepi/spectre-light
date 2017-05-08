@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1) #required for CMAKE_CXX_STANDARD
 project(spectre-light)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file(GLOB spectre_core_sources
     src/geometry/*.cpp
     src/primitives/*.cpp
