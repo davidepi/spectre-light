@@ -17,12 +17,6 @@ fbr(b->x+e->x,b->y,b->z),ftl(b->x,b->y+e->y,b->z),bbl(b->x,b->y,b->z+e->z)
     transformMatrix = t;
 }
 
-void Box::recomputeAABB()
-{
-    const Point3 max(Box::fbr.x,Box::ftl.y,Box::bbl.z);
-    Box::aabb = AABB(&(Box::fbl),&max);
-}
-
 AABB Box::computeAABB()const
 {
     const Point3 max(Box::fbr.x,Box::ftl.y,Box::bbl.z);

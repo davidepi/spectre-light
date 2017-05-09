@@ -20,16 +20,6 @@ AABB Sphere::computeAABB()const
     return AABB(&pmin, &pmax);
 }
 
-void Sphere::recomputeAABB()
-{
-    const Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
-    const Point3 pmax( Sphere::radius, Sphere::radius, Sphere::radius);
-    
-    //who cares if pmin and pmax are stack-allocated, the AABB constructor is
-    //going to copy them anyway
-    Sphere::aabb = AABB(&pmin, &pmax);
-}
-
 void Sphere::obj2world()
 {
 #ifdef _LOW_LEVEL_CHECKS_

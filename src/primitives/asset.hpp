@@ -55,11 +55,26 @@ public:
      */
     bool intersect(const Ray* r,float* distance,float* error)const;
     
+    /** \brief Intersection of a Ray and the bounding box of the asset
+     *
+     *  Calls the intersection routine on the bounding box of this shape
+     *
+     *  \param[in] r A pointer to the ray used to perform the intersection
+     *  \param[in] rp A pointer to the RayProperties struct, used for fast
+     *                intersection
+     *  \param[out] p1 The entry point of the AABB
+     *  \param[out] p2 The exit point of the AABB
+     */
+    bool intersectFast(const Ray* r, const RayProperties* rp,
+                       float* p1, float* p2)const;
+    
 private:
     //underlying model
     Shape* model;
     //id of the asset
     const unsigned int id;
+    //Bounding box
+    AABB aabb;
     //Material
     //Texture
 };

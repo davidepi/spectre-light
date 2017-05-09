@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit  7 May 2017
+//Last Edit  9 May 2017
 
 /**
  *  \file box.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      7 May 2017
+ *  \date      9 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -34,7 +34,7 @@
  *  matrix.
  *
  */
-class Box : Shape
+class Box : public Shape
 {
 public:
     
@@ -93,27 +93,10 @@ public:
     
     /** \brief Recalculate the AABB
      *
-     *  This method replaces the current AABB of the box with an updated
-     *  version. This procedure has to be performed after every obj2world or
-     *  world2obj call.
-     *
-     *  \note Despite the name of the function contains the word REcompute, the
-     *  AABB is not implicitly calculated by whichever constructor
-     *
-     *  \sa computeAABB()
-     *  \sa obj2world()
-     *  \sa world2obj()
-     */
-    void recomputeAABB();
-    
-    /** \brief Recalculate the AABB
-     *
      *  This method return an AABB that can fit well on this possibly oriented 
      *  box.
      *
      *  \return an AABB representing the calculated bounding box
-     *
-     *  \sa recomputeAABB()
      */
     AABB computeAABB()const;
     

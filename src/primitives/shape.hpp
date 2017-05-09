@@ -71,22 +71,10 @@ public:
     
     /** \brief Recalculate the AABB
      *
-     *  In its implementations, this method should replace the current AABB of
-     *  the shape with an updated version. A procedure that has to be performed
-     *  after moving or transforming the shape
-     *
-     *  \sa computeAABB()
-     */
-    virtual void recomputeAABB() = 0;
-    
-    /** \brief Recalculate the AABB
-     *
      *  In its implementations, this method should return an AABB that can fit
      *  well on this shape.
      *
      *  \return an AABB representing the calculated bounding box
-     *
-     *  \sa recomputeAABB()
      */
     virtual AABB computeAABB()const = 0;
     
@@ -117,9 +105,6 @@ public:
      */
     virtual void world2obj() = 0;
     
-protected:
-    ///Axis aligned bounding box of the shape
-    AABB aabb;
     
 private:
     //id of the shape

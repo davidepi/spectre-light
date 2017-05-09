@@ -30,7 +30,7 @@
  *  non-uniform scaling value, this class will rely upon the \a x value
  *
  */
-class Sphere : Shape
+class Sphere : public Shape
 {
 public:
     
@@ -71,28 +71,11 @@ public:
      */
     bool intersect(const Ray* r,float* distance,float* error)const;
     
-    /** \brief Recalculate the AABB
-     *
-     *  This method replaces the current AABB of the sphere with an updated
-     *  version. This procedure has to be performed after every obj2world or
-     *  world2obj call.
-     *
-     *  \note Despite the name of the function contains the word REcompute, the
-     *  AABB is not implicitly calculated by whichever constructor
-     *
-     *  \sa computeAABB()
-     *  \sa obj2world()
-     *  \sa world2obj()
-     */
-    void recomputeAABB();
-    
-    /** \brief Recalculate the AABB
+    /** \brief Calculate the AABB
      *
      *  This method return an AABB that can fit well on this sphere.
      *
      *  \return an AABB representing the calculated bounding box
-     *
-     *  \sa recomputeAABB()
      */
     AABB computeAABB()const;
     
