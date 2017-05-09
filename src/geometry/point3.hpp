@@ -77,7 +77,7 @@ public:
      *  and \p z
      *
      *  \param[in] xyz A float representing the x, y and z coordinates
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xyz is NaN or Infinity
+     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xyz is NaN
      */
     Point3(float xyz);
     
@@ -90,7 +90,7 @@ public:
      *  \param[in] y The value of the y coordinate
      *  \param[in] z The value of the z coordinate
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p x, \p y or \p z
-     *        are NaN or Infinity
+     *        are NaN
      */
     Point3(float x, float y, float z);
     
