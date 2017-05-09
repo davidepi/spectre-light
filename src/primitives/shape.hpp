@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  3 May 2017
+//Last Edit  9 May 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      3 May 2017
+ *  \date      9 May 2017
  *  \copyright GNU GPLv3
  */
 

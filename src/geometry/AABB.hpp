@@ -149,7 +149,7 @@ public:
     
     /** \brief Faster Intersection of a Ray and this AABB
      *
-     *  This function has the same purpose of 
+     *  This function has the same purposeqwe of 
      *  AABB::intersect(const Ray* r, float* p1, float* p2)const, however, when
      *  used on a large amount of AABBs, this one is more efficient
      *
