@@ -1,12 +1,12 @@
 //Created,  28 Apr 2017
-//Last Edit  6 May 2017
+//Last Edit 10 May 2017
 
 /**
  *  \file validator.h
  *  \brief Check the consistency of the settings.h file and add some definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 6 May 2017
+ *  \date 10 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,14 @@
 
 #ifndef DEFAULT_BOUNCES
 #error DEFAULT_BOUNCES must be defined in settings.h! (The default value is 6)
+#endif
+
+#ifndef _MAX_PRIMITIVES
+#define _MAX_PRIMITIVES_ 4096
+#endif
+#if _MAX_PRIMITIVES_ <= 1
+#undef _MAX_PRIMITIVES_
+#define _MAX_PRIMITIVES_ 4096
 #endif
 
 //for vs

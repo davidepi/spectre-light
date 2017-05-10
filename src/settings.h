@@ -1,12 +1,12 @@
 //Created,  24 Apr 2017
-//Last Edit  5 May 2017
+//Last Edit 10 May 2017
 
 /**
  *  \file settings.h
  *  \brief User defined global definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 5 May 2017
+ *  \date 10 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -20,6 +20,9 @@
 #define _LOW_LEVEL_CHECKS_
 ///If defined, instead of writing errors in the console, writes them in a struct
 //#define _TEST_
+
+///Defines the max number of assets in a KdTree acceleration structure
+#define _MAX_ASSETS_ 4096
 
 #include "validator.h"
 #endif

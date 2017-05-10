@@ -1,4 +1,5 @@
 #include "kdtree.hpp"
+#define KDNODE_ALLOC 4
 
 //KdTreeNode member description
 // union{ float split; uint32_t primitive_offset;}
@@ -72,7 +73,76 @@ unsigned int KdTreeNode::getPrimitiveNumber()const
 
 KdTree::KdTree()
 {
-    KdTree::tempList = new std::vector<Asset *>();
-    KdTree::primitiveNumber = 0;
-    //KdTreeNode::nodeList = malloc(
+    KdTree::primitiveList = (Asset**)malloc(sizeof(Asset*)*KDNODE_ALLOC);
+    KdTree::primitive_number = 0;
+    KdTree::primitive_allocated = KDNODE_ALLOC;
+    
+    KdTree::nodeList=(KdTreeNode*)malloc(sizeof(KdTreeNode)* KDNODE_ALLOC);
+    KdTree::node_index = 0;
+    KdTree::nodes_allocated = KDNODE_ALLOC;
+    
+    if(KdTree::primitiveList == NULL || KdTree::nodeList == NULL)
+        critical("Out of memory [Kd-Tree init]");
+}
+
+KdTree::~KdTree()
+{
+    free(primitiveList);
+    free(nodeList);
+}
+
+void KdTree::addAsset(Asset *addme)
+{
+    if(node_index == nodes_allocated)
+    {
+        unsigned int allocNo = max(primitive_allocated<<1,_MAX_ASSETS_);
+        Asset** tmp = (Asset**)malloc(sizeof(Asset*)*(allocNo));
+        if(tmp)
+        {
+            memcpy(tmp,primitiveList,primitive_allocated*sizeof(KdTreeNode));
+            primitive_allocated=allocNo;
+            free(KdTree::primitiveList);
+            KdTree::primitiveList = tmp;
+        }
+        else
+            critical("Out of memory [Kd-Tree building]");
+    }
+    primitiveList[primitive_number++] = addme;
+}
+
+void KdTree::finalize()
+{
+    maximum_depth = (char)(8 + 2*logf(primitive_number));
+}
+
+void KdTree::build(unsigned int node, char depth, unsigned int p_start,
+                   unsigned int p_num)
+{
+    
+    //check enough memory
+    if(node_index == nodes_allocated)
+    {
+        KdTreeNode* tmp = (KdTreeNode*)malloc(sizeof(KdTreeNode)*
+                                             (KdTree::nodes_allocated<<1));
+        if(tmp)
+        {
+            memcpy(tmp,nodeList,nodes_allocated*sizeof(KdTreeNode));
+            nodes_allocated<<=1;
+            free(KdTree::nodeList);
+            KdTree::nodeList = tmp;
+        }
+        else
+            critical("Out of memory [Kd-Tree building]");
+    }
+    
+    //terminate recursion
+    if(depth==maximum_depth || p_num <= _LEAF_ASSETS_)
+    {
+        nodeList[node] = KdTreeNode(p_start,p_num); //this is a leaf
+        return;
+    }
+    else
+    {
+        //TODO: split + recursive step
+    }
 }

@@ -14,8 +14,10 @@
 #ifndef __KDTREE_H__
 #define __KDTREE_H__
 
-#include <vector>
 #include "asset.hpp"
+
+///Defines the minimum number of assests in a leaf
+#define _LEAF_ASSETS_ 3
 
 class KdTreeNode
 {
@@ -45,13 +47,21 @@ class KdTree
 public:
     KdTree();
     ~KdTree();
-    bool addAsset(Asset* addme);
+    void addAsset(Asset* addme);
+    void finalize();
+    
 private:
-    std::vector<Asset*>* tempList;
-    Asset* primitiveList;
-    KdTreeNode* nodeList;
-    int primitiveNumber;
+    void build(unsigned int node, char depth, unsigned int primitive_offset,
+               unsigned int primitive_number);
     char maximum_depth;
+    
+    Asset** primitiveList;
+    unsigned int primitive_number;
+    unsigned int primitive_allocated;
+    
+    KdTreeNode* nodeList;
+    unsigned int node_index;
+    unsigned int nodes_allocated;
 };
 
 #endif
