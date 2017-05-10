@@ -13,7 +13,7 @@
 //[29 bit] -| non-leaf -> pointer of the right nodes
 //          | leaf     -> number of primitives
 
-KdTreeNode::KdTreeNode(float split, int axis, uint32_t other_child)
+KdTreeNode::KdTreeNode(float split, int axis, unsigned int other_child)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     critical(!(other_child < 0x20000000), "Too much nodes in the kdtree");
@@ -29,7 +29,7 @@ KdTreeNode::KdTreeNode(float split, int axis, uint32_t other_child)
     KdTreeNode::split = split;
 }
 
-KdTreeNode::KdTreeNode(uint32_t primitive_offset, uint32_t p_number)
+KdTreeNode::KdTreeNode(unsigned int primitive_offset, unsigned int p_number)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     critical(p_number>=0x20000000, "Too much primitives in one KdTreeNode");
@@ -53,4 +53,26 @@ bool KdTreeNode::isLeaf()const
 int KdTreeNode::getAxis()const
 {
     return (KdTreeNode::data & 0x60000000) >> 29;
+}
+
+unsigned int KdTreeNode::getOtherChildOffset()const
+{
+    return KdTreeNode::data & 0x1FFFFFFF;
+}
+
+unsigned int KdTreeNode::getPrimitiveOffset()const
+{
+    return KdTreeNode::primitive_offset;
+}
+
+unsigned int KdTreeNode::getPrimitiveNumber()const
+{
+    return KdTreeNode::data & 0x7FFFFFFF;
+}
+
+KdTree::KdTree()
+{
+    KdTree::tempList = new std::vector<Asset *>();
+    KdTree::primitiveNumber = 0;
+    //KdTreeNode::nodeList = malloc(
 }
