@@ -1,12 +1,12 @@
 //Created,   9 May 2017
-//Last Edit  9 May 2017
+//Last Edit 10 May 2017
 
 /**
  *  \file kdtree.hpp
  *  \brief     Implementation of a Kd-tree space subdivision structure
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      9 May 2017
+ *  \date      10 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -19,21 +19,20 @@
 class KdTreeNode
 {
 public:
-    KdTreeNode();
+    KdTreeNode(float split, int axis, uint32_t other_child);
+    KdTreeNode(uint32_t primitive_offset, uint32_t primitive_number);
     ~KdTreeNode();
     
     bool isLeaf()const;
-    void setLeaf(bool leaf);
     int getAxis()const;
-    void setAxis(int axis);
     
 private:
-    //split position along the axis
-    float split;
-    //from most significative bit to least significative one
-    //[1 bit] - leaf or not
-    //[2 bit] - split axis {0:x, 1:y, 2:z}
-    //[29 bit] - index of the array containing primitives
+    //private members description in file kdtree.cpp
+    union
+    {
+        float split;
+        uint32_t primitive_offset;
+    };
     uint32_t data;
 };
 
