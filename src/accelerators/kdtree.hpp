@@ -1,12 +1,12 @@
 //Created,   9 May 2017
-//Last Edit 11 May 2017
+//Last Edit 12 May 2017
 
 /**
  *  \file kdtree.hpp
  *  \brief     Implementation of a Kd-tree space subdivision structure
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 May 2017
+ *  \date      12 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -33,6 +33,9 @@
  *  leaf.
  *  The overall size of the class is 8 bytes, to maximize the number of nodes
  *  that can be fit into the cache.
+ *
+ *  This class goes along with the KdTree class, and usually provide offsets
+ *  to locate the actual stored data in the KdTree class
  */
 class KdTreeNode
 {
@@ -79,7 +82,7 @@ public:
     ///Default destructor
     ~KdTreeNode();
     
-    /* \brief Check if this node is a leaf
+    /** \brief Check if this node is a leaf
      *  
      *  Returns true if this node is a leaf, false otherwise
      *
@@ -87,7 +90,7 @@ public:
      */
     bool isLeaf()const;
     
-    /* \brief Return the split axis of this node
+    /** \brief Return the split axis of this node
      *
      *  If this node is an internal node, returns 0 if the split axis is the \a
      *  x axis, 1 if the split axis is the \a y axis, 2 if the split axis is the
@@ -100,8 +103,42 @@ public:
      */
     int getAxis()const;
     
+    /** \brief Return the pointer to the sibling of this node
+     *
+     *  If this node is an internal node, returns the offset of the Node array
+     *  to locate the sibling of this node
+     *
+     *  \return The offset of the sibling of this node
+     *
+     *  \warning If this node is a leaf the behaviour of this function is
+     *  undefined
+     */
     unsigned int getOtherChildOffset()const;
+    
+    /** \brief Return the number of primitives referenced by the leaf
+     *
+     *  Return the number of primitives that should be considered as
+     *  "belonging" to this leaf, starting from the one referenced by the
+     *  offset
+     *
+     *  \return An integer representing the number of primitives
+     *
+     *  \warning If this node is an internal node the behaviour of this function
+     *  is undefined
+     */
     unsigned int getPrimitiveNumber()const;
+    
+    /** \brief Return the offset of the first primitive referenced
+     *
+     *  Return an offset that, once added to the pointer referencing the
+     *  array of primitives in the KdTree class, should return the first
+     *  primitive contained in this leaf
+     *
+     *  \return An integer representing the offset of the first primitive
+     *
+     *  \warning If this node is an internal node the behaviour of this function
+     *  is undefined
+     */
     unsigned int getPrimitiveOffset()const;
     
 private:
