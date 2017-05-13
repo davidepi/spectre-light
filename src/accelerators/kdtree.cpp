@@ -115,63 +115,69 @@ Asset* KdTreeBuildNode::retrieveAsset(int n)
 
 KdTree::KdTree()
 {
-    KdTree::primitiveList = (Asset**)malloc(sizeof(Asset*)*KDNODE_ALLOC);
-    KdTree::primitive_number = 0;
-    KdTree::primitive_allocated = KDNODE_ALLOC;
+    KdTree::assetsList = (Asset**)malloc(sizeof(Asset*)*KDNODE_ALLOC);
+    KdTree::assets_number = 0;
+    KdTree::assets_allocated = KDNODE_ALLOC;
     
-    KdTree::nodeList=(KdTreeNode*)malloc(sizeof(KdTreeNode)* KDNODE_ALLOC);
-    KdTree::node_index = 0;
+    KdTree::nodesList=(KdTreeNode*)malloc(sizeof(KdTreeNode)* KDNODE_ALLOC);
+    KdTree::nodes_index = 0;
     KdTree::nodes_allocated = KDNODE_ALLOC;
     
-    if(KdTree::primitiveList == NULL || KdTree::nodeList == NULL)
+    built = false;
+    
+    if(KdTree::assetsList == NULL || KdTree::nodesList == NULL)
         critical("Out of memory [Kd-Tree init]");
 }
 
 KdTree::~KdTree()
 {
-    free(primitiveList);
-    free(nodeList);
+    free(assetsList);
+    free(nodesList);
 }
 
 void KdTree::addAsset(Asset *addme)
 {
-    if(node_index == nodes_allocated)
+    if(nodes_index == nodes_allocated)
     {
-        unsigned int allocNo = max(primitive_allocated<<1,_MAX_ASSETS_);
+        unsigned int allocNo = max(assets_allocated<<1,_MAX_ASSETS_);
         Asset** tmp = (Asset**)malloc(sizeof(Asset*)*(allocNo));
         if(tmp)
         {
-            memcpy(tmp,primitiveList,primitive_allocated*sizeof(KdTreeNode));
-            primitive_allocated=allocNo;
-            free(KdTree::primitiveList);
-            KdTree::primitiveList = tmp;
+            memcpy(tmp,assetsList,assets_allocated*sizeof(KdTreeNode));
+            assets_allocated=allocNo;
+            free(KdTree::assetsList);
+            KdTree::assetsList = tmp;
         }
         else
             critical("Out of memory [Kd-Tree building]");
     }
-    primitiveList[primitive_number++] = addme;
+    assetsList[assets_number++] = addme;
 }
 
 void KdTree::finalize()
 {
-    maximum_depth = (char)(8 + 2*logf(primitive_number));
+}
+
+void KdTree::buildTree()
+{
+    maximum_depth = 17;
 }
 
 void KdTree::build(unsigned int node, char depth, unsigned int p_start,
-                   unsigned int p_num)
+                   unsigned int p_num, AABB area)
 {
     
     //check enough memory
-    if(node_index == nodes_allocated)
+    if(nodes_index == nodes_allocated)
     {
         KdTreeNode* tmp = (KdTreeNode*)malloc(sizeof(KdTreeNode)*
                                              (KdTree::nodes_allocated<<1));
         if(tmp)
         {
-            memcpy(tmp,nodeList,nodes_allocated*sizeof(KdTreeNode));
+            memcpy(tmp,nodesList,nodes_allocated*sizeof(KdTreeNode));
             nodes_allocated<<=1;
-            free(KdTree::nodeList);
-            KdTree::nodeList = tmp;
+            free(KdTree::nodesList);
+            KdTree::nodesList = tmp;
         }
         else
             critical("Out of memory [Kd-Tree building]");
@@ -180,7 +186,7 @@ void KdTree::build(unsigned int node, char depth, unsigned int p_start,
     //terminate recursion
     if(depth==maximum_depth || p_num <= _LEAF_ASSETS_)
     {
-        nodeList[node] = KdTreeNode(p_start,p_num); //this is a leaf
+        nodesList[node] = KdTreeNode(p_start,p_num); //this is a leaf
         return;
     }
     else

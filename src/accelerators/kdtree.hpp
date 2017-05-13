@@ -216,20 +216,24 @@ public:
     KdTree();
     ~KdTree();
     void addAsset(Asset* addme);
-    void finalize();
+    void buildTree();
     
 private:
     void build(unsigned int node, char depth, unsigned int primitive_offset,
-               unsigned int primitive_number);
+               unsigned int primitive_number, AABB area);
+    void finalize();
     char maximum_depth;
     
-    Asset** primitiveList;
-    unsigned int primitive_number;
-    unsigned int primitive_allocated;
+    Asset** assetsList;
+    unsigned int assets_number;
+    unsigned int assets_allocated;
     
-    KdTreeNode* nodeList;
-    unsigned int node_index;
+    KdTreeNode* nodesList;
+    unsigned int nodes_index;
     unsigned int nodes_allocated;
+    
+    std::vector<KdTreeBuildNode>* tempbuilder;
+    bool built;
 };
 
 #endif
