@@ -35,7 +35,7 @@ KdTreeNode::KdTreeNode(unsigned int primitive_offset, unsigned int p_number)
 #ifdef _LOW_LEVEL_CHECKS_
     critical(p_number>=0x20000000, "Too much primitives in one KdTreeNode");
 #endif
-    KdTreeNode::primitive_offset = primitive_offset;
+    KdTreeNode::asset_offset = primitive_offset;
     KdTreeNode::data = p_number;
     KdTreeNode::data |= 0x80000000;
     
@@ -61,15 +61,57 @@ unsigned int KdTreeNode::getOtherChildOffset()const
     return KdTreeNode::data & 0x1FFFFFFF;
 }
 
-unsigned int KdTreeNode::getPrimitiveOffset()const
+unsigned int KdTreeNode::getAssetOffset()const
 {
-    return KdTreeNode::primitive_offset;
+    return KdTreeNode::asset_offset;
 }
 
-unsigned int KdTreeNode::getPrimitiveNumber()const
+unsigned int KdTreeNode::getAssetsNumber()const
 {
     return KdTreeNode::data & 0x7FFFFFFF;
 }
+
+// <><><><><><><>    KdTreeBuildNode
+
+KdTreeBuildNode::KdTreeBuildNode(float s, int a, unsigned int o_c)
+: KdTreeNode(s,a,o_c)
+{
+    
+}
+
+KdTreeBuildNode::KdTreeBuildNode(unsigned int assets_number)
+: KdTreeNode(0,assets_number)
+{
+    
+}
+
+KdTreeBuildNode::~KdTreeBuildNode()
+{
+    
+}
+
+void KdTreeBuildNode::addAsset(Asset* a)
+{
+    KdTreeBuildNode::container.push_back(a);
+}
+
+Asset* KdTreeBuildNode::retrieveLastAsset()
+{
+    Asset* retval = KdTreeBuildNode::container.back();
+    KdTreeBuildNode::container.pop_back();
+    return retval;
+}
+
+Asset* KdTreeBuildNode::retrieveAsset(int n)
+{
+    Asset* retval = KdTreeBuildNode::container.at(n);
+    //not very efficient, but this class is used just for building the tree.
+    KdTreeBuildNode::container.erase(KdTreeBuildNode::container.begin()+n);
+    return retval;
+}
+
+
+// <><><><><><><>    KdTree
 
 KdTree::KdTree()
 {

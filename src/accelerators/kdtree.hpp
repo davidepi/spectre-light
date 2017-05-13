@@ -1,12 +1,12 @@
 //Created,   9 May 2017
-//Last Edit 12 May 2017
+//Last Edit 13 May 2017
 
 /**
  *  \file kdtree.hpp
  *  \brief     Implementation of a Kd-tree space subdivision structure
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      12 May 2017
+ *  \date      13 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -15,6 +15,7 @@
 #define __KDTREE_H__
 
 #include "asset.hpp"
+#include <vector>
 
 ///Defines the minimum number of assests in a leaf
 #define _LEAF_ASSETS_ 3
@@ -29,7 +30,7 @@
  *  its ease of use.
  *  The information contained in this class are: the split axis, position of
  *  the split plane and the position of the sibling if this node is internal;
- *  number of primitives and offset in the primitives array if this node is a
+ *  number of assetss and offset in the assets array if this node is a
  *  leaf.
  *  The overall size of the class is 8 bytes, to maximize the number of nodes
  *  that can be fit into the cache.
@@ -64,20 +65,20 @@ public:
     
     /** Constructor, leaf node
      *
-     *  Construct this node as a leaf node, by giving the number of primitives
+     *  Construct this node as a leaf node, by giving the number of assets
      *  stored in the leaf and an offset to the pointer. The actual storage 
      *  is in the KdTree class and is, obviously, contiguous
      *
-     *  \param[in] primitive_offset an integer representing the offset in the
-     *  primitive array, in the KdTree class, that contains the first primitive
+     *  \param[in] asset_offset an integer representing the offset in the
+     *  assets array, in the KdTree class, that contains the first asset
      *  referenced by this leaf
-     *  \param[in] primitive_numbers How many primitives are stored in this
+     *  \param[in] assets_number How many assets are stored in this
      *  leaf, starting from the one referenced by the offset
      *
-     *  \warning Only 29 bits of the \p primitive_numbers value can be used,
+     *  \warning Only 29 bits of the \p assets_number value can be used,
      *  thus its maximum value is 536870911
      */
-    KdTreeNode(unsigned int primitive_offset, unsigned int primitive_numbers);
+    KdTreeNode(unsigned int asset_offset, unsigned int assets_number);
     
     ///Default destructor
     ~KdTreeNode();
@@ -115,40 +116,98 @@ public:
      */
     unsigned int getOtherChildOffset()const;
     
-    /** \brief Return the number of primitives referenced by the leaf
+    /** \brief Return the number of assets referenced by the leaf
      *
-     *  Return the number of primitives that should be considered as
+     *  Return the number of assets that should be considered as
      *  "belonging" to this leaf, starting from the one referenced by the
      *  offset
      *
-     *  \return An integer representing the number of primitives
+     *  \return An integer representing the number of assets
      *
      *  \warning If this node is an internal node the behaviour of this function
      *  is undefined
      */
-    unsigned int getPrimitiveNumber()const;
+    unsigned int getAssetsNumber()const;
     
-    /** \brief Return the offset of the first primitive referenced
+    /** \brief Return the offset of the first asset referenced
      *
      *  Return an offset that, once added to the pointer referencing the
-     *  array of primitives in the KdTree class, should return the first
-     *  primitive contained in this leaf
+     *  array of assets in the KdTree class, should return the first
+     *  asset contained in this leaf
      *
      *  \return An integer representing the offset of the first primitive
      *
      *  \warning If this node is an internal node the behaviour of this function
      *  is undefined
      */
-    unsigned int getPrimitiveOffset()const;
+    unsigned int getAssetOffset()const;
     
 private:
     //private members description in file kdtree.cpp
     union
     {
         float split;
-        uint32_t primitive_offset;
+        uint32_t asset_offset;
     };
     uint32_t data;
+};
+
+
+/** 
+ *  \class KdTreeBuildNode kdtree.hpp accelerators/kdtree.hpp
+ *
+ *  Just like the KdTreeNode class, but with the assets stored in the node.
+ *  The only differente between this class and KdTreeNode is the fact that this
+ *  one stores the assets in an std::vector inside the node, KdTreeNode stores
+ *  them as an offset of a linear array allocated in KdTree.
+ *  Since the assets will be reorganized during the kd-tree building, firstly
+ *  they are stored inside every node, and when the tree is built, they can be
+ *  layed out in a linear array and every KdTreeBuildNode can be replaced by the
+ *  corresponding KdTreeNode
+ */
+class KdTreeBuildNode : public KdTreeNode
+{
+public:
+    
+    ///Constructor, see KdTreeNode::KdTreeNode()
+    KdTreeBuildNode(float split, int axis, unsigned int other_child);
+    
+    ///Constructor, see KdTreeNode::KdTreeNode()
+    KdTreeBuildNode(unsigned int assets_number);
+    
+    ///Destructor
+    ~KdTreeBuildNode();
+    
+    /** \brief Add an asset to this node
+     *
+     *  Add an asset to the ones managed by this node
+     *
+     *  \param[in] a The asset that will be added to the node
+     */
+    void addAsset(Asset* a);
+    
+    /** \brief Retrieve the last asset
+     *
+     *  Return the last asset from the one referenced by this node, and removes
+     *  it from the node
+     *
+     *  \return The last asset referenced by this node
+     */
+    Asset* retrieveLastAsset();
+    
+    /** \brief Retrieve the nth asset
+     *
+     *  Return the asset at a specific index, from the one referenced by this
+     *  node, and then removes it.
+     *
+     *  \param[in] n The index of the asset that will be retrieved
+     *  \return The asset at the specified index
+     */
+    Asset* retrieveAsset(int n);
+    
+private:
+    //where the assets are stored
+    std::vector<Asset*> container;
 };
 
 class KdTree
