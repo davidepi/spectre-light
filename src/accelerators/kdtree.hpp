@@ -19,6 +19,10 @@
 
 ///Defines the minimum number of assests in a leaf
 #define _LEAF_ASSETS_ 3
+///Define the default cost of the intersection in the Surface Area Heuristic
+#define SAH_INTERSECT 50
+///Define the default cost of descending a node in the Surface Area Heuristic
+#define SAH_DESCEND 1
 
 /**
  *  \class KdTreeNode kdtree.hpp accelerators/kdtree.hpp

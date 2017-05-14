@@ -165,7 +165,7 @@ void KdTree::buildTree()
     AABB tmp = AABB(*(assetsList[0]->getAABB)());
     for(int i=1;i<assets_number;i++)
         tmp.engulf(assetsList[i]->getAABB());
-    //build
+    build(0,0,assets_number,tmp);
     finalize(); //copy tempbuilder to nodesList and the assets into assetsList
     delete tempbuilder;
 }
@@ -179,8 +179,11 @@ void KdTree::build(unsigned int node, char depth, unsigned int a_n,
         //nodesList[node] = KdTreeNode(p_start,p_num); //this is a leaf
         return;
     }
-    else
-    {
-        //TODO: split + recursive step
-    }
+    int best_axis = -1;
+    int best_edge = -1;
+    float best_SAH = INFINITY;
+    float old_SAH = SAH_INTERSECT * (float)a_n;
+    float total_area = area.surface();
+    float inv_area = 1.f/total_area;
+    
 }
