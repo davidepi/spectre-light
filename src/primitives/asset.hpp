@@ -68,6 +68,15 @@ public:
     bool intersectFast(const Ray* r, const RayProperties* rp,
                        float* p1, float* p2)const;
     
+    /** \brief Return a pointer to the AABB
+     *
+     *  Return a constant pointer to the axis aligned bounding box surrounding
+     *  this asset
+     *
+     *  \return A pointer to the aabb surrounding this asset
+     */
+    const AABB* getAABB() const;
+    
 private:
     //underlying model
     Shape* model;

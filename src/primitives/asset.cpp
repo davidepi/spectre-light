@@ -22,3 +22,8 @@ Asset::~Asset()
 {
     
 }
+
+const AABB* Asset::getAABB()const
+{
+    return &(Asset::aabb);
+}

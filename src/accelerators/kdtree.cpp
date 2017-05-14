@@ -1,5 +1,5 @@
 #include "kdtree.hpp"
-#define KDNODE_ALLOC 4
+#define KDNODE_ALLOC 0
 
 //KdTreeNode member description
 // union{ float split; uint32_t primitive_offset;}
@@ -123,8 +123,6 @@ KdTree::KdTree()
     KdTree::nodes_index = 0;
     KdTree::nodes_allocated = KDNODE_ALLOC;
     
-    built = false;
-    
     if(KdTree::assetsList == NULL || KdTree::nodesList == NULL)
         critical("Out of memory [Kd-Tree init]");
 }
@@ -156,37 +154,29 @@ void KdTree::addAsset(Asset *addme)
 
 void KdTree::finalize()
 {
+    //TODO: copy tempbuilder to nodesList
 }
 
 void KdTree::buildTree()
 {
-    maximum_depth = 17;
+    if(assets_number == 0)
+        return;
+    tempbuilder = new std::vector<KdTreeBuildNode>();
+    AABB tmp = AABB(*(assetsList[0]->getAABB)());
+    for(int i=1;i<assets_number;i++)
+        tmp.engulf(assetsList[i]->getAABB());
+    //build
+    finalize(); //copy tempbuilder to nodesList and the assets into assetsList
+    delete tempbuilder;
 }
 
-void KdTree::build(unsigned int node, char depth, unsigned int p_start,
-                   unsigned int p_num, AABB area)
+void KdTree::build(unsigned int node, char depth, unsigned int a_n,
+                   AABB area)
 {
-    
-    //check enough memory
-    if(nodes_index == nodes_allocated)
-    {
-        KdTreeNode* tmp = (KdTreeNode*)malloc(sizeof(KdTreeNode)*
-                                             (KdTree::nodes_allocated<<1));
-        if(tmp)
-        {
-            memcpy(tmp,nodesList,nodes_allocated*sizeof(KdTreeNode));
-            nodes_allocated<<=1;
-            free(KdTree::nodesList);
-            KdTree::nodesList = tmp;
-        }
-        else
-            critical("Out of memory [Kd-Tree building]");
-    }
-    
     //terminate recursion
-    if(depth==maximum_depth || p_num <= _LEAF_ASSETS_)
+    if(depth==maximum_depth || a_n <= _LEAF_ASSETS_)
     {
-        nodesList[node] = KdTreeNode(p_start,p_num); //this is a leaf
+        //nodesList[node] = KdTreeNode(p_start,p_num); //this is a leaf
         return;
     }
     else

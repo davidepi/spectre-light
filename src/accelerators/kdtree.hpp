@@ -219,8 +219,8 @@ public:
     void buildTree();
     
 private:
-    void build(unsigned int node, char depth, unsigned int primitive_offset,
-               unsigned int primitive_number, AABB area);
+    void build(unsigned int node, char depth, unsigned int assets_number,
+               AABB area);
     void finalize();
     char maximum_depth;
     
@@ -233,7 +233,6 @@ private:
     unsigned int nodes_allocated;
     
     std::vector<KdTreeBuildNode>* tempbuilder;
-    bool built;
 };
 
 #endif
