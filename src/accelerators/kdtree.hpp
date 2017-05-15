@@ -168,11 +168,14 @@ public:
     ~KdTree();
     void addAsset(Asset* addme);
     void buildTree();
+    bool intersect(const Ray* r, Asset* hit)const;
     
 private:
     void build(void* node, char depth, void* split_candidates,
-               Asset** assets_list, unsigned int assets_number, AABB area);
+               Asset** assets_list, unsigned int assets_number,const AABB area);
     void finalize(void* node);
+    
+    AABB scene_aabb;
     
     Asset** assetsList;
     unsigned int assets_number;

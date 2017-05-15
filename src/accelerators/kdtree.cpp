@@ -107,6 +107,13 @@ bool compare_sc(const SplitCandidate s1, const SplitCandidate s2)
     return s1.pos < s2.pos;
 }
 
+struct KdTravNode
+{
+    const KdTreeNode* node;
+    float mint;
+    float maxt;
+};
+
 // <><><><><><><>    KdTree
 
 KdTree::KdTree()
@@ -179,6 +186,7 @@ void KdTree::finalize(void* n)
                                         nodes_index);
         finalize(node->right);
     }
+    free(node);
 }
 
 void KdTree::buildTree()
@@ -186,9 +194,9 @@ void KdTree::buildTree()
     if(assets_number == 0)
         return;
     KdTreeBuildNode* node = new KdTreeBuildNode();
-    AABB tmp = AABB(*(assetsList[0]->getAABB)());
+    scene_aabb = AABB(*(assetsList[0]->getAABB)());
     for(int i=1;i<assets_number;i++)
-        tmp.engulf(assetsList[i]->getAABB());
+        scene_aabb.engulf(assetsList[i]->getAABB());
     Asset** alcopy = (Asset**)malloc(sizeof(Asset*)*KdTree::assets_number);
     memcpy(alcopy, KdTree::assetsList, KdTree::assets_number);
     unsigned int a_n = KdTree::assets_number; //assets_number will be set to 0
@@ -199,7 +207,7 @@ void KdTree::buildTree()
     sc[1] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
     sc[2] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
     
-    build(node,0,sc,alcopy,a_n,tmp);
+    build(node,0,sc,alcopy,a_n,scene_aabb);
 
     free(alcopy);
     free(sc[0]);
@@ -210,7 +218,7 @@ void KdTree::buildTree()
 }
 
 void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
-                   unsigned int a_n, AABB area)
+                   unsigned int a_n, const AABB area)
 {
     //based on pbrt's algorithm
     
@@ -335,4 +343,22 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     free(as_below);
     build(right, depth+1, sc, as_above, as_above_index, area_right);
     free(as_above);
+}
+
+bool KdTree::intersect(const Ray* r, Asset* h)const
+{
+    RayProperties rp;
+    rp.inverseX = 1.0f/r->direction.x;
+    rp.inverseY = 1.0f/r->direction.y;
+    rp.inverseZ = 1.0f/r->direction.z;
+    rp.isXInvNeg = rp.inverseX < 0?true:false;
+    rp.isYInvNeg = rp.inverseY < 0?true:false;
+    rp.isZInvNeg = rp.inverseZ < 0?true:false;
+    float mint, maxt;
+    if(!scene_aabb.intersect(r, &rp, &mint, &maxt))
+        return false;
+    
+    KdTravNode jobs[KD_MAX_DEPTH];
+    int next_job = 0;
+    return NULL; //TODO: finish
 }

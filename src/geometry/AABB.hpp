@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  9 May 2017
+//Last Edit 15 May 2017
 
 /**
  *  \file aabb.hpp
@@ -7,7 +7,7 @@
  *  \details   An Axis Aligned Bounding Box, used to enclose some geometry
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      9 May 2017
+ *  \date      15 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -131,7 +131,7 @@ public:
      *  \return An integer value, 0 if the \a x axis is the longest, 1 if it is
      *  the \a y axis or 2 if it is the \a z axis
      */
-    int longest_axis();
+    int longest_axis()const;
     
     /** \brief Intersection of a Ray and this AABB
      *
