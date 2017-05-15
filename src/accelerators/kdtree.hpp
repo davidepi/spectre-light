@@ -172,7 +172,7 @@ public:
 private:
     void build(void* node, char depth, void* split_candidates,
                Asset** assets_list, unsigned int assets_number, AABB area);
-    void finalize();
+    void finalize(void* node);
     
     Asset** assetsList;
     unsigned int assets_number;

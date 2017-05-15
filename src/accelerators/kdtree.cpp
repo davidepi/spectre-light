@@ -137,7 +137,7 @@ void KdTree::addAsset(Asset *addme)
         Asset** tmp = (Asset**)malloc(sizeof(Asset*)*(allocNo));
         if(tmp)
         {
-            memcpy(tmp,assetsList,assets_allocated*sizeof(KdTreeNode));
+            memcpy(tmp,assetsList,assets_allocated*sizeof(Asset*));
             assets_allocated=allocNo;
             free(KdTree::assetsList);
             KdTree::assetsList = tmp;
@@ -148,9 +148,37 @@ void KdTree::addAsset(Asset *addme)
     assetsList[assets_number++] = addme;
 }
 
-void KdTree::finalize()
+void KdTree::finalize(void* n)
 {
-    //TODO: copy tempbuilder to nodesList
+    KdTreeBuildNode* node = (KdTreeBuildNode*)n;
+    if(nodes_index == nodes_allocated)
+    {
+        unsigned int allocNo = nodes_allocated<<1;
+        KdTreeNode* tmp = (KdTreeNode*)malloc(sizeof(KdTreeNode)*(allocNo));
+        if(tmp)
+        {
+            memcpy(tmp,nodesList,nodes_allocated*sizeof(KdTreeNode));
+            nodes_allocated=allocNo;
+            free(KdTree::nodesList);
+            KdTree::nodesList = tmp;
+        }
+        else
+            critical("Out of memory [Kd-Tree flattening]");
+    }
+    if(node->isLeaf)
+    {
+        nodesList[nodes_index++] = KdTreeNode((unsigned int)(node->assets_start-
+                                                             assetsList),
+                                              node->assets_number);
+    }
+    else
+    {
+        unsigned int myindex = nodes_index++;
+        finalize(node->left);
+        nodesList[myindex] = KdTreeNode(node->split_position,node->split_axis,
+                                        nodes_index);
+        finalize(node->right);
+    }
 }
 
 void KdTree::buildTree()
@@ -178,7 +206,7 @@ void KdTree::buildTree()
     free(sc[1]);
     free(sc[2]);
     free(sc);
-    finalize(); //copy tempbuilder to nodesList and the assets into assetsList
+    finalize(node); //copy tempbuilder to nodesList and the assets into assetsList
 }
 
 void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
