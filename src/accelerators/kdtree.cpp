@@ -102,9 +102,9 @@ struct SplitCandidate
     Asset* whoami;
 };
 
-bool compare_sc(SplitCandidate* s1, SplitCandidate* s2)
+bool compare_sc(const SplitCandidate s1, const SplitCandidate s2)
 {
-    return s1->pos < s2->pos;
+    return s1.pos < s2.pos;
 }
 
 // <><><><><><><>    KdTree
@@ -166,15 +166,25 @@ void KdTree::buildTree()
     unsigned int a_n = KdTree::assets_number; //assets_number will be set to 0
     KdTree::assets_number = 0;//and assets will be reinserted in order during
                               //building of the kd-tree
-    build(node,alcopy,0,a_n,tmp);
+    SplitCandidate** sc = (SplitCandidate**)malloc(sizeof(SplitCandidate*)*3);
+    sc[0] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
+    sc[1] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
+    sc[2] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
+    
+    build(node,0,sc,alcopy,a_n,tmp);
+
     free(alcopy);
+    free(sc[0]);
+    free(sc[1]);
+    free(sc[2]);
+    free(sc);
     finalize(); //copy tempbuilder to nodesList and the assets into assetsList
 }
 
-void KdTree::build(void* n, Asset** a_l, char depth, unsigned int a_n,
-                   AABB area)
+void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
+                   unsigned int a_n, AABB area)
 {
-    //based on pbrt's algo
+    //based on pbrt's algorithm
     
     KdTreeBuildNode* node = (KdTreeBuildNode*)n;
     //terminate recursion
@@ -189,6 +199,7 @@ void KdTree::build(void* n, Asset** a_l, char depth, unsigned int a_n,
         node->right = NULL;
         return;
     }
+    SplitCandidate** sc = (SplitCandidate**)s_c;
     int best_axis = -1;
     int best_split = -1;
     float best_cost = INFINITY;
@@ -199,11 +210,6 @@ void KdTree::build(void* n, Asset** a_l, char depth, unsigned int a_n,
     
     int axis = area.longest_axis();
     int isSearching = 3;
-    
-    SplitCandidate** sc = (SplitCandidate**)malloc(sizeof(SplitCandidate*)*3);
-    sc[0] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
-    sc[1] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
-    sc[2] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
     
     while(isSearching)
     {
@@ -216,7 +222,7 @@ void KdTree::build(void* n, Asset** a_l, char depth, unsigned int a_n,
             sc[axis][(i<<1)+1].whoami = a_l[i];
             sc[axis][(i<<1)+1].isLeftSide = false;
         }
-        std::sort(sc[axis][0],sc[axis][2*a_n],compare_sc);
+        std::sort(&(sc[axis][0]),&(sc[axis][2*a_n]),compare_sc);
         
         unsigned int below = 0,above = a_n;
         for(int i=0;i<2*a_n;i++)
@@ -297,8 +303,8 @@ void KdTree::build(void* n, Asset** a_l, char depth, unsigned int a_n,
     AABB area_left(&(area.bounds[0]),&tmp);
     AABB area_right(&tmp,&(area.bounds[1]));
     
-    build(left, as_below, depth+1, as_below_index, area_left);
+    build(left, depth+1, sc, as_below, as_below_index, area_left);
     free(as_below);
-    build(right, as_above, depth+1, as_above_index, area_right);
+    build(right, depth+1, sc, as_above, as_above_index, area_right);
     free(as_above);
 }

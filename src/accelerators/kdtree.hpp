@@ -170,7 +170,8 @@ public:
     void buildTree();
     
 private:
-    void build(void* node, Asset** assets_list, char depth, unsigned int assets_number, AABB area);
+    void build(void* node, char depth, void* split_candidates,
+               Asset** assets_list, unsigned int assets_number, AABB area);
     void finalize();
     
     Asset** assetsList;
