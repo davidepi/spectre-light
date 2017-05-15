@@ -118,4 +118,9 @@ bool Point3::operator!= (const Point3& p)const
            std::fabs(Point3::z-p.z) > FLT_EPSILON;
 }
 
+float Point3::operator[] (const int val)const
+{
+    return *(&(Point3::x)+val);
+}
+
 //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥

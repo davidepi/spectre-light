@@ -1,12 +1,12 @@
 //Created,   9 May 2017
-//Last Edit 13 May 2017
+//Last Edit 15 May 2017
 
 /**
  *  \file kdtree.hpp
  *  \brief     Implementation of a Kd-tree space subdivision structure
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      13 May 2017
+ *  \date      15 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,7 @@
 
 #include "asset.hpp"
 #include <vector>
+#include <algorithm>
 
 ///Defines the minimum number of assests in a leaf
 #define _LEAF_ASSETS_ 3
@@ -23,6 +24,10 @@
 #define SAH_INTERSECT 50
 ///Define the default cost of descending a node in the Surface Area Heuristic
 #define SAH_DESCEND 1
+///Define the bonus value if a portion of the tree is empty
+#define KD_BONUS_VAL 10
+///Define maximum depth of the kd-tree
+#define KD_MAX_DEPTH 15
 
 /**
  *  \class KdTreeNode kdtree.hpp accelerators/kdtree.hpp
@@ -156,64 +161,6 @@ private:
     uint32_t data;
 };
 
-
-/** 
- *  \class KdTreeBuildNode kdtree.hpp accelerators/kdtree.hpp
- *
- *  Just like the KdTreeNode class, but with the assets stored in the node.
- *  The only differente between this class and KdTreeNode is the fact that this
- *  one stores the assets in an std::vector inside the node, KdTreeNode stores
- *  them as an offset of a linear array allocated in KdTree.
- *  Since the assets will be reorganized during the kd-tree building, firstly
- *  they are stored inside every node, and when the tree is built, they can be
- *  layed out in a linear array and every KdTreeBuildNode can be replaced by the
- *  corresponding KdTreeNode
- */
-class KdTreeBuildNode : public KdTreeNode
-{
-public:
-    
-    ///Constructor, see KdTreeNode::KdTreeNode()
-    KdTreeBuildNode(float split, int axis, unsigned int other_child);
-    
-    ///Constructor, see KdTreeNode::KdTreeNode()
-    KdTreeBuildNode(unsigned int assets_number);
-    
-    ///Destructor
-    ~KdTreeBuildNode();
-    
-    /** \brief Add an asset to this node
-     *
-     *  Add an asset to the ones managed by this node
-     *
-     *  \param[in] a The asset that will be added to the node
-     */
-    void addAsset(Asset* a);
-    
-    /** \brief Retrieve the last asset
-     *
-     *  Return the last asset from the one referenced by this node, and removes
-     *  it from the node
-     *
-     *  \return The last asset referenced by this node
-     */
-    Asset* retrieveLastAsset();
-    
-    /** \brief Retrieve the nth asset
-     *
-     *  Return the asset at a specific index, from the one referenced by this
-     *  node, and then removes it.
-     *
-     *  \param[in] n The index of the asset that will be retrieved
-     *  \return The asset at the specified index
-     */
-    Asset* retrieveAsset(int n);
-    
-private:
-    //where the assets are stored
-    std::vector<Asset*> container;
-};
-
 class KdTree
 {
 public:
@@ -223,10 +170,8 @@ public:
     void buildTree();
     
 private:
-    void build(unsigned int node, char depth, unsigned int assets_number,
-               AABB area);
+    void build(void* node, Asset** assets_list, char depth, unsigned int assets_number, AABB area);
     void finalize();
-    char maximum_depth;
     
     Asset** assetsList;
     unsigned int assets_number;
@@ -235,8 +180,6 @@ private:
     KdTreeNode* nodesList;
     unsigned int nodes_index;
     unsigned int nodes_allocated;
-    
-    std::vector<KdTreeBuildNode>* tempbuilder;
 };
 
 #endif

@@ -429,6 +429,11 @@ bool Vec3::operator!=(const Vec3& v)const
     std::fabs(Vec3::z-v.z) > FLT_EPSILON;
 }
 
+float Vec3::operator[](const int component)const
+{
+    return *(&(Vec3::x)+component);
+}
+
 //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
 
 Normal::Normal()

@@ -32,9 +32,10 @@
  */
 class AABB
 {
-private:
-    Point3 bounds[2]; //0-> bottom left point, 1-> top right point
 public:
+    
+    ///brief The front bottom left and back top right corner of the box
+    Point3 bounds[2];
     
     /** \brief Default Constructor
      *

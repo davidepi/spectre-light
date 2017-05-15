@@ -73,43 +73,39 @@ unsigned int KdTreeNode::getAssetsNumber()const
 
 // <><><><><><><>    KdTreeBuildNode
 
-KdTreeBuildNode::KdTreeBuildNode(float s, int a, unsigned int o_c)
-: KdTreeNode(s,a,o_c)
+//Like the KdTreeNode, but with extra variables.
+//This is used to build the tree in a 'canonical' way. Then, when ready,
+//everything is flattened into the KdTreeNode array
+class KdTreeBuildNode
 {
+public:
+    KdTreeBuildNode(){};
+    ~KdTreeBuildNode(){};
     
-}
+    //where the assets are stored
+    Asset** assets_start;
+    bool isLeaf;
+    char split_axis;
+    union
+    {
+        float split_position;
+        unsigned int assets_number;
+    };
+    KdTreeBuildNode* left;
+    KdTreeBuildNode* right;
+};
 
-KdTreeBuildNode::KdTreeBuildNode(unsigned int assets_number)
-: KdTreeNode(0,assets_number)
+struct SplitCandidate
 {
-    
-}
+    float pos;
+    bool isLeftSide;
+    Asset* whoami;
+};
 
-KdTreeBuildNode::~KdTreeBuildNode()
+bool compare_sc(SplitCandidate* s1, SplitCandidate* s2)
 {
-    
+    return s1->pos < s2->pos;
 }
-
-void KdTreeBuildNode::addAsset(Asset* a)
-{
-    KdTreeBuildNode::container.push_back(a);
-}
-
-Asset* KdTreeBuildNode::retrieveLastAsset()
-{
-    Asset* retval = KdTreeBuildNode::container.back();
-    KdTreeBuildNode::container.pop_back();
-    return retval;
-}
-
-Asset* KdTreeBuildNode::retrieveAsset(int n)
-{
-    Asset* retval = KdTreeBuildNode::container.at(n);
-    //not very efficient, but this class is used just for building the tree.
-    KdTreeBuildNode::container.erase(KdTreeBuildNode::container.begin()+n);
-    return retval;
-}
-
 
 // <><><><><><><>    KdTree
 
@@ -161,29 +157,148 @@ void KdTree::buildTree()
 {
     if(assets_number == 0)
         return;
-    tempbuilder = new std::vector<KdTreeBuildNode>();
+    KdTreeBuildNode* node = new KdTreeBuildNode();
     AABB tmp = AABB(*(assetsList[0]->getAABB)());
     for(int i=1;i<assets_number;i++)
         tmp.engulf(assetsList[i]->getAABB());
-    build(0,0,assets_number,tmp);
+    Asset** alcopy = (Asset**)malloc(sizeof(Asset*)*KdTree::assets_number);
+    memcpy(alcopy, KdTree::assetsList, KdTree::assets_number);
+    unsigned int a_n = KdTree::assets_number; //assets_number will be set to 0
+    KdTree::assets_number = 0;//and assets will be reinserted in order during
+                              //building of the kd-tree
+    build(node,alcopy,0,a_n,tmp);
+    free(alcopy);
     finalize(); //copy tempbuilder to nodesList and the assets into assetsList
-    delete tempbuilder;
 }
 
-void KdTree::build(unsigned int node, char depth, unsigned int a_n,
+void KdTree::build(void* n, Asset** a_l, char depth, unsigned int a_n,
                    AABB area)
 {
+    //based on pbrt's algo
+    
+    KdTreeBuildNode* node = (KdTreeBuildNode*)n;
     //terminate recursion
-    if(depth==maximum_depth || a_n <= _LEAF_ASSETS_)
+    if(depth==KD_MAX_DEPTH || a_n <= _LEAF_ASSETS_)
     {
-        //nodesList[node] = KdTreeNode(p_start,p_num); //this is a leaf
+        node->assets_start = KdTree::assetsList+KdTree::assets_number;
+        node->assets_number = a_n;
+        for(int i=0;i<a_n;i++)
+            KdTree::addAsset(a_l[i]);
+        node->isLeaf = true;
+        node->left = NULL;
+        node->right = NULL;
         return;
     }
     int best_axis = -1;
-    int best_edge = -1;
-    float best_SAH = INFINITY;
-    float old_SAH = SAH_INTERSECT * (float)a_n;
+    int best_split = -1;
+    float best_cost = INFINITY;
+    float old_cost = SAH_INTERSECT*(float)a_n;
     float total_area = area.surface();
+    Vec3 aabb_diagonal = area.bounds[1] - area.bounds[0];
     float inv_area = 1.f/total_area;
     
+    int axis = area.longest_axis();
+    int isSearching = 3;
+    
+    SplitCandidate** sc = (SplitCandidate**)malloc(sizeof(SplitCandidate*)*3);
+    sc[0] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
+    sc[1] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
+    sc[2] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
+    
+    while(isSearching)
+    {
+        for(int i=0;i<a_n;i++)
+        {
+            sc[axis][i<<1].pos = a_l[i]->getAABB()->bounds[0][axis];
+            sc[axis][i<<1].whoami = a_l[i];
+            sc[axis][i<<1].isLeftSide = true;
+            sc[axis][(i<<1)+1].pos = a_l[i]->getAABB()->bounds[1][axis];
+            sc[axis][(i<<1)+1].whoami = a_l[i];
+            sc[axis][(i<<1)+1].isLeftSide = false;
+        }
+        std::sort(sc[axis][0],sc[axis][2*a_n],compare_sc);
+        
+        unsigned int below = 0,above = a_n;
+        for(int i=0;i<2*a_n;i++)
+        {
+            bool isAABBRightSide = !(sc[axis][i].isLeftSide);
+            if(isAABBRightSide)
+                --above;
+            if(sc[axis][i].pos > area.bounds[0][axis] &&
+               sc[axis][i].pos < area.bounds[1][axis])
+            {
+                char otheraxis1 = (axis+1)%3;
+                char otheraxis2 = (axis+2)%3;
+                float belowSA=2*(aabb_diagonal[otheraxis1]*
+                                 aabb_diagonal[otheraxis2]
+                                 +(sc[axis][i].pos - area.bounds[0][axis])*
+                                 (aabb_diagonal[otheraxis1]
+                                  +aabb_diagonal[otheraxis2]));
+                float aboveSA=2*(aabb_diagonal[otheraxis1]*
+                                 aabb_diagonal[otheraxis2]
+                                 +(sc[axis][i].pos - area.bounds[1][axis])*
+                                 (aabb_diagonal[otheraxis1]
+                                  +aabb_diagonal[otheraxis2]));
+                float pb = belowSA * inv_area;
+                float pa = aboveSA * inv_area;
+                float bonus = (above == 0 || below == 0) ? KD_BONUS_VAL : 0;
+                float cost =  SAH_DESCEND +
+                              SAH_INTERSECT * bonus * (pb * below + pa * above);
+                if(cost < best_cost)
+                {
+                    best_cost = cost;
+                    best_axis = axis;
+                    best_split = i;
+                }
+            }
+            if(!isAABBRightSide)
+                ++below;
+        }
+        if(best_axis == -1)
+        {
+            isSearching--;
+            axis = (axis+1)%3;
+        }
+    }
+    if((best_cost > 4.0 * old_cost && a_n < 16) || best_axis == -1)
+    {
+        node->assets_start = KdTree::assetsList+KdTree::assets_number;
+        node->assets_number = a_n;
+        for(int i=0;i<a_n;i++)
+            KdTree::addAsset(a_l[i]);
+        node->isLeaf = true;
+        node->left = NULL;
+        node->right = NULL;
+        return;
+        return;
+    }
+    KdTreeBuildNode* left = (KdTreeBuildNode*)malloc(sizeof(KdTreeBuildNode));
+    KdTreeBuildNode* right = (KdTreeBuildNode*)malloc(sizeof(KdTreeBuildNode));
+    Asset** as_below = (Asset**)malloc(sizeof(Asset*)*a_n);
+    Asset** as_above = (Asset**)malloc(sizeof(Asset*)*a_n*(KD_MAX_DEPTH+1));
+    
+    unsigned int as_below_index = 0;
+    unsigned int as_above_index = 0;
+    for(int i=0;i<best_split;i++)
+        if(sc[best_axis][i].isLeftSide)
+            as_below[as_below_index++] = sc[best_axis][i].whoami;
+    for(int i=best_split+1;i<2*a_n;i++)
+        if(!(sc[best_axis][i].isLeftSide))
+           as_above[as_above_index++] = sc[best_axis][i].whoami;
+    
+    node->isLeaf = false;
+    node->split_axis = (char)best_axis;
+    node->split_position = sc[best_axis][best_split].pos;
+    node->left = left;
+    node->right = right;
+    
+    Point3 tmp = (area.bounds[1]);
+    *(&(tmp.x)+best_axis) = node->split_position;
+    AABB area_left(&(area.bounds[0]),&tmp);
+    AABB area_right(&tmp,&(area.bounds[1]));
+    
+    build(left, as_below, depth+1, as_below_index, area_left);
+    free(as_below);
+    build(right, as_above, depth+1, as_above_index, area_right);
+    free(as_above);
 }

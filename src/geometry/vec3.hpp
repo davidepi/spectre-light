@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 14 Apr 2017
+//Last Edit 15 May 2017
 
 /**
  *  \file vec3.hpp
@@ -8,7 +8,7 @@
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
  *  \version   1.0
- *  \date      14 April 2017
+ *  \date      15 May 2017
  *  \warning   Since this is a low level class, some verification
  *             could be skipped. To enable them compile the project with the
  *             #_LOW_LEVEL_CHECKS_ preprocessor define
@@ -353,6 +353,8 @@ public:
     bool operator==(const Vec3&)const;
     ///Check if two vector are different
     bool operator!=(const Vec3&)const;
+    //Return the nth component
+    float operator[](const int)const;
     
     //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
