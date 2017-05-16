@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  9 May 2017
+//Last Edit 16 May 2017
 
 /**
  *  \file shape.hpp
@@ -77,6 +77,16 @@ public:
      *  \return an AABB representing the calculated bounding box
      */
     virtual AABB computeAABB()const = 0;
+    
+    /** \brief Recalculate the AABB, in world space units
+     *
+     *  In its implementations, this method should return an AABB that can fit
+     *  well on the world space representation of this shape, without
+     *  transforming the shape
+     *
+     *  \return an AABB representing the world space bounding box
+     */
+    virtual AABB computeWorldAABB() const = 0;
     
     /** \brief Return the surface of the shape
      *

@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit  9 May 2017
+//Last Edit 16 May 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      9 May 2017
+ *  \date      16 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -78,6 +78,18 @@ public:
      *  \return an AABB representing the calculated bounding box
      */
     AABB computeAABB()const;
+    
+    /** \brief Calculate the AABB in world space
+     *
+     *  This method return an AABB that can fit well on the world space sphere,
+     *  without actually transforming the sphere.
+     *
+     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
+     *  set
+     *
+     *  \return an AABB representing the world space bounding box
+     */
+    AABB computeWorldAABB()const;
     
     /** \brief Return the surface of the sphere
      *

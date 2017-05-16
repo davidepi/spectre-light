@@ -23,6 +23,21 @@ AABB Box::computeAABB()const
     return AABB(&(Box::fbl),&max);
 }
 
+AABB Box::computeWorldAABB()const
+{
+#ifdef _LOW_LEVEL_CHECKS_
+    if(transformMatrix==NULL)
+    {
+        severe("Trying to generate a world-space AABB with a NULL matrix");
+        return AABB();
+    }
+#endif
+    const Point3 pmin=*transformMatrix*Box::fbl;
+    const Point3 pmax=*transformMatrix*Point3(Box::fbr.x,Box::ftl.y,Box::bbl.z);
+    
+    return AABB(&pmin, &pmax);
+}
+
 float Box::surface()const
 {
     float xe = fbr.x-fbl.x; //x edge

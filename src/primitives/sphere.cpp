@@ -20,6 +20,25 @@ AABB Sphere::computeAABB()const
     return AABB(&pmin, &pmax);
 }
 
+AABB Sphere::computeWorldAABB()const
+{
+#ifdef _LOW_LEVEL_CHECKS_
+    if(transformMatrix==NULL)
+    {
+        severe("Trying to generate a world-space AABB with a NULL matrix");
+        return AABB();
+    }
+#endif
+    const Point3 pmin = *transformMatrix * Point3(-Sphere::radius,
+                                                  -Sphere::radius,
+                                                  -Sphere::radius);
+    const Point3 pmax = *transformMatrix * Point3(Sphere::radius,
+                                                  Sphere::radius,
+                                                  Sphere::radius);
+    
+    return AABB(&pmin, &pmax);
+}
+
 void Sphere::obj2world()
 {
 #ifdef _LOW_LEVEL_CHECKS_

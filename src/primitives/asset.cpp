@@ -2,7 +2,7 @@
 
 unsigned static int _asset_ID_pool = 1;
 
-Asset::Asset(Shape* sp) : id(_asset_ID_pool++),aabb(sp->computeAABB())
+Asset::Asset(Shape* sp) : id(_asset_ID_pool++),aabb(sp->computeWorldAABB())
 {
     Asset::model = sp;
 }
