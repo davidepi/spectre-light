@@ -1,5 +1,7 @@
 #include "kdtree.hpp"
-#define KDNODE_ALLOC 0
+#include <iostream>
+#define KDNODE_ALLOC 1 //AT LEAST 1!!! otherwise when doubling the array size:
+                       //0 * 2 = guess what :^)
 
 //KdTreeNode member description
 // union{ float split; uint32_t primitive_offset;}
@@ -20,9 +22,9 @@ KdTreeNode::KdTreeNode(float split, int axis, unsigned int other_child)
 #endif
     KdTreeNode::data = other_child;
     if(axis == 1) // could have been done also with a shift... nvm
-        /* This line goes bad if there is already something in the two most
-           significant bits. However if they are not zero, the other_child
-           variable would be too high and the application doomed anyway */
+    /* This line goes bad if there is already something in the two most
+     significant bits. However if they are not zero, the other_child
+     variable would be too high and the application doomed anyway */
         KdTreeNode::data |= 0x20000000;
     else if(axis == 2)
         KdTreeNode::data |= 0x40000000;
@@ -77,46 +79,49 @@ unsigned int KdTreeNode::getAssetsNumber()const
 
 // <><><><><><><>    KdTreeBuildNode
 
-//Like the KdTreeNode, but with extra variables.
-//This is used to build the tree in a 'canonical' way. Then, when ready,
-//everything is flattened into the KdTreeNode array
-class KdTreeBuildNode
+namespace KdHelpers
 {
-public:
-    KdTreeBuildNode(){};
-    ~KdTreeBuildNode(){};
-    
-    //where the assets are stored
-    Asset** assets_start;
-    bool isLeaf;
-    char split_axis;
-    union
+    //Like the KdTreeNode, but with extra variables.
+    //This is used to build the tree in a 'canonical' way. Then, when ready,
+    //everything is flattened into the KdTreeNode array
+    class KdTreeBuildNode
     {
-        float split_position;
-        unsigned int assets_number;
+    public:
+        KdTreeBuildNode(){};
+        ~KdTreeBuildNode(){};
+        
+        //where the assets are stored
+        Asset** assets_start;
+        bool isLeaf;
+        char split_axis;
+        union
+        {
+            float split_position;
+            unsigned int assets_number;
+        };
+        KdTreeBuildNode* left;
+        KdTreeBuildNode* right;
     };
-    KdTreeBuildNode* left;
-    KdTreeBuildNode* right;
-};
-
-struct SplitCandidate
-{
-    float pos;
-    bool isLeftSide;
-    Asset* whoami;
-};
-
-bool compare_sc(const SplitCandidate s1, const SplitCandidate s2)
-{
-    return s1.pos < s2.pos;
+    
+    struct SplitCandidate
+    {
+        float pos;
+        bool isLeftSide;
+        Asset* whoami;
+    };
+    
+    bool compare_sc(const SplitCandidate s1, const SplitCandidate s2)
+    {
+        return s1.pos < s2.pos;
+    }
+    
+    struct KdTravNode
+    {
+        const KdTreeNode* node;
+        float mint;
+        float maxt;
+    };
 }
-
-struct KdTravNode
-{
-    const KdTreeNode* node;
-    float mint;
-    float maxt;
-};
 
 // <><><><><><><>    KdTree
 
@@ -142,7 +147,7 @@ KdTree::~KdTree()
 
 void KdTree::addAsset(Asset *addme)
 {
-    if(nodes_index == nodes_allocated)
+    if(assets_number == assets_allocated)
     {
         unsigned int allocNo = max(assets_allocated<<1,_MAX_ASSETS_);
         Asset** tmp = (Asset**)malloc(sizeof(Asset*)*(allocNo));
@@ -161,6 +166,7 @@ void KdTree::addAsset(Asset *addme)
 
 void KdTree::finalize(void* n)
 {
+    using KdHelpers::KdTreeBuildNode;
     KdTreeBuildNode* node = (KdTreeBuildNode*)n;
     if(nodes_index == nodes_allocated)
     {
@@ -195,14 +201,17 @@ void KdTree::finalize(void* n)
 
 void KdTree::buildTree()
 {
+    using KdHelpers::KdTreeBuildNode;
+    using KdHelpers::SplitCandidate;
+    
     if(assets_number == 0)
         return;
     KdTreeBuildNode* node = new KdTreeBuildNode();
     scene_aabb = AABB(*(assetsList[0]->getAABB)());
-    for(int i=1;i<assets_number;i++)
+    for(unsigned int i=1;i<assets_number;i++)
         scene_aabb.engulf(assetsList[i]->getAABB());
     Asset** alcopy = (Asset**)malloc(sizeof(Asset*)*KdTree::assets_number);
-    memcpy(alcopy, KdTree::assetsList, KdTree::assets_number);
+    memcpy(alcopy, KdTree::assetsList, sizeof(Asset*)*KdTree::assets_number);
     unsigned int a_n = KdTree::assets_number; //assets_number will be set to 0
     KdTree::assets_number = 0;//and assets will be reinserted in order during
                               //building of the kd-tree
@@ -212,18 +221,28 @@ void KdTree::buildTree()
     sc[2] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
     
     build(node,0,sc,alcopy,a_n,scene_aabb);
-
+    
     free(alcopy);
     free(sc[0]);
     free(sc[1]);
     free(sc[2]);
     free(sc);
     finalize(node); //copy tempbuilder to nodesList and the assets into assetsList
+    
+    //free unused memory for KdTreeNode array
+    KdTreeNode* tmpnodes = (KdTreeNode*)malloc(sizeof(KdTreeNode)*nodes_index);
+    memcpy(tmpnodes, nodesList, sizeof(KdTreeNode)*nodes_index);
+    nodes_allocated = nodes_index;
+    free(nodesList);
+    nodesList = tmpnodes;
 }
 
 void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
                    unsigned int a_n, const AABB area)
 {
+    using KdHelpers::KdTreeBuildNode;
+    using KdHelpers::SplitCandidate;
+    
     //based on pbrt's algorithm
     
     KdTreeBuildNode* node = (KdTreeBuildNode*)n;
@@ -232,7 +251,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     {
         node->assets_start = KdTree::assetsList+KdTree::assets_number;
         node->assets_number = a_n;
-        for(int i=0;i<a_n;i++)
+        for(unsigned int i=0;i<a_n;i++)
             KdTree::addAsset(a_l[i]);
         node->isLeaf = true;
         node->left = NULL;
@@ -253,7 +272,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     
     while(isSearching)
     {
-        for(int i=0;i<a_n;i++)
+        for(unsigned int i=0;i<a_n;i++)
         {
             sc[axis][i<<1].pos = a_l[i]->getAABB()->bounds[0][axis];
             sc[axis][i<<1].whoami = a_l[i];
@@ -262,10 +281,10 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
             sc[axis][(i<<1)+1].whoami = a_l[i];
             sc[axis][(i<<1)+1].isLeftSide = false;
         }
-        std::sort(&(sc[axis][0]),&(sc[axis][2*a_n]),compare_sc);
+        std::sort(&(sc[axis][0]),&(sc[axis][2*a_n]),KdHelpers::compare_sc);
         
         unsigned int below = 0,above = a_n;
-        for(int i=0;i<2*a_n;i++)
+        for(unsigned int i=0;i<2*a_n;i++)
         {
             bool isAABBRightSide = !(sc[axis][i].isLeftSide);
             if(isAABBRightSide)
@@ -289,7 +308,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
                 float pa = aboveSA * inv_area;
                 float bonus = (above == 0 || below == 0) ? KD_BONUS_VAL : 0;
                 float cost =  SAH_DESCEND +
-                              SAH_INTERSECT * bonus * (pb * below + pa * above);
+                SAH_INTERSECT * bonus * (pb * below + pa * above);
                 if(cost < best_cost)
                 {
                     best_cost = cost;
@@ -310,7 +329,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     {
         node->assets_start = KdTree::assetsList+KdTree::assets_number;
         node->assets_number = a_n;
-        for(int i=0;i<a_n;i++)
+        for(unsigned int i=0;i<a_n;i++)
             KdTree::addAsset(a_l[i]);
         node->isLeaf = true;
         node->left = NULL;
@@ -328,9 +347,9 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     for(int i=0;i<best_split;i++)
         if(sc[best_axis][i].isLeftSide)
             as_below[as_below_index++] = sc[best_axis][i].whoami;
-    for(int i=best_split+1;i<2*a_n;i++)
+    for(unsigned int i=best_split+1;i<2*a_n;i++)
         if(!(sc[best_axis][i].isLeftSide))
-           as_above[as_above_index++] = sc[best_axis][i].whoami;
+            as_above[as_above_index++] = sc[best_axis][i].whoami;
     
     node->isLeaf = false;
     node->split_axis = (char)best_axis;
@@ -351,6 +370,8 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
 
 bool KdTree::intersect(const Ray* r, Asset* h)const
 {
+    using KdHelpers::KdTravNode;
+    
     RayProperties rp;
     rp.inverseX = 1.0f/r->direction.x;
     rp.inverseY = 1.0f/r->direction.y;
@@ -400,7 +421,7 @@ bool KdTree::intersect(const Ray* r, Asset* h)const
                 jobs[jobs_stack_top].node = right;
                 jobs[jobs_stack_top].mint = planet;
                 jobs[jobs_stack_top++].maxt = maxt;
-                n = left;
+                n =   left;
                 maxt = planet;
             }
         }
@@ -414,11 +435,11 @@ bool KdTree::intersect(const Ray* r, Asset* h)const
             {
                 current_asset = assetsList[n->getAssetOffset()+i];
                 if(current_asset->intersectFast(r, &rp, &res1, &res2))
-                   if(current_asset->intersect(r,&res1,&res2))
-                   {
-                       found = true;
-                       h = current_asset;
-                   }
+                    if(current_asset->intersect(r,&res1,&res2))
+                    {
+                        found = true;
+                        h = current_asset;
+                    }
             }
             
             if(jobs_stack_top>0)

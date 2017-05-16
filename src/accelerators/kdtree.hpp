@@ -31,9 +31,9 @@
 
 /**
  *  \class KdTreeNode kdtree.hpp accelerators/kdtree.hpp
- * 
+ *
  *  KdTreeNode is a component of the KdTree. This class represents every node
- *  of the tree. It can be either a leaf or an internal node and once 
+ *  of the tree. It can be either a leaf or an internal node and once
  *  constructed in a way it is necessary to destroy and reconstruct it, in order
  *  to change its type. This class is built to maximize the speed, sacrificing
  *  its ease of use.
@@ -55,7 +55,7 @@ public:
      *
      *  Construct this node as an internal node, by giving split position,
      *  split axis and its sibling.
-     *  
+     *
      *  The split axis values are 0 for \a x, 1 for \a y and 2 for \a z
      *
      *  \param[in] split A float representing the coordinate of the plane
@@ -75,7 +75,7 @@ public:
     /** Constructor, leaf node
      *
      *  Construct this node as a leaf node, by giving the number of assets
-     *  stored in the leaf and an offset to the pointer. The actual storage 
+     *  stored in the leaf and an offset to the pointer. The actual storage
      *  is in the KdTree class and is, obviously, contiguous
      *
      *  \param[in] asset_offset an integer representing the offset in the
@@ -93,7 +93,7 @@ public:
     ~KdTreeNode();
     
     /** \brief Check if this node is a leaf
-     *  
+     *
      *  Returns true if this node is a leaf, false otherwise
      *
      *  \return true if this node is a leaf, false otherwise
