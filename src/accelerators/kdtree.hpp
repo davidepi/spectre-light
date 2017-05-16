@@ -1,5 +1,5 @@
 //Created,   9 May 2017
-//Last Edit 15 May 2017
+//Last Edit 16 May 2017
 
 /**
  *  \file kdtree.hpp
@@ -111,7 +111,20 @@ public:
      *  \warning If this node is a leaf the behaviour of this function is
      *  undefined
      */
-    int getAxis()const;
+    char getAxis()const;
+    
+    /** \brief Return the split value of this node
+     *
+     *  If this node is an internal node, returns a floating point representing
+     *  the position of the plane, perpendicular to  a determined axis, which
+     *  splits the scene in two
+     *
+     *  \return A floating point representing the split position
+     *
+     *  \warning If this node is a leaf the behaviour of this function is
+     *  undefined
+     */
+    float getSplit()const;
     
     /** \brief Return the pointer to the sibling of this node
      *

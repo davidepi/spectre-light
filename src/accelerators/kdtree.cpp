@@ -13,7 +13,6 @@
 //[02 bit] - split axis{0:x, 1:y, 2:z, 3: unused}
 //[29 bit] -| non-leaf -> pointer of the right nodes
 //          | leaf     -> number of primitives
-
 KdTreeNode::KdTreeNode(float split, int axis, unsigned int other_child)
 {
 #ifdef _LOW_LEVEL_CHECKS_
@@ -51,9 +50,14 @@ bool KdTreeNode::isLeaf()const
     return KdTreeNode::data & 0x80000000;
 }
 
-int KdTreeNode::getAxis()const
+char KdTreeNode::getAxis()const
 {
     return (KdTreeNode::data & 0x60000000) >> 29;
+}
+
+float KdTreeNode::getSplit()const
+{
+    return split;
 }
 
 unsigned int KdTreeNode::getOtherChildOffset()const
@@ -359,6 +363,73 @@ bool KdTree::intersect(const Ray* r, Asset* h)const
         return false;
     
     KdTravNode jobs[KD_MAX_DEPTH];
-    int next_job = 0;
-    return NULL; //TODO: finish
+    int jobs_stack_top = 0;
+    bool found = false;
+    
+    const KdTreeNode* n = nodesList;
+    while(nodesList != NULL)
+    {
+        if(r->maxext < mint)
+            break;
+        if(!n->isLeaf())
+        {
+            char axis = n->getAxis();
+            float planet = n->getSplit()-r->origin[axis]**(&(rp.inverseX)+axis);
+            const KdTreeNode* left;
+            const KdTreeNode* right;
+            int leftBelow = (r->origin[axis] < n->getSplit() ||
+                             (r->origin[axis] == n->getSplit() &&
+                              r->direction[axis] <= 0));
+            if(leftBelow)
+            {
+                left = n+1;
+                right = &nodesList[n->getOtherChildOffset()];
+            }
+            else
+            {
+                left = &nodesList[n->getOtherChildOffset()];
+                right = n+1;
+            }
+            
+            if (planet > maxt || planet <= 0)
+                n = left;
+            else if (planet < mint)
+                n = right;
+            else
+            {
+                jobs[jobs_stack_top].node = right;
+                jobs[jobs_stack_top].mint = planet;
+                jobs[jobs_stack_top++].maxt = maxt;
+                n = left;
+                maxt = planet;
+            }
+        }
+        else
+        {
+            //assets number
+            unsigned int a_n = n->getAssetsNumber();
+            Asset* current_asset;
+            float res1, res2;
+            for(unsigned int i=0;i<a_n;i++)
+            {
+                current_asset = assetsList[n->getAssetOffset()+i];
+                if(current_asset->intersectFast(r, &rp, &res1, &res2))
+                   if(current_asset->intersect(r,&res1,&res2))
+                   {
+                       found = true;
+                       h = current_asset;
+                   }
+            }
+            
+            if(jobs_stack_top>0)
+            {
+                n = jobs[--jobs_stack_top].node;
+                mint = jobs[jobs_stack_top].mint;
+                maxt = jobs[jobs_stack_top].maxt;
+            }
+            else
+                break;
+        }
+    }
+    return found;
 }
