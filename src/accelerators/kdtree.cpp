@@ -1,5 +1,4 @@
 #include "kdtree.hpp"
-#include <iostream>
 #define KDNODE_ALLOC 1 //AT LEAST 1!!! otherwise when doubling the array size:
                        //0 * 2 = guess what :^)
 
@@ -235,6 +234,7 @@ void KdTree::buildTree()
     nodes_allocated = nodes_index;
     free(nodesList);
     nodesList = tmpnodes;
+    printf("%d\n",nodes_index);
 }
 
 void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
@@ -268,7 +268,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     float inv_area = 1.f/total_area;
     
     int axis = area.longest_axis();
-    int isSearching = 3;
+    int isSearching = 3; //number of axis tried
     
     while(isSearching)
     {
@@ -282,7 +282,6 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
             sc[axis][(i<<1)+1].isLeftSide = false;
         }
         std::sort(&(sc[axis][0]),&(sc[axis][2*a_n]),KdHelpers::compare_sc);
-        
         unsigned int below = 0,above = a_n;
         for(unsigned int i=0;i<2*a_n;i++)
         {
@@ -301,14 +300,14 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
                                   +aabb_diagonal[otheraxis2]));
                 float aboveSA=2*(aabb_diagonal[otheraxis1]*
                                  aabb_diagonal[otheraxis2]
-                                 +(sc[axis][i].pos - area.bounds[1][axis])*
+                                 +(area.bounds[1][axis]-sc[axis][i].pos)*
                                  (aabb_diagonal[otheraxis1]
                                   +aabb_diagonal[otheraxis2]));
                 float pb = belowSA * inv_area;
                 float pa = aboveSA * inv_area;
-                float bonus = (above == 0 || below == 0) ? KD_BONUS_VAL : 0;
+                float bonus = (above == 0 || below == 0) ? 1.0f : 0.0f;
                 float cost =  SAH_DESCEND +
-                SAH_INTERSECT * bonus * (pb * below + pa * above);
+                SAH_INTERSECT * (1.0f - bonus) * (pb * below + pa * above);
                 if(cost < best_cost)
                 {
                     best_cost = cost;
@@ -324,6 +323,8 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
             isSearching--;
             axis = (axis+1)%3;
         }
+        else
+            break;
     }
     if((best_cost > 4.0 * old_cost && a_n < 16) || best_axis == -1)
     {
@@ -334,7 +335,6 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
         node->isLeaf = true;
         node->left = NULL;
         node->right = NULL;
-        return;
         return;
     }
     KdTreeBuildNode* left = (KdTreeBuildNode*)malloc(sizeof(KdTreeBuildNode));

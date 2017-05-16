@@ -6,7 +6,7 @@
  *  \brief     Implementation of a Kd-tree space subdivision structure
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      15 May 2017
+ *  \date      16 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -24,8 +24,6 @@
 #define SAH_INTERSECT 50
 ///Define the default cost of descending a node in the Surface Area Heuristic
 #define SAH_DESCEND 1
-///Define the bonus value if a portion of the tree is empty
-#define KD_BONUS_VAL 10
 ///Define maximum depth of the kd-tree
 #define KD_MAX_DEPTH 15
 
