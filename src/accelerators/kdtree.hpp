@@ -1,12 +1,12 @@
 //Created,   9 May 2017
-//Last Edit 16 May 2017
+//Last Edit 17 May 2017
 
 /**
  *  \file kdtree.hpp
  *  \brief     Implementation of a Kd-tree space subdivision structure
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 May 2017
+ *  \date      17 May 2017
  *  \copyright GNU GPLv3
  */
 

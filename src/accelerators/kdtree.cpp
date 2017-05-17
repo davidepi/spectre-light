@@ -234,7 +234,6 @@ void KdTree::buildTree()
     nodes_allocated = nodes_index;
     free(nodesList);
     nodesList = tmpnodes;
-    printf("%d\n",nodes_index);
 }
 
 void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
@@ -357,10 +356,10 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     node->left = left;
     node->right = right;
     
-    Point3 tmp = (area.bounds[1]);
-    *(&(tmp.x)+best_axis) = node->split_position;
-    AABB area_left(&(area.bounds[0]),&tmp);
-    AABB area_right(&tmp,&(area.bounds[1]));
+    AABB area_left(area);
+    AABB area_right(area);
+    *(&(area_left.bounds[1].x)+axis) = sc[best_axis][best_split].pos;
+    *(&(area_right.bounds[0].x)+axis) = sc[best_axis][best_split].pos;
     
     build(left, depth+1, sc, as_below, as_below_index, area_left);
     free(as_below);
