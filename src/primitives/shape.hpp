@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  3 May 2017
+//Last Edit 16 May 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      3 May 2017
+ *  \date      9 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -71,24 +71,22 @@ public:
     
     /** \brief Recalculate the AABB
      *
-     *  In its implementations, this method should replace the current AABB of
-     *  the shape with an updated version. A procedure that has to be performed
-     *  after moving or transforming the shape
-     *
-     *  \sa computeAABB()
-     */
-    virtual void recomputeAABB() = 0;
-    
-    /** \brief Recalculate the AABB
-     *
      *  In its implementations, this method should return an AABB that can fit
      *  well on this shape.
      *
      *  \return an AABB representing the calculated bounding box
-     *
-     *  \sa recomputeAABB()
      */
     virtual AABB computeAABB()const = 0;
+    
+    /** \brief Recalculate the AABB, in world space units
+     *
+     *  In its implementations, this method should return an AABB that can fit
+     *  well on the world space representation of this shape, without
+     *  transforming the shape
+     *
+     *  \return an AABB representing the world space bounding box
+     */
+    virtual AABB computeWorldAABB() const = 0;
     
     /** \brief Return the surface of the shape
      *
@@ -117,9 +115,6 @@ public:
      */
     virtual void world2obj() = 0;
     
-protected:
-    ///Axis aligned bounding box of the shape
-    AABB aabb;
     
 private:
     //id of the shape

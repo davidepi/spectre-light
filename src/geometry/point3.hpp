@@ -1,5 +1,5 @@
 //Created,  24 Feb 2016
-//Last Edit 18 Apr 2017
+//Last Edit 15 May 2017
 
 /**
  *  \file point3.hpp
@@ -140,6 +140,8 @@ public:
     bool operator==  (const Point3&)const;
     ///Check if two points are in different places
     bool operator!=  (const Point3&)const;
+    ///Access a component of the point
+    float operator[] (const int)const;
     
     /* Useless operation.
      i.e.: Cannot offset a point by a point

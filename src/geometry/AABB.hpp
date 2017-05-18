@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  7 May 2017
+//Last Edit 15 May 2017
 
 /**
  *  \file aabb.hpp
@@ -7,7 +7,7 @@
  *  \details   An Axis Aligned Bounding Box, used to enclose some geometry
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      7 May 2017
+ *  \date      15 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -19,7 +19,7 @@
 
 /**
  * \class AABB AABB.hpp "geometry/AABB.hpp"
- * \brief An Axis Aligned Bounding Box
+ * \brief An axis aligned bounding box
  *
  *  This class represents a bounding volume, a volume that contains a specific
  *  set of objects, in this case points belonging to the Point3 class.
@@ -32,9 +32,10 @@
  */
 class AABB
 {
-private:
-    Point3 bounds[2]; //0-> bottom left point, 1-> top right point
 public:
+    
+    ///brief The front bottom left and back top right corner of the box
+    Point3 bounds[2];
     
     /** \brief Default Constructor
      *
@@ -130,7 +131,7 @@ public:
      *  \return An integer value, 0 if the \a x axis is the longest, 1 if it is
      *  the \a y axis or 2 if it is the \a z axis
      */
-    int longest_axis();
+    int longest_axis()const;
     
     /** \brief Intersection of a Ray and this AABB
      *
@@ -149,7 +150,7 @@ public:
     
     /** \brief Faster Intersection of a Ray and this AABB
      *
-     *  This function has the same purpose of 
+     *  This function has the same purposeqwe of 
      *  AABB::intersect(const Ray* r, float* p1, float* p2)const, however, when
      *  used on a large amount of AABBs, this one is more efficient
      *

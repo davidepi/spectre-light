@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit  6 May 2017
+//Last Edit 16 May 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      6 May 2017
+ *  \date      16 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -30,7 +30,7 @@
  *  non-uniform scaling value, this class will rely upon the \a x value
  *
  */
-class Sphere : Shape
+class Sphere : public Shape
 {
 public:
     
@@ -71,30 +71,25 @@ public:
      */
     bool intersect(const Ray* r,float* distance,float* error)const;
     
-    /** \brief Recalculate the AABB
-     *
-     *  This method replaces the current AABB of the sphere with an updated
-     *  version. This procedure has to be performed after every obj2world or
-     *  world2obj call.
-     *
-     *  \note Despite the name of the function contains the word REcompute, the
-     *  AABB is not implicitly calculated by whichever constructor
-     *
-     *  \sa computeAABB()
-     *  \sa obj2world()
-     *  \sa world2obj()
-     */
-    void recomputeAABB();
-    
-    /** \brief Recalculate the AABB
+    /** \brief Calculate the AABB
      *
      *  This method return an AABB that can fit well on this sphere.
      *
      *  \return an AABB representing the calculated bounding box
-     *
-     *  \sa recomputeAABB()
      */
     AABB computeAABB()const;
+    
+    /** \brief Calculate the AABB in world space
+     *
+     *  This method return an AABB that can fit well on the world space sphere,
+     *  without actually transforming the sphere.
+     *
+     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
+     *  set
+     *
+     *  \return an AABB representing the world space bounding box
+     */
+    AABB computeWorldAABB()const;
     
     /** \brief Return the surface of the sphere
      *

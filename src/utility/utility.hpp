@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit  3 May 2017
+//Last Edit 10 May 2017
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  3 May 2017
+ *  \date  10 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -257,7 +257,7 @@ inline float toDeg(const float rad)
  *  \param[in] f1 A float used for the comparison
  *  \param[in] f2 A float used for the comparison
  *  \return A float containing the minimum value between \p f1 and \p f2
- *  \sa max(float f1, float f2)
+ *  \sa max(const float f1, const float f2)
  */
 inline float min(const float f1, const float f2)
 {
@@ -271,11 +271,39 @@ inline float min(const float f1, const float f2)
  *  \param[in] f1 A float used for the comparison
  *  \param[in] f2 A float used for the comparison
  *  \return A float containing the maximum value between \p f1 and \p f2
- *  \sa min(float f1, float f2)
+ *  \sa min(const float f1, const float f2)
  */
 inline float max(const float f1, const float f2)
 {
     return f1>f2?f1:f2;
+}
+
+/**
+ *  \brief Compute the minimum value between two integers
+ *  Return An int containing the minimum of the two input values
+ *
+ *  \param[in] i1 A float used for the comparison
+ *  \param[in] i2 A float used for the comparison
+ *  \return A float containing the minimum value between \p f1 and \p f2
+ *  \sa max(const int i1, const int i2)
+ */
+inline int min(const int i1, const int i2)
+{
+    return i1<i2?i1:i2;
+}
+
+/**
+ *  \brief Compute the maximum value between two integers
+ *  Return An int containing the maximum of the two input values
+ *
+ *  \param[in] i1 An int used for the comparison
+ *  \param[in] i2 An int used for the comparison
+ *  \return An int containing the maximum value between \p i1 and \p i2
+ *  \sa min(const int i1, const int i2)
+ */
+inline int max(const int i1, const int i2)
+{
+    return i1>i2?i1:i2;
 }
 
 /**

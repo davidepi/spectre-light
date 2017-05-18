@@ -20,14 +20,23 @@ AABB Sphere::computeAABB()const
     return AABB(&pmin, &pmax);
 }
 
-void Sphere::recomputeAABB()
+AABB Sphere::computeWorldAABB()const
 {
-    const Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
-    const Point3 pmax( Sphere::radius, Sphere::radius, Sphere::radius);
+#ifdef _LOW_LEVEL_CHECKS_
+    if(transformMatrix==NULL)
+    {
+        severe("Trying to generate a world-space AABB with a NULL matrix");
+        return AABB();
+    }
+#endif
+    const Point3 pmin = *transformMatrix * Point3(-Sphere::radius,
+                                                  -Sphere::radius,
+                                                  -Sphere::radius);
+    const Point3 pmax = *transformMatrix * Point3(Sphere::radius,
+                                                  Sphere::radius,
+                                                  Sphere::radius);
     
-    //who cares if pmin and pmax are stack-allocated, the AABB constructor is
-    //going to copy them anyway
-    Sphere::aabb = AABB(&pmin, &pmax);
+    return AABB(&pmin, &pmax);
 }
 
 void Sphere::obj2world()
