@@ -1,5 +1,5 @@
 #include "kdtree.hpp"
-#define KDNODE_ALLOC 1 //AT LEAST 1!!! otherwise when doubling the array size:
+#define KDNODE_ALLOC 1 //AT LEAST 1!!! otherwise when doubling the array size
                        //0 * 2 = guess what :^)
 
 //KdTreeNode member description
@@ -16,9 +16,6 @@
 //          | leaf     -> number of primitives
 KdTreeNode::KdTreeNode(float split, int axis, unsigned int other_child)
 {
-#ifdef _LOW_LEVEL_CHECKS_
-    critical(!(other_child < 0x20000000), "Too much nodes in the kdtree");
-#endif
     KdTreeNode::data = other_child;
     if(axis == 1) // could have been done also with a shift... nvm
     /* This line goes bad if there is already something in the two most
@@ -32,9 +29,6 @@ KdTreeNode::KdTreeNode(float split, int axis, unsigned int other_child)
 
 KdTreeNode::KdTreeNode(unsigned int primitive_offset, unsigned int p_number)
 {
-#ifdef _LOW_LEVEL_CHECKS_
-    critical(p_number>=0x20000000, "Too many assets in one KdTreeNode");
-#endif
     KdTreeNode::asset_offset = primitive_offset;
     KdTreeNode::data = p_number;
     KdTreeNode::data |= 0x80000000;
@@ -75,8 +69,14 @@ unsigned int KdTreeNode::getAssetsNumber()const
     return KdTreeNode::data & 0x7FFFFFFF;
 }
 
-// <><><><><><><>    KdTreeBuildNode
-///cond
+// <><><><><><><>    KdTree Helpers
+
+/**
+ * \cond
+ *  No documentation for these helper classes
+ */
+
+///Contains some private classes used as helper in the kd-tree construction
 namespace KdHelpers
 {
     //Like the KdTreeNode, but with extra variables.
@@ -89,7 +89,7 @@ namespace KdHelpers
         ~KdTreeBuildNode(){};
         
         //where the assets are stored
-        Asset** assets_start;
+        const Asset** assets_start;
         bool isLeaf;
         char split_axis;
         union
@@ -126,13 +126,16 @@ namespace KdHelpers
         float maxt;
     };
 }
-///endcond
+
+/**
+ *  \endcond
+ */
 
 // <><><><><><><>    KdTree
 
 KdTree::KdTree()
 {
-    KdTree::assetsList = (Asset**)malloc(sizeof(Asset*)*KDNODE_ALLOC);
+    KdTree::assetsList = (const Asset**)malloc(sizeof(Asset*)*KDNODE_ALLOC);
     KdTree::assets_number = 0;
     KdTree::assets_allocated = KDNODE_ALLOC;
     
@@ -150,12 +153,14 @@ KdTree::~KdTree()
     free(nodesList);
 }
 
-void KdTree::addAsset(Asset *addme)
+void KdTree::addAsset(const Asset *addme)
 {
+    if(assets_number == _MAX_ASSETS_)
+        severe("Cannot add more primitives");
     if(assets_number == assets_allocated)
     {
         unsigned int allocNo = max(assets_allocated<<1,_MAX_ASSETS_);
-        Asset** tmp = (Asset**)malloc(sizeof(Asset*)*(allocNo));
+        const Asset** tmp = (const Asset**)malloc(sizeof(Asset*)*(allocNo));
         if(tmp)
         {
             memcpy(tmp,assetsList,assets_allocated*sizeof(Asset*));
@@ -231,7 +236,7 @@ void KdTree::buildTree()
     unsigned int a_n = KdTree::assets_number; //assets_number will be set to 0
     KdTree::assets_number = 0;//and assets will be reinserted in order during
                               //building of the kd-tree
-
+    
     //allocate the array of possible candidates. sc[axis][candidate]
     SplitCandidate** sc = (SplitCandidate**)malloc(sizeof(SplitCandidate*)*3);
     sc[0] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
@@ -245,7 +250,7 @@ void KdTree::buildTree()
     free(sc[1]);
     free(sc[2]);
     free(sc);
-    finalize(node); //copy tempbuilder to nodesList and the assets into assetsList
+    finalize(node); //copy tempbuilder into nodesList and assets into assetsList
     
     //free unused memory for KdTreeNode array
     KdTreeNode* tmpnodes = (KdTreeNode*)malloc(sizeof(KdTreeNode)*nodes_index);
@@ -324,16 +329,17 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
             {
                 char otheraxis1 = (axis+1)%3;
                 char otheraxis2 = (axis+2)%3;
-                float area_candidate_left=2*(aabb_diagonal[otheraxis1]*
-                                 aabb_diagonal[otheraxis2]
-                                 +(sc[axis][i].pos - area.bounds[0][axis])*
-                                 (aabb_diagonal[otheraxis1]
-                                  +aabb_diagonal[otheraxis2]));
-                float area_candidate_right=2*(aabb_diagonal[otheraxis1]*
-                                 aabb_diagonal[otheraxis2]
-                                 +(area.bounds[1][axis]-sc[axis][i].pos)*
-                                 (aabb_diagonal[otheraxis1]
-                                  +aabb_diagonal[otheraxis2]));
+                
+                float area_candidate_left =
+                2*(aabb_diagonal[otheraxis1]* aabb_diagonal[otheraxis2]
+                   +(sc[axis][i].pos-area.bounds[0][axis])*
+                   (aabb_diagonal[otheraxis1]+aabb_diagonal[otheraxis2]));
+                
+                float area_candidate_right =
+                2*(aabb_diagonal[otheraxis1]*aabb_diagonal[otheraxis2]
+                   +(area.bounds[1][axis]-sc[axis][i].pos)*
+                   (aabb_diagonal[otheraxis1]+aabb_diagonal[otheraxis2]));
+                
                 float al = area_candidate_left * inv_area;
                 float ar = area_candidate_right * inv_area;
                 //bonus is used to prefer nodes with 0 assets -> discard rays
@@ -410,7 +416,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     free(as_right);
 }
 
-bool KdTree::intersect(const Ray* r, Asset* h)const
+bool KdTree::intersect(const Ray* r, const Asset* h)const
 {
     using KdHelpers::KdTravNode;
     
@@ -428,13 +434,13 @@ bool KdTree::intersect(const Ray* r, Asset* h)const
     if(!scene_aabb.intersect(r, &rp, &mint, &maxt))
         return false;
     
-    //stack of node to process
+    //stack of nodes to process, used to traverse the tree breadth-first
     KdTravNode jobs[KD_MAX_DEPTH];
     int jobs_stack_top = 0;
     bool found = false;
     
     const KdTreeNode* n = nodesList;
-    while(nodesList != NULL) //TODO: check this one, maybe wrong
+    while(n != NULL)
     {
         if(r->maxext < mint) //a closer intersection has been found
             break;
@@ -442,9 +448,12 @@ bool KdTree::intersect(const Ray* r, Asset* h)const
         if(!n->isLeaf()) //if internal node
         {
             char axis = n->getAxis();
+            //get plane distance
             float planet = n->getSplit()-r->origin[axis]**(&(rp.inverseX)+axis);
             const KdTreeNode* left;
             const KdTreeNode* right;
+            
+            //find the order in which the ray encounters the children
             int leftBelow = (r->origin[axis] < n->getSplit() ||
                              (r->origin[axis] == n->getSplit() &&
                               r->direction[axis] <= 0));
@@ -459,11 +468,12 @@ bool KdTree::intersect(const Ray* r, Asset* h)const
                 right = n+1;
             }
             
+            //special cases, only 1 node needs to be processed
             if (planet > maxt || planet <= 0)
                 n = left;
             else if (planet < mint)
                 n = right;
-            else
+            else //put the right node in the todo list, process the left one
             {
                 jobs[jobs_stack_top].node = right;
                 jobs[jobs_stack_top].mint = planet;
@@ -476,7 +486,7 @@ bool KdTree::intersect(const Ray* r, Asset* h)const
         {
             //assets number
             unsigned int a_n = n->getAssetsNumber();
-            Asset* current_asset;
+            const Asset* current_asset;
             float res1, res2;
             
             //try to intersect every asset
@@ -486,15 +496,18 @@ bool KdTree::intersect(const Ray* r, Asset* h)const
                 
                 //firstly try with the aabb since it's faster
                 if(current_asset->intersectFast(r, &rp, &res1, &res2))
+                {
                     //then try with the actual asset
                     if(current_asset->intersect(r,&res1,&res2))
                     {
                         found = true; //record current intersection
                         h = current_asset;
+                        r->maxext = res1; //update ray extensions
                     }
+                }
             }
             
-            //try another node in the queue, maybe a closer intersection
+            //try another node in the todo queue, maybe a closer intersection
             //can be found
             if(jobs_stack_top>0)
             {

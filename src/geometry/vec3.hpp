@@ -353,7 +353,7 @@ public:
     bool operator==(const Vec3&)const;
     ///Check if two vector are different
     bool operator!=(const Vec3&)const;
-    //Return the nth component
+    ///Return the nth component
     float operator[](const int)const;
     
     //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥

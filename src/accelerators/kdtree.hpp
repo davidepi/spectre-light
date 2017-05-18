@@ -1,12 +1,12 @@
 //Created,   9 May 2017
-//Last Edit 17 May 2017
+//Last Edit 18 May 2017
 
 /**
  *  \file kdtree.hpp
  *  \brief     Implementation of a Kd-tree space subdivision structure
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      17 May 2017
+ *  \date      18 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -29,6 +29,7 @@
 
 /**
  *  \class KdTreeNode kdtree.hpp accelerators/kdtree.hpp
+ *  \brief Node composing the Kd-tree
  *
  *  KdTreeNode is a component of the KdTree. This class represents every node
  *  of the tree. It can be either a leaf or an internal node and once
@@ -59,7 +60,7 @@ public:
      *  \param[in] split A float representing the coordinate of the plane
      *  that will split the given axis in two
      *  \param[in] axis An integer representing the axis to split. 0 for the \a
-     *  x axis, 1 for the \a y axis and 2 for the \z axis. Every other value
+     *  x axis, 1 for the \a y axis and 2 for the \a z axis. Every other value
      *  will split the \a x axis
      *  \param[in] other_child An unsigned int representing the offset of the
      *  node's sibling. In the KdTree class every node is in the same array
@@ -172,28 +173,82 @@ private:
     uint32_t data;
 };
 
+/** \class KdTree kdtree.hpp accelerators/kdtree.hpp
+ *  \brief Fast intersection structure
+ *
+ *  KdTree is a space partitioning data structure, used to improve the speed
+ *  of the intersection routines between a Ray and a Shape. This class contains
+ *  pointers to assets and with the exposed methods is able to return if
+ *  there is an intersection and the hit asset for a given ray
+ */
 class KdTree
 {
 public:
+    
+    ///Default constructor
     KdTree();
+    
+    ///Default destructor
     ~KdTree();
-    void addAsset(Asset* addme);
+    
+    /** \brief Add an asset to this kd-tree
+     *
+     *  Add an asset to the ones managed by the kd-tree. The kd-tree stores and
+     *  manages only the pointer and the world-space aabb exposed by the asset
+     *  class.
+     *
+     *  \param[in] addme The asset that will be managed by this kd-tree
+     */
+    void addAsset(const Asset* addme);
+    
+    /** \brief Build the kd-tree
+     *
+     *  Recursively construct the optimal kd-tree for the assets added with the
+     *  KdTree::addAsset method
+     */
     void buildTree();
-    bool intersect(const Ray* r, Asset* hit)const;
+    
+    /** \brief Find the closest intersection to a ray
+     *
+     *  Find the closest intersection of this ray, with the assets added through
+     *  the KdTree::addAsset method, in an efficient way.
+     *
+     *  \note Remember to build the tree first, or the intersections will always
+     *  fail
+     *
+     *  \param[in] r The ray used for the intersection test
+     *  \param[out] hit The hit asset
+     */
+    bool intersect(const Ray* r, const Asset* hit)const;
     
 private:
+    
+    //recursive step for the build
     void build(void* node, char depth, void* split_candidates,
                Asset** assets_list, unsigned int assets_number,const AABB area);
+    
+    //flatten out the tree into an array
     void finalize(void* node);
     
+    //the aabb containing every asset of this kd-tree
     AABB scene_aabb;
     
-    Asset** assetsList;
+    //the list of assets managed by this kd-tree
+    const Asset** assetsList;
+    
+    //the number of assets managed and the index of the next insertion
     unsigned int assets_number;
+    
+    //the allocated size of the assetsList array
     unsigned int assets_allocated;
     
+    //the list of nodes managed by this kd-tree
     KdTreeNode* nodesList;
+    
+    //the number of nodes managed and the index of the next node inserted
     unsigned int nodes_index;
+    
+    //the allocated size of the nodesList array
     unsigned int nodes_allocated;
 };
 

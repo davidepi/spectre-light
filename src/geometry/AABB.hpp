@@ -19,7 +19,7 @@
 
 /**
  * \class AABB AABB.hpp "geometry/AABB.hpp"
- * \brief An Axis Aligned Bounding Box
+ * \brief An axis aligned bounding box
  *
  *  This class represents a bounding volume, a volume that contains a specific
  *  set of objects, in this case points belonging to the Point3 class.
