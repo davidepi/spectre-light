@@ -78,7 +78,7 @@ public:
      */
     virtual void getSamples(Sample* res) = 0;
     
-private:
+protected:
     WELLrng rng;
     int startx;
     int starty;
