@@ -6,6 +6,7 @@ file(GLOB spectre_core_sources
     src/geometry/*.cpp
     src/primitives/*.cpp
     src/accelerators/*.cpp
+    src/samplers/*.cpp
     src/utility/*.cpp)
 file(GLOB spectre_core_headers
     src/settings.h
@@ -13,12 +14,14 @@ file(GLOB spectre_core_headers
     src/geometry/*.hpp
     src/primitives/*.hpp
     src/accelerators/*.hpp
+    src/samplers/*.hpp
     src/utility/*.hpp)
 include_directories(src)
 include_directories(src/geometry)
 include_directories(src/primitives)
 include_directories(src/utility)
 include_directories(src/accelerators)
+include_directories(src/samplers)
 find_package(Doxygen)
 
 if(DOXYGEN_FOUND)
