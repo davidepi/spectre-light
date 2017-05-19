@@ -1,21 +1,19 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-project(spectre-light C CXX)
+project(spectre-light CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file(GLOB spectre_core_sources
     src/geometry/*.cpp
     src/primitives/*.cpp
     src/accelerators/*.cpp
-    src/utility/*.cpp
-    src/utility/*.c)
+    src/utility/*.cpp)
 file(GLOB spectre_core_headers
     src/settings.h
     src/validator.h
     src/geometry/*.hpp
     src/primitives/*.hpp
     src/accelerators/*.hpp
-    src/utility/*.hpp
-    src/utility/*.h)
+    src/utility/*.hpp)
 include_directories(src)
 include_directories(src/geometry)
 include_directories(src/primitives)
