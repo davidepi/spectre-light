@@ -5,7 +5,7 @@ BoxFilter::BoxFilter() : Filter()
 
 }
 
-BoxFilter::~BoxFilter() : ~Filter()
+BoxFilter::~BoxFilter()
 {
 
 }

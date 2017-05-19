@@ -17,6 +17,7 @@
 #include "asset.hpp"
 #include <vector>
 #include <algorithm>
+#include <cstdint>
 
 ///Defines the minimum number of assests in a leaf
 #define _LEAF_ASSETS_ 3
