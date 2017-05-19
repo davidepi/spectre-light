@@ -9,3 +9,5 @@ build/
 *.exe
 *.app
 Makefile
+.idea
+cmake-build-debug/
