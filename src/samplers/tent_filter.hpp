@@ -46,7 +46,7 @@ public:
      * This method is an implementation of the pure virtual function of the
      * weight class which returns the weight of the considered pixel.
      * The sample in the exact centre of the filter has a value of 1.0, and
-     * every other sample is calculated as a linear fallom from the centre until
+     * every other sample is calculated as a linear falloff from the centre until
      * the edge of the filter which posses a value of 0.0
      *
      * \param offset_x The \a x distance of the sample from the centre.
