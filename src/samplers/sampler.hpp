@@ -17,7 +17,6 @@
 
 #include "wellrng.hpp"
 
-
 /**
  *  \struct Sample sampler.hpp "samplers/sampler.hpp"
  *  \brief A simple struct containing a sample
@@ -79,6 +78,7 @@ public:
     virtual void getSamples(Sample* res) = 0;
     
 protected:
+
     WELLrng rng;
     int startx;
     int starty;
