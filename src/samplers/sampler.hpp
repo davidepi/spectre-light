@@ -62,7 +62,7 @@ public:
      *  \param[in] seed A 128 bytes array containing the seed of the rng
      */
     Sampler(int startx, int endx, int starty, int endy, int spp,
-            unsigned int* seed);
+            const unsigned int* seed);
     
     ///Default destructor
     ~Sampler();

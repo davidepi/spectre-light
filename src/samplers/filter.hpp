@@ -39,11 +39,11 @@ public:
      * Given a sample, measured as an offset from the centre of the pixel,
      * measure its weight in the final average, in the range [0.0,1.0]
      *
-     * \param offset_x The \a x distance of the sample from the centre
-     * \param offset_y The \a y distance of the sample from the centre
+     * \param[in] offset_x The \a x distance of the sample from the centre
+     * \param[in] offset_y The \a y distance of the sample from the centre
      * \return The weight of the sample in the final average for the pixel
      */
-    virtual float weight(float offset_x, float offset_y) = 0;
+    virtual float weight(float offset_x, float offset_y)const = 0;
 };
 
 #endif

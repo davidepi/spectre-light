@@ -14,7 +14,7 @@ MitchellFilter::~MitchellFilter()
 
 }
 
-float MitchellFilter::weight(float offset_x, float offset_y)
+float MitchellFilter::weight(float offset_x, float offset_y)const
 {
     float x = offset_x * inv_width;
     float y = offset_x * inv_height;

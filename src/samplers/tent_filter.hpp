@@ -33,8 +33,8 @@ public:
 
     /** \brief Default constructor
      *
-     * \param x_range The x extent of the filter
-     * \param y_range The y extent of the filter
+     * \param[in] x_range The x extent of the filter
+     * \param[in] y_range The y extent of the filter
      */
     TentFilter(float x_range,float y_range);
 
@@ -49,11 +49,11 @@ public:
      * every other sample is calculated as a linear falloff from the centre until
      * the edge of the filter which posses a value of 0.0
      *
-     * \param offset_x The \a x distance of the sample from the centre.
-     * \param offset_y The \a y distance of the sample from the centre.
+     * \param[in] offset_x The \a x distance of the sample from the centre.
+     * \param[in] offset_y The \a y distance of the sample from the centre.
      * \return The weight of the sample in the final average for the pixel.
      */
-    float weight(float offset_x, float offset_y);
+    float weight(float offset_x, float offset_y)const;
 
 private:
 

@@ -44,10 +44,10 @@ public:
      *  this two parameters. For example with B = 0 and C = 0.5 the filter is
      *  like a Catmull-Rom, and with B = 1 and C = 0 the filter is a B-spline.
      *
-     *  \param x_range The x extent of the filter
-     *  \param y_range The y extent of the filter
-     *  \param b B value of the filter, check detailed description
-     *  \param c C value of the filter, check detailed description
+     *  \param[in] x_range The x extent of the filter
+     *  \param[in] y_range The y extent of the filter
+     *  \param[in] b B value of the filter, check detailed description
+     *  \param[in] c C value of the filter, check detailed description
      */
     MitchellFilter(float x_range, float y_range, float b, float c);
 
@@ -62,11 +62,11 @@ public:
      *  every other sample is calculated with a parametric expression similar to
      *  to a gaussian curve, until the value of 0.0 on the limit.
      *
-     *  \param offset_x The \a x distance of the sample from the centre.
-     *  \param offset_y The \a y distance of the sample from the centre.
+     *  \param[in] offset_x The \a x distance of the sample from the centre.
+     *  \param[in] offset_y The \a y distance of the sample from the centre.
      *  \return The weight of the sample in the final average for the pixel.
      */
-    float weight(float offset_x, float offset_y);
+    float weight(float offset_x, float offset_y)const;
 
 private:
 

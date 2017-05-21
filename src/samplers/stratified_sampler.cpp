@@ -1,11 +1,11 @@
 #include "stratified_sampler.hpp"
 StratifiedSampler::StratifiedSampler(int startx, int endx, int starty, int endy,
-                                     int spp,unsigned int* seed, bool random)
+                                     int spp,const unsigned int* seed,bool rand)
 : Sampler(startx,endx,starty,endy,spp,seed)
 {
     StratifiedSampler::nextx = startx;
     StratifiedSampler::nexty = starty;
-    StratifiedSampler::isRandomized = random;
+    StratifiedSampler::isRandomized = rand;
     StratifiedSampler::strata_x = (int)sqrtf(spp);
     StratifiedSampler::strata_y = StratifiedSampler::strata_x;
 }

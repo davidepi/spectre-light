@@ -36,7 +36,7 @@ public:
      *
      *  \param[in] seed 128 bytes representing the seed of this prng
      */
-    WELLrng(unsigned int seed[WELL_R]);
+    WELLrng(const unsigned int seed[WELL_R]);
     
     ///Default destructor
     ~WELLrng();

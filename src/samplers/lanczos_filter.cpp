@@ -13,7 +13,7 @@ LanczosFilter::~LanczosFilter()
     
 }
 
-float LanczosFilter::weight(float offset_x, float offset_y)
+float LanczosFilter::weight(float offset_x, float offset_y)const
 {
     float resx = fabsf(offset_x * LanczosFilter::inverse_width);
     if(resx < 1E-5)

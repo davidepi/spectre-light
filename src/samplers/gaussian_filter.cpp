@@ -13,7 +13,7 @@ GaussianFilter::~GaussianFilter()
 
 }
 
-float GaussianFilter::weight(float offset_x, float offset_y)
+float GaussianFilter::weight(float offset_x, float offset_y)const
 {
     //f(x) = e^(-alpha*x^2)-e^(-alpha*width^2)
     //where the second term is used to let the gaussian tend to zero at its

@@ -48,7 +48,7 @@ public:
      * in the centre
      */
     StratifiedSampler(int startx, int endx, int starty, int endy, int spp,
-                              unsigned int* seed, bool random);
+                              const unsigned int* seed, bool random);
 
     ///Default destructor
     ~StratifiedSampler();

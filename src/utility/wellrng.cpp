@@ -7,7 +7,7 @@
 
 #include "wellrng.hpp"
 
-WELLrng::WELLrng(unsigned int seed[WELL_R])
+WELLrng::WELLrng(const unsigned int seed[WELL_R])
 {
     WELLrng::state_i = 0;
     for(int i=0;i<WELL_R;i++)

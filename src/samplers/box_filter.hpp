@@ -43,13 +43,13 @@ public:
      * pixel. However, since every pixel in a box filter is weighted in the same
      * way, this function simply returns 1.0
      *
-     * \param offset_x The \a x distance of the sample from the centre. Unused
-     * \param offset_y The \a y distance of the sample from the centre. Unused
+     * \param[in] offset_x The \a x distance of the sample from the centre. Unused
+     * \param[in] offset_y The \a y distance of the sample from the centre. Unused
      * \return The weight of the sample in the final average for the pixel.
      * Which is always 1.0 in a box filter, since every sample has the same
      * weight
      */
-    float weight(float offset_x, float offset_y);
+    float weight(float offset_x, float offset_y)const;
 };
 
 #endif
