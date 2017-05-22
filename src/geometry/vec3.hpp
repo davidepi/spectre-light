@@ -22,6 +22,7 @@
 
 #include "utility.hpp"
 #include "vec2.hpp"
+#include "console.hpp"
 #include <cstdio> //snprintf
 #include <cmath> //std::sqrt
 #include <cfloat> //FLT_EPSILON
@@ -857,7 +858,7 @@ inline Vec3 normalize(Vec3 v)
 #ifdef _LOW_LEVEL_CHECKS_
     if(len==0)
     {
-        critical("Trying to normalize a zero-length vector");
+        Console.critical("Trying to normalize a zero-length vector");
         return Vec3();
     }
 #endif
@@ -880,7 +881,7 @@ inline Normal normalize(Normal n)
 #ifdef _LOW_LEVEL_CHECKS_
     if(len==0)
     {
-        critical("Trying to normalize a zero-length normal");
+        Console.critical("Trying to normalize a zero-length normal");
         return Normal();
     }
 #endif
@@ -1129,7 +1130,8 @@ inline Normal min(const Normal n1, const Normal n2)
 inline Vec3 reflect(const Vec3 source, const Vec3 centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    warning(!centre.isNormalized(),"Reflecting around a non normalized centre");
+    Console.warning(!centre.isNormalized(),
+                    "Reflecting around a non normalized centre");
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1151,7 +1153,8 @@ inline Vec3 reflect(const Vec3 source, const Vec3 centre)
 inline Vec3 reflect(const Vec3 source, const Normal centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    warning(!centre.isNormalized(),"Reflecting around a non normalized centre");
+    Console.warning(!centre.isNormalized(),
+                    "Reflecting around a non normalized centre");
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),

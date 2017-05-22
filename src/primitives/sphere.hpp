@@ -15,6 +15,7 @@
 #ifndef __SPHERE_HPP__
 #define __SPHERE_HPP__
 
+#include "console.hpp"
 #include "utility.hpp"
 #include "shape.hpp"
 #include "matrix4.hpp"

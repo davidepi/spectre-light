@@ -15,6 +15,7 @@
 #define __KDTREE_H__
 
 #include "asset.hpp"
+#include "console.hpp"
 #include <vector>
 #include <algorithm>
 #include <cstdint>

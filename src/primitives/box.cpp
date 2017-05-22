@@ -28,7 +28,8 @@ AABB Box::computeWorldAABB()const
 #ifdef _LOW_LEVEL_CHECKS_
     if(transformMatrix==NULL)
     {
-        severe("Trying to generate a world-space AABB with a NULL matrix");
+        Console.severe(
+        "Trying to generate a world-space AABB with a NULL matrix");
         return AABB();
     }
 #endif
@@ -48,11 +49,11 @@ float Box::surface()const
 
 void Box::obj2world()
 {
-    warning("No rotation supported for now");
+    Console.warning("No rotation supported for now");
 #ifdef _LOW_LEVEL_CHECKS_
     if(transformMatrix==NULL)
     {
-        severe("Trying to convert a box to world-space with a NULL matrix");
+        Console.severe("Trying to convert a box to world-space with a NULL matrix");
         return;
     }
 #endif
@@ -64,11 +65,11 @@ void Box::obj2world()
 
 void Box::world2obj()
 {
-    warning("No rotation supported for now");
+    Console.warning("No rotation supported for now");
 #ifdef _LOW_LEVEL_CHECKS_
     if(transformMatrix==NULL)
     {
-        severe("Trying to convert a box to world-space with a NULL matrix");
+        Console.severe("Trying to convert a box to world-space with a NULL matrix");
         return;
     }
 #endif
