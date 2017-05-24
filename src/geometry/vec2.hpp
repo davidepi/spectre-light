@@ -24,6 +24,7 @@
 #include <cstring>
 #include <cstdio> //snprintf
 #include "utility.hpp"
+#include "console.hpp"
 
 /**
  *  \class Vec2 vec2.hpp "geometry/vec2.hpp"
@@ -310,7 +311,7 @@ inline Vec2 normalize(const Vec2 vector)
 #ifdef _LOW_LEVEL_CHECKS_
     if(len==0)
     {
-        critical("Trying to normalize a zero-length vector");
+        Console.critical("Trying to normalize a zero-length vector");
         return Vec2();
     }
 #endif
@@ -455,7 +456,8 @@ inline Vec2 min (const Vec2 vector1, const Vec2 vector2)
 inline Vec2 reflect(const Vec2 source,const Vec2 centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    warning(!centre.isNormalized(),"Reflecting around a non normalized centre");
+    Console.warning(!centre.isNormalized(),
+                    "Reflecting around a non normalized centre");
 #endif
     float dot = ((source.x * centre.x) + (source.y * centre.y));
     return Vec2(source.x-((2*dot)*centre.x), source.y-((2*dot)*centre.y));

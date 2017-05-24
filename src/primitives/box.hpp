@@ -22,6 +22,7 @@
 #include "shape.hpp"
 #include "matrix4.hpp"
 #include "AABB.hpp"
+#include "console.hpp"
 
 /**
  *  \class Box box.hpp "primitives/box.hpp"

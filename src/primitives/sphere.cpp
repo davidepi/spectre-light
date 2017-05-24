@@ -25,7 +25,8 @@ AABB Sphere::computeWorldAABB()const
 #ifdef _LOW_LEVEL_CHECKS_
     if(transformMatrix==NULL)
     {
-        severe("Trying to generate a world-space AABB with a NULL matrix");
+        Console.severe(
+        "Trying to generate a world-space AABB with a NULL matrix");
         return AABB();
     }
 #endif
@@ -44,7 +45,8 @@ void Sphere::obj2world()
 #ifdef _LOW_LEVEL_CHECKS_
     if(transformMatrix==NULL)
     {
-        severe("Trying to convert a sphere to world-space with a NULL matrix");
+        Console.severe(
+        "Trying to convert a sphere to world-space with a NULL matrix");
         return;
     }
 #endif
@@ -61,7 +63,8 @@ void Sphere::world2obj()
 #ifdef _LOW_LEVEL_CHECKS_
     if(transformMatrix==NULL)
     {
-        severe("Trying to convert a sphere to object-space with a NULL matrix");
+        Console.severe(
+        "Trying to convert a sphere to object-space with a NULL matrix");
         return;
     }
 #endif

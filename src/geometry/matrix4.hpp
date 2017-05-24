@@ -21,6 +21,7 @@
 #include "utility.hpp"
 #include "vec3.hpp"
 #include "point3.hpp"
+#include "console.hpp"
 #include <cmath>
 #include <cstring>
 #include <cstdio>

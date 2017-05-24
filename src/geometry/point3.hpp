@@ -20,6 +20,7 @@
 
 #ifndef __POINT_HPP__
 #define __POINT_HPP__
+#include "console.hpp"
 #include "utility.hpp"
 #include "vec3.hpp"
 #include <cmath>
