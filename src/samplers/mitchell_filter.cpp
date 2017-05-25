@@ -1,10 +1,10 @@
 #include "mitchell_filter.hpp"
 
-MitchellFilter::MitchellFilter(float x_range, float y_range, float b, float c)
-: Filter()
+MitchellFilter::MitchellFilter(float x_r, float y_r, float b, float c)
+: Filter(x_r,y_r)
 {
-    MitchellFilter::inv_width = 1.0f/x_range;
-    MitchellFilter::inv_height = 1.0f/y_range;
+    MitchellFilter::inv_width = 1.0f/x_r;
+    MitchellFilter::inv_height = 1.0f/y_r;
     MitchellFilter::b = b;
     MitchellFilter::c = c;
 }

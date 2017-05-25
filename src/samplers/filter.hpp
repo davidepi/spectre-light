@@ -28,8 +28,12 @@ class Filter
 {
 public:
 
-    ///Default constructor
-    Filter();
+    /** Default constructor
+     *
+     * \param[in] x_range The x extent of the filter
+     * \param[in] y_range The y extent of the filter
+     */
+    Filter(float x_range, float y_range);
 
     ///Default destructor
     ~Filter();
@@ -44,6 +48,12 @@ public:
      * \return The weight of the sample in the final average for the pixel
      */
     virtual float weight(float offset_x, float offset_y)const = 0;
+    
+    ///x extent of the filter
+    const float x_range;
+    
+    ///y extent of the filter
+    const float y_range;
 };
 
 #endif

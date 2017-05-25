@@ -30,8 +30,12 @@ class BoxFilter : public Filter
 {
 public:
 
-    ///Default constructor
-    BoxFilter();
+    /** Default constructor
+     *
+     * \param[in] x_range The x extent of the filter
+     * \param[in] y_range The y extent of the filter
+     */
+    BoxFilter(float x_range, float y_range);
 
     ///Default destructor
     ~BoxFilter();

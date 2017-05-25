@@ -1,10 +1,10 @@
 #include "lanczos_filter.hpp"
 
-LanczosFilter::LanczosFilter(float x_range, float y_range, float tau)
-: Filter()
+LanczosFilter::LanczosFilter(float x_r, float y_r, float tau)
+: Filter(x_r,y_r)
 {
-    LanczosFilter::inverse_width = 1.0f/x_range;
-    LanczosFilter::inverse_height = 1.0f/y_range;
+    LanczosFilter::inverse_width = 1.0f/x_r;
+    LanczosFilter::inverse_height = 1.0f/y_r;
     LanczosFilter::tau = tau;
 }
 

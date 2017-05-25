@@ -54,14 +54,6 @@ public:
      * \return The weight of the sample in the final average for the pixel.
      */
     float weight(float offset_x, float offset_y)const;
-
-private:
-
-    //x extent
-    float width;
-
-    //y extent
-    float height;
 };
 
 #endif
