@@ -1,5 +1,6 @@
 #include "image_output.hpp"
 
+//check if extension is supported
 bool check_extension(const char* fn)
 {
     const char* name = strrchr(fn,'.');
@@ -23,13 +24,18 @@ bool check_extension(const char* fn)
 
 ImageOutput::ImageOutput(int w, int h, const char* fn) :width(w), height(h)
 {
+    //allocate image
     ImageOutput::image = (Pixel*)malloc(sizeof(Pixel)*w*h);
+    //set as zero, I need to have number of samples = 0 for every pixel
+    memset(ImageOutput::image, 0, sizeof(Pixel)*w*h);
+    ImageOutput::f = NULL;
     ImageOutput::filename = NULL;
     if(fn != NULL)
     {
+        //check extension, add .ppm if not supported
         bool res = check_extension(fn);
         int len = (int)strlen(fn)+1;
-        len += res?0:4; //to add the .bmp at the end, if there was no extension
+        len += res?0:4; //to add the .ppm at the end, if there was no extension
         ImageOutput::filename = (char*)malloc(sizeof(char)*len);
         memcpy(ImageOutput::filename,fn,sizeof(char)*len);
         if(!res)
@@ -63,6 +69,7 @@ ImageOutput::~ImageOutput()
 
 void ImageOutput::addPixel(Sample* s, Color* c)
 {
+    //TODO: not sure if this will work, need to check
     float ptmpx = s->posx-0.5f;
     float ptmpy = s->posy-0.5f;
     int p0x = (int)ceil(ptmpx-f->x_range);
@@ -92,13 +99,26 @@ bool ImageOutput::saveImage()
 {
     unsigned char tmp[ImageOutput::width*ImageOutput::height*3];
     int i = 0;
+    
+    //evaluate average for every pixel
     for(int j=0;j<ImageOutput::width*ImageOutput::height;j++)
     {
-        tmp[i++] = (unsigned char)(image[j].r*255/image[j].samples);
-        tmp[i++] = (unsigned char)(image[j].g*255/image[j].samples);
-        tmp[i++] = (unsigned char)(image[j].b*255/image[j].samples);
+        if(image[j].samples>0.f) //if at least one sample
+        {
+            tmp[i++] = (unsigned char)(image[j].r*255/image[j].samples);
+            tmp[i++] = (unsigned char)(image[j].g*255/image[j].samples);
+            tmp[i++] = (unsigned char)(image[j].b*255/image[j].samples);
+        }
+        else
+        {
+            tmp[i++] = 0;
+            tmp[i++] = 0;
+            tmp[i++] = 0;
+        }
     }
-    FILE* fout = fopen(filename,"wb");
+    
+    //TODO: consider moving this inside utility class
+    FILE* fout = fopen(filename,"wb"); //save as ppm
     if(fout != NULL)
     {
         fprintf(fout,"P6 %d %d 255 ",width,height);
@@ -108,16 +128,4 @@ bool ImageOutput::saveImage()
     }
     else
         return false;
-}
-
-void ImageOutput::test()
-{
-    WELLrng rng((unsigned int*)this);
-    for(int i=0;i<width*height;i++)
-    {
-        image[i].r = rng.getNumberf();
-        image[i].g = rng.getNumberf();
-        image[i].b = rng.getNumberf();
-        image[i].samples = 1.0f;
-    }
 }
