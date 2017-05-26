@@ -35,7 +35,13 @@ endif(DOXYGEN_FOUND)
 
 find_package(ImageMagick)
 if(ImageMagick_FOUND)
-    add_definitions(-DIMAGEMAGICK_FOUND)
+    #add_definitions(-DIMAGEMAGICK_FOUND)
+endif()
+
+if(WIN32)
+else()
+    set_property(SOURCE src/utility/console.cpp APPEND_STRING PROPERTY
+    COMPILE_FLAGS " -DSPECTRE_COLOURED_OUTPUT ")
 endif()
 
 add_executable(spectre src/main.cpp ${spectre_core_sources})

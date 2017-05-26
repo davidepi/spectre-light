@@ -6,6 +6,23 @@ int Errors_count[5] = {0,0,0,0,0};
 
 #undef Console
 
+#ifndef SPECTRE_COLOURED_OUTPUT
+#define NOTICE "NOTICE"
+#define WARNING "WARNING"
+#define ERROR "ERROR"
+#define CRITICAL "CRITICAL"
+#else
+#define SPNRM  "\x1B[0m"
+#define SPRED  "\x1B[31m"
+#define SPGRN  "\x1B[32m"
+#define SPYEL  "\x1B[33m"
+#define SPCYN  "\x1B[36m"
+#define NOTICE SPCYN "NOTICE" SPNRM
+#define WARNING SPYEL "WARNING" SPNRM
+#define ERROR SPRED "ERROR" SPNRM
+#define CRITICAL SPRED "CRITICAL" SPNRM
+#endif
+
 Console::Console()
 {
     Console::motd();
@@ -32,7 +49,7 @@ void Console::log(const char* m, const char* v)
 void Console::notice(const char* s)
 {
 #ifndef _TEST_
-    fprintf(stdout,"[NOTICE] %s\n",s);
+    fprintf(stdout,"[" NOTICE "] %s\n",s);
 #else
     Errors_count[NOTICE_INDEX]++;
 #endif
@@ -41,7 +58,7 @@ void Console::notice(const char* s)
 void Console::warning(const char* s)
 {
 #ifndef _TEST_
-    fprintf(stderr,"[WARNING] %s\n",s);
+    fprintf(stderr,"[" WARNING "] %s\n",s);
 #else
     Errors_count[WARNING_INDEX]++;
 #endif
@@ -50,7 +67,7 @@ void Console::warning(const char* s)
 void Console::severe(const char* s)
 {
 #ifndef _TEST_
-    fprintf(stderr,"[ERROR] %s\n",s);
+    fprintf(stderr,"[" ERROR "] %s\n",s);
 #else
     Errors_count[ERROR_INDEX]++;
 #endif
@@ -59,7 +76,7 @@ void Console::severe(const char* s)
 void Console::critical(const char* s)
 {
 #ifndef _TEST_
-    fprintf(stderr,"[CRITICAL] %s\n",s);
+    fprintf(stderr,"[" CRITICAL "] %s\n",s);
     exit(EXIT_FAILURE);
 #else
     Errors_count[CRITICAL_INDEX]++;
@@ -86,7 +103,7 @@ void Console::notice(bool b, const char* s)
     if(b)
     {
 #ifndef _TEST_
-        fprintf(stdout,"[NOTICE] %s\n",s);
+        fprintf(stdout,"[" NOTICE "] %s\n",s);
 #else
         Errors_count[NOTICE_INDEX]++;
 #endif
@@ -98,7 +115,7 @@ void Console::warning(bool b, const char* s)
     if(b)
     {
 #ifndef _TEST_
-        fprintf(stderr,"[WARNING] %s\n",s);
+        fprintf(stderr,"[" WARNING "] %s\n",s);
 #else
         Errors_count[WARNING_INDEX]++;
 #endif
@@ -110,7 +127,7 @@ void Console::severe(bool b, const char* s)
     if(b)
     {
 #ifndef _TEST_
-        fprintf(stderr,"[ERROR] %s\n",s);
+        fprintf(stderr,"[" ERROR "] %s\n",s);
 #else
         Errors_count[ERROR_INDEX]++;
 #endif
@@ -122,7 +139,7 @@ void Console::critical(bool b, const char* s)
     if(b)
     {
 #ifndef _TEST_
-        fprintf(stderr,"[CRITICAL] %s\n",s);
+        fprintf(stderr,"[" CRITICAL "] %s\n",s);
         exit(EXIT_FAILURE);
 #else
         Errors_count[CRITICAL_INDEX]++;
