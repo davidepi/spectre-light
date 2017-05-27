@@ -7,10 +7,11 @@ class OrthographicCamera : public Camera
 {
 public:
     
-    OrthographicCamera(Vec3* position, int width, int height,
-                       const char* filename);
+    OrthographicCamera(const Point3* position,const Point3* target,
+                       const Vec3* up, int width, int height,
+                       const char* filename, const float bounds[4]);
     ~OrthographicCamera();
-    void createRay(Sample* s, Ray* r);
+    void createRay(Sample* s, Ray* r)const;
 };
 
 #endif

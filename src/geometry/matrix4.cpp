@@ -980,7 +980,7 @@ bool Matrix4::operator!=(const Matrix4& mat)const
              flt_equal(Matrix4::m33, mat.m33));
 }
 
-Point3 Matrix4::operator*(Point3 p)const
+Point3 Matrix4::operator*(const Point3& p)const
 {
     float x = Matrix4::m00*p.x+Matrix4::m01*p.y+Matrix4::m02*p.z+Matrix4::m03;
     float y = Matrix4::m10*p.x+Matrix4::m11*p.y+Matrix4::m12*p.z+Matrix4::m13;
@@ -999,7 +999,7 @@ Point3 Matrix4::operator*(Point3 p)const
     }
 }
 
-Vec3 Matrix4::operator*(Vec3 v)const
+Vec3 Matrix4::operator*(const Vec3& v)const
 {
     return Vec3(Matrix4::m00*v.x+Matrix4::m01*v.y+Matrix4::m02*v.z+Matrix4::m03,
                 Matrix4::m10*v.x+Matrix4::m11*v.y+Matrix4::m12*v.z+Matrix4::m13,
@@ -1007,7 +1007,7 @@ Vec3 Matrix4::operator*(Vec3 v)const
                 );
 }
 
-Normal Matrix4::operator*(Normal n)const
+Normal Matrix4::operator*(const Normal& n)const
 {
     //TODO possible optimization by storing inverse matrix?
     Matrix4 inv;
@@ -1015,6 +1015,13 @@ Normal Matrix4::operator*(Normal n)const
     return Normal(inv.m00*n.x+inv.m01*n.y+inv.m02*n.z+inv.m03,
                   inv.m10*n.x+inv.m11*n.y+inv.m12*n.z+inv.m13,
                   inv.m20*n.x+inv.m21*n.y+inv.m22*n.z+inv.m23);
+}
+
+Ray Matrix4::operator*(const Ray& r)const
+{
+    Point3 origin = (*this)*r.origin;
+    Vec3 direction = (*this)*r.direction;
+    return Ray(origin,direction);
 }
 
 //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥

@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 29 Apr 2017
+//Last Edit 30 May 2017
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      29 April 2017
+ *  \date      30 May 2017
  *  \warning   Since this is a low level class, some verification are skipped.
  *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
  *             preprocessor define.
@@ -21,6 +21,7 @@
 #include "utility.hpp"
 #include "vec3.hpp"
 #include "point3.hpp"
+#include "ray.hpp"
 #include "console.hpp"
 #include <cmath>
 #include <cstring>
@@ -266,11 +267,14 @@ public:
     bool operator!=(const Matrix4&)const;
     
     ///Apply the transformation matrix to the Point
-    Point3 operator*(Point3)const;
+    Point3 operator*(const Point3&)const;
     ///Apply the transformation matrix to the Vector
-    Vec3 operator*(Vec3)const;
+    Vec3 operator*(const Vec3&)const;
     ///Apply the transformation matrix to the Normal
-    Normal operator*(Normal)const;
+    Normal operator*(const Normal&)const;
+    ///Apply the transformation matrix to the Ray
+    Ray operator*(const Ray&)const;
+    
     
     //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
