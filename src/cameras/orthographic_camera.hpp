@@ -3,6 +3,8 @@
 
 #include "camera.hpp"
 
+/**
+ */
 class OrthographicCamera : public Camera
 {
 public:
