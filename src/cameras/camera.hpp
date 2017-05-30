@@ -16,6 +16,7 @@
 #define __CAMERA_HPP__
 
 #include "image_output.hpp"
+#include "sampler.hpp"
 #include "matrix4.hpp"
 #include "ray.hpp"
 
