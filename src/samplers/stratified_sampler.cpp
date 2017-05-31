@@ -1,4 +1,5 @@
 #include "stratified_sampler.hpp"
+
 StratifiedSampler::StratifiedSampler(int startx, int endx, int starty, int endy,
                                      int spp,const unsigned int* seed,bool rand)
 : Sampler(startx,endx,starty,endy,spp,seed)
@@ -15,8 +16,10 @@ StratifiedSampler::~StratifiedSampler()
     
 }
 
-void StratifiedSampler::getSamples(Sample *res)
+bool StratifiedSampler::getSamples(Sample *res)
 {
+    if(nexty==endy)
+        return false;
     float dx = 1.0f/strata_x;
     float dy = 1.0f/strata_y;
     for(int y=0;y<strata_y;y++)
@@ -25,10 +28,15 @@ void StratifiedSampler::getSamples(Sample *res)
         {
             float randomization_x = isRandomized?rng.getNumberf():0.5f;
             float randomization_y = isRandomized?rng.getNumberf():0.5f;
-            res[y*x+x].posx = (nextx)+((x+randomization_x)*dx);
-            res[y*x+x].posy = (nexty)+((y+randomization_y)*dy);
+            res->posx = (nextx)+((x+randomization_x)*dx);
+            res->posy = (nexty)+((y+randomization_y)*dy);
+            res++;
         }
     }
-    nextx++;
-    nexty++;
+    if(++nextx==endx)
+    {
+        nextx=startx;
+        nexty++;
+    }
+    return true;
 }

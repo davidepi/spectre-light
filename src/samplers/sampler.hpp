@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 19 May 2017
+//Last Edit 31 May 2017
 
 /**
  *  \file sampler.hpp
@@ -8,7 +8,7 @@
  *             data structure expected to be returning
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      19 May 2017
+ *  \date      31 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -74,16 +74,28 @@ public:
      *  the constructor
      *
      *  \param[out] res An array containing the generated samples
+     *  \return false if the whole area has been sampled, true otherwise
      */
-    virtual void getSamples(Sample* res) = 0;
+    virtual bool getSamples(Sample* res) = 0;
     
 protected:
 
+    //The random number generator
     WELLrng rng;
+    
+    //The starting pixel (x-coordinate)
     int startx;
+    
+    //The starting pixel (y-coordinate)
     int starty;
+    
+    //The ending pixel (x-coordinate)
     int endx;
+    
+    //The ending pixel (y-coordinate)
     int endy;
+    
+    //The number of samples per pixel
     int spp;
 };
 

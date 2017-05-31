@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 21 May 2017
+//Last Edit 31 May 2017
 
 /**
  *  \file stratified_sampler.hpp
@@ -7,7 +7,7 @@
  *  \details   Divide the region in equal subregions and sample each one
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      21 May 2017
+ *  \date      31 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -58,9 +58,12 @@ public:
      *  Return a set of samples for the current pixel. The current pixel is
      *  auto-updated, and not required as input
      *
-     * \param[in,out] res The resulting array of samples
+     *  If the whole area has been sampled, the function returns false
+     *
+     *  \param[in,out] res The resulting array of samples
+     *  \return false if the whole area has been sampled, true otherwise
      */
-    void getSamples(Sample* res);
+    bool getSamples(Sample* res);
 
 private:
 
