@@ -282,37 +282,39 @@ void Matrix4::setRotateZ(float value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setLookAtLH(Point3 position, Point3 target, Vec3 up)
+void Matrix4::setLookAtLH(const Point3 pos, const Point3 target, const Vec3 up)
 {
+    Vec3 newup = up;
 #ifdef _LOW_LEVEL_CHECKS_
     if(!(up.isNormalized()))
     {
         Console.warning("Up camera vector is not normalized. Normalizing now");
-        up.normalize();
+        newup.normalize();
     }
 #endif
-    Vec3 dir = target - position;
+    Vec3 dir = target - pos;
     dir.normalize();
-    Vec3 left = cross(up,dir);
+    Vec3 left = cross(newup,dir);
     left.normalize();
-    up = cross(dir,left);
+    newup = cross(dir,left);
     
     Matrix4::m00 = left.x;
-    Matrix4::m01 = up.x;
+    Matrix4::m01 = newup.x;
     Matrix4::m02 = dir.x;
-    Matrix4::m03 = position.x;
+    Matrix4::m03 = pos.x;
     Matrix4::m10 = left.y;
-    Matrix4::m11 = up.y;
+    Matrix4::m11 = newup.y;
     Matrix4::m12 = dir.y;
-    Matrix4::m13 = position.y;
+    Matrix4::m13 = pos.y;
     Matrix4::m20 = left.z;
-    Matrix4::m21 = up.z;
+    Matrix4::m21 = newup.z;
     Matrix4::m22 = dir.z;
-    Matrix4::m23 = position.z;
+    Matrix4::m23 = pos.z;
     Matrix4::m30 = 0.0f;
     Matrix4::m31 = 0.0f;
     Matrix4::m32 = 0.0f;
     Matrix4::m33 = 1.0f;
+    Matrix4::inverse(this); //hardcoding this matrix is a nightmare
 }
 
 void Matrix4::transpose(Matrix4* output)const

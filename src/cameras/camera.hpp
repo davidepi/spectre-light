@@ -36,6 +36,9 @@ class Camera
 {
 public:
     
+    ///The object used to store the values of the pixel and save the image
+    ImageOutput film;
+    
     /** \brief Default constructor
      *
      *  \param[in] position The position of the camera in the space
@@ -69,8 +72,8 @@ protected:
     ///The matrix used to transform from raster space to world space
     Matrix4 raster2world;
     
-    ///The object used to store the values of the pixel and save the image
-    ImageOutput film;
+    //Ray direction is define in camera space
+    Matrix4 camera2world;
 };
 
 #endif

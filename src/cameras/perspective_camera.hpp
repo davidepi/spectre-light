@@ -46,12 +46,11 @@ public:
      *  \param[in] height   The height of the final image (resolution)
      *  \param[in] filename The name of the file that will be stored onto the
      *  disk
-     *  \param[in] bounds TODO
      *  \param[in] fov The angle of view in radians
      */
     PerspectiveCamera(const Point3* position,const Point3* target,
                        const Vec3* up, int width, int height,
-                       const char* filename, const float bounds[4], float fov);
+                       const char* filename, float fov);
     
     ///Default destructor
     ~PerspectiveCamera();

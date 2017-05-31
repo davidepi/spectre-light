@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 30 May 2017
+//Last Edit 31 May 2017
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      30 May 2017
+ *  \date      31 May 2017
  *  \warning   Since this is a low level class, some verification are skipped.
  *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
  *             preprocessor define.
@@ -220,7 +220,7 @@ public:
      *  \param[in] up A vector representing the direction poiting upside the
      *  camera. With the camera parallel to the terrain, this will be (0,1,0)
      */
-    void setLookAtLH(Point3 position, Point3 target, Vec3 up);
+    void setLookAtLH(const Point3 position, const Point3 target, const Vec3 up);
     
     /**  \brief Returns a new matrix that is the transpose of the current matrix
      *

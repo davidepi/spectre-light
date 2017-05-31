@@ -1,5 +1,5 @@
 //Created,  26 May 2017
-//Last Edit 30 May 2017
+//Last Edit 31 May 2017
 
 /**
  *  \file orthographic_camera.hpp
@@ -7,7 +7,7 @@
  *  \details   Create a camera for generating non-perspective images
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      30 May 2017
+ *  \date      31 May 2017
  *  \copyright GNU GPLv3
  */
 
@@ -46,11 +46,10 @@ public:
      *  \param[in] height   The height of the final image (resolution)
      *  \param[in] filename The name of the file that will be stored onto the
      *  disk
-     *  \param[in] bounds TODO
      */
-    OrthographicCamera(const Point3* position,const Point3* target,
+    OrthographicCamera(const Point3* position, const Point3* target,
                        const Vec3* up, int width, int height,
-                       const char* filename, const float bounds[4]);
+                       const char* filename);
     
     ///Default destructor
     ~OrthographicCamera();
