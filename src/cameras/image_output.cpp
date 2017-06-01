@@ -74,13 +74,13 @@ void ImageOutput::addPixel(Sample* s, Color* c)
     float ptmpy = s->posy-0.5f;
     int p0x = (int)ceil(ptmpx-f->x_range);
     int p0y = (int)ceil(ptmpy-f->y_range);
-    int p1x = (int)floor(ptmpx-f->x_range);
-    int p1y = (int)floor(ptmpy-f->y_range);
+    int p1x = (int)floor(ptmpx+f->x_range);
+    int p1y = (int)floor(ptmpy+f->y_range);
     for(int y=p0y;y<p1y;y++)
         for(int x=p0x;x<p1x;x++)
         {
             float weight = f->weight(x-ptmpx, y-ptmpy);
-            Pixel* val = image+(x*y+x);
+            Pixel* val = image+(width*y+x);
             mtx.lock();
             val->r += c->r*weight;
             val->g += c->g*weight;
@@ -105,9 +105,10 @@ bool ImageOutput::saveImage()
     {
         if(image[j].samples>0.f) //if at least one sample
         {
-            tmp[i++] = (unsigned char)(image[j].r*255/image[j].samples);
-            tmp[i++] = (unsigned char)(image[j].g*255/image[j].samples);
-            tmp[i++] = (unsigned char)(image[j].b*255/image[j].samples);
+            float weight = 1.f/image[j].samples;
+            tmp[i++] = (unsigned char)(image[j].r*255*weight);
+            tmp[i++] = (unsigned char)(image[j].g*255*weight);
+            tmp[i++] = (unsigned char)(image[j].b*255*weight);
         }
         else
         {
