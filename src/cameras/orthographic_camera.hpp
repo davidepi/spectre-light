@@ -1,5 +1,5 @@
 //Created,  26 May 2017
-//Last Edit 31 May 2017
+//Last Edit  2 Jun 2017
 
 /**
  *  \file orthographic_camera.hpp
@@ -7,7 +7,7 @@
  *  \details   Create a camera for generating non-perspective images
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      31 May 2017
+ *  \date      2 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -63,6 +63,11 @@ public:
      *  \param[out] ray   The output ray
      */
     void createRay(Sample* sample, Ray* ray)const;
+    
+private:
+    
+    ///The matrix used to transform from raster space to world space
+    Matrix4 raster2world;
 };
 
 #endif

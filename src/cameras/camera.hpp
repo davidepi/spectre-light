@@ -1,5 +1,5 @@
 //Created,  24 May 2017
-//Last Edit 29 May 2017
+//Last Edit  2 Jun 2017
 
 /**
  *  \file camera.hpp
@@ -7,7 +7,7 @@
  *  \details   An abstract class representing a generic camera in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      27 May 2017
+ *  \date      2 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -68,10 +68,7 @@ public:
     virtual void createRay(Sample* sample, Ray* ray)const = 0;
     
 protected:
-    
-    ///The matrix used to transform from raster space to world space
-    Matrix4 raster2world;
-    
+        
     //Ray direction is define in camera space
     Matrix4 camera2world;
 };

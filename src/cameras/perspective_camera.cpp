@@ -1,14 +1,15 @@
 #include "perspective_camera.hpp"
-
+#include <iostream>
 PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
                                      const Vec3* u, int w, int h, const char* o,
                                      float fov)
 : Camera(p,t,u,w,h,o)
 {
     float f = 1000.0f; //far plane
-    float n = 0.1f; //near plane
-    float values[16] = {1.f/tanf(fov/2), 0,  0,  0,  //already inverted camera
-                        0, 1.f/tanf(fov/2),  0,  0,  //screen to camera
+    float n = 0.01f; //near plane
+    float invar = 1.f/tanf(fov/2.f);
+    float values[16] = {invar, 0,  0,  0,
+                        0, invar,  0,  0,
                         0, 0, f/(f-n), (-f*n)/(f-n),
                         0, 0,  1,  0};
     
@@ -51,8 +52,9 @@ PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
     values[15] = 1.f;
     
     Matrix4 raster2screen(values);
-    raster2world *= screen2camera;
-    raster2world *= raster2screen;
+    raster2camera.setIdentity();
+    raster2camera*= screen2camera;
+    raster2camera *= raster2screen;
 }
 
 PerspectiveCamera::~PerspectiveCamera()
@@ -62,7 +64,7 @@ PerspectiveCamera::~PerspectiveCamera()
 
 void PerspectiveCamera::createRay(Sample *s, Ray *r)const
 {
-    r->origin = raster2world * Point3(s->posx,s->posy,0);
-    r->direction = camera2world * Vec3(0,0,1);
-    r->direction.normalize();
+    r->origin = camera2world * Point3(0,0,0);
+    Point3 dir = raster2camera * Point3(s->posx,s->posy,0);
+    r->direction = camera2world * normalize(Vec3(dir.x,dir.y,dir.z));
 }

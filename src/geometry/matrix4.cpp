@@ -282,7 +282,7 @@ void Matrix4::setRotateZ(float value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setLookAtLH(const Point3 pos, const Point3 target, const Vec3 up)
+void Matrix4::setInvLookAtLH(const Point3 pos, const Point3 eye, const Vec3 up)
 {
     Vec3 newup = up;
 #ifdef _LOW_LEVEL_CHECKS_
@@ -292,7 +292,7 @@ void Matrix4::setLookAtLH(const Point3 pos, const Point3 target, const Vec3 up)
         newup.normalize();
     }
 #endif
-    Vec3 dir = target - pos;
+    Vec3 dir = eye - pos;
     dir.normalize();
     Vec3 left = cross(newup,dir);
     left.normalize();
@@ -314,7 +314,6 @@ void Matrix4::setLookAtLH(const Point3 pos, const Point3 target, const Vec3 up)
     Matrix4::m31 = 0.0f;
     Matrix4::m32 = 0.0f;
     Matrix4::m33 = 1.0f;
-    Matrix4::inverse(this); //hardcoding this matrix is a nightmare
 }
 
 void Matrix4::transpose(Matrix4* output)const
@@ -1003,10 +1002,9 @@ Point3 Matrix4::operator*(const Point3& p)const
 
 Vec3 Matrix4::operator*(const Vec3& v)const
 {
-    return Vec3(Matrix4::m00*v.x+Matrix4::m01*v.y+Matrix4::m02*v.z+Matrix4::m03,
-                Matrix4::m10*v.x+Matrix4::m11*v.y+Matrix4::m12*v.z+Matrix4::m13,
-                Matrix4::m20*v.x+Matrix4::m21*v.y+Matrix4::m22*v.z+Matrix4::m23
-                );
+    return Vec3(Matrix4::m00*v.x+Matrix4::m01*v.y+Matrix4::m02*v.z,
+                Matrix4::m10*v.x+Matrix4::m11*v.y+Matrix4::m12*v.z,
+                Matrix4::m20*v.x+Matrix4::m21*v.y+Matrix4::m22*v.z);
 }
 
 Normal Matrix4::operator*(const Normal& n)const

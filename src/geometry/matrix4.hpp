@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 31 May 2017
+//Last Edit  2 Jun 2017
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      31 May 2017
+ *  \date      2 Jun 2017
  *  \warning   Since this is a low level class, some verification are skipped.
  *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
  *             preprocessor define.
@@ -207,20 +207,20 @@ public:
      */
     void setRotateZ(float value);
     
-    /** \brief set this matrix to a LookAt matrix
+    /** \brief set this matrix to an inverted LookAt matrix
      *
      *  Set this matrix to a transformation LookAt matrix in a LeftHanded
      *  system. This matrix is used to align the world with the camera (can be
      *  seen as a result of placing the camera inside a scene).
+     *  This is done by transforming the camera space coordinates to world
+     *  space
      *
-     *  \note All the coordinates must be in world-space
-     *
-     *  \param[in] position The position of the camera
+     *  \param[in] pos The position of the camera
      *  \param[in] target The point the camera is looking at
      *  \param[in] up A vector representing the direction poiting upside the
      *  camera. With the camera parallel to the terrain, this will be (0,1,0)
      */
-    void setLookAtLH(const Point3 position, const Point3 target, const Vec3 up);
+    void setInvLookAtLH(const Point3 pos, const Point3 target, const Vec3 up);
     
     /**  \brief Returns a new matrix that is the transpose of the current matrix
      *

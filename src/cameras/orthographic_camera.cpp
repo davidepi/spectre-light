@@ -5,6 +5,8 @@ OrthographicCamera::OrthographicCamera(const Point3* p,const Point3* t,
                                        const char* o)
 : Camera(p,t,u,w,h,o)
 {
+    raster2world = camera2world;
+    
     float ar = (float)w/(float)h;
     float b[4]; //screen-space bounds
     if(ar > 1) //horizontal image
@@ -22,7 +24,7 @@ OrthographicCamera::OrthographicCamera(const Point3* p,const Point3* t,
         b[3] = 1.f/ar; //maxy
     }
     float f = 1.0f; //far plane
-    float n = 0.1f; //near plane
+    float n = 0.0f; //near plane
     float values[16] = {1, 0,  0,  0,  //already inverted camera
                         0, 1,  0,  0,  //screen to camera
                         0, 0, f-n, n,
