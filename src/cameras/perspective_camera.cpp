@@ -1,5 +1,5 @@
 #include "perspective_camera.hpp"
-#include <iostream>
+
 PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
                                      const Vec3* u, int w, int h, const char* o,
                                      float fov)

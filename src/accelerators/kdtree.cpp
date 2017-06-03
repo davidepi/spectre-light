@@ -433,7 +433,7 @@ bool KdTree::intersect(const Ray* r, const Asset* h)const
     //if the scene is not insersected end here
     if(!scene_aabb.intersect(r, &rp, &mint, &maxt))
         return false;
-    
+    float bestmaxt = maxt;
     //stack of nodes to process, used to traverse the tree breadth-first
     KdTravNode jobs[KD_MAX_DEPTH];
     int jobs_stack_top = 0;
@@ -442,19 +442,20 @@ bool KdTree::intersect(const Ray* r, const Asset* h)const
     const KdTreeNode* n = nodesList;
     while(n != NULL)
     {
-        if(r->maxext < mint) //a closer intersection has been found
+        if(bestmaxt < mint) //a closer intersection has been found
             break;
         
         if(!n->isLeaf()) //if internal node
         {
             char axis = n->getAxis();
             //get plane distance
-            float planet = n->getSplit()-r->origin[axis]**(&(rp.inverseX)+axis);
+            float planet = (n->getSplit()-r->origin[axis]);
+            planet*=*(&(rp.inverseX)+axis);
             const KdTreeNode* left;
             const KdTreeNode* right;
             
             //find the order in which the ray encounters the children
-            int leftBelow = (r->origin[axis] < n->getSplit() ||
+            bool leftBelow = (r->origin[axis] < n->getSplit() ||
                              (r->origin[axis] == n->getSplit() &&
                               r->direction[axis] <= 0));
             if(leftBelow)
@@ -500,9 +501,10 @@ bool KdTree::intersect(const Ray* r, const Asset* h)const
                     //then try with the actual asset
                     if(current_asset->intersect(r,&res1,&res2))
                     {
+                        if(bestmaxt > maxt)
+                            bestmaxt = maxt;
                         found = true; //record current intersection
                         h = current_asset;
-                        r->maxext = res1; //update ray extensions
                     }
                 }
             }
