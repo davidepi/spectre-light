@@ -35,7 +35,8 @@ endif(DOXYGEN_FOUND)
 
 find_package(ImageMagick)
 if(ImageMagick_FOUND)
-    #add_definitions(-DIMAGEMAGICK_FOUND)
+    set_property(SOURCE src/cameras/image_output.cpp APPEND_STRING PROPERTY
+        COMPILE_FLAGS " -DIMAGEMAGICK_FOUND ")
 endif()
 
 if(WIN32)

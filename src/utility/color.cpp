@@ -24,7 +24,11 @@ Color::Color(float rgb)
 Color::Color(const char* hex)
 {
     if(hex[0]!='#' || (strlen(hex)!=4&&strlen(hex)!=7))
-        Color::Color();
+    {
+        Color::r = 0.f;
+        Color::g = 0.f;
+        Color::b = 0.f;
+    }
     else
     {
         unsigned char hexred = 0x0;
