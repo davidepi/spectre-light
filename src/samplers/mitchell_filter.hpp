@@ -1,5 +1,5 @@
 //Created,  20 May 2017
-//Last Edit 21 May 2017
+//Last Edit  4 Jun 2017
 
 /**
  *  \file mitchell_filter.hpp
@@ -7,7 +7,7 @@
  *  \details   A filter that approximate a gaussian function, with less blur
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      21 May 2017
+ *  \date      4 Jun 2017
  *  \copyright GNU GPLv3
  */
 

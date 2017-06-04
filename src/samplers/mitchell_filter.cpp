@@ -17,7 +17,7 @@ MitchellFilter::~MitchellFilter()
 float MitchellFilter::weight(float offset_x, float offset_y)const
 {
     float x = offset_x * inv_width;
-    float y = offset_x * inv_height;
+    float y = offset_y * inv_height;
 
     float resx = fabsf(x*2.0f);
     if(resx>1.0f)

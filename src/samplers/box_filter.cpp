@@ -10,7 +10,7 @@ BoxFilter::~BoxFilter()
 
 }
 
-float BoxFilter::weight(float offset_x, float offset_y)const
+float BoxFilter::weight(float, float)const
 {
     return 1.0f;
 }

@@ -100,7 +100,7 @@ void ImageOutput::setFilter(Filter* f)
 
 bool ImageOutput::saveImage()
 {
-    unsigned char tmp[ImageOutput::width*ImageOutput::height*3];
+    uint8_t* tmp = (uint8_t*)malloc(ImageOutput::width*ImageOutput::height*3);
     int i = 0;
     
     //evaluate average for every pixel
@@ -109,9 +109,9 @@ bool ImageOutput::saveImage()
         if(image[j].samples>0.f) //if at least one sample
         {
             float weight = 1.f/image[j].samples;
-            tmp[i++] = (unsigned char)(image[j].r*255*weight);
-            tmp[i++] = (unsigned char)(image[j].g*255*weight);
-            tmp[i++] = (unsigned char)(image[j].b*255*weight);
+            tmp[i++] = (uint8_t)(image[j].r*255*weight);
+            tmp[i++] = (uint8_t)(image[j].g*255*weight);
+            tmp[i++] = (uint8_t)(image[j].b*255*weight);
         }
         else
         {
@@ -128,8 +128,12 @@ bool ImageOutput::saveImage()
         fprintf(fout,"P6 %d %d 255 ",width,height);
         fwrite(tmp, sizeof(unsigned char), width*height*3, fout);
         fclose(fout);
+        free(tmp);
         return true;
     }
     else
+    {
+        free(tmp);
         return false;
+    }
 }
