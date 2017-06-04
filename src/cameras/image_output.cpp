@@ -69,13 +69,16 @@ ImageOutput::~ImageOutput()
 
 void ImageOutput::addPixel(Sample* s, Color* c)
 {
-    //TODO: not sure if this will work, need to check
     float ptmpx = s->posx-0.5f;
     float ptmpy = s->posy-0.5f;
     int p0x = (int)ceil(ptmpx-f->x_range);
     int p0y = (int)ceil(ptmpy-f->y_range);
     int p1x = (int)floor(ptmpx+f->x_range);
     int p1y = (int)floor(ptmpy+f->y_range);
+    p0x = max(p0x,0);
+    p0y = max(p0y,0);
+    p1x = min(p1x,width);
+    p1y = min(p1y,height);
     for(int y=p0y;y<p1y;y++)
         for(int x=p0x;x<p1x;x++)
         {
