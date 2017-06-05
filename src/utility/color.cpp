@@ -69,3 +69,51 @@ Color::~Color()
 {
     
 }
+
+Color Color::operator+(const Color& c)const
+{
+    return Color(Color::r+c.r,Color::g+c.g,Color::b+c.b);
+}
+
+void Color::operator+=(const Color& c)
+{
+    Color::r+=c.r;
+    Color::g+=c.g;
+    Color::b+=c.b;
+}
+
+Color Color::operator-(const Color& c)const
+{
+    return Color(Color::r-c.r,Color::g-c.g,Color::b-c.b);
+}
+
+void Color::operator-=(const Color& c)
+{
+    Color::r-=c.r;
+    Color::g-=c.g;
+    Color::b-=c.b;
+}
+
+Color Color::operator*(const Color& c)const
+{
+    return Color(Color::r*c.r,Color::g*c.g,Color::b*c.b);
+}
+
+void Color::operator*=(const Color& c)
+{
+    Color::r*=c.r;
+    Color::g*=c.g;
+    Color::b*=c.b;
+}
+
+Color Color::operator/(const Color& c)const
+{
+    return Color(Color::r/c.r,Color::g/c.g,Color::b/c.b);
+}
+
+void Color::operator/=(const Color& c)
+{
+    Color::r/=c.r;
+    Color::g/=c.g;
+    Color::b/=c.b;
+}

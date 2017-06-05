@@ -22,6 +22,15 @@ public:
     
     ///Blue component
     float b;
+    
+    Color operator+(const Color& c)const;
+    void operator+=(const Color& c);
+    Color operator-(const Color& c)const;
+    void operator-=(const Color& c);
+    Color operator*(const Color& c)const;
+    void operator*=(const Color& c);
+    Color operator/(const Color& c)const;
+    void operator/=(const Color& c);
 };
 
 #endif
