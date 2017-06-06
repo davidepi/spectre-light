@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 16 May 2017
+//Last Edit  6 Jun 2017
 
 /**
  *  \file box.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 May 2017
+ *  \date      6 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -85,6 +85,9 @@ public:
      *  \note If there is an intersection, but it is outside the range defined
      *  by Ray#minext and Ray#maxext, this method returns false. The parameter
      *  \p error is unset and \p distance may exhibit undefined behaviour
+     *
+     *  \warning For the box this method simply returns true. Intersect its AABB
+     *  instead
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection

@@ -79,45 +79,57 @@ int AABB::longest_axis()const
 
 bool AABB::intersect(const Ray* r, float* p1, float* p2)const
 {
-    float mint;
-    float maxt;
+    float minxt, maxxt, minyt, maxyt, minzt, maxzt;
+    float invx = 1.f/r->direction.x;
+    float invy = 1.f/r->direction.y;
+    float invz = 1.f/r->direction.z;
+    if(r->direction.x >= 0)
+    {
+        minxt = (bounds[0].x - r->origin.x) * invx;
+        maxxt = (bounds[1].x - r->origin.x) * invx;
+    }
+    else
+    {
+        minxt = (bounds[1].x - r->origin.x) * invx;
+        maxxt = (bounds[0].x - r->origin.x) * invx;
+    }
+    if(r->direction.y >= 0)
+    {
+        minyt = (bounds[0].y - r->origin.y) * invy;
+        maxyt = (bounds[1].y - r->origin.y) * invy;
+    }
+    else
+    {
+        minyt = (bounds[1].y - r->origin.y) * invy;
+        maxyt = (bounds[0].y - r->origin.y) * invy;
+    }
     
-    //x plane
-    float invr = 1.0f/r->direction.x;
-    float near = (AABB::bounds[0].x-r->origin.x) * invr;
-    float far = (AABB::bounds[1].x-r->origin.x) * invr;
-    if(near>far)
-        swap(&near,&far);
-    mint = near;
-    maxt = far;
-    if(mint>maxt)
+    if((minxt > maxyt) || (minyt > maxxt))
         return false;
+    if(minyt > minxt)
+        minxt = minyt;
+    if(maxyt < maxxt)
+        maxxt = maxyt;
     
-    //y plane
-    invr = 1.0f/r->direction.y;
-    near = (AABB::bounds[0].y-r->origin.y) * invr;
-    far = (AABB::bounds[1].y-r->origin.y) * invr;
-    if(near>far)
-        swap(&near,&far);
-    mint = near>mint?near:mint;
-    maxt = far<maxt?far:maxt;
-    if(mint>maxt)
-        return false;
+    if(r->direction.z >= 0)
+    {
+        minzt = (bounds[0].z - r->origin.z) * invz;
+        maxzt = (bounds[1].z - r->origin.z) * invz;
+    }
+    else
+    {
+        minzt = (bounds[1].z - r->origin.z) * invz;
+        maxzt = (bounds[0].z - r->origin.z) * invz;
+    }
     
-    //z plane
-    invr = 1.0f/r->direction.z;
-    near = (AABB::bounds[0].z-r->origin.z) * invr;
-    far = (AABB::bounds[1].z-r->origin.z) * invr;
-    if(near>far)
-        swap(&near,&far);
-    mint = near>mint?near:mint;
-    maxt = far<maxt?far:maxt;
-    if(mint>maxt)
+    if((minxt > maxzt) || (minzt > maxxt))
         return false;
-    if(!std::isnan(mint))
-        *p1 = mint;
-    if(!std::isnan(maxt))
-        *p2 = maxt;
+    if(minzt > minxt)
+        minxt = minzt;
+    if(maxzt < maxxt)
+        maxxt = maxzt;
+    *p1 = minxt;
+    *p2 = maxxt;
     return true;
 }
 

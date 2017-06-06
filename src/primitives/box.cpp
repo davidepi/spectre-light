@@ -5,7 +5,7 @@ Box::Box() : Shape(),fbl(0,0,0),fbr(1,0,0),ftl(0,1,0),bbl(0,0,1)
     
 }
 
-Box::Box(Vec3* e, Matrix4* t) : Shape(),fbl(0,0,0),fbr(e->x,0,0),ftl(0,0,e->y),
+Box::Box(Vec3* e, Matrix4* t) : Shape(),fbl(0,0,0),fbr(e->x,0,0),ftl(0,e->y,0),
 bbl(0,0,e->z)
 {
     transformMatrix = t;
@@ -83,45 +83,53 @@ void Box::world2obj()
 
 bool Box::intersect(const Ray* r,float* distance,float* error)const
 {
-    Point3 top(fbr.x,ftl.y,bbl.z);
-    float mint;
-    float maxt;
-    
-    //x plane
-    float invr = 1.0f/r->direction.x;
-    float near = (fbl.x-r->origin.x) * invr;
-    float far = (top.x-r->origin.x) * invr;
-    if(near>far)
-        swap(&near,&far);
-    mint = near;
-    maxt = far;
-    if(mint>maxt)
-        return false;
-    
-    //y plane
-    invr = 1.0f/r->direction.y;
-    near = (fbl.y-r->origin.y) * invr;
-    far = (top.y-r->origin.y) * invr;
-    if(near>far)
-        swap(&near,&far);
-    mint = near>mint?near:mint;
-    maxt = far<maxt?far:maxt;
-    if(mint>maxt)
-        return false;
-    
-    //z plane
-    invr = 1.0f/r->direction.z;
-    near = (fbl.z-r->origin.z) * invr;
-    far = (top.z-r->origin.z) * invr;
-    if(near>far)
-        swap(&near,&far);
-    mint = near>mint?near:mint;
-    maxt = far<maxt?far:maxt;
-    if(mint>maxt)
-        return false;
-    *distance = min(mint,maxt);
-    *error = 0; //TODO: since this method will be replaced for now this is a
-                //placeholder
-    return true;
-
+//    Point3 btr(fbr.x,ftl.y,bbl.z);
+//    
+//    float minxt, maxxt, minyt, maxyt, minzt, maxzt;
+//    float invx = 1.f/r->direction.x;
+//    float invy = 1.f/r->direction.y;
+//    float invz = 1.f/r->direction.z;
+//    if(r->direction.x >= 0)
+//    {
+//        minxt = (fbl.x - r->origin.x) * invx;
+//        maxxt = (fbr.x - r->origin.x) * invx;
+//    }
+//    else
+//    {
+//        minxt = (fbr.x - r->origin.x) * invx;
+//        maxxt = (fbl.x - r->origin.x) * invx;
+//    }
+//    if(r->direction.y >= 0)
+//    {
+//        minyt = (fbl.y - r->origin.y) * invy;
+//        maxyt = (ftl.y - r->origin.y) * invy;
+//    }
+//    else
+//    {
+//        minyt = (ftl.y - r->origin.y) * invy;
+//        maxyt = (fbl.y - r->origin.y) * invy;
+//    }
+//    
+//    if((minxt > maxyt) || (minyt > maxxt))
+//        return false;
+//    if(minyt > minxt)
+//        minxt = minyt;
+//    if(maxyt < maxxt)
+//        maxxt = maxyt;
+//    
+//    if(r->direction.z >= 0)
+//    {
+//        minzt = (fbl.z - r->origin.z) * invz;
+//        maxzt = (bbl.z - r->origin.z) * invz;
+//    }
+//    else
+//    {
+//        minzt = (bbl.z - r->origin.z) * invz;
+//        maxzt = (fbl.z - r->origin.z) * invz;
+//    }
+//    
+//    if((minxt > maxzt) || (minzt > maxxt))
+//        return false;
+//    else
+    return true; //this is equal to the AABB
 }
