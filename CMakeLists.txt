@@ -8,7 +8,8 @@ file(GLOB spectre_core_sources
     src/accelerators/*.cpp
     src/samplers/*.cpp
     src/utility/*.cpp
-    src/cameras/*.cpp)
+    src/cameras/*.cpp
+    src/materials/*.cpp)
 file(GLOB spectre_core_headers
     src/settings.h
     src/validator.h
@@ -18,7 +19,8 @@ file(GLOB spectre_core_headers
     src/accelerators/*.hpp
     src/samplers/*.hpp
     src/utility/*.hpp
-    src/cameras/*.hpp)
+    src/cameras/*.hpp
+    src/materials/*.hpp)
 include_directories(src)
 include_directories(src/geometry)
 include_directories(src/primitives)
@@ -26,6 +28,7 @@ include_directories(src/utility)
 include_directories(src/accelerators)
 include_directories(src/samplers)
 include_directories(src/cameras)
+include_directories(src/materials)
 find_package(Doxygen)
 
 if(DOXYGEN_FOUND)
