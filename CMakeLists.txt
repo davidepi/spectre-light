@@ -46,3 +46,4 @@ else()
 endif()
 
 add_executable(spectre src/main.cpp ${spectre_core_sources})
+
