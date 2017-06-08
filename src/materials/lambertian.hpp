@@ -4,9 +4,11 @@
 
 #ifndef __LAMBERTIAN_HPP__
 #define __LAMBERTIAN_HPP__
+#include "settings.h"
 #include "bdf.hpp"
 #include "color.hpp"
 #include "vec3.hpp"
+
 
 class Lambertian : public Bdf
 {

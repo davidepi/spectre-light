@@ -12,5 +12,9 @@ Lambertian::~Lambertian()
 Color Lambertian::df(const Vec3*, const Vec3* ) const
 {
     //equally scattered in every direction
-    return Lambertian::diffuse;
+    Color ret;
+    ret.r = Lambertian::diffuse.r * INV_PI;
+    ret.g = Lambertian::diffuse.g * INV_PI;
+    ret.b = Lambertian::diffuse.b * INV_PI;
+    return ret;
 }

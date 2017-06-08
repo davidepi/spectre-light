@@ -37,6 +37,8 @@
 ///The number π, redefined as a floating point
 #define M_PI 3.1415926535897932384626433832795028841971693993751058209749445923f
 #endif
+///define the inverse of the pi
+#define INV_PI 1.f/M_PI
 
 //deprecated function, compatible with vs
 #ifdef _MSC_VER
