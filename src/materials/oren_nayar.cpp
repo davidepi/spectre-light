@@ -47,7 +47,5 @@ Color OrenNayar::df(const Vec3 *wout, const Vec3 *wincident) const
     }
 
     //diffuse/pi * (A+B*max[0,cos(phiin-phiout)]*sinalpha*tanbeta)
-    return Color(diffuse.r * INV_PI * (A+B*maxcos*sinalpha*tanbeta),
-                 diffuse.g * INV_PI * (A+B*maxcos*sinalpha*tanbeta),
-                 diffuse.b * INV_PI * (A+B*maxcos*sinalpha*tanbeta));
+    return OrenNayar::diffuse * INV_PI * (A+B*maxcos*sinalpha*tanbeta);
 }
