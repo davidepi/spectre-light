@@ -2,6 +2,7 @@
 #define __FRESNEL_CONDITIONS_HPP__
 
 #include "color.hpp"
+#include "utility.hpp"
 
 class FresnelConditions
 {
@@ -12,12 +13,24 @@ public:
 class Conductor : public FresnelConditions
 {
 public:
-    Conductor(float refraction, float absorption);
+    Conductor(Color refraction, Color absorption);
     ~Conductor();
-    Color eval(float cosin);
+    Color eval(float cosin)const;
 private:
-    float refraction_index;
-    float absorption;
+    Color refraction_index;
+    Color absorption;
+};
+
+class Dielectric : public FresnelConditions
+{
+public:
+    Dielectric(float refractioni, float refractiont);
+    ~Dielectric();
+    Color eval(float cosin)const;
+
+private:
+    float etai;
+    float etat;
 };
 
 #endif
