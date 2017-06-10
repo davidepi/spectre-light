@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 16 May 2017
+//Last Edit 10 Jun 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      9 May 2017
+ *  \date      10 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -57,7 +57,7 @@ public:
      *  as a parameter with the shape, returning true or false if the
      *  intersection happened in the range defined by the Ray#minext and
      *  Ray#maxext. If the intersection happened, the variables \p distance and
-     *  \p error should be set based on the result.
+     *  \p h should be set based on the result.
      *
      *  \note If there is an intersection, but it is outside the range defined
      *  by Ray#minext and Ray#maxext, this method should return false, and
@@ -65,9 +65,9 @@ public:
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection
-     *  \param[out] error The maximum floating point error in the computation
+     *  \param[out] h Details on the hit point on the surface
      */
-    virtual bool intersect(const Ray* r,float* distance,float* error)const=0;
+    virtual bool intersect(const Ray* r,float* distance, HitPoint* h)const=0;
     
     /** \brief Recalculate the AABB
      *
@@ -119,6 +119,26 @@ public:
 private:
     //id of the shape
     const unsigned int id;
+};
+
+
+///Struct containing the data of the intersection between a Ray and a Shape
+struct HitPoint
+{
+    ///The hit point
+    Point3 h;
+
+    ///The normal of the hit point
+    Normal n;
+
+    ///u coordinate for texture
+    float u;
+
+    ///v coordinate for texture
+    float v;
+
+    ///The hit shape
+    const Shape* sp;
 };
 
 #endif
