@@ -13,7 +13,7 @@
 class Lambertian : public Bdf
 {
 public:
-    Lambertian(Color* scattered_spectrum);
+    Lambertian(Color scattered_spectrum);
     ~Lambertian();
     Color df(const Vec3* wout, const Vec3* wincident)const;
 private:

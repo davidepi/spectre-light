@@ -1,11 +1,11 @@
 #include "oren_nayar.hpp"
 
-OrenNayar::OrenNayar(Color diffuse, float sigma) : Bdf(BdfFlags(BRDF|DIFFUSE))
+OrenNayar::OrenNayar(Color diffuse, float sigma) : Bdf(BdfFlags(BRDF|DIFFUSE)),
+                                                   diffuse(diffuse)
 {
     float sigma2 = sigma*sigma;
     OrenNayar::A = 1.f - (sigma2/(2*(sigma2+0.33f)));
     OrenNayar::B = (0.45f*sigma2)/(sigma2+0.09f);
-    OrenNayar::diffuse = diffuse;
 }
 
 OrenNayar::~OrenNayar()

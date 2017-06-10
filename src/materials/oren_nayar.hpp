@@ -5,6 +5,7 @@
 
 #include "bdf.hpp"
 #include "color.hpp"
+#include "vec3.hpp"
 
 class OrenNayar : public Bdf
 {

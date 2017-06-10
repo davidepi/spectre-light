@@ -1,8 +1,9 @@
 #include "lambertian.hpp"
 
-Lambertian::Lambertian(Color *scattered_spectrum) : Bdf(BdfFlags(BRDF|DIFFUSE))
+Lambertian::Lambertian(Color scattered_spectrum) : Bdf(BdfFlags(BRDF|DIFFUSE)),
+                                                   diffuse(scattered_spectrum)
 {
-    diffuse = *scattered_spectrum;
+
 }
 
 Lambertian::~Lambertian()

@@ -18,7 +18,7 @@ public:
 
     BdfFlags type;
     virtual Color df(const Vec3* wout, const Vec3* wincident)const = 0;
-
+    virtual Color df_s(const Vec3* wo, Vec3* wi)const;
     inline bool isType(BdfFlags f)
     {
         return type & f;

@@ -1,9 +1,9 @@
 #include "fresnel_conditions.hpp"
 
-Conductor::Conductor(Color refraction, Color absorption)
+Conductor::Conductor(Color refraction, Color absorption) :
+refraction_index(refraction),absorption(absorption)
 {
-    Conductor::refraction_index = refraction;
-    Conductor::absorption = absorption;
+
 }
 
 Color Conductor::eval(float cosin)const
