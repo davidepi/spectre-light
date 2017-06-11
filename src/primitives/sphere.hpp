@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit 16 May 2017
+//Last Edit 11 Jun 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 May 2017
+ *  \date      11 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -68,9 +68,10 @@ public:
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection
-     *  \param[out] error The maximum floating point error in the computation
+     *  \param[out] h an HitPoint class containing information about the
+     *  intersection point
      */
-    bool intersect(const Ray* r,float* distance,float* error)const;
+    bool intersect(const Ray* r,float* distance, HitPoint* h)const;
     
     /** \brief Calculate the AABB
      *

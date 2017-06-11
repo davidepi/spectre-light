@@ -74,7 +74,7 @@ void Sphere::world2obj()
                            Sphere::transformMatrix->m20).length();
 }
 
-bool Sphere::intersect(const Ray *r, float *distance, float *error)const
+bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
 {
     const Vec3 tmp = r->origin - Sphere::centre;
     float a = r->direction.dot(r->direction);
@@ -96,7 +96,11 @@ bool Sphere::intersect(const Ray *r, float *distance, float *error)const
             if(*distance>r->maxext) //both intersections behind origin
                 return false;
         }
-        *error = 5e-4f**distance; //this line of code is stealed from pbrt :^)
+        h->h = r->apply(*distance);
+        Vec3 normal = h->h - Sphere::centre;
+        normal.normalize();
+        h->n = Normal(normal);
+        h->sp = this;
         return true;
     }
     else
