@@ -72,7 +72,7 @@ public:
     /** \brief Recalculate the AABB
      *
      *  In its implementations, this method should return an AABB that can fit
-     *  well on this shape.
+     *  well on this shape. Object space.
      *
      *  \return an AABB representing the calculated bounding box
      */
@@ -86,7 +86,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    virtual AABB computeWorldAABB() const = 0;
+    virtual AABB computeWorldAABB(Matrix4* trans) const = 0;
     
     /** \brief Return the surface of the shape
      *
@@ -104,16 +104,17 @@ public:
      *
      *  \sa world2obj()
      */
-    virtual void obj2world() = 0;
+    virtual void obj2world(const Matrix4* trans) = 0;
     
     /** \brief Convert the shape to object-space
      *
      *  In its implementations, this method should replace the world-space
-     *  definition of the object with its object-space
+     *  definition of the object with its object-space.
+     *  It is the same as applying the inverse and calling the obj2world method
      *
      *  \sa obj2world()
      */
-    virtual void world2obj() = 0;
+    virtual void world2obj(const Matrix4* trans) = 0;
     
     
 private:
