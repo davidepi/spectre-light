@@ -16,6 +16,7 @@
 #include "wellrng.hpp"
 #include "sampler.hpp"
 #include "stratified_sampler.hpp"
+#include "lanczos_filter.hpp"
 #include "box_filter.hpp"
 #include "perspective_camera.hpp"
 #include "orthographic_camera.hpp"
@@ -30,7 +31,9 @@ int main()
     {
         Matrix4 *m = new Matrix4();
         m->setTranslation(Vec3(i,i,i));
-        Sphere *sh = new Sphere(0.5,m);
+        Vec3 size(1,1,1);
+        Box *sh = new Box(&size,m);
+//Sphere *sh = new Sphere(1,m);
         sh->obj2world();
         Asset *a = new Asset(sh);
         k->addAsset(a);
@@ -42,12 +45,12 @@ int main()
     
     
     Point3 pos(0,0,-10);
-    Point3 tar(1,5,0);
+    Point3 tar(0,0,0);
     Vec3 up(0,1,0);
-    PerspectiveCamera pc(&pos, &tar, &up, 800, 600, "test.ppm",1);
+    PerspectiveCamera pc(&pos, &tar, &up, 800, 600, "/Users/davide/Desktop/test.ppm",2);
     int spp = 1;
     StratifiedSampler s(0, 800, 0, 600, 1, (unsigned int*)&pc, false);
-    BoxFilter* f = new BoxFilter(1.0,1.0);
+    BoxFilter* f = new BoxFilter(1,1);
     pc.film.setFilter(f);
     Sample* sam = (Sample*)malloc(sizeof(Sample)*spp);
     while(s.getSamples(sam))
@@ -59,6 +62,14 @@ int main()
             c.r =1;
             c.g =1;
             c.b =1;
+            pc.film.addPixel(sam, &c);
+        }
+        else
+        {
+            Color c;
+            c.r =0;
+            c.g = 0;
+            c.b = 0;
             pc.film.addPixel(sam, &c);
         }
     }
