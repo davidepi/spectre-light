@@ -498,8 +498,9 @@ bool KdTree::intersect(const Ray* r, const Asset* h)const
                 //firstly try with the aabb since it's faster
                 if(current_asset->intersectFast(r, &rp, &res1, &res2))
                 {
+                    HitPoint hp;
                     //then try with the actual asset
-                    if(current_asset->intersect(r,&res1,&res2))
+                    if(current_asset->intersect(r,&res1,&hp))
                     {
                         if(bestmaxt > maxt)
                             bestmaxt = maxt;

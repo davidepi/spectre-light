@@ -1,95 +1,53 @@
 #include "box.hpp"
 
-Box::Box() : Shape(),fbl(0,0,0),fbr(1,0,0),ftl(0,1,0),bbl(0,0,1)
+Box::Box() : edges(1,1,1)
 {
     
 }
 
-Box::Box(Vec3* e, Matrix4* t) : Shape(),fbl(0,0,0),fbr(e->x,0,0),ftl(0,0,e->y),
-bbl(0,0,e->z)
+Box::Box(Vec3 e) : edges(e)
 {
-    transformMatrix = t;
-}
 
-Box::Box(Point3* b, Vec3* e, Matrix4* t) : Shape(),fbl(*b),
-fbr(b->x+e->x,b->y,b->z),ftl(b->x,b->y+e->y,b->z),bbl(b->x,b->y,b->z+e->z)
-{
-    transformMatrix = t;
 }
 
 AABB Box::computeAABB()const
 {
-    const Point3 max(Box::fbr.x,Box::ftl.y,Box::bbl.z);
-    return AABB(&(Box::fbl),&max);
+    const Point3 min(0,0,0);
+    const Point3 max(Box::edges.x,Box::edges.y,Box::edges.z);
+    return AABB(&min,&max);
 }
 
-AABB Box::computeWorldAABB()const
+AABB Box::computeWorldAABB(const Matrix4* transform)const
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
+    if(transform==NULL)
     {
         Console.severe(
         "Trying to generate a world-space AABB with a NULL matrix");
         return AABB();
     }
 #endif
-    const Point3 pmin=*transformMatrix*Box::fbl;
-    const Point3 pmax=*transformMatrix*Point3(Box::fbr.x,Box::ftl.y,Box::bbl.z);
+    const Point3 pmin=*transform*Point3();
+    const Point3 pmax=*transform*Point3(Box::edges.x,Box::edges.y,Box::edges.z);
     
     return AABB(&pmin, &pmax);
 }
 
 float Box::surface()const
 {
-    float xe = fbr.x-fbl.x; //x edge
-    float ze = bbl.z-fbl.z; //z edge
-    float la = 2*(xe+ze)*(ftl.y-fbl.y); //lateral surface = perimeter * heigth
-    return la+2*xe*ze;
+    float la = 2*(edges.x+edges.z)*(edges.y); //lateral surface = perimeter * heigth
+    return la+2*edges.x*edges.z;
 }
 
-void Box::obj2world()
+bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 {
-    Console.warning("No rotation supported for now");
-#ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
-    {
-        Console.severe("Trying to convert a box to world-space with a NULL matrix");
-        return;
-    }
-#endif
-    Box::fbl = (*transformMatrix)*Box::fbl;
-    Box::fbr = (*transformMatrix)*Box::fbr;
-    Box::ftl = (*transformMatrix)*Box::ftl;
-    Box::bbl = (*transformMatrix)*Box::bbl;
-}
-
-void Box::world2obj()
-{
-    Console.warning("No rotation supported for now");
-#ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
-    {
-        Console.severe("Trying to convert a box to world-space with a NULL matrix");
-        return;
-    }
-#endif
-    Matrix4 inv;
-    transformMatrix->inverse(&inv);
-    Box::fbl = inv*Box::fbl;
-    Box::fbr = inv*Box::fbr;
-    Box::ftl = inv*Box::ftl;
-    Box::bbl = inv*Box::bbl;
-}
-
-bool Box::intersect(const Ray* r,float* distance,float* error)const
-{
-    Point3 top(fbr.x,ftl.y,bbl.z);
+    Point3 top(edges.x,edges.y,edges.z);
     float mint;
     float maxt;
     
     //x plane
     float invr = 1.0f/r->direction.x;
-    float near = (fbl.x-r->origin.x) * invr;
+    float near = (-r->origin.x) * invr;
     float far = (top.x-r->origin.x) * invr;
     if(near>far)
         swap(&near,&far);
@@ -100,7 +58,7 @@ bool Box::intersect(const Ray* r,float* distance,float* error)const
     
     //y plane
     invr = 1.0f/r->direction.y;
-    near = (fbl.y-r->origin.y) * invr;
+    near = (-r->origin.y) * invr;
     far = (top.y-r->origin.y) * invr;
     if(near>far)
         swap(&near,&far);
@@ -111,7 +69,7 @@ bool Box::intersect(const Ray* r,float* distance,float* error)const
     
     //z plane
     invr = 1.0f/r->direction.z;
-    near = (fbl.z-r->origin.z) * invr;
+    near = (-r->origin.z) * invr;
     far = (top.z-r->origin.z) * invr;
     if(near>far)
         swap(&near,&far);
@@ -120,8 +78,19 @@ bool Box::intersect(const Ray* r,float* distance,float* error)const
     if(mint>maxt)
         return false;
     *distance = min(mint,maxt);
-    *error = 0; //TODO: since this method will be replaced for now this is a
-                //placeholder
+    h->h = r->apply(*distance);
+    h->sp = this;
+
+    //calculate normal
+    Point3 centre(edges.x/2.f,edges.y/2.f,edges.z/2.f);
+    Vec3 offset = h->h - centre;
+    Vec3 normal = ((int)(offset.x/centre.x),
+                    (int)(offset.y/centre.y),
+                    (int)(offset.z/centre.z));
+
+    normal.normalize();
+    h->n = Normal(normal);
+
     return true;
 
 }

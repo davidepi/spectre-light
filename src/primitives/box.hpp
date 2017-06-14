@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 16 May 2017
+//Last Edit 14 Jun 2017
 
 /**
  *  \file box.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 May 2017
+ *  \date      14 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -28,12 +28,10 @@
  *  \class Box box.hpp "primitives/box.hpp"
  *  \brief Implementation of a Box
  *
- *  This class contains the definition of a box, a box that is not necessarily
- *  aligned with the world axis. This class expects the bottom left corner and
- *  three Vec3 representing lenght of every edge. For this reason, a Box will be
- *  constructed as an axis aligned box, and then oriented with the transform
- *  matrix.
- *
+ *  This class contains the definition of a box. This class expects three Vec3
+ *  representing the length of every edge. The front bottom left point is
+ *  always centered in (0,0,0). For this reason, a Box will be constructed as an
+ *  axis aligned box, and then oriented with the transform matrix.
  */
 class Box : public Shape
 {
@@ -50,29 +48,11 @@ public:
      *
      *  Construct an axis aligned box with the bottom left corner in (0,0,0)
      *  and the length of the edges as specified by the component of the vector.
-     *  Then stores the transformation matrix, for later use with the
-     *  Box::obj2world function.
      *
      *  \param[in] edges A vector with each component representing the length of
      *  an edge
-     *  \param[in] transformation A pointer to the transformation matrix
      */
-    Box(Vec3* edges, Matrix4* transformation);
-    
-    /** \brief Constructor, given the position, edges length and the transform
-     *  matrix.
-     *
-     *  Construct an axis aligned box with the bottom left corner in the given
-     *  point and the length of the edges as specified by the component of the
-     *  vector. Then stores the transformation matrix, for later use with the
-     *  Box::obj2world function.
-     *
-     *  \param[in] bottom_left Position of the bottom left corner of the box
-     *  \param[in] edges A vector with each component representing the length of
-     *  an edge
-     *  \param[in] transformation A pointer to the transformation matrix
-     */
-    Box(Point3* bottom_left, Vec3* edges, Matrix4* transformation);
+    Box(Vec3 edges);
     
     /** \brief Intersection of a Ray and this box
      *
@@ -88,14 +68,16 @@ public:
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection
-     *  \param[out] error The maximum floating point error in the computation
+     *  \param[out] hp The HitPoint structure containing information about the
+     *  intersection point
      */
-    bool intersect(const Ray* r,float* distance,float* error)const;
+    bool intersect(const Ray* r,float* distance, HitPoint* hp)const;
     
     /** \brief Recalculate the AABB
      *
-     *  This method return an AABB that can fit well on this possibly oriented 
-     *  box.
+     *  This method return an AABB that can fit well on this box. Since the box
+     *  is actually an Axis Aligned Bounding Box, the AABB returned will be the
+     *  box itself
      *
      *  \return an AABB representing the calculated bounding box
      */
@@ -109,9 +91,12 @@ public:
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
      *  set
      *
+     *  \param[in] transform The transformation matrix used to transform the box
+     *  box from object space to world space
+     *
      *  \return an AABB representing the world space bounding box
      */
-    AABB computeWorldAABB()const;
+    AABB computeWorldAABB(const Matrix4* transform)const;
     
     /** \brief Return the surface of the box
      *
@@ -122,42 +107,10 @@ public:
      */
     float surface()const;
     
-    /** \brief Convert the box to world-space
-     *
-     *  Modify the box corners by using the transformation matrix and convert
-     *  the box from object-space to world-space
-     *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *
-     *  \sa world2obj()
-     */
-    void obj2world();
-    
-    /** \brief Convert the box to object-space
-     *
-     *  Modify the box corners by using the transformation matrix and convert
-     *  the box from object-space to world-space
-     *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *
-     *  \sa obj2world()
-     */
-    void world2obj();
-    
 private:
-    //position of the front bottom left corner
-    Point3 fbl;
-    
-    //position of the front bottom right corner
-    Point3 fbr;
-    
-    //position of the front top left corner
-    Point3 ftl;
-    
-    //position of the back bottom left corner
-    Point3 bbl;
+
+    ///The length of the three edges of the box
+    Vec3 edges;
 };
 
 #endif

@@ -4,12 +4,6 @@ Sphere::Sphere(float rad) :Shape()
     Sphere::radius = rad;
 }
 
-Sphere::Sphere(float rad, Matrix4* m) :Shape()
-{
-    Sphere::radius = rad;
-    Shape::transformMatrix = m;
-}
-
 AABB Sphere::computeAABB()const
 {
     const Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
@@ -20,63 +14,29 @@ AABB Sphere::computeAABB()const
     return AABB(&pmin, &pmax);
 }
 
-AABB Sphere::computeWorldAABB()const
+AABB Sphere::computeWorldAABB(const Matrix4* transform)const
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
+    if(transform==NULL)
     {
         Console.severe(
         "Trying to generate a world-space AABB with a NULL matrix");
         return AABB();
     }
 #endif
-    const Point3 pmin = *transformMatrix * Point3(-Sphere::radius,
+    const Point3 pmin = *transform * Point3(-Sphere::radius,
                                                   -Sphere::radius,
                                                   -Sphere::radius);
-    const Point3 pmax = *transformMatrix * Point3(Sphere::radius,
+    const Point3 pmax = *transform * Point3(Sphere::radius,
                                                   Sphere::radius,
                                                   Sphere::radius);
     
     return AABB(&pmin, &pmax);
 }
 
-void Sphere::obj2world()
-{
-#ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
-    {
-        Console.severe(
-        "Trying to convert a sphere to world-space with a NULL matrix");
-        return;
-    }
-#endif
-    Sphere::centre = Point3(Sphere::transformMatrix->m03,
-                            Sphere::transformMatrix->m13,
-                            Sphere::transformMatrix->m23);
-    Sphere::radius *= Vec3(Sphere::transformMatrix->m00,
-                           Sphere::transformMatrix->m10,
-                           Sphere::transformMatrix->m20).length();
-}
-
-void Sphere::world2obj()
-{
-#ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
-    {
-        Console.severe(
-        "Trying to convert a sphere to object-space with a NULL matrix");
-        return;
-    }
-#endif
-    Sphere::centre = Point3();
-    Sphere::radius /= Vec3(Sphere::transformMatrix->m00,
-                           Sphere::transformMatrix->m10,
-                           Sphere::transformMatrix->m20).length();
-}
-
 bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
 {
-    const Vec3 tmp = r->origin - Sphere::centre;
+    const Vec3 tmp(r->origin.x,r->origin.y,r->origin.z);
     float a = r->direction.dot(r->direction);
     float b = 2*(r->direction.dot(tmp));
     float c = tmp.dot(tmp) - (Sphere::radius*Sphere::radius);
@@ -97,7 +57,7 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
                 return false;
         }
         h->h = r->apply(*distance);
-        Vec3 normal = h->h - Sphere::centre;
+        Vec3 normal(h->h.z,h->h.y,h->h.z);
         normal.normalize();
         h->n = Normal(normal);
         h->sp = this;

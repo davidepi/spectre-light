@@ -20,6 +20,8 @@
 #define _LOW_LEVEL_CHECKS_
 ///If defined, instead of writing errors in the console, writes them in a struct
 //#define _TEST_
+///The amount of floating point rounding error that can cause self-intersections
+#define SELF_INTERSECT_ERROR 0.0001f
 
 ///Defines the max number of assets in a KdTree acceleration structure
 #define _MAX_ASSETS_ 4096

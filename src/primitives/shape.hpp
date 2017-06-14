@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 10 Jun 2017
+//Last Edit 14 Jun 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      10 Jun 2017
+ *  \date      14 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -18,6 +18,8 @@
 #include "ray.hpp"
 #include "matrix4.hpp"
 #include "AABB.hpp"
+
+struct HitPoint;
 
 /**
  *  \class Shape shape.hpp "primitives/shape.hpp"
@@ -37,14 +39,6 @@ public:
     
     ///Default destructor
     ~Shape();
-    
-    /** \brief The transformation matrix that should be used on the vertices
-     *
-     *  A pointer to the transformation matrix used to scale, translate and
-     *  rotate and project the shape. Since a shape is in object-space this
-     *  matrix MUST be used before rendering the actual shape
-     */
-    Matrix4* transformMatrix;
     
     /** \brief Return the ID of this shape
      *  \return A unsigned int representing the ID of this shape
@@ -84,9 +78,12 @@ public:
      *  well on the world space representation of this shape, without
      *  transforming the shape
      *
+     *  \param[in] trans The matrix4 used for the transforming the Shape from
+     *  object space to world space
+     *
      *  \return an AABB representing the world space bounding box
      */
-    virtual AABB computeWorldAABB(Matrix4* trans) const = 0;
+    virtual AABB computeWorldAABB(const Matrix4* trans) const = 0;
     
     /** \brief Return the surface of the shape
      *
@@ -96,25 +93,6 @@ public:
      *  \return A float representing the area of the shape in world-space units
      */
     virtual float surface()const = 0;
-    
-    /** \brief Convert the shape to world-space
-     *
-     *  In its implementations, this method should replace the object-space
-     *  definition of the object with its world-space
-     *
-     *  \sa world2obj()
-     */
-    virtual void obj2world(const Matrix4* trans) = 0;
-    
-    /** \brief Convert the shape to object-space
-     *
-     *  In its implementations, this method should replace the world-space
-     *  definition of the object with its object-space.
-     *  It is the same as applying the inverse and calling the obj2world method
-     *
-     *  \sa obj2world()
-     */
-    virtual void world2obj(const Matrix4* trans) = 0;
     
     
 private:
