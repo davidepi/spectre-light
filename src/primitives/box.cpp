@@ -44,6 +44,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     Point3 top(edges.x,edges.y,edges.z);
     float mint;
     float maxt;
+    char axis = 0; //used for normal identification
     
     //x plane
     float invr = 1.0f/r->direction.x;
@@ -62,7 +63,11 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     far = (top.y-r->origin.y) * invr;
     if(near>far)
         swap(&near,&far);
-    mint = near>mint?near:mint;
+    if(near > mint)
+    {
+        mint = near;
+        axis = 1;
+    }
     maxt = far<maxt?far:maxt;
     if(mint>maxt)
         return false;
@@ -73,24 +78,20 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     far = (top.z-r->origin.z) * invr;
     if(near>far)
         swap(&near,&far);
-    mint = near>mint?near:mint;
+    if(near > mint)
+    {
+        mint = near;
+        axis = 2;
+    }
     maxt = far<maxt?far:maxt;
     if(mint>maxt)
         return false;
     *distance = min(mint,maxt);
     h->h = r->apply(*distance);
     h->sp = this;
-
-    //calculate normal
-    Point3 centre(edges.x/2.f,edges.y/2.f,edges.z/2.f);
-    Vec3 offset = h->h - centre;
-    Vec3 normal = ((int)(offset.x/centre.x),
-                    (int)(offset.y/centre.y),
-                    (int)(offset.z/centre.z));
-
-    normal.normalize();
-    h->n = Normal(normal);
-
+    h->n = Normal();
+    h->n[axis] = 1;
+    h->n[axis]*=sign(h->h[axis]);
     return true;
 
 }
