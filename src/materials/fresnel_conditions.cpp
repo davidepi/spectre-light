@@ -33,7 +33,7 @@ Dielectric::Dielectric(float refractioni, float refractiont)
 
 Dielectric::~Dielectric()
 {
-    
+
 }
 
 Color Dielectric::eval(float cosin)const

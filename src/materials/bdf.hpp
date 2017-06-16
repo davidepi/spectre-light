@@ -1,11 +1,12 @@
-//Created,   7 Jun 2017
-//Last Edit  7 Jun 2017
+//Created,   16 Jun 2017
+//Last Edit  16 Jun 2017
 
 
 #ifndef __BDF_HPP__
 #define __BDF_HPP__
 #include "color.hpp"
 #include "vec3.hpp"
+#include "console.hpp"
 
 enum BdfFlags {BRDF = 0x0, BTDF = 0x1, DIFFUSE = 0x2, SPECULAR = 0x4};
 
@@ -23,6 +24,18 @@ public:
     {
         return type & f;
     }
+};
+
+class Bsdf
+{
+public:
+    Bsdf();
+    ~Bsdf();
+    void addBdf(Bdf addme);
+
+private:
+    char count;
+    Bdf bdfs[_MAX_BDF_];
 };
 
 #endif
