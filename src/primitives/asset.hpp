@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 16 May 2017
+//Last Edit 15 Jun 2017
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 May 2017
+ *  \date      15 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -34,7 +34,7 @@ public:
      *
      *  \param[in] sp A pointer to the Shape wrapped in this class
      */
-    Asset(Shape* sp);
+    Asset(Shape* sp, Matrix4* transform);
     
     ///Default destructor
     ~Asset();
@@ -51,9 +51,10 @@ public:
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection
-     *  \param[out] error The maximum floating point error in the computation
+     *  \param[out] h an HitPoint class containing information about the
+     *  intersection point
      */
-    bool intersect(const Ray* r,float* distance,float* error)const;
+    bool intersect(const Ray* r,float* distance, HitPoint* h)const;
     
     /** \brief Intersection of a Ray and the bounding box of the asset
      *
@@ -80,10 +81,19 @@ public:
 private:
     //underlying model
     Shape* model;
+
     //id of the asset
     const unsigned int id;
+
     //Bounding box
     AABB aabb;
+
+    //Transformation
+    Matrix4* transform;
+
+    //Inverse transformation
+    Matrix4 invTrans;
+
     //Material
     //Texture
 };

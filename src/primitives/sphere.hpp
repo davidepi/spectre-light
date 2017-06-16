@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit 16 May 2017
+//Last Edit 14 Jun 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 May 2017
+ *  \date      14 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -43,17 +43,6 @@ public:
      */
     Sphere(float radius);
     
-    /** \brief Constructor, given the radius and the trasnform matrix.
-     *
-     *  Construct a sphere with the given radius and centered in (0,0,0)
-     *  The input matrix will be used when transforming the sphere from
-     *  object-space to world-space
-     *
-     *  \param[in] radius The radius of the sphere
-     *  \param[in] transformation A pointer to the transformation matrix
-     */
-    Sphere(float radius, Matrix4* transformation);
-    
     /** \brief Intersection of a Ray and this sphere
      *
      *  This method tries to intersect a ray passed as a parameter with the
@@ -68,9 +57,10 @@ public:
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection
-     *  \param[out] error The maximum floating point error in the computation
+     *  \param[out] h an HitPoint class containing information about the
+     *  intersection point
      */
-    bool intersect(const Ray* r,float* distance,float* error)const;
+    bool intersect(const Ray* r,float* distance, HitPoint* h)const;
     
     /** \brief Calculate the AABB
      *
@@ -88,9 +78,12 @@ public:
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
      *  set
      *
+     *  \param[in] transform The transform matrix used to transform the Sphere
+     *  from object space to world space
+     *
      *  \return an AABB representing the world space bounding box
      */
-    AABB computeWorldAABB()const;
+    AABB computeWorldAABB(const Matrix4* transform)const;
     
     /** \brief Return the surface of the sphere
      *
@@ -101,45 +94,7 @@ public:
      */
     float surface()const;
     
-    /** \brief Convert the sphere to world-space
-     *
-     *  Modify the sphere radius and centre by using the transformation matrix
-     *  and convert the sphere from object-space to world-space
-     *
-     *  \parblock
-     *  \note If the supplied matrix contains non-uniform scaling, the \a x
-     *  value will be chosen
-     *  \endparblock
-     *  \parblock
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *  \endparblock
-     *
-     *  \sa world2obj()
-     */
-    void obj2world();
-    
-    /** \brief Convert the sphere to object-space
-     *
-     *  Modify the sphere radius and centre by using the transformation matrix
-     *  and convert the sphere from object-space to world-space
-     *
-     *  \parblock
-     *  \note If the supplied matrix contains non-uniform scaling, the \a x
-     *  value will be chosen
-     *  \endparblock
-     *  \parblock
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *  \endparblock
-     *
-     *  \sa obj2world()
-     */
-    void world2obj();
-    
 private:
-    //centre of the sphere
-    Point3 centre;
     
     //radius of the sphere
     float radius;
