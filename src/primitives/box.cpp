@@ -92,6 +92,9 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     h->n = Normal();
     h->n[axis] = 1;
     h->n[axis]*=sign(h->h[axis]);
+    if(h->n.x==0)
+        h->right = Vec3(1,0,0);
+    else
+        h->right = Vec3(0,-h->n.x,0);
     return true;
-
 }

@@ -1,5 +1,6 @@
 #include "asset.hpp"
-
+#include <assert.h>
+#include <iostream>
 unsigned static int _asset_ID_pool = 1;
 
 Asset::Asset(Shape* sp, Matrix4* transform)
@@ -24,9 +25,20 @@ bool Asset::intersect(const Ray* r,float* distance, HitPoint* h)const
     if(res)
     {
         //retransform back to world space
-        h->h = *transform*h->h;
-        h->n = *transform*h->n;
-        h->n.normalize();
+//        h->h = *transform*h->h;
+//        h->n = *transform*h->n;
+//        h->right = *transform*h->right;
+//        h->n.normalize();
+//        h->right.normalize();
+//        h->cross = normalize(cross(Vec3(h->n),h->right));
+
+        Normal n = h->n;
+        Vec3 ri = h->right;
+        std::cout<<h->n.toString()<<std::endl;
+        n = *transform*n;
+        ri = *transform*ri;
+        n.normalize();
+        ri.normalize();
     }
     return res;
 }

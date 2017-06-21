@@ -43,7 +43,7 @@ int main()
     Point3 pos(0,0,-10);
     Point3 tar(1,5,0);
     Vec3 up(0,1,0);
-    PerspectiveCamera pc(&pos, &tar, &up, 800, 600, "/home/davide/Desktop/test.ppm",1);
+    PerspectiveCamera pc(&pos, &tar, &up, 800, 600, "test.ppm",1);
     int spp = 1;
     StratifiedSampler s(0, 800, 0, 600, 1, (unsigned int*)&pc, false);
     MitchellFilter* f = new MitchellFilter(2.0,2.0,1.0f,0);

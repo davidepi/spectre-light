@@ -57,9 +57,12 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
                 return false;
         }
         h->h = r->apply(*distance);
-        Vec3 normal(h->h.z,h->h.y,h->h.z);
-        normal.normalize();
+        Vec3 normal(h->h.x,h->h.y,h->h.z);
         h->n = Normal(normal);
+        if(h->h.x==0 && h->h.y==0) //particular case
+            h->right = Vec3(0,1,0);
+        else
+            h->right = Vec3(-2*M_PI*h->h.y,2*M_PI*h->h.x,0);
         h->sp = this;
         return true;
     }
