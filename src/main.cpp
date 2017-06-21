@@ -16,7 +16,7 @@
 #include "wellrng.hpp"
 #include "sampler.hpp"
 #include "stratified_sampler.hpp"
-#include "box_filter.hpp"
+#include "mitchell_filter.hpp"
 #include "perspective_camera.hpp"
 #include "orthographic_camera.hpp"
 #include "console.hpp"
@@ -30,9 +30,8 @@ int main()
     {
         Matrix4 *m = new Matrix4();
         m->setTranslation(Vec3(i,i,i));
-        Sphere *sh = new Sphere(0.5,m);
-        sh->obj2world();
-        Asset *a = new Asset(sh);
+        Sphere *sh = new Sphere(0.5);
+        Asset *a = new Asset(sh,m);
         k->addAsset(a);
     }
     k->buildTree();
@@ -47,20 +46,20 @@ int main()
     PerspectiveCamera pc(&pos, &tar, &up, 800, 600, "test.ppm",1);
     int spp = 1;
     StratifiedSampler s(0, 800, 0, 600, 1, (unsigned int*)&pc, false);
-    BoxFilter* f = new BoxFilter(1.0,1.0);
+    MitchellFilter* f = new MitchellFilter(2.0,2.0,1.0f,0);
     pc.film.setFilter(f);
     Sample* sam = (Sample*)malloc(sizeof(Sample)*spp);
     while(s.getSamples(sam))
     {
         pc.createRay(sam, &r);
+        Color c;
         if(k->intersect(&r, res))
         {
-            Color c;
             c.r =1;
             c.g =1;
             c.b =1;
-            pc.film.addPixel(sam, &c);
         }
+        pc.film.addPixel(sam, &c);
     }
     pc.film.saveImage();
     

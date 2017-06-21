@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 15 Jun 2017
+//Last Edit 21 Jun 2017
 
 /**
  *  \file box.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      15 Jun 2017
+ *  \date      21 Jun 2017
  *  \copyright GNU GPLv3
  */
 

@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 14 Jun 2017
+//Last Edit 21 Jun 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      14 Jun 2017
+ *  \date      21 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -109,6 +109,12 @@ struct HitPoint
 
     ///The normal of the hit point
     Normal n;
+
+    ///Right direction, perpendicular to the normal
+    Vec3 right;
+
+    ///Cross between normal and right
+    Vec3 cross;
 
     ///u coordinate for texture
     float u;
