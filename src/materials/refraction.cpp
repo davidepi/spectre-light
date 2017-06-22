@@ -12,7 +12,7 @@ Refraction::~Refraction()
 
 }
 
-Color Refraction::df(const Vec3 *wout, const Vec3 *wincident) const
+Color Refraction::df(const Vec3*, const Vec3*) const
 {
     return Color();
 }
