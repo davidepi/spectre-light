@@ -20,26 +20,25 @@
 #include "perspective_camera.hpp"
 #include "orthographic_camera.hpp"
 #include "console.hpp"
+#include "scene.hpp"
+
 int main()
 {
+    Scene* sc = new Scene();
     unsigned int seed[32];
     WELLrng rng(seed);
     Ray r(Point3(0,0,-10),Vec3(0,0,1));
-    KdTree* k = new KdTree;
     for(int i=0;i<100;i++)
     {
         Matrix4 *m = new Matrix4();
         m->setTranslation(Vec3(i,i,i));
         Sphere *sh = new Sphere(0.5);
-        Asset *a = new Asset(sh,m);
-        k->addAsset(a);
+        sc->inheritShape(sh);
+        if(!sc->addAsset(sh->getID(),m))
+            Console.warning("Not added");
     }
-    k->buildTree();
+    sc->k.buildTree();
     Asset* res;
-    if(k->intersect(&r, res))
-        std::cout<<"test ok"<<std::endl;
-    
-    
     Point3 pos(0,0,-10);
     Point3 tar(1,5,0);
     Vec3 up(0,1,0);
@@ -53,7 +52,7 @@ int main()
     {
         pc.createRay(sam, &r);
         Color c;
-        if(k->intersect(&r, res))
+        if(sc->k.intersect(&r, res))
         {
             c.r =1;
             c.g =1;

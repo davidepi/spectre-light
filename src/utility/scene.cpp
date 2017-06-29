@@ -36,9 +36,9 @@ void Scene::inheritShape(Shape *addme)
             memcpy(Scene::shapes,tmp,Scene::shape_index*sizeof(Shape*));
             delete[] tmp;
         }
-
-        Scene::shapes[Scene::shape_index++] = addme; //add shape
     }
+
+    Scene::shapes[Scene::shape_index++] = addme; //add shape
 }
 
 bool Scene::addAsset(int shapeid, Matrix4* transformMatrix)
@@ -62,12 +62,13 @@ bool Scene::addAsset(int shapeid, Matrix4* transformMatrix)
                     delete[] tmp;
                 }
 
-                Scene::assets[Scene::asset_index++]= new Asset(Scene::shapes[i],
-                                                               transformMatrix);
-                k.addAsset(Scene::assets[Scene::asset_index-1]); //add to kdtree
-                return true;
+
             }
 
+            Scene::assets[Scene::asset_index++]= new Asset(Scene::shapes[i],
+                                                           transformMatrix);
+            k.addAsset(Scene::assets[Scene::asset_index-1]); //add to kdtree
+            return true;
         }
     }
 
