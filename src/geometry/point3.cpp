@@ -12,8 +12,7 @@ Point3::~Point3()
 Point3::Point3(float xyz)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.severe(std::isnan(xyz),
-                   "Trying to construct a Point3 with a NaN value");
+    Console.severe(std::isnan(xyz), MESSAGE_NAN("Point3"));
 #endif
     Point3::x = xyz;
     Point3::y = xyz;
@@ -24,7 +23,7 @@ Point3::Point3(float x, float y, float z)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(x) || std::isnan(y) || std::isnan(z),
-           "Trying to construct a Point3 with a NaN value");
+                   MESSAGE_NAN("Point3"));
 #endif
     Point3::x = x;
     Point3::y = y;

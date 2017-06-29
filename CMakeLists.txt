@@ -12,7 +12,7 @@ file(GLOB spectre_core_sources
 file(GLOB spectre_core_headers
     src/settings.h
     src/validator.h
-    src/utility/CImg.h
+    src/localization.h
     src/geometry/*.hpp
     src/primitives/*.hpp
     src/accelerators/*.hpp

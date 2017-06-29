@@ -26,7 +26,7 @@ void Scene::inheritShape(Shape *addme)
     if(Scene::shapes_allocated == Scene::shape_index) //array full, doubles it
     {
         if (Scene::shape_index == _MAX_ASSETS_)
-            Console.warning("Can't add more shapes");
+            Console.warning(MESSAGE_MAXASSETNUMBER);
         else
         {
             Shape **tmp = Scene::shapes;
@@ -51,7 +51,7 @@ bool Scene::addAsset(int shapeid, Matrix4* transformMatrix)
             if(Scene::assets_allocated == Scene::asset_index) //array full
             {
                 if (Scene::asset_index == _MAX_ASSETS_)
-                    Console.warning("Can't add more assets");
+                    Console.warning(MESSAGE_MAXASSETNUMBER);
                 else
                 {
                     Asset **tmp = Scene::assets;

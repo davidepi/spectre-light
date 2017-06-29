@@ -192,7 +192,7 @@ inline float equation1(const float a, const float b)
 #ifdef _LOW_LEVEL_CHECKS_
     if(a==0)
     {
-        Console.severe("Trying to solve the linear equation ax+b=0 with a=0");
+        Console.severe(MESSAGE_LINEAR_EQUATION_IMPOSSIBLE);
         return b;
     }
 #endif

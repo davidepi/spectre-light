@@ -31,8 +31,7 @@ Matrix4::Matrix4(const float* v)
 #ifdef _LOW_LEVEL_CHECKS_
     }
     else
-        Console.warning("Initializing a Matrix4 with a NULL pointer to array.\
-                Matrix4 was left uninitialized");
+        Console.warning(MESSAGE_MATRIX4_NULLINIT);
 #endif
 }
 
@@ -288,7 +287,7 @@ void Matrix4::setInvLookAtLH(const Point3 pos, const Point3 eye, const Vec3 up)
 #ifdef _LOW_LEVEL_CHECKS_
     if(!(up.isNormalized()))
     {
-        Console.warning("Up camera vector is not normalized. Normalizing now");
+        Console.warning(MESSAGE_UPVECTOR_NOTUNIT);
         newup.normalize();
     }
 #endif

@@ -22,8 +22,7 @@ AABB Box::computeWorldAABB(const Matrix4* transform)const
 #ifdef _LOW_LEVEL_CHECKS_
     if(transform==NULL)
     {
-        Console.severe(
-        "Trying to generate a world-space AABB with a NULL matrix");
+        Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
         return AABB();
     }
 #endif

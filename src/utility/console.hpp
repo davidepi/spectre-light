@@ -13,6 +13,7 @@
 #ifndef __CONSOLE_HPP__
 #define __CONSOLE_HPP__
 
+#include "localization.h"
 #include <cstdio> //fprintf
 #include <cstdlib> //exit
 

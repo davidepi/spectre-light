@@ -10,10 +10,8 @@ Vec2::Vec2()
 Vec2::Vec2(float xy)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.severe(std::isnan(xy),
-                   "Trying to construct a Vec2 with a NaN value");
-    Console.severe(std::isinf(xy),
-                   "Trying to construct a Vec2 with an infinity value");
+    Console.severe(std::isnan(xy), MESSAGE_NAN("Vec2"));
+    Console.severe(std::isinf(xy), MESSAGE_INFINITY("Vec2"));
 #endif
     Vec2::x = xy;
     Vec2::y = xy;
@@ -22,10 +20,8 @@ Vec2::Vec2(float xy)
 Vec2::Vec2(float x, float y)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.severe(std::isnan(x) || std::isnan(y),
-           "Trying to construct a Vec3 with a NaN value");
-    Console.severe(std::isinf(x) || std::isinf(y),
-           "Trying to construct a Vec3 with an infinity value");
+    Console.severe(std::isnan(x) || std::isnan(y), MESSAGE_NAN("Vec2"));
+    Console.severe(std::isinf(x) || std::isinf(y), MESSAGE_INFINITY("Vec2"));
 #endif
     Vec2::x = x;
     Vec2::y = y;
@@ -37,9 +33,9 @@ Vec2::Vec2(const float* xy)
     if(xy != NULL)
     {
         Console.severe(std::isnan(xy[0]) || std::isnan(xy[1]),
-               "Trying to construct a Vec3 with a NaN value");
+                       MESSAGE_NAN("Vec2"));
         Console.severe(std::isinf(xy[0]) || std::isinf(xy[1]),
-               "Trying to construct a Vec3 with an infinity value");
+                       MESSAGE_INFINITY("Vec2"));
 #endif
         Vec2::x = xy[0];
         Vec2::y = xy[1];
@@ -47,8 +43,7 @@ Vec2::Vec2(const float* xy)
     }
     else
     {
-        Console.warning("Initializing a Vec2 with a NULL pointer to array.\
-                Vec2 was created as (0,0,0)");
+        Console.warning(MESSAGE_NULLPOINTER("Vec2"));
         Vec2::x = 0;
         Vec2::y = 0;
     }
@@ -76,7 +71,7 @@ void Vec2::normalize()
 #ifdef _LOW_LEVEL_CHECKS_
     if(length==0)
     {
-        Console.critical("Trying to normalize a zero-length vector");
+        Console.critical(MESSAGE_NORMALIZE_ZERO);
         return;
     }
 #endif
@@ -179,8 +174,7 @@ void Vec2::min(const Vec2 vector2)
 void Vec2::reflect(const Vec2 centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.warning(!centre.isNormalized(),
-                    "Reflecting around a non normalized centre");
+    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec2::dot(centre);
     Vec2::x -= ((2 * dot) * centre.x);
@@ -260,7 +254,7 @@ Vec2 Vec2::operator/(const Vec2& v)const
 #ifdef _LOW_LEVEL_CHECKS_
     if(v.x==0 || v.y==0)
     {
-        Console.critical("Vector division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return Vec2();
     }
 #endif
@@ -272,7 +266,7 @@ Vec2 Vec2::operator/(float f)const
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
     {
-        Console.critical("Vector division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return Vec2();
     }
 #endif
@@ -284,7 +278,7 @@ void Vec2::operator/=(const Vec2& v)
 #ifdef _LOW_LEVEL_CHECKS_
     if(v.x==0 || v.y==0)
     {
-        Console.critical("Vector division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return;
     }
 #endif
@@ -297,7 +291,7 @@ void Vec2::operator/=(float f)
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
     {
-        Console.critical("Vector division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return;
     }
 #endif

@@ -11,10 +11,8 @@ Vec3::Vec3()
 Vec3::Vec3(float xyz)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.severe(std::isnan(xyz),
-                   "Trying to construct a Vec3 with a NaN value");
-    Console.severe(std::isinf(xyz),
-                   "Trying to construct a Vec3 with an infinity value");
+    Console.severe(std::isnan(xyz), MESSAGE_NAN("Vec3"));
+    Console.severe(std::isinf(xyz), MESSAGE_INFINITY("Vec3"));
 #endif
     Vec3::x = xyz;
     Vec3::y = xyz;
@@ -25,9 +23,9 @@ Vec3::Vec3(float x,float y,float z)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(x) || std::isnan(y) || std::isnan(z),
-           "Trying to construct a Vec3 with a NaN value");
+                   MESSAGE_NAN("Vec3"));
     Console.severe(std::isinf(x) || std::isinf(y) || std::isinf(z),
-           "Trying to construct a Vec3 with an infinity value");
+                   MESSAGE_INFINITY("Vec3"));
 #endif
     Vec3::x = x;
     Vec3::y = y;
@@ -38,9 +36,9 @@ Vec3::Vec3(const Vec2 xy,float z)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z),
-           "Trying to construct a Vec3 with a NaN value");
+                   MESSAGE_NAN("Vec3"));
     Console.severe(std::isinf(xy.x) || std::isinf(xy.y) || std::isinf(z),
-           "Trying to construct a Vec3 with an infinity value");
+                   MESSAGE_INFINITY("Vec3"));
 #endif
     Vec3::x = xy.x;
     Vec3::y = xy.y;
@@ -54,10 +52,10 @@ Vec3::Vec3(const float* xyz)
     {
         Console.severe(std::isnan(xyz[0]) || std::isnan(xyz[1])
                        || std::isnan(xyz[2]),
-               "Trying to construct a Vec3 with a NaN value");
+                       MESSAGE_NAN("Vec3"));
         Console.severe(std::isinf(xyz[0]) || std::isinf(xyz[1])
                        || std::isinf(xyz[2]),
-               "Trying to construct a Vec3 with an infinity value");
+                       MESSAGE_INFINITY("Vec3"));
 #endif
         Vec3::x = xyz[0];
         Vec3::y = xyz[1];
@@ -66,8 +64,7 @@ Vec3::Vec3(const float* xyz)
     }
     else
     {
-        Console.warning("Initializing a Vec3 with a NULL pointer to array.\
-                Vec3 was created as (0,0,0)");
+        Console.warning(MESSAGE_NULLPOINTER("Vec3"));
         Vec3::x = 0;
         Vec3::y = 0;
         Vec3::z = 0;
@@ -79,9 +76,9 @@ Vec3::Vec3(const Normal n)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(n.x) || std::isnan(n.y) || std::isnan(n.z),
-           "Trying to construct a Vec3 with a NaN value");
+                   MESSAGE_NAN("Vec3"));
     Console.severe(std::isinf(n.x) || std::isinf(n.y) || std::isinf(n.z),
-           "Trying to construct a Vec3 with an infinity value");
+                   MESSAGE_INFINITY("Vec3"));
 #endif
     Vec3::x = n.x;
     Vec3::y = n.y;
@@ -143,7 +140,7 @@ void Vec3::normalize()
 #ifdef _LOW_LEVEL_CHECKS_
     if(len==0)
     {
-        Console.critical("Trying to normalize a zero-length vector");
+        Console.critical(MESSAGE_NORMALIZE_ZERO);
         return;
     }
 #endif
@@ -264,8 +261,7 @@ void Vec3::min(const Vec3 vector2)
 void Vec3::reflect(const Vec3 centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.warning(!centre.isNormalized(),
-                    "Reflecting around a non normalized centre");
+    Console.warning(!centre.isNormalized(),MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
     Vec3::x -= ((2 * dot) * centre.x);
@@ -276,8 +272,7 @@ void Vec3::reflect(const Vec3 centre)
 void Vec3::reflect(const Normal centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.warning(!centre.isNormalized(),
-                    "Reflecting around a non normalized centre");
+    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
     Vec3::x -= ((2 * dot) * centre.x);
@@ -364,7 +359,7 @@ Vec3 Vec3::operator/(const Vec3& v)const
 #ifdef _LOW_LEVEL_CHECKS_
     if(v.x==0 || v.y==0 || v.z==0)
     {
-        Console.critical("Vector division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return Vec3();
     }
 #endif
@@ -376,7 +371,7 @@ Vec3 Vec3::operator/(const float f)const
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
     {
-        Console.critical("Vector division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return Vec3();
     }
 #endif
@@ -388,7 +383,7 @@ void Vec3::operator/=(const Vec3& v)
 #ifdef _LOW_LEVEL_CHECKS_
     if(v.x==0 || v.y==0 || v.z==0)
     {
-        Console.critical("Vector division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return;
     }
 #endif
@@ -402,7 +397,7 @@ void Vec3::operator/=(const float f)
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
     {
-        Console.critical("Vector division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return;
     }
 #endif
@@ -457,10 +452,8 @@ Normal::Normal()
 Normal::Normal(float xyz)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.severe(std::isnan(xyz),
-                   "Trying to construct a Normal with a NaN value");
-    Console.severe(std::isinf(xyz),
-           "Trying to construct a Normal with an infinity value");
+    Console.severe(std::isnan(xyz), MESSAGE_NAN("Normal"));
+    Console.severe(std::isinf(xyz), MESSAGE_INFINITY("Normal"));
 #endif
     Normal::x = xyz;
     Normal::y = xyz;
@@ -471,9 +464,9 @@ Normal::Normal(float x,float y,float z)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(x) || std::isnan(y) || std::isnan(z),
-           "Trying to construct a Normal with a NaN value");
+                   MESSAGE_NAN("Normal"));
     Console.severe(std::isinf(x) || std::isinf(y) || std::isinf(z),
-           "Trying to construct a Normal with an infinity value");
+                   MESSAGE_INFINITY("Normal"));
 #endif
     Normal::x = x;
     Normal::y = y;
@@ -484,9 +477,9 @@ Normal::Normal(const Vec2 xy,float z)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z),
-           "Trying to construct a Normal with a NaN value");
+                   MESSAGE_NAN("Normal"));
     Console.severe(std::isinf(xy.x) || std::isinf(xy.y) || std::isinf(z),
-           "Trying to construct a Normal with an infinity value");
+                   MESSAGE_INFINITY("Normal"));
 #endif
     Normal::x = xy.x;
     Normal::y = xy.y;
@@ -500,10 +493,10 @@ Normal::Normal(const float* xyz)
     {
         Console.severe(std::isnan(xyz[0]) || std::isnan(xyz[1]) ||
                        std::isnan(xyz[2]),
-               "Trying to construct a Normal with a NaN value");
+                       MESSAGE_NAN("Normal"));
         Console.severe(std::isinf(xyz[0]) || std::isinf(xyz[1]) ||
                        std::isinf(xyz[2]),
-               "Trying to construct a Normal with an infinity value");
+                       MESSAGE_INFINITY("Normal"));
 #endif
         Normal::x = xyz[0];
         Normal::y = xyz[1];
@@ -512,8 +505,7 @@ Normal::Normal(const float* xyz)
     }
     else
     {
-        Console.warning("Initializing a Normal with a NULL pointer to array.\
-                Normal was created as (0,0,0)");
+        Console.warning(MESSAGE_NULLPOINTER("Normal"));
         Normal::x = 0;
         Normal::y = 0;
         Normal::z = 0;
@@ -525,9 +517,9 @@ Normal::Normal(const Vec3 v)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(v.x) || std::isnan(v.y) || std::isnan(v.z),
-           "Trying to construct a Normal with a NaN value");
+                   MESSAGE_NAN("Normal"));
     Console.severe(std::isinf(v.x) || std::isinf(v.y) || std::isinf(v.z),
-           "Trying to construct a Normal with an infinity value");
+                   MESSAGE_INFINITY("Normal"));
 #endif
     Normal::x = v.x;
     Normal::y = v.y;
@@ -581,7 +573,7 @@ void Normal::normalize()
 #ifdef _LOW_LEVEL_CHECKS_
     if(len==0)
     {
-        Console.critical("Trying to normalize a zero-length normal");
+        Console.critical(MESSAGE_NORMALIZE_ZERO);
         return;
     }
 #endif
@@ -783,7 +775,7 @@ Normal Normal::operator/(const Normal& n)const
 #ifdef _LOW_LEVEL_CHECKS_
     if(n.x==0 || n.y==0 || n.z==0)
     {
-        Console.critical("Normal division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return Normal();
     }
 #endif
@@ -795,7 +787,7 @@ Normal Normal::operator/(const float f)const
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
     {
-        Console.critical("Normal division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return Normal();
     }
 #endif
@@ -807,7 +799,7 @@ void Normal::operator/=(const Normal& n)
 #ifdef _LOW_LEVEL_CHECKS_
     if(n.x==0 || n.y==0 || n.z==0)
     {
-        Console.critical("Normal division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return;
     }
 #endif
@@ -821,7 +813,7 @@ void Normal::operator/=(const float f)
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
     {
-        Console.critical("Normal division by zero");
+        Console.critical(MESSAGE_DIVISIONBY0);
         return;
     }
 #endif

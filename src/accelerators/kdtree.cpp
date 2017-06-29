@@ -144,7 +144,7 @@ KdTree::KdTree()
     KdTree::nodes_allocated = KDNODE_ALLOC;
     
     if(KdTree::assetsList == NULL || KdTree::nodesList == NULL)
-        Console.critical("Out of memory [Kd-Tree init]");
+        Console.critical(MESSAGE_NOMEMORY("KdTree init"));
 }
 
 KdTree::~KdTree()
@@ -156,7 +156,7 @@ KdTree::~KdTree()
 void KdTree::addAsset(const Asset *addme)
 {
     if(assets_number == _MAX_ASSETS_)
-        Console.severe("Cannot add more primitives");
+        Console.severe(MESSAGE_MAXASSETNUMBER);
     if(assets_number == assets_allocated)
     {
         unsigned int allocNo = max(assets_allocated<<1,_MAX_ASSETS_);
@@ -169,7 +169,7 @@ void KdTree::addAsset(const Asset *addme)
             KdTree::assetsList = tmp;
         }
         else
-            Console.critical("Out of memory [Kd-Tree building]");
+            Console.critical(MESSAGE_NOMEMORY("KdTree building"));
     }
     assetsList[assets_number++] = addme;
 }
@@ -190,7 +190,7 @@ void KdTree::finalize(void* n)
             KdTree::nodesList = tmp;
         }
         else
-            Console.critical("Out of memory [Kd-Tree flattening]");
+            Console.critical(MESSAGE_NOMEMORY("KdTree flattening"));
     }
     if(node->isLeaf)
     {

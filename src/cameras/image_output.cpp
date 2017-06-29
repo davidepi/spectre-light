@@ -6,8 +6,7 @@ bool check_extension(const char* fn)
     const char* name = strrchr(fn,'.');
     if(name == NULL)
     {
-        Console.warning(
-                   "Missing extension in filename. File will be saved as .ppm");
+        Console.warning(MESSAGE_MISSING_EXTENSION);
         return false;
     }
     else
