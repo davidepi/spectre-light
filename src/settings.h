@@ -23,7 +23,7 @@
 ///The amount of floating point rounding error that can cause self-intersections
 #define SELF_INTERSECT_ERROR 0.0001f
 
-///Defines the max number of assets in a KdTree acceleration structure
+///Defines the max number of assets
 #define _MAX_ASSETS_ 4096
 
 #include "validator.h"
