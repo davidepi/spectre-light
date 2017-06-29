@@ -51,9 +51,6 @@ public:
      */
     MitchellFilter(float x_range, float y_range, float b, float c);
 
-    ///Default destructor
-    ~MitchellFilter();
-
     /** \brief Compute the weight of a given sample in the final average
      *
      *  This method is an implementation of the pure virtual function of the

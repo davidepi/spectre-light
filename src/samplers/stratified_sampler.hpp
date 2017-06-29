@@ -50,9 +50,6 @@ public:
     StratifiedSampler(int startx, int endx, int starty, int endy, int spp,
                               const unsigned int* seed, bool random);
 
-    ///Default destructor
-    ~StratifiedSampler();
-
     /** Return the samples
      *
      *  Return a set of samples for the current pixel. The current pixel is

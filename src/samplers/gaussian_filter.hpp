@@ -41,9 +41,6 @@ public:
      */
     GaussianFilter(float x_range, float y_range, float falloff);
 
-    ///Default destructor
-    ~GaussianFilter();
-
     /** \brief Compute the weight of a given sample in the final average
      *
      * This method is an implementation of the pure virtual function of the

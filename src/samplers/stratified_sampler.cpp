@@ -7,13 +7,8 @@ StratifiedSampler::StratifiedSampler(int startx, int endx, int starty, int endy,
     StratifiedSampler::nextx = startx;
     StratifiedSampler::nexty = starty;
     StratifiedSampler::isRandomized = rand;
-    StratifiedSampler::strata_x = (int)sqrtf(spp);
+    StratifiedSampler::strata_x = (int) sqrtf(spp);
     StratifiedSampler::strata_y = StratifiedSampler::strata_x;
-}
-
-StratifiedSampler::~StratifiedSampler()
-{
-    
 }
 
 bool StratifiedSampler::getSamples(Sample *res)

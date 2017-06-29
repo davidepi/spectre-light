@@ -8,11 +8,6 @@ LanczosFilter::LanczosFilter(float x_r, float y_r, float tau)
     LanczosFilter::tau = tau;
 }
 
-LanczosFilter::~LanczosFilter()
-{
-    
-}
-
 float LanczosFilter::weight(float offset_x, float offset_y)const
 {
     float resx = fabsf(offset_x * LanczosFilter::inverse_width);
