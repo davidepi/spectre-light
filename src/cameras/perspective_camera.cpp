@@ -57,11 +57,6 @@ PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
     raster2camera *= raster2screen;
 }
 
-PerspectiveCamera::~PerspectiveCamera()
-{
-    
-}
-
 void PerspectiveCamera::createRay(Sample *s, Ray *r)const
 {
     r->origin = camera2world * Point3(0,0,0);

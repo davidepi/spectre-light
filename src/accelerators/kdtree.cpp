@@ -159,7 +159,7 @@ void KdTree::addAsset(const Asset *addme)
         Console.severe(MESSAGE_MAXASSETNUMBER);
     if(assets_number == assets_allocated)
     {
-        unsigned int allocNo = max(assets_allocated<<1,_MAX_ASSETS_);
+        int allocNo = max(assets_allocated<<1,_MAX_ASSETS_);
         const Asset** tmp = (const Asset**)malloc(sizeof(Asset*)*(allocNo));
         if(tmp)
         {
@@ -392,7 +392,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     for(int i=0;i<best_split;i++)
         if(sc[best_axis][i].isLeftSide)
             as_left[as_left_index++] = sc[best_axis][i].whoami;
-    for(unsigned int i=best_split+1;i<2*a_n;i++)
+    for(int i=best_split+1;i<2*a_n;i++)
         if(!(sc[best_axis][i].isLeftSide))
             as_right[as_right_index++] = sc[best_axis][i].whoami;
     
@@ -425,9 +425,9 @@ bool KdTree::intersect(const Ray* r, const Asset* h)const
     rp.inverseX = 1.0f/r->direction.x;
     rp.inverseY = 1.0f/r->direction.y;
     rp.inverseZ = 1.0f/r->direction.z;
-    rp.isXInvNeg = rp.inverseX < 0?true:false;
-    rp.isYInvNeg = rp.inverseY < 0?true:false;
-    rp.isZInvNeg = rp.inverseZ < 0?true:false;
+    rp.isXInvNeg = rp.inverseX < 0;
+    rp.isYInvNeg = rp.inverseY < 0;
+    rp.isZInvNeg = rp.inverseZ < 0;
     float mint, maxt;
     
     //if the scene is not insersected end here

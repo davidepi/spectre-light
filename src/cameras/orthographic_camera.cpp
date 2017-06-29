@@ -58,11 +58,6 @@ OrthographicCamera::OrthographicCamera(const Point3* p,const Point3* t,
     raster2world *= raster2screen;
 }
 
-OrthographicCamera::~OrthographicCamera()
-{
-    
-}
-
 void OrthographicCamera::createRay(Sample *s, Ray *r)const
 {
     r->origin = raster2world * Point3(s->posx,s->posy,0);

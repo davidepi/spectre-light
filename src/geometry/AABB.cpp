@@ -170,6 +170,18 @@ AABB AABB::operator+(const AABB& aabb)const
     return AABB(&minp,&maxp);
 }
 
+void AABB::operator+=(const Point3& p)
+{
+    AABB::bounds[0] = min((AABB::bounds[0]),p);
+    AABB::bounds[1] = max((AABB::bounds[1]),p);
+}
+
+void AABB::operator+=(const AABB& aabb)
+{
+    AABB::bounds[0] = min(AABB::bounds[0],aabb.bounds[0]);
+    AABB::bounds[1] = max(AABB::bounds[1],aabb.bounds[1]);
+}
+
 bool AABB::operator<(const AABB& a)const
 {
     return AABB::volume() < a.volume();

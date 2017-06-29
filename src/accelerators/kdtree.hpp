@@ -239,19 +239,19 @@ private:
     const Asset** assetsList;
     
     //the number of assets managed and the index of the next insertion
-    unsigned int assets_number;
+    int assets_number;
     
     //the allocated size of the assetsList array
-    unsigned int assets_allocated;
+    int assets_allocated;
     
     //the list of nodes managed by this kd-tree
     KdTreeNode* nodesList;
     
     //the number of nodes managed and the index of the next node inserted
-    unsigned int nodes_index;
+    int nodes_index;
     
     //the allocated size of the nodesList array
-    unsigned int nodes_allocated;
+    int nodes_allocated;
 };
 
 #endif
