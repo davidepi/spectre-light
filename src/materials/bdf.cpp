@@ -26,7 +26,8 @@ Bsdf::Bsdf()
 
 Bsdf::~Bsdf()
 {
-
+    for(int i=0;i<count;i++)
+        delete Bsdf::bdfs[i];
 }
 
 void Bsdf::addBdf(const Bdf& addme)
@@ -53,8 +54,8 @@ Color Bsdf::df(const Vec3 *wo, const HitPoint* h, Vec3 *wi)const
     Color retval;
     for(int i=0;i<count;i++)
     {
-        if(bdfs[i].isType(val)) //add contribution only if matches refl/trans
-            retval += bdfs[i].df(&wo_shading_space,&wi_shading_space);
+        if(bdfs[i]->isType(val)) //add contribution only if matches refl/trans
+            retval += bdfs[i]->df(&wo_shading_space,&wi_shading_space);
     }
     return retval;
 }
