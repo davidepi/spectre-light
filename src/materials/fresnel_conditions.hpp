@@ -14,7 +14,6 @@ class Conductor : public FresnelConditions
 {
 public:
     Conductor(Color refraction, Color absorption);
-    ~Conductor();
     Color eval(float cosin)const;
 private:
     Color refraction_index;
@@ -25,7 +24,6 @@ class Dielectric : public FresnelConditions
 {
 public:
     Dielectric(float refractioni, float refractiont);
-    ~Dielectric();
     Color eval(float cosin)const;
 
 private:

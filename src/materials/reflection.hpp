@@ -10,7 +10,7 @@ class Reflection : public Bdf
 {
 public:
     Reflection(Color specular, FresnelConditions* fc);
-    ~Reflection();
+    Bdf* clone()const;
     Color df(const Vec3* wout, const Vec3* wincident)const;
     Color df_s(const Vec3* wo, Vec3* wi)const;
 

@@ -22,3 +22,9 @@ Color Reflection::df_s(const Vec3* wo, Vec3* wi) const
     wi->z = wo->z;
     return fc->eval(wo->z)*specular*fabsf(wo->z);
 }
+
+Bdf* Reflection::clone()const
+{
+    Reflection* res = new Reflection(*this);
+    return res;
+}

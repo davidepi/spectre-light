@@ -31,11 +31,6 @@ Dielectric::Dielectric(float refractioni, float refractiont)
     Dielectric::etat = refractiont;
 }
 
-Dielectric::~Dielectric()
-{
-
-}
-
 Color Dielectric::eval(float cosin)const
 {
     float ei = Dielectric::etai;

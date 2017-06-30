@@ -19,6 +19,7 @@ public:
     Bdf(BdfFlags flags);
     ~Bdf();
 
+    virtual Bdf* clone()const = 0;
     virtual Color df(const Vec3* wout, const Vec3* wincident)const = 0;
     virtual Color df_s(const Vec3* wo, Vec3* wi)const;
     BdfFlags getFlags()const;
@@ -37,12 +38,12 @@ public:
     Bsdf();
     ~Bsdf();
     //bdf is copied
-    void addBdf(const Bdf addme);
+    void addBdf(const Bdf& addme);
     Color df(const Vec3* wo, const HitPoint* h, Vec3* wi)const;
 
 private:
     char count;
-    Bdf bdfs[_MAX_BDF_];
+    Bdf* bdfs[_MAX_BDF_];
     Normal n;
     Vec3 right;
     Vec3 cross;

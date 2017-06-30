@@ -7,11 +7,6 @@ Refraction::Refraction(Color s, float etai, float etat)
     eta_t = etat;
 }
 
-Refraction::~Refraction()
-{
-
-}
-
 Color Refraction::df(const Vec3*, const Vec3*) const
 {
     return Color();
@@ -35,4 +30,10 @@ Color Refraction::df_s(const Vec3 *wo, Vec3 *wi) const
     wi->y = eta * -wo->y;
     wi->z = costransmitted;
     return (Color(1)-d.eval(wo->z)) * (et*et)/(ei*ei) * specular/fabsf(wi->z);
+}
+
+Bdf* Refraction::clone()const
+{
+    Refraction* res = new Refraction(*this);
+    return res;
 }

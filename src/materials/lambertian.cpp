@@ -6,9 +6,10 @@ Lambertian::Lambertian(Color scattered_spectrum) : Bdf(BdfFlags(BRDF|DIFFUSE)),
 
 }
 
-Lambertian::~Lambertian()
+Bdf* Lambertian::clone()const
 {
-
+    Lambertian* res = new Lambertian(*this);
+    return res;
 }
 
 Color Lambertian::df(const Vec3*, const Vec3* ) const

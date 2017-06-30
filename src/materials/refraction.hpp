@@ -10,7 +10,7 @@ class Refraction : public Bdf
 {
 public:
     Refraction(Color specular, float eta_incident, float eta_transmitted);
-    ~Refraction();
+    Bdf* clone()const;
     Color df(const Vec3* wout, const Vec3* wincident)const;
     Color df_s(const Vec3* wo, Vec3* wi)const;
 

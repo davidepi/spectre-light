@@ -29,7 +29,7 @@ Bsdf::~Bsdf()
 
 }
 
-void Bsdf::addBdf(Bdf addme)
+void Bsdf::addBdf(const Bdf& addme)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     if(count==_MAX_BDF_)
@@ -38,7 +38,7 @@ void Bsdf::addBdf(Bdf addme)
         return;
     }
 #endif
-    Bsdf::bdfs[count++] = addme;
+    Bsdf::bdfs[count++] = addme.clone();
 }
 
 Color Bsdf::df(const Vec3 *wo, const HitPoint* h, Vec3 *wi)const

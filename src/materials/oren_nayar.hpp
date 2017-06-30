@@ -11,8 +11,8 @@ class OrenNayar : public Bdf
 {
 public:
     OrenNayar(Color diffuse, float sigma);
-    ~OrenNayar();
     Color df(const Vec3* wout, const Vec3* wincident)const;
+    Bdf* clone()const;
 
 private:
     Color diffuse;

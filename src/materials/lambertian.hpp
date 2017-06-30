@@ -8,13 +8,13 @@
 #include "bdf.hpp"
 #include "color.hpp"
 #include "vec3.hpp"
-
+#include "console.hpp"
 
 class Lambertian : public Bdf
 {
 public:
     Lambertian(Color scattered_spectrum);
-    ~Lambertian();
+    Bdf* clone()const;
     Color df(const Vec3* wout, const Vec3* wincident)const;
 private:
     Color diffuse;

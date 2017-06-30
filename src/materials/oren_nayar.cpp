@@ -8,9 +8,10 @@ OrenNayar::OrenNayar(Color diffuse, float sigma) : Bdf(BdfFlags(BRDF|DIFFUSE)),
     OrenNayar::B = (0.45f*sigma2)/(sigma2+0.09f);
 }
 
-OrenNayar::~OrenNayar()
+Bdf* OrenNayar::clone()const
 {
-
+    OrenNayar* res = new OrenNayar(*this);
+    return res;
 }
 
 Color OrenNayar::df(const Vec3 *wout, const Vec3 *wincident) const
