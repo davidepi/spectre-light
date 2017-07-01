@@ -42,7 +42,7 @@ void Bsdf::addBdf(const Bdf& addme)
     Bsdf::bdfs[count++] = addme.clone();
 }
 
-Color Bsdf::df(const Vec3 *wo, const HitPoint* h, Vec3 *wi)const
+Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi)const
 {
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
     Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->n));
