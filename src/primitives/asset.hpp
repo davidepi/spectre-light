@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 21 Jun 2017
+//Last Edit  1 Jul 2017
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      21 Jun 2017
+ *  \date      1 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 #define __ASSET_HPP__
 
 #include "shape.hpp"
+#include "bdf.hpp"
 
 /**
  *  \class Asset asset.hpp "primitives/asset.hpp"
@@ -77,6 +78,24 @@ public:
      *  \return A pointer to the aabb surrounding this asset
      */
     const AABB* getAABB() const;
+
+    /** \brief Set the material for the current asset
+     *
+     *  Set the material for the current asset. Note that the pointer will not
+     *  be owned by the asset
+     *
+     *  \param[in] material The pointer of the material that will be associated
+     *  with the current asset
+     */
+    void setMaterial(const Bsdf* material);
+
+    /** \brief Return a pointer to the material
+     *
+     *  Return the material associated with the asset
+     *
+     *  \return material A pointer to the material of the asset
+     */
+    const Bsdf* getMaterial()const;
     
 private:
     //underlying model
@@ -95,6 +114,8 @@ private:
     Matrix4 invTrans;
 
     //Material
+    const Bsdf* material;
+
     //Texture
 };
 

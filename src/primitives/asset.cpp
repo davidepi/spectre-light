@@ -58,3 +58,13 @@ const AABB* Asset::getAABB()const
 {
     return &(Asset::aabb);
 }
+
+void Asset::setMaterial(const Bsdf *material)
+{
+    Asset::material = material;
+}
+
+const Bsdf* Asset::getMaterial() const
+{
+    return Asset::material;
+}
