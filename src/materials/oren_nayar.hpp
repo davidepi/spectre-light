@@ -21,7 +21,7 @@
 
 /**
  *  \class OrenNayar oren_nayar.hpp "materials/oren_nayar.hpp"
- *  \brief Component of the Bsdf class
+ *  \brief BRDF for a perfectly diffuse rough surface
  *
  *  The Oren-Nayar model is a BRDF that defines a diffuse surface.
  *  In constrast to the Lambertian model, this one is able to weight the 

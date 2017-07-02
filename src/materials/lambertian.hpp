@@ -21,7 +21,7 @@
 
 /**
  *  \class Lambertian lambertian.hpp "materials/lambertian.hpp"
- *  \brief Component of the Bsdf class
+ *  \brief BRDF for a perfectly diffuse smooth surface
  *
  *  The Lambertian is a BRDF that defines an ideal matte surface, with very 
  *  subtle roughness. For surfaces with a more pronounced roughness, consider 
