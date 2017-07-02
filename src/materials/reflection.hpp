@@ -56,8 +56,8 @@ public:
      *  Since specular reflection exhist only for a single pair of ray, the
      *  BRDF follows a delta distribution, and this function returns always 0
      *
-     *  \param[in] wout outgoing ray
-     *  \param[in] wincident incident ray
+     *  \param[in] wo outgoing ray
+     *  \param[in] wiincident ray
      *  \return 0
      */
     Color df(const Vec3* wo, const Vec3* wi)const;
