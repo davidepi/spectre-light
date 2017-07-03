@@ -26,5 +26,8 @@
 ///Defines the max number of assets
 #define _MAX_ASSETS_ 4096
 
+///The maximum number of functions (BRDF/BTDF) that a BSDF can contain
+#define _MAX_BDF_ 5
+
 #include "validator.h"
 #endif

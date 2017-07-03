@@ -101,6 +101,22 @@ public:
     Color operator/(const Color& c)const;
     ///The division operation between two colours
     void operator/=(const Color& c);
+    ///The addition operation between a value and a colour
+    Color operator+(float c)const;
+    ///The addition operation between a value and a colour
+    void operator+=(float c);
+    ///The subtraction operation between a value and a colour
+    Color operator-(float c)const;
+    ///The subtraction operation between a value and a colour
+    void operator-=(float c);
+    ///The multiplication operation between a value and a colour
+    Color operator*(float c)const;
+    ///The multiplication operation between a value and a colour
+    void operator*=(float c);
+    ///The division operation between a value and a colour
+    Color operator/(float c)const;
+    ///The division operation between a value and a colour
+    void operator/=(float c);
 
     //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 };

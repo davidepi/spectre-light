@@ -120,4 +120,52 @@ void Color::operator/=(const Color& c)
     Color::b/=c.b;
 }
 
+Color Color::operator+(float c)const
+{
+    return Color(Color::r+c,Color::g+c,Color::b+c);
+}
+
+void Color::operator+=(float c)
+{
+    Color::r+=c;
+    Color::g+=c;
+    Color::b+=c;
+}
+
+Color Color::operator-(float c)const
+{
+    return Color(Color::r-c,Color::g-c,Color::b-c);
+}
+
+void Color::operator-=(float c)
+{
+    Color::r-=c;
+    Color::g-=c;
+    Color::b-=c;
+}
+
+Color Color::operator*(float c)const
+{
+    return Color(Color::r*c,Color::g*c,Color::b*c);
+}
+
+void Color::operator*=(float c)
+{
+    Color::r*=c;
+    Color::g*=c;
+    Color::b*=c;
+}
+
+Color Color::operator/(float c)const
+{
+    return Color(Color::r/c,Color::g/c,Color::b/c);
+}
+
+void Color::operator/=(float c)
+{
+    Color::r/=c;
+    Color::g/=c;
+    Color::b/=c;
+}
+
 //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
