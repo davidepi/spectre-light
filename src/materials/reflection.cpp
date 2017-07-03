@@ -1,9 +1,20 @@
 #include "reflection.hpp"
 
-Reflection::Reflection(Color specular, FresnelConditions* fc)
+Reflection::Reflection(Color specular, Color refraction, Color absorption)
         : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
 {
-    Reflection::fc = fc;
+    Reflection::fc = new Conductor(refraction,absorption);
+}
+
+Reflection::Reflection(Color specular, float etai, float etat)
+        : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
+{
+    Reflection::fc = new Dielectric(etai,etat);
+}
+
+Reflection::~Reflection()
+{
+    delete Reflection::fc;
 }
 
 Color Reflection::df(const Vec3*, const Vec3*) const

@@ -43,7 +43,7 @@ public:
     Bdf(BdfFlags flags);
 
     ///Default destructor
-    ~Bdf();
+    virtual ~Bdf();
 
     /** \brief Copy the Bdf and its eventual derived class
      *

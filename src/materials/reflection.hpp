@@ -32,12 +32,25 @@ class Reflection : public Bdf
 {
 public:
 
-    /** \brief Default Constructor
+    /** \brief Default constructor
      *
-     * \param[in] specular The spectrum of light reflected back
-     * \param[in] fc Fresnel conditions used in the object (conductor or not)
+     *  \param specular The spectrum of light reflected back
+     *  \param etai Index of refraction from the incoming material
+     *  \param etat Index of refraction of the transmitted material
      */
-    Reflection(Color specular, FresnelConditions* fc);
+    Reflection(Color specular, float etai, float etat);
+
+    /** \brief Default Constructor for metallic material
+     *
+     *  \param[in] specular The spectrum of light reflected back
+     *  \param[in] refraction The ior for the material. In a metallic material,
+     *  index of refraction is different based on the wavelenght of light
+     *  \param[in] absorption The amount of light absorbed by the material
+     */
+    Reflection(Color specular, Color refraction, Color absorption);
+
+    ///Default destructor
+    ~Reflection();
 
     /** \brief Copy the BRDF
      *
