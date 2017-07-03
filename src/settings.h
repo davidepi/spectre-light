@@ -29,5 +29,20 @@
 ///The maximum number of functions (BRDF/BTDF) that a BSDF can contain
 #define _MAX_BDF_ 5
 
+///Default extension for the box filter
+#define BOX_FILTER_EXTENT 1
+
+///Default extension for the tent filter
+#define TENT_FILTER_EXTENT 2
+
+///Default extension for the gaussian filter
+#define GAUSSIAN_FILTER_EXTENT 2
+
+///Default extension for the mitchell filter
+#define MITCHELL_FILTER_EXTENT 2
+
+///Default extension for the sinc filter
+#define LANCZOS_FILTER_EXTENT 4
+
 #include "validator.h"
 #endif

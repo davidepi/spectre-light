@@ -46,4 +46,9 @@
                                        "with a NULL matrix"
 
 #define MESSAGE_LINEAR_EQUATION_IMPOSSIBLE "Trying to solve ax+b=0 with a=0"
+
+#define MESSAGE_MISSING_CAMERA "Missing camera"
+
+#define MESSAGE_MISSING_FILTER "Missing filter"
+
 #endif
