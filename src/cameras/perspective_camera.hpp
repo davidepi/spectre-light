@@ -1,5 +1,5 @@
 //Created,  28 May 2017
-//Last Edit  2 Jun 2017
+//Last Edit  3 Jul 2017
 
 /**
  *  \file perspective_camera.hpp
@@ -49,8 +49,7 @@ public:
      *  \param[in] fov The angle of view in radians
      */
     PerspectiveCamera(const Point3* position,const Point3* target,
-                       const Vec3* up, int width, int height,
-                       const char* filename, float fov);
+                       const Vec3* up, int width, int height, float fov);
     
     /** \brief Create a ray from a sample
      *

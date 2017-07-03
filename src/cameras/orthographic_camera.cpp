@@ -1,9 +1,8 @@
 #include "orthographic_camera.hpp"
 
 OrthographicCamera::OrthographicCamera(const Point3* p,const Point3* t,
-                                       const Vec3* u, int w, int h,
-                                       const char* o)
-: Camera(p,t,u,w,h,o)
+                                       const Vec3* u, int w, int h)
+: Camera(p,t,u,w,h)
 {
     raster2world = camera2world;
     
