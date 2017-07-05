@@ -1,6 +1,7 @@
 #include "renderer.hpp"
 
-void* executer(void* jobs);
+void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
+              std::stack<Renderer_task>* jobs, Scene* s);
 
 Renderer::Renderer(int w, int h, int spp, const char* o) : film(w,h,o)
 {
@@ -71,7 +72,7 @@ void Renderer::setLanczosSincFilter(float tau)
     f = new LanczosFilter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,tau);
 }
 
-int Renderer::render()
+int Renderer::render(Scene* s)
 {
     if(Renderer::c == NULL)
     {
@@ -81,5 +82,54 @@ int Renderer::render()
     if(Renderer::f == NULL)
     {
         Console.severe(MESSAGE_MISSING_FILTER);
+    }
+}
+
+void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
+              std::stack<Renderer_task>* jobs, Scene* s)
+{
+    bool done = false;
+    Renderer_task todo;
+    Sample sample;
+    Ray r;
+    Color radiance;
+    Asset* h;
+    while(!done)
+    {
+        lock->lock();
+        if(jobs->size() == 0)
+        {
+            lock->unlock();
+            done = true;
+            continue;
+        }
+        else
+        {
+            todo = jobs->top();
+            jobs->pop();
+            lock->unlock();
+        }
+        unsigned int* seed = (unsigned int*) &todo; //TODO: maybe change this
+        StratifiedSampler sam(todo.startx,todo.endx,todo.starty,todo.endy,spp,
+                              seed, true);
+        while(sam.getSamples(&sample))
+        {
+            c->createRay(&sample,&r);
+            //TODO: compute actual radiance instead of these lines
+            if(s->k.intersect(&r,h))
+            {
+                radiance.r = 1;
+                radiance.g = 1;
+                radiance.b = 1;
+            }
+            else
+            {
+                radiance.r = 0;
+                radiance.g = 0;
+                radiance.b = 0;
+            }
+            //end
+            io->addPixel(&sample,&radiance);
+        }
     }
 }

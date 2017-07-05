@@ -14,6 +14,8 @@
 #include "gaussian_filter.hpp"
 #include "mitchell_filter.hpp"
 #include "lanczos_filter.hpp"
+#include "scene.hpp"
+#include "stratified_sampler.hpp"
 #include <thread>
 #include <stack>
 
@@ -31,7 +33,7 @@ public:
     void setMitchellFilter(float b, float c);
     void setLanczosSincFilter(float tau);
 
-    int render();
+    int render(Scene* s);
 
 private:
     bool done;
