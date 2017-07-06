@@ -29,6 +29,9 @@
 ///The maximum number of functions (BRDF/BTDF) that a BSDF can contain
 #define _MAX_BDF_ 5
 
+///Avoid aliasing by jittering the sampling positions
+#define JITTERED_SAMPLER true
+
 ///Default extension for the box filter
 #define BOX_FILTER_EXTENT 1
 

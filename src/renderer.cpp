@@ -12,6 +12,7 @@ Renderer::Renderer(int w, int h, int spp, const char* o) : film(w,h,o)
     numthreads = numthreads > 0 ? numthreads : 1;
     Renderer::c = NULL;
     Renderer::f = NULL;
+    Renderer::workers=new std::thread[numthreads];//dflt ctor won't start thread
 }
 
 Renderer::~Renderer()
@@ -20,6 +21,7 @@ Renderer::~Renderer()
         delete c;
     if(Renderer::f != NULL)
         delete f;
+    delete[] Renderer::workers;
 }
 
 void Renderer::setPerspective(Point3 pos, Point3 target, Vec3 up, float fov)
@@ -74,15 +76,27 @@ void Renderer::setLanczosSincFilter(float tau)
 
 int Renderer::render(Scene* s)
 {
-    if(Renderer::c == NULL)
+    if (Renderer::c == NULL)
     {
         Console.severe(MESSAGE_MISSING_CAMERA);
         return 1;
     }
-    if(Renderer::f == NULL)
+    if (Renderer::f == NULL)
     {
         Console.severe(MESSAGE_MISSING_FILTER);
     }
+
+    //TODO: split image into render_task
+
+    for(int i=0;i<Renderer::numthreads;i++)
+    {
+        Renderer::workers[i] = std::thread(executor,c,&film,&jobs_mtx,spp,&jobs,s);
+    }
+    for(int i=0;i<Renderer::numthreads;i++)
+    {
+        Renderer::workers[i].join();
+    }
+    Renderer::film.saveImage();
 }
 
 void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
@@ -111,7 +125,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
         }
         unsigned int* seed = (unsigned int*) &todo; //TODO: maybe change this
         StratifiedSampler sam(todo.startx,todo.endx,todo.starty,todo.endy,spp,
-                              seed, true);
+                              seed, JITTERED_SAMPLER);
         while(sam.getSamples(&sample))
         {
             c->createRay(&sample,&r);

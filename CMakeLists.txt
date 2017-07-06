@@ -31,8 +31,9 @@ include_directories(src/accelerators)
 include_directories(src/samplers)
 include_directories(src/cameras)
 include_directories(src/materials)
-find_package(Doxygen)
+find_package (Threads REQUIRED)
 
+find_package(Doxygen)
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
     add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile ${CMAKE_CURRENT_SOURCE_DIR}/src/ ${CMAKE_CURRENT_BINARY_DIR})
@@ -51,4 +52,4 @@ else()
 endif()
 
 add_executable(spectre src/main.cpp ${spectre_core_sources})
-
+target_link_libraries (spectre ${CMAKE_THREAD_LIBS_INIT})

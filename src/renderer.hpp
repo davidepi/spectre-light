@@ -16,6 +16,7 @@
 #include "lanczos_filter.hpp"
 #include "scene.hpp"
 #include "stratified_sampler.hpp"
+#include "settings.h"
 #include <thread>
 #include <stack>
 
@@ -46,6 +47,7 @@ private:
     int spp;
     std::stack<Renderer_task> jobs;
     std::mutex jobs_mtx;
+    std::thread* workers;
 };
 
 struct Renderer_task
