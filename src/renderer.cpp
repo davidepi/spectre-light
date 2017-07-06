@@ -93,6 +93,9 @@ void Renderer::setLanczosSincFilter(float tau)
 
 int Renderer::render(Scene* s)
 {
+    //used just for seed generation, WELLrng will be the actual prng
+    srand(time(NULL));
+
     //build the kd-tree, or rebuild it, just to be sure
     s->k.buildTree();
 
@@ -125,7 +128,8 @@ int Renderer::render(Scene* s)
     //create threads
     for(int i=0;i<Renderer::numthreads;i++)
     {
-        Renderer::workers[i] = std::thread(executor,c,&film,&jobs_mtx,spp,&jobs,s);
+        Renderer::workers[i] = std::thread(executor,c,&film,&jobs_mtx,spp,
+                                           &jobs,s);
     }
 
     //wait for them to finish
@@ -136,13 +140,20 @@ int Renderer::render(Scene* s)
 
     //save the image
     Renderer::film.saveImage();
-    
+
     return 0;
 }
 
 void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
               std::stack<Renderer_task>* jobs, Scene* s)
 {
+    //generate seed for WELLrng. Constant WELL_R is inside wellrng.h
+    unsigned int WELLseed[WELL_R];
+    for(int i=0;i<WELL_R;i++)
+    {
+        //assuming RAND_MAX=2^31, sum two randoms and xor them with a third one
+        WELLseed[i] = ((unsigned int)rand()+(unsigned int)rand()) ^ rand();
+    }
     bool done = false;
     Renderer_task todo;
     Sample sample;
@@ -165,9 +176,8 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
             jobs->pop();
             lock->unlock();
         }
-        unsigned int* seed = (unsigned int*) &todo; //TODO: maybe change this
         StratifiedSampler sam(todo.startx,todo.endx,todo.starty,todo.endy,spp,
-                              seed, JITTERED_SAMPLER);
+                              WELLseed, JITTERED_SAMPLER);
         while(sam.getSamples(&sample))
         {
             c->createRay(&sample,&r);

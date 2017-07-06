@@ -19,8 +19,16 @@
 #include "settings.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
+#include <time.h> //time for srand
 
-struct Renderer_task;
+struct Renderer_task
+{
+    int startx;
+    int endx;
+    int starty;
+    int endy;
+};
+
 class Renderer
 {
 public:
@@ -49,14 +57,5 @@ private:
     std::mutex jobs_mtx;
     std::thread* workers;
 };
-
-struct Renderer_task
-{
-    int startx;
-    int endx;
-    int starty;
-    int endy;
-};
-
 
 #endif
