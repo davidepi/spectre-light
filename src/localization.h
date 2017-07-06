@@ -51,4 +51,6 @@
 
 #define MESSAGE_MISSING_FILTER "Missing filter"
 
+#define MESSAGE_WIDTH_MULTIPLE "Width must be a multiple of %d"
+
 #endif

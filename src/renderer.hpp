@@ -1,5 +1,5 @@
 //Created,   3 May 2017
-//Last Edit  3 Jul 2017
+//Last Edit  6 Jul 2017
 
 #ifndef __RENDERER_HPP__
 #define __RENDERER_HPP__
@@ -17,8 +17,8 @@
 #include "scene.hpp"
 #include "stratified_sampler.hpp"
 #include "settings.h"
-#include <thread>
-#include <stack>
+#include <thread> //std::thread
+#include <stack> //std::stack
 
 struct Renderer_task;
 class Renderer

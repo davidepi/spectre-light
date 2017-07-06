@@ -16,10 +16,13 @@
 
 ///The number of bounces before discarding the ray
 #define DEFAULT_BOUNCES 6
+
 ///If defined performs several checks to avoid Nan values
 #define _LOW_LEVEL_CHECKS_
+
 ///If defined, instead of writing errors in the console, writes them in a struct
 //#define _TEST_
+
 ///The amount of floating point rounding error that can cause self-intersections
 #define SELF_INTERSECT_ERROR 0.0001f
 
@@ -28,6 +31,9 @@
 
 ///The maximum number of functions (BRDF/BTDF) that a BSDF can contain
 #define _MAX_BDF_ 5
+
+///The overall image will be divided in subimages of SPLIT_SIZE width and height
+#define SPLIT_SIZE 32
 
 ///Avoid aliasing by jittering the sampling positions
 #define JITTERED_SAMPLER true

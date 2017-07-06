@@ -5,8 +5,20 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
 
 Renderer::Renderer(int w, int h, int spp, const char* o) : film(w,h,o)
 {
-    Renderer::w = w;
-    Renderer::h = h;
+    if(w%SPLIT_SIZE)
+    {
+        char errmsg[256];
+        snprintf(errmsg,256,MESSAGE_WIDTH_MULTIPLE,SPLIT_SIZE);
+        Console.severe(errmsg);
+        //set w and h as 0 so no image will be rendered
+        Renderer::w = 0;
+        Renderer::h = 0;
+    }
+    else
+    {
+        Renderer::w = w;
+        Renderer::h = h;
+    }
     Renderer::spp = spp;
     Renderer::numthreads = (int)std::thread::hardware_concurrency();
     numthreads = numthreads > 0 ? numthreads : 1;
@@ -44,6 +56,7 @@ void Renderer::setBoxFilter()
     if(Renderer::f != NULL)
         delete f;
     f = new BoxFilter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
+    film.setFilter(f);
 }
 
 void Renderer::setTentFilter()
@@ -51,6 +64,7 @@ void Renderer::setTentFilter()
     if(Renderer::f != NULL)
         delete f;
     f = new TentFilter(TENT_FILTER_EXTENT,TENT_FILTER_EXTENT);
+    film.setFilter(f);
 }
 
 void Renderer::setGaussianFilter(float sigma)
@@ -58,6 +72,7 @@ void Renderer::setGaussianFilter(float sigma)
     if(Renderer::f != NULL)
         delete f;
     f = new GaussianFilter(GAUSSIAN_FILTER_EXTENT,GAUSSIAN_FILTER_EXTENT,sigma);
+    film.setFilter(f);
 }
 
 void Renderer::setMitchellFilter(float b, float c)
@@ -65,6 +80,7 @@ void Renderer::setMitchellFilter(float b, float c)
     if(Renderer::f != NULL)
         delete f;
     f = new MitchellFilter(MITCHELL_FILTER_EXTENT,MITCHELL_FILTER_EXTENT,b,c);
+    film.setFilter(f);
 }
 
 void Renderer::setLanczosSincFilter(float tau)
@@ -72,10 +88,15 @@ void Renderer::setLanczosSincFilter(float tau)
     if(Renderer::f != NULL)
         delete f;
     f = new LanczosFilter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,tau);
+    film.setFilter(f);
 }
 
 int Renderer::render(Scene* s)
 {
+    //build the kd-tree, or rebuild it, just to be sure
+    s->k.buildTree();
+
+    //checks if the camera and the filter are set
     if (Renderer::c == NULL)
     {
         Console.severe(MESSAGE_MISSING_CAMERA);
@@ -84,19 +105,39 @@ int Renderer::render(Scene* s)
     if (Renderer::f == NULL)
     {
         Console.severe(MESSAGE_MISSING_FILTER);
+        return 1;
     }
 
-    //TODO: split image into render_task
+    //add part of the image as renderer_tasks
+    Renderer_task task;
+    for(int y=0;y<h;y+=SPLIT_SIZE)
+    {
+        task.starty = y;
+        task.endy = y+SPLIT_SIZE<h?y+SPLIT_SIZE:h;
+        for(int x=0;x<w;x+=SPLIT_SIZE)
+        {
+            task.startx = x;
+            task.endx = x+SPLIT_SIZE;
+            jobs.push(task);
+        }
+    }
 
+    //create threads
     for(int i=0;i<Renderer::numthreads;i++)
     {
         Renderer::workers[i] = std::thread(executor,c,&film,&jobs_mtx,spp,&jobs,s);
     }
+
+    //wait for them to finish
     for(int i=0;i<Renderer::numthreads;i++)
     {
         Renderer::workers[i].join();
     }
+
+    //save the image
     Renderer::film.saveImage();
+    
+    return 0;
 }
 
 void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
@@ -111,6 +152,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
     while(!done)
     {
         lock->lock();
+        //check if the job queue is empty
         if(jobs->size() == 0)
         {
             lock->unlock();
