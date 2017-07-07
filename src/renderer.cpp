@@ -21,6 +21,12 @@ Renderer::Renderer(int w, int h, int spp, const char* o) : film(w,h,o)
     }
     Renderer::spp = spp;
     Renderer::numthreads = (int)std::thread::hardware_concurrency();
+
+    //print number of rendering threads
+    char threads[256];
+    sprintf(threads,MESSAGE_NUMTHREADS,numthreads);
+    Console.log(threads,threads);
+
     numthreads = numthreads > 0 ? numthreads : 1;
     Renderer::c = NULL;
     Renderer::f = NULL;

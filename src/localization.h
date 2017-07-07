@@ -1,6 +1,3 @@
-//Created,  24 Apr 2017
-//Last Edit 10 May 2017
-
 /**
  *  \file localization.h
  *  \brief Text strings
@@ -52,5 +49,7 @@
 #define MESSAGE_MISSING_FILTER "Missing filter"
 
 #define MESSAGE_WIDTH_MULTIPLE "Width must be a multiple of %d"
+
+#define MESSAGE_NUMTHREADS "Using %d rendering threads"
 
 #endif
