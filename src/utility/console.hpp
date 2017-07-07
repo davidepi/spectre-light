@@ -30,7 +30,7 @@
  *  This class is used to print messages to the console. It is a singleton, and
  *  while usually not a good practice I find it handy to print in this way.
  *
- *  A define grant access to an singleton just by writing "Console"
+ *  A define grant access to this singleton just by writing "Console"
  */
 class Console
 {

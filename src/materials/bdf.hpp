@@ -138,7 +138,7 @@ public:
      *
      *  \param[in] addme The Bdf that will be added
      */
-    void addBdf(const Bdf& addme);
+    void addBdf(const Bdf* addme);
 
     /** \brief Return the value of the BSDF
      *
