@@ -73,3 +73,8 @@ float Sphere::surface()const
 {
     return 4.0f*(float)M_PI*Sphere::radius*Sphere::radius;
 }
+
+void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
+{
+
+}

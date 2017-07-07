@@ -1,12 +1,12 @@
 //Created,  24 Apr 2017
-//Last Edit 10 May 2017
+//Last Edit 6 Jul 2017
 
 /**
  *  \file settings.h
  *  \brief User defined global definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 10 May 2017
+ *  \date 6 Jul 2017
  *  \copyright GNU GPLv3
  */
 

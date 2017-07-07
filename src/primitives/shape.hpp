@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 21 Jun 2017
+//Last Edit  7 Jul 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      21 Jun 2017
+ *  \date      7 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -93,6 +93,19 @@ public:
      *  \return A float representing the area of the shape in world-space units
      */
     virtual float surface()const = 0;
+
+    /** \brief Returns a random point on the surface of the shape
+     *
+     *  Useful for the light sources, this method returns a random point on the
+     *  surface of the shape. Its implementation may chose a point that is
+     *  actually facing the viewer, in order to reduce variance
+     *
+     *  \param[in] r A random value in the interval (0.0,1.0)
+     *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[out] p The computed point
+     *  \param[out] n The normal of the computed point
+     */
+    virtual void getRandomPoint(float r, float r1, Point3* p, Normal* n)const=0;
     
     
 private:
