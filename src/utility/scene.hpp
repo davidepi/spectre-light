@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 29 Jun 2017
+//Last Edit  7 Jul 2017
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      29 Jun 2017
+ *  \date      7 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -59,17 +59,20 @@ public:
      *  Given a pointer to a shape, the scene inherits its ownership and use it
      *  for subsequent addAsset calls
      *
-     *  \param addme The shape that will be added to the Scene
+     *  \param[in] addme The shape that will be added to the Scene
+     *  \return The added shape id
      */
-    void inheritShape(Shape* addme);
+    int inheritShape(Shape* addme);
 
     /** \brief Given a shape id and a matrix, create an asset with those
      *
-     *  \param shapeid The id of the shape, alredy inherited by the scene
-     *  \param transform The transform matrix for the asset
-     *  \return true if the shape has been found and added correctly as an asset
+     *  \param[in] shapeid The id of the shape, alredy inherited by the scene
+     *  \param[in] transform The transform matrix for the asset
+     *  \param[in] material The material for the asset. If NULL the material
+     *  will remain the default one
+     *  \return the added assets id. 0 if nothing was added
      */
-    bool addAsset(int shapeid, Matrix4* transform);
+    int addAsset(int shapeid, Matrix4* transform, const Bsdf* material = NULL);
 
 private:
 

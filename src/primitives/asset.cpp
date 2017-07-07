@@ -1,6 +1,4 @@
 #include "asset.hpp"
-#include <assert.h>
-#include <iostream>
 unsigned static int _asset_ID_pool = 1;
 
 Asset::Asset(Shape* sp, Matrix4* transform)
@@ -8,6 +6,8 @@ Asset::Asset(Shape* sp, Matrix4* transform)
 {
     Asset::model = sp;
     Asset::transform = transform;
+    Asset::material = MtlLib.get("Default");
+
     transform->inverse(&(Asset::invTrans));
 }
 

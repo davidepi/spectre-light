@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit  1 Jul 2017
+//Last Edit  7 Jul 2017
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      1 Jul 2017
+ *  \date      7 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -18,6 +18,7 @@
 
 #include "shape.hpp"
 #include "bdf.hpp"
+#include "material_library.hpp"
 
 /**
  *  \class Asset asset.hpp "primitives/asset.hpp"

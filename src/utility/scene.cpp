@@ -21,7 +21,7 @@ Scene::~Scene()
     delete[] Scene::assets;
 }
 
-void Scene::inheritShape(Shape *addme)
+int Scene::inheritShape(Shape *addme)
 {
     if(Scene::shapes_allocated == Scene::shape_index) //array full, doubles it
     {
@@ -39,9 +39,10 @@ void Scene::inheritShape(Shape *addme)
     }
 
     Scene::shapes[Scene::shape_index++] = addme; //add shape
+    return  addme->getID();
 }
 
-bool Scene::addAsset(int shapeid, Matrix4* transformMatrix)
+int Scene::addAsset(int shapeid, Matrix4* transformMatrix,const Bsdf* material)
 {
     //complexity O(n), could be O(1), but who cares, this is done in the setup
     for(int i=0;i<Scene::shape_index;i++)
@@ -65,12 +66,14 @@ bool Scene::addAsset(int shapeid, Matrix4* transformMatrix)
 
             }
 
-            Scene::assets[Scene::asset_index++]= new Asset(Scene::shapes[i],
-                                                           transformMatrix);
-            k.addAsset(Scene::assets[Scene::asset_index-1]); //add to kdtree
-            return true;
+            Asset* addme = new Asset(Scene::shapes[i], transformMatrix);
+            if(material!=NULL)
+                addme->setMaterial(material);
+            Scene::assets[Scene::asset_index++] = addme;
+            k.addAsset(addme); //add to kdtree
+            return addme->getID();
         }
     }
 
-    return false; //shape not found, nothing added
+    return 0; //shape not found, nothing added
 }

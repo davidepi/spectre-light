@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(spectre-light CXX)
+list(APPEND CMAKE_CXX_SOURCE_FILE_EXTENSIONS c) #for pthread
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file(GLOB spectre_core_sources
