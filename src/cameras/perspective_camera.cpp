@@ -1,9 +1,8 @@
 #include "perspective_camera.hpp"
 
 PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
-                                     const Vec3* u, int w, int h, const char* o,
-                                     float fov)
-: Camera(p,t,u,w,h,o)
+                                     const Vec3* u, int w, int h, float fov)
+: Camera(p,t,u,w,h)
 {
     float f = 1000.0f; //far plane
     float n = 0.01f; //near plane
@@ -55,11 +54,6 @@ PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
     raster2camera.setIdentity();
     raster2camera*= screen2camera;
     raster2camera *= raster2screen;
-}
-
-PerspectiveCamera::~PerspectiveCamera()
-{
-    
 }
 
 void PerspectiveCamera::createRay(Sample *s, Ray *r)const

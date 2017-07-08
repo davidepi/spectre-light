@@ -6,8 +6,7 @@ bool check_extension(const char* fn)
     const char* name = strrchr(fn,'.');
     if(name == NULL)
     {
-        Console.warning(
-                   "Missing extension in filename. File will be saved as .ppm");
+        Console.warning(MESSAGE_MISSING_EXTENSION);
         return false;
     }
     else
@@ -95,12 +94,13 @@ void ImageOutput::addPixel(Sample* s, Color* c)
 
 void ImageOutput::setFilter(Filter* f)
 {
-    ImageOutput::f = dynamic_cast<Filter*>(f);
+    ImageOutput::f = f;
 }
 
 bool ImageOutput::saveImage()
 {
-    uint8_t* tmp = (uint8_t*)malloc(ImageOutput::width*ImageOutput::height*3);
+    uint8_t* tmp = (uint8_t*)malloc((size_t)(ImageOutput::width
+                                             *ImageOutput::height*3));
     int i = 0;
     
     //evaluate average for every pixel
@@ -126,7 +126,7 @@ bool ImageOutput::saveImage()
     if(fout != NULL)
     {
         fprintf(fout,"P6 %d %d 255 ",width,height);
-        fwrite(tmp, sizeof(unsigned char), width*height*3, fout);
+        fwrite(tmp, sizeof(unsigned char), (size_t)(width*height*3), fout);
         fclose(fout);
         free(tmp);
         return true;

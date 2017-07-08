@@ -1,5 +1,5 @@
 //Created,  26 May 2017
-//Last Edit  2 Jun 2017
+//Last Edit  3 Jul 2017
 
 /**
  *  \file orthographic_camera.hpp
@@ -48,11 +48,7 @@ public:
      *  disk
      */
     OrthographicCamera(const Point3* position, const Point3* target,
-                       const Vec3* up, int width, int height,
-                       const char* filename);
-    
-    ///Default destructor
-    ~OrthographicCamera();
+                       const Vec3* up, int width, int height);
     
     /** \brief Create a ray from a sample
      *

@@ -70,6 +70,8 @@ Color::~Color()
     
 }
 
+//<><><><> Operators <><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
 Color Color::operator+(const Color& c)const
 {
     return Color(Color::r+c.r,Color::g+c.g,Color::b+c.b);
@@ -117,3 +119,53 @@ void Color::operator/=(const Color& c)
     Color::g/=c.g;
     Color::b/=c.b;
 }
+
+Color Color::operator+(float c)const
+{
+    return Color(Color::r+c,Color::g+c,Color::b+c);
+}
+
+void Color::operator+=(float c)
+{
+    Color::r+=c;
+    Color::g+=c;
+    Color::b+=c;
+}
+
+Color Color::operator-(float c)const
+{
+    return Color(Color::r-c,Color::g-c,Color::b-c);
+}
+
+void Color::operator-=(float c)
+{
+    Color::r-=c;
+    Color::g-=c;
+    Color::b-=c;
+}
+
+Color Color::operator*(float c)const
+{
+    return Color(Color::r*c,Color::g*c,Color::b*c);
+}
+
+void Color::operator*=(float c)
+{
+    Color::r*=c;
+    Color::g*=c;
+    Color::b*=c;
+}
+
+Color Color::operator/(float c)const
+{
+    return Color(Color::r/c,Color::g/c,Color::b/c);
+}
+
+void Color::operator/=(float c)
+{
+    Color::r/=c;
+    Color::g/=c;
+    Color::b/=c;
+}
+
+//<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>

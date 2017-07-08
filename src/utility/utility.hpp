@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit 10 May 2017
+//Last Edit 15 Jun 2017
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  10 May 2017
+ *  \date  15 Jun 2017
  *  \copyright GNU GPLv3
  */
 
@@ -164,6 +164,18 @@ inline bool flt_equal(const float val1, const float val2)
     return std::fabs(val1-val2) <= FLT_EPSILON;
 }
 
+/** \brief Determine the sign of the given number
+ *
+ *  Determine the sign of the given number and return 1 if positive and -1 if
+ *  negative. If the number is 0, 1 is returned
+ *
+ *  \param[in] a The number for which is required to determine the sign
+ *  \return 1 if poisitive, -1 if negative
+ */
+inline int sign(float a)
+{
+    return (a>=0)?1:-1;
+}
 
 /** \brief Solve a linear equation
  *
@@ -180,7 +192,7 @@ inline float equation1(const float a, const float b)
 #ifdef _LOW_LEVEL_CHECKS_
     if(a==0)
     {
-        Console.severe("Trying to solve the linear equation ax+b=0 with a=0");
+        Console.severe(MESSAGE_LINEAR_EQUATION_IMPOSSIBLE);
         return b;
     }
 #endif

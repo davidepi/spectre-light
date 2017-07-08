@@ -1,5 +1,5 @@
 //Created,  24 May 2017
-//Last Edit  2 Jun 2017
+//Last Edit  3 Jul 2017
 
 /**
  *  \file camera.hpp
@@ -36,9 +36,6 @@ class Camera
 {
 public:
     
-    ///The object used to store the values of the pixel and save the image
-    ImageOutput film;
-    
     /** \brief Default constructor
      *
      *  \param[in] position The position of the camera in the space
@@ -47,11 +44,9 @@ public:
      *  of the camera
      *  \param[in] width    The width of the final image (resolution)
      *  \param[in] height   The height of the final image (resolution)
-     *  \param[in] filename The name of the file that will be stored onto the
-     *  disk
      */
     Camera(const Point3* position, const Point3* target, const Vec3* up,
-           int width, int height, const char* filename);
+           int width, int height);
     
     ///Default destructor
     ~Camera();

@@ -4,12 +4,6 @@ Sphere::Sphere(float rad) :Shape()
     Sphere::radius = rad;
 }
 
-Sphere::Sphere(float rad, Matrix4* m) :Shape()
-{
-    Sphere::radius = rad;
-    Shape::transformMatrix = m;
-}
-
 AABB Sphere::computeAABB()const
 {
     const Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
@@ -20,63 +14,28 @@ AABB Sphere::computeAABB()const
     return AABB(&pmin, &pmax);
 }
 
-AABB Sphere::computeWorldAABB()const
+AABB Sphere::computeWorldAABB(const Matrix4* transform)const
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
+    if(transform==NULL)
     {
-        Console.severe(
-        "Trying to generate a world-space AABB with a NULL matrix");
+        Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
         return AABB();
     }
 #endif
-    const Point3 pmin = *transformMatrix * Point3(-Sphere::radius,
+    const Point3 pmin = *transform * Point3(-Sphere::radius,
                                                   -Sphere::radius,
                                                   -Sphere::radius);
-    const Point3 pmax = *transformMatrix * Point3(Sphere::radius,
+    const Point3 pmax = *transform * Point3(Sphere::radius,
                                                   Sphere::radius,
                                                   Sphere::radius);
     
     return AABB(&pmin, &pmax);
 }
 
-void Sphere::obj2world()
+bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
-    {
-        Console.severe(
-        "Trying to convert a sphere to world-space with a NULL matrix");
-        return;
-    }
-#endif
-    Sphere::centre = Point3(Sphere::transformMatrix->m03,
-                            Sphere::transformMatrix->m13,
-                            Sphere::transformMatrix->m23);
-    Sphere::radius *= Vec3(Sphere::transformMatrix->m00,
-                           Sphere::transformMatrix->m10,
-                           Sphere::transformMatrix->m20).length();
-}
-
-void Sphere::world2obj()
-{
-#ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
-    {
-        Console.severe(
-        "Trying to convert a sphere to object-space with a NULL matrix");
-        return;
-    }
-#endif
-    Sphere::centre = Point3();
-    Sphere::radius /= Vec3(Sphere::transformMatrix->m00,
-                           Sphere::transformMatrix->m10,
-                           Sphere::transformMatrix->m20).length();
-}
-
-bool Sphere::intersect(const Ray *r, float *distance, float *error)const
-{
-    const Vec3 tmp = r->origin - Sphere::centre;
+    const Vec3 tmp(r->origin.x,r->origin.y,r->origin.z);
     float a = r->direction.dot(r->direction);
     float b = 2*(r->direction.dot(tmp));
     float c = tmp.dot(tmp) - (Sphere::radius*Sphere::radius);
@@ -96,7 +55,14 @@ bool Sphere::intersect(const Ray *r, float *distance, float *error)const
             if(*distance>r->maxext) //both intersections behind origin
                 return false;
         }
-        *error = 5e-4f**distance; //this line of code is stealed from pbrt :^)
+        h->h = r->apply(*distance);
+        Vec3 normal(h->h.x,h->h.y,h->h.z);
+        h->n = Normal(normal);
+        if(h->h.x==0 && h->h.y==0) //particular case
+            h->right = Vec3(0,1,0);
+        else
+            h->right = Vec3(-2*M_PI*h->h.y,2*M_PI*h->h.x,0);
+        h->sp = this;
         return true;
     }
     else
@@ -106,4 +72,40 @@ bool Sphere::intersect(const Ray *r, float *distance, float *error)const
 float Sphere::surface()const
 {
     return 4.0f*(float)M_PI*Sphere::radius*Sphere::radius;
+}
+
+void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
+{
+    if(p->x*p->x+p->y*p->y+p->z*p->z - radius*radius < 0.000005f)
+    {
+        //point inside sphere, sample uniformly
+        float z = 1.f - 2.f * r0; //height of the sample, supposing radius 1
+        float r = sqrtf(max(0.f,1.f-z*z));
+        float phi = 2.f*M_PI*r1; //partial sphere to consider
+        float x = r*cosf(phi);
+        float y = r*sinf(phi);
+        p->x = x;
+        p->y = y;
+        p->z = z;
+        n->x = -x; //negative because the point is inside, so the normal points
+        n->y = -y; //inside
+        n->z = -z;
+    }
+    else
+    {
+       //point outside sphere, sample only visible hemisphere
+//       Vec3 pc(-p->x,-p->y,-p->z); //direction from point to sphere centre
+        //TODO: for now I'm just sampling uniformly on the whole sphere
+        float z = 1.f - 2.f * r0;
+        float r = sqrtf(max(0.f,1.f-z*z));
+        float phi = 2.f*M_PI*r1;
+        float x = r*cosf(phi);
+        float y = r*sinf(phi);
+        p->x = x;
+        p->y = y;
+        p->z = z;
+        n->x = x;
+        n->y = y;
+        n->z = z;
+    }
 }

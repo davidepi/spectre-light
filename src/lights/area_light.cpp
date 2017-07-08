@@ -1,6 +1,7 @@
 #include "area_light.hpp"
 
-AreaLight::AreaLight(Shape* sp, Color c) : Asset(sp), c(c)
+AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, Color c)
+: Asset(sp,objToWorld), c(c)
 {
     AreaLight::area = sp->surface();
 }

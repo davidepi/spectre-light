@@ -8,11 +8,6 @@ GaussianFilter::GaussianFilter(float x_r, float y_r, float falloff)
     GaussianFilter::alpha = falloff;
 }
 
-GaussianFilter::~GaussianFilter()
-{
-
-}
-
 float GaussianFilter::weight(float offset_x, float offset_y)const
 {
     //f(x) = e^(-alpha*x^2)-e^(-alpha*width^2)

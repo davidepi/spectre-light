@@ -28,7 +28,7 @@
 class AreaLight : public Asset
 {
 public:
-    AreaLight(Shape* sp, Color c);
+    AreaLight(Shape* sp, Matrix4* objToWorld, Color c);
     void radiance()const;
     Color emissivePower()const;
     

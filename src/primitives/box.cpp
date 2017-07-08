@@ -1,135 +1,100 @@
 #include "box.hpp"
 
-Box::Box() : Shape(),fbl(0,0,0),fbr(1,0,0),ftl(0,1,0),bbl(0,0,1)
+Box::Box() : edges(1,1,1)
 {
     
 }
 
-Box::Box(Vec3* e, Matrix4* t) : Shape(),fbl(0,0,0),fbr(e->x,0,0),ftl(0,e->y,0),
-bbl(0,0,e->z)
+Box::Box(Vec3 e) : edges(e)
 {
-    transformMatrix = t;
-}
 
-Box::Box(Point3* b, Vec3* e, Matrix4* t) : Shape(),fbl(*b),
-fbr(b->x+e->x,b->y,b->z),ftl(b->x,b->y+e->y,b->z),bbl(b->x,b->y,b->z+e->z)
-{
-    transformMatrix = t;
 }
 
 AABB Box::computeAABB()const
 {
-    const Point3 max(Box::fbr.x,Box::ftl.y,Box::bbl.z);
-    return AABB(&(Box::fbl),&max);
+    const Point3 min(0,0,0);
+    const Point3 max(Box::edges.x,Box::edges.y,Box::edges.z);
+    return AABB(&min,&max);
 }
 
-AABB Box::computeWorldAABB()const
+AABB Box::computeWorldAABB(const Matrix4* transform)const
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
+    if(transform==NULL)
     {
-        Console.severe(
-        "Trying to generate a world-space AABB with a NULL matrix");
+        Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
         return AABB();
     }
 #endif
-    const Point3 pmin=*transformMatrix*Box::fbl;
-    const Point3 pmax=*transformMatrix*Point3(Box::fbr.x,Box::ftl.y,Box::bbl.z);
+    const Point3 pmin=*transform*Point3();
+    const Point3 pmax=*transform*Point3(Box::edges.x,Box::edges.y,Box::edges.z);
     
     return AABB(&pmin, &pmax);
 }
 
 float Box::surface()const
 {
-    float xe = fbr.x-fbl.x; //x edge
-    float ze = bbl.z-fbl.z; //z edge
-    float la = 2*(xe+ze)*(ftl.y-fbl.y); //lateral surface = perimeter * heigth
-    return la+2*xe*ze;
+    float la = 2*(edges.x+edges.z)*(edges.y); //lateral surface = perimeter * heigth
+    return la+2*edges.x*edges.z;
 }
 
-void Box::obj2world()
+bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 {
-    Console.warning("No rotation supported for now");
-#ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
+
+    Point3 top(edges.x,edges.y,edges.z);
+    float mint;
+    float maxt;
+    char axis = 0; //used for normal identification
+    
+    //x plane
+    float invr = 1.0f/r->direction.x;
+    float near = (-r->origin.x) * invr;
+    float far = (top.x-r->origin.x) * invr;
+    if(near>far)
+        swap(&near,&far);
+    mint = near;
+    maxt = far;
+    if(mint>maxt)
+        return false;
+    
+    //y plane
+    invr = 1.0f/r->direction.y;
+    near = (-r->origin.y) * invr;
+    far = (top.y-r->origin.y) * invr;
+    if(near>far)
+        swap(&near,&far);
+    if(near > mint)
     {
-        Console.severe("Trying to convert a box to world-space with a NULL matrix");
-        return;
+        mint = near;
+        axis = 1;
     }
-#endif
-    Box::fbl = (*transformMatrix)*Box::fbl;
-    Box::fbr = (*transformMatrix)*Box::fbr;
-    Box::ftl = (*transformMatrix)*Box::ftl;
-    Box::bbl = (*transformMatrix)*Box::bbl;
-}
-
-void Box::world2obj()
-{
-    Console.warning("No rotation supported for now");
-#ifdef _LOW_LEVEL_CHECKS_
-    if(transformMatrix==NULL)
+    maxt = far<maxt?far:maxt;
+    if(mint>maxt)
+        return false;
+    
+    //z plane
+    invr = 1.0f/r->direction.z;
+    near = (-r->origin.z) * invr;
+    far = (top.z-r->origin.z) * invr;
+    if(near>far)
+        swap(&near,&far);
+    if(near > mint)
     {
-        Console.severe("Trying to convert a box to world-space with a NULL matrix");
-        return;
+        mint = near;
+        axis = 2;
     }
-#endif
-    Matrix4 inv;
-    transformMatrix->inverse(&inv);
-    Box::fbl = inv*Box::fbl;
-    Box::fbr = inv*Box::fbr;
-    Box::ftl = inv*Box::ftl;
-    Box::bbl = inv*Box::bbl;
-}
-
-bool Box::intersect(const Ray* r,float* distance,float* error)const
-{
-//    Point3 btr(fbr.x,ftl.y,bbl.z);
-//    
-//    float minxt, maxxt, minyt, maxyt, minzt, maxzt;
-//    float invx = 1.f/r->direction.x;
-//    float invy = 1.f/r->direction.y;
-//    float invz = 1.f/r->direction.z;
-//    if(r->direction.x >= 0)
-//    {
-//        minxt = (fbl.x - r->origin.x) * invx;
-//        maxxt = (fbr.x - r->origin.x) * invx;
-//    }
-//    else
-//    {
-//        minxt = (fbr.x - r->origin.x) * invx;
-//        maxxt = (fbl.x - r->origin.x) * invx;
-//    }
-//    if(r->direction.y >= 0)
-//    {
-//        minyt = (fbl.y - r->origin.y) * invy;
-//        maxyt = (ftl.y - r->origin.y) * invy;
-//    }
-//    else
-//    {
-//        minyt = (ftl.y - r->origin.y) * invy;
-//        maxyt = (fbl.y - r->origin.y) * invy;
-//    }
-//    
-//    if((minxt > maxyt) || (minyt > maxxt))
-//        return false;
-//    if(minyt > minxt)
-//        minxt = minyt;
-//    if(maxyt < maxxt)
-//        maxxt = maxyt;
-//    
-//    if(r->direction.z >= 0)
-//    {
-//        minzt = (fbl.z - r->origin.z) * invz;
-//        maxzt = (bbl.z - r->origin.z) * invz;
-//    }
-//    else
-//    {
-//        minzt = (bbl.z - r->origin.z) * invz;
-//        maxzt = (fbl.z - r->origin.z) * invz;
-//    }
-//    
-//    if((minxt > maxzt) || (minzt > maxxt))
-//        return false;
-//    else
-    return true; //this is equal to the AABB
+    maxt = far<maxt?far:maxt;
+    if(mint>maxt)
+        return false;
+    *distance = min(mint,maxt);
+    h->h = r->apply(*distance);
+    h->sp = this;
+    h->n = Normal();
+    h->n[axis] = 1;
+    h->n[axis]*=sign(h->h[axis]);
+    if(h->n.x==0)
+        h->right = Vec3(1,0,0);
+    else
+        h->right = Vec3(0,-h->n.x,0);
+    return true;
 }
