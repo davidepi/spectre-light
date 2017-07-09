@@ -2,7 +2,7 @@
 #include "renderer.hpp"
 int main()
 {
-    Renderer r(800,600,4,"/Users/davide/Desktop/test.ppm");
+    Renderer r(800,600,1,"test.ppm");
     Scene s;
     for(int i=0;i<100;i++)
     {

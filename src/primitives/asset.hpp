@@ -98,9 +98,12 @@ public:
      */
     const Bsdf* getMaterial()const;
     
-private:
+protected:
+
     //underlying model
     Shape* model;
+
+private:
 
     //id of the asset
     const unsigned int id;

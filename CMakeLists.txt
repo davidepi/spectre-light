@@ -3,6 +3,7 @@ project(spectre-light C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file(GLOB spectre_core_sources
+    src/lights/*.cpp
     src/renderer.cpp
     src/geometry/*.cpp
     src/primitives/*.cpp
@@ -12,6 +13,7 @@ file(GLOB spectre_core_sources
     src/cameras/*.cpp
     src/materials/*.cpp)
 file(GLOB spectre_core_headers
+    src/light/*.hpp
     src/settings.h
     src/validator.h
     src/renderer.hpp
