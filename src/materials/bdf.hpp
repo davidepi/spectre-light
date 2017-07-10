@@ -154,6 +154,22 @@ public:
      */
     Color df(const Vec3* wo, const HitPoint* h, const Vec3* wi)const;
 
+    /** \brief Return the value of the BSDF
+     *
+     *  Similar to the df method, this one sample a single direction and returns
+     *  the light reflected or transmitted in that direction. The random
+     *  incident ray is updated in the \p wi member
+     *
+     *  \param[in] r0 A random float in the interval (0.0,1.0)
+     *  \param[in] r1 A random float in the interval (0.0,1.0)
+     *  \param[in] r2 A random float in the interval (0.0,1.0)
+     *  \param[in] wo The outgoing direction
+     *  \param[in] h  The properties of the hit point
+     *  \param[out] wi The incident direction
+     *  \return A sampled value of the BSDF
+     */
+    Color df_s(float r0, float r1, float r2, const Vec3* wo, const HitPoint* h,
+               Vec3* wi)const;
 private:
 
     //number of Bdfs
