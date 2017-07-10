@@ -9,7 +9,7 @@ Sampler::Sampler(int startx, int endx, int starty, int endy, int spp,
     Sampler::spp = spp;
 }
 
-Sampler::~Sampler()
+float Sampler::getRandomNumber()
 {
-    
+    return rng.getNumberf();
 }

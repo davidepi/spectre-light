@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 31 May 2017
+//Last Edit 10 Jul 2017
 
 /**
  *  \file sampler.hpp
@@ -8,7 +8,7 @@
  *             data structure expected to be returning
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      31 May 2017
+ *  \date      10 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -63,10 +63,7 @@ public:
      */
     Sampler(int startx, int endx, int starty, int endy, int spp,
             const unsigned int* seed);
-    
-    ///Default destructor
-    ~Sampler();
-    
+
     /** \brief Return a set of samples
      *
      *  Return the set of samples that needs to be evaluated for the current
@@ -77,6 +74,14 @@ public:
      *  \return false if the whole area has been sampled, true otherwise
      */
     virtual bool getSamples(Sample* res) = 0;
+
+    /** \brief Generate a random number
+     *
+     *  Return a randomly generated number in the interval (0.0,1.0)
+     *
+     * \return The generated number
+     */
+    float getRandomNumber();
     
 protected:
 
