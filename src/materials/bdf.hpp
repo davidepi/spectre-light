@@ -80,12 +80,17 @@ public:
      *  This methods computes the incident direction, given the outgoing
      *  direction and computes the value of the Bdf for these one.
      *
+     *  In case the distribution is not a delta one, this method sample a single
+     *  incident direction by using importance sampling
+     *
      *  \param[in] wo The outgoing direction
      *  \param[out] wi The incident direction
+     *  \param[in] r0 A random float in the interval (0.0,1.0)
+     *  \param[in] r1 A random float in the interval (0.0,1.0)
      *  \return The value of the Bdf for the pair of direction
      *  \sa df(const Vec3* wo, const Vec3* wi)const
      */
-    virtual Color df_s(const Vec3* wo, Vec3* wi)const;
+    virtual Color df_s(const Vec3* wo, Vec3* wi, float r0, float r1)const;
 
     /** \brief Returns the flags associated with this Bdf
      *  \return The flags representing the type of Bdf

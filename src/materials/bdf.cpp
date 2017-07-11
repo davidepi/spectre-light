@@ -14,8 +14,16 @@ BdfFlags Bdf::getFlags() const
     return Bdf::type;
 }
 
-Color Bdf::df_s(const Vec3 *wo, Vec3 *wi) const
+Color Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1)const
 {
+    //sample x,y points on the hemisphere, shirley's method maybe's better
+    float t = 2.0f * M_PI * r0;
+    float r = sqrtf(r1);
+    wi->x = r * cosf(t);
+    wi->y = r * cosf(t);
+    wi->z = sqrtf(max(0.f,1.f-wi->x*wi->x-wi->y*wi->y));
+    //if the wo was flipped, flip also wi
+    if(wo->z < 0) wi->z *= -1.f;
     return df(wo,wi);
 }
 
@@ -73,7 +81,7 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
     Vec3 tmpwi;
     //compute sampled bdf value
-    Color retval = bdfs[chosen]->df_s(&wo_shading_space,&tmpwi);
+    Color retval = bdfs[chosen]->df_s(&wo_shading_space,&tmpwi,r1,r2);
 
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
