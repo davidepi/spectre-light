@@ -1,12 +1,12 @@
 //Created,   9 May 2017
-//Last Edit  3 Jun 2017
+//Last Edit 11 Jul 2017
 
 /**
  *  \file kdtree.hpp
  *  \brief     Implementation of a Kd-tree space subdivision structure
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      3 Jun 2017
+ *  \date      11 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -221,7 +221,7 @@ public:
      *  \param[in] r The ray used for the intersection test
      *  \param[out] hit The hit asset
      */
-    bool intersect(const Ray* r, const Asset* hit)const;
+    bool intersect(const Ray* r, HitPoint* hit)const;
     
 private:
     

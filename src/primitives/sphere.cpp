@@ -62,7 +62,6 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
             h->right = Vec3(0,1,0);
         else
             h->right = Vec3(-2*M_PI*h->h.y,2*M_PI*h->h.x,0);
-        h->sp = this;
         return true;
     }
     else

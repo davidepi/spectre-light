@@ -1,13 +1,7 @@
 /**
- *  \file localization.h
- *  \brief Text strings
- *  \details Every console message string in a single file
- *  \author Davide Pizzolotto
- *  \version 0.1
- *  \date 10 May 2017
- *  \copyright GNU GPLv3
+ *  \cond
+ *  No documentation for the strings
  */
-
 
 #ifndef __LOCALIZATION_H__
 #define __LOCALIZATION_H__
@@ -53,3 +47,8 @@
 #define MESSAGE_NUMTHREADS "Using %d rendering threads"
 
 #endif
+
+
+/**
+ *  \endcond
+ */

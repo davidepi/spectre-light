@@ -165,7 +165,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
     Sample sample;
     Ray r;
     Color radiance;
-    Asset* h;
+    HitPoint h;
     while(!done)
     {
         lock->lock();
@@ -188,7 +188,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
         {
             c->createRay(&sample,&r);
             //TODO: compute actual radiance instead of these lines
-            if(s->k.intersect(&r,h))
+            if(s->k.intersect(&r,&h))
             {
                 radiance.r = 1;
                 radiance.g = 1;

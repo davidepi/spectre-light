@@ -66,7 +66,7 @@ float AABB::volume()const
     return diagonal.x * diagonal.y * diagonal.z;
 }
 
-int AABB::longest_axis()const
+char AABB::longest_axis()const
 {
     Vec3 diagonal = AABB::bounds[1] - AABB::bounds[0];
     if(diagonal.x > diagonal.y && diagonal.x > diagonal.z)

@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  7 Jul 2017
+//Last Edit 11 Jul 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      7 Jul 2017
+ *  \date      11 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -113,6 +113,9 @@ private:
     const unsigned int id;
 };
 
+//this will be defined in another file, but I need a pointer to it in HitPoint
+//but HitPoint is required by Shape::intersect
+class Asset;
 
 ///Struct containing the data of the intersection between a Ray and a Shape
 struct HitPoint
@@ -135,8 +138,8 @@ struct HitPoint
     ///v coordinate for texture
     float v;
 
-    ///The hit shape
-    const Shape* sp;
+    ///Hit asset
+    const Asset* hit;
 };
 
 #endif

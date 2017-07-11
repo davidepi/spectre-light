@@ -88,7 +88,6 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
         return false;
     *distance = min(mint,maxt);
     h->h = r->apply(*distance);
-    h->sp = this;
     h->n = Normal();
     h->n[axis] = 1;
     h->n[axis]*=sign(h->h[axis]);

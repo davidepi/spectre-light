@@ -287,7 +287,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     
     //set variables
     SplitCandidate** sc = (SplitCandidate**)s_c;
-    int best_axis = -1;
+    char best_axis = -1;
     int best_split = -1; //the offset in the sc structure for the best split
     float best_cost = INFINITY;
     float old_cost = SAH_INTERSECT*(float)a_n;
@@ -296,7 +296,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     float inv_area = 1.f/total_area;
     
     //usually this is the best split candidate, being the longest axis
-    int axis = area.longest_axis();
+    char axis = area.longest_axis();
     int isSearching = 3; //number of axis attemped. In the worst case
                          //bail out of the while at 0
     
@@ -416,7 +416,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     free(as_right);
 }
 
-bool KdTree::intersect(const Ray* r, const Asset* h)const
+bool KdTree::intersect(const Ray* r, HitPoint* h)const
 {
     using KdHelpers::KdTravNode;
     
@@ -498,14 +498,13 @@ bool KdTree::intersect(const Ray* r, const Asset* h)const
                 //firstly try with the aabb since it's faster
                 if(current_asset->intersectFast(r, &rp, &res1, &res2))
                 {
-                    HitPoint hp;
                     //then try with the actual asset
-                    if(current_asset->intersect(r,&res1,&hp))
+                    if(current_asset->intersect(r,&res1,h))
                     {
                         if(bestmaxt > maxt)
                             bestmaxt = maxt;
                         found = true; //record current intersection
-                        h = current_asset;
+                        h->hit = current_asset;
                     }
                 }
             }
