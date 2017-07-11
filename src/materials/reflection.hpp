@@ -14,10 +14,10 @@
 #ifndef __REFLECTION_HPP__
 #define __REFLECTION_HPP__
 
-#include "bdf.hpp"
-#include "fresnel_conditions.hpp"
-#include "color.hpp"
-#include "vec3.hpp"
+#include "materials/bdf.hpp"
+#include "materials/fresnel_conditions.hpp"
+#include "utility/color.hpp"
+#include "geometry/vec3.hpp"
 
 /**
  *  \class Reflection reflection.hpp "materials/reflection.hpp"

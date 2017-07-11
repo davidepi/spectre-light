@@ -14,10 +14,9 @@
 #ifndef __OREN_NAYAR_HPP__
 #define __OREN_NAYAR_HPP__
 
-
-#include "bdf.hpp"
-#include "color.hpp"
-#include "vec3.hpp"
+#include "materials/bdf.hpp"
+#include "utility/color.hpp"
+#include "geometry/vec3.hpp"
 
 /**
  *  \class OrenNayar oren_nayar.hpp "materials/oren_nayar.hpp"

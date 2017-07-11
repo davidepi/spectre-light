@@ -15,8 +15,8 @@
 #ifndef __TENT_FILTER_HPP__
 #define __TENT_FILTER_HPP__
 
-#include "filter.hpp"
-#include "utility.hpp"
+#include "samplers/filter.hpp"
+#include "utility/utility.hpp"
 
 /**
  *  \class TentFilter tent_filter.hpp "samplers/tent_filter.hpp"

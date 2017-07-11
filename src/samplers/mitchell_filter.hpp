@@ -16,7 +16,7 @@
 #define __MITCHELL_FILTER_HPP__
 
 #include <cmath>
-#include "filter.hpp"
+#include "samplers/filter.hpp"
 
 /**
  *  \class MitchellFilter mitchell_filter.hpp "samplers/mitchell_filter.hpp"

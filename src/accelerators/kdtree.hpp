@@ -14,8 +14,8 @@
 #ifndef __KDTREE_H__
 #define __KDTREE_H__
 
-#include "asset.hpp"
-#include "console.hpp"
+#include "primitives/asset.hpp"
+#include "utility/console.hpp"
 #include <vector>
 #include <algorithm>
 #include <cstdint>

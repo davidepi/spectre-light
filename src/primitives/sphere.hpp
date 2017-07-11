@@ -15,11 +15,12 @@
 #ifndef __SPHERE_HPP__
 #define __SPHERE_HPP__
 
-#include "console.hpp"
-#include "utility.hpp"
-#include "shape.hpp"
-#include "matrix4.hpp"
-#include "AABB.hpp"
+#include "utility/console.hpp"
+#include "utility/utility.hpp"
+#include "primitives/shape.hpp"
+#include "geometry/matrix4.hpp"
+#include "geometry/AABB.hpp"
+#include "geometry/AABB.hpp"
 
 /**
  *  \class Sphere sphere.hpp "primitives/sphere.hpp"

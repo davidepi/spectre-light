@@ -14,8 +14,9 @@
 
 #ifndef __AABBOX_HPP__
 #define __AABBOX_HPP__
-#include "point3.hpp"
-#include "ray.hpp"
+
+#include "geometry/point3.hpp"
+#include "geometry/ray.hpp"
 
 /**
  * \class AABB AABB.hpp "geometry/AABB.hpp"

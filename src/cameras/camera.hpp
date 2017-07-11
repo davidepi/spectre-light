@@ -15,10 +15,10 @@
 #ifndef __CAMERA_HPP__
 #define __CAMERA_HPP__
 
-#include "image_output.hpp"
-#include "sampler.hpp"
-#include "matrix4.hpp"
-#include "ray.hpp"
+#include "cameras/image_output.hpp"
+#include "samplers/sampler.hpp"
+#include "geometry/matrix4.hpp"
+#include "geometry/ray.hpp"
 
 /**
  * \class Camera camera.hpp "cameras/camera.hpp"

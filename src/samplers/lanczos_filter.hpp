@@ -16,8 +16,8 @@
 #define __LANCZOS_FILTER_HPP__
 
 #include <cmath>
-#include "filter.hpp"
-#include "utility.hpp" //M_PI
+#include "samplers/filter.hpp"
+#include "utility/utility.hpp" //M_PI
 
 /**
  *  \class LanczosFilter lanczos_filter.hpp "samplers/lanczos_filter.hpp"

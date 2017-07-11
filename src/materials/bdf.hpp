@@ -15,10 +15,10 @@
 #ifndef __BDF_HPP__
 #define __BDF_HPP__
 
-#include "shape.hpp"
-#include "color.hpp"
-#include "vec3.hpp"
-#include "console.hpp"
+#include "primitives/shape.hpp"
+#include "utility/color.hpp"
+#include "geometry/vec3.hpp"
+#include "utility/console.hpp"
 
 ///Type of Bdf
 enum BdfFlags {BRDF = 0x1, BTDF = 0x2, DIFFUSE = 0x4, SPECULAR = 0x8};

@@ -15,18 +15,18 @@
 #ifndef __RENDERER_HPP__
 #define __RENDERER_HPP__
 
-#include "vec3.hpp"
-#include "point3.hpp"
-#include "console.hpp"
-#include "perspective_camera.hpp"
-#include "orthographic_camera.hpp"
-#include "box_filter.hpp"
-#include "tent_filter.hpp"
-#include "gaussian_filter.hpp"
-#include "mitchell_filter.hpp"
-#include "lanczos_filter.hpp"
-#include "scene.hpp"
-#include "stratified_sampler.hpp"
+#include "geometry/vec3.hpp"
+#include "geometry/point3.hpp"
+#include "utility/console.hpp"
+#include "cameras/perspective_camera.hpp"
+#include "cameras/orthographic_camera.hpp"
+#include "samplers/box_filter.hpp"
+#include "samplers/tent_filter.hpp"
+#include "samplers/gaussian_filter.hpp"
+#include "samplers/mitchell_filter.hpp"
+#include "samplers/lanczos_filter.hpp"
+#include "utility/scene.hpp"
+#include "samplers/stratified_sampler.hpp"
 #include "settings.h"
 #include <thread> //std::thread
 #include <stack> //std::stack

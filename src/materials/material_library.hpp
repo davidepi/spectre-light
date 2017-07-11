@@ -10,14 +10,14 @@
  *  \copyright GNU GPLv3
  */
 
+
 #ifndef __MATERIAL_LIBRARY_HPP__
 #define __MATERIAL_LIBRARY_HPP__
 
-
+#include "materials/bdf.hpp"
+#include "materials/lambertian.hpp"
 #include <unordered_map>
 #include <string>
-#include "bdf.hpp"
-#include "lambertian.hpp"
 
 /**
  * \class MaterialLibrary material_library.hpp "materials/material_library.hpp"

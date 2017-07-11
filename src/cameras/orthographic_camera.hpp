@@ -15,11 +15,11 @@
 #ifndef __ORTHOGRAPHIC_CAMERA_HPP__
 #define __ORTHOGRAPHIC_CAMERA_HPP__
 
-#include "camera.hpp"
-#include "point3.hpp"
-#include "vec3.hpp"
-#include "ray.hpp"
-#include "sampler.hpp"
+#include "cameras/camera.hpp"
+#include "geometry/point3.hpp"
+#include "geometry/vec3.hpp"
+#include "geometry/ray.hpp"
+#include "samplers/sampler.hpp"
 
 /**
  *  \class OrthographicCamera

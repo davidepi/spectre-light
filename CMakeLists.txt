@@ -12,27 +12,7 @@ file(GLOB spectre_core_sources
     src/utility/*.cpp
     src/cameras/*.cpp
     src/materials/*.cpp)
-file(GLOB spectre_core_headers
-    src/light/*.hpp
-    src/settings.h
-    src/validator.h
-    src/renderer.hpp
-    src/localization.h
-    src/geometry/*.hpp
-    src/primitives/*.hpp
-    src/accelerators/*.hpp
-    src/samplers/*.hpp
-    src/utility/*.hpp
-    src/cameras/*.hpp
-    src/materials/*.hpp)
 include_directories(src)
-include_directories(src/geometry)
-include_directories(src/primitives)
-include_directories(src/utility)
-include_directories(src/accelerators)
-include_directories(src/samplers)
-include_directories(src/cameras)
-include_directories(src/materials)
 find_package (Threads REQUIRED)
 
 find_package(Doxygen)

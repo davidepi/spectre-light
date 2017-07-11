@@ -15,14 +15,15 @@
 #ifndef __BOX_HPP__
 #define __BOX_HPP__
 
+
+#include "utility/utility.hpp"
+#include "geometry/vec3.hpp"
+#include "primitives/shape.hpp"
+#include "geometry/matrix4.hpp"
+#include "geometry/AABB.hpp"
+#include "utility/console.hpp"
 #include <cstdio> //sprintf
 #include <cstring> //strcpy,strcat
-#include "utility.hpp"
-#include "vec3.hpp"
-#include "shape.hpp"
-#include "matrix4.hpp"
-#include "AABB.hpp"
-#include "console.hpp"
 
 /**
  *  \class Box box.hpp "primitives/box.hpp"

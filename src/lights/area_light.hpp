@@ -14,9 +14,9 @@
 #ifndef __AREA_LIGHT_HPP__
 #define __AREA_LIGHT_HPP__
 
-#include "color.hpp"
-#include "asset.hpp"
-#include "shape.hpp"
+#include "utility/color.hpp"
+#include "primitives/asset.hpp"
+#include "primitives/shape.hpp"
 
 /**
  * \class AreaLight area_light.hpp "lights/area_light.hpp"

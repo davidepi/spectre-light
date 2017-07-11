@@ -16,8 +16,8 @@
 #define __GAUSSIAN_FILTER_HPP__
 
 #include <cmath>
-#include "filter.hpp"
-#include "utility.hpp"
+#include "samplers/filter.hpp"
+#include "utility/utility.hpp"
 
 /**
  *  \class GaussianFilter gaussian_filter.hpp "samplers/gaussian_filter.hpp"

@@ -16,11 +16,11 @@
 #ifndef __SCENE_HPP__
 #define __SCENE_HPP__
 
-#include "kdtree.hpp"
-#include "asset.hpp"
-#include "matrix4.hpp"
-#include "utility.hpp"
-#include "console.hpp"
+#include "accelerators/kdtree.hpp"
+#include "primitives/asset.hpp"
+#include "geometry/matrix4.hpp"
+#include "utility/utility.hpp"
+#include "utility/console.hpp"
 
 /**
  *  \class Scene scene.hpp "utility/scene.hpp"

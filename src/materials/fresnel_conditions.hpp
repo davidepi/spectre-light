@@ -14,8 +14,8 @@
 #ifndef __FRESNEL_CONDITIONS_HPP__
 #define __FRESNEL_CONDITIONS_HPP__
 
-#include "color.hpp"
-#include "utility.hpp"
+#include "utility/color.hpp"
+#include "utility/utility.hpp"
 
 /**
  *  \class FresnelConditions fresnel_conditions.hpp

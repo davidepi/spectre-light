@@ -1,8 +1,9 @@
-#include "sphere.hpp"
+#include "utility/scene.hpp"
+#include "primitives/sphere.hpp"
 #include "renderer.hpp"
 int main()
 {
-    Renderer r(800,600,1,"/home/davide/Desktop/test.ppm");
+    Renderer r(800,600,1,"test.ppm");
     Scene s;
     for(int i=0;i<100;i++)
     {

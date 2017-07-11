@@ -20,9 +20,9 @@
 #ifndef __VEC3_HPP__
 #define __VEC3_HPP__
 
-#include "utility.hpp"
-#include "vec2.hpp"
-#include "console.hpp"
+#include "utility/utility.hpp"
+#include "geometry/vec2.hpp"
+#include "utility/console.hpp"
 #include <cstdio> //snprintf
 #include <cmath> //std::sqrt
 #include <cfloat> //FLT_EPSILON

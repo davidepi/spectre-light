@@ -15,7 +15,7 @@
 #ifndef __SAMPLER_HPP__
 #define __SAMPLER_HPP__
 
-#include "wellrng.hpp"
+#include "utility/wellrng.hpp"
 
 /**
  *  \struct Sample sampler.hpp "samplers/sampler.hpp"

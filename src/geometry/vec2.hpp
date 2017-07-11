@@ -19,12 +19,13 @@
 #ifndef __VEC2_HPP__
 #define __VEC2_HPP__
 
+#include "utility/utility.hpp"
+#include "utility/console.hpp"
 #include <cmath> //std::sqrt
 #include <cfloat> //FLT_EPSILON
 #include <cstring>
 #include <cstdio> //snprintf
-#include "utility.hpp"
-#include "console.hpp"
+
 
 /**
  *  \class Vec2 vec2.hpp "geometry/vec2.hpp"

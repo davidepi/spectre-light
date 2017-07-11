@@ -14,8 +14,9 @@
 
 #ifndef __RAY_HPP__
 #define __RAY_HPP__
-#include "point3.hpp"
-#include "vec3.hpp"
+
+#include "geometry/point3.hpp"
+#include "geometry/vec3.hpp"
 #include "settings.h"
 
 /**

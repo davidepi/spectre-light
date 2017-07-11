@@ -18,11 +18,12 @@
 
 #ifndef __MATRIX4_H__
 #define __MATRIX4_H__
-#include "utility.hpp"
-#include "vec3.hpp"
-#include "point3.hpp"
-#include "ray.hpp"
-#include "console.hpp"
+
+#include "utility/utility.hpp"
+#include "geometry/vec3.hpp"
+#include "geometry/point3.hpp"
+#include "geometry/ray.hpp"
+#include "utility/console.hpp"
 #include <cmath>
 #include <cstring>
 #include <cstdio>

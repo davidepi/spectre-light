@@ -15,9 +15,9 @@
 #ifndef __SHAPE_HPP_
 #define __SHAPE_HPP_
 
-#include "ray.hpp"
-#include "matrix4.hpp"
-#include "AABB.hpp"
+#include "geometry/ray.hpp"
+#include "geometry/matrix4.hpp"
+#include "geometry/AABB.hpp"
 
 struct HitPoint;
 

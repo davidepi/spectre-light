@@ -15,7 +15,7 @@
 #ifndef __BOX_FILTER_HPP__
 #define __BOX_FILTER_HPP__
 
-#include "filter.hpp"
+#include "samplers/filter.hpp"
 
 /**
  *  \class BoxFilter box_filter.hpp "samplers/box_filter.hpp"

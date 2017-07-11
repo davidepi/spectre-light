@@ -16,9 +16,9 @@
 #ifndef __ASSET_HPP__
 #define __ASSET_HPP__
 
-#include "shape.hpp"
-#include "bdf.hpp"
-#include "material_library.hpp"
+#include "primitives/shape.hpp"
+#include "materials/bdf.hpp"
+#include "materials/material_library.hpp"
 
 /**
  *  \class Asset asset.hpp "primitives/asset.hpp"

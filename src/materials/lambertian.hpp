@@ -13,11 +13,12 @@
 
 #ifndef __LAMBERTIAN_HPP__
 #define __LAMBERTIAN_HPP__
+
 #include "settings.h"
-#include "bdf.hpp"
-#include "color.hpp"
-#include "vec3.hpp"
-#include "console.hpp"
+#include "materials/bdf.hpp"
+#include "utility/color.hpp"
+#include "geometry/vec3.hpp"
+#include "utility/console.hpp"
 
 /**
  *  \class Lambertian lambertian.hpp "materials/lambertian.hpp"

@@ -14,12 +14,12 @@
 #ifndef __IMAGE_OUTPUT_HPP__
 #define __IMAGE_OUTPUT_HPP__
 
-#include "filter.hpp"
-#include "box_filter.hpp"
-#include "sampler.hpp"
-#include "color.hpp"
-#include "console.hpp"
-#include "utility.hpp"
+#include "samplers/filter.hpp"
+#include "samplers/box_filter.hpp"
+#include "samplers/sampler.hpp"
+#include "utility/color.hpp"
+#include "utility/console.hpp"
+#include "utility/utility.hpp"
 #include <cstring>
 #include <cmath>
 #include <mutex>

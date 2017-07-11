@@ -14,10 +14,10 @@
 #ifndef __REFRACTION_HPP__
 #define __REFRACTION_HPP__
 
-#include "bdf.hpp"
-#include "color.hpp"
-#include "vec3.hpp"
-#include "fresnel_conditions.hpp"
+#include "materials/bdf.hpp"
+#include "utility/color.hpp"
+#include "geometry/vec3.hpp"
+#include "materials/fresnel_conditions.hpp"
 
 /**
  *  \class Refraction refraction.hpp "materials/refraction.hpp"
