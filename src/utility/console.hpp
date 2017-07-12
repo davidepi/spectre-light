@@ -10,6 +10,7 @@
  *  \copyright GNU GPLv3
  */
 
+
 #ifndef __CONSOLE_HPP__
 #define __CONSOLE_HPP__
 
