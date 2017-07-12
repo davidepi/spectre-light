@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 11 Jul 2017
+//Last Edit 12 Jul 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Jul 2017
+ *  \date      12 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -30,6 +30,7 @@
 #include "settings.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
+#include <chrono> //std::this_thread::sleep_for, platform independent
 #include <time.h> //time for srand
 
 /**  \brief Struct containing the coordinates of a sub-image to be rendered
@@ -51,6 +52,35 @@ struct Renderer_task
 
     ///The ending y point of the sub-image
     int endy;
+};
+
+///Class used to check the progress in the rendering
+class RendererProgressBar
+{
+public:
+
+    /** \brief Default constructor
+     *
+     * \param[in] jobs The job queue
+     */
+    RendererProgressBar(std::stack<Renderer_task>* jobs);
+
+    ///Default destructor
+    ~RendererProgressBar();
+
+    ///Terminate the listener
+    void kill();
+
+private:
+
+    //jobs queue
+    std::stack<Renderer_task>* jobs;
+
+    //listener thread
+    std::thread listener;
+
+    //used to terminate the thread
+    bool alive;
 };
 
 /**

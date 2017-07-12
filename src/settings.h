@@ -1,5 +1,5 @@
 //Created,  24 Apr 2017
-//Last Edit 6 Jul 2017
+//Last Edit 12 Jul 2017
 
 /**
  *  \file settings.h
@@ -37,6 +37,9 @@
 
 ///Avoid aliasing by jittering the sampling positions
 #define JITTERED_SAMPLER true
+
+///The number of seconds elapsed between each update of the progress bar
+#define PROGRESS_BAR_UPDATE_SECONDS 1
 
 ///Default extension for the box filter
 #define BOX_FILTER_EXTENT 1
