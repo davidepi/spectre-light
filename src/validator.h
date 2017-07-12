@@ -39,6 +39,10 @@
 #endif
 ///define the inverse of the pi
 #define INV_PI 1.f/M_PI
+///define 2 * π, used extensively in sphere computations
+#define TWO_PI 6.283185307179586476925286766559005768394338798750211641949f
+//define 4 * π
+#define FOUR_PI 12.56637061435917295385057353311801153678867759750042328389f
 
 //deprecated function, compatible with vs
 #ifdef _MSC_VER

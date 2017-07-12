@@ -9,7 +9,8 @@ Sampler::Sampler(int startx, int endx, int starty, int endy, int spp,
     Sampler::spp = spp;
 }
 
-float Sampler::getRandomNumber()
+void Sampler::getRandomNumbers(float* container, int size)
 {
-    return rng.getNumberf();
+    for(int i=0;i<size;i++)
+        container[i] = rng.getNumberf();
 }

@@ -212,7 +212,7 @@ void KdTree::finalize(void* n)
                                         nodes_index);
         finalize(node->right);
     }
-    free(node);
+    delete(node);
 }
 
 void KdTree::buildTree()

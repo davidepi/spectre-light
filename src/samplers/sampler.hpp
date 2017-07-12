@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 10 Jul 2017
+//Last Edit 13 Jul 2017
 
 /**
  *  \file sampler.hpp
@@ -8,7 +8,7 @@
  *             data structure expected to be returning
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      10 Jul 2017
+ *  \date      13 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -75,13 +75,14 @@ public:
      */
     virtual bool getSamples(Sample* res) = 0;
 
-    /** \brief Generate a random number
+    /** \brief Generate random numbers
      *
-     *  Return a randomly generated number in the interval (0.0,1.0)
+     *  Return \p size randomly generated numbers in the interval (0.0,1.0)
      *
-     * \return The generated number
+     *  \param[out] container The array where the random numbers will be stored
+     *  \param[in]  size The amount of numbers that will be generated
      */
-    float getRandomNumber();
+    void getRandomNumbers(float* container, int size);
     
 protected:
 

@@ -8,7 +8,7 @@ AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, Color c)
 
 Color AreaLight::emissivePower()const
 {
-    return AreaLight::c * 2.f * M_PI;
+    return AreaLight::c * TWO_PI;
 }
 
 Color AreaLight::radiance(float r0, float r1, float r2, float r3,
@@ -24,7 +24,7 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
     //generate random direction
     float z = 1.f - 2.f * r0;
     float r = sqrtf(max(0.f,1.f-z*z));
-    float phi = 2.f*M_PI*r1;
+    float phi = TWO_PI*r1;
     float x = r*cosf(phi);
     float y = r*sinf(phi);
     out->direction = Vec3(x,y,z);

@@ -61,7 +61,7 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
         if(h->h.x==0 && h->h.y==0) //particular case
             h->right = Vec3(0,1,0);
         else
-            h->right = Vec3(-2*M_PI*h->h.y,2*M_PI*h->h.x,0);
+            h->right = Vec3(-TWO_PI*h->h.y,TWO_PI*h->h.x,0);
         return true;
     }
     else
@@ -70,7 +70,7 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
 
 float Sphere::surface()const
 {
-    return 4.0f*(float)M_PI*Sphere::radius*Sphere::radius;
+    return FOUR_PI*Sphere::radius*Sphere::radius;
 }
 
 void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
@@ -80,7 +80,7 @@ void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
         //point inside sphere, sample uniformly
         float z = 1.f - 2.f * r0; //height of the sample, supposing radius 1
         float r = sqrtf(max(0.f,1.f-z*z));
-        float phi = 2.f*M_PI*r1; //partial sphere to consider
+        float phi = TWO_PI*r1; //partial sphere to consider
         float x = r*cosf(phi);
         float y = r*sinf(phi);
         p->x = x;
@@ -97,7 +97,7 @@ void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
         //TODO: for now I'm just sampling uniformly on the whole sphere
         float z = 1.f - 2.f * r0;
         float r = sqrtf(max(0.f,1.f-z*z));
-        float phi = 2.f*M_PI*r1;
+        float phi = TWO_PI*r1;
         float x = r*cosf(phi);
         float y = r*sinf(phi);
         p->x = x;

@@ -17,7 +17,7 @@ BdfFlags Bdf::getFlags() const
 Color Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1)const
 {
     //sample x,y points on the hemisphere, shirley's method maybe's better
-    float t = 2.0f * M_PI * r0;
+    float t = TWO_PI * r0;
     float r = sqrtf(r1);
     wi->x = r * cosf(t);
     wi->y = r * cosf(t);
