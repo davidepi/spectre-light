@@ -1,7 +1,11 @@
 #include "renderer.hpp"
 
-void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
+static void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
               std::stack<Renderer_task>* jobs, Scene* s);
+
+
+static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
+                        bool& alive);
 
 Renderer::Renderer(int w, int h, int spp, const char* o) : film(w,h,o)
 {
@@ -130,7 +134,7 @@ int Renderer::render(Scene* s)
             jobs.push(task);
         }
     }
-
+    RendererProgressBar rb(&jobs);
     //create threads
     for(int i=0;i<Renderer::numthreads;i++)
     {
@@ -143,7 +147,7 @@ int Renderer::render(Scene* s)
     {
         Renderer::workers[i].join();
     }
-
+    rb.kill();
     //save the image
     Renderer::film.saveImage();
 
@@ -204,4 +208,46 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
             io->addPixel(&sample,&radiance);
         }
     }
+}
+
+RendererProgressBar::RendererProgressBar(std::stack<Renderer_task> *jobs)
+{
+    RendererProgressBar::jobs = jobs;
+    RendererProgressBar::alive = true;
+    RendererProgressBar::listener=std::thread(progressBar,jobs,jobs->size(),
+                                              std::ref(alive));
+}
+
+RendererProgressBar::~RendererProgressBar()
+{
+    RendererProgressBar::alive = false;
+    RendererProgressBar::listener.join();
+}
+
+void RendererProgressBar::kill()
+{
+    RendererProgressBar::alive = false;
+}
+
+void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
+{
+
+    unsigned long current_size;
+    const unsigned long total_size = ts;
+    float done = 0.f;
+    time_t start_time = time(NULL); //Precision not required for an eta
+    time_t current_time;
+    time_t eta;
+    while(alive)
+    {
+        current_size = jobs->size(); //I don't care about dirty reads, it's an
+        current_time = time(NULL); //eta, I cannot block n threads for an eta
+        done = (float)current_size/(float)total_size;
+        eta = (time_t)(((float)(current_time - start_time) / current_size) *
+                (total_size - current_size));
+        //TODO: Console.progress(done,eta);
+        std::this_thread::sleep_for
+                (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
+    }
+    //TODO: Console.progress(1.f,0);
 }
