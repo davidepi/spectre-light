@@ -1,12 +1,12 @@
 //Created,  22 Mar 2017
-//Last Edit 22 May 2017
+//Last Edit 14 Jul 2017
 
 /**
  *  \file console.hpp
  *  \brief Console logging
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  22 May 2017
+ *  \date  14 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,8 @@
 #include "localization.h"
 #include <cstdio> //fprintf
 #include <cstdlib> //exit
+#include <string> //std::wstring, std::string
+#include <iostream> //std::wcout, std::cout
 
 ///Version of the software
 #define SPECTRE_VERSION "PRE"
@@ -227,6 +229,18 @@ public:
      *  \sa severe(bool condition, const char* message)
      */
     void critical(bool condition, const char* message);
+
+    /** \brief Print a progress bar
+     *
+     * \param[in] done A float in the range [0.0,1.0] representing the completed
+     * amount
+     * \param[in] eta The estimated remainint time in seconds
+     * \sa progressBarDone()
+     */
+    void progressBar(float done, float eta)const;
+
+    ///Print a completed progress bar
+    void progressBarDone()const;
 
 private:
     

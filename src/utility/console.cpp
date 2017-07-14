@@ -11,6 +11,11 @@ int Errors_count[5] = {0,0,0,0,0};
 #define WARNING "WARNING"
 #define ERROR "ERROR"
 #define CRITICAL "CRITICAL"
+#define SPNRM  ""
+#define SPRED  ""
+#define SPGRN  ""
+#define SPYEL  ""
+#define SPCYN  ""
 #else
 #define SPNRM  "\x1B[0m"
 #define SPRED  "\x1B[31m"
@@ -145,4 +150,55 @@ void Console::critical(bool b, const char* s)
         Errors_count[CRITICAL_INDEX]++;
 #endif
     }
+}
+
+void Console::progressBarDone()const
+{
+#ifdef WIN32
+    std::wcout<<"\r(████████████████████) "<<SPGRN<< "100% Done!"<<SPNRM
+              <<std::endl;
+#else
+    std::cout<<"\r(████████████████████) "<<SPGRN<< "100% Done!"<<SPNRM
+             <<std::endl;
+#endif
+}
+
+void Console::progressBar(float done, float eta)const
+{
+    done*=20;
+#ifdef WIN32
+    std::wstring progress;
+    const wchar_t fullblock = L'█';
+    const wchar_t emptyblock = L'░';
+#else
+    const char fullblock[] = "█";
+    const char emptyblock[] = "░";
+    std::string progress;
+#endif
+
+    int i=0;
+    while(i<(int)done)
+    {
+#ifdef WIN32
+        progress.push_back(fullblock);
+#else
+        progress.append(fullblock);
+#endif
+        i++;
+    }
+    while(i<20)
+    {
+#ifdef WIN32
+        progress.push_back(emptyblock);
+#else
+        progress.append(emptyblock);
+#endif
+        i++;
+    }
+#ifdef WIN32
+    std::wcout<<"\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
+#else
+    std::cout<<"\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
+#endif
+    fflush(stdout);
 }

@@ -232,7 +232,7 @@ void RendererProgressBar::kill()
 void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
 {
 
-    unsigned long current_size;
+    unsigned long remaining;
     const unsigned long total_size = ts;
     float done = 0.f;
     time_t start_time = time(NULL); //Precision not required for an eta
@@ -240,14 +240,14 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
     time_t eta;
     while(alive)
     {
-        current_size = jobs->size(); //I don't care about dirty reads, it's an
+        remaining = jobs->size(); //I don't care about dirty reads, it's an
         current_time = time(NULL); //eta, I cannot block n threads for an eta
-        done = (float)current_size/(float)total_size;
-        eta = (time_t)(((float)(current_time - start_time) / current_size) *
-                (total_size - current_size));
-        //TODO: Console.progress(done,eta);
+        done = (float)(total_size-remaining)/(float)total_size;
+        eta = (time_t)((float)(current_time-start_time)/(total_size-remaining)*
+                remaining);
+        Console.progressBar(done,eta);
         std::this_thread::sleep_for
                 (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }
-    //TODO: Console.progress(1.f,0);
+    Console.progressBarDone();
 }
