@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit   1 Jul 2017
+//Last Edit  14 Jul 2017
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      1 Jul 2017
+ *  \date      14 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -87,10 +87,25 @@ public:
      *  \param[out] wi The incident direction
      *  \param[in] r0 A random float in the interval (0.0,1.0)
      *  \param[in] r1 A random float in the interval (0.0,1.0)
+     *  \param[out] pdf The probability density function of the chosen point
+     *  over the bdf hemisphere
      *  \return The value of the Bdf for the pair of direction
      *  \sa df(const Vec3* wo, const Vec3* wi)const
      */
-    virtual Color df_s(const Vec3* wo, Vec3* wi, float r0, float r1)const;
+    virtual Color df_s(const Vec3* wo, Vec3* wi, float r0, float r1,
+                       float* pdf)const;
+
+    /** \brief Return the probability density function for this bdf
+     *
+     *  Given a pair of vectors, return the pdf value for these directions. In
+     *  other words the probability that another random sample will be equal to
+     *  this one
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[in] wi The incident direction
+     *  \return The pdf for this set of values
+     */
+    virtual float pdf(const Vec3* wo, const Vec3* wi)const;
 
     /** \brief Returns the flags associated with this Bdf
      *  \return The flags representing the type of Bdf
@@ -171,10 +186,12 @@ public:
      *  \param[in] wo The outgoing direction
      *  \param[in] h  The properties of the hit point
      *  \param[out] wi The incident direction
+     *  \param[out] pdf The probability density function of the chosen point
+     *  over the bdf hemisphere
      *  \return A sampled value of the BSDF
      */
     Color df_s(float r0, float r1, float r2, const Vec3* wo, const HitPoint* h,
-               Vec3* wi)const;
+               Vec3* wi, float* pdf)const;
 private:
 
     //number of Bdfs

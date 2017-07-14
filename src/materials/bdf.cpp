@@ -14,7 +14,7 @@ BdfFlags Bdf::getFlags() const
     return Bdf::type;
 }
 
-Color Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1)const
+Color Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const
 {
     //sample x,y points on the hemisphere, shirley's method maybe's better
     float t = TWO_PI * r0;
@@ -24,7 +24,12 @@ Color Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1)const
     wi->z = sqrtf(max(0.f,1.f-wi->x*wi->x-wi->y*wi->y));
     //if the wo was flipped, flip also wi
     if(wo->z < 0) wi->z *= -1.f;
+    *pdf = fabsf(wi->z)*INV_PI;
     return df(wo,wi);
+}
+float Bdf::pdf(const Vec3* wo, const Vec3* wi)const
+{
+    return fabsf(wi->z)*INV_PI;
 }
 
 Bsdf::Bsdf()
@@ -69,10 +74,13 @@ Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi)const
 }
 
 Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
-                 const HitPoint* h, Vec3* wi)const
+                 const HitPoint* h, Vec3* wi, float* pdf)const
 {
     if(Bsdf::count == 0)
-        return Color(); //otherwise it will access
+    {
+        *pdf = 0.f;
+        return Color(); //otherwise it will access invalid array positions
+    }
     int chosen = (int)(r0 * count);
     if(chosen==count) //out of array bounds
         chosen--;
@@ -81,7 +89,7 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
     Vec3 tmpwi;
     //compute sampled bdf value
-    Color retval = bdfs[chosen]->df_s(&wo_shading_space,&tmpwi,r1,r2);
+    Color retval = bdfs[chosen]->df_s(&wo_shading_space,&tmpwi,r1,r2,pdf);
 
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
@@ -93,15 +101,22 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
         return retval;
 
     //else compute the value for the given pair of ray
-    BdfFlags val;
+    BdfFlags val = bdfs[count]->getFlags();
+    char matching = 1;
     if(wi->dot(h->n)*wo->dot(h->n) > 0)
-        val = BRDF;
+        val = (BdfFlags)(val & ~BTDF);
     else
-        val = BTDF;
+        val = (BdfFlags)(val & ~BRDF);
     for(int i=0;i<count;i++)
     {
         if(bdfs[i]->isType(val)) //add contribution only if matches refl/trans
+        {
             retval += bdfs[i]->df(&wo_shading_space,&tmpwi);
+            *pdf+=bdfs[i]->pdf(&wo_shading_space,&tmpwi);
+            matching++;
+        }
     }
+    if(matching>1) //most of times this will be 1. And the division is expensive
+        *pdf/=matching;
     return retval;
 }

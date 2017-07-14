@@ -1,12 +1,12 @@
 //Created,  28 Apr 2017
-//Last Edit 18 May 2017
+//Last Edit 14 Jul 2017
 
 /**
  *  \file validator.h
  *  \brief Check the consistency of the settings.h file and add some definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 18 May 2017
+ *  \date 14 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -38,7 +38,7 @@
 #define M_PI 3.1415926535897932384626433832795028841971693993751058209749445923f
 #endif
 ///define the inverse of the pi
-#define INV_PI 1.f/M_PI
+#define INV_PI 0.318309886183790671537767526745028724068919291480912897495f
 ///define 2 * π, used extensively in sphere computations
 #define TWO_PI 6.283185307179586476925286766559005768394338798750211641949f
 //define 4 * π

@@ -12,7 +12,7 @@ Color AreaLight::emissivePower()const
 }
 
 Color AreaLight::radiance(float r0, float r1, float r2, float r3,
-                          const Point3* pos, Ray* out)const
+                          const Point3* pos, Ray* out,float* pdf)const
 {
     Normal n;
     out->origin = *pos;
@@ -34,5 +34,6 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
     if(out->direction.dot(n) < 0.f)
         out->direction *= -1.f;
 
+    *pdf = 1.f/AreaLight::model->surface();
     return c;
 }

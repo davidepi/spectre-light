@@ -12,7 +12,7 @@ Color Refraction::df(const Vec3*, const Vec3*) const
     return Color();
 }
 
-Color Refraction::df_s(const Vec3 *wo, Vec3 *wi) const
+Color Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
 {
     float ei = eta_i;
     float et = eta_t;
@@ -36,8 +36,14 @@ Color Refraction::df_s(const Vec3 *wo, Vec3 *wi) const
     wi->x = eta * -wo->x;
     wi->y = eta * -wo->y;
     wi->z = costransmitted;
+    *pdf = 0.f;
     //return BTDF
     return (Color(1)-d.eval(wo->z)) * (et*et)/(ei*ei) * specular/fabsf(wi->z);
+}
+
+float Refraction::pdf(const Vec3* wo, const Vec3* wi)const
+{
+    return 0.f;
 }
 
 Bdf* Refraction::clone()const

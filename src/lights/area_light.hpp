@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit  9 Jul 2017
+//Last Edit 14 Jul 2017
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      9 Jul 2017
+ *  \date      14 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -52,10 +52,12 @@ public:
      * \param[in] current_pos The current position of the viewer, i.e. the point
      * receiving the radiance from this light
      * \param[out] out The computed ray originating the radiance
+     * \param[out] pdf The probability density function of the chosen point
+     * over the light
      * \return The emitted radiance from the computed ray
      */
     Color radiance(float r0, float r1, float r2, float r3,
-                   const Point3* current_pos, Ray* out)const;
+                   const Point3* current_pos, Ray* out, float* pdf)const;
 
     /** \brief Return the total emissive power over the surface
      * \return Emissive power over the surface, given constant radiance
