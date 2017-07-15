@@ -31,6 +31,8 @@
  */
 class LightIntegrator
 {
+public:
+
     /** \brief Determine the radiance arriving at a point
      *
      *  The radiance method compute the arriving radiance at the film. This

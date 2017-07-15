@@ -1,7 +1,7 @@
 #include "renderer.hpp"
 
 static void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
-              std::stack<Renderer_task>* jobs, Scene* s);
+              std::stack<Renderer_task>* jobs, Scene* s, LightIntegrator* t);
 
 
 static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
@@ -34,6 +34,7 @@ Renderer::Renderer(int w, int h, int spp, const char* o) : film(w,h,o)
     numthreads = numthreads > 0 ? numthreads : 1;
     Renderer::c = NULL;
     Renderer::f = NULL;
+    Renderer::t = NULL;
     Renderer::workers=new std::thread[numthreads];//dflt ctor won't start thread
 }
 
@@ -43,6 +44,8 @@ Renderer::~Renderer()
         delete c;
     if(Renderer::f != NULL)
         delete f;
+    if(Renderer::t != NULL)
+        delete t;
     delete[] Renderer::workers;
 }
 
@@ -101,6 +104,13 @@ void Renderer::setLanczosSincFilter(float tau)
     film.setFilter(f);
 }
 
+void Renderer::setRayTracer()
+{
+    if(Renderer::t != NULL)
+        delete t;
+    t = new RayTracer();
+}
+
 int Renderer::render(Scene* s)
 {
     //used just for seed generation, WELLrng will be the actual prng
@@ -118,6 +128,11 @@ int Renderer::render(Scene* s)
     if (Renderer::f == NULL)
     {
         Console.severe(MESSAGE_MISSING_FILTER);
+        return 1;
+    }
+    if (Renderer::t == NULL)
+    {
+        Console.severe(MESSAGE_MISSING_INTEGRATOR);
         return 1;
     }
 
@@ -139,7 +154,7 @@ int Renderer::render(Scene* s)
     for(int i=0;i<Renderer::numthreads;i++)
     {
         Renderer::workers[i] = std::thread(executor,c,&film,&jobs_mtx,spp,
-                                           &jobs,s);
+                                           &jobs,s,Renderer::t);
     }
 
     //wait for them to finish
@@ -155,7 +170,7 @@ int Renderer::render(Scene* s)
 }
 
 void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
-              std::stack<Renderer_task>* jobs, Scene* s)
+              std::stack<Renderer_task>* jobs, Scene* s, LightIntegrator* t)
 {
     //generate seed for WELLrng. Constant WELL_R is inside wellrng.h
     unsigned int WELLseed[WELL_R];
@@ -166,7 +181,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
     }
     bool done = false;
     Renderer_task todo;
-    Sample sample;
+    Sample samples[spp];
     Ray r;
     Color radiance;
     HitPoint h;
@@ -188,24 +203,23 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
         }
         StratifiedSampler sam(todo.startx,todo.endx,todo.starty,todo.endy,spp,
                               WELLseed, JITTERED_SAMPLER);
-        while(sam.getSamples(&sample))
+        while(sam.getSamples(samples))
         {
-            c->createRay(&sample,&r);
-            //TODO: compute actual radiance instead of these lines
-            if(s->k.intersect(&r,&h))
+            for(int i=0;i<spp;i++)
             {
-                radiance.r = 1;
-                radiance.g = 1;
-                radiance.b = 1;
+                c->createRay(&(samples[i]), &r);
+                if (s->k.intersect(&r, &h))
+                {
+                    radiance = t->radiance(s, &h, &r, &sam);
+                } else
+                {
+                    radiance.r = 0;
+                    radiance.g = 0;
+                    radiance.b = 0;
+                }
+                //end
+                io->addPixel(&(samples[i]), &radiance);
             }
-            else
-            {
-                radiance.r = 0;
-                radiance.g = 0;
-                radiance.b = 0;
-            }
-            //end
-            io->addPixel(&sample,&radiance);
         }
     }
 }

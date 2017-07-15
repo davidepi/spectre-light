@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 14 Jul 2017
+//Last Edit 15 Jul 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      14 Jul 2017
+ *  \date      15 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -27,6 +27,8 @@
 #include "samplers/lanczos_filter.hpp"
 #include "utility/scene.hpp"
 #include "samplers/stratified_sampler.hpp"
+#include "integrators/light_integrator.hpp"
+#include "integrators/ray_tracer.hpp"
 #include "settings.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
@@ -178,6 +180,14 @@ public:
      */
     void setLanczosSincFilter(float tau);
 
+    /** \brief Solve the light transport equation using the ray-tracer
+     *
+     *  Set the ray tracer as the integrator used for solving the light
+     *  transport equation. This integrator accounts only for direct lighting
+     *  and thus does not compute global illumination
+     */
+    void setRayTracer();
+
     /** \brief Render the scene
      *
      *  This method, given an input scene, sets up the rendering threads and
@@ -220,6 +230,9 @@ private:
 
     //working threads
     std::thread* workers;
+
+    //integrator
+    LightIntegrator* t;
 };
 
 #endif
