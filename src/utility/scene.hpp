@@ -21,6 +21,7 @@
 #include "geometry/matrix4.hpp"
 #include "utility/utility.hpp"
 #include "utility/console.hpp"
+#include "lights/area_light.hpp"
 
 /**
  *  \class Scene scene.hpp "utility/scene.hpp"
@@ -66,13 +67,33 @@ public:
 
     /** \brief Given a shape id and a matrix, create an asset with those
      *
-     *  \param[in] shapeid The id of the shape, alredy inherited by the scene
+     *  \param[in] shapeid The id of the shape, already inherited by the scene
      *  \param[in] transform The transform matrix for the asset
      *  \param[in] material The material for the asset. If NULL the material
      *  will remain the default one
      *  \return the added assets id. 0 if nothing was added
      */
     int addAsset(int shapeid, Matrix4* transform, const Bsdf* material = NULL);
+
+    /** \brief Given a shapeid and a matrix, create a light with those
+     *
+     *  \param[in] shapeid The id of the shape, already inherited by the scene
+     *  \param[in] transform The transform matrix for the light
+     *  \param[in] c The emissive spectrum of the light
+     *  \return the added light id. Since a light is essentially an asset, this
+     *  is an asset id. 0 if nothing was added
+     */
+    int addLight(int shapeid, Matrix4* transform, Color c);
+
+    /** \brief Return the number of lights in the scene
+     * \return The number of lights in the scene
+     */
+    int lightSize()const;
+
+    /** \brief  Return the array of lights in the scene
+     * \return The array of lights in the scene
+     */
+    const AreaLight* const* getLights()const;
 
 private:
 
@@ -93,6 +114,16 @@ private:
 
     //next insertion index in the asset pointers array
     int asset_index;
+
+    //Array of light pointers
+    AreaLight** lights;
+
+    //size of light pointers array
+    int lights_allocated;
+
+    //next insertion index in the asset pointers array
+    int light_index;
+
 };
 
 

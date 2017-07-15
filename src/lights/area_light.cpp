@@ -43,7 +43,7 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
     return c;
 }
 
-bool isLight()const
+bool AreaLight::isLight()const
 {
     return true;
 }
