@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  14 Jul 2017
+//Last Edit  15 Jul 2017
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      14 Jul 2017
+ *  \date      15 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -192,6 +192,20 @@ public:
      */
     Color df_s(float r0, float r1, float r2, const Vec3* wo, const HitPoint* h,
                Vec3* wi, float* pdf)const;
+
+    /** \brief Return the probability density function for this bsdf
+     *
+     *  Given a pair of vectors, return the pdf value for these directions. In
+     *  other words the probability that another random sample will be equal to
+     *  this one
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[in] h  The properties of the hit point
+     *  \param[in] wi The incident direction
+     *  \return The pdf for this set of values
+     */
+    float pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi)const;
+
 private:
 
     //number of Bdfs

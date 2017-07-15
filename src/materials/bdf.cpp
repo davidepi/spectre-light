@@ -120,3 +120,21 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
         *pdf/=matching;
     return retval;
 }
+
+float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi)const
+{
+    if(Bsdf::count == 0)
+        return 0.f;
+    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
+    float pdf = 0.f;
+    int matching = 0;
+    for (int i = 0; i < count; ++i)
+    {
+        matching++;
+        pdf += bdfs[i]->pdf(wo, wi);
+    }
+    if(matching>0)
+        return pdf/(float)matching;
+    else
+        return 0.f;
+}

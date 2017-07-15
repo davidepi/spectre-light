@@ -70,6 +70,11 @@ Color::~Color()
     
 }
 
+bool Color::isBlack()const
+{
+    return Color::r==0 && Color::g==0 && Color::b==0;
+}
+
 //<><><><> Operators <><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 Color Color::operator+(const Color& c)const

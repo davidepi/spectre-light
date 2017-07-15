@@ -1,6 +1,5 @@
 //Created,  23 May 2017
-//Last Edit  6 Jun 2017
-
+//Last Edit 15 Jun 2017
 /**
  *  \file color.hpp
  *  \brief Spectrum and colours representations
@@ -8,7 +7,7 @@
  *  spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 6 June 2017
+ *  \date 15 June 2017
  *  \copyright GNU GPLv3
  */
 
@@ -73,6 +72,11 @@ public:
 
     ///Default destructor
     ~Color();
+
+    /** \brief Return true if the color is black
+     *  \return true if every component is zero
+     */
+    bool isBlack()const;
     
     ///Red component
     float r;
