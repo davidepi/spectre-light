@@ -60,3 +60,8 @@ const Bsdf* Asset::getMaterial() const
 {
     return Asset::material;
 }
+
+bool Asset::isLight() const
+{
+    return false;
+}

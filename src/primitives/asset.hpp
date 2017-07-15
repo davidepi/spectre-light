@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit  7 Jul 2017
+//Last Edit 14 Jul 2017
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      7 Jul 2017
+ *  \date      14 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -97,6 +97,12 @@ public:
      *  \return material A pointer to the material of the asset
      */
     const Bsdf* getMaterial()const;
+
+    /** \brief Return true if this asset is a light
+     *
+     *  \return true if the asset is a light
+     */
+    virtual bool isLight()const;
     
 protected:
 

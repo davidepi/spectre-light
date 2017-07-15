@@ -63,6 +63,17 @@ public:
      * \return Emissive power over the surface, given constant radiance
      */
     Color emissivePower()const;
+
+    /** \brief Return the light spectrum emitted
+     * \return The emitted light spectrum
+     */
+    Color emissiveSpectrum()const;
+
+    /** \brief Return true if this asset is a light
+     *
+     *  \return true
+     */
+    bool isLight()const;
     
 private:
 

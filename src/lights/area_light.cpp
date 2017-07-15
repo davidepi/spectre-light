@@ -11,6 +11,11 @@ Color AreaLight::emissivePower()const
     return AreaLight::c * TWO_PI;
 }
 
+Color AreaLight::emissiveSpectrum()const
+{
+    return AreaLight::c;
+}
+
 Color AreaLight::radiance(float r0, float r1, float r2, float r3,
                           const Point3* pos, Ray* out,float* pdf)const
 {
@@ -36,4 +41,9 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
 
     *pdf = 1.f/AreaLight::model->surface();
     return c;
+}
+
+bool isLight()const
+{
+    return true;
 }
