@@ -11,6 +11,7 @@ file(GLOB spectre_core_sources
     src/samplers/*.cpp
     src/utility/*.cpp
     src/cameras/*.cpp
+    src/integrators/*.cpp
     src/materials/*.cpp)
 include_directories(src)
 find_package (Threads REQUIRED)
