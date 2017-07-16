@@ -42,6 +42,7 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
         out->direction *= -1.f;
 
     *pdf = AreaLight::invarea * INV_TWOPI;
+    return AreaLight::c;
 }
 
 float AreaLight::pdf() const
