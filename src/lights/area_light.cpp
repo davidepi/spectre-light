@@ -39,8 +39,13 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
     if(out->direction.dot(n) < 0.f)
         out->direction *= -1.f;
 
-    *pdf = 1.f/AreaLight::model->surface();
+    *pdf = 1.f/AreaLight::area;
     return c;
+}
+
+float AreaLight::pdf() const
+{
+    return 1.f/AreaLight::area;
 }
 
 bool AreaLight::isLight()const

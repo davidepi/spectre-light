@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 14 Jul 2017
+//Last Edit 16 Jul 2017
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      14 Jul 2017
+ *  \date      16 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -44,7 +44,7 @@ public:
     /** \brief Return the ID of this asset
      *  \return A unsigned int representing the ID of this asset
      */
-    unsigned int getID();
+    unsigned int getID()const;
     
     /** \brief Intersection of a Ray and this asset
      *

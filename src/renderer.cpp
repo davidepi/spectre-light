@@ -181,7 +181,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
     }
     bool done = false;
     Renderer_task todo;
-    Sample samples[spp];
+    Sample* samples = new Sample[spp];
     Ray r;
     Color radiance;
     HitPoint h;
@@ -222,6 +222,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
             }
         }
     }
+    delete samples;
 }
 
 RendererProgressBar::RendererProgressBar(std::stack<Renderer_task> *jobs)

@@ -11,7 +11,7 @@ Asset::Asset(Shape* sp, Matrix4* transform)
     transform->inverse(&(Asset::invTrans));
 }
 
-unsigned int Asset::getID()
+unsigned int Asset::getID()const
 {
     return Asset::id;
 }
