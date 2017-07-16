@@ -3,7 +3,7 @@
 AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, Color c)
 : Asset(sp,objToWorld), c(c)
 {
-    AreaLight::area = sp->surface();
+    AreaLight::invarea = 1.f/sp->surface();
 }
 
 Color AreaLight::emissivePower()const
@@ -33,19 +33,21 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
     float x = r*cosf(phi);
     float y = r*sinf(phi);
     out->direction = Vec3(x,y,z);
+    //out is in object space
+    *out = AreaLight::invTrans**out;
 
     //if the dir is pointing on the opposite direction of the normal, flip it
     //because there is no emission in that direction
     if(out->direction.dot(n) < 0.f)
         out->direction *= -1.f;
 
-    *pdf = 1.f/AreaLight::area;
+    *pdf = AreaLight::invarea * INV_TWOPI;
     return c;
 }
 
 float AreaLight::pdf() const
 {
-    return 1.f/AreaLight::area;
+    return AreaLight::invarea;
 }
 
 bool AreaLight::isLight()const

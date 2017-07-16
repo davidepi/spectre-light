@@ -87,7 +87,7 @@ public:
 private:
 
     Color c;
-    float area;
+    float invarea;
 };
 
 #endif

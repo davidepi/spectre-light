@@ -75,14 +75,13 @@ float Sphere::surface()const
 
 void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
 {
+    float z = 1.f - 2.f * r0;
+    float r = sqrtf(max(0.f,1.f-z*z));
+    float phi = TWO_PI*r1;
+    float x = r*cosf(phi);
+    float y = r*sinf(phi);
     if(p->x*p->x+p->y*p->y+p->z*p->z - radius*radius < 0.000005f)
     {
-        //point inside sphere, sample uniformly
-        float z = 1.f - 2.f * r0; //height of the sample, supposing radius 1
-        float r = sqrtf(max(0.f,1.f-z*z));
-        float phi = TWO_PI*r1; //partial sphere to consider
-        float x = r*cosf(phi);
-        float y = r*sinf(phi);
         p->x = x;
         p->y = y;
         p->z = z;
@@ -92,14 +91,6 @@ void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
     }
     else
     {
-       //point outside sphere, sample only visible hemisphere
-//       Vec3 pc(-p->x,-p->y,-p->z); //direction from point to sphere centre
-        //TODO: for now I'm just sampling uniformly on the whole sphere
-        float z = 1.f - 2.f * r0;
-        float r = sqrtf(max(0.f,1.f-z*z));
-        float phi = TWO_PI*r1;
-        float x = r*cosf(phi);
-        float y = r*sinf(phi);
         p->x = x;
         p->y = y;
         p->z = z;

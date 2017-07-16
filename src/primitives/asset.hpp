@@ -109,6 +109,9 @@ protected:
     //underlying model
     Shape* model;
 
+    //Inverse transformation
+    Matrix4 invTrans;
+
 private:
 
     //id of the asset
@@ -119,9 +122,6 @@ private:
 
     //Transformation
     Matrix4* transform;
-
-    //Inverse transformation
-    Matrix4 invTrans;
 
     //Material
     const Bsdf* material;
