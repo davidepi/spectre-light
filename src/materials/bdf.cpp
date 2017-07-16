@@ -97,7 +97,7 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     wi->x = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
 
     //if specular return the computed value
-    if(bdfs[count]->getFlags() & (BRDF|SPECULAR))
+    if(bdfs[chosen]->getFlags() & (BRDF|SPECULAR))
         return retval;
 
     //else compute the value for the given pair of ray

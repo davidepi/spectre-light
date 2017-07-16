@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  15 Jul 2017
+//Last Edit  16 Jul 2017
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      15 Jul 2017
+ *  \date      16 Jul 2017
  *  \copyright GNU GPLv3
  */
 

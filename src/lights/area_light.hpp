@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 14 Jul 2017
+//Last Edit 16 Jul 2017
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      14 Jul 2017
+ *  \date      16 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -74,6 +74,15 @@ public:
      *  \return true
      */
     bool isLight()const;
+
+    /** \brief Return the probability density function for this light
+     *
+     *  Return the probability that another random sample will be equal to
+     *  the one generated with the radiance() method
+     *
+     *  \return The pdf for this light
+     */
+    float pdf()const;
     
 private:
 
