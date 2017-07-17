@@ -15,42 +15,40 @@ Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
     }
     if(nlights>0)
     {
-        float rand[8];
-        sam->getRandomNumbers(rand,8);
+        float rand[6];
+        sam->getRandomNumbers(rand,6);
         const Vec3 wo = -r->direction;
+        Vec3 wi;
         Color retval;
         //choose a light to sample
         int sampledlight = min((int)(rand[0]*nlights),nlights-1);
         const AreaLight* light = lights[sampledlight];
+        const Bsdf* mat = hp->hit->getMaterial();
         float lightpdf;
         float bsdfpdf;
-        Ray lightray;
 
         //multiple importance sampling, light first
-        Color directrad = light->radiance(rand[1],rand[2],rand[3],rand[4],
-                                          &hp->h,&lightray,&lightpdf);
-        const Bsdf* mat = hp->hit->getMaterial();
+        Color directrad=light->radiance_i(rand[1],rand[2],&hp->h,&wi,&lightpdf);
         if(lightpdf > 0 && !directrad.isBlack())
         {
-            Color bsdf_f = mat->df(&wo,hp,&lightray.direction);
+            Color bsdf_f = mat->df(&wo,hp,&wi);
             OcclusionTester ot(sc);
             if(!bsdf_f.isBlack())// && !ot.isOccluded(&lightray,hp->hit))
             {
-                bsdfpdf = mat->pdf(&wo,hp,&lightray.direction);
-                float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf-
+                bsdfpdf = mat->pdf(&wo,hp,&wi);
+                float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
                         bsdfpdf*bsdfpdf);
-                L+=bsdf_f*directrad*absdot(lightray.direction,hp->n)*
+                L+=bsdf_f*directrad*absdot(wi,hp->n)*
                                     weight/lightpdf;
             }
         }
 
         //mip bsdf sampling
-        Vec3 wi;
-        Color bsdf_f = mat->df_s(rand[5],rand[6],rand[7],&wo,hp,&wi,&bsdfpdf);
+        Color bsdf_f = mat->df_s(rand[3],rand[4],rand[5],&wo,hp,&wi,&bsdfpdf);
         if(!bsdf_f.isBlack() && bsdfpdf>0)
         {
-            lightpdf = light->pdf();
-            float weight = (bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf-lightpdf*lightpdf);
+            lightpdf = light->pdf(&hp->h,&wi);
+            float weight = (bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf+lightpdf*lightpdf);
             Ray r2(hp->h,wi);
             HitPoint h2;
             Color rad;
@@ -63,5 +61,8 @@ Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
 
         }
     }
+    if(L.r>1)L.r=1;
+    if(L.g>1)L.g=1;
+    if(L.b>1)L.b=1;
     return L*nlights;
 }

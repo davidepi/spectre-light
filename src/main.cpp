@@ -3,7 +3,7 @@
 #include "renderer.hpp"
 int main()
 {
-    Renderer r(800,600,1,"test.ppm");
+    Renderer r(800,600,100,"test.ppm");
     Scene s;
     Sphere* sp = new Sphere(1);
     Matrix4* m = new Matrix4();
@@ -11,12 +11,14 @@ int main()
     s.addLight(s.inheritShape(sp),m,Color(1));
     for(int i=2;i<100;i+=2)
     {
-        Sphere* sp = new Sphere(1);
-        Matrix4* m = new Matrix4();
-        m->setTranslation(Vec3(i,i,i));
-        s.addAsset(s.inheritShape(sp),m);
+        Sphere *sp = new Sphere(1);
+        Matrix4 *m = new Matrix4();
+        m->setTranslation(Vec3(i, i, i));
+        s.addAsset(s.inheritShape(sp), m);
     }
+
     r.setPerspective(Point3(0,0,-10),Point3(0,0,0),Vec3(0,1,0),1);
-    r.setTentFilter();
+    r.setMitchellFilter(1/3.f,1/3.f);
+    r.setRayTracer();
     return r.render(&s);
 }
