@@ -3,7 +3,8 @@
 AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, Color c)
 : Asset(sp,objToWorld), c(c)
 {
-    AreaLight::invarea = 1.f/sp->surface();
+    AreaLight::area = sp->surface();
+    AreaLight::invarea = 1.f/area;
 }
 
 Color AreaLight::emissivePower()const
@@ -16,11 +17,9 @@ Color AreaLight::emissiveSpectrum()const
     return AreaLight::c;
 }
 
-Color AreaLight::radiance(float r0, float r1, float r2, float r3,
-                          const Point3* pos, Ray* out,float* pdf)const
+Color AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
 {
     Normal n;
-    out->origin = *pos;
 
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
@@ -33,8 +32,9 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
     float x = r*cosf(phi);
     float y = r*sinf(phi);
     out->direction = Vec3(x,y,z);
-    //out is in object space
-    *out = AreaLight::invTrans**out;
+
+    //objspace to world space
+    *out = *AreaLight::objToWorld**out;
 
     //if the dir is pointing on the opposite direction of the normal, flip it
     //because there is no emission in that direction
@@ -43,6 +43,65 @@ Color AreaLight::radiance(float r0, float r1, float r2, float r3,
 
     *pdf = AreaLight::invarea * INV_TWOPI;
     return AreaLight::c;
+}
+
+Color AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
+                            Vec3 *wi, float *pdf) const
+{
+    Normal n;
+    Point3 p;
+    Ray r;
+    r.origin = worldToObj**current_pos;
+
+    //generate random origin point of the emitted radiance in the surface of the
+    //underlying model of the light
+    AreaLight::model->getRandomPoint(r0,r1,&p,&n);
+
+    //in the next steps a ray originating from the current_pos and pointing to
+    //the sampled point is tested against the light. This because if the sampled
+    //point is on the backface, a point facing the current_pos is selected
+    r.direction = p-r.origin;
+    r.direction.normalize();
+    HitPoint hp;
+    float distance;
+    bool res=AreaLight::model->intersect(&r,&distance,&hp);//will always succeed
+#ifdef _LOW_LEVEL_CHECKS_
+    //TODO: erase this after all the intersections are tried
+    //just to be sure
+    if(!res)
+        return Color();
+#endif
+    p = r.apply(distance);
+    n = hp.n;
+    *wi = r.direction;
+
+    *pdf = (r.origin.x-p.x)*(r.origin.x-p.x)+(r.origin.y-p.y)*(r.origin.y-p.y)+
+           (r.origin.z-p.z)*(r.origin.z-p.z);
+    *pdf/=(absdot(n,-(*wi))*AreaLight::area);
+
+    //convert wi to world space
+    Color retval;
+    if(dot(n,-(*wi))>0) //TODO:probably can be removed
+        retval = AreaLight::c;
+
+    *wi = *AreaLight::objToWorld**wi;
+    wi->normalize();
+    return retval;
+}
+
+float AreaLight::pdf(const Point3* p, const Vec3* wi)const
+{
+    Ray r;
+    r.origin = AreaLight::worldToObj**p;
+    r.direction = AreaLight::worldToObj**wi;
+    HitPoint hp;
+    float distance;
+    AreaLight::model->intersect(&r,&distance,&hp);
+    Point3 ps = r.apply(distance);
+    float pdf = (r.origin.x-ps.x)*(r.origin.x-ps.x)+(r.origin.y-ps.y)*
+                (r.origin.y-ps.y)+(r.origin.z-ps.z)*(r.origin.z-ps.z);
+    pdf/=(absdot(hp.n,-(*wi))*AreaLight::area);
+    return pdf;
 }
 
 float AreaLight::pdf() const

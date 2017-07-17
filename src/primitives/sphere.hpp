@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit 11 Jul 2017
+//Last Edit 17 Jul 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Jul 2017
+ *  \date      17 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -98,16 +98,11 @@ public:
     /** \brief Returns a random point on the surface of the sphere
      *
      *  Useful for the light sources, this method returns a random point on the
-     *  surface of the shape. If the viewer point is outside the sphere, the
-     *  random point is only in the hemisphere facing the viewer. Otherwise it
-     *  could cover the whole surface. This because if the point is inside the
-     *  sphere, the whole sphere is visible. On the other hand, if the point is
-     *  outside only one hemisphere can be seen.
+     *  surface of the shape. The normal is always pointing outside the sphere
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
-     *  \param[in,out] p The viewer point in object space as input, the computed
-     *  point in object space as output
+     *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
     void getRandomPoint(float r0, float r1, Point3* p, Normal* n)const;

@@ -109,8 +109,11 @@ protected:
     //underlying model
     Shape* model;
 
-    //Inverse transformation
-    Matrix4 invTrans;
+    //ObjToWorld matrix
+    Matrix4* objToWorld;
+
+    //WorldToObj matrix
+    Matrix4 worldToObj;
 
 private:
 
@@ -119,9 +122,6 @@ private:
 
     //Bounding box
     AABB aabb;
-
-    //Transformation
-    Matrix4* transform;
 
     //Material
     const Bsdf* material;

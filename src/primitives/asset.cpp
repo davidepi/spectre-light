@@ -5,10 +5,10 @@ Asset::Asset(Shape* sp, Matrix4* transform)
         :id(_asset_ID_pool++),aabb(sp->computeWorldAABB(transform))
 {
     Asset::model = sp;
-    Asset::transform = transform;
+    Asset::objToWorld = transform;
     Asset::material = MtlLib.get("Default");
 
-    transform->inverse(&(Asset::invTrans));
+    transform->inverse(&(Asset::worldToObj));
 }
 
 unsigned int Asset::getID()const
@@ -20,14 +20,14 @@ bool Asset::intersect(const Ray* r,float* distance, HitPoint* h)const
 {
 
     //since intersection is performed in object_space, convert back the ray
-    Ray r2 = invTrans**r;
+    Ray r2 = worldToObj**r;
     bool res = Asset::model->intersect(&r2, distance, h);
     if(res)
     {
         //retransform back to world space
-        h->h = *transform*h->h;
-        h->n = *transform*h->n;
-        h->right = *transform*h->right;
+        h->h = *objToWorld*h->h;
+        h->n = *objToWorld*h->n;
+        h->right = *objToWorld*h->right;
         h->n.normalize();
         h->right.normalize();
         h->cross = normalize(cross(Vec3(h->n),h->right));

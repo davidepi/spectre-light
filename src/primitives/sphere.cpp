@@ -80,22 +80,10 @@ void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
     float phi = TWO_PI*r1;
     float x = r*cosf(phi);
     float y = r*sinf(phi);
-    if(p->x*p->x+p->y*p->y+p->z*p->z - radius*radius < 0.000005f)
-    {
-        p->x = x;
-        p->y = y;
-        p->z = z;
-        n->x = -x; //negative because the point is inside, so the normal points
-        n->y = -y; //inside
-        n->z = -z;
-    }
-    else
-    {
-        p->x = x;
-        p->y = y;
-        p->z = z;
-        n->x = x;
-        n->y = y;
-        n->z = z;
-    }
+    p->x = x;
+    p->y = y;
+    p->z = z;
+    n->x = x;
+    n->y = y;
+    n->z = z;
 }
