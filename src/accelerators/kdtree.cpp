@@ -455,9 +455,9 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
             const KdTreeNode* right;
             
             //find the order in which the ray encounters the children
-            bool leftBelow = (r->origin[axis] < n->getSplit() ||
+            bool leftBelow = (r->origin[axis] < n->getSplit()) ||
                              (r->origin[axis] == n->getSplit() &&
-                              r->direction[axis] <= 0));
+                              r->direction[axis] <= 0);
             if(leftBelow)
             {
                 left = n+1;
