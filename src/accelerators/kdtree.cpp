@@ -419,7 +419,9 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
 bool KdTree::intersect(const Ray* r, HitPoint* h)const
 {
     using KdHelpers::KdTravNode;
-    
+	HitPoint hp;
+    float current_best = 10000000;
+
     //setup all the divisions since they won't change for this ray
     RayProperties rp;
     rp.inverseX = 1.0f/r->direction.x;
@@ -499,12 +501,17 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
                 if(current_asset->intersectFast(r, &rp, &res1, &res2))
                 {
                     //then try with the actual asset
-                    if(current_asset->intersect(r,&res1,h))
+                    if(current_asset->intersect(r,&res1,&hp))
                     {
                         if(bestmaxt > maxt)
                             bestmaxt = maxt;
                         found = true; //record current intersection
-                        h->hit = current_asset;
+						if(res1<current_best)
+						{
+							current_best = res1;
+							*h = hp;
+							h->hit = current_asset;
+						}
                     }
                 }
             }
