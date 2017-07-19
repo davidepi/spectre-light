@@ -230,8 +230,10 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
                 io->addPixel(&(samples[i]), &radiance, &ex);
             }
         }
+		io->deferredAddPixel(&ex);
     }
     delete samples;
+	io->forceAddPixel(&ex);
 }
 
 RendererProgressBar::RendererProgressBar(std::stack<Renderer_task> *jobs)

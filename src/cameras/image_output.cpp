@@ -119,6 +119,7 @@ void ImageOutput::deferredAddPixel(ExecutorData* ex)
 			val->r += tp.r;
 			val->g += tp.g;
 			val->b += tp.b;
+			val->samples += tp.samples;
 		}
 		mtx.unlock();
 	}
@@ -137,6 +138,7 @@ void ImageOutput::forceAddPixel(ExecutorData* ex)
 		val->r += tp.r;
 		val->g += tp.g;
 		val->b += tp.b;
+		val->samples += tp.samples;
 	}
 	mtx.unlock();
 }
