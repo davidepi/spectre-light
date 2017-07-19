@@ -9,9 +9,10 @@ int main(int argc, char* argv[])
     int width = 800;
     int height = 600;
     int spp = 256;
-    char output[256];
-    char input[256];
+	char output[256];
+	char input[256];
     int flags, opt;
+	strcpy(output,"test.ppm");
 #ifndef WIN32
     while ((opt = getopt(argc, argv, "o:w:h:s:")) != -1) {
         switch (opt) {

@@ -143,7 +143,7 @@ int Renderer::render(Scene* s)
         task.starty = y;
         task.endy = y+SPLIT_SIZE<h?y+SPLIT_SIZE:h;
         for(int x=0;x<w;x+=SPLIT_SIZE)
-        {
+		{
             task.startx = x;
             task.endx = x+SPLIT_SIZE;
             jobs.push(task);
@@ -176,8 +176,8 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
     unsigned int WELLseed[WELL_R];
     for(int i=0;i<WELL_R;i++)
     {
-        //assuming RAND_MAX=2^31, sum two randoms and xor them with a third one
-        WELLseed[i] = ((unsigned int)rand()+(unsigned int)rand()) ^ rand();
+        //assuming RAND_MAX=2^31, sum two randoms
+        WELLseed[i] = ((unsigned int)rand()+(unsigned int)rand());
     }
     bool done = false;
     Renderer_task todo;
@@ -201,6 +201,9 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
             jobs->pop();
             lock->unlock();
         }
+	for(int i=0;i<WELL_R;i++) //alterate the seed
+	    WELLseed[i]++; //Predictable, but it is still a seed
+
         StratifiedSampler sam(todo.startx,todo.endx,todo.starty,todo.endy,spp,
                               WELLseed, JITTERED_SAMPLER);
         while(sam.getSamples(samples))
