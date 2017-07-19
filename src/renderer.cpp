@@ -163,9 +163,10 @@ int Renderer::render(Scene* s)
         Renderer::workers[i].join();
     }
     rb.kill();
+
     //save the image
     Renderer::film.saveImage();
-
+	
     return 0;
 }
 
@@ -183,6 +184,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
     Renderer_task todo;
     Sample* samples = new Sample[spp];
     Ray r;
+	ExecutorData ex;
     Color radiance;
     HitPoint h;
     while(!done)
@@ -206,6 +208,10 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
 
         StratifiedSampler sam(todo.startx,todo.endx,todo.starty,todo.endy,spp,
                               WELLseed, JITTERED_SAMPLER);
+		ex.startx = todo.startx;
+		ex.starty = todo.starty;
+		ex.endx = todo.endx;
+		ex.endy = todo.endy;
         while(sam.getSamples(samples))
         {
             for(int i=0;i<spp;i++)
@@ -221,7 +227,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
                     radiance.b = 0;
                 }
                 //end
-                io->addPixel(&(samples[i]), &radiance);
+                io->addPixel(&(samples[i]), &radiance, &ex);
             }
         }
     }

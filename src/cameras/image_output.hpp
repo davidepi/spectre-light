@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit  4 Jun 2017
+//Last Edit 19 Jul 2017
 
 /**
  *  \file image_output.hpp
  *  \brief     Buffer storing and saving an image, will be used by Camera
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      4 Jun 2017
+ *  \date      19 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -23,6 +23,7 @@
 #include <cstring>
 #include <cmath>
 #include <mutex>
+#include <stack>
 #include <cstdio>
 
 ///Used to store the weigthed average for every pixel
@@ -43,6 +44,47 @@ struct Pixel
      *  have to be divided by this number
      */
     float samples;
+};
+
+///Like the Pixel struct, but with the added x and y position on the image plane
+struct TodoPixel
+{
+	///The red value, from 0.0 to 1.0
+	float r;
+
+	///The green value, from 0.0 to 1.0
+	float g;
+
+	///The blue vale, from 0.0 to 1.0
+	float b;
+
+	///The weight of the various samples added
+	float samples;
+
+	///The x position of the pixel on the image plane
+	int x;
+
+	///The y position of the pixel on the image plane
+	int y;
+};
+
+///Stores the rendered area and where to put the pixel samples
+struct ExecutorData
+{
+	///The starting x point of the sub-image
+	int startx;
+
+	///The ending x point of the sub-image
+	int endx;
+
+	///The starting y point of the sub-image
+	int starty;
+
+	///The ending y point of the sub-image
+	int endy;
+
+	///If the pixel is in a critical area it will be put here
+	std::stack<TodoPixel> deferred;
 };
 
 /**
@@ -87,15 +129,51 @@ public:
      *  discrete values of the pixels, updating every affected pixel in a
      *  weighted way. The weight is defined by the filter.
      *
-     *  This function is thread-safe
-     *
+     *  If the pixel to be updated is in a critical area, outside of the
+	 *	ExecutorData bounds, the pixel is put in the ExecutorData stack for
+	 *	deferred processing
+	 *
      *  \warning By default filter is unset, remember to set it with
      *  ImageOutput::setFilter
      *
      *  \param[in] sample The sampled point
      *  \param[in] c The color value of the sampled point
+	 *	\param[in,out] ex A struct containing the rendered sub-image coordinates
+	 *	and where to put the pixel values that cannot be updated. For these 
+	 *	values a mutex will be used.
+	 *	\sa deferredAddPixel(const ExecutorData* ex);
+	 *	\sa forceAddPixel(const ExecutorData* ex);
      */
-    void addPixel(Sample* sample, Color* c);
+    void addPixel(const Sample* sample, const Color* c, ExecutorData* ex);
+
+
+	/** \brief Attempts the addition of pixels in critical areas
+	 *	
+	 *	When using the addPixel method, every pixel that could be influenced by
+	 *	samples of other rendering thread is put on the ExecutorData struct.
+	 *	This method tries the addition of these values in a thread safe way.
+	 * 	If the mutex is already locked nothing is done, otherwise the
+	 *	ExecutorData stack is emptied
+	 *
+	 *	\param[in] ex The struct containing all the pixel values that will be
+	 *	updated
+	 *	\sa addPixel(const Sample* sample, const Color* c, ExecutorData* ex);
+	 *	\sa forceAddPixel(ExecutorData* ex);
+	 */
+	void deferredAddPixel(ExecutorData* ex);
+
+	/** \brief Force the addition of pixels in critical areas
+	 *	
+	 *	When using the addPixel method, every pixel that could be influenced by
+	 *	samples of other rendering thread is put on the ExecutorData struct.
+	 *	This method force the addition of these values in a thread safe way.
+	 *
+	 *	\param[in] ex The struct containing all the pixel values that will be
+	 *	updated
+	 *	\sa addPixel(const Sample* sample, const Color* c, ExecutorData* ex);
+	 *	\sa deferredAddPixel(const ExecutorData* ex);
+	 */
+	void forceAddPixel(ExecutorData* ex);
     
     /** \brief Set a Filter for this image
      *

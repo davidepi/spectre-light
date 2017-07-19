@@ -66,7 +66,7 @@ ImageOutput::~ImageOutput()
     free(ImageOutput::image);
 }
 
-void ImageOutput::addPixel(Sample* s, Color* c)
+void ImageOutput::addPixel(const Sample* s, const Color* c, ExecutorData* ex)
 {
     float ptmpx = s->posx-0.5f;
     float ptmpy = s->posy-0.5f;
@@ -81,15 +81,64 @@ void ImageOutput::addPixel(Sample* s, Color* c)
     for(int y=p0y;y<p1y;y++)
         for(int x=p0x;x<p1x;x++)
         {
-            float weight = f->weight(x-ptmpx, y-ptmpy);
-            Pixel* val = image+(width*y+x);
-            mtx.lock();
-            val->r += c->r*weight;
-            val->g += c->g*weight;
-            val->b += c->b*weight;
-            val->samples += weight;
-            mtx.unlock();
+			float weight = f->weight(x-ptmpx, y-ptmpy);
+			if(x < ex->startx || x > ex->endx || y < ex->starty || y > ex->endy)
+			{
+				//critical section, deferred processing
+				TodoPixel tp;
+				tp.x = x;
+				tp.y = y;
+				tp.r = c->r*weight;
+				tp.g = c->g*weight;
+				tp.b = c->b*weight;
+				tp.samples = weight;
+				ex->deferred.push(tp);
+			}
+			else
+			{
+            	Pixel* val = image+(width*y+x);
+            	val->r += c->r*weight;
+            	val->g += c->g*weight;
+            	val->b += c->b*weight;
+            	val->samples += weight;
+			}
         }
+}
+
+void ImageOutput::deferredAddPixel(ExecutorData* ex)
+{
+	if(mtx.try_lock())
+	{
+		Pixel* val;
+		TodoPixel tp;
+		while(!ex->deferred.empty())
+		{
+			tp = ex->deferred.top();
+			ex->deferred.pop();
+			val = image+(width*tp.y+tp.x);
+			val->r += tp.r;
+			val->g += tp.g;
+			val->b += tp.b;
+		}
+		mtx.unlock();
+	}
+}
+
+void ImageOutput::forceAddPixel(ExecutorData* ex)
+{
+	Pixel* val;
+	TodoPixel tp;
+	mtx.lock();
+	while(!ex->deferred.empty())
+	{
+		tp = ex->deferred.top();
+		ex->deferred.pop();
+		val = image+(width*tp.y+tp.x);
+		val->r += tp.r;
+		val->g += tp.g;
+		val->b += tp.b;
+	}
+	mtx.unlock();
 }
 
 void ImageOutput::setFilter(Filter* f)
