@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit 17 Jul 2017
+//Last Edit 20 Jul 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      17 Jul 2017
+ *  \date      20 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -21,6 +21,7 @@
 #include "geometry/matrix4.hpp"
 #include "geometry/AABB.hpp"
 #include "geometry/AABB.hpp"
+#include <cmath>
 
 /**
  *  \class Sphere sphere.hpp "primitives/sphere.hpp"

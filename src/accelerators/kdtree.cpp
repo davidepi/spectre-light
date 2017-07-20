@@ -433,16 +433,16 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
     //if the scene is not insersected end here
     if(!scene_aabb.intersect(r, &rp, &mint, &maxt))
         return false;
-    float bestmaxt = maxt;
     //stack of nodes to process, used to traverse the tree breadth-first
     KdTravNode jobs[KD_MAX_DEPTH];
     int jobs_stack_top = 0;
     bool found = false;
+    float bestdistance = FLT_MAX;
     
     const KdTreeNode* n = nodesList;
     while(n != NULL)
     {
-        if(bestmaxt < mint) //a closer intersection has been found
+        if(bestdistance < mint) //a closer intersection has been found
             break;
         
         if(!n->isLeaf()) //if internal node
@@ -499,10 +499,9 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
                 if(current_asset->intersectFast(r, &rp, &res1, &res2))
                 {
                     //then try with the actual asset
-                    if(current_asset->intersect(r,&res1,h))
+                    if(res1<bestdistance && //don't try if AABB > best distance
+                       current_asset->intersect(r,&bestdistance,h))
                     {
-                        if(bestmaxt > maxt)
-                            bestmaxt = maxt;
                         found = true; //record current intersection
                         h->hit = current_asset;
                     }

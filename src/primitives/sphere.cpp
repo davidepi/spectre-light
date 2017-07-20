@@ -35,6 +35,9 @@ AABB Sphere::computeWorldAABB(const Matrix4* transform)const
 
 bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
 {
+#ifdef _LOW_LEVEL_CHECKS_
+    Console.severe(*distance < 0,"Intersection distance < 0");
+#endif
     const Vec3 tmp(r->origin.x,r->origin.y,r->origin.z);
     float a = r->direction.dot(r->direction);
     float b = 2*(r->direction.dot(tmp));
@@ -45,23 +48,27 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
     {
         if(sol2<sol1)
             swap(&sol1,&sol2);
-        
-        if(sol1>r->maxext || sol2<r->minext)
+        if(*distance < sol1) //intersection already found
             return false;
-        *distance = sol1;
-        if(sol1<r->minext) //intersection BEHIND origin
+        if(sol1<0) //intersection BEHIND origin
         {
-            *distance = sol2;
-            if(*distance>r->maxext) //both intersections behind origin
-                return false;
+                if (sol2<0 || *distance < sol2) //sol2 behind origin or distance
+                    return false;               //already between sol1 and sol2
+                else
+                    *distance = sol2;
         }
-        h->h = r->apply(*distance);
-        Vec3 normal(h->h.x,h->h.y,h->h.z);
-        h->n = Normal(normal);
-        if(h->h.x==0 && h->h.y==0) //particular case
-            h->right = Vec3(0,1,0);
         else
-            h->right = Vec3(-TWO_PI*h->h.y,TWO_PI*h->h.x,0);
+            *distance = sol1;
+        if(h!=NULL)
+        {
+            h->h = r->apply(*distance);
+            Vec3 normal(h->h.x, h->h.y, h->h.z);
+            h->n = Normal(normal);
+            if (h->h.x == 0 && h->h.y == 0) //particular case
+                h->right = Vec3(0, 1, 0);
+            else
+                h->right = Vec3(-TWO_PI * h->h.y, TWO_PI * h->h.x, 0);
+        }
         return true;
     }
     else
