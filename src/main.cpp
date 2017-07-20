@@ -1,6 +1,7 @@
 #include "utility/scene.hpp"
 #include "primitives/sphere.hpp"
 #include "renderer.hpp"
+#include <cstdlib> //atoi, exit
 #ifndef WIN32
 #include <getopt.h>
 #endif
@@ -9,13 +10,16 @@ int main(int argc, char* argv[])
     int width = 800;
     int height = 600;
     int spp = 256;
+    int threads = 0;
 	char output[256];
 	char input[256];
     int flags, opt;
 	strcpy(output,"test.ppm");
 #ifndef WIN32
-    while ((opt = getopt(argc, argv, "o:w:h:s:")) != -1) {
-        switch (opt) {
+    while ((opt = getopt(argc, argv, "o:w:h:s:t:")) != -1)
+    {
+        switch (opt)
+        {
             case 'o':
                     strncpy(output,optarg,sizeof(output));
                 break;
@@ -28,6 +32,9 @@ int main(int argc, char* argv[])
             case 's':
                     spp = atoi(optarg);
                 break;
+            case 't':
+                    threads = atoi(optarg);
+                break;
             default: /* '?' */
                 fprintf(stderr, "Usage: %s -o output [-i name | -w width -h"
                                 " height -s spp] \n",
@@ -36,7 +43,7 @@ int main(int argc, char* argv[])
         }
     }
 #endif
-    Renderer r(width,height,spp,output);
+    Renderer r(width,height,spp,output,threads);
     Scene s;
     Sphere* sp = new Sphere(1);
     Sphere* s2 = new Sphere(1e5);

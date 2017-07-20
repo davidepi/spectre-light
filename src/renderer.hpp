@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 19 Jul 2017
+//Last Edit 20 Jul 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      19 Jul 2017
+ *  \date      20 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -110,9 +110,11 @@ public:
      *  \param[in] spp The number of samples per pixel. Recall that the higher
      *  the samples number, the lower the noise. The price for this is longer
      *  rendering times.
-     *  \param[in] outputfile The desired path for the output image
+     *  \param[in] threads If you wish to override the number of rendering
+     *  threads, anything below 1 to autodetect
+     *  \param[in] output The desired path for the output image
      */
-    Renderer(int width, int height, int spp, const char* outputfile);
+    Renderer(int width,int height,int spp,const char* output,int threads=0);
 
     ///Default destructor
     ~Renderer();

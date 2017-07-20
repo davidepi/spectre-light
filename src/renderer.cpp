@@ -7,7 +7,7 @@ static void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
 static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
                         bool& alive);
 
-Renderer::Renderer(int w, int h, int spp, const char* o) : film(w,h,o)
+Renderer::Renderer(int w, int h, int spp, const char* o,int th) : film(w,h,o)
 {
     if(w%SPLIT_SIZE)
     {
@@ -24,7 +24,10 @@ Renderer::Renderer(int w, int h, int spp, const char* o) : film(w,h,o)
         Renderer::h = h;
     }
     Renderer::spp = spp;
-    Renderer::numthreads = (int)std::thread::hardware_concurrency();
+    if(th<1)
+        Renderer::numthreads = (int)std::thread::hardware_concurrency();
+    else
+        Renderer::numthreads = th;
 
     //print number of rendering threads
     char threads[256];
@@ -257,7 +260,6 @@ void RendererProgressBar::kill()
 
 void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
 {
-
     unsigned long remaining;
     const unsigned long total_size = ts;
     float done = 0.f;
