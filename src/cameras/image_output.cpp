@@ -49,7 +49,7 @@ ImageOutput::ImageOutput(int w, int h, const char* fn) :width(w), height(h)
     }
 
 #ifdef WIN32
-    if(_access(folder,W_OK)!=0)
+    if(_access(folder,2)!=-1)
 #else
     if(access(folder,W_OK)!=0)
 #endif
