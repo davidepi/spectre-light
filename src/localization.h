@@ -48,6 +48,11 @@
 
 #define MESSAGE_NUMTHREADS "Using %d rendering threads"
 
+#define MESSAGE_W_DENIED "The folder \"%s\" is not writable or does not exists"
+
+#define MESSAGE_W_DENIED_RC "The output file was writable at startup, but now "\
+                            "it is not anymore."
+
 #endif
 
 

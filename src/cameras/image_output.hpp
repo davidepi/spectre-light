@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit 19 Jul 2017
+//Last Edit 21 Jul 2017
 
 /**
  *  \file image_output.hpp
  *  \brief     Buffer storing and saving an image, will be used by Camera
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      19 Jul 2017
+ *  \date      21 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -25,6 +25,11 @@
 #include <mutex>
 #include <stack>
 #include <cstdio>
+#ifdef WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
 ///Used to store the weigthed average for every pixel
 struct Pixel

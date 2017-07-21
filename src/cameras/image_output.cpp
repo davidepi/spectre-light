@@ -4,13 +4,14 @@
 bool check_extension(const char* fn)
 {
     const char* name = strrchr(fn,'.');
-    if(name == NULL)
-    {
+    if(name == NULL || (name-fn)<strlen(fn)-4) //null or position less than the
+    {                                          //4 chr expected for an extension
         Console.warning(MESSAGE_MISSING_EXTENSION);
         return false;
     }
     else
     {
+
 #ifndef IMAGEMAGICK_FOUND
         Console.warning(
                    "ImageMagick is not installed. Image will be saved as .ppm");
@@ -29,6 +30,36 @@ ImageOutput::ImageOutput(int w, int h, const char* fn) :width(w), height(h)
     memset(ImageOutput::image, 0, sizeof(Pixel)*w*h);
     ImageOutput::f = NULL;
     ImageOutput::filename = NULL;
+
+    //check if folder is writable
+    const char* file = strrchr(fn,PATH_SEPARATOR);
+    char* folder;
+    if(file!=NULL) //the path references another folder
+    {
+        int last_separator=(int)(file-fn)+1;
+        folder = (char*) malloc(sizeof(char)*(last_separator+1));
+        memcpy(folder, fn, sizeof(char)*last_separator);
+        folder[last_separator] = '\0';
+    }
+    else //current folder
+    {
+        folder= (char*)malloc(sizeof(char)*2);
+        folder[0] = '.';
+        folder[2] = '\n';
+    }
+
+#ifdef WIN32
+    if(_access(folder,W_OK)!=0)
+#else
+    if(access(folder,W_OK)!=0)
+#endif
+    {
+        char* err=(char*)malloc(sizeof(char)*(strlen(MESSAGE_W_DENIED)
+                                              +strlen(folder)+1));
+        sprintf(err,MESSAGE_W_DENIED,folder);
+        Console.critical(err);
+    }
+
     if(fn != NULL)
     {
         //check extension, add .ppm if not supported
@@ -59,6 +90,9 @@ ImageOutput::ImageOutput(int w, int h, const char* fn) :width(w), height(h)
         filename[6] = 'm';
         filename[7] = '\0';
     }
+
+    //check if writable
+    free(folder);
 }
 
 ImageOutput::~ImageOutput()
@@ -184,6 +218,7 @@ bool ImageOutput::saveImage()
     }
     else
     {
+        Console.critical(MESSAGE_W_DENIED_RC);
         free(tmp);
         return false;
     }
