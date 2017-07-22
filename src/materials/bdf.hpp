@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  16 Jul 2017
+//Last Edit  22 Jul 2017
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 Jul 2017
+ *  \date      22 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -188,10 +188,11 @@ public:
      *  \param[out] wi The incident direction
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
+     *  \param[in] matchme The types of bdfs to consider when computing radiance
      *  \return A sampled value of the BSDF
      */
     Color df_s(float r0, float r1, float r2, const Vec3* wo, const HitPoint* h,
-               Vec3* wi, float* pdf)const;
+               Vec3* wi, float* pdf, BdfFlags matchme=BdfFlags(BRDF|BRDF))const;
 
     /** \brief Return the probability density function for this bsdf
      *

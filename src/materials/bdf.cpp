@@ -74,7 +74,7 @@ Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi)const
 }
 
 Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
-                 const HitPoint* h, Vec3* wi, float* pdf)const
+                 const HitPoint* h, Vec3* wi, float* pdf, BdfFlags matchme)const
 {
     if(Bsdf::count == 0)
     {

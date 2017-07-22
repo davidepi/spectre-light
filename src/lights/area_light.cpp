@@ -69,7 +69,11 @@ Color AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
     //TODO: erase this after all the intersections are tried
     //just to be sure
     if(!res)
+    {
+        AreaLight::model->intersect(&r,&distance,&hp); //the error happens when
+        //the light is tangent to the sphere
         return Color();
+    }
 #endif
     p = r.apply(distance);
     n = hp.n;

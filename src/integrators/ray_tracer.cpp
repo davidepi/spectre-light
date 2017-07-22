@@ -32,8 +32,9 @@ Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
         if(lightpdf > 0 && !directrad.isBlack())
         {
             Color bsdf_f = mat->df(&wo,hp,&wi);
+            Ray r(hp->h,wi);
             OcclusionTester ot(sc);
-            if(!bsdf_f.isBlack())// && !ot.isOccluded(&lightray,hp->hit))
+            if(!bsdf_f.isBlack() && !ot.isOccluded(&r,hp->hit))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi);
                 float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
