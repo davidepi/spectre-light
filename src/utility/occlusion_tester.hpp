@@ -1,5 +1,5 @@
-//Created,  12 Jul 2017
-//Last Edit 12 Jul 2017
+//Created,  23 Jul 2017
+//Last Edit 23 Jul 2017
 
 /**
  *  \file occlusion_tester.hpp
@@ -36,26 +36,27 @@ public:
 
     /** \brief default Constructor
      *
-     * \param[in] s The scene used for the occlusion testing
+     *  \param[in] s The scene used for the occlusion testing
      */
     OcclusionTester(const Scene* s);
 
     /** \brief Check if a path is occluded
      *
-     * Given a ray and an expected asset, this method check if the nearest
-     * intersection is the expected asset (no occlusion) or another one.
+     *  Given a ray and an expected asset, this method check if the nearest
+     *  intersection is the expected asset (no occlusion) or another one.
      *
      *  \note It is not tested if the nearest intersection is closer than the
      *  expected intersection, since the ray direction should point to the
      *  expected one. For this reason, the farthest intersection is the expected
      *  one
      *
-     * \param[in] r The ray used for the test
-     * \param[in] expected The expected nearest intersection
-     * \return true if an asset different from the expected is intersected
+     *  \param[in] r The ray used for the test
+     *  \param[in] expected The expected nearest intersection
+     *  \param[in] expected_dist The expected distance of the light
+     *  \return true if an asset different from the expected is intersected
      *  nearer, false otherwise
      */
-    bool isOccluded(const Ray* r, const Asset* expected);
+    bool isOccluded(const Ray* r, const Asset* expected, float* expected_dist);
 
 private:
     const Scene* s;

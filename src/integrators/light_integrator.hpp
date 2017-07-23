@@ -1,12 +1,12 @@
 //Created,  15 Jul 2017
-//Last Edit 15 Jul 2017
+//Last Edit 23 Jul 2017
 
 /**
  *  \file aabb.hpp
  *  \brief     Interface for rendering equation integrators
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      15 Jul 2017
+ *  \date      23 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -19,6 +19,7 @@
 #include "utility/color.hpp"
 #include "primitives/shape.hpp"
 #include "geometry/ray.hpp"
+#include "utility/occlusion_tester.hpp"
 
 /**
  * \class LightIntegrator light_integrator.hpp
@@ -44,10 +45,14 @@ public:
      *  \param[in] hp The first intersection point
      *  \param[in] r The originating ray, generated from the camera
      *  \param[in] sam A sampler used to generate random numbers
+     *  \param[in] ot Class used in order to test the occlusion. It is passed
+     *  here to keep trace of cached assets between various call of this
+     *  function
      *  \return The radiance arriving at the film
      */
     virtual Color radiance(const Scene* sc, const HitPoint* hp,
-                           const Ray* r, Sampler* sam)const = 0;
+                           const Ray* r, Sampler* sam,
+                           OcclusionTester* ot)const = 0;
 };
 
 

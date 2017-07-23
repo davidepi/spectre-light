@@ -190,6 +190,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
 	ExecutorData ex;
     Color radiance;
     HitPoint h;
+    OcclusionTester ot(s);
     while(!done)
     {
         lock->lock();
@@ -222,7 +223,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
                 c->createRay(&(samples[i]), &r);
                 if (s->k.intersect(&r, &h))
                 {
-                    radiance = t->radiance(s, &h, &r, &sam);
+                    radiance = t->radiance(s, &h, &r, &sam, &ot);
                 } else
                 {
                     radiance.r = 0;

@@ -1,7 +1,7 @@
 #include "ray_tracer.hpp"
 
 Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
-                           Sampler* sam)const
+                           Sampler* sam, OcclusionTester* ot)const
 {
     Color L;
     int nlights = sc->lightSize();
@@ -27,14 +27,15 @@ Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
         float lightpdf;
         float bsdfpdf;
 
+        float light_distance;
         //multiple importance sampling, light first
-        Color directrad=light->radiance_i(rand[1],rand[2],&hp->h,&wi,&lightpdf);
+        Color directrad=light->radiance_i(rand[1],rand[2],&hp->h,&wi,&lightpdf,
+                                          &light_distance);
         if(lightpdf > 0 && !directrad.isBlack())
         {
             Color bsdf_f = mat->df(&wo,hp,&wi);
             Ray r(hp->h,wi);
-            OcclusionTester ot(sc);
-            if(!bsdf_f.isBlack() && !ot.isOccluded(&r,hp->hit))
+            if(!bsdf_f.isBlack() && !ot->isOccluded(&r,hp->hit,&light_distance))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi);
                 float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+

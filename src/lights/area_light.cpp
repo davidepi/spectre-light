@@ -46,7 +46,7 @@ Color AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
 }
 
 Color AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
-                            Vec3 *wi, float *pdf) const
+                            Vec3 *wi, float *pdf, float* distance) const
 {
     Normal n;
     Point3 p;
@@ -63,19 +63,15 @@ Color AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
     r.direction = p-r.origin;
     r.direction.normalize();
     HitPoint hp;
-    float distance = FLT_MAX;
-    bool res=AreaLight::model->intersect(&r,&distance,&hp);//will always succeed
+    *distance = FLT_MAX;
+    bool res=AreaLight::model->intersect(&r,distance,&hp);//will always succeed
 #ifdef _LOW_LEVEL_CHECKS_
     //TODO: erase this after all the intersections are tried
     //just to be sure
     if(!res)
-    {
-        AreaLight::model->intersect(&r,&distance,&hp); //the error happens when
-        //the light is tangent to the sphere
         return Color();
-    }
 #endif
-    p = r.apply(distance);
+    p = r.apply(*distance);
     n = hp.n;
     *wi = r.direction;
 

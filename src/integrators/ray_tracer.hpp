@@ -1,7 +1,3 @@
-//
-// Created by davide on 15/07/17.
-//
-
 #ifndef __RAY_TRACER_HPP__
 #define __RAY_TRACER_HPP__
 
@@ -17,7 +13,7 @@
 class RayTracer : public LightIntegrator
 {
     Color radiance(const Scene* sc, const HitPoint* hp,
-                   const Ray* r, Sampler* sam)const;
+                   const Ray* r, Sampler* sam, OcclusionTester* ot)const;
 };
 
 

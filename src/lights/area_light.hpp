@@ -36,7 +36,7 @@ public:
      *  \param[in] sp A pointer to the underlying shape
      *  \param[in] objToWorld A pointer to the matrix used to transform the
      *  light from object space to world space
-     * \param[in] c The emitted light
+     *  \param[in] c The emitted light
      */
     AreaLight(Shape* sp, Matrix4* objToWorld, Color c);
 
@@ -45,13 +45,14 @@ public:
      *  Sample a random ray from the light and return the emitted radiance
      *  originated from that point
      *
-     * \param[in] r0 A random number in the interval (0.0,1.0)
-     * \param[in] r1 A random number in the interval (0.0,1.0)
-     * \param[out] out The computed ray originating the radiance, in world space
-     * \param[out] pdf The probability density function of the chosen point
-     * over the light
-     * \return The emitted radiance from the computed ray
-     * \sa radiance_i
+     *  \param[in] r0 A random number in the interval (0.0,1.0)
+     *  \param[in] r1 A random number in the interval (0.0,1.0)
+     *  \param[out] out The computed ray originating the radiance, in world
+     *  space units
+     *  \param[out] pdf The probability density function of the chosen point
+     *  over the light
+     *  \return The emitted radiance from the computed ray
+     *  \sa radiance_i
      */
     Color radiance_e(float r0, float r1, Ray* out, float* pdf)const;
 
@@ -62,26 +63,27 @@ public:
      *  This method assume that there are no occluding objects between the light
      *  and the point
      *
-     * \param[in] r0 A random number in the interval (0.0,1.0)
-     * \param[in] r1 A random number in the interval (0.0,1.0)
-     * \param[in] current_pos The current position of the viewer, i.e. the point
-     * receiving the radiance from this light
-     * \param[out] wi The computed incident direction
-     * \param[out] pdf The probability density function of the chosen point
-     * over the light
-     * \return The emitted radiance from the computed ray
-     * \sa radiance_e
+     *  \param[in] r0 A random number in the interval (0.0,1.0)
+     *  \param[in] r1 A random number in the interval (0.0,1.0)
+     *  \param[in] current_pos The current position of the viewer, i.e the point
+     *  receiving the radiance from this light
+     *  \param[out] wi The computed incident direction
+     *  \param[out] pdf The probability density function of the chosen point
+     *  over the light
+     *  \param[out] distance The distance of the light from the position
+     *  \return The emitted radiance from the computed ray
+     *  \sa radiance_e
      */
     Color radiance_i(float r0, float r1, const Point3* current_pos, Vec3* wi,
-                     float* pdf)const;
+                     float* pdf, float* distance)const;
 
     /** \brief Return the total emissive power over the surface
-     * \return Emissive power over the surface, given constant radiance
+     *  \return Emissive power over the surface, given constant radiance
      */
     Color emissivePower()const;
 
     /** \brief Return the light spectrum emitted
-     * \return The emitted light spectrum
+     *  \return The emitted light spectrum
      */
     Color emissiveSpectrum()const;
 
