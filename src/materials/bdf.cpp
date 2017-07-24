@@ -29,7 +29,7 @@ Color Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const
 }
 float Bdf::pdf(const Vec3* wo, const Vec3* wi)const
 {
-    return fabsf(wi->z)*INV_PI;
+    return wo->z*wi->z>0?fabsf(wi->z)*INV_PI:0.f;
 }
 
 Bsdf::Bsdf()
@@ -60,10 +60,10 @@ Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi)const
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
     Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->n));
     BdfFlags val;
-    if(wi->dot(h->n)*wo->dot(h->n) > 0) //reflected ray
-        val = BRDF;
+    if(wi_shading_space.dot(h->n)*wo_shading_space.dot(h->n) > 0)//reflected ray
+        val = BdfFlags(~BTDF);
     else                                //transmitted ray
-        val = BTDF;
+        val = BdfFlags(~BRDF);
     Color retval;
     for(int i=0;i<count;i++)
     {
@@ -81,43 +81,57 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
         *pdf = 0.f;
         return Color(); //otherwise it will access invalid array positions
     }
-    int chosen = (int)(r0 * count);
-    if(chosen==count) //out of array bounds
+
+    int matchcount = 0;
+    Bdf* matching[_MAX_BDF_];
+    for(int i=0;i<Bsdf::count;i++)
+        if(Bsdf::bdfs[i]->isType(matchme))
+        {
+            matching[matchcount++]=bdfs[i];
+        }
+
+    int chosen = (int)(r0 * matchcount);
+    if(chosen == matchcount) //out of array
         chosen--;
 
     //transform to shading space
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
     Vec3 tmpwi;
-    //compute sampled bdf value
-    Color retval = bdfs[chosen]->df_s(&wo_shading_space,&tmpwi,r1,r2,pdf);
+
+    //I don't care about the result, but I need to generate the &wi vector
+    //TODO: gained efficiency by creating an ad-hoc method?
+    Color retval=matching[chosen]->df_s(&wo_shading_space, &tmpwi, r1, r2, pdf);
+
+    //if not specular, throw away retval and compute the value for the generated
+    //pair of directions
+    if((matchme & SPECULAR)==0)
+    {
+        retval = Color();
+        BdfFlags val = matching[chosen]->getFlags();//val now is a subset of
+        char nummatching = 1;                       //matchme
+        if (tmpwi.dot(h->n) * wo_shading_space.dot(h->n) > 0)
+            val = (BdfFlags) (val & ~BTDF);
+        else
+            val = (BdfFlags) (val & ~BRDF);
+        for (int i = 0; i < count; i++)
+        {
+
+            if (bdfs[i]->isType(val))//add contribution only if matches
+            {
+                retval += bdfs[i]->df(&wo_shading_space, &tmpwi);
+                *pdf += bdfs[i]->pdf(&wo_shading_space, &tmpwi);
+                nummatching++;
+            }
+        }
+        if(nummatching>1) //most of times this will be 1. Division is expensive
+            *pdf /= nummatching;
+    }
 
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
     wi->x = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->n.y * tmpwi.z;
     wi->x = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
 
-    //if specular return the computed value
-    if(bdfs[chosen]->getFlags() & (BRDF|SPECULAR))
-        return retval;
-
-    //else compute the value for the given pair of ray
-    BdfFlags val = bdfs[count]->getFlags();
-    char matching = 1;
-    if(wi->dot(h->n)*wo->dot(h->n) > 0)
-        val = (BdfFlags)(val & ~BTDF);
-    else
-        val = (BdfFlags)(val & ~BRDF);
-    for(int i=0;i<count;i++)
-    {
-        if(bdfs[i]->isType(val)) //add contribution only if matches refl/trans
-        {
-            retval += bdfs[i]->df(&wo_shading_space,&tmpwi);
-            *pdf+=bdfs[i]->pdf(&wo_shading_space,&tmpwi);
-            matching++;
-        }
-    }
-    if(matching>1) //most of times this will be 1. And the division is expensive
-        *pdf/=matching;
     return retval;
 }
 
@@ -126,12 +140,13 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi)const
     if(Bsdf::count == 0)
         return 0.f;
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
+    Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->n));
     float pdf = 0.f;
     int matching = 0;
     for (int i = 0; i < count; ++i)
     {
         matching++;
-        pdf += bdfs[i]->pdf(wo, wi);
+        pdf += bdfs[i]->pdf(&wo_shading_space, &wi_shading_space);
     }
     if(matching>0)
         return pdf/(float)matching;

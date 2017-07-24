@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  22 Jul 2017
+//Last Edit  24 Jul 2017
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      22 Jul 2017
+ *  \date      24 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -64,12 +64,12 @@ public:
      *  reflected or transmitted. This function returns the ratio of reflected
      *  radiance to the incident irradiance on the surface.
      *
-     *  \param[in] wo The outgoing direction
-     *  \param[in] wi The incident direction
+     *  \param[in] woS The outgoing direction, in shading space
+     *  \param[in] wiS The incident direction, in shading space
      *  \return The value of the BxDF
-     *  \sa df_s(const Vec3* wo, Vec3* wi)const
+     *  \sa df_s(const Vec3* woS, Vec3* wiS)const
      */
-    virtual Color df(const Vec3* wo, const Vec3* wi)const = 0;
+    virtual Color df(const Vec3* woS, const Vec3* wiS)const = 0;
 
     /** \brief Return the value of the Bdf
      *
@@ -83,16 +83,16 @@ public:
      *  In case the distribution is not a delta one, this method sample a single
      *  incident direction by using importance sampling
      *
-     *  \param[in] wo The outgoing direction
-     *  \param[out] wi The incident direction
+     *  \param[in] woS The outgoing direction, in shading space
+     *  \param[out] wiS The incident direction, in shading space
      *  \param[in] r0 A random float in the interval (0.0,1.0)
      *  \param[in] r1 A random float in the interval (0.0,1.0)
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
      *  \return The value of the Bdf for the pair of direction
-     *  \sa df(const Vec3* wo, const Vec3* wi)const
+     *  \sa df(const Vec3* woS, const Vec3* wiS)const
      */
-    virtual Color df_s(const Vec3* wo, Vec3* wi, float r0, float r1,
+    virtual Color df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
                        float* pdf)const;
 
     /** \brief Return the probability density function for this bdf
@@ -101,11 +101,11 @@ public:
      *  other words the probability that another random sample will be equal to
      *  this one
      *
-     *  \param[in] wo The outgoing direction
-     *  \param[in] wi The incident direction
+     *  \param[in] woS The outgoing direction, in shading space
+     *  \param[in] wiS The incident direction, in shading space
      *  \return The pdf for this set of values
      */
-    virtual float pdf(const Vec3* wo, const Vec3* wi)const;
+    virtual float pdf(const Vec3* woS, const Vec3* wiS)const;
 
     /** \brief Returns the flags associated with this Bdf
      *  \return The flags representing the type of Bdf
@@ -167,9 +167,9 @@ public:
      *  radiance to the incident irradiance on the surface. This value is
      *  determined by the BRDFs and BTDFs encompassed in the BSDF
      *
-     *  \param[in] wo The outgoing direction
+     *  \param[in] wo The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
-     *  \param[in] wi The incident direction
+     *  \param[in] wi The incident direction, in world space
      *  \return The value of the BSDF
      */
     Color df(const Vec3* wo, const HitPoint* h, const Vec3* wi)const;
@@ -183,9 +183,9 @@ public:
      *  \param[in] r0 A random float in the interval (0.0,1.0)
      *  \param[in] r1 A random float in the interval (0.0,1.0)
      *  \param[in] r2 A random float in the interval (0.0,1.0)
-     *  \param[in] wo The outgoing direction
+     *  \param[in] wo The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
-     *  \param[out] wi The incident direction
+     *  \param[out] wi The incident direction, in world space
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
      *  \param[in] matchme The types of bdfs to consider when computing radiance
@@ -200,9 +200,9 @@ public:
      *  other words the probability that another random sample will be equal to
      *  this one
      *
-     *  \param[in] wo The outgoing direction
+     *  \param[in] wo The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
-     *  \param[in] wi The incident direction
+     *  \param[in] wi The incident direction, in world space
      *  \return The pdf for this set of values
      */
     float pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi)const;
