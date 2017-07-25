@@ -55,15 +55,15 @@ void Bsdf::addBdf(const Bdf* addme)
     Bsdf::bdfs[count++] = addme->clone();
 }
 
-Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi)const
+Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
+               BdfFlags val)const
 {
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
     Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->n));
-    BdfFlags val;
     if(wi_shading_space.dot(h->n)*wo_shading_space.dot(h->n) > 0)//reflected ray
-        val = BdfFlags(~BTDF);
+        val = (BdfFlags)(val & ~BTDF);
     else                                //transmitted ray
-        val = BdfFlags(~BRDF);
+        val = (BdfFlags)(val & ~BRDF);
     Color retval;
     for(int i=0;i<count;i++)
     {
@@ -110,16 +110,17 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
         BdfFlags val = matching[chosen]->getFlags();//val now is a subset of
         char nummatching = 1;                       //matchme
         if (tmpwi.dot(h->n) * wo_shading_space.dot(h->n) > 0)
-            val = (BdfFlags) (val & ~BTDF);
+            val = (BdfFlags)(val & ~BTDF);
         else
-            val = (BdfFlags) (val & ~BRDF);
+            val = (BdfFlags)(val & ~BRDF);
         for (int i = 0; i < count; i++)
         {
 
             if (bdfs[i]->isType(val))//add contribution only if matches
             {
                 retval += bdfs[i]->df(&wo_shading_space, &tmpwi);
-                *pdf += bdfs[i]->pdf(&wo_shading_space, &tmpwi);
+                if(bdfs[i]!=matching[chosen])
+                    *pdf += bdfs[i]->pdf(&wo_shading_space, &tmpwi);
                 nummatching++;
             }
         }

@@ -21,7 +21,8 @@
 #include "utility/console.hpp"
 
 ///Type of Bdf
-enum BdfFlags {BRDF = 0x1, BTDF = 0x2, DIFFUSE = 0x4, SPECULAR = 0x8};
+enum BdfFlags {BRDF = 0x1, BTDF = 0x2, DIFFUSE = 0x4, SPECULAR = 0x8,
+                ALL = BRDF | BTDF | DIFFUSE | SPECULAR};
 
 /**
  *  \class Bdf bdf.hpp "materials/bdf.hpp"
@@ -122,7 +123,7 @@ public:
      */
     inline bool isType(BdfFlags f)
     {
-        return type & f;
+        return (type & f) == type; //without `== type` would match subflags
     }
 
 private:
@@ -170,9 +171,11 @@ public:
      *  \param[in] wo The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wi The incident direction, in world space
+     *  \param[in] matchme The types of bdfs to consider when computing radiance
      *  \return The value of the BSDF
      */
-    Color df(const Vec3* wo, const HitPoint* h, const Vec3* wi)const;
+    Color df(const Vec3* wo, const HitPoint* h, const Vec3* wi,
+             BdfFlags matchme)const;
 
     /** \brief Return the value of the BSDF
      *
@@ -192,7 +195,7 @@ public:
      *  \return A sampled value of the BSDF
      */
     Color df_s(float r0, float r1, float r2, const Vec3* wo, const HitPoint* h,
-               Vec3* wi, float* pdf, BdfFlags matchme=BdfFlags(BRDF|BRDF))const;
+               Vec3* wi, float* pdf, BdfFlags matchme=BdfFlags(ALL))const;
 
     /** \brief Return the probability density function for this bsdf
      *
