@@ -60,7 +60,7 @@ Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
 {
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
     Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->n));
-    if(wi_shading_space.dot(h->n)*wo_shading_space.dot(h->n) > 0)//reflected ray
+    if(wi->dot(h->n)*wo->dot(h->n) > 0)//reflected ray
         val = (BdfFlags)(val & ~BTDF);
     else                                //transmitted ray
         val = (BdfFlags)(val & ~BRDF);
@@ -104,12 +104,19 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
 
     //if not specular, throw away retval and compute the value for the generated
     //pair of directions
-    if((matchme & SPECULAR)==0)
+
+    //transform incident ray to world space
+    wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
+    wi->x = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->n.y * tmpwi.z;
+    wi->x = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
+
+    BdfFlags val = matching[chosen]->getFlags();//val now is a subset of matchme
+    if((val & SPECULAR)==0)
     {
         retval = Color();
-        BdfFlags val = matching[chosen]->getFlags();//val now is a subset of
-        char nummatching = 1;                       //matchme
-        if (tmpwi.dot(h->n) * wo_shading_space.dot(h->n) > 0)
+
+        char nummatching = 1;
+        if (wo->dot(h->n) * wi->dot(h->n) > 0)
             val = (BdfFlags)(val & ~BTDF);
         else
             val = (BdfFlags)(val & ~BRDF);
@@ -120,18 +127,15 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
             {
                 retval += bdfs[i]->df(&wo_shading_space, &tmpwi);
                 if(bdfs[i]!=matching[chosen])
+                {
                     *pdf += bdfs[i]->pdf(&wo_shading_space, &tmpwi);
-                nummatching++;
+                    nummatching++;
+                }
             }
         }
         if(nummatching>1) //most of times this will be 1. Division is expensive
             *pdf /= nummatching;
     }
-
-    //transform incident ray to world space
-    wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
-    wi->x = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->n.y * tmpwi.z;
-    wi->x = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
 
     return retval;
 }
