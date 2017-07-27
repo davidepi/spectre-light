@@ -1,12 +1,12 @@
 //Created,  24 Apr 2017
-//Last Edit 12 Jul 2017
+//Last Edit 27 Jul 2017
 
 /**
  *  \file settings.h
  *  \brief User defined global definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 6 Jul 2017
+ *  \date 27 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -24,7 +24,10 @@
 //#define _TEST_
 
 ///The amount of floating point rounding error that can cause self-intersections
-#define SELF_INTERSECT_ERROR 0.0001f
+#define SELF_INTERSECT_ERROR 1e-5f
+
+///The amount of error to consider when comparing shadow ray distance
+#define OCCLUSION_INTERSECT_ERROR SELF_INTERSECT_ERROR
 
 ///Defines the max number of assets
 #define _MAX_ASSETS_ 4096

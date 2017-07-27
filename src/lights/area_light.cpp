@@ -69,7 +69,10 @@ Color AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
     //TODO: erase this after all the intersections are tried
     //just to be sure
     if(!res)
+    {
+        *pdf = 0;
         return Color();
+    }
 #endif
     p = r.apply(*distance);
     n = hp.n;
@@ -97,16 +100,12 @@ float AreaLight::pdf(const Point3* p, const Vec3* wi)const
     HitPoint hp;
     float distance = FLT_MAX;
     bool res=AreaLight::model->intersect(&r,&distance,&hp);//will always succeed
-#ifdef _LOW_LEVEL_CHECKS_
-    //TODO: erase this after all the intersections are tried
-    //just to be sure
     if(!res)
         return 0;
-#endif
     Point3 ps = r.apply(distance);
     float pdf = (r.origin.x-ps.x)*(r.origin.x-ps.x)+(r.origin.y-ps.y)*
                 (r.origin.y-ps.y)+(r.origin.z-ps.z)*(r.origin.z-ps.z);
-    pdf/=(absdot(hp.n,-(*wi))*AreaLight::area);
+    pdf/=(absdot(hp.n,-(r.direction))*AreaLight::area);
     return pdf;
 }
 

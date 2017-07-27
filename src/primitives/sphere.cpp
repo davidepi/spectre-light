@@ -36,7 +36,7 @@ AABB Sphere::computeWorldAABB(const Matrix4* transform)const
 bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.severe(*distance < 0,"Intersection distance < 0");
+    Console.severe(*distance<SELF_INTERSECT_ERROR,"Intersection distance < 0");
 #endif
     const Vec3 tmp(r->origin.x,r->origin.y,r->origin.z);
     float a = r->direction.dot(r->direction);
@@ -48,7 +48,8 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
     {
         if(sol2<sol1)
             swap(&sol1,&sol2);
-        if(*distance < sol1) //intersection already found
+        if(*distance < sol1 || //better intersection already found
+           sol1<SELF_INTERSECT_ERROR||sol2<SELF_INTERSECT_ERROR)//self intersect
             return false;
         if(sol1<0) //intersection BEHIND origin
         {
