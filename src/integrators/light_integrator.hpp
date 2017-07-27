@@ -2,7 +2,7 @@
 //Last Edit 23 Jul 2017
 
 /**
- *  \file aabb.hpp
+ *  \file light_integrator.hpp
  *  \brief     Interface for rendering equation integrators
  *  \author    Davide Pizzolotto
  *  \version   0.1

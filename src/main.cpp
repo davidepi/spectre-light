@@ -49,12 +49,12 @@ int main(int argc, char* argv[])
     Sphere* sp = new Sphere(1);
     Sphere* s2 = new Sphere(1e5);
 
-    Matrix4 m1; m1.setTranslation(Vec3(0,4,0));
+    Matrix4 m1; m1.setTranslation(Vec3(-1,1,0));
     Matrix4 mbot; mbot.setTranslation(Vec3(0,-1e5,0));
     Matrix4 mleft; mleft.setTranslation(Vec3(-1e5-3,0,0));
     Matrix4 mright; mright.setTranslation(Vec3(1e5+3,0,0));
     Matrix4 mfront; mfront.setTranslation(Vec3(0,0,1e5+3));
-    Matrix4 sphere; sphere.setTranslation(Vec3(0,1,-1));
+    Matrix4 sphere; sphere.setTranslation(Vec3(1,1,0));
 
     s.inheritShape(sp);
     s.inheritShape(s2);
@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
     Bsdf onl,onr,onn;
     Bdf* b = new OrenNayar(Color(0.25,0.75,0.25),1);
     Bdf* b2 = new OrenNayar(Color(0.75,0.25,0.25),1);
-    Bdf* b3 = new OrenNayar(Color(0.25,0.25,0.25),20);
+    Bdf* b3 = new OrenNayar(Color(0.75,0.75,0.25),20);
     onr.addBdf(b);
     onl.addBdf(b2);
     onn.addBdf(b3);

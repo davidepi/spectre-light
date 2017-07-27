@@ -224,6 +224,12 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
                 if (s->k.intersect(&r, &h))
                 {
                     radiance = t->radiance(s, &h, &r, &sam, &ot);
+                    if(radiance.r>1.f)
+                        radiance.r=1.f;
+                    if(radiance.g>1.f)
+                        radiance.g=1.f;
+                    if(radiance.b>1.f)
+                        radiance.b=1.f;
                 } else
                 {
                     radiance.r = 0;

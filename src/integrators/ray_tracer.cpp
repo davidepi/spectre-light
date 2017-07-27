@@ -1,6 +1,12 @@
 #include "ray_tracer.hpp"
 
-Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
+Color RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
+                          Sampler *sam, OcclusionTester *ot) const
+{
+    return RayTracer::direct_l(sc,hp,r,sam,ot)*sc->lightSize();
+}
+
+Color RayTracer::direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                            Sampler* sam, OcclusionTester* ot)const
 {
     Color L;
@@ -9,10 +15,6 @@ Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
     if(hp->hit->isLight())
         if(dot(hp->n,-r->direction)>0)
             L+=((AreaLight *) hp->hit)->emissiveSpectrum();
-    if(L.r ==1 && L.g==1 &&L.b==1)
-    {
-        volatile int i=0;
-    }
     if(nlights>0)
     {
         float rand[6];
@@ -29,13 +31,13 @@ Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
 
         float light_distance;
         //multiple importance sampling, light first
-        Color directrad=light->radiance_i(rand[1],rand[2],&hp->h,&wi,&lightpdf,
-                                          &light_distance);
+        Color directrad=light->radiance_i(rand[1],rand[2],&hp->h,&wi,
+                                          &lightpdf,&light_distance);
         if(lightpdf > 0 && !directrad.isBlack())
         {
-            Color bsdf_f = mat->df(&wo,hp,&wi);
+            Color bsdf_f = mat->df(&wo,hp,&wi,BdfFlags(ALL));
             Ray r(hp->h,wi);
-            if(!bsdf_f.isBlack() && !ot->isOccluded(&r,hp->hit,&light_distance))
+            if(!bsdf_f.isBlack() && !ot->isOccluded(&r,&light_distance))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi);
                 float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
@@ -46,11 +48,19 @@ Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
         }
 
         //mip bsdf sampling
-        Color bsdf_f = mat->df_s(rand[3],rand[4],rand[5],&wo,hp,&wi,&bsdfpdf);
+        Color bsdf_f = mat->df_s(rand[3],rand[4],rand[5],&wo,hp,&wi,&bsdfpdf,
+                                 BdfFlags(ALL));
         if(!bsdf_f.isBlack() && bsdfpdf>0)
         {
-            lightpdf = light->pdf(&hp->h,&wi);
-            float weight = (bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf+lightpdf*lightpdf);
+            float w = 1.f; //weight
+            //if not specular
+                lightpdf = light->pdf(&hp->h,&wi);
+                if(lightpdf==0)
+                    return L; //no contribution from bsdf sampling
+                else
+                    w=(bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf+lightpdf*lightpdf);
+            //endif
+
             Ray r2(hp->h,wi);
             HitPoint h2;
             Color rad;
@@ -59,12 +69,9 @@ Color RayTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
                     if(dot(h2.n,-r2.direction)>0)
                         rad=light->emissiveSpectrum();
             if(!rad.isBlack())
-                L+=bsdf_f*rad*absdot(wi,hp->n)*weight/bsdfpdf;
+                L+=bsdf_f*rad*absdot(wi,hp->n)*w/bsdfpdf;
 
         }
     }
-    if(L.r>1)L.r=1;
-    if(L.g>1)L.g=1;
-    if(L.b>1)L.b=1;
-    return L*nlights;
+    return L;
 }
