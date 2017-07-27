@@ -37,7 +37,7 @@ int Scene::inheritShape(Shape *addme)
         else
         {
             Shape **tmp = Scene::shapes;
-            Scene::shapes_allocated = max(Scene::shapes_allocated << 1,
+            Scene::shapes_allocated = min(Scene::shapes_allocated << 1,
                                           _MAX_ASSETS_);
             Scene::shapes = new Shape*[Scene::shapes_allocated];
             memcpy(Scene::shapes,tmp,Scene::shape_index*sizeof(Shape*));
@@ -63,7 +63,7 @@ int Scene::addAsset(int shapeid, Matrix4* transformMatrix,const Bsdf* material)
                 else
                 {
                     Asset **tmp = Scene::assets;
-                    Scene::assets_allocated = max(Scene::assets_allocated << 1,
+                    Scene::assets_allocated = min(Scene::assets_allocated << 1,
                                                   _MAX_ASSETS_);
                     Scene::assets = new Asset*[Scene::assets_allocated];
                     memcpy(Scene::assets,tmp,Scene::asset_index*sizeof(Asset*));
@@ -102,7 +102,7 @@ int Scene::addLight(int shapeid, Matrix4* transform, Color c)
                 else
                 {
                     Asset **tmp = Scene::assets;
-                    Scene::assets_allocated = max(Scene::assets_allocated << 1,
+                    Scene::assets_allocated = min(Scene::assets_allocated << 1,
                                                   _MAX_ASSETS_);
                     Scene::assets = new Asset*[Scene::assets_allocated];
                     memcpy(Scene::assets,tmp,Scene::asset_index*sizeof(Asset*));
@@ -128,7 +128,7 @@ int Scene::addLight(int shapeid, Matrix4* transform, Color c)
             else
             {
                 AreaLight **tmp = Scene::lights;
-                Scene::lights_allocated = max(Scene::lights_allocated << 1,
+                Scene::lights_allocated = min(Scene::lights_allocated << 1,
                                               _MAX_ASSETS_);
                 Scene::lights = new AreaLight*[Scene::lights_allocated];
                 memcpy(Scene::lights,tmp,Scene::light_index*sizeof(AreaLight*));

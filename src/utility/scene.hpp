@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit  7 Jul 2017
+//Last Edit 28 Jul 2017
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      7 Jul 2017
+ *  \date      28 Jul 2017
  *  \copyright GNU GPLv3
  */
 

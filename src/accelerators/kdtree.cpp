@@ -89,7 +89,7 @@ namespace KdHelpers
         ~KdTreeBuildNode(){};
         
         //where the assets are stored
-        const Asset** assets_start;
+        unsigned int offset_start;
         bool isLeaf;
         char split_axis;
         union
@@ -159,7 +159,7 @@ void KdTree::addAsset(const Asset *addme)
         Console.severe(MESSAGE_MAXASSETNUMBER);
     if(assets_number == assets_allocated)
     {
-        int allocNo = max(assets_allocated<<1,_MAX_ASSETS_);
+        int allocNo = min(assets_allocated<<1,_MAX_ASSETS_);
         const Asset** tmp = (const Asset**)malloc(sizeof(Asset*)*(allocNo));
         if(tmp)
         {
@@ -194,8 +194,7 @@ void KdTree::finalize(void* n)
     }
     if(node->isLeaf)
     {
-        nodesList[nodes_index++] = KdTreeNode((unsigned int)(node->assets_start-
-                                                             assetsList),
+        nodesList[nodes_index++] = KdTreeNode(node->offset_start,
                                               node->assets_number);
     }
     else
@@ -271,7 +270,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     //terminate recursion if max depth or too few assets
     if(depth==KD_MAX_DEPTH || a_n <= _LEAF_ASSETS_)
     {
-        node->assets_start = KdTree::assetsList+KdTree::assets_number;
+        node->offset_start = KdTree::assets_number;
         node->assets_number = a_n;
         
         //assets are added in order to the Class assets array
@@ -368,7 +367,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     //best cost sucks, better not to split at all -> make a leaf
     if((best_cost > 4.0 * old_cost && a_n < 16) || best_axis == -1)
     {
-        node->assets_start = KdTree::assetsList+KdTree::assets_number;
+        node->offset_start = KdTree::assets_number;
         node->assets_number = a_n;
         for(unsigned int i=0;i<a_n;i++)
             KdTree::addAsset(a_l[i]);
