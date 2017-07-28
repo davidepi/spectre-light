@@ -48,12 +48,11 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
     {
         if(sol2<sol1)
             swap(&sol1,&sol2);
-        if(*distance < sol1 || //better intersection already found
-           sol1<SELF_INTERSECT_ERROR||sol2<SELF_INTERSECT_ERROR)//self intersect
+        if(*distance < sol1)//better intersection already found
             return false;
-        if(sol1<0) //intersection BEHIND origin
+        if(sol1<SELF_INTERSECT_ERROR) //intersection BEHIND origin
         {
-                if (sol2<0 || *distance < sol2) //sol2 behind origin or distance
+                if (sol2<SELF_INTERSECT_ERROR || *distance < sol2) //sol2 behind origin or distance
                     return false;               //already between sol1 and sol2
                 else
                     *distance = sol2;

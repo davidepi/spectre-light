@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit  2 Jun 2017
+//Last Edit 28 Jul 2017
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      2 Jun 2017
+ *  \date      28 Jul 2017
  *  \warning   Since this is a low level class, some verification are skipped.
  *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
  *             preprocessor define.
@@ -243,6 +243,19 @@ public:
      *          not
      */
     bool inverse(Matrix4* output)const;
+
+    /** \brief Apply the transformation matrix to the Normal
+     *
+     *  Since transforming a normal implies a multiplication by the inverse of
+     *  the transform matrix, and since this matrix is often stored somewhere,
+     *  this method requires such a matrix as input instead of computing it
+     *  every time
+     *
+     *  \param[in] n The normal that will be transformed
+     *  \param[in] inverse The inverse of the transformation matrix used
+     *  \return The transformed normal
+     */
+    Normal transformNormal(const Normal& n, const Matrix4* inverse)const;
     
     //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
@@ -271,8 +284,6 @@ public:
     Point3 operator*(const Point3&)const;
     ///Apply the transformation matrix to the Vector
     Vec3 operator*(const Vec3&)const;
-    ///Apply the transformation matrix to the Normal
-    Normal operator*(const Normal&)const;
     ///Apply the transformation matrix to the Ray
     Ray operator*(const Ray&)const;
     

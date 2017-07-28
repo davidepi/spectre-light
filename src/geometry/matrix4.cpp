@@ -1006,14 +1006,11 @@ Vec3 Matrix4::operator*(const Vec3& v)const
                 Matrix4::m20*v.x+Matrix4::m21*v.y+Matrix4::m22*v.z);
 }
 
-Normal Matrix4::operator*(const Normal& n)const
+Normal Matrix4::transformNormal(const Normal& n, const Matrix4* inv)const
 {
-    //TODO possible optimization by storing inverse matrix?
-    Matrix4 inv;
-    Matrix4::inverse(&inv);
-    return Normal(inv.m00*n.x+inv.m01*n.y+inv.m02*n.z+inv.m03,
-                  inv.m10*n.x+inv.m11*n.y+inv.m12*n.z+inv.m13,
-                  inv.m20*n.x+inv.m21*n.y+inv.m22*n.z+inv.m23);
+    return Normal(inv->m00*n.x+inv->m01*n.y+inv->m02*n.z+inv->m03,
+                  inv->m10*n.x+inv->m11*n.y+inv->m12*n.z+inv->m13,
+                  inv->m20*n.x+inv->m21*n.y+inv->m22*n.z+inv->m23);
 }
 
 Ray Matrix4::operator*(const Ray& r)const
