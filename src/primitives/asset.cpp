@@ -26,7 +26,9 @@ bool Asset::intersect(const Ray* r,float* distance, HitPoint* h)const
     {
         //retransform back to world space
         h->h = *objToWorld*h->h;
-        h->n = *objToWorld*h->n;
+        //normal requires the inverse of the transformation. Since I want a
+        //objToWorld, its inverse is a worldToObj
+        h->n = transformNormal(h->n,&worldToObj);
         h->right = *objToWorld*h->right;
         h->n.normalize();
         h->right.normalize();

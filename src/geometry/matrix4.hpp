@@ -243,19 +243,6 @@ public:
      *          not
      */
     bool inverse(Matrix4* output)const;
-
-    /** \brief Apply the transformation matrix to the Normal
-     *
-     *  Since transforming a normal implies a multiplication by the inverse of
-     *  the transform matrix, and since this matrix is often stored somewhere,
-     *  this method requires such a matrix as input instead of computing it
-     *  every time
-     *
-     *  \param[in] n The normal that will be transformed
-     *  \param[in] inverse The inverse of the transformation matrix used
-     *  \return The transformed normal
-     */
-    Normal transformNormal(const Normal& n, const Matrix4* inverse)const;
     
     //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
@@ -291,6 +278,19 @@ public:
     //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
 };
+
+/** \brief Apply the transformation matrix to the Normal
+ *
+ *  Since transforming a normal implies a multiplication by the inverse of
+ *  the transform matrix, and since this matrix is often stored somewhere,
+ *  this method requires such a matrix as input instead of computing it
+ *  every time
+ *
+ *  \param[in] n The normal that will be transformed
+ *  \param[in] inverse The inverse of the transformation matrix used
+ *  \return The transformed normal
+*/
+Normal transformNormal(const Normal& n, const Matrix4* inverse);
 
 /**  /brief Sum two matrices together
  *
