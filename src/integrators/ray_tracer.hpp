@@ -1,12 +1,12 @@
 //Created,  15 Jul 2017
-//Last Edit 27 Jul 2017
+//Last Edit 29 Jul 2017
 
 /**
  *  \file ray_tracer.hpp
  *  \brief     Direct lighting integrator
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      27 Jul 2017
+ *  \date      29 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -80,6 +80,23 @@ class RayTracer : public LightIntegrator
      */
     Color direct_l(const Scene* sc, const HitPoint* hp,
                           const Ray* r, Sampler* sam, OcclusionTester* ot)const;
+
+    /** \brief Determine the radiance arriving at a point
+     *
+     *  Determine the radiance arriving directly at a point, accounting only
+     *  specular reflection
+     *
+     *  \param[in] sc The rendered scene
+     *  \param[in] hp The first intersection point
+     *  \param[in] r The originating ray, generated from the camera
+     *  \param[in] sam A sampler used to generate random numbers
+     *  \param[in] ot Class used in order to test the occlusion. It is passed
+     *  here to keep trace of cached assets between various call of this
+     *  function
+     *  \return The radiance arriving at the film
+     */
+    Color specular_refl(const Scene* sc, const HitPoint *hp, const Ray *r,
+                     Sampler* sam, OcclusionTester* ot)const;
 };
 
 

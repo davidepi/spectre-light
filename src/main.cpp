@@ -3,6 +3,8 @@
 #include "renderer.hpp"
 #include <cstdlib> //atoi, exit
 #include "materials/oren_nayar.hpp"
+#include "materials/reflection.hpp"
+#include "materials/refraction.hpp"
 #ifndef WIN32
 #include <getopt.h>
 #endif
@@ -62,17 +64,17 @@ int main(int argc, char* argv[])
     Bsdf onl,onr,onn;
     Bdf* b = new OrenNayar(Color(0.25,0.75,0.25),1);
     Bdf* b2 = new OrenNayar(Color(0.75,0.25,0.25),1);
-    Bdf* b3 = new OrenNayar(Color(0.75,0.75,0.25),20);
+    Bdf* b3 = new Reflection(Color(0.5),Color(1),Color());
     onr.addBdf(b);
     onl.addBdf(b2);
     onn.addBdf(b3);
 
     s.addLight(sp->getID(),&m1,Color(1));
     s.addAsset(s2->getID(),&mbot);
-    s.addAsset(s2->getID(),&mleft,&onl);
-    s.addAsset(s2->getID(),&mright,&onr);
+    s.addAsset(s2->getID(),&mleft);
+    s.addAsset(s2->getID(),&mright);
     s.addAsset(s2->getID(),&mfront);
-    s.addAsset(sp->getID(),&sphere,&onn);
+    s.addAsset(sp->getID(),&sphere);
 
     r.setPerspective(Point3(0,2,-5),Point3(0,0,0),Vec3(0,1,0),1);
     r.setMitchellFilter(1/3.f,1/3.f);
