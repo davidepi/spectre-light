@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 14 Jul 2017
+//Last Edit 29 Jul 2017
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      14 Jul 2017
+ *  \date      29 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -85,8 +85,8 @@ public:
      *  \param[in] r0 A random float in the interval (0.0,1.0) UNUSED
      *  \param[in] r1 A random float in the interval (0.0,1.0) UNUSED
      *  \param[out] pdf The probability density function of the chosen point
-     *  over the bdf hemisphere. In this case 0.0 since this is a delta
-     *  distribution
+     *  over the bdf hemisphere. This is a delta distribution, but this method
+     *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
     Color df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf)const;
@@ -95,11 +95,12 @@ public:
      *
      *  Given a pair of vectors, return the pdf value for these directions. In
      *  other words the probability that another random sample will be equal to
-     *  this one
+     *  this one. Since this is a delta distribution, given a random pair of
+     *  directions, the probability of obtaining these directions is 0
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wi The incident direction
-     *  \return The pdf for this set of values
+     *  \return 0
      */
     float pdf(const Vec3* wo, const Vec3* wi)const;
 

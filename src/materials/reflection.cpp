@@ -31,13 +31,13 @@ Color Reflection::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
     wi->x = -wo->x;
     wi->y = -wo->y;
     wi->z = wo->z;
-    *pdf = 0.f;
+    *pdf = 1.f;
     return fc->eval(wo->z)*specular/fabsf(wo->z);
 }
 
 float Reflection::pdf(const Vec3* wo, const Vec3* wi)const
 {
-    return 0.f;
+    return 1.f;
 }
 
 Bdf* Reflection::clone()const

@@ -74,22 +74,24 @@ Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
 }
 
 Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
-                 const HitPoint* h, Vec3* wi, float* pdf, BdfFlags matchme)const
+                 const HitPoint* h, Vec3* wi, float* pdf,const BdfFlags matchme,
+                 BdfFlags* val)const
 {
-    if(Bsdf::count == 0)
+    int matchcount = 0;
+    Bdf* matching[_MAX_BDF_];
+    for(int i=0;i<Bsdf::count;i++)
+    {
+        if (Bsdf::bdfs[i]->isType(matchme))
+        {
+            matching[matchcount++] = bdfs[i];
+        }
+    }
+
+    if(matchcount==0)
     {
         *pdf = 0.f;
         return Color(); //otherwise it will access invalid array positions
     }
-
-    int matchcount = 0;
-    Bdf* matching[_MAX_BDF_];
-    for(int i=0;i<Bsdf::count;i++)
-        if(Bsdf::bdfs[i]->isType(matchme))
-        {
-            matching[matchcount++]=bdfs[i];
-        }
-
     int chosen = (int)(r0 * matchcount);
     if(chosen == matchcount) //out of array
         chosen--;
@@ -110,20 +112,20 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     wi->x = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->n.y * tmpwi.z;
     wi->x = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
 
-    BdfFlags val = matching[chosen]->getFlags();//val now is a subset of matchme
-    if((val & SPECULAR)==0)
+    *val = matching[chosen]->getFlags();//val now is a subset of matchme
+    if((*val & SPECULAR)==0)
     {
         retval = Color();
 
         char nummatching = 1;
         if (wo->dot(h->n) * wi->dot(h->n) > 0)
-            val = (BdfFlags)(val & ~BTDF);
+            *val = (BdfFlags)(*val & ~BTDF);
         else
-            val = (BdfFlags)(val & ~BRDF);
+            *val = (BdfFlags)(*val & ~BRDF);
         for (int i = 0; i < count; i++)
         {
 
-            if (bdfs[i]->isType(val))//add contribution only if matches
+            if (bdfs[i]->isType(*val))//add contribution only if matches
             {
                 retval += bdfs[i]->df(&wo_shading_space, &tmpwi);
                 if(bdfs[i]!=matching[chosen])

@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  26 Jul 2017
+//Last Edit  29 Jul 2017
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      26 Jul 2017
+ *  \date      29 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -168,13 +168,13 @@ public:
      *  radiance to the incident irradiance on the surface. This value is
      *  determined by the BRDFs and BTDFs encompassed in the BSDF
      *
-     *  \param[in] wo The outgoing direction, in world space
+     *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
-     *  \param[in] wi The incident direction, in world space
+     *  \param[in] wiW The incident direction, in world space
      *  \param[in] matchme The types of bdfs to consider when computing radiance
      *  \return The value of the BSDF
      */
-    Color df(const Vec3* wo, const HitPoint* h, const Vec3* wi,
+    Color df(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
              BdfFlags matchme)const;
 
     /** \brief Return the value of the BSDF
@@ -186,16 +186,18 @@ public:
      *  \param[in] r0 A random float in the interval (0.0,1.0)
      *  \param[in] r1 A random float in the interval (0.0,1.0)
      *  \param[in] r2 A random float in the interval (0.0,1.0)
-     *  \param[in] wo The outgoing direction, in world space
+     *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
-     *  \param[out] wi The incident direction, in world space
+     *  \param[out] wiW The incident direction, in world space
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
      *  \param[in] matchme The types of bdfs to consider when computing radiance
+     *  \param[out] matched The bdfs matched with the sampling
      *  \return A sampled value of the BSDF
      */
-    Color df_s(float r0, float r1, float r2, const Vec3* wo, const HitPoint* h,
-               Vec3* wi, float* pdf, BdfFlags matchme=BdfFlags(ALL))const;
+    Color df_s(float r0, float r1, float r2, const Vec3* woW, const HitPoint* h,
+               Vec3* wiW, float* pdf, const BdfFlags matchme, BdfFlags* matched)
+    const;
 
     /** \brief Return the probability density function for this bsdf
      *
@@ -203,12 +205,12 @@ public:
      *  other words the probability that another random sample will be equal to
      *  this one
      *
-     *  \param[in] wo The outgoing direction, in world space
+     *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
-     *  \param[in] wi The incident direction, in world space
+     *  \param[in] wiW The incident direction, in world space
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi)const;
+    float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW)const;
 
 private:
 
