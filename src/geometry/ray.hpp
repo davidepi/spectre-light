@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  7 May 2017
+//Last Edit 29 Jul 2017
 
 /**
  *  \file ray.hpp
@@ -7,7 +7,7 @@
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 7 May 2017
+ *  \date 29 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -25,10 +25,6 @@
  *
  *  Ray class represents a semi-infinite line. A Ray is denoted by a Point o,
  *  its origin and a Vec3 d, its direction.
- *
- *   Minext and Maxext represents the ray extents and are mutable because if a
- *   Ray is const a function cannot modify its origin or direction but only
- *   its extents.
  *
  *   Ricochet is the "Time-to-Live" of the ray. At every bounce it is increased
  *   by one and when it reaches a determined amount, the ray is destroyed.
@@ -51,26 +47,6 @@ public:
      */
     Vec3  direction;
     
-    /** \brief The minimum extent of the origin
-     *
-     *  A mutable float representing the minimum extent of the origin. This
-     *  value is used to keep trace of the current minimum legal value of the
-     *  ray distance. It is left mutable because in subsequent intersection
-     *  routine calls, the ray will be constant, but its extent will be refined
-     *  progressively
-     */
-    mutable float minext;
-    
-    /** \brief The maximum extent of the origin
-     *
-     *  A mutable float representing the maximum extent of the origin. This
-     *  value is used to keep trace of the current maximum legal value of the
-     *  ray distance. It is left mutable because in subsequent intersection
-     *  routine calls, the ray will be constant, but its extent will be refined
-     *  progressively
-     */
-    mutable float maxext;
-    
     /** \brief Maximum number of bounces for this ray
      *
      *  An unsigned char representing the maximum number of bounces for this
@@ -78,7 +54,7 @@ public:
      *  another until they are absorbed. However, if the scene is full of
      *  specular reflecting surfaces, a ray will bounce for a lot of time, if
      *  not forever. This value is a sort of "Time-to-live" for the ray: when it
-     *  reaches zero, the ray must be destroyed.
+     *  reaches a determined value, the ray must be destroyed.
      *  Despite the fact that in pathtrace-based algorithms rays are guaranteed
      *  to be eventually destroyed, due to the russian roulette, this value can
      *  be used as a minimum number of bounces before starting the russian
@@ -145,24 +121,7 @@ public:
      *  \param[in] t the distance of the point from the origin
      */
     Point3 apply(float t)const;
-    
-    /** \brief Check the life of a Ray
-     *
-     *  An inline function which purpose is simply to check if a ray should be
-     *  killed. Nothing fancy, just for more clearness
-     *
-     *  \return true if the ray has to be killed, false otherwise
-     */
-    inline bool kill()
-    {
-        return ricochet<0;
-    }
-    
-    /*TODO: probably it will be useful to override the copy constructor,
-     so every time the ray spawns a child, its ricochet value is updated.
-     But I still don't know if I will pass by pointer or by copy, so
-     for now it's just a todo.
-     */
+
 };
 
 /**
