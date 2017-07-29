@@ -20,7 +20,7 @@ Color Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const
     float t = TWO_PI * r0;
     float r = sqrtf(r1);
     wi->x = r * cosf(t);
-    wi->y = r * cosf(t);
+    wi->y = r * sinf(t);
     wi->z = sqrtf(max(0.f,1.f-wi->x*wi->x-wi->y*wi->y));
     //if the wo was flipped, flip also wi
     if(wo->z < 0) wi->z *= -1.f;
@@ -109,8 +109,8 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
 
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
-    wi->x = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->n.y * tmpwi.z;
-    wi->x = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
+    wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->n.y * tmpwi.z;
+    wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
 
     *val = matching[chosen]->getFlags();//val now is a subset of matchme
     if((*val & SPECULAR)==0)
