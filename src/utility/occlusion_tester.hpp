@@ -1,12 +1,12 @@
 //Created,  23 Jul 2017
-//Last Edit 27 Jul 2017
+//Last Edit 30 Jul 2017
 
 /**
  *  \file occlusion_tester.hpp
  *  \brief Test if a Ray intersects with the expected Asset
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  27 Jul 2017
+ *  \date  30 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -56,7 +56,7 @@ private:
     const Scene* s;
 
     //test this asset first
-    const Asset* lasthit;
+    const Asset* lasthit[DEFAULT_BOUNCES];
 };
 
 
