@@ -6,7 +6,10 @@ Color RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
     Color direct = RayTracer::direct_l(sc,hp,r,sam,ot)*sc->lightSize();
     //specular reflection
     if(r->ricochet < DEFAULT_BOUNCES) //ensure termination
-        direct+=specular_refl(sc,hp,r,sam,ot);
+    {
+        direct+=specular_rad(sc,hp,r,sam,ot,BdfFlags(BRDF));
+        direct+=specular_rad(sc,hp,r,sam,ot,BdfFlags(BTDF));
+    }
     return direct;
 }
 
@@ -79,8 +82,8 @@ Color RayTracer::direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
     return L;
 }
 
-Color RayTracer::specular_refl(const Scene* s, const HitPoint* hp, const Ray* r,
-                          Sampler* sam, OcclusionTester* ot)const
+Color RayTracer::specular_rad(const Scene* s, const HitPoint* hp, const Ray* r,
+                          Sampler* sam, OcclusionTester* ot, BdfFlags ref)const
 {
     Vec3 wo = -r->direction;
     Vec3 wi;
@@ -89,10 +92,11 @@ Color RayTracer::specular_refl(const Scene* s, const HitPoint* hp, const Ray* r,
     sam->getRandomNumbers(rand,3);
     const Bsdf* mat = hp->hit->getMaterial();
     BdfFlags sampled_val;
+    BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
     Color bsdf_f = mat->df_s(rand[0], rand[1], rand[2], &wo, hp, &wi,
-                       &bsdfpdf,BdfFlags(BRDF | SPECULAR),&sampled_val);
+                       &bsdfpdf,sampleme,&sampled_val);
     float adot = absdot(wi, hp->n);
-    if (bsdfpdf > 0 && !bsdf_f.isBlack() && adot != 0)
+    if (bsdfpdf == 1.f && !bsdf_f.isBlack() && adot != 0)
     {
         Color reflr_rad;
         Ray r2(hp->h,wi); //new ray to trace
@@ -100,7 +104,7 @@ Color RayTracer::specular_refl(const Scene* s, const HitPoint* hp, const Ray* r,
         HitPoint h2;
         if(s->k.intersect(&r2,&h2)) //if intersection is found
             reflr_rad = radiance(s,&h2,&r2,sam,ot);
-        return bsdf_f*reflr_rad*adot/bsdfpdf;
+        return bsdf_f*reflr_rad*adot;
     }
     else
         return Color();

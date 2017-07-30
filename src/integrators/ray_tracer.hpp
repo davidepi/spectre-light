@@ -84,7 +84,7 @@ class RayTracer : public LightIntegrator
     /** \brief Determine the radiance arriving at a point
      *
      *  Determine the radiance arriving directly at a point, accounting only
-     *  specular reflection
+     *  specular reflection or refraction
      *
      *  \param[in] sc The rendered scene
      *  \param[in] hp The first intersection point
@@ -93,10 +93,12 @@ class RayTracer : public LightIntegrator
      *  \param[in] ot Class used in order to test the occlusion. It is passed
      *  here to keep trace of cached assets between various call of this
      *  function
+     *  \param[in] ref BRDF for specular reflection, BTDF for specular
+     *  refraction
      *  \return The radiance arriving at the film
      */
-    Color specular_refl(const Scene* sc, const HitPoint *hp, const Ray *r,
-                     Sampler* sam, OcclusionTester* ot)const;
+    Color specular_rad(const Scene* sc, const HitPoint *hp, const Ray *r,
+                     Sampler* sam, OcclusionTester* ot, BdfFlags ref)const;
 };
 
 
