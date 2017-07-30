@@ -1,11 +1,15 @@
 #include "renderer.hpp"
 
-static void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
+//st = sampler type
+static void executor(Camera* c,ImageOutput* io,std::mutex* lock,int spp, int st,
               std::stack<Renderer_task>* jobs, Scene* s, LightIntegrator* t);
 
 
 static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
                         bool& alive);
+
+#define SPECTRE_USE_RANDOM_SAMPLER 0
+#define SPECTRE_USE_STRATIFIED_SAMPLER 1
 
 Renderer::Renderer(int w, int h, int spp, const char* o,int th) : film(w,h,o)
 {
@@ -35,20 +39,11 @@ Renderer::Renderer(int w, int h, int spp, const char* o,int th) : film(w,h,o)
     sprintf(threads,MESSAGE_NUMTHREADS,numthreads);
     Console.log(threads,threads);
 
-    //spp must be a perfect square
-    Renderer::spp = (int)sqrtf(spp);
-    Renderer::spp*=Renderer::spp;
-    if(Renderer::spp!=spp)
-    {
-        char errmsg[256];
-        snprintf(errmsg,256,MESSAGE_CHANGED_SPP,Renderer::spp);
-        Console.notice(errmsg);
-    }
-
-
+    Renderer::spp = spp;
     Renderer::c = NULL;
     Renderer::f = NULL;
     Renderer::t = NULL;
+    Renderer::sampler_t = -1;
     Renderer::workers=new std::thread[numthreads];//dflt ctor won't start thread
 }
 
@@ -75,6 +70,26 @@ void Renderer::setOrthographic(Point3 pos, Point3 target, Vec3 up)
     if(Renderer::c != NULL)
         delete c;
     c = new OrthographicCamera(&pos,&target,&up,w,h);
+}
+
+void Renderer::setRandomSampler()
+{
+    Renderer::sampler_t = SPECTRE_USE_RANDOM_SAMPLER;
+}
+
+void Renderer::setStratifiedSampler()
+{
+    int old_spp = Renderer::spp;
+    //spp must be a perfect square
+    Renderer::spp = (int)sqrtf(old_spp);
+    Renderer::spp*=Renderer::spp;
+    if(Renderer::spp!=old_spp)
+    {
+        char errmsg[256];
+        snprintf(errmsg,256,MESSAGE_CHANGED_SPP,Renderer::spp);
+        Console.notice(errmsg);
+    }
+    Renderer::sampler_t = SPECTRE_USE_STRATIFIED_SAMPLER;
 }
 
 void Renderer::setBoxFilter()
@@ -133,22 +148,15 @@ int Renderer::render(Scene* s)
     //build the kd-tree, or rebuild it, just to be sure
     s->k.buildTree();
 
-    //checks if the camera and the filter are set
+    //checks if the settings are ok
     if (Renderer::c == NULL)
-    {
-        Console.severe(MESSAGE_MISSING_CAMERA);
-        return 1;
-    }
+        Console.critical(MESSAGE_MISSING_CAMERA);
     if (Renderer::f == NULL)
-    {
-        Console.severe(MESSAGE_MISSING_FILTER);
-        return 1;
-    }
+        Console.critical(MESSAGE_MISSING_FILTER);
     if (Renderer::t == NULL)
-    {
-        Console.severe(MESSAGE_MISSING_INTEGRATOR);
-        return 1;
-    }
+        Console.critical(MESSAGE_MISSING_INTEGRATOR);
+    if(Renderer::sampler_t == -1)
+        Console.critical(MESSAGE_MISSING_SAMPLER);
 
     //add part of the image as renderer_tasks
     Renderer_task task;
@@ -168,7 +176,7 @@ int Renderer::render(Scene* s)
     for(int i=0;i<Renderer::numthreads;i++)
     {
         Renderer::workers[i] = std::thread(executor,c,&film,&jobs_mtx,spp,
-                                           &jobs,s,Renderer::t);
+                                           sampler_t,&jobs,s,Renderer::t);
     }
 
     //wait for them to finish
@@ -184,7 +192,7 @@ int Renderer::render(Scene* s)
     return 0;
 }
 
-void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
+void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
               std::stack<Renderer_task>* jobs, Scene* s, LightIntegrator* t)
 {
     //generate seed for WELLrng. Constant WELL_R is inside wellrng.h
@@ -196,6 +204,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
     }
     bool done = false;
     Renderer_task todo;
+    Sampler* sam;
     Sample* samples = new Sample[spp];
     Ray r;
 	ExecutorData ex;
@@ -219,22 +228,33 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
             lock->unlock();
         }
 	for(int i=0;i<WELL_R;i++) //alterate the seed
-	    WELLseed[i]++; //Predictable, but it is still a seed
+	    WELLseed[i]++; //Predictable, but it is only a seed
 
-        StratifiedSampler sam(todo.startx,todo.endx,todo.starty,todo.endy,spp,
-                              WELLseed, JITTERED_SAMPLER);
+        switch(st)
+        {
+            case SPECTRE_USE_RANDOM_SAMPLER:
+                sam = new RandomSampler(todo.startx, todo.endx, todo.starty,
+                                        todo.endy, spp, WELLseed);
+                break;
+            case SPECTRE_USE_STRATIFIED_SAMPLER:
+            default:
+                sam = new StratifiedSampler(todo.startx, todo.endx, todo.starty,
+                                      todo.endy, spp, WELLseed,
+                                      JITTERED_SAMPLER);
+                break;
+        }
 		ex.startx = todo.startx;
 		ex.starty = todo.starty;
 		ex.endx = todo.endx;
 		ex.endy = todo.endy;
-        while(sam.getSamples(samples))
+        while(sam->getSamples(samples))
         {
             for(int i=0;i<spp;i++)
             {
                 c->createRay(&(samples[i]), &r);
                 if (s->k.intersect(&r, &h))
                 {
-                    radiance = t->radiance(s, &h, &r, &sam, &ot);
+                    radiance = t->radiance(s, &h, &r, sam, &ot);
                     if(radiance.r>1.f)
                         radiance.r=1.f;
                     if(radiance.g>1.f)
@@ -252,6 +272,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp,
             }
         }
 		io->deferredAddPixel(&ex);
+        delete sam;
     }
     delete samples;
 	io->forceAddPixel(&ex);

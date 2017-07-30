@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 30 Jul 2017
+//Last Edit 31 Jul 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      30 Jul 2017
+ *  \date      31 Jul 2017
  *  \copyright GNU GPLv3
  */
 
@@ -26,6 +26,8 @@
 #include "samplers/mitchell_filter.hpp"
 #include "samplers/lanczos_filter.hpp"
 #include "utility/scene.hpp"
+#include "samplers/sampler.hpp"
+#include "samplers/random_sampler.hpp"
 #include "samplers/stratified_sampler.hpp"
 #include "integrators/light_integrator.hpp"
 #include "integrators/ray_tracer.hpp"
@@ -140,6 +142,18 @@ public:
      */
     void setOrthographic(Point3 position, Point3 target, Vec3 up);
 
+    /** \brief Set a naive, and terrible, sampler
+     *
+     *  More info in the random_sampler.hpp file
+     */
+    void setRandomSampler();
+
+    /** \brief Set a sampler that uses stratified subregions
+     *
+     *  More info in the stratified_sampler.hpp file
+     */
+    void setStratifiedSampler();
+
     /** \brief Set a box filter for the computed radiance values
      *
      *  More info in the box_filter.hpp file. The used filter extents are
@@ -235,6 +249,9 @@ private:
 
     //integrator
     LightIntegrator* t;
+
+    //sampler
+    int sampler_t;
 };
 
 #endif

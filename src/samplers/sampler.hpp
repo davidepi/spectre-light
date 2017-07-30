@@ -4,13 +4,14 @@
 /**
  *  \file sampler.hpp
  *  \brief     Definition of Sampler superclass and Sample POD
- *  \details   Containst the superclass for every sampler and the minimum
+ *  \details   Contains the superclass for every sampler and the minimum
  *             data structure expected to be returning
  *  \author    Davide Pizzolotto
  *  \version   0.1
  *  \date      13 Jul 2017
  *  \copyright GNU GPLv3
  */
+
 
 #ifndef __SAMPLER_HPP__
 #define __SAMPLER_HPP__

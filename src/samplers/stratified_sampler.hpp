@@ -11,12 +11,12 @@
  *  \copyright GNU GPLv3
  */
 
+
 #ifndef __STRATIFIED_SAMPLER_HPP__
 #define __STRATIFIED_SAMPLER_HPP__
 
 #include <cmath>
 #include "samplers/sampler.hpp"
-
 
 /**
  * \class StratifiedSampler stratified_sampler.hpp

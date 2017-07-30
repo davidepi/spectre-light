@@ -79,6 +79,7 @@ int main(int argc, char* argv[])
     s.addAsset(s2->getID(),&mtop);
     s.addAsset(sp->getID(),&sphere);
 
+    r.setStratifiedSampler();
     r.setPerspective(Point3(0,2,-5),Point3(0,0,0),Vec3(0,1,0),1);
     r.setMitchellFilter(1/3.f,1/3.f);
     r.setRayTracer();

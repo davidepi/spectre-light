@@ -44,6 +44,8 @@
 
 #define MESSAGE_MISSING_INTEGRATOR "Missing integrator"
 
+#define MESSAGE_MISSING_SAMPLER "Missing sampler"
+
 #define MESSAGE_WIDTH_MULTIPLE "Width must be a multiple of %d"
 
 #define MESSAGE_CHANGED_SPP "Samples per pixel should be a perfect square."\
