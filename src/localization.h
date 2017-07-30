@@ -46,6 +46,9 @@
 
 #define MESSAGE_WIDTH_MULTIPLE "Width must be a multiple of %d"
 
+#define MESSAGE_CHANGED_SPP "Samples per pixel should be a perfect square."\
+                            " Using %d samples"
+
 #define MESSAGE_NUMTHREADS "Using %d rendering threads"
 
 #define MESSAGE_W_DENIED "The folder \"%s\" is not writable or does not exists"

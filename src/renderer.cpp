@@ -23,18 +23,29 @@ Renderer::Renderer(int w, int h, int spp, const char* o,int th) : film(w,h,o)
         Renderer::w = w;
         Renderer::h = h;
     }
-    Renderer::spp = spp;
+
     if(th<1)
         Renderer::numthreads = (int)std::thread::hardware_concurrency();
     else
         Renderer::numthreads = th;
+    numthreads = numthreads > 0 ? numthreads : 1;
 
     //print number of rendering threads
     char threads[256];
     sprintf(threads,MESSAGE_NUMTHREADS,numthreads);
     Console.log(threads,threads);
 
-    numthreads = numthreads > 0 ? numthreads : 1;
+    //spp must be a perfect square
+    Renderer::spp = (int)sqrtf(spp);
+    Renderer::spp*=Renderer::spp;
+    if(Renderer::spp!=spp)
+    {
+        char errmsg[256];
+        snprintf(errmsg,256,MESSAGE_CHANGED_SPP,Renderer::spp);
+        Console.notice(errmsg);
+    }
+
+
     Renderer::c = NULL;
     Renderer::f = NULL;
     Renderer::t = NULL;
