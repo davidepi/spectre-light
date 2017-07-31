@@ -63,7 +63,7 @@ Color RayTracer::direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
             if((sampled_val&SPECULAR)==0) //if not specular
             {
                 lightpdf = light->pdf(&hp->h, &wi);
-                if (lightpdf == 0)
+                if(lightpdf == 0)
                     return L; //no contribution from bsdf sampling
                 w = (bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf+lightpdf*lightpdf);
             }
@@ -96,7 +96,7 @@ Color RayTracer::specular_rad(const Scene* s, const HitPoint* hp, const Ray* r,
     Color bsdf_f = mat->df_s(rand[0], rand[1], rand[2], &wo, hp, &wi,
                        &bsdfpdf,sampleme,&sampled_val);
     float adot = absdot(wi, hp->n);
-    if (bsdfpdf == 1.f && !bsdf_f.isBlack() && adot != 0)
+    if(bsdfpdf == 1.f && !bsdf_f.isBlack() && adot != 0)
     {
         Color reflr_rad;
         Ray r2(hp->h,wi); //new ray to trace

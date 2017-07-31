@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 29 Jul 2017
+//Last Edit 31 Jul 2017
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      29 Jul 2017
+ *  \date      31 Jul 2017
  *  \copyright GNU GPLv3
  */
 
