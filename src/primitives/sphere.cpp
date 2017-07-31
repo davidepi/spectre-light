@@ -52,10 +52,11 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
             return false;
         if(sol1<SELF_INTERSECT_ERROR) //intersection BEHIND origin
         {
-                if (sol2<SELF_INTERSECT_ERROR || *distance < sol2) //sol2 behind origin or distance
-                    return false;               //already between sol1 and sol2
-                else
-                    *distance = sol2;
+            //sol2 behind origin or distance
+            if (sol2<SELF_INTERSECT_ERROR || *distance < sol2)
+                return false;               //already between sol1 and sol2
+            else
+                *distance = sol2;
         }
         else
             *distance = sol1;
@@ -64,10 +65,9 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
             h->h = r->apply(*distance);
             Vec3 normal(h->h.x, h->h.y, h->h.z);
             h->n = Normal(normal);
-            if (h->h.x == 0 && h->h.y == 0) //particular case
-                h->right = Vec3(0, 1, 0);
-            else
-                h->right = Vec3(-TWO_PI * h->h.y, TWO_PI * h->h.x, 0);
+            if (h->h.x == 0 && h->h.y == 0)    //otherwise h->right would be a 0
+                h->h.x = SELF_INTERSECT_ERROR; //-length vector
+            h->right = Vec3(-TWO_PI * h->h.y, TWO_PI * h->h.x, 0);
         }
         return true;
     }

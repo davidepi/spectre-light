@@ -31,8 +31,8 @@ Color Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
     if(sintransmitted2>=1)
         return Color();
     //calculate transmitted ray
-    float costransmitted = fromOutside?sqrtf(max(0.f,1.f-sintransmitted2)):
-                           -sqrtf(max(0.f,1-sintransmitted2));
+    float costransmitted = fromOutside?-sqrtf(1.f-sintransmitted2):
+                                        sqrtf(1-sintransmitted2);
     wi->x = eta * -wo->x;
     wi->y = eta * -wo->y;
     wi->z = costransmitted;
