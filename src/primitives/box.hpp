@@ -110,6 +110,7 @@ public:
      *  \return A float representing the area of the sphere in world-space units
      */
     float surface()const;
+    void getRandomPoint(float r, float r1, Point3* p, Normal* n)const;
     
 private:
 

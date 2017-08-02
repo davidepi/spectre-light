@@ -58,6 +58,12 @@
 #define MESSAGE_W_DENIED_RC "The output file was writable at startup, but now "\
                             "it is not anymore."
 
+#define MESSAGE_DEGENERATE_SPHERE "Trying to create a degenerate sphere, with "\
+                                  "radius less than or equal to zero"
+
+#define MESSAGE_DEGENERATE_BOX "Trying to create a degenerate box, with edges "\
+                                "less than or equal to zero"
+
 #endif
 
 

@@ -1,6 +1,9 @@
 #include "sphere.hpp"
 Sphere::Sphere(float rad) :Shape()
 {
+#ifdef _LOW_LEVEL_CHECKS_
+    Console.severe(rad <= 0,MESSAGE_DEGENERATE_SPHERE);
+#endif
     Sphere::radius = rad;
 }
 
