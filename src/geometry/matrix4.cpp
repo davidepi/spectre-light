@@ -1017,9 +1017,9 @@ Ray Matrix4::operator*(const Ray& r)const
 
 Normal transformNormal(const Normal& n, const Matrix4* inv)
 {
-    return Normal(inv->m00*n.x+inv->m01*n.y+inv->m02*n.z+inv->m03,
-                  inv->m10*n.x+inv->m11*n.y+inv->m12*n.z+inv->m13,
-                  inv->m20*n.x+inv->m21*n.y+inv->m22*n.z+inv->m23);
+    return Normal(inv->m00*n.x+inv->m10*n.y+inv->m20*n.z,
+                  inv->m01*n.x+inv->m11*n.y+inv->m21*n.z,
+                  inv->m02*n.x+inv->m12*n.y+inv->m22*n.z);
 }
 
 void sum(const Matrix4* input1, const Matrix4* input2, Matrix4* output)

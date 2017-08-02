@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 28 Jul 2017
+//Last Edit  2 Aug 2017
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      28 Jul 2017
+ *  \date      2 Aug 2017
  *  \warning   Since this is a low level class, some verification are skipped.
  *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
  *             preprocessor define.
