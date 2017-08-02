@@ -43,7 +43,7 @@ Color Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
 
 float Refraction::pdf(const Vec3* wo, const Vec3* wi)const
 {
-    return 1.f;
+    return 0.f;
 }
 
 Bdf* Refraction::clone()const

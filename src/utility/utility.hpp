@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit 15 Jun 2017
+//Last Edit  2 Aug 2017
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  15 Jun 2017
+ *  \date  2 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -147,6 +147,21 @@ inline float clamp(const float value, const float min, const float max)
         return max;
     else
         return value;
+}
+
+/** \brief Perform linear interpolation
+ *
+ *  Perform a linear interpolation of a value between [0,1] in order to map it
+ *  in an interval [min,max]
+ *
+ *  \param[in] value The value in the interval [0,1]
+ *  \param[in] min The minimum value of the new interval
+ *  \param[in] max The maximum value of the new interval
+ *  \return The original value mapped in the interval [min,max]
+ */
+inline float lerp(const float value, const float min, const float max)
+{
+    return (1 - value) * min + value * max;
 }
 
 /**
