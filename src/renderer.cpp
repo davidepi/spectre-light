@@ -140,6 +140,13 @@ void Renderer::setRayTracer()
     t = new RayTracer();
 }
 
+void Renderer::setPathTracer()
+{
+    if(Renderer::t != NULL)
+        delete t;
+    t = new PathTracer();
+}
+
 int Renderer::render(Scene* s)
 {
     //used just for seed generation, WELLrng will be the actual prng

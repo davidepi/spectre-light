@@ -24,7 +24,7 @@
 #include "settings.h"
 
 /**
- * \class RayTracer ray_integrator.hpp
+ * \class RayTracer ray_tracer.hpp
  * \brief Rendering equation solver, accounting for direct lighting only
  *
  *  This class computes the radiance arriving at a point, accounting for
@@ -63,43 +63,47 @@ class RayTracer : public LightIntegrator
      */
     Color radiance(const Scene* sc, const HitPoint* hp,
                    const Ray* r, Sampler* sam, OcclusionTester* ot)const;
-
-    /** \brief Determine the radiance arriving at a point
-     *
-     *  See RayTracer::radiance
-     *
-     *  \param[in] sc The rendered scene
-     *  \param[in] hp The first intersection point
-     *  \param[in] r The originating ray, generated from the camera
-     *  \param[in] sam A sampler used to generate random numbers
-     *  \param[in] ot Class used in order to test the occlusion. It is passed
-     *  here to keep trace of cached assets between various call of this
-     *  function
-     *  \return The radiance arriving at the film
-     *  \sa RayTracer::radiance
-     */
-    Color direct_l(const Scene* sc, const HitPoint* hp,
-                          const Ray* r, Sampler* sam, OcclusionTester* ot)const;
-
-    /** \brief Determine the radiance arriving at a point
-     *
-     *  Determine the radiance arriving directly at a point, accounting only
-     *  specular reflection or refraction
-     *
-     *  \param[in] sc The rendered scene
-     *  \param[in] hp The first intersection point
-     *  \param[in] r The originating ray, generated from the camera
-     *  \param[in] sam A sampler used to generate random numbers
-     *  \param[in] ot Class used in order to test the occlusion. It is passed
-     *  here to keep trace of cached assets between various call of this
-     *  function
-     *  \param[in] ref BRDF for specular reflection, BTDF for specular
-     *  refraction
-     *  \return The radiance arriving at the film
-     */
-    Color specular_rad(const Scene* sc, const HitPoint *hp, const Ray *r,
-                     Sampler* sam, OcclusionTester* ot, BdfFlags ref)const;
 };
 
+/** \brief Determine the radiance arriving at a point
+ *
+ *  Determine the radiance arriving directly at a point, accounting only
+ *  non-specular brdfs/btdfs
+ *
+ *  \param[in] sc The rendered scene
+ *  \param[in] hp The first intersection point
+ *  \param[in] r The originating ray, generated from the camera
+ *  \param[in] sam A sampler used to generate random numbers
+ *  \param[in] ot Class used in order to test the occlusion. It is passed
+ *  here to keep trace of cached assets between various call of this
+ *  function
+ *  \return The radiance arriving at the film
+ *  \sa RayTracer::radiance
+ */
+Color direct_l(const Scene *sc, const HitPoint *hp,
+               const Ray *r, Sampler *sam, OcclusionTester *ot);
+
+/** \brief Determine the radiance arriving at a point
+ *
+ *  Determine the radiance arriving directly at a point, accounting only
+ *  specular reflection or refraction
+ *
+ *  \param[in] sc The rendered scene
+ *  \param[in] hp The first intersection point
+ *  \param[in] r The originating ray, generated from the camera
+ *  \param[in] sam A sampler used to generate random numbers
+ *  \param[in] ot Class used in order to test the occlusion. It is passed
+ *  here to keep trace of cached assets between various call of this
+ *  function
+ *  \param[in] ref BRDF for specular reflection, BTDF for specular
+ *  refraction
+ *  \param[in] l Since this function needs to compute the radiance arriving
+ *  through a specular direction, the integrator used to calla the radiance()
+ *  function is passed here
+ *  \return The radiance arriving at the film
+ */
+Color spec_l(const Scene *sc, const HitPoint *hp, const Ray *r,
+                   Sampler *sam, OcclusionTester *ot, BdfFlags ref,
+                   const LightIntegrator* i);
 
 #endif

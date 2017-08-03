@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 31 Jul 2017
+//Last Edit  3 Aug 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      31 Jul 2017
+ *  \date      3 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -31,6 +31,7 @@
 #include "samplers/stratified_sampler.hpp"
 #include "integrators/light_integrator.hpp"
 #include "integrators/ray_tracer.hpp"
+#include "integrators/path_tracer.hpp"
 #include "settings.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
@@ -203,6 +204,14 @@ public:
      *  and thus does not compute global illumination
      */
     void setRayTracer();
+
+    /** \brief Solve the light transport equation using the path-tracer
+     *
+     *  Set the path tracer as the integrator used for solving the light
+     *  transport equation. This integrator is based on the Path tracing
+     *  algorithm and accounts for direct and indirect illumination
+     */
+    void setPathTracer();
 
     /** \brief Render the scene
      *

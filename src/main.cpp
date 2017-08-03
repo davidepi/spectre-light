@@ -7,6 +7,8 @@
 #include "materials/refraction.hpp"
 #ifndef WIN32
 #include <getopt.h>
+#include <primitives/box.hpp>
+
 #endif
 int main(int argc, char* argv[])
 {
@@ -50,38 +52,43 @@ int main(int argc, char* argv[])
     Scene s;
     Sphere* sp = new Sphere(1);
     Sphere* s2 = new Sphere(1e5);
+    Box* bb = new Box(Vec3(1,1.5,1));
 
-    Matrix4 m1; m1.setTranslation(Vec3(-1,1,0));
+    Matrix4 m1; m1.setTranslation(Vec3(-1,1,-1));
     Matrix4 mbot; mbot.setTranslation(Vec3(0,-1e5,0));
     Matrix4 mleft; mleft.setTranslation(Vec3(-1e5-3,0,0));
     Matrix4 mright; mright.setTranslation(Vec3(1e5+3,0,0));
     Matrix4 mfront; mfront.setTranslation(Vec3(0,0,1e5+3));
     Matrix4 mtop; mtop.setTranslation(Vec3(0,1e5+3,0));
-    Matrix4 sphere; sphere.setTranslation(Vec3(1,1,0));
+    Matrix4 sphere; sphere.setTranslation(Vec3(1,1,-1));
+    Matrix4 box; box.setScale(2);
 
     s.inheritShape(sp);
     s.inheritShape(s2);
+    s.inheritShape(bb);
 
-    Bsdf onl,onr,onn;
+    Bsdf onl,onr,glass;
     Bdf* b = new OrenNayar(Color(0.25,0.75,0.25),1);
     Bdf* b2 = new OrenNayar(Color(0.75,0.25,0.25),1);
-    Bdf* b3 = new Reflection(Color(0.5),Color(),Color());
-    //Bdf* b3 = new Refraction(Color(0.5),1.0,1.33f);
+    Bdf* b3 = new Reflection(Color(1.0),1.0,1.5f);
+    Bdf* b4 = new Refraction(Color(1.0),1.0f,1.5f);
     onr.addBdf(b);
     onl.addBdf(b2);
-    onn.addBdf(b3);
+    glass.addBdf(b3);
+    glass.addBdf(b4);
 
     s.addLight(sp->getID(),&m1,Color(1));
-    s.addAsset(s2->getID(),&mbot,&onn);
+    s.addAsset(s2->getID(),&mbot);
     s.addAsset(s2->getID(),&mleft,&onl);
     s.addAsset(s2->getID(),&mright,&onr);
     s.addAsset(s2->getID(),&mfront);
     s.addAsset(s2->getID(),&mtop);
+    //s.addAsset(bb->getID(),&box);
     s.addAsset(sp->getID(),&sphere);
 
     r.setStratifiedSampler();
     r.setPerspective(Point3(0,2,-5),Point3(0,0,0),Vec3(0,1,0),1);
     r.setMitchellFilter(1/3.f,1/3.f);
-    r.setRayTracer();
+    r.setPathTracer();
     return r.render(&s);
 }

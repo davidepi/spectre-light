@@ -3,18 +3,18 @@
 Color RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
                           Sampler *sam, OcclusionTester *ot) const
 {
-    Color direct = RayTracer::direct_l(sc,hp,r,sam,ot)*sc->lightSize();
+    Color direct = direct_l(sc,hp,r,sam,ot)*sc->lightSize();
     //specular reflection
     if(r->ricochet < DEFAULT_BOUNCES) //ensure termination
     {
-        direct+=specular_rad(sc,hp,r,sam,ot,BdfFlags(BRDF));
-        direct+=specular_rad(sc,hp,r,sam,ot,BdfFlags(BTDF));
+        direct+=spec_l(sc,hp,r,sam,ot,BdfFlags(BRDF),this);
+        direct+=spec_l(sc,hp,r,sam,ot,BdfFlags(BTDF),this);
     }
     return direct;
 }
 
-Color RayTracer::direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
-                           Sampler* sam, OcclusionTester* ot)const
+Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
+               OcclusionTester* ot)
 {
     Color L;
     int nlights = sc->lightSize();
@@ -82,8 +82,8 @@ Color RayTracer::direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
     return L;
 }
 
-Color RayTracer::specular_rad(const Scene* s, const HitPoint* hp, const Ray* r,
-                          Sampler* sam, OcclusionTester* ot, BdfFlags ref)const
+Color spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
+             OcclusionTester* ot, BdfFlags ref,const LightIntegrator* i)
 {
     Vec3 wo = -r->direction;
     Vec3 wi;
@@ -103,7 +103,7 @@ Color RayTracer::specular_rad(const Scene* s, const HitPoint* hp, const Ray* r,
         r2.ricochet=r->ricochet+1;
         HitPoint h2;
         if(s->k.intersect(&r2,&h2)) //if intersection is found
-            reflr_rad = radiance(s,&h2,&r2,sam,ot);
+            reflr_rad = i->radiance(s,&h2,&r2,sam,ot);
         return bsdf_f*reflr_rad*adot;
     }
     else
