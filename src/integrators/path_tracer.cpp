@@ -19,8 +19,9 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Color retval(0.0);
     Vec3 wo = -r->direction;
 
-    //if first hit is light use its emission
-    if(r->ricochet==0 && hp->hit->isLight() && dot(hp->n,wo)>0)
+    //if first hit is light or specular, use its emission
+    if(r->ricochet==0 && last&SPECULAR!=0
+       && hp->hit->isLight() && dot(hp->n,wo)>0)
     {
         retval+=*power*((AreaLight *)hp->hit)->emissiveSpectrum();
     }
@@ -57,5 +58,5 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
         return retval; //ray out of scene, return now
 
     //recursive step
-    return retval+l_rec(sc,&h2,&r2,sam,power,last,ot);
+    return retval+l_rec(sc,&h2,&r2,sam,power,matched,ot);
 }

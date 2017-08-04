@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 31 Jul 2017
+//Last Edit  4 Aug 2017
 
 /**
  *  \file refraction.hpp
  *  \brief Implementation of a BTDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      31 Jul 2017
+ *  \date      4 Aug 2017
  *  \copyright GNU GPLv3
  */
 

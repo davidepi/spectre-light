@@ -35,19 +35,22 @@ Color Dielectric::eval(float cosin)const
 {
     float ei = Dielectric::etai;
     float et = Dielectric::etat;
+    float abscosthetai = cosin;
     if (cosin < 0) //exiting ray
+    {
         swap(&ei, &et);
-    float sintheta = ei / et * sqrtf(max(0.f, 1.f - cosin * cosin));
-    if(sintheta >= 1.f) //Total internal reflection
+        abscosthetai = fabsf(cosin);
+    }
+    float sinthetat = (ei/et)*sqrtf(max(0.f, 1.f - abscosthetai*abscosthetai));
+    if(sinthetat >= 1.f) //Total internal reflection
         return 1.f;
     else
     {
-        float costheta = sqrtf(max(0.f,1.f-sintheta*sintheta));
-        float cosabsin = fabsf(cosin);
-        float etatcosi = et*cosabsin;
-        float etaicosi = ei*cosabsin;
-        float etatcost = et*costheta;
-        float etaicost = ei*costheta;
+        float costhetat = sqrtf(max(0.f,1.f-sinthetat*sinthetat));
+        float etatcosi = et*abscosthetai;
+        float etaicosi = ei*abscosthetai;
+        float etatcost = et*costhetat;
+        float etaicost = ei*costhetat;
 
         float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
         float rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);

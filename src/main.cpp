@@ -1,15 +1,16 @@
 #include "utility/scene.hpp"
 #include "primitives/sphere.hpp"
+#include "primitives/box.hpp"
 #include "renderer.hpp"
 #include <cstdlib> //atoi, exit
 #include "materials/oren_nayar.hpp"
 #include "materials/reflection.hpp"
 #include "materials/refraction.hpp"
+
 #ifndef WIN32
 #include <getopt.h>
-#include <primitives/box.hpp>
-
 #endif
+
 int main(int argc, char* argv[])
 {
     int width = 800;
@@ -54,7 +55,7 @@ int main(int argc, char* argv[])
     Sphere* s2 = new Sphere(1e5);
     Box* bb = new Box(Vec3(1,1.5,1));
 
-    Matrix4 m1; m1.setTranslation(Vec3(-1,1,-1));
+    Matrix4 m1; m1.setTranslation(Vec3(0,2.5,0));
     Matrix4 mbot; mbot.setTranslation(Vec3(0,-1e5,0));
     Matrix4 mleft; mleft.setTranslation(Vec3(-1e5-3,0,0));
     Matrix4 mright; mright.setTranslation(Vec3(1e5+3,0,0));
@@ -74,7 +75,7 @@ int main(int argc, char* argv[])
     Bdf* b4 = new Refraction(Color(1.0),1.0f,1.5f);
     onr.addBdf(b);
     onl.addBdf(b2);
-    glass.addBdf(b3);
+    //glass.addBdf(b3);
     glass.addBdf(b4);
 
     s.addLight(sp->getID(),&m1,Color(1));
@@ -84,7 +85,7 @@ int main(int argc, char* argv[])
     s.addAsset(s2->getID(),&mfront);
     s.addAsset(s2->getID(),&mtop);
     //s.addAsset(bb->getID(),&box);
-    s.addAsset(sp->getID(),&sphere);
+    s.addAsset(sp->getID(),&sphere, &glass);
 
     r.setStratifiedSampler();
     r.setPerspective(Point3(0,2,-5),Point3(0,0,0),Vec3(0,1,0),1);
