@@ -49,13 +49,13 @@ public:
      *
      *  This method tries to intersect a ray passed as a parameter with the
      *  sphere, returning true or false if the intersection happened in the
-     *  range defined by the Ray#minext and Ray#maxext. If the intersection
-     *  happened, the variables \p distance and \p error are set based on the
-     *  result.
+     *  range defined by the minimum epsilon and the current distance.
+     *  If the intersection happened, the variables \p distance and \p h are set
+     *  based on the result.
      *
      *  \note If there is an intersection, but it is outside the range defined
-     *  by Ray#minext and Ray#maxext, this method returns false. The parameter
-     *  \p error is unset and \p distance may exhibit undefined behaviour
+     *  by SELF_INTERSECTION_ERROR and the current distance value, this method
+     *  returns false.
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection
@@ -66,7 +66,7 @@ public:
     
     /** \brief Calculate the AABB
      *
-     *  This method return an AABB that can fit well on this sphere.
+     *  This method returns an AABB that can fit well on this sphere.
      *
      *  \return an AABB representing the calculated bounding box
      */
@@ -74,7 +74,7 @@ public:
     
     /** \brief Calculate the AABB in world space
      *
-     *  This method return an AABB that can fit well on the world space sphere,
+     *  This method returns an AABB that can fit well on the world space sphere,
      *  without actually transforming the sphere.
      *
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
@@ -89,7 +89,7 @@ public:
     
     /** \brief Return the surface of the sphere
      *
-     *  This method should compute the surface area of the sphere, useful
+     *  This method computes the surface area of the sphere, useful
      *  if the sphere is a light source.
      *
      *  \return A float representing the area of the sphere in world-space units

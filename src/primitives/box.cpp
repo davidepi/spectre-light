@@ -110,7 +110,68 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     return true;
 }
 
-void Box::getRandomPoint(float r, float r1, Point3* p, Normal* n)const
+void Box::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
 {
-    Console.critical("Box sample not implemented yet");
+
+    float res = lerp(r0,0,edges.x*4+edges.z*2);
+    unsigned char face = (unsigned char)res/6;
+    switch(face)
+    {
+        //front
+        case 0:
+            p->x=res;
+            p->y = lerp(r1,0,edges.y);
+            p->z = 0;
+            n->x = 0;
+            n->y = 0;
+            n->z = -1;
+            break;
+        //back
+        case 1:
+            p->x=res-edges.x;
+            p->y = lerp(r1,0,edges.y);
+            p->z = edges.z;
+            n->x = 0;
+            n->y = 0;
+            n->z = 1;
+            break;
+        //left
+        case 2:
+            p->x=0;
+            p->y = lerp(r1,0,edges.y);
+            p->z = res-(edges.x*2);
+            n->x = -1;
+            n->y = 0;
+            n->z = 0;
+            break;
+        //right
+        case 3:
+            p->x=edges.x;
+            p->y = lerp(r1,0,edges.y);
+            p->z = res-(edges.x*2)-edges.z;
+            n->x = 1;
+            n->y = 0;
+            n->z = 0;
+            break;
+        //bottom
+        case 4:
+            p->x=res-(edges.x*2)-(edges.z*2);
+            p->y = 0;
+            p->z = lerp(r1,0,edges.z);
+            n->x = 0;
+            n->y = -1;
+            n->z = 0;
+            break;
+        //top
+        case 5:
+            p->x=res-(edges.x*3)-(edges.z*2);
+            p->y = edges.y;
+            p->z = lerp(r1,0,edges.z);
+            n->x = 0;
+            n->y = 1;
+            n->z = 0;
+            break;
+        default:
+            printf("%d\n",face);
+    }
 }

@@ -59,16 +59,13 @@ public:
      *
      *  This method tries to intersect a ray passed as a parameter with the
      *  box, returning true or false if the intersection happened in the
-     *  range defined by the Ray#minext and Ray#maxext. If the intersection
-     *  happened, the variables \p distance and \p error are set based on the
-     *  result.
+     *  range defined by the minimum epsilon and the current distance.
+     *  If the intersection happened, the variables \p distance and \p h are set
+     *  based on the result.
      *
      *  \note If there is an intersection, but it is outside the range defined
-     *  by Ray#minext and Ray#maxext, this method returns false. The parameter
-     *  \p error is unset and \p distance may exhibit undefined behaviour
-     *
-     *  \warning For the box this method simply returns true. Intersect its AABB
-     *  instead
+     *  by SELF_INTERSECTION_ERROR and the current distance value, this method
+     *  returns false.
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection

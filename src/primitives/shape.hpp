@@ -49,13 +49,14 @@ public:
      *
      *  In its implementations, this method should try to intersect a ray passed
      *  as a parameter with the shape, returning true or false if the
-     *  intersection happened in the range defined by the Ray#minext and
-     *  Ray#maxext. If the intersection happened, the variables \p distance and
-     *  \p h should be set based on the result.
+     *  intersection happened in the range defined by the minimum epsilon and
+     *  the current distance.
+     *  If the intersection happened, the variables \p distance and \p h should
+     *  be set based on the result.
      *
      *  \note If there is an intersection, but it is outside the range defined
-     *  by Ray#minext and Ray#maxext, this method should return false, and
-     *  it should avoid setting the \p distance and \p error parameters
+     *  by SELF_INTERSECTION_ERROR and the current distance value, this method
+     *  should returns false.
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection
