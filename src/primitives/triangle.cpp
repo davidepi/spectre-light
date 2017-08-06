@@ -77,7 +77,7 @@ bool Triangle::intersect(const Ray *r, float *distance, HitPoint *h)const
     float invdet = 1.f/det;
     Vec3 tv = r->origin - a.p;
     float u = pv.dot(tv) * invdet;
-    if(u<0.f || u>1.f)
+    if(u<0.f || u>1.f)//constraints are u,v>=0 & u+v<=1 so if u>1 I can exit now
         return false;
 
     Vec3 qv = tv.cross(ba);
@@ -90,9 +90,10 @@ bool Triangle::intersect(const Ray *r, float *distance, HitPoint *h)const
         return false;
 
     *distance = dist;
-    h->right.x = -a.p.x+c.p.x+b.p.x-c.p.x;
-    h->right.y = -a.p.y+c.p.y+b.p.y-c.p.y;
-    h->right.z = -a.p.z+c.p.z+b.p.z-c.p.z;
-    h->n = Normal(cross(ba,ca));
+    h->h=r->apply(dist);
+    h->right.x = b.p.x-a.p.x;
+    h->right.y = b.p.y-a.p.y;
+    h->right.z = b.p.z-a.p.z;
+    h->n = -Normal(cross(ba,ca));
     return true;
 }

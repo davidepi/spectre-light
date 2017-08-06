@@ -1,14 +1,16 @@
 #include "utility/scene.hpp"
 #include "primitives/sphere.hpp"
 #include "primitives/box.hpp"
+#include "primitives/triangle.hpp"
 #include "renderer.hpp"
 #include <cstdlib> //atoi, exit
 #include "materials/oren_nayar.hpp"
 #include "materials/reflection.hpp"
 #include "materials/refraction.hpp"
-
 #ifndef WIN32
 #include <getopt.h>
+
+
 #endif
 
 int main(int argc, char* argv[])
@@ -54,6 +56,13 @@ int main(int argc, char* argv[])
     Sphere* sp = new Sphere(1);
     Sphere* s2 = new Sphere(1e5);
     Box* bb = new Box(Vec3(1,1.5,1));
+    Vertex a;
+    a.p = Point3(-2,0,0);
+    Vertex b;
+    b.p = Point3(1,0,0);
+    Vertex c;
+    c.p = Point3(0,1,0);
+    Triangle* tr = new Triangle(a,b,c);
 
     Matrix4 m1; m1.setTranslation(Vec3(0,2.5,0));
     Matrix4 mbot; mbot.setTranslation(Vec3(0,-1e5,0));
@@ -63,17 +72,19 @@ int main(int argc, char* argv[])
     Matrix4 mtop; mtop.setTranslation(Vec3(0,1e5+3,0));
     Matrix4 sphere; sphere.setTranslation(Vec3(1,1,-1));
     Matrix4 box; box.setScale(2);
+    Matrix4 triangle; triangle.setIdentity();
 
     s.inheritShape(sp);
     s.inheritShape(s2);
     s.inheritShape(bb);
+    s.inheritShape(tr);
 
     Bsdf onl,onr,glass;
-    Bdf* b = new OrenNayar(Color(0.25,0.75,0.25),1);
+    Bdf* b1 = new OrenNayar(Color(0.25,0.75,0.25),1);
     Bdf* b2 = new OrenNayar(Color(0.75,0.25,0.25),1);
     Bdf* b3 = new Reflection(Color(1.0),1.0,1.5f);
     Bdf* b4 = new Refraction(Color(1.0),1.0f,1.5f);
-    onr.addBdf(b);
+    onr.addBdf(b1);
     onl.addBdf(b2);
     //glass.addBdf(b3);
     glass.addBdf(b4);
@@ -85,7 +96,8 @@ int main(int argc, char* argv[])
     s.addAsset(s2->getID(),&mfront);
     s.addAsset(s2->getID(),&mtop);
     //s.addAsset(bb->getID(),&box);
-    s.addAsset(sp->getID(),&sphere, &glass);
+    //s.addAsset(sp->getID(),&sphere, &glass);
+    s.addAsset(tr->getID(),&triangle);
 
     r.setStratifiedSampler();
     r.setPerspective(Point3(0,2,-5),Point3(0,0,0),Vec3(0,1,0),1);
