@@ -43,11 +43,6 @@ bool Asset::intersectFast(const Ray* r, const RayProperties* rp,
     return aabb.intersect(r,rp,p1,p2);
 }
 
-Asset::~Asset()
-{
-    
-}
-
 const AABB* Asset::getAABB()const
 {
     return &(Asset::aabb);

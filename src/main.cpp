@@ -9,6 +9,7 @@
 #include "materials/refraction.hpp"
 #ifndef WIN32
 #include <getopt.h>
+#include <primitives/mesh.hpp>
 
 
 #endif
@@ -56,15 +57,46 @@ int main(int argc, char* argv[])
     Sphere* sp = new Sphere(1);
     Sphere* s2 = new Sphere(1e5);
     Box* bb = new Box(Vec3(1,1.5,1));
-    Vertex a;
-    a.p = Point3(-2,0,0);
-    Vertex b;
-    b.p = Point3(1,0,0);
-    Vertex c;
-    c.p = Point3(0,1,0);
-    Triangle* tr = new Triangle(a,b,c);
 
-    Matrix4 m1; m1.setTranslation(Vec3(0,2.5,0));
+    Mesh* me = new Mesh(20);
+    Point3 p01(0.000000,0.000000,0.000000);
+    Point3 p02(0.723600,0.552785,0.525720);
+    Point3 p03(-0.276385,0.552785,0.850640);
+    Point3 p04(-0.894425,0.552785,0.000000);
+    Point3 p05(-0.276385,0.552785,-0.850640);
+    Point3 p06(0.723600,0.552785,-0.525720);
+    Point3 p07(0.276385,1.447215,0.850640);
+    Point3 p08(-0.723600,1.447215,0.525720);
+    Point3 p09(-0.723600,1.447215,-0.525720);
+    Point3 p10(0.276385,1.447215,-0.850640);
+    Point3 p11(0.894425,1.447215,0.000000);
+    Point3 p12(0.000000,2.000000,0.000000);
+    Normal n0;
+
+    me->addTriangle(&p01,&p02,&p03,&n0);
+    me->addTriangle(&p02,&p01,&p06,&n0);
+    me->addTriangle(&p01,&p03,&p04,&n0);
+    me->addTriangle(&p01,&p04,&p05,&n0);
+    me->addTriangle(&p01,&p05,&p06,&n0);
+    me->addTriangle(&p02,&p06,&p11,&n0);
+    me->addTriangle(&p03,&p02,&p07,&n0);
+    me->addTriangle(&p04,&p03,&p08,&n0);
+    me->addTriangle(&p05,&p04,&p09,&n0);
+    me->addTriangle(&p06,&p05,&p10,&n0);
+    me->addTriangle(&p02,&p11,&p07,&n0);
+    me->addTriangle(&p03,&p07,&p08,&n0);
+    me->addTriangle(&p04,&p08,&p09,&n0);
+    me->addTriangle(&p05,&p09,&p10,&n0);
+    me->addTriangle(&p06,&p10,&p11,&n0);
+    me->addTriangle(&p07,&p11,&p12,&n0);
+    me->addTriangle(&p08,&p07,&p12,&n0);
+    me->addTriangle(&p09,&p08,&p12,&n0);
+    me->addTriangle(&p10,&p09,&p12,&n0);
+    me->addTriangle(&p11,&p10,&p12,&n0);
+    me->finalize();
+
+
+    Matrix4 m1; m1.setTranslation(Vec3(0,3.25,0));
     Matrix4 mbot; mbot.setTranslation(Vec3(0,-1e5,0));
     Matrix4 mleft; mleft.setTranslation(Vec3(-1e5-3,0,0));
     Matrix4 mright; mright.setTranslation(Vec3(1e5+3,0,0));
@@ -77,16 +109,16 @@ int main(int argc, char* argv[])
     s.inheritShape(sp);
     s.inheritShape(s2);
     s.inheritShape(bb);
-    s.inheritShape(tr);
+    s.inheritShape(me);
 
     Bsdf onl,onr,glass;
     Bdf* b1 = new OrenNayar(Color(0.25,0.75,0.25),1);
     Bdf* b2 = new OrenNayar(Color(0.75,0.25,0.25),1);
-    Bdf* b3 = new Reflection(Color(1.0),1.0,1.5f);
+    Bdf* b3 = new Reflection(Color(1.0),1.0f,1.5f);
     Bdf* b4 = new Refraction(Color(1.0),1.0f,1.5f);
     onr.addBdf(b1);
     onl.addBdf(b2);
-    //glass.addBdf(b3);
+    glass.addBdf(b3);
     glass.addBdf(b4);
 
     s.addLight(sp->getID(),&m1,Color(1));
@@ -96,8 +128,7 @@ int main(int argc, char* argv[])
     s.addAsset(s2->getID(),&mfront);
     s.addAsset(s2->getID(),&mtop);
     //s.addAsset(bb->getID(),&box);
-    //s.addAsset(sp->getID(),&sphere, &glass);
-    s.addAsset(tr->getID(),&triangle);
+    s.addAsset(me->getID(),&triangle);
 
     r.setStratifiedSampler();
     r.setPerspective(Point3(0,2,-5),Point3(0,0,0),Vec3(0,1,0),1);

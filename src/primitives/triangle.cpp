@@ -1,5 +1,9 @@
 #include "triangle.hpp"
 
+Triangle::Triangle()
+{
+
+}
 
 Triangle::Triangle(Vertex v0, Vertex v1, Vertex v2) : a(v0), b(v1), c(v2)
 {
@@ -94,6 +98,6 @@ bool Triangle::intersect(const Ray *r, float *distance, HitPoint *h)const
     h->right.x = b.p.x-a.p.x;
     h->right.y = b.p.y-a.p.y;
     h->right.z = b.p.z-a.p.z;
-    h->n = -Normal(cross(ba,ca));
+    h->n = Normal(cross(ba,ca));
     return true;
 }

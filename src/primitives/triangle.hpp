@@ -50,6 +50,16 @@ class Triangle : public Shape
 {
 public:
 
+    /** \brief Default constructor
+     *
+     *  This constructor leaves the object uninitialized, however it is needed
+     *  in the Mesh class to initialize a stack-allocated array with the new
+     *  operator without having the data for the triangles. The new operator
+     *  is necessary, because an allocation with the malloc operator would leave
+     *  the vtable pointer uninitialized
+     */
+    Triangle();
+
     /** \brief Constructor, given the vertices.
      *
      *  Construct a triangle in object space with the given vertices
@@ -124,11 +134,13 @@ public:
      */
     void getRandomPoint(float r0, float r1, Point3* p, Normal* n)const;
 
-private:
-
-    //vertices of the triangle
+    ///First vertex of the triangle
     Vertex a;
+
+    ///Second vertex of the triangle
     Vertex b;
+
+    ///Third vertex of the triangle
     Vertex c;
 };
 

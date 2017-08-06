@@ -38,9 +38,6 @@ public:
      */
     Asset(Shape* sp, Matrix4* transform);
     
-    ///Default destructor
-    ~Asset();
-    
     /** \brief Return the ID of this asset
      *  \return A unsigned int representing the ID of this asset
      */

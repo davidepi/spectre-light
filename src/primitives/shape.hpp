@@ -38,7 +38,7 @@ public:
     Shape();
     
     ///Default destructor
-    ~Shape();
+    virtual ~Shape();
     
     /** \brief Return the ID of this shape
      *  \return A unsigned int representing the ID of this shape

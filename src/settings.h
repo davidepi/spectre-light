@@ -1,12 +1,12 @@
 //Created,  24 Apr 2017
-//Last Edit 27 Jul 2017
+//Last Edit  6 Aug 2017
 
 /**
  *  \file settings.h
  *  \brief User defined global definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 27 Jul 2017
+ *  \date 6 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -31,6 +31,9 @@
 
 ///Defines the max number of assets
 #define _MAX_ASSETS_ 4096
+
+///Defines the max number of triangles per mesh
+#define _MAX_TRIS_ 1000000u
 
 ///The maximum number of functions (BRDF/BTDF) that a BSDF can contain
 #define _MAX_BDF_ 5
