@@ -38,11 +38,11 @@ void Mesh::addTriangle(const Vertex *a, const Vertex *b, const Vertex *c)
     }
     else
     {
-        if (Mesh::count == Mesh::alloc) //need to realloc a bigger area
+        if(Mesh::count == Mesh::alloc) //need to realloc a bigger area
         {
             unsigned int newsize = std::min(Mesh::alloc << 1, _MAX_TRIS_);
-            Triangle *tmp = new Triangle[newsize];
-            memcpy(tmp, Mesh::tris, Mesh::alloc);
+            Triangle* tmp = new Triangle[newsize];
+            memcpy(tmp, Mesh::tris, Mesh::count*sizeof(Triangle));
             delete[] Mesh::tris;
             Mesh::tris = tmp;
             Mesh::alloc = newsize;
@@ -59,7 +59,14 @@ void Mesh::finalize()
     //shrink memory to fit exactly the number of triangle used
     //just in case the constructor was called with a wrong parameter and the
     //array doubled
-    //Mesh::tris = (Triangle*)realloc(Mesh::tris,sizeof(Triangle)*Mesh::count);
+    if(Mesh::alloc>Mesh::count)
+    {
+        Triangle *tmp = new Triangle[Mesh::count];
+        memcpy(tmp, Mesh::tris, Mesh::count*sizeof(Triangle));
+        delete[] Mesh::tris;
+        Mesh::tris = tmp;
+        Mesh::alloc = Mesh::count;
+    }
 
     //precompute the surface of the mesh and the aabb
     for(int i=0;i<count;i++)
@@ -72,7 +79,6 @@ void Mesh::finalize()
 
 bool Mesh::intersect(const Ray* r,float* distance, HitPoint* h)const
 {
-
     //TODO: obviously this has to be changed
     bool retval = false;
     for(int i=0;i<count;i++)

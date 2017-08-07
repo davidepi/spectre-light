@@ -94,10 +94,18 @@ bool Triangle::intersect(const Ray *r, float *distance, HitPoint *h)const
         return false;
 
     *distance = dist;
-    h->h=r->apply(dist);
+    float w = 1.f-u-v;
+    h->h=r->apply(dist); //compute hit point
+
+    //compute normal in the point, given normals in the vertices
+    h->n = a.n*w+b.n*u+c.n*v;//TODO: change this after uv mapping implementation
+
+    //compute default shading vector TODO: change also this after uv map impl
     h->right.x = b.p.x-a.p.x;
     h->right.y = b.p.y-a.p.y;
     h->right.z = b.p.z-a.p.z;
-    h->n = Normal(cross(ba,ca));
+
+    h->cross = cross(Vec3(h->n),h->right);
+    h->right = cross(Vec3(h->n),h->cross); //adjust right vector
     return true;
 }

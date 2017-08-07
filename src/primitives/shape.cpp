@@ -7,11 +7,6 @@ Shape::Shape() : id(_shape_ID_pool++)
     
 }
 
-Shape::~Shape()
-{
-    
-}
-
 unsigned int Shape::getID()const
 {
     return Shape::id;
