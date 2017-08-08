@@ -35,6 +35,7 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
         const Bsdf* mat = hp->hit->getMaterial();
         float lightpdf;
         float bsdfpdf;
+        BdfFlags flags((BdfFlags)(ALL&~SPECULAR));
         BdfFlags sampled_val;
         float light_distance;
 
@@ -43,11 +44,11 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
                                           &lightpdf,&light_distance);
         if(lightpdf > 0 && !directrad.isBlack())
         {
-            Color bsdf_f = mat->df(&wo,hp,&wi,BdfFlags(ALL));
+            Color bsdf_f = mat->df(&wo,hp,&wi,flags);
             Ray r(hp->h,wi);
             if(!bsdf_f.isBlack() && !ot->isOccluded(&r,&light_distance))
             {
-                bsdfpdf = mat->pdf(&wo,hp,&wi);
+                bsdfpdf = mat->pdf(&wo,hp,&wi,flags);
                 float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
                         bsdfpdf*bsdfpdf);
                 L+=bsdf_f*directrad*absdot(wi,hp->n)*weight/lightpdf;
@@ -56,17 +57,17 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
 
         //mip bsdf sampling
         Color bsdf_f = mat->df_s(rand[3],rand[4],rand[5],&wo,hp,&wi,&bsdfpdf,
-                                 BdfFlags(ALL),&sampled_val);
+                                 flags,&sampled_val);
         if(bsdfpdf>0 && !bsdf_f.isBlack())
         {
             float w = 1.f; //weight
-            if((sampled_val&SPECULAR)==0) //if not specular
-            {
+            //if((sampled_val&SPECULAR)==0) //if not specular -> 100% guaranteed
+            //{
                 lightpdf = light->pdf(&hp->h, &wi);
                 if(lightpdf == 0)
                     return L; //no contribution from bsdf sampling
                 w = (bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf+lightpdf*lightpdf);
-            }
+            //}
             Ray r2(hp->h,wi);
             HitPoint h2;
             Color rad;
