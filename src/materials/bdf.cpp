@@ -142,7 +142,8 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     return retval;
 }
 
-float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi)const
+float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
+                const BdfFlags m)const
 {
     if(Bsdf::count == 0)
         return 0.f;
@@ -152,8 +153,11 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi)const
     int matching = 0;
     for (int i = 0; i < count; ++i)
     {
-        matching++;
-        pdf += bdfs[i]->pdf(&wo_shading_space, &wi_shading_space);
+        if(bdfs[i]->isType(m))
+        {
+            matching++;
+            pdf += bdfs[i]->pdf(&wo_shading_space, &wi_shading_space);
+        }
     }
     if(matching>0)
         return pdf/(float)matching;

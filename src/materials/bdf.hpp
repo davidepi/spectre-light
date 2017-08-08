@@ -208,9 +208,11 @@ public:
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wiW The incident direction, in world space
+     *  \param[in] matchme The types of bdfs to consider when computing the pdf
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW)const;
+    float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
+              const BdfFlags matchme)const;
 
 private:
 

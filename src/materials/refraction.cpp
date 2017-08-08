@@ -37,7 +37,7 @@ Color Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
     wi->z = costransmitted;
     *pdf = 1.f;
     //return BTDF
-    return (Color(1)-d.eval(wo->z)) * ((ei*ei)/(et*et)) * specular/fabsf(wi->z);
+    return (Color(1)-d.eval(wi->z)) * ((ei*ei)/(et*et)) * specular/fabsf(wi->z);
 }
 
 float Refraction::pdf(const Vec3* wo, const Vec3* wi)const

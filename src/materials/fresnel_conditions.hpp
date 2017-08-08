@@ -57,8 +57,8 @@ public:
      *  absorption. Despite the fact that conductive materials do not transmit
      *  light, they absorb it, hence the needs for the index of refraction
      *
-     *  \param refraction Refraction index for the material
-     *  \param absorption The portion of spectrum absorbed
+     *  \param[in] refraction Refraction index for the material
+     *  \param[in] absorption The portion of spectrum absorbed
      */
     Conductor(Color refraction, Color absorption);
 
@@ -67,7 +67,7 @@ public:
      *  Given an angle, determines how much of the incoming light is reflected,
      *  removing the one absorbed and turned into heat
      *
-     *  \param cosin The angle between the two rays
+     *  \param[in] cosin The angle between the two rays
      *  \return The amount of light reflected
      */
     Color eval(float cosin)const;
@@ -98,8 +98,8 @@ public:
      *  Construct a dielectric material with the given refraction index for
      *  incident and transmitted materials
      *
-     *  \param refractioni Refraction index for the incident ray
-     *  \param refractiont Refraction index for the transmitted ray
+     *  \param[in] refractioni Refraction index for the incident ray
+     *  \param[in] refractiont Refraction index for the transmitted ray
      */
     Dielectric(float refractioni, float refractiont);
 
@@ -107,11 +107,11 @@ public:
      *
      *  Given an angle, determines how much of the incoming light is reflected.
      *  In case the ray is transmitted, return the amount of incoming light
-     *  transmitted
+     *  reflected, so the remaining of the original spectrum is the potion of
+     *  light transmitted
      *
-     *  \param cosin The angle between the two rays
-     *  \return The amount of light reflected or transmitted, depending on the
-     *  angle
+     *  \param[in] cosin The angle between the two rays
+     *  \return The amount of light reflected, depending on the angle
      */
     Color eval(float cosin)const;
 
