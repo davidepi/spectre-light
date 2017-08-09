@@ -1,3 +1,6 @@
+#ifndef WIN32
+#include <getopt.h>
+#endif
 #include "utility/scene.hpp"
 #include "primitives/sphere.hpp"
 #include "primitives/box.hpp"
@@ -7,12 +10,7 @@
 #include "materials/oren_nayar.hpp"
 #include "materials/reflection.hpp"
 #include "materials/refraction.hpp"
-#ifndef WIN32
-#include <getopt.h>
-#include <primitives/mesh.hpp>
-
-
-#endif
+#include "primitives/mesh.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -59,40 +57,59 @@ int main(int argc, char* argv[])
     Box* bb = new Box(Vec3(1,1.5,1));
 
     Mesh* me = new Mesh(20);
-    Point3 p01(0.000000,0.000000,0.000000);
-    Point3 p02(0.723600,0.552785,0.525720);
-    Point3 p03(-0.276385,0.552785,0.850640);
-    Point3 p04(-0.894425,0.552785,0.000000);
-    Point3 p05(-0.276385,0.552785,-0.850640);
-    Point3 p06(0.723600,0.552785,-0.525720);
-    Point3 p07(0.276385,1.447215,0.850640);
-    Point3 p08(-0.723600,1.447215,0.525720);
-    Point3 p09(-0.723600,1.447215,-0.525720);
-    Point3 p10(0.276385,1.447215,-0.850640);
-    Point3 p11(0.894425,1.447215,0.000000);
-    Point3 p12(0.000000,2.000000,0.000000);
-    Normal n0;
+    Point3 p01(0.500000,0.133975,0.000000);
+    Point3 p02(.850263,0.974500,0.525720);
+    Point3 p03(-0.015749,0.474508,0.850640);
+    Point3 p04(-0.550987,0.165488,0.000000);
+    Point3 p05(-0.015749,0.474508,-0.850640);
+    Point3 p06(0.850263,0.974500,-0.525720);
+    Point3 p07(0.015749,1.525492,0.850640);
+    Point3 p08(-0.850263,1.025500,0.525720);
+    Point3 p09(-0.850263,1.025500,-0.525720);
+    Point3 p10(0.015749,1.525492,-0.850640);
+    Point3 p11(0.550987,1.834512,0.000000);
+    Point3 p12(-0.500000,1.866025,0.000000);
+    Normal n01(0.559800,-0.594400,0.577400);
+    Normal n02(0.923100,-0.384700,0.000000);
+    Normal n03(-0.028000,-0.933800,0.356800);
+    Normal n04(-0.028000,-0.933800,-0.356800);
+    Normal n05(0.559800,-0.594400,-0.577400);
+    Normal n06(0.944400,0.328700,0.000000);
+    Normal n07(0.356700,-0.010700,0.934200);
+    Normal n08(-0.594400,-0.559800,0.577400);
+    Normal n09(-0.594400,-0.559800,-0.577400);
+    Normal n10(0.356700,-0.010700,-0.934200);
+    Normal n11(0.594400,0.559800,0.577400);
+    Normal n12(-0.356700,0.010700,0.934200);
+    Normal n13(-0.944400,-0.328700,0.000000);
+    Normal n14(-0.356700,0.010700,-0.934200);
+    Normal n15(0.594400,0.559800,-0.577400);
+    Normal n16(0.028000,0.933800,0.356800);
+    Normal n17(-0.559800,0.594400,0.577400);
+    Normal n18(-0.923100,0.384700,0.000000);
+    Normal n19(-0.559800,0.594400,-0.577400);
+    Normal n20(0.028000,0.933800,-0.356800);
 
-    me->addTriangle(&p01,&p02,&p03,&n0);
-    me->addTriangle(&p02,&p01,&p06,&n0);
-    me->addTriangle(&p01,&p03,&p04,&n0);
-    me->addTriangle(&p01,&p04,&p05,&n0);
-    me->addTriangle(&p01,&p05,&p06,&n0);
-    me->addTriangle(&p02,&p06,&p11,&n0);
-    me->addTriangle(&p03,&p02,&p07,&n0);
-    me->addTriangle(&p04,&p03,&p08,&n0);
-    me->addTriangle(&p05,&p04,&p09,&n0);
-    me->addTriangle(&p06,&p05,&p10,&n0);
-    me->addTriangle(&p02,&p11,&p07,&n0);
-    me->addTriangle(&p03,&p07,&p08,&n0);
-    me->addTriangle(&p04,&p08,&p09,&n0);
-    me->addTriangle(&p05,&p09,&p10,&n0);
-    me->addTriangle(&p06,&p10,&p11,&n0);
-    me->addTriangle(&p07,&p11,&p12,&n0);
-    me->addTriangle(&p08,&p07,&p12,&n0);
-    me->addTriangle(&p09,&p08,&p12,&n0);
-    me->addTriangle(&p10,&p09,&p12,&n0);
-    me->addTriangle(&p11,&p10,&p12,&n0);
+    me->addTriangle(&p01,&p02,&p03,&n01);
+    me->addTriangle(&p02,&p01,&p06,&n02);
+    me->addTriangle(&p01,&p03,&p04,&n03);
+    me->addTriangle(&p01,&p04,&p05,&n04);
+    me->addTriangle(&p01,&p05,&p06,&n05);
+    me->addTriangle(&p02,&p06,&p11,&n06);
+    me->addTriangle(&p03,&p02,&p07,&n07);
+    me->addTriangle(&p04,&p03,&p08,&n08);
+    me->addTriangle(&p05,&p04,&p09,&n09);
+    me->addTriangle(&p06,&p05,&p10,&n10);
+    me->addTriangle(&p02,&p11,&p07,&n11);
+    me->addTriangle(&p03,&p07,&p08,&n12);
+    me->addTriangle(&p04,&p08,&p09,&n13);
+    me->addTriangle(&p05,&p09,&p10,&n14);
+    me->addTriangle(&p06,&p10,&p11,&n15);
+    me->addTriangle(&p07,&p11,&p12,&n16);
+    me->addTriangle(&p08,&p07,&p12,&n17);
+    me->addTriangle(&p09,&p08,&p12,&n18);
+    me->addTriangle(&p10,&p09,&p12,&n19);
+    me->addTriangle(&p11,&p10,&p12,&n20);
     me->finalize();
 
 
@@ -129,6 +146,7 @@ int main(int argc, char* argv[])
     s.addAsset(s2->getID(),&mtop);
     //s.addAsset(bb->getID(),&box);
     s.addAsset(me->getID(),&triangle);
+    //s.addAsset(sp->getID(),&sphere,&glass);
 
     r.setStratifiedSampler();
     r.setPerspective(Point3(0,2,-5),Point3(0,0,0),Vec3(0,1,0),1);

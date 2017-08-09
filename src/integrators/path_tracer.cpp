@@ -1,7 +1,3 @@
-//
-// Created by davide on 15/07/17.
-//
-
 #include "path_tracer.hpp"
 
 Color PathTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,

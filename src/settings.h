@@ -15,7 +15,7 @@
 #define __SETTINGS_H__
 
 ///The number of bounces before discarding the ray
-#define DEFAULT_BOUNCES 6
+#define DEFAULT_BOUNCES 5
 
 ///If defined performs several checks to avoid Nan values
 #define _LOW_LEVEL_CHECKS_

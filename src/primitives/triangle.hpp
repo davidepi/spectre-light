@@ -122,7 +122,7 @@ public:
      */
     float surface()const;
 
-    /** \brief Returns a random point on the surface of the sphere
+    /** \brief Returns a random point on the surface of the triangle
      *
      *  Useful for the light sources, this method returns a random point on the
      *  surface of the triangle.
