@@ -9,44 +9,35 @@ struct Node
 };
 
 /* Morton code for 3D points, mix of
-https://stackoverflow.com/questions/26856268
+https://stackoverflow.com/questions/1024754/
 and
 https://devblogs.nvidia.com/parallelforall/thinking-parallel-part-iii-tree-const
 ruction-gpu/
 */
 
-//maps [-FLT_MAX,FLT_MAX] to [0,UINT_MAX]
-static inline uint64_t adjust(uint64_t val, char sign)
-{
-    return (((val & 0x7FFFFFFFL) ^ sign) - sign) + 0x7FFFFFFFL;
-}
-
 //expand the value so there is enough space for the others components
 static inline uint64_t expand(uint64_t val)
 {
-    val = (val | (val << 16)) & 0x00FF0000FF0000FFU; //interleave by 16
-    val = (val | (val <<  8)) & 0xF00F00F00F00F00FU; //interleave by 8
-    val = (val | (val <<  4)) & 0x30C30C30C30C30C3U; //interleave by 4
-    val = (val | (val <<  2)) & 0x9249249249249249U; //interleave by 2
+    //consider only 21 bit. 21x3 = 63
+    val &= 0x1FFFFF;
+    val = (val | val << 32) & 0x1F00000000FFFF;
+    val = (val | val << 16) & 0x1F0000FF0000FF;
+    val = (val | val << 8) & 0x100F00f00F00F00F;
+    val = (val | val << 4) & 0x10C30C30C30C30C3;
+    val = (val | val << 2) & 0x1249249249249249;
     return val;
 }
 
 uint64_t mortonCode(float inx, float iny, float inz)
 {
+    //convert float in range [0,1] to fixed point
+    float x = inx*0x1FFFFFU;
+    float y = iny*0x1FFFFFU;
+    float z = inz*0x1FFFFFU;
 
-    //use x y z as weird integers, do not touch the values, use same bits
-    unsigned x = reinterpret_cast<unsigned&>(inx);
-    unsigned y = reinterpret_cast<unsigned&>(iny);
-    unsigned z = reinterpret_cast<unsigned&>(inz);
-
-    //extract the sign, this time change the bits to represent the truncated val
-    char x_sign = (char)(static_cast<int>(x) > 0);
-    char y_sign = (char)(static_cast<int>(y) > 0);
-    char z_sign = (char)(static_cast<int>(z) > 0);
-
-    uint64_t xx = expand(x);
-    uint64_t yy = expand(y);
-    uint64_t zz = expand(z);
+    uint64_t xx = expand((uint64_t)x);
+    uint64_t yy = expand((uint64_t)y);
+    uint64_t zz = expand((uint64_t)z);
 
     return ((xx << 2) | (yy << 1) | zz);
 }
