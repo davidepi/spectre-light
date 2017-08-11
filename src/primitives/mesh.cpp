@@ -40,7 +40,8 @@ void Mesh::addTriangle(const Vertex *a, const Vertex *b, const Vertex *c)
     {
         if(Mesh::count == Mesh::alloc) //need to realloc a bigger area
         {
-            unsigned int newsize = std::min(Mesh::alloc << 1, _MAX_TRIS_);
+            //parenthesis around std::min for windows conflicting macros
+            unsigned int newsize = (std::min)(Mesh::alloc << 1, _MAX_TRIS_);
             Triangle* tmp = new Triangle[newsize];
             memcpy(tmp, Mesh::tris, Mesh::count*sizeof(Triangle));
             delete[] Mesh::tris;

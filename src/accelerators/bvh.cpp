@@ -31,27 +31,24 @@ static inline uint64_t expand(uint64_t val)
     return val;
 }
 
-static __int128 mortonCode(float inx, float iny, float inz)
+uint64_t mortonCode(float inx, float iny, float inz)
 {
 
-    __int128 retval = 0x0U;
-
     //use x y z as weird integers, do not touch the values, use same bits
-    unsigned x = reinterpret_cast<unsigned>(inx);
-    unsigned y = reinterpret_cast<unsigned>(iny);
-    unsigned z = reinterpret_cast<unsigned>(inz);
+    unsigned x = reinterpret_cast<unsigned&>(inx);
+    unsigned y = reinterpret_cast<unsigned&>(iny);
+    unsigned z = reinterpret_cast<unsigned&>(inz);
 
     //extract the sign, this time change the bits to represent the truncated val
     char x_sign = (char)(static_cast<int>(x) > 0);
     char y_sign = (char)(static_cast<int>(y) > 0);
     char z_sign = (char)(static_cast<int>(z) > 0);
 
-    uint64_t xx = expand(adjust(x,x_sign));
-    uint64_t yy = expand(adjust(y,y_sign));
-    uint64_t zz = expand(adjust(z,z_sign));
+    uint64_t xx = expand(x);
+    uint64_t yy = expand(y);
+    uint64_t zz = expand(z);
 
-    retval = (xx << 2) | (yy << 1) | zz;
-    return retval;
+    return ((xx << 2) | (yy << 1) | zz);
 }
 
 //centroid calc
