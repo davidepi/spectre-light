@@ -1,12 +1,10 @@
 #include "bvh.hpp"
-
-struct Node
-{
-    Triangle* t;
-    uint32_t morton_x;
-    uint32_t morton_y;
-    uint32_t morton_z;
-};
+#ifdef __BMI2__
+#include <x86intrin.h>
+#endif
+#ifdef WIN32 //BMI2 and windows
+#include <immintrin.h>
+#endif
 
 /* Morton code for 3D points, mix of
 https://stackoverflow.com/questions/1024754/
@@ -28,27 +26,27 @@ static inline uint64_t expand(uint64_t val)
     return val;
 }
 
-uint64_t mortonCode(float inx, float iny, float inz)
+static uint64_t mortonCode(float inx, float iny, float inz)
 {
-    //convert float in range [0,1] to fixed point
+    //convert floats in range [0,1] to fixed point
     float x = inx*0x1FFFFFU;
     float y = iny*0x1FFFFFU;
     float z = inz*0x1FFFFFU;
+
+#ifndef __BMI2__ //not Intel >haswell or AMD >ryzord. Probably also on windows
 
     uint64_t xx = expand((uint64_t)x);
     uint64_t yy = expand((uint64_t)y);
     uint64_t zz = expand((uint64_t)z);
 
     return ((xx << 2) | (yy << 1) | zz);
-}
 
-//centroid calc
-//float minx = min(min(in->a.p.x,in->b.p.x),in->c.p.x);
-//float miny = min(min(in->a.p.y,in->b.p.y),in->c.p.y);
-//float minz = min(min(in->a.p.z,in->b.p.z),in->c.p.z);
-//float maxx = max(max(in->a.p.x,in->b.p.x),in->c.p.x);
-//float maxy = max(max(in->a.p.y,in->b.p.y),in->c.p.y);
-//float maxz = max(max(in->a.p.z,in->b.p.z),in->c.p.z);
-//float x_centroid = (minx + (maxx-minx))*0.5f;
-//float y_centroid = (miny + (maxy-miny))*0.5f;
-//float z_centroid = (minz + (maxz-minz))*0.5f;
+#else //Haswell and ryzord or newer
+
+    uint64_t retval = 0x0;
+    return retval |
+           _pdep_u64((uint64_t)x,0x4924924924924924U) |
+           _pdep_u64((uint64_t)y,0x2492492492492492) |
+           _pdep_u64((uint64_t)z,0x9249249249249249);
+#endif
+}
