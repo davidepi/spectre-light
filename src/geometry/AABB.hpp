@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 11 Jul 2017
+//Last Edit 13 Aug 2017
 
 /**
  *  \file aabb.hpp
@@ -7,7 +7,7 @@
  *  \details   An Axis Aligned Bounding Box, used to enclose some geometry
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Jul 2017
+ *  \date      13 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -68,6 +68,21 @@ public:
      *                 of the box
      */
     AABB(const Point3* min, const Point3* max);
+
+    /** \brief Constructor, given bottom left and top right points
+     *
+     *  Construct a bounding box given, in order the bottom left and the top
+     *  right points
+     *
+     * \warning It is not checked which one of the two points is the maximum or
+     *  the minimum. Be sure to pass them in the correct order
+     *
+     *  \param[in] min The point representing the bottom left
+     *                 corner of the box
+     *  \param[in] max The point representing the top right corner
+     *                 of the box
+     */
+    AABB(const Point3& min, const Point3& max);
     
     /** \brief Expand the bounding box by a fixed amount
      *
@@ -85,6 +100,15 @@ public:
      *  \param[in] p1 A pointer to the point that will be enclosed
      */
     void engulf(const Point3* p1);
+
+    /** \brief Expand the bounding box until the new value is enclosed
+     *
+     *  Expand the bounding box until it encloses the new point. If the new
+     *  point is already inside the bounding box, nothing happens
+     *
+     *  \param[in] p1 The point that will be enclosed
+     */
+    void engulf(const Point3& p1);
     
     /** \brief Expand the bounding box until the new bounding box is enclosed
      *
@@ -95,6 +119,16 @@ public:
      *  \param[in] aabb The bounding box that will be used to perform the union
      */
     void engulf(const AABB* aabb);
+
+    /** \brief Expand the bounding box until the new bounding box is enclosed
+     *
+     *  Simply performs an union of the two bounding boxes. The new bounding box
+     *  will cover an area containing both the old box and the one passed as
+     *  input.
+     *
+     *  \param[in] aabb The bounding box that will be used to perform the union
+     */
+    void engulf(const AABB& aabb);
     
     /** \brief Check if two bounding boxes overlap
      *
@@ -133,6 +167,14 @@ public:
      *  the \a y axis or 2 if it is the \a z axis
      */
     char longest_axis()const;
+
+    /** \brief Calculate the centroid of this AABB
+     *
+     *  Determine the centroid of this AABB
+     *
+     *  \return The centroid of the AABB
+     */
+    Vec3 center()const;
     
     /** \brief Intersection of a Ray and this AABB
      *
@@ -162,8 +204,8 @@ public:
      */
     bool intersect(const Ray* r, const RayProperties* rp, float* p1, float* p2)
     const;
-    
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+
+    //<><><><> Operators <><><><><><><><><><><><><><><><><><><><><><><><><><><><
     
     ///Return a new AABB including the old one and the input point
     AABB operator+(const Point3& p)const;
@@ -185,8 +227,8 @@ public:
     bool operator ==  (const AABB& a)const;
     ///Determine if the two AABBs have different volumes
     bool operator !=  (const AABB& b)const;
-    
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+
+    //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 };
 
 #endif

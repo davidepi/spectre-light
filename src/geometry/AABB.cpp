@@ -17,6 +17,12 @@ AABB::AABB(const Point3* min, const Point3* max)
     
 }
 
+AABB::AABB(const Point3& min, const Point3& max)
+        :bounds{Point3(min.x, min.y, min.z), Point3(max.x, max.y, max.z)}
+{
+
+}
+
 void AABB::expand(float value)
 {
     AABB::bounds[0] -= value;
@@ -29,10 +35,22 @@ void AABB::engulf(const Point3* p1)
     AABB::bounds[1] = max((AABB::bounds[1]),*p1);
 }
 
+void AABB::engulf(const Point3& p1)
+{
+    AABB::bounds[0] = min((AABB::bounds[0]),p1);
+    AABB::bounds[1] = max((AABB::bounds[1]),p1);
+}
+
 void AABB::engulf(const AABB* aabb)
 {
     AABB::bounds[0] = min(AABB::bounds[0],aabb->bounds[0]);
     AABB::bounds[1] = max(AABB::bounds[1],aabb->bounds[1]);
+}
+
+void AABB::engulf(const AABB& aabb)
+{
+    AABB::bounds[0] = min(AABB::bounds[0],aabb.bounds[0]);
+    AABB::bounds[1] = max(AABB::bounds[1],aabb.bounds[1]);
 }
 
 bool AABB::overlaps(const AABB* aabb)const
@@ -75,6 +93,13 @@ char AABB::longest_axis()const
         return 1;
     else
         return 2;
+}
+
+Vec3 AABB::center()const
+{
+    return Vec3(bounds[0].x+bounds[1].x*0.5f,
+                bounds[0].y+bounds[1].y*0.5f,
+                bounds[0].z+bounds[1].z*0.5f);
 }
 
 bool AABB::intersect(const Ray* r, float* p1, float* p2)const
@@ -165,7 +190,7 @@ const
 }
 
 
-//♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//<><><><> Operators <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
 AABB AABB::operator+(const Point3& p)const
 {
@@ -224,4 +249,4 @@ bool AABB::operator!=(const AABB &b)const
     return !(*(this)==b);
 }
 
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
