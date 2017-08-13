@@ -174,7 +174,7 @@ public:
      *
      *  \return The centroid of the AABB
      */
-    Vec3 center()const;
+    Point3 center()const;
     
     /** \brief Intersection of a Ray and this AABB
      *
@@ -216,17 +216,17 @@ public:
     ///Computes the union of the two AABBs
     void operator+=(const AABB& aabb);
     ///Determine which AABB has the lowest volume
-    bool operator <   (const AABB& a)const;
+    bool operator<(const AABB& a)const;
     ///Determine which AABB has the greatest volume
-    bool operator >   (const AABB& a)const;
+    bool operator>(const AABB& a)const;
     ///Determine if the AABB has lower or equal volume than the input one
-    bool operator <=  (const AABB& b)const;
+    bool operator<=(const AABB& b)const;
     ///Determine if the AABB has higher or equal volume than the input one
-    bool operator >=  (const AABB& b)const;
+    bool operator>=(const AABB& b)const;
     ///Determine if the two AABBs have the same volume
-    bool operator ==  (const AABB& a)const;
+    bool operator==(const AABB& a)const;
     ///Determine if the two AABBs have different volumes
-    bool operator !=  (const AABB& b)const;
+    bool operator!=(const AABB& b)const;
 
     //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 };

@@ -95,11 +95,11 @@ char AABB::longest_axis()const
         return 2;
 }
 
-Vec3 AABB::center()const
+Point3 AABB::center()const
 {
-    return Vec3(bounds[0].x+bounds[1].x*0.5f,
-                bounds[0].y+bounds[1].y*0.5f,
-                bounds[0].z+bounds[1].z*0.5f);
+    return Point3(bounds[0].x+bounds[1].x*0.5f,
+                  bounds[0].y+bounds[1].y*0.5f,
+                  bounds[0].z+bounds[1].z*0.5f);
 }
 
 bool AABB::intersect(const Ray* r, float* p1, float* p2)const

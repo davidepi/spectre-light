@@ -2,9 +2,11 @@
 #define __BVH_HPP__
 
 #include "primitives/triangle.hpp"
-class BVH
-{
+#include <algorithm>
 
+class Bvh
+{
+    void buildTree(Triangle* primitives, int size);
 };
 
 
