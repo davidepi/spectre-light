@@ -30,7 +30,7 @@ namespace bvhhelpers
         BvhBuildNode* right;
         char split_axis;
         uint32_t offset;
-        uint32_t number;
+        int number;
 
         //init as interior node
         void interior(BvhBuildNode* l, BvhBuildNode* r, char axis)
@@ -43,14 +43,13 @@ namespace bvhhelpers
         }
 
         //init as leaf node
-        void leaf(Shape* sp, uint32_t offset, uint32_t numbers)
+        void leaf(AABB& box, uint32_t offset, int numbers)
         {
             left = NULL;
             right = NULL;
             BvhBuildNode::offset = offset;
             BvhBuildNode::number = numbers;
-            for(uint32_t i=offset;i<numbers;i++)
-                bounding.engulf((sp+i)->computeAABB());
+            bounding.engulf(box);
         }
     };
 }
@@ -101,15 +100,98 @@ static uint64_t mortonCode(float inx, float iny, float inz)
 using bvhhelpers::BvhBuildNode;
 using bvhhelpers::Primitive;
 
-void Bvh::buildTree(Shape* shapes, int size)
+//given a cluster and an element, find the index of the closest node to that
+//element in the cluster
+static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
 {
-    Primitive* prims = (Primitive*)malloc(sizeof(Primitive)*size);
-    Point3* centroids = (Point3*)malloc(sizeof(Point3)*size);
+    float best_area = INFINITY;
+    uint32_t retval = 0xFFFFFFFF;
+    for(unsigned int i=0;i<c->size();i++) //linear search
+    {
+        if(c->at(i)!=b)
+        {
+            AABB unionbox = c->at(i)->bounding+b->bounding;
+            float val = unionbox.surface();
+            if(val<best_area)
+            {
+                retval = i;
+                best_area = val;
+            }
+        }
+    }
+    return retval;
+}
+
+static std::vector<BvhBuildNode*>* combineCluster(std::vector<BvhBuildNode*>*c,
+uint32_t n)
+{
+    uint32_t* closest = (uint32_t*)malloc(sizeof(uint32_t)*c->size());
+    uint32_t left;
+    uint32_t right;
+    for(unsigned int i=0;i<c->size();c++)
+    {
+        //find best pair for this node
+        closest[i] = findBestMatch(c,c->at(i));
+    }
+    while(c->size()>n)
+    {
+        float best = INFINITY;
+        //find best surface for the best pair of nodes
+        for(unsigned int i=0;i<c->size();i++)
+        {
+            float val;
+            val = (c->at(i)->bounding + c->at(closest[i])->bounding).surface();
+            if(val<best)
+            {
+                best = val;
+                left = i;
+                right = closest[i];
+            }
+        }
+
+        //TODO: new cluster
+    }
+}
+
+//Algorithm 3 of the AAC paper, BuildTree(P)
+//sp[in] the original array of shapes
+//sz[in] the size of the shapes (since it could be derived)
+//p[in] The primitive array that matches sp element with their morton codes
+//offs[in] offset of the primitive array
+//len[in] how many elements of the primitive array will be considered
+//c[out] cluster array
+//bit[in] partition bit for morton code
+static void traverseTree(Shape* sp, size_t sz, Primitive* p, uint32_t offs, int len,
+                         uint64_t bit, std::vector<BvhBuildNode*>* c)
+{
+    if(len < AAC_DELTA)
+    {
+        AABB bounding;
+        BvhBuildNode* node = new BvhBuildNode;
+        for(int i=0;i<len;i++)
+            //offset and len refers to the Primitive* array, Shape* is in a
+            //totally different order, this is the reason of this pointer calc.
+            bounding.engulf((sp+p[offs+i].index*sz)->computeAABB());
+        node->leaf(bounding,offs,len);
+        c->push_back(node);
+
+        //TODO: combine cluster
+    }
+    else
+    {
+
+    }
+}
+
+void Bvh::buildTree(Shape* shapes, size_t size, int len)
+{
+    Primitive* prims = (Primitive*)malloc(sizeof(Primitive)*len);
+    Point3* centroids = (Point3*)malloc(sizeof(Point3)*len);
     AABB centroidaabb;
-    for(int i=0;i<size;i++) //calculate centroid AABB
+    for(int i=0;i<len;i++) //calculate centroid AABB
     {
         prims[i].index=i;
-        centroids[i] = shapes[i].computeAABB().center();
+        centroids[i] = (shapes+(i*size))->computeAABB().center();
         centroidaabb.engulf(centroids+i);
     }
     //calculate reciprocal of the centroidaabb, used to map distance in [0-1]
@@ -117,7 +199,7 @@ void Bvh::buildTree(Shape* shapes, int size)
     centroidaabb_ext.x = 1.f/centroidaabb_ext.x;
     centroidaabb_ext.y = 1.f/centroidaabb_ext.y;
     centroidaabb_ext.z = 1.f/centroidaabb_ext.z;
-    for(int i=0;i<size;i++) //maps triangle centroids in [0-1] wrt whole AABB
+    for(int i=0;i<len;i++) //maps triangle centroids in [0-1] wrt whole AABB
     {
         Vec3 distance = (centroids[i]-centroidaabb.bounds[0])*centroidaabb_ext;
         //calculate morton code
@@ -125,6 +207,8 @@ void Bvh::buildTree(Shape* shapes, int size)
     }
 
     free(centroids);
-    std::sort(prims,prims+size);
+    std::sort(prims,prims+len);
     uint64_t morton_flag = 0x4000000000000000U;
+
+    std::vector<BvhBuildNode*> clusters;
 }

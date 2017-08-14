@@ -3,6 +3,7 @@
 
 #include "primitives/triangle.hpp"
 #include <algorithm>
+#include <vector>
 
 ///Alpha parameter for AAC. 0.4 for high quality trees, 0.3 for fast buildup
 #define AAC_ALPHA 0.2
@@ -11,7 +12,7 @@
 
 class Bvh
 {
-    void buildTree(Shape* primitives, int size);
+    void buildTree(Shape* primitives, size_t obj_size, int len);
 };
 
 
