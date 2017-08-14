@@ -7,8 +7,8 @@
 #endif
 
 //f(x) for AAC
-#define AAC_FDELTA powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(AAC_DELTA,AAC_ALPHA)
-#define AAC_F(X) powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(X,AAC_ALPHA)
+#define AAC_FD ceil(powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(AAC_DELTA,AAC_ALPHA))
+#define AAC_F(X) ceil(powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(X,AAC_ALPHA))
 
 namespace bvhhelpers
 {
@@ -16,11 +16,12 @@ namespace bvhhelpers
     {
         int index; //index in the primitive array
         uint64_t morton;
-        bool operator<(Primitive& b)const
-        {
-            return Primitive::morton < b.morton;
-        }
+
     };
+    bool operator<(Primitive& a, Primitive& b)
+    {
+        return a.morton < b.morton;
+    }
 
     class BvhBuildNode
     {
@@ -28,14 +29,12 @@ namespace bvhhelpers
         AABB bounding;
         BvhBuildNode* left;
         BvhBuildNode* right;
-        char split_axis;
         uint32_t offset;
         int number;
 
         //init as interior node
-        void interior(BvhBuildNode* l, BvhBuildNode* r, char axis)
+        void interior(BvhBuildNode* l, BvhBuildNode* r)
         {
-            split_axis = axis;
             left = l;
             right = r;
             bounding.engulf(l->bounding);
@@ -122,12 +121,14 @@ static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
     return retval;
 }
 
-static std::vector<BvhBuildNode*>* combineCluster(std::vector<BvhBuildNode*>*c,
-uint32_t n)
+//combine more clusters in order to reach a defined value
+//c[in] The clusters that will be combined
+//n[in] The desired number of clusters
+static void combineCluster(std::vector<BvhBuildNode*>*c, int n)
 {
     uint32_t* closest = (uint32_t*)malloc(sizeof(uint32_t)*c->size());
-    uint32_t left;
-    uint32_t right;
+    uint32_t left = 0xFFFFFFFF; //ensure segfault if this is not set
+    uint32_t right = 0xFFFFFFFF;
     for(unsigned int i=0;i<c->size();c++)
     {
         //find best pair for this node
@@ -136,7 +137,7 @@ uint32_t n)
     while(c->size()>n)
     {
         float best = INFINITY;
-        //find best surface for the best pair of nodes
+        //find best of best-pairs
         for(unsigned int i=0;i<c->size();i++)
         {
             float val;
@@ -149,8 +150,54 @@ uint32_t n)
             }
         }
 
-        //TODO: new cluster
+        //merge them together in a new node
+        BvhBuildNode* node = new BvhBuildNode();
+        node->interior(c->at(left),c->at(right));
+        //replace one node with the new one, remove the other. Since I don't
+        //care about order I can replace the second with the last and pop the
+        //last one
+        c->at(left) = node;
+        c->at(right) = c->back();
+        c->pop_back();
+
+        //update new nodes closest, reflecting previous computations.
+        //closest is never shrinked, so c->size()+1 is safe
+        closest[right] = closest[c->size()+1];
+        closest[left] = findBestMatch(c,c->at(left));
+
+        //update closest node for the one referencing the old left and right
+        for(unsigned int i=0;i<c->size();i++)
+        {
+            if(closest[i]==left || closest[i]==right)
+                closest[i] = findBestMatch(c,c->at(i));
+        }
     }
+    free(closest);
+}
+
+//bisects the array of morton codes, when the flag change from 0 to 1
+//mc[in] morton code array
+//start[in] The start of the portion of codes to consider
+//end[in] The end of the portion of codes to consider
+//m[in] The morton code bit to consider
+uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end, uint64_t m)
+{
+
+    //TODO: not enough primitives
+
+    //delimiters used to fin when bit changes from 0 to 1.
+    uint32_t left = start; //points always to 0
+    uint32_t right = end; //points always to 1
+    uint32_t cur = (left+right)>>1; //find the middle point
+    while(cur>left)//divide et impera approach
+    {
+        if((mc[cur].morton & m)==0)
+            left = cur;
+        else
+            right = cur;
+        cur = (left+right)>>1;
+    }
+    return left;
 }
 
 //Algorithm 3 of the AAC paper, BuildTree(P)
@@ -173,13 +220,22 @@ static void traverseTree(Shape* sp, size_t sz, Primitive* p, uint32_t offs, int 
             //totally different order, this is the reason of this pointer calc.
             bounding.engulf((sp+p[offs+i].index*sz)->computeAABB());
         node->leaf(bounding,offs,len);
-        c->push_back(node);
-
-        //TODO: combine cluster
+        std::vector<BvhBuildNode*> tmp_cluster;
+        tmp_cluster.push_back(node);
+        combineCluster(&tmp_cluster,(int)AAC_FD);
+        c->insert(c->end(),tmp_cluster.begin(),tmp_cluster.end());
     }
     else
     {
-
+        std::vector<BvhBuildNode*>left;
+        std::vector<BvhBuildNode*>right;
+        uint32_t part = makePartition(p,offs,offs+len,bit);
+        bit>>=1;
+        traverseTree(sp,sz,p,offs,part-offs,bit,&left);
+        traverseTree(sp,sz,p,part+1,len-part-offs,bit,&right);
+        left.insert(left.end(),right.begin(),right.end());
+        combineCluster(&left,AAC_F(len));
+        c->insert(c->end(),left.begin(),left.end());
     }
 }
 
@@ -211,4 +267,5 @@ void Bvh::buildTree(Shape* shapes, size_t size, int len)
     uint64_t morton_flag = 0x4000000000000000U;
 
     std::vector<BvhBuildNode*> clusters;
+    traverseTree(shapes,size,prims,0,len,morton_flag,&clusters);
 }
