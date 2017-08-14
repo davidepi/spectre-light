@@ -6,21 +6,52 @@
 #include <immintrin.h>
 #endif
 
+//f(x) for AAC
+#define AAC_FDELTA powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(AAC_DELTA,AAC_ALPHA)
+#define AAC_F(X) powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(X,AAC_ALPHA)
+
 namespace bvhhelpers
 {
     struct Primitive
     {
         int index; //index in the primitive array
         uint64_t morton;
-        bool operator<(Primitive &b)const
+        bool operator<(Primitive& b)const
         {
-            return morton < b.morton;
+            return Primitive::morton < b.morton;
         }
     };
 
-    struct Node
+    class BvhBuildNode
     {
-        Primitive** primitives;
+    public:
+        AABB bounding;
+        BvhBuildNode* left;
+        BvhBuildNode* right;
+        char split_axis;
+        uint32_t offset;
+        uint32_t number;
+
+        //init as interior node
+        void interior(BvhBuildNode* l, BvhBuildNode* r, char axis)
+        {
+            split_axis = axis;
+            left = l;
+            right = r;
+            bounding.engulf(l->bounding);
+            bounding.engulf(r->bounding);
+        }
+
+        //init as leaf node
+        void leaf(Shape* sp, uint32_t offset, uint32_t numbers)
+        {
+            left = NULL;
+            right = NULL;
+            BvhBuildNode::offset = offset;
+            BvhBuildNode::number = numbers;
+            for(uint32_t i=offset;i<numbers;i++)
+                bounding.engulf((sp+i)->computeAABB());
+        }
     };
 }
 
@@ -67,10 +98,10 @@ static uint64_t mortonCode(float inx, float iny, float inz)
 #endif
 }
 
-using bvhhelpers::Node;
+using bvhhelpers::BvhBuildNode;
 using bvhhelpers::Primitive;
 
-void Bvh::buildTree(Triangle* tris, int size)
+void Bvh::buildTree(Shape* shapes, int size)
 {
     Primitive* prims = (Primitive*)malloc(sizeof(Primitive)*size);
     Point3* centroids = (Point3*)malloc(sizeof(Point3)*size);
@@ -78,7 +109,7 @@ void Bvh::buildTree(Triangle* tris, int size)
     for(int i=0;i<size;i++) //calculate centroid AABB
     {
         prims[i].index=i;
-        centroids[i] = tris[i].computeAABB().center();
+        centroids[i] = shapes[i].computeAABB().center();
         centroidaabb.engulf(centroids+i);
     }
     //calculate reciprocal of the centroidaabb, used to map distance in [0-1]
