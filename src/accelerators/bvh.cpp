@@ -1,9 +1,11 @@
 #include "bvh.hpp"
 #ifdef __BMI2__
-#include <x86intrin.h>
+#include <x86intrin.h> //for pdep
 #endif
+
 #ifdef WIN32 //BMI2 and windows
-#include <immintrin.h>
+#include <intrin.h> //for bsf
+#include <immintrin.h> //for pdep
 #endif
 
 /**
@@ -36,14 +38,16 @@ namespace bvhhelpers
         BvhBuildNode* right;
         uint32_t offset;
         int number;
+        char split;
 
         //init as interior node
-        void interior(BvhBuildNode* l, BvhBuildNode* r)
+        void interior(BvhBuildNode* l, BvhBuildNode* r, char split_axis)
         {
             left = l;
             right = r;
             bounding.engulf(l->bounding);
             bounding.engulf(r->bounding);
+            split = split_axis;
         }
 
         //init as leaf node
@@ -56,6 +60,17 @@ namespace bvhhelpers
             bounding.engulf(box);
         }
     };
+}
+
+static inline char BSF(uint64_t val)
+{
+#ifdef WIN32
+    char out;
+    _BitScanForward64(&out,val);
+    return out;
+#else
+    return __builtin_ffsll(val);
+#endif
 }
 
 /* Morton code for 3D points, mix of
@@ -130,7 +145,7 @@ static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
 //c[in] The clusters that will be combined
 //n[in] The desired number of clusters
 //return number of nodes created
-static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n)
+static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
 {
     uint32_t created = 0;
     uint32_t* closest = (uint32_t*)malloc(sizeof(uint32_t)*c->size());
@@ -160,7 +175,7 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n)
         //merge them together in a new node
         BvhBuildNode* node = new BvhBuildNode();
         created++;
-        node->interior(c->at(left),c->at(right));
+        node->interior(c->at(left),c->at(right),axis);
         //replace one node with the new one, remove the other. Since I don't
         //care about order I can replace the second with the last and pop the
         //last one
@@ -222,6 +237,7 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
                              int len, uint64_t bit,std::vector<BvhBuildNode*>*c)
 {
     uint32_t created = 0;
+    char axis = BSF(bit)%3;
     if(len < AAC_DELTA)
     {
         AABB bounding;
@@ -232,7 +248,7 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
         node->leaf(bounding,offs,len);
         std::vector<BvhBuildNode*> tmp_cluster;
         tmp_cluster.push_back(node);
-        created+=combineCluster(&tmp_cluster,(int)AAC_FD);
+        created+=combineCluster(&tmp_cluster,(int)AAC_FD,axis);
         c->insert(c->end(),tmp_cluster.begin(),tmp_cluster.end());
     }
     else
@@ -244,7 +260,7 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
         created+=traverseTree(tris,p,offs,part-offs,bit,&left);
         created+=traverseTree(tris,p,part+1,len-part-offs,bit,&right);
         left.insert(left.end(),right.begin(),right.end());
-        created+=combineCluster(&left,(int)AAC_F(len));
+        created+=combineCluster(&left,(int)AAC_F(len),axis);
         c->insert(c->end(),left.begin(),left.end());
     }
     return created;
@@ -291,7 +307,7 @@ void Bvh::buildTree(Triangle* tris, int len)
     std::vector<BvhBuildNode*> clusters;
     uint32_t created;
     created = traverseTree(tris,prims,0,len,morton_flag,&clusters);
-    created+=combineCluster(&clusters,1);
+    created+=combineCluster(&clusters,1,BSF(morton_flag)%3);
     //bvh completed
 
     //flatten the tree into an array, like the kdtree one
@@ -314,6 +330,7 @@ void Bvh::buildTree(Triangle* tris, int len)
         tris[i].b = tmp[prims[i].index].b;
         tris[i].c = tmp[prims[i].index].c;
     }
+    Bvh::tris = tris;
     free(tmp);
     free(prims);
 }
@@ -339,7 +356,68 @@ void Bvh::flatten(void* n, uint32_t* index)
         //I processed all the left nodes, so now I know the right node position
         nodesList[myindex].bounding = node->bounding;
         nodesList[myindex].sibling = *index;
+        nodesList[myindex].len = 0;
+        nodesList[myindex].axis = node->split;
         flatten(node->right,index);
     }
     delete(node);
+}
+
+///Max depth of the Bvh tree
+#define BVH_MAX_DEPTH 32
+bool Bvh::intersect(const Ray* r, HitPoint* h)const
+{
+    RayProperties rp;
+    rp.inverseX = 1.0f/r->direction.x;
+    rp.inverseY = 1.0f/r->direction.y;
+    rp.inverseZ = 1.0f/r->direction.z;
+    rp.isXInvNeg = rp.inverseX < 0;
+    rp.isYInvNeg = rp.inverseY < 0;
+    rp.isZInvNeg = rp.inverseZ < 0;
+    float dmin;
+    float dmax;
+    float distance = FLT_MAX;
+    bool found = false;
+
+    BvhNode* jobs[BVH_MAX_DEPTH];
+    char jobs_stack_top = 0;
+    BvhNode* node = Bvh::nodesList;
+    while(node!=NULL)
+    {
+        if(node->bounding.intersect(r,&rp,&dmin,&dmax))
+        {
+            if(node->len>0) //is leaf
+            {
+                for(int i=0;i<node->len;i++)
+                {
+                    if(Bvh::tris[node->offset+i].intersect(r,&distance,h))
+                        found = true;
+                }
+                if (jobs_stack_top > 0)
+                    node = jobs[--jobs_stack_top];
+                else
+                    break;
+            }
+            else //interior node
+            {
+                if(*(&rp.isXInvNeg+node->axis))
+                {
+                    jobs[jobs_stack_top++] = node+1;
+                    node = nodesList+node->offset;
+                }
+                else
+                {
+                    jobs[jobs_stack_top++] = nodesList+node->offset;
+                    node = node+1;
+                }
+            }
+        }
+        else
+            if (jobs_stack_top > 0)
+                node = jobs[--jobs_stack_top];
+            else
+                break;
+    }
+
+    return found;
 }

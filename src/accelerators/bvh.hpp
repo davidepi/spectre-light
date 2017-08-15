@@ -19,7 +19,8 @@ struct BvhNode
         uint32_t sibling;
     };
     uint8_t len;
-    uint8_t pad[3]; //compiler should do this automagically
+    uint8_t axis;
+    uint8_t pad[2]; //compiler should do this automagically
 };
 
 class Bvh
@@ -27,11 +28,12 @@ class Bvh
 public:
     ~Bvh();
     void buildTree(Triangle* t, int len);
+    bool intersect(const Ray* r, HitPoint* h)const;
 
 private:
     void flatten(void*,uint32_t*);
-
     BvhNode* nodesList;
+    Triangle* tris;
 };
 
 
