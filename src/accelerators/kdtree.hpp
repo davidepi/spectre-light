@@ -41,7 +41,7 @@
  *  its ease of use.
  *  The information contained in this class are: the split axis, position of
  *  the split plane and the position of the sibling if this node is internal;
- *  number of assetss and offset in the assets array if this node is a
+ *  number of assets and offset in the assets array if this node is a
  *  leaf.
  *  The overall size of the class is 8 bytes, to maximize the number of nodes
  *  that can be fit into the cache.
@@ -220,7 +220,8 @@ public:
      *  fail
      *
      *  \param[in] r The ray used for the intersection test
-     *  \param[out] hit The hit asset
+     *  \param[out] hit The hit asset\
+     *  \return true if there is an intersection, false otherwise
      */
     bool intersect(const Ray* r, HitPoint* hit)const;
     

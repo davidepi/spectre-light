@@ -23,12 +23,13 @@ namespace bvhhelpers
     {
         int index; //index in the primitive array
         uint64_t morton;
+        bool operator<(const Primitive& b)const
+        {
+            return Primitive::morton < b.morton;
+        }
 
     };
-    bool operator<(Primitive& a, Primitive& b)
-    {
-        return a.morton < b.morton;
-    }
+
 
     class BvhBuildNode
     {
@@ -258,7 +259,7 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
         uint32_t part = makePartition(p,offs,offs+len,bit);
         bit>>=1;
         created+=traverseTree(tris,p,offs,part-offs,bit,&left);
-        created+=traverseTree(tris,p,part+1,len-part-offs,bit,&right);
+        created+=traverseTree(tris,p,part+1,offs+len-part,bit,&right);
         left.insert(left.end(),right.begin(),right.end());
         created+=combineCluster(&left,(int)AAC_F(len),axis);
         c->insert(c->end(),left.begin(),left.end());
@@ -384,7 +385,8 @@ bool Bvh::intersect(const Ray* r, HitPoint* h)const
     BvhNode* node = Bvh::nodesList;
     while(node!=NULL)
     {
-        if(node->bounding.intersect(r,&rp,&dmin,&dmax))
+        if(node->bounding.intersect(r,&rp,&dmin,&dmax) &&
+                !(found && dmin>distance))//already found a closer one
         {
             if(node->len>0) //is leaf
             {
@@ -400,7 +402,7 @@ bool Bvh::intersect(const Ray* r, HitPoint* h)const
             }
             else //interior node
             {
-                if(*(&rp.isXInvNeg+node->axis))
+                if(*(&rp.isXInvNeg+node->axis))//better try the other side first
                 {
                     jobs[jobs_stack_top++] = node+1;
                     node = nodesList+node->offset;
@@ -412,7 +414,7 @@ bool Bvh::intersect(const Ray* r, HitPoint* h)const
                 }
             }
         }
-        else
+        else //try next node
             if (jobs_stack_top > 0)
                 node = jobs[--jobs_stack_top];
             else
