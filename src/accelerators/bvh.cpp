@@ -6,6 +6,11 @@
 #include <immintrin.h>
 #endif
 
+/**
+ * \cond
+ *  No documentation for these helper things
+ */
+
 //f(x) for AAC
 #define AAC_FD ceil(powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(AAC_DELTA,AAC_ALPHA))
 #define AAC_F(X) ceil(powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(X,AAC_ALPHA))
@@ -124,8 +129,10 @@ static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
 //combine more clusters in order to reach a defined value
 //c[in] The clusters that will be combined
 //n[in] The desired number of clusters
-static void combineCluster(std::vector<BvhBuildNode*>*c, int n)
+//return number of nodes created
+static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n)
 {
+    uint32_t created = 0;
     uint32_t* closest = (uint32_t*)malloc(sizeof(uint32_t)*c->size());
     uint32_t left = 0xFFFFFFFF; //ensure segfault if this is not set
     uint32_t right = 0xFFFFFFFF;
@@ -152,6 +159,7 @@ static void combineCluster(std::vector<BvhBuildNode*>*c, int n)
 
         //merge them together in a new node
         BvhBuildNode* node = new BvhBuildNode();
+        created++;
         node->interior(c->at(left),c->at(right));
         //replace one node with the new one, remove the other. Since I don't
         //care about order I can replace the second with the last and pop the
@@ -173,6 +181,7 @@ static void combineCluster(std::vector<BvhBuildNode*>*c, int n)
         }
     }
     free(closest);
+    return created;
 }
 
 //bisects the array of morton codes, when the flag change from 0 to 1
@@ -180,7 +189,8 @@ static void combineCluster(std::vector<BvhBuildNode*>*c, int n)
 //start[in] The start of the portion of codes to consider
 //end[in] The end of the portion of codes to consider
 //m[in] The morton code bit to consider
-uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end, uint64_t m)
+static uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end,
+                              uint64_t m)
 {
 
     //TODO: not enough primitives
@@ -201,28 +211,28 @@ uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end, uint64_t m)
 }
 
 //Algorithm 3 of the AAC paper, BuildTree(P)
-//sp[in] the original array of shapes
-//sz[in] the size of the shapes (since it could be derived)
+//tris[in] The array of triangles
 //p[in] The primitive array that matches sp element with their morton codes
 //offs[in] offset of the primitive array
 //len[in] how many elements of the primitive array will be considered
 //c[out] cluster array
 //bit[in] partition bit for morton code
-static void traverseTree(Shape* sp, size_t sz, Primitive* p, uint32_t offs, int len,
-                         uint64_t bit, std::vector<BvhBuildNode*>* c)
+//return number of nodes created
+static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
+                             int len, uint64_t bit,std::vector<BvhBuildNode*>*c)
 {
+    uint32_t created = 0;
     if(len < AAC_DELTA)
     {
         AABB bounding;
         BvhBuildNode* node = new BvhBuildNode;
-        for(int i=0;i<len;i++)
-            //offset and len refers to the Primitive* array, Shape* is in a
-            //totally different order, this is the reason of this pointer calc.
-            bounding.engulf((sp+p[offs+i].index*sz)->computeAABB());
+        created++;
+        for(int i=0;i<len;i++);
+            bounding.engulf(tris[p[offs].index].computeAABB());
         node->leaf(bounding,offs,len);
         std::vector<BvhBuildNode*> tmp_cluster;
         tmp_cluster.push_back(node);
-        combineCluster(&tmp_cluster,(int)AAC_FD);
+        created+=combineCluster(&tmp_cluster,(int)AAC_FD);
         c->insert(c->end(),tmp_cluster.begin(),tmp_cluster.end());
     }
     else
@@ -231,15 +241,27 @@ static void traverseTree(Shape* sp, size_t sz, Primitive* p, uint32_t offs, int 
         std::vector<BvhBuildNode*>right;
         uint32_t part = makePartition(p,offs,offs+len,bit);
         bit>>=1;
-        traverseTree(sp,sz,p,offs,part-offs,bit,&left);
-        traverseTree(sp,sz,p,part+1,len-part-offs,bit,&right);
+        created+=traverseTree(tris,p,offs,part-offs,bit,&left);
+        created+=traverseTree(tris,p,part+1,len-part-offs,bit,&right);
         left.insert(left.end(),right.begin(),right.end());
-        combineCluster(&left,AAC_F(len));
+        created+=combineCluster(&left,(int)AAC_F(len));
         c->insert(c->end(),left.begin(),left.end());
     }
+    return created;
 }
 
-void Bvh::buildTree(Shape* shapes, size_t size, int len)
+/**
+ *  \endcond
+ */
+
+//<><><><><><><><> Bvh methods <><><><><><><><><><><><><><><><><><><><><><><><><
+
+Bvh::~Bvh()
+{
+    free(nodesList);
+}
+
+void Bvh::buildTree(Triangle* tris, int len)
 {
     Primitive* prims = (Primitive*)malloc(sizeof(Primitive)*len);
     Point3* centroids = (Point3*)malloc(sizeof(Point3)*len);
@@ -247,7 +269,7 @@ void Bvh::buildTree(Shape* shapes, size_t size, int len)
     for(int i=0;i<len;i++) //calculate centroid AABB
     {
         prims[i].index=i;
-        centroids[i] = (shapes+(i*size))->computeAABB().center();
+        centroids[i] = tris[i].computeAABB().center();
         centroidaabb.engulf(centroids+i);
     }
     //calculate reciprocal of the centroidaabb, used to map distance in [0-1]
@@ -267,5 +289,57 @@ void Bvh::buildTree(Shape* shapes, size_t size, int len)
     uint64_t morton_flag = 0x4000000000000000U;
 
     std::vector<BvhBuildNode*> clusters;
-    traverseTree(shapes,size,prims,0,len,morton_flag,&clusters);
+    uint32_t created;
+    created = traverseTree(tris,prims,0,len,morton_flag,&clusters);
+    created+=combineCluster(&clusters,1);
+    //bvh completed
+
+    //flatten the tree into an array, like the kdtree one
+    Bvh::nodesList = (BvhNode*)malloc(created*sizeof(BvhNode));
+    if(clusters.size()>1)
+    {
+        fprintf(stderr,"Node number error"); //TODO removeme
+    }
+    uint32_t index = 0;
+    flatten(clusters.at(0),&index);
+
+    //reorder the Triangle* array
+    //this is actually horrible but I don't want to deallocate array under
+    //the hood. I really hope that memcpying the whole array is smh fast
+    Triangle* tmp = (Triangle*)malloc(sizeof(Triangle)*len);
+    memcpy(tmp,tris,sizeof(Triangle)*len); //create a reference copy
+    for(uint32_t i=0;i<len;i++)
+    {
+        tris[i].a = tmp[prims[i].index].a; //copy from the reference
+        tris[i].b = tmp[prims[i].index].b;
+        tris[i].c = tmp[prims[i].index].c;
+    }
+    free(tmp);
+    free(prims);
+}
+
+void Bvh::flatten(void* n, uint32_t* index)
+{
+    BvhBuildNode* node = (BvhBuildNode*)n;
+    if(node->left==NULL) //leaf
+    {
+        nodesList[*index].bounding = node->bounding;
+        nodesList[*index].offset = node->offset;
+        nodesList[*index].len = (uint8_t)node->number;
+    }
+    else
+    {
+        //record my position for later use and update it, so I can call the
+        //recursive step
+        uint32_t myindex = (*index)++;
+
+        //left node is right after the parent, right node is somewhere else
+        flatten(node->left,index);
+
+        //I processed all the left nodes, so now I know the right node position
+        nodesList[myindex].bounding = node->bounding;
+        nodesList[myindex].sibling = *index;
+        flatten(node->right,index);
+    }
+    delete(node);
 }

@@ -10,9 +10,28 @@
 ///Delta parameter for AAC. 20 for high quality trees, 4 for fast buildup
 #define AAC_DELTA 20
 
+struct BvhNode
+{
+    AABB bounding;
+    union
+    {
+        uint32_t offset;
+        uint32_t sibling;
+    };
+    uint8_t len;
+    uint8_t pad[3]; //compiler should do this automagically
+};
+
 class Bvh
 {
-    void buildTree(Shape* primitives, size_t obj_size, int len);
+public:
+    ~Bvh();
+    void buildTree(Triangle* t, int len);
+
+private:
+    void flatten(void*,uint32_t*);
+
+    BvhNode* nodesList;
 };
 
 
