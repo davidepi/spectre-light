@@ -1,13 +1,33 @@
 #include "parser.hpp"
 
+#define SETTINGS_OUT_SIZE 512
+
+Settings::Settings()
+{
+    output = (char*)malloc(SETTINGS_OUT_SIZE);
+    strcpy(output,"~/Desktop/test.ppm");
+    resolution[0] = 800;
+    resolution[1] = 600;
+    spp = 256;
+    ct = ORTHOGRAPHIC;
+    ft = BOX;
+    f_val[0] = 1;
+    f_val[1] = 1;
+    it = DIRECT_LIGHT;
+}
+
+Settings::~Settings()
+{
+    free(output);
+}
+
 static void parseOutFile(char* string, Settings* out)
 {
     char* token = strtok(string," ");
     if(strcmp(token,"out:")==0)
     {
         token = strtok(NULL," ");
-        out->output = (char*)malloc(512);
-        strncpy(out->output,token,512);
+        strncpy(out->output,token,SETTINGS_OUT_SIZE);
     }
     else
     {
@@ -40,9 +60,14 @@ static void parseResolution(char* string, Settings* out)
 static void parseSpp(char* string, Settings* out)
 {
     char* token = strtok(string," ");
-    if(strcmp(token,"spp:")==0)
+    if(strcmp(token,"sampler:")==0)
     {
-        token = strtok(string," ");
+        token = strtok(NULL," ");
+        if(strcmp(token,"random")==0)
+            out->st = RANDOM;
+        else
+            out->st = STRATIFIED;
+        token = strtok(NULL," ");
         out->spp = atoi(token);
     }
     else
@@ -106,6 +131,66 @@ static void parseCamera(char* string, Settings* out)
     }
 }
 
+static void parseFilter(char* string, Settings* out)
+{
+    char* token = strtok(string," ");
+    if(strcmp(token,"filter:")==0)
+    {
+        token = strtok(NULL," "); //parse camera type
+        if(strcmp(token,"box")==0)
+            out->ft = BOX;
+        else if(strcmp(token,"tent")==0)
+            out->ft = TENT;
+        else if(strcmp(token,"gaussian")==0)
+        {
+            out->ft = GAUSSIAN;
+            token = strtok(NULL," ");
+            out->f_val[0] = (float)atof(token);
+        }
+        else if(strcmp(token,"mitchell")==0)
+        {
+            out->ft = MITCHELL;
+            token = strtok(NULL," ");
+            out->f_val[0] = (float)atof(token);
+            token = strtok(NULL," ");
+            out->f_val[1] = (float)atof(token);
+        }
+        else
+        {
+            out->ft = LANCZOS;
+            token = strtok(NULL, " ");
+            out->f_val[0] = (float) atof(token);
+        }
+    }
+    else
+    {
+        char outm[256];
+        //string not in localization.h since this parses will be changed
+        snprintf(outm,256,"Unknown keyword while parsing: %s",token);
+        Console.warning(outm);
+    }
+}
+
+static void parseIntegrator(char* string, Settings* out)
+{
+    char* token = strtok(string," ");
+    if(strcmp(token,"integrator:")==0)
+    {
+        token = strtok(NULL," ");
+        if(strcmp(token,"direct")==0)
+            out->it = DIRECT_LIGHT;
+        else
+            out->it = PATH_TRACE;
+    }
+    else
+    {
+        char outm[256];
+        //string not in localization.h since this parses will be changed
+        snprintf(outm,256,"Unknown keyword while parsing: %s",token);
+        Console.warning(outm);
+    }
+}
+
 static void parseScene()
 {
 
@@ -113,14 +198,11 @@ static void parseScene()
 
 Settings Parser::parse(const char* filename)
 {
-    Console.log(MESSAGE_STARTED_PARSING,"");
+    Console.log(MESSAGE_STARTED_PARSING,NULL);
     size_t buf_size = 512;
     char* buf = (char*)malloc(buf_size);
     FILE* fin = fopen(filename,"r");
     Settings out;
-    out.resolution[0] = 800;
-    out.resolution[1] = 600;
-    out.spp = 256;
     if(fin!=NULL)
     {
         while (getline(&buf, &buf_size, fin)!=-1)
@@ -137,7 +219,7 @@ Settings Parser::parse(const char* filename)
                     break;
                 case 's':
                 {
-                    if (buf[1] == 'p')
+                    if (buf[1] == 'a')
                         parseSpp(buf, &out);
                     else
                         parseScene();
@@ -145,6 +227,12 @@ Settings Parser::parse(const char* filename)
                 }
                 case 'c':
                     parseCamera(buf, &out);
+                    break;
+                case 'f':
+                    parseFilter(buf,&out);
+                    break;
+                case 'i':
+                    parseIntegrator(buf,&out);
                     break;
                 default:
                     continue;
@@ -154,6 +242,6 @@ Settings Parser::parse(const char* filename)
     }
     else
         Console.critical("Error opening input file");
-    Console.log(MESSAGE_ENDED_PARSING,"");
+    Console.log(MESSAGE_ENDED_PARSING,NULL);
     return out;
 }

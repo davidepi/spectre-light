@@ -7,10 +7,22 @@ out: ~/Desktop/test.ppm
 #Resolution width height
 resolution: 800 600
 
-#Samples per pixel
-spp: 32
-
 #camera type (pos.x,pos.y,pos.z) (target.x,target.y,target.z) (up.x,up.y,up.z) fov
 #type can be either perspective or orthographic
 #fov is in degrees and used only with perspective camera
 camera: perspective (0,0,-10) (0,0,0) (0,1,0) 55
+
+#sampler type samples per pixel
+#type can be random or stratified
+sampler: stratified 32
+
+#filter type optional_values
+#type can be box, tent, gaussian, mitchell and lanczos
+#gaussian requires a sigma parameter, the falloff speed. Default is 2
+#mitchell requires the B and C parameters, default are 1/3 and 1/3
+#lanczos requires the tau parameter, default is 3
+filter: lanczos 3 0.33
+
+#integrator type
+#type can be direct or pt (path trace)
+integrator: pt

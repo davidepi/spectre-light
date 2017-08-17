@@ -11,9 +11,15 @@
 #include <cstdlib>
 
 enum camera_type{ORTHOGRAPHIC,PERSPECTIVE};
+enum sampler_type{STRATIFIED,RANDOM};
+enum filter_type{BOX,TENT,GAUSSIAN,MITCHELL,LANCZOS};
+enum integrator_type{DIRECT_LIGHT,PATH_TRACE};
 
-struct Settings
+class Settings
 {
+public:
+    Settings();
+    ~Settings();
     char* output;
     int resolution[2];
     int spp;
@@ -22,6 +28,10 @@ struct Settings
     Point3 camera_target;
     Vec3 camera_up;
     float camera_fov;
+    enum sampler_type st;
+    enum filter_type ft;
+    enum integrator_type it;
+    float f_val[2];
 };
 
 class Parser
