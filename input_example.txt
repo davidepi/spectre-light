@@ -1,0 +1,16 @@
+#Input file example. The parser is still a temp version, just for debugging
+#Misplaced colon or spaces will break everything
+
+#Output file, absolute or relative to the executable
+out: ~/Desktop/test.ppm
+
+#Resolution width height
+resolution: 800 600
+
+#Samples per pixel
+spp: 32
+
+#camera type (pos.x,pos.y,pos.z) (target.x,target.y,target.z) (up.x,up.y,up.z) fov
+#type can be either perspective or orthographic
+#fov is in degrees and used only with perspective camera
+camera: perspective (0,0,-10) (0,0,0) (0,1,0) 55
