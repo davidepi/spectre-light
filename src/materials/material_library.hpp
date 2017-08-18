@@ -1,12 +1,12 @@
 //Created,   7 Jul 2017
-//Last Edit  7 Jul 2017
+//Last Edit 18 Aug 2017
 
 /**
  *  \file material_library.hpp
  *  \brief MaterialLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  7 Jul 2017
+ *  \date  18 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -60,7 +60,7 @@ public:
      *  \param[in] name The name of the material
      *  \param[in] material The material that will be added
      */
-    void add(std::string name, const Bsdf* material);
+    void add(const std::string& name, Bsdf* material);
 
 
     /** \brief Retrieve a material from the library
@@ -71,20 +71,30 @@ public:
      * \param[in] name The material to retrieve
      * \return The material, if it is stored in the library, NULL otherwise
      */
-    const Bsdf* get(std::string name)const;
+    const Bsdf* get(const std::string& name)const;
+
+    /** \brief Retrieve a material from the library
+     *
+     *  Retrieve a material from the library for editing.
+     *  If the material can not be found the returned value will be NULL
+     *
+     * \param[in] name The material to retrieve
+     * \return The material, if it is stored in the library, NULL otherwise
+     */
+    Bsdf* edit(const std::string& name)const;
 
 
     /** \brief Remove and deallocate a material from the library
      *
      * \param[in] name The material that will be removed and deallocated
      */
-    void remove(std::string name);
+    void remove(const std::string& name);
 
 private:
 
     MaterialLibrary();
 
-    std::unordered_map<std::string,const Bsdf*> lib;
+    std::unordered_map<std::string,Bsdf*> lib;
 };
 
 ///Access the material library just by writing "MtlLib"

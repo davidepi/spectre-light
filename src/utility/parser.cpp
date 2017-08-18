@@ -191,6 +191,118 @@ static void parseIntegrator(char* string, Settings* out)
     }
 }
 
+static void parseMaterial(char* string, Settings* out)
+{
+    char** stringpos = &string;
+    char* token = strtok_r(string," ",stringpos);
+    unsigned char r,g,b;
+    char* val;
+    Bdf* addme;
+    if(strcmp(token,"material:")==0)
+    {
+        char name[64];
+        Bsdf* mat;
+        token = strtok_r(string," ",stringpos);
+        strncpy(name,token,64);
+        mat = MtlLib.edit(name); //retrieve material
+        if(mat==NULL) //new material
+        {
+            mat = new Bsdf();
+            MtlLib.add(name,mat);
+        }
+        token = strtok_r(string," ",stringpos); //retrieve material type
+        if(strcmp(token,"diffuse")==0)
+        {
+            token = strtok_r(string," ",stringpos); //parse diffuse color in rgb
+            val = strtok(token,"(), "); //parse x
+            r = (unsigned char)atoi(val);
+            val = strtok(NULL,"(), "); //parse y
+            g = (unsigned char)atoi(val);
+            val = strtok(NULL,"(), "); //parse z
+            b = (unsigned char)atoi(val);
+            Color diffuse(r,g,b);
+
+            token = strtok_r(string," ",stringpos); //parse roughness value
+            float rough = (float)atof(token);
+            if(rough>0) //oren-nayar
+                addme = new OrenNayar(diffuse,rough);
+            else //lambertian
+                addme = new Lambertian(diffuse);
+        }
+        else if(strcmp(token,"reflection")==0)
+        {
+            token = strtok_r(string," ",stringpos);//parse reflected color, rgb
+            val = strtok(token,"(), "); //parse x
+            r = (unsigned char)atoi(val);
+            val = strtok(NULL,"(), "); //parse y
+            g = (unsigned char)atoi(val);
+            val = strtok(NULL,"(), "); //parse z
+            b = (unsigned char)atoi(val);
+            Color reflected(r,g,b);
+
+            token = strtok_r(string," ",stringpos);
+            if(token[0]=='(') //conductor
+            {
+                val = strtok(token,"(), "); //parse x
+                r = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse y
+                g = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse z
+                b = (unsigned char)atoi(val);
+                Color absorbed(r,g,b);
+
+                token = strtok_r(string," ",stringpos);
+                val = strtok(token,"(), "); //parse x
+                r = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse y
+                g = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse z
+                b = (unsigned char)atoi(val);
+                Color emitted(r,g,b);
+
+                addme = new Reflection(reflected,absorbed,emitted);
+            }
+            else //dielectric
+            {
+                float etai = (float)atof(token);
+
+                token = strtok_r(string," ",stringpos); //parse ior transmitted
+                float etat = (float)atof(token);
+
+                addme = new Reflection(reflected,etai,etat);
+            }
+        }
+        else if(strcmp(token,"refraction")==0)
+        {
+            token = strtok_r(string," ",stringpos);//parse refracted color, rgb
+            val = strtok(token,"(), "); //parse x
+            r = (unsigned char)atoi(val);
+            val = strtok(NULL,"(), "); //parse y
+            g = (unsigned char)atoi(val);
+            val = strtok(NULL,"(), "); //parse z
+            b = (unsigned char)atoi(val);
+            Color refracted(r,g,b);
+
+            token = strtok_r(string," ",stringpos); //parse ior incident
+            float etai = (float)atof(token);
+
+            token = strtok_r(string," ",stringpos); //parse ior transmitted
+            float etat = (float)atof(token);
+
+            addme = new Refraction(refracted,etai,etat);
+        }
+        else;
+        mat->inheritBdf(addme);
+    }
+    else
+    {
+        char outm[256];
+        //string not in localization.h since this parses will be changed
+        snprintf(outm,256,"Unknown keyword while parsing: %s",token);
+        Console.warning(outm);
+    }
+}
+
 static void parseScene()
 {
 
@@ -234,6 +346,8 @@ Settings Parser::parse(const char* filename)
                 case 'i':
                     parseIntegrator(buf,&out);
                     break;
+                case 'm':
+                    parseMaterial(buf,&out);
                 default:
                     continue;
             }

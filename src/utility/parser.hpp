@@ -6,6 +6,13 @@
 #include "console.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
+#include "utility/scene.hpp"
+#include "materials/material_library.hpp"
+#include "materials/bdf.hpp"
+#include "materials/lambertian.hpp"
+#include "materials/oren_nayar.hpp"
+#include "materials/refraction.hpp"
+#include "materials/reflection.hpp"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>

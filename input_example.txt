@@ -21,8 +21,19 @@ sampler: stratified 32
 #gaussian requires a sigma parameter, the falloff speed. Default is 2
 #mitchell requires the B and C parameters, default are 1/3 and 1/3
 #lanczos requires the tau parameter, default is 3
-filter: lanczos 3 0.33
+filter: mitchell 0.33 0.33
 
 #integrator type
 #type can be direct or pt (path trace)
 integrator: pt
+
+#material name_without_spaces type optional_values
+#types:
+#diffuse (r,g,b) roughness
+#reflection (r,g,b) (r,g,b) (r,g,b) where second and third colour are ior and absorption of the metal
+#reflection (r,g,b) ior ior where ior is the index of refraction of the incident and transmitted material
+#refraction (r,g,b) ior ior where ior is the index of refraction of the incident and transmitted material
+material: Red diffuse (150,0,0) 20
+material: Glass reflection (255,255,255) 1.0 1.5
+material: Glass refraction (255,255,255) 1.0 1.5
+material: Mirror reflection (255,255,255) (0,0,0) (255,255,255)
