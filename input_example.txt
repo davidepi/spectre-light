@@ -1,0 +1,58 @@
+#Input file example. The parser is still a temp version, just for debugging
+#Misplaced colon or spaces will break everything
+
+#Output file, absolute or relative to the executable
+out: /home/user/Desktop/test.ppm
+
+#Resolution width height
+resolution: 800 600
+
+#camera type (pos.x,pos.y,pos.z) (target.x,target.y,target.z) (up.x,up.y,up.z) fov
+#type can be either perspective or orthographic
+#fov is in degrees and used only with perspective camera
+camera: perspective (0,2,-10) (0,0,0) (0,1,0) 55
+
+#sampler type samples per pixel
+#type can be random or stratified
+sampler: stratified 25
+
+#filter type optional_values
+#type can be box, tent, gaussian, mitchell and lanczos
+#gaussian requires a sigma parameter, the falloff speed. Default is 2
+#mitchell requires the B and C parameters, default are 1/3 and 1/3
+#lanczos requires the tau parameter, default is 3
+filter: mitchell 0.33 0.33
+
+#integrator type
+#type can be direct or pt (path trace)
+integrator: pt
+
+#material name_without_spaces type optional_values
+#types:
+#diffuse (r,g,b) roughness
+#reflection (r,g,b) (r,g,b) (r,g,b) where second and third colour are ior and absorption of the metal
+#reflection (r,g,b) ior ior where ior is the index of refraction of the incident and transmitted material
+#refraction (r,g,b) ior ior where ior is the index of refraction of the incident and transmitted material
+material: Red diffuse (150,0,0) 20
+material: Glass reflection (255,255,255) 1.0 1.5
+material: Glass refraction (255,255,255) 1.0 1.5
+material: Mirror reflection (255,255,255) (0,0,0) (255,255,255)
+
+#asset name_without_spaces obj_file_path || asset name sphere radius
+#path is absolute or relative to the executable
+asset: Ico /home/user/Desktop/test.obj
+asset: Big_sphere sphere 100000
+asset: Default_sphere sphere 1.0
+
+#light asset_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z) (r,g,b)
+#rotation in degrees
+light: Default_sphere (0,2,0) (250,250,250)
+
+#world asset_name material_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z)
+#rotation in degrees
+world: Big_sphere Red (0,-100001,0) (0,0,0) (1,1,1)
+world: Big_sphere Default (-100003,0,0) (0,0,0) (1,1,1)
+world: Big_sphere Default (100003,0,0) (0,0,0) (1,1,1)
+world: Big_sphere Default (0,0,100005) (0,0,0) (1,1,1)
+world: Big_sphere Default (0,100005,0) (0,0,0) (1,1,1)
+world: Ico Default (1,-1,0) (0,0,0) (1,1,1)

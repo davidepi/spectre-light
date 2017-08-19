@@ -7,20 +7,19 @@ MaterialLibrary::MaterialLibrary()
     white.r = 1.f;
     white.g = 1.f;
     white.b = 1.f;
-    Lambertian l(white);
-    defmatl->addBdf(static_cast<Bdf*>(&l));
-    lib.insert({{"Default",defmatl}});
+    defmatl->inheritBdf(new Lambertian(white));
+    lib.insert(std::make_pair("Default",defmatl));
 }
 
-void MaterialLibrary::add(std::string name, const Bsdf* material)
+void MaterialLibrary::add(const std::string& name, Bsdf* material)
 {
-    lib.insert({{name,material}});
+    lib.insert(std::make_pair(name,material));
 }
 
-const Bsdf* MaterialLibrary::get(std::string name)const
+const Bsdf* MaterialLibrary::get(const std::string& name)const
 {
     const Bsdf* retval;
-    std::unordered_map<std::string,const Bsdf*>::const_iterator got =
+    std::unordered_map<std::string,Bsdf*>::const_iterator got =
             lib.find(name);
 
     if(got!=lib.end())
@@ -30,9 +29,22 @@ const Bsdf* MaterialLibrary::get(std::string name)const
     return retval;
 }
 
-void MaterialLibrary::remove(std::string name)
+Bsdf* MaterialLibrary::edit(const std::string& name)const
 {
-    std::unordered_map<std::string,const Bsdf*>::const_iterator got =
+    Bsdf* retval;
+    std::unordered_map<std::string,Bsdf*>::const_iterator got =
+            lib.find(name);
+
+    if(got!=lib.end())
+        retval = got->second;
+    else
+        retval = NULL;
+    return retval;
+}
+
+void MaterialLibrary::remove(const std::string& name)
+{
+    std::unordered_map<std::string,Bsdf*>::const_iterator got =
             lib.find(name);
 
     if(got!=lib.end())

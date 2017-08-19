@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  29 Jul 2017
+//Last Edit  18 Aug 2017
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      29 Jul 2017
+ *  \date      18 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -154,12 +154,13 @@ public:
 
     /** \brief Add the Bdf to the Bsdf
      *
-     *  Copy the given Bdf and adds it to this Bsdf. This means that the value
-     *  of the Bdf will be taken in consideration when evaluating the Bsdf
+     *  Inherit the ownership of the given Bdf and adds it to this Bsdf.
+     *  This means that the value of the Bdf will be taken in consideration when
+     *  evaluating the Bsdf
      *
      *  \param[in] addme The Bdf that will be added
      */
-    void addBdf(const Bdf* addme);
+    void inheritBdf(Bdf* addme);
 
     /** \brief Return the value of the BSDF
      *

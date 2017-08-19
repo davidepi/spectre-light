@@ -48,7 +48,7 @@
 #define PROGRESS_BAR_UPDATE_SECONDS 1
 
 ///Default extension for the box filter
-#define BOX_FILTER_EXTENT 1
+#define BOX_FILTER_EXTENT 0.5
 
 ///Default extension for the tent filter
 #define TENT_FILTER_EXTENT 2
