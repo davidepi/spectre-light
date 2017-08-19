@@ -28,7 +28,7 @@
 #include <cstdlib>
 #include <chrono>
 
-enum camera_type{ORTHOGRAPHIC,PERSPECTIVE};
+enum camera_type{ORTHOGRAPHIC,PERSPECTIVE,PANORAMA};
 enum sampler_type{STRATIFIED,RANDOM};
 enum filter_type{BOX,TENT,GAUSSIAN,MITCHELL,LANCZOS};
 enum integrator_type{DIRECT_LIGHT,PATH_TRACE};

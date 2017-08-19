@@ -72,6 +72,13 @@ void Renderer::setOrthographic(Point3 pos, Point3 target, Vec3 up)
     c = new OrthographicCamera(&pos,&target,&up,w,h);
 }
 
+void Renderer::setPanorama(Point3 pos, Point3 target, Vec3 up)
+{
+    if(Renderer::c != NULL)
+        delete c;
+    c = new Camera360(&pos,&target,&up,w,h);
+}
+
 void Renderer::setRandomSampler()
 {
     Renderer::sampler_t = SPECTRE_USE_RANDOM_SAMPLER;

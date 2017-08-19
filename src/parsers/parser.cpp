@@ -90,6 +90,8 @@ static void parseCamera(char* string, Settings* out)
         token = strtok_r(NULL," ",&savestring); //parse camera type
         if(strcmp(token,"perspective")==0)
             out->ct = PERSPECTIVE;
+        else if(strcmp(token,"panorama")==0)
+            out->ct = PANORAMA;
         else
             out->ct = ORTHOGRAPHIC;
 

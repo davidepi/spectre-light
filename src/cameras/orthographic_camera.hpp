@@ -44,8 +44,6 @@ public:
      *  of the camera
      *  \param[in] width    The width of the final image (resolution)
      *  \param[in] height   The height of the final image (resolution)
-     *  \param[in] filename The name of the file that will be stored onto the
-     *  disk
      */
     OrthographicCamera(const Point3* position, const Point3* target,
                        const Vec3* up, int width, int height);

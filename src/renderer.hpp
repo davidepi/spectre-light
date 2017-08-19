@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit  3 Aug 2017
+//Last Edit 19 Aug 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      3 Aug 2017
+ *  \date      19 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -20,6 +20,7 @@
 #include "utility/console.hpp"
 #include "cameras/perspective_camera.hpp"
 #include "cameras/orthographic_camera.hpp"
+#include "cameras/camera360.hpp"
 #include "samplers/box_filter.hpp"
 #include "samplers/tent_filter.hpp"
 #include "samplers/gaussian_filter.hpp"
@@ -142,6 +143,16 @@ public:
      *  \param[in] up A vector representing the up direction for the camera
      */
     void setOrthographic(Point3 position, Point3 target, Vec3 up);
+
+    /** \brief Create a 360 panorama camaera for this renderer
+     *
+     *  More info in the camera360.hpp file
+     *
+     *  \param[in] position The position of the camera
+     *  \param[in] target The target of the camera
+     *  \param[in] up A vector representing the up direction for the camera
+     */
+    void setPanorama(Point3 position, Point3 target, Vec3 up);
 
     /** \brief Set a naive, and terrible, sampler
      *

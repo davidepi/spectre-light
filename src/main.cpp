@@ -19,6 +19,8 @@ int main(int argc, char* argv[])
                                             s.camera_up);break;
         case PERSPECTIVE:r.setPerspective(s.camera_pos,s.camera_target,
                                           s.camera_up,s.camera_fov);break;
+        case PANORAMA:r.setPanorama(s.camera_pos,s.camera_target, s.camera_up);
+                        break;
     }
     switch(s.st)
     {
