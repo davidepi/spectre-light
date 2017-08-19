@@ -26,6 +26,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <chrono>
 
 enum camera_type{ORTHOGRAPHIC,PERSPECTIVE};
 enum sampler_type{STRATIFIED,RANDOM};

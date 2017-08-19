@@ -68,7 +68,7 @@
 
 #define MESSAGE_STARTED_PARSING "Parsing started..."
 
-#define MESSAGE_ENDED_PARSING "Parsing ended"
+#define MESSAGE_ENDED_PARSING "Parsing ended (%d ms)"
 
 #endif
 

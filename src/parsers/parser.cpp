@@ -221,7 +221,7 @@ static void parseMaterial(char* string, Settings* out)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color diffuse(r,g,b);
+            Color diffuse((float)r/255,(float)g/255,(float)b/255);
 
             token = strtok_r(NULL," ",&stringpos); //parse roughness value
             float rough = (float)atof(token);
@@ -239,7 +239,7 @@ static void parseMaterial(char* string, Settings* out)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color reflected(r,g,b);
+            Color reflected((float)r/255,(float)g/255,(float)b/255);
 
             token = strtok_r(NULL," ",&stringpos);
             if(token[0]=='(') //conductor
@@ -250,7 +250,7 @@ static void parseMaterial(char* string, Settings* out)
                 g = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse z
                 b = (unsigned char)atoi(val);
-                Color absorbed(r,g,b);
+                Color absorbed((float)r/255,(float)g/255,(float)b/255);
 
                 token = strtok_r(NULL," ",&stringpos);
                 val = strtok(token,"(), "); //parse x
@@ -259,7 +259,7 @@ static void parseMaterial(char* string, Settings* out)
                 g = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse z
                 b = (unsigned char)atoi(val);
-                Color emitted(r,g,b);
+                Color emitted((float)r/255,(float)g/255,(float)b/255);
 
                 addme = new Reflection(reflected,absorbed,emitted);
             }
@@ -282,7 +282,7 @@ static void parseMaterial(char* string, Settings* out)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color refracted(r,g,b);
+            Color refracted((float)r/255,(float)g/255,(float)b/255);
 
             token = strtok_r(NULL," ",&stringpos); //parse ior incident
             float etai = (float)atof(token);
@@ -348,7 +348,6 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
         {
             char* val;
             float x,y,z;
-            unsigned char r,g,b;
 
             //parse position
             token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
@@ -365,13 +364,13 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             //parse spectrum
             token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
             val = strtok(token,"(), "); //parse x
-            r = (unsigned char)atoi(val);
+            x = (float)atoi(val)*0.00392156862f;
             val = strtok(NULL,"(), "); //parse y
-            g = (unsigned char)atoi(val);
+            y = (float)atoi(val)*0.00392156862f;
             val = strtok(NULL,"(), "); //parse z
-            b = (unsigned char)atoi(val);
+            z = (float)atoi(val)*0.00392156862f;
 
-            out->sc->addLight(got->second,m,Color(r,g,b));
+            out->sc->addLight(got->second,m,Color(x,y,z));
         }
         else
         {
@@ -448,6 +447,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
 void Parser::parse(const char* filename, Settings* out)
 {
     Console.log(MESSAGE_STARTED_PARSING,NULL);
+    std::chrono::steady_clock::time_point a = std::chrono::steady_clock::now();
     size_t buf_size = 512;
     char* buf = (char*)malloc(buf_size);
     FILE* fin = fopen(filename,"r");
@@ -509,5 +509,9 @@ void Parser::parse(const char* filename, Settings* out)
     }
     else
         Console.critical("Error opening input file");
-    Console.log(MESSAGE_ENDED_PARSING,NULL);
+    std::chrono::steady_clock::time_point b = std::chrono::steady_clock::now();
+    int d = std::chrono::duration_cast<std::chrono::microseconds>(b-a).count();
+    char log[64];
+    sprintf(log,MESSAGE_ENDED_PARSING,d);
+    Console.log(log,NULL);
 }
