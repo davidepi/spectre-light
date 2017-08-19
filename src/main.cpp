@@ -12,6 +12,8 @@ int main(int argc, char* argv[])
         p.parse(argv[1],&s);
 
     Renderer r(s.resolution[0],s.resolution[1],s.spp,s.output);
+    Scene* scene = s.sc;
+    scene->k.buildTree(); //build kd-tree
 
     switch (s.ct)
     {
@@ -39,5 +41,5 @@ int main(int argc, char* argv[])
         case PATH_TRACE:r.setPathTracer();break;
     }
 
-    return 0;
+    return r.render(scene);
 }

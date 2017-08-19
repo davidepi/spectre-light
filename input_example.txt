@@ -14,7 +14,7 @@ camera: perspective (0,0,-10) (0,0,0) (0,1,0) 55
 
 #sampler type samples per pixel
 #type can be random or stratified
-sampler: stratified 32
+sampler: stratified 1
 
 #filter type optional_values
 #type can be box, tent, gaussian, mitchell and lanczos
@@ -25,7 +25,7 @@ filter: mitchell 0.33 0.33
 
 #integrator type
 #type can be direct or pt (path trace)
-integrator: pt
+integrator: direct
 
 #material name_without_spaces type optional_values
 #types:
@@ -38,6 +38,14 @@ material: Glass reflection (255,255,255) 1.0 1.5
 material: Glass refraction (255,255,255) 1.0 1.5
 material: Mirror reflection (255,255,255) (0,0,0) (255,255,255)
 
-#asset name_without_spaces obj_file_path
+#asset name_without_spaces obj_file_path || asset name sphere radius
 #path is absolute or relative to the executable
-asset: Cylinder /home/davide/Desktop/test.obj
+asset: Box /home/davide/Desktop/test.obj
+asset: Big_sphere sphere 100000
+asset: Default_sphere sphere 1.0
+
+#light asset_name (pos.x,pos.y,pos.z) (r,g,b)
+light: Default_sphere (0,3,0) (250,250,250)
+
+#world asset_name material_name (pos.x,pos.y,pos.z)
+world: Big_sphere Default (0,-100000,0)

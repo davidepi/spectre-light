@@ -20,6 +20,9 @@
 #include "materials/reflection.hpp"
 #include "parsers/obj_parser.hpp"
 #include "utility/scene.hpp"
+#include "primitives/shape.hpp"
+#include "primitives/sphere.hpp"
+#include "primitives/mesh.hpp"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>

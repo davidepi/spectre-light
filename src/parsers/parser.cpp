@@ -177,7 +177,7 @@ static void parseIntegrator(char* string, Settings* out)
     char* token = strtok(string," ");
     if(strcmp(token,"integrator:")==0)
     {
-        token = strtok(NULL," ");
+        token = strtok(NULL," \n");
         if(strcmp(token,"direct")==0)
             out->it = DIRECT_LIGHT;
         else
@@ -304,18 +304,81 @@ static void parseMaterial(char* string, Settings* out)
     }
 }
 
-static void parseAsset(char* string, std::unordered_map<std::string,int>* map,
+static void parseShape(char* string, std::unordered_map<std::string,int>* map,
                         Settings* out)
 {
-    char* token = strtok(string," ");
+    char* token = strtok(string," \n");
     if(strcmp(token,"asset:")==0)
     {
         std::string name(strtok(NULL," \n"));
-        Mesh* res = parseObj(strtok(NULL," \n"));
-        if(res!=NULL)
+        token = strtok(NULL," \n");
+        Shape* res;
+        if(strcmp(token,"sphere")==0) //sdl sphere
+            res = new Sphere((float)atof(strtok(NULL," \n")));
+        else
         {
+            res = parseObj(token);
+            Mesh* mesh = (Mesh*)res;
+            //otherwise adding the mesh to the world will fail miserably
+            mesh->finalize();
+        }
+        if(res!=NULL)
             map->insert(std::make_pair(name,out->sc->inheritShape(res)));
+    }
+    else
+    {
+        char outm[256];
+        //string not in localization.h since this parses will be changed
+        snprintf(outm,256,"Unknown keyword while parsing: %s",token);
+        Console.warning(outm);
+    }
+}
 
+static void parseLight(char* string, std::unordered_map<std::string,int>* map,
+                       Settings* out)
+{
+    char* pos;
+    char* token = strtok_r(string," \n",&pos);
+
+    if(strcmp(token,"light:")==0)
+    {
+        std::string name(strtok_r(NULL," \n",&pos));
+        std::unordered_map<std::string,int>::const_iterator got=map->find(name);
+        if(got!=map->end())
+        {
+            char* val;
+            float x,y,z;
+            unsigned char r,g,b;
+
+            //parse position
+            token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
+            val = strtok(token,"(), "); //parse x
+            x = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse y
+            y = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse z
+            z = (float)atof(val);
+
+            Matrix4* m = new Matrix4();
+            m->setTranslation(Vec3(x,y,z));
+
+            //parse spectrum
+            token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
+            val = strtok(token,"(), "); //parse x
+            r = (unsigned char)atoi(val);
+            val = strtok(NULL,"(), "); //parse y
+            g = (unsigned char)atoi(val);
+            val = strtok(NULL,"(), "); //parse z
+            b = (unsigned char)atoi(val);
+
+            out->sc->addLight(got->second,m,Color(r,g,b));
+        }
+        else
+        {
+            char outm[256];
+            //string not in localization.h since this parses will be changed
+            snprintf(outm,256,"Could not find asset %s",name.c_str());
+            Console.warning(outm);
         }
     }
     else
@@ -327,9 +390,59 @@ static void parseAsset(char* string, std::unordered_map<std::string,int>* map,
     }
 }
 
-static void parseScene()
+static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
+                       Settings* out)
 {
+    char* pos;
+    char* token = strtok_r(string," \n",&pos);
 
+    if(strcmp(token,"world:")==0)
+    {
+        std::string name(strtok_r(NULL," \n",&pos));
+        const Bsdf* mat = MtlLib.get(strtok_r(NULL," \n",&pos));
+        if(mat == NULL)
+        {
+            char outm[256];
+            //string not in localization.h since this parses will be changed
+            snprintf(outm,256,"Could not find material for %s",name.c_str());
+            Console.warning(outm);
+            return;
+        }
+        std::unordered_map<std::string,int>::const_iterator got=map->find(name);
+        if(got!=map->end())
+        {
+            char* val;
+            float x,y,z;
+
+            //parse position
+            token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
+            val = strtok(token,"(), "); //parse x
+            x = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse y
+            y = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse z
+            z = (float)atof(val);
+
+            Matrix4* m = new Matrix4();
+            m->setTranslation(Vec3(x,y,z));
+
+            out->sc->addAsset(got->second,m,mat);
+        }
+        else
+        {
+            char outm[256];
+            //string not in localization.h since this parses will be changed
+            snprintf(outm,256,"Could not find asset %s",name.c_str());
+            Console.warning(outm);
+        }
+    }
+    else
+    {
+        char outm[256];
+        //string not in localization.h since this parses will be changed
+        snprintf(outm,256,"Unknown keyword while parsing: %s",token);
+        Console.warning(outm);
+    }
 }
 
 void Parser::parse(const char* filename, Settings* out)
@@ -340,7 +453,7 @@ void Parser::parse(const char* filename, Settings* out)
     FILE* fin = fopen(filename,"r");
     if(fin!=NULL)
     {
-        while (getline(&buf, &buf_size, fin)!=-1)
+        while (getline(&buf, &buf_size, fin)!=-1) //first pass
         {
             switch (buf[0]) //call various parsers
             {
@@ -353,13 +466,8 @@ void Parser::parse(const char* filename, Settings* out)
                     parseResolution(buf, out);
                     break;
                 case 's':
-                {
-                    if (buf[1] == 'a')
-                        parseSpp(buf, out);
-                    else
-                        parseScene();
+                    parseSpp(buf, out);
                     break;
-                }
                 case 'c':
                     parseCamera(buf, out);
                     break;
@@ -373,7 +481,24 @@ void Parser::parse(const char* filename, Settings* out)
                     parseMaterial(buf,out);
                     break;
                 case 'a':
-                    parseAsset(buf, &(Parser::shapeids), out);
+                    parseShape(buf, &(Parser::shapeids), out);
+                    break;
+                default:
+                    continue;
+            }
+        }
+        fseek(fin,0,SEEK_SET);//restart from beginning of file
+        while (getline(&buf, &buf_size, fin)!=-1)//second pass, world and lights
+        {
+            switch (buf[0])
+            {
+                case '#':
+                    continue;
+                case 'l':
+                    parseLight(buf, &(Parser::shapeids), out);
+                    break;
+                case 'w':
+                    parseWorld(buf, &(Parser::shapeids), out);
                     break;
                 default:
                     continue;
