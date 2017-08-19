@@ -1,4 +1,4 @@
-#include "utility/parser.hpp"
+#include "parsers/parser.hpp"
 #include "utility/console.hpp"
 #include "renderer.hpp"
 
@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
     if(argc < 2)
         Console.critical("Input should be in the form: executable input_file");
     else
-        s = p.parse(argv[1]);
+        p.parse(argv[1],&s);
 
     Renderer r(s.resolution[0],s.resolution[1],s.spp,s.output);
 

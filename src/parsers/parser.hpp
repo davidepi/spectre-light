@@ -1,9 +1,14 @@
 //created 17/08
+/**
+ * \cond
+ *  No documentation for files under parser/ folder since they will be replaced
+ *  by flex/bison parsing as soon as possible
+ */
 
 #ifndef __PARSER_HPP__
 #define __PARSER_HPP__
 
-#include "console.hpp"
+#include "utility/console.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
 #include "utility/scene.hpp"
@@ -13,6 +18,8 @@
 #include "materials/oren_nayar.hpp"
 #include "materials/refraction.hpp"
 #include "materials/reflection.hpp"
+#include "parsers/obj_parser.hpp"
+#include "utility/scene.hpp"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -39,13 +46,19 @@ public:
     enum filter_type ft;
     enum integrator_type it;
     float f_val[2];
+    Scene* sc;
 };
 
 class Parser
 {
 public:
-    Settings parse(const char* filename);
+    void parse(const char* filename, Settings* out);
+private:
+    std::unordered_map<std::string,int>shapeids;
 };
 
+/**
+ * \endcond
+ */
 
 #endif

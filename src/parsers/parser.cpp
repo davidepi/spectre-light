@@ -5,7 +5,7 @@
 Settings::Settings()
 {
     output = (char*)malloc(SETTINGS_OUT_SIZE);
-    strcpy(output,"~/Desktop/test.ppm");
+    strcpy(output,"test.ppm");
     resolution[0] = 800;
     resolution[1] = 600;
     spp = 256;
@@ -14,6 +14,7 @@ Settings::Settings()
     f_val[0] = 1;
     f_val[1] = 1;
     it = DIRECT_LIGHT;
+    sc = new Scene;
 }
 
 Settings::~Settings()
@@ -23,10 +24,10 @@ Settings::~Settings()
 
 static void parseOutFile(char* string, Settings* out)
 {
-    char* token = strtok(string," ");
+    char* token = strtok(string," \n");
     if(strcmp(token,"out:")==0)
     {
-        token = strtok(NULL," ");
+        token = strtok(NULL," \n");
         strncpy(out->output,token,SETTINGS_OUT_SIZE);
     }
     else
@@ -81,18 +82,18 @@ static void parseSpp(char* string, Settings* out)
 
 static void parseCamera(char* string, Settings* out)
 {
-    char** savestring = &string;
-    char* token = strtok_r(string," ",savestring);
+    char* savestring;
+    char* token = strtok_r(string," ",&savestring);
     char* val;
     if(strcmp(token,"camera:")==0)
     {
-        token = strtok_r(string," ",savestring); //parse camera type
+        token = strtok_r(NULL," ",&savestring); //parse camera type
         if(strcmp(token,"perspective")==0)
             out->ct = PERSPECTIVE;
         else
             out->ct = ORTHOGRAPHIC;
 
-        token = strtok_r(string," ",savestring); //parse Vec3 position
+        token = strtok_r(NULL," ",&savestring); //parse Vec3 position
         val = strtok(token,"(), "); //parse x
         out->camera_pos.x = (float)atof(val);
         val = strtok(NULL,"(), "); //parse y
@@ -100,7 +101,7 @@ static void parseCamera(char* string, Settings* out)
         val = strtok(NULL,"(), "); //parse z
         out->camera_pos.z = (float)atof(val);
 
-        token = strtok_r(string," ",savestring); //parse Vec3 target
+        token = strtok_r(NULL," ",&savestring); //parse Vec3 target
         val = strtok(token,"(), "); //parse x
         out->camera_target.x = (float)atof(val);
         val = strtok(NULL,"(), "); //parse y
@@ -108,7 +109,7 @@ static void parseCamera(char* string, Settings* out)
         val = strtok(NULL,"(), "); //parse z
         out->camera_target.z = (float)atof(val);
 
-        token = strtok_r(string," ",savestring); //parse Vec3 up
+        token = strtok_r(NULL," ",&savestring); //parse Vec3 up
         val = strtok(token,"(), "); //parse x
         out->camera_up.x = (float)atof(val);
         val = strtok(NULL,"(), "); //parse y
@@ -118,7 +119,7 @@ static void parseCamera(char* string, Settings* out)
 
         if(out->ct == PERSPECTIVE) //parse fov
         {
-            token = strtok_r(string," ",savestring);
+            token = strtok_r(NULL," ",&savestring);
             out->camera_fov = toRad(atof(token));
         }
     }
@@ -193,8 +194,8 @@ static void parseIntegrator(char* string, Settings* out)
 
 static void parseMaterial(char* string, Settings* out)
 {
-    char** stringpos = &string;
-    char* token = strtok_r(string," ",stringpos);
+    char* stringpos;
+    char* token = strtok_r(string," ",&stringpos);
     unsigned char r,g,b;
     char* val;
     Bdf* addme;
@@ -202,7 +203,7 @@ static void parseMaterial(char* string, Settings* out)
     {
         char name[64];
         Bsdf* mat;
-        token = strtok_r(string," ",stringpos);
+        token = strtok_r(NULL," ",&stringpos);
         strncpy(name,token,64);
         mat = MtlLib.edit(name); //retrieve material
         if(mat==NULL) //new material
@@ -210,10 +211,10 @@ static void parseMaterial(char* string, Settings* out)
             mat = new Bsdf();
             MtlLib.add(name,mat);
         }
-        token = strtok_r(string," ",stringpos); //retrieve material type
+        token = strtok_r(NULL," ",&stringpos); //retrieve material type
         if(strcmp(token,"diffuse")==0)
         {
-            token = strtok_r(string," ",stringpos); //parse diffuse color in rgb
+            token = strtok_r(NULL," ",&stringpos); //parse diffuse color in rgb
             val = strtok(token,"(), "); //parse x
             r = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse y
@@ -222,7 +223,7 @@ static void parseMaterial(char* string, Settings* out)
             b = (unsigned char)atoi(val);
             Color diffuse(r,g,b);
 
-            token = strtok_r(string," ",stringpos); //parse roughness value
+            token = strtok_r(NULL," ",&stringpos); //parse roughness value
             float rough = (float)atof(token);
             if(rough>0) //oren-nayar
                 addme = new OrenNayar(diffuse,rough);
@@ -231,7 +232,7 @@ static void parseMaterial(char* string, Settings* out)
         }
         else if(strcmp(token,"reflection")==0)
         {
-            token = strtok_r(string," ",stringpos);//parse reflected color, rgb
+            token = strtok_r(NULL," ",&stringpos);//parse reflected color, rgb
             val = strtok(token,"(), "); //parse x
             r = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse y
@@ -240,7 +241,7 @@ static void parseMaterial(char* string, Settings* out)
             b = (unsigned char)atoi(val);
             Color reflected(r,g,b);
 
-            token = strtok_r(string," ",stringpos);
+            token = strtok_r(NULL," ",&stringpos);
             if(token[0]=='(') //conductor
             {
                 val = strtok(token,"(), "); //parse x
@@ -251,7 +252,7 @@ static void parseMaterial(char* string, Settings* out)
                 b = (unsigned char)atoi(val);
                 Color absorbed(r,g,b);
 
-                token = strtok_r(string," ",stringpos);
+                token = strtok_r(NULL," ",&stringpos);
                 val = strtok(token,"(), "); //parse x
                 r = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse y
@@ -266,7 +267,7 @@ static void parseMaterial(char* string, Settings* out)
             {
                 float etai = (float)atof(token);
 
-                token = strtok_r(string," ",stringpos); //parse ior transmitted
+                token = strtok_r(NULL," ",&stringpos); //parse ior transmitted
                 float etat = (float)atof(token);
 
                 addme = new Reflection(reflected,etai,etat);
@@ -274,7 +275,7 @@ static void parseMaterial(char* string, Settings* out)
         }
         else if(strcmp(token,"refraction")==0)
         {
-            token = strtok_r(string," ",stringpos);//parse refracted color, rgb
+            token = strtok_r(NULL," ",&stringpos);//parse refracted color, rgb
             val = strtok(token,"(), "); //parse x
             r = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse y
@@ -283,10 +284,10 @@ static void parseMaterial(char* string, Settings* out)
             b = (unsigned char)atoi(val);
             Color refracted(r,g,b);
 
-            token = strtok_r(string," ",stringpos); //parse ior incident
+            token = strtok_r(NULL," ",&stringpos); //parse ior incident
             float etai = (float)atof(token);
 
-            token = strtok_r(string," ",stringpos); //parse ior transmitted
+            token = strtok_r(NULL," ",&stringpos); //parse ior transmitted
             float etat = (float)atof(token);
 
             addme = new Refraction(refracted,etai,etat);
@@ -303,18 +304,40 @@ static void parseMaterial(char* string, Settings* out)
     }
 }
 
+static void parseAsset(char* string, std::unordered_map<std::string,int>* map,
+                        Settings* out)
+{
+    char* token = strtok(string," ");
+    if(strcmp(token,"asset:")==0)
+    {
+        std::string name(strtok(NULL," \n"));
+        Mesh* res = parseObj(strtok(NULL," \n"));
+        if(res!=NULL)
+        {
+            map->insert(std::make_pair(name,out->sc->inheritShape(res)));
+
+        }
+    }
+    else
+    {
+        char outm[256];
+        //string not in localization.h since this parses will be changed
+        snprintf(outm,256,"Unknown keyword while parsing: %s",token);
+        Console.warning(outm);
+    }
+}
+
 static void parseScene()
 {
 
 }
 
-Settings Parser::parse(const char* filename)
+void Parser::parse(const char* filename, Settings* out)
 {
     Console.log(MESSAGE_STARTED_PARSING,NULL);
     size_t buf_size = 512;
     char* buf = (char*)malloc(buf_size);
     FILE* fin = fopen(filename,"r");
-    Settings out;
     if(fin!=NULL)
     {
         while (getline(&buf, &buf_size, fin)!=-1)
@@ -324,38 +347,42 @@ Settings Parser::parse(const char* filename)
                 case '#':
                     continue;
                 case 'o':
-                    parseOutFile(buf,&out);
+                    parseOutFile(buf,out);
                     break;
                 case 'r':
-                    parseResolution(buf, &out);
+                    parseResolution(buf, out);
                     break;
                 case 's':
                 {
                     if (buf[1] == 'a')
-                        parseSpp(buf, &out);
+                        parseSpp(buf, out);
                     else
                         parseScene();
                     break;
                 }
                 case 'c':
-                    parseCamera(buf, &out);
+                    parseCamera(buf, out);
                     break;
                 case 'f':
-                    parseFilter(buf,&out);
+                    parseFilter(buf,out);
                     break;
                 case 'i':
-                    parseIntegrator(buf,&out);
+                    parseIntegrator(buf,out);
                     break;
                 case 'm':
-                    parseMaterial(buf,&out);
+                    parseMaterial(buf,out);
+                    break;
+                case 'a':
+                    parseAsset(buf, &(Parser::shapeids), out);
+                    break;
                 default:
                     continue;
             }
         }
         fclose(fin);
+        free(buf);
     }
     else
         Console.critical("Error opening input file");
     Console.log(MESSAGE_ENDED_PARSING,NULL);
-    return out;
 }

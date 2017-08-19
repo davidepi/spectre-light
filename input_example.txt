@@ -2,7 +2,7 @@
 #Misplaced colon or spaces will break everything
 
 #Output file, absolute or relative to the executable
-out: ~/Desktop/test.ppm
+out: /home/davide/Desktop/test.ppm
 
 #Resolution width height
 resolution: 800 600
@@ -37,3 +37,7 @@ material: Red diffuse (150,0,0) 20
 material: Glass reflection (255,255,255) 1.0 1.5
 material: Glass refraction (255,255,255) 1.0 1.5
 material: Mirror reflection (255,255,255) (0,0,0) (255,255,255)
+
+#asset name_without_spaces obj_file_path
+#path is absolute or relative to the executable
+asset: Cylinder /home/davide/Desktop/test.obj
