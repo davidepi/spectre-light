@@ -348,6 +348,9 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
         {
             char* val;
             float x,y,z;
+            Matrix4* m = new Matrix4();
+            m->setIdentity();
+            Matrix4 trans,rotx,roty,rotz,scale;
 
             //parse position
             token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
@@ -357,9 +360,33 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
+            trans.setTranslation(Vec3(x,y,z));
 
-            Matrix4* m = new Matrix4();
-            m->setTranslation(Vec3(x,y,z));
+            token = strtok_r(NULL," ",&pos);//parse rotation
+            val = strtok(token,"(), "); //parse x
+            x = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse y
+            y = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse z
+            z = (float)atof(val);
+            rotx.setRotateX(toRad(x));
+            roty.setRotateY(toRad(y));
+            rotz.setRotateZ(toRad(z));
+
+            token = strtok_r(NULL," ",&pos);//parse translation
+            val = strtok(token,"(), "); //parse x
+            x = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse y
+            y = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse z
+            z = (float)atof(val);
+            scale.setScale(Vec3(x,y,z));
+
+            *m *= trans;
+            rotz *= roty;
+            rotz *= rotx;
+            *m *= rotz;
+            *m *= scale;
 
             //parse spectrum
             token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
@@ -412,6 +439,9 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
         {
             char* val;
             float x,y,z;
+            Matrix4* m = new Matrix4();
+            m->setIdentity();
+            Matrix4 trans,rotx,roty,rotz,scale;
 
             //parse position
             token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
@@ -421,9 +451,33 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
+            trans.setTranslation(Vec3(x,y,z));
 
-            Matrix4* m = new Matrix4();
-            m->setTranslation(Vec3(x,y,z));
+            token = strtok_r(NULL," ",&pos);//parse rotation
+            val = strtok(token,"(), "); //parse x
+            x = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse y
+            y = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse z
+            z = (float)atof(val);
+            rotx.setRotateX(toRad(x));
+            roty.setRotateY(toRad(y));
+            rotz.setRotateZ(toRad(z));
+
+            token = strtok_r(NULL," ",&pos);//parse translation
+            val = strtok(token,"(), "); //parse x
+            x = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse y
+            y = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse z
+            z = (float)atof(val);
+            scale.setScale(Vec3(x,y,z));
+
+            *m *= trans;
+            rotz *= roty;
+            rotz *= rotx;
+            *m *= rotz;
+            *m *= scale;
 
             out->sc->addAsset(got->second,m,mat);
         }
