@@ -40,8 +40,7 @@ void Mesh::addTriangle(const Vertex *a, const Vertex *b, const Vertex *c)
     {
         if(Mesh::count == Mesh::alloc) //need to realloc a bigger area
         {
-            //parenthesis around std::min for windows conflicting macros
-            unsigned int newsize = (std::min)(Mesh::alloc << 1, _MAX_TRIS_);
+            unsigned int newsize = alloc<<1<_MAX_TRIS_?alloc<<1:_MAX_TRIS_;
             Triangle* tmp = new Triangle[newsize];
             memcpy(tmp, Mesh::tris, Mesh::count*sizeof(Triangle));
             delete[] Mesh::tris;
@@ -76,18 +75,13 @@ void Mesh::finalize()
         AABB tmp = Mesh::tris[i].computeAABB();
         aabb.engulf(&tmp);
     }
+
+    bvh.buildTree(Mesh::tris,count);
 }
 
 bool Mesh::intersect(const Ray* r,float* distance, HitPoint* h)const
 {
-    //TODO: obviously this has to be changed
-    bool retval = false;
-    for(int i=0;i<count;i++)
-    {
-        if(Mesh::tris[i].intersect(r,distance,h))
-            retval = true;
-    }
-    return retval;
+    return bvh.intersect(r,distance,h);
 }
 
 AABB Mesh::computeAABB()const
@@ -106,7 +100,7 @@ AABB Mesh::computeWorldAABB(const Matrix4 *trans) const
 #endif
     Point3 pmin = *trans * Mesh::aabb.bounds[0];
     Point3 pmax = *trans * Mesh::aabb.bounds[1];
-    return AABB(&pmin, &pmax);
+    return AABB(min(pmin,pmax), max(pmin,pmax));
 }
 
 float Mesh::surface()const

@@ -136,10 +136,10 @@ static void parseCamera(char* string, Settings* out)
 
 static void parseFilter(char* string, Settings* out)
 {
-    char* token = strtok(string," ");
+    char* token = strtok(string," \n");
     if(strcmp(token,"filter:")==0)
     {
-        token = strtok(NULL," "); //parse camera type
+        token = strtok(NULL," \n"); //parse camera type
         if(strcmp(token,"box")==0)
             out->ft = BOX;
         else if(strcmp(token,"tent")==0)

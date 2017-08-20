@@ -1,12 +1,12 @@
 //Created,  11 Aug 2017
-//Last Edit 16 Aug 2017
+//Last Edit 20 Aug 2017
 
 /**
  *  \file bvh.hpp
  *  \brief     Implementation of a bvh acceleration structure, specific for tris
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 Aug 2017
+ *  \date      20 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -98,7 +98,7 @@ public:
      *  \param[in] h The hit triangle
      *  \return true if there is an intersection, false otherwise
      */
-    bool intersect(const Ray* r, HitPoint* h)const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h)const;
 
 private:
 

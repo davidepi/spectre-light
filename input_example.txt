@@ -4,11 +4,12 @@
 #Output file, absolute or relative to the executable
 out: /home/user/Desktop/test.ppm
 
-#Resolution width height
+#Resolution width height (width = 2x height suggested with panorama camera)
+#width MUST be a multiple of 32
 resolution: 800 600
 
 #camera type (pos.x,pos.y,pos.z) (target.x,target.y,target.z) (up.x,up.y,up.z) fov
-#type can be either perspective or orthographic
+#type can be perspective, orthographic or panorama
 #fov is in degrees and used only with perspective camera
 camera: perspective (0,2,-10) (0,0,0) (0,1,0) 55
 

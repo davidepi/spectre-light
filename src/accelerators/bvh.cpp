@@ -125,7 +125,7 @@ using bvhhelpers::Primitive;
 static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
 {
     float best_area = INFINITY;
-    uint32_t retval = 0xFFFFFFFF;
+    uint32_t retval = 0; //if size == 1 return myself
     for(unsigned int i=0;i<c->size();i++) //linear search
     {
         if(c->at(i)!=b)
@@ -155,7 +155,8 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
     for(unsigned int i=0;i<c->size();c++)
     {
         //find best pair for this node
-        closest[i] = findBestMatch(c,c->at(i));
+        BvhBuildNode* at = c->at(i);
+        closest[i] = findBestMatch(c,at);
     }
     while(c->size()>n)
     {
@@ -280,6 +281,16 @@ Bvh::~Bvh()
 
 void Bvh::buildTree(Triangle* tris, int len)
 {
+    Bvh::tris = tris;
+    if(len<AAC_DELTA) //small mesh
+    {
+        Bvh::nodesList = (BvhNode*)malloc(sizeof(BvhNode));
+        Bvh::nodesList[0].len = (uint8_t)len;
+        Bvh::nodesList[0].offset = 0;
+        for(int i=0;i<len;i++)
+            Bvh::nodesList[0].bounding.engulf(tris[i].computeAABB());
+        return;
+    }
     Primitive* prims = (Primitive*)malloc(sizeof(Primitive)*len);
     Point3* centroids = (Point3*)malloc(sizeof(Point3)*len);
     AABB centroidaabb;
@@ -331,7 +342,6 @@ void Bvh::buildTree(Triangle* tris, int len)
         tris[i].b = tmp[prims[i].index].b;
         tris[i].c = tmp[prims[i].index].c;
     }
-    Bvh::tris = tris;
     free(tmp);
     free(prims);
 }
@@ -366,7 +376,7 @@ void Bvh::flatten(void* n, uint32_t* index)
 
 ///Max depth of the Bvh tree
 #define BVH_MAX_DEPTH 32
-bool Bvh::intersect(const Ray* r, HitPoint* h)const
+bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h)const
 {
     RayProperties rp;
     rp.inverseX = 1.0f/r->direction.x;
@@ -377,7 +387,6 @@ bool Bvh::intersect(const Ray* r, HitPoint* h)const
     rp.isZInvNeg = rp.inverseZ < 0;
     float dmin;
     float dmax;
-    float distance = FLT_MAX;
     bool found = false;
 
     BvhNode* jobs[BVH_MAX_DEPTH];
@@ -386,13 +395,13 @@ bool Bvh::intersect(const Ray* r, HitPoint* h)const
     while(node!=NULL)
     {
         if(node->bounding.intersect(r,&rp,&dmin,&dmax) &&
-                !(found && dmin>distance))//already found a closer one
+                !(found && dmin>*distance))//already found a closer one
         {
             if(node->len>0) //is leaf
             {
                 for(int i=0;i<node->len;i++)
                 {
-                    if(Bvh::tris[node->offset+i].intersect(r,&distance,h))
+                    if(Bvh::tris[node->offset+i].intersect(r,distance,h))
                         found = true;
                 }
                 if (jobs_stack_top > 0)

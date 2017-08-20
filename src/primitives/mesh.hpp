@@ -1,5 +1,5 @@
 //Created,   6 Aug 2017
-//Last Edit  9 Aug 2017
+//Last Edit 20 Aug 2017
 
 /**
  *  \file triangle.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      9 Aug 2017
+ *  \date     20 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -22,6 +22,7 @@
 #include "geometry/vec3.hpp"
 #include "geometry/AABB.hpp"
 #include "utility/console.hpp"
+#include "accelerators/bvh.hpp"
 
 
 /**
@@ -166,6 +167,9 @@ private:
 
     //precomputed surface of the mesh
     float area;
+
+    //BVH for faster intersections
+    Bvh bvh;
 };
 
 #endif
