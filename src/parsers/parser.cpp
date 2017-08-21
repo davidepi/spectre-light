@@ -1,6 +1,10 @@
 #include "parser.hpp"
 
 #define SETTINGS_OUT_SIZE 512
+#if defined(WIN32) || defined(WIN64)
+#define strtok_r strtok_s
+#define _CRT_SECURE_NO_WARNINGS //no warnings for strtok
+#endif
 
 Settings::Settings()
 {
@@ -509,7 +513,7 @@ void Parser::parse(const char* filename, Settings* out)
     FILE* fin = fopen(filename,"r");
     if(fin!=NULL)
     {
-        while (getline(&buf, &buf_size, fin)!=-1) //first pass
+        while(fgets(buf, buf_size, fin)!=NULL) //first pass
         {
             switch (buf[0]) //call various parsers
             {
@@ -544,7 +548,7 @@ void Parser::parse(const char* filename, Settings* out)
             }
         }
         fseek(fin,0,SEEK_SET);//restart from beginning of file
-        while (getline(&buf, &buf_size, fin)!=-1)//second pass, world and lights
+        while(fgets(buf, buf_size, fin)!=NULL)//second pass, world and lights
         {
             switch (buf[0])
             {

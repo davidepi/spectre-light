@@ -65,10 +65,10 @@ namespace bvhhelpers
 
 static inline char BSF(uint64_t val)
 {
-#ifdef WIN32
-    char out;
+#if defined(WIN32) || defined(WIN64)
+    unsigned long out;
     _BitScanForward64(&out,val);
-    return out;
+    return (char)out;
 #else
     return __builtin_ffsll(val);
 #endif

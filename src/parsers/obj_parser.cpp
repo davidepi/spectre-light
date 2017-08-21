@@ -1,5 +1,10 @@
 #include "obj_parser.hpp"
 
+#if defined(WIN32) || defined(WIN64)
+#define strtok_r strtok_s
+#define _CRT_SECURE_NO_WARNINGS //no warnings for strtok.
+#endif
+
 static bool check_extension(const char* path)
 {
     const char* val = strchr(path,'.');
@@ -22,7 +27,7 @@ Mesh* parseObj(const char* path)
     {
         uint32_t tris = 0;
         float x,y,z;
-        while (getline(&buf, &buf_size, fin)!=-1) //first pass, verts and norms
+        while(fgets(buf, buf_size, fin)!=NULL) //first pass, verts and norms
         {
             if(buf[0]=='v' && buf[1]==' ')//vertex
             {
@@ -53,7 +58,7 @@ Mesh* parseObj(const char* path)
             char* token;
             char* val;
             char* pos;
-            while (getline(&buf, &buf_size, fin) != -1) //second pass, faces
+            while(fgets(buf, buf_size, fin)!=NULL) //second pass, faces
             {
                 if(buf[0]=='f' && buf[1]==' ')//face
                 {
