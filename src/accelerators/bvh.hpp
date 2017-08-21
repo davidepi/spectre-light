@@ -1,12 +1,12 @@
 //Created,  11 Aug 2017
-//Last Edit 20 Aug 2017
+//Last Edit 21 Aug 2017
 
 /**
  *  \file bvh.hpp
  *  \brief     Implementation of a bvh acceleration structure, specific for tris
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      20 Aug 2017
+ *  \date      21 Aug 2017
  *  \copyright GNU GPLv3
  */
 

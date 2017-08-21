@@ -152,11 +152,14 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
     uint32_t* closest = (uint32_t*)malloc(sizeof(uint32_t)*c->size());
     uint32_t left = 0xFFFFFFFF; //ensure segfault if this is not set
     uint32_t right = 0xFFFFFFFF;
-    for(unsigned int i=0;i<c->size();c++)
+    if(c->size()>n) //calculate best pair only if needed
     {
-        //find best pair for this node
-        BvhBuildNode* at = c->at(i);
-        closest[i] = findBestMatch(c,at);
+        for (unsigned int i = 0; i < c->size(); i++)
+        {
+            //find best pair for this node
+            BvhBuildNode *at = c->at(i);
+            closest[i] = findBestMatch(c, at);
+        }
     }
     while(c->size()>n)
     {
@@ -245,8 +248,8 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
         AABB bounding;
         BvhBuildNode* node = new BvhBuildNode;
         created++;
-        for(int i=0;i<len;i++);
-            bounding.engulf(tris[p[offs].index].computeAABB());
+        for(int i=0;i<len;i++)
+            bounding.engulf(tris[p[offs+i].index].computeAABB());
         node->leaf(bounding,offs,len);
         std::vector<BvhBuildNode*> tmp_cluster;
         tmp_cluster.push_back(node);
@@ -257,10 +260,10 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
     {
         std::vector<BvhBuildNode*>left;
         std::vector<BvhBuildNode*>right;
-        uint32_t part = makePartition(p,offs,offs+len,bit);
+        uint32_t part = makePartition(p,offs,offs+len-1,bit);
         bit>>=1;
         created+=traverseTree(tris,p,offs,part-offs,bit,&left);
-        created+=traverseTree(tris,p,part+1,offs+len-part,bit,&right);
+        created+=traverseTree(tris,p,part,offs+len-part,bit,&right);
         left.insert(left.end(),right.begin(),right.end());
         created+=combineCluster(&left,(int)AAC_F(len),axis);
         c->insert(c->end(),left.begin(),left.end());
@@ -329,6 +332,7 @@ void Bvh::buildTree(Triangle* tris, int len)
         fprintf(stderr,"Node number error"); //TODO removeme
     }
     uint32_t index = 0;
+
     flatten(clusters.at(0),&index);
 
     //reorder the Triangle* array
@@ -354,6 +358,7 @@ void Bvh::flatten(void* n, uint32_t* index)
         nodesList[*index].bounding = node->bounding;
         nodesList[*index].offset = node->offset;
         nodesList[*index].len = (uint8_t)node->number;
+        (*index)++;
     }
     else
     {
