@@ -1,3 +1,4 @@
+#include <cmath>
 #include "bvh.hpp"
 #ifdef __BMI2__
 #include <x86intrin.h> //for pdep
@@ -188,16 +189,19 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
         c->at(right) = c->back();
         c->pop_back();
 
-        //update new nodes closest, reflecting previous computations.
-        //closest is never shrinked, so c->size()+1 is safe
-        closest[right] = closest[c->size()+1];
-        closest[left] = findBestMatch(c,c->at(left));
-
-        //update closest node for the one referencing the old left and right
-        for(unsigned int i=0;i<c->size();i++)
+        if(c->size()>n)
         {
-            if(closest[i]==left || closest[i]==right)
-                closest[i] = findBestMatch(c,c->at(i));
+            //update new nodes closest, reflecting previous computations.
+            //closest is never shrinked, so c->size()+1 is safe
+            closest[right] = closest[c->size() + 1];
+            closest[left] = findBestMatch(c, c->at(left));
+
+            //update closest node for the one referencing the old left and right
+            for (unsigned int i = 0; i < c->size(); i++)
+            {
+                if (closest[i] == left || closest[i] == right)
+                    closest[i] = findBestMatch(c, c->at(i));
+            }
         }
     }
     free(closest);
@@ -212,8 +216,9 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
 static uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end,
                               uint64_t m)
 {
-
-    //TODO: not enough primitives
+    //every bit considered is equal || morton code is 0
+    if(((mc[start].morton&m)==(mc[end].morton&m)) || m == 0x0)
+        return (start+(end-start))>>1;
 
     //delimiters used to fin when bit changes from 0 to 1.
     uint32_t left = start; //points always to 0
@@ -241,6 +246,8 @@ static uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end,
 static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
                              int len, uint64_t bit,std::vector<BvhBuildNode*>*c)
 {
+    if(len==0)
+        return 0;
     uint32_t created = 0;
     char axis = BSF(bit)%3;
     if(len < AAC_DELTA)
