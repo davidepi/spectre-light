@@ -149,6 +149,10 @@ static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
 //return number of nodes created
 static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
 {
+    if(n==19 && axis==1)
+    {
+        volatile int i=0;
+    }
     uint32_t created = 0;
     uint32_t* closest = (uint32_t*)malloc(sizeof(uint32_t)*c->size());
     uint32_t left = 0xFFFFFFFF; //ensure segfault if this is not set
@@ -192,15 +196,24 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
         if(c->size()>n)
         {
             //update new nodes closest, reflecting previous computations.
-            //closest is never shrinked, so c->size()+1 is safe
-            closest[right] = closest[c->size() + 1];
+            //closest is never shrinked, so c->size() is safe
+            //c, instead, has already been shrinked so c->size() points to the
+            //previous last element
+            closest[right] = closest[c->size()];
             closest[left] = findBestMatch(c, c->at(left));
 
             //update closest node for the one referencing the old left and right
             for (unsigned int i = 0; i < c->size(); i++)
             {
+                //first check. left and right intended to be the old nodes,
+                //now removed. So I need to update the values
                 if (closest[i] == left || closest[i] == right)
                     closest[i] = findBestMatch(c, c->at(i));
+
+                //second check. If this point to c->size, the node removed at
+                //the end, it should point to the ACTUAL node in right
+                if(closest[i]==c->size())
+                    closest[i] = right;
             }
         }
     }
@@ -218,7 +231,7 @@ static uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end,
 {
     //every bit considered is equal || morton code is 0
     if(((mc[start].morton&m)==(mc[end].morton&m)) || m == 0x0)
-        return (start+(end-start))>>1;
+        return (start+((end-start)>>1));
 
     //delimiters used to fin when bit changes from 0 to 1.
     uint32_t left = start; //points always to 0
@@ -258,6 +271,10 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
         for(int i=0;i<len;i++)
             bounding.engulf(tris[p[offs+i].index].computeAABB());
         node->leaf(bounding,offs,len);
+        if(std::isinf(bounding.bounds[0].x))
+        {
+            volatile int i=0;
+        }
         std::vector<BvhBuildNode*> tmp_cluster;
         tmp_cluster.push_back(node);
         created+=combineCluster(&tmp_cluster,(int)AAC_FD,axis);

@@ -570,7 +570,7 @@ void Parser::parse(const char* filename, Settings* out)
     else
         Console.critical("Error opening input file");
     std::chrono::steady_clock::time_point b = std::chrono::steady_clock::now();
-    int d = std::chrono::duration_cast<std::chrono::microseconds>(b-a).count();
+    int d = std::chrono::duration_cast<std::chrono::milliseconds>(b-a).count();
     char log[64];
     sprintf(log,MESSAGE_ENDED_PARSING,d);
     Console.log(log,NULL);
