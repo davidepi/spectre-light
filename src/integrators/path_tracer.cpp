@@ -12,11 +12,12 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
                         Sampler *sam, Color *power, BdfFlags last,
                         OcclusionTester *ot) const
 {
+    float rrprob = 1.f;
     Color retval(0.0);
     Vec3 wo = -r->direction;
 
     //if first hit is light or specular, use its emission
-    if((r->ricochet==0 || last&SPECULAR!=0)
+    if((r->ricochet==0 || (last&SPECULAR))
        && hp->hit->isLight() && dot(hp->n,wo)>0)
     {
         retval+=*power*((AreaLight *)hp->hit)->emissiveSpectrum();
@@ -31,8 +32,13 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     sam->getRandomNumbers(rand,4);
 
     //russian roulette
-    if(r->ricochet>3 &&rand[0]<0.5f)
-        return retval;
+    if(r->ricochet>3)
+    {
+        if (rand[0] < 0.5f)
+            return retval;
+        else
+            rrprob = 0.5f; //survived russian roulette, need to cut down contrib
+    }
     if(r->ricochet==DEFAULT_BOUNCES)
         return retval;
 
@@ -46,7 +52,7 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
         return retval;
 
     //calculate new power, new ray and new intersection point
-    *power *= f*absdot(wi,hp->n)/pdf;
+    *power *= f*absdot(wi,hp->n)/pdf*rrprob;
     Ray r2(hp->h,wi);
     r2.ricochet = r->ricochet+1;
     HitPoint h2;
