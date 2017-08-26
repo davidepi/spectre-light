@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
     {
         case DIRECT_LIGHT:r.setRayTracer();break;
         case PATH_TRACE:r.setPathTracer();break;
+        case BDPT:r.setBidirectionalPathTracer();break;
     }
 
     return r.render(s.sc);

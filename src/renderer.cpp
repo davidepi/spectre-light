@@ -154,6 +154,13 @@ void Renderer::setPathTracer()
     t = new PathTracer();
 }
 
+void Renderer::setBidirectionalPathTracer()
+{
+    if(Renderer::t != NULL)
+        delete t;
+    t = new Bdpt();
+}
+
 int Renderer::render(Scene* s)
 {
     //used just for seed generation, WELLrng will be the actual prng

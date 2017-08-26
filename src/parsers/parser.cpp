@@ -186,8 +186,10 @@ static void parseIntegrator(char* string, Settings* out)
         token = strtok(NULL," \n");
         if(strcmp(token,"direct")==0)
             out->it = DIRECT_LIGHT;
-        else
+        else if(strcmp(token,"pt")==0)
             out->it = PATH_TRACE;
+        else if(strcmp(token,"bdpt")==0)
+            out->it = BDPT;
     }
     else
     {

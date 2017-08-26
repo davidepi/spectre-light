@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 19 Aug 2017
+//Last Edit 26 Aug 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      19 Aug 2017
+ *  \date      26 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -33,6 +33,7 @@
 #include "integrators/light_integrator.hpp"
 #include "integrators/ray_tracer.hpp"
 #include "integrators/path_tracer.hpp"
+#include "integrators/bidirpt.hpp"
 #include "settings.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
@@ -223,6 +224,16 @@ public:
      *  algorithm and accounts for direct and indirect illumination
      */
     void setPathTracer();
+
+    /** \brief Solve the light transport equation using the bdpt
+     *
+     *  Set the bidirectional path tracer as the integrator used for solving the
+     *  light transport equation. This integrator is based on the Path tracing
+     *  algorithm and accounts for direct and indirect illumination. The
+     *  bidirectional path tracing algorithm differs from the unidirectional one
+     *  because it starts a path also from the light.
+     */
+    void setBidirectionalPathTracer();
 
     /** \brief Render the scene
      *
