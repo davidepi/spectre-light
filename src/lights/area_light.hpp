@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 17 Jul 2017
+//Last Edit 26 Aug 2017
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      17 Jul 2017
+ *  \date      26 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -47,14 +47,16 @@ public:
      *
      *  \param[in] r0 A random number in the interval (0.0,1.0)
      *  \param[in] r1 A random number in the interval (0.0,1.0)
-     *  \param[out] out The computed ray originating the radiance, in world
+     *  \param[out] out The sampled point originating the radiance, in world
+     *  space units
+     *  \param[out] d The sampled direction originating the radiance, in world
      *  space units
      *  \param[out] pdf The probability density function of the chosen point
      *  over the light
      *  \return The emitted radiance from the computed ray
      *  \sa radiance_i
      */
-    Color radiance_e(float r0, float r1, Ray* out, float* pdf)const;
+    Color radiance_e(float r0, float r1, Point3* out, Vec3* d, float* pdf)const;
 
     /** \brief Generate the incident vector and return the radiance
      *

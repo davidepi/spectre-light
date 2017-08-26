@@ -17,13 +17,14 @@ Color AreaLight::emissiveSpectrum()const
     return AreaLight::c;
 }
 
-Color AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
+Color AreaLight::radiance_e(float r0, float r1, Point3* o, Vec3* d,
+                            float* pdf)const
 {
     Normal n;
 
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
-    AreaLight::model->getRandomPoint(r0,r1,&(out->origin),&n);
+    AreaLight::model->getRandomPoint(r0,r1,o,&n);
 
     //generate random direction
     float z = 1.f - 2.f * r0;
@@ -31,15 +32,16 @@ Color AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
     float phi = TWO_PI*r1;
     float x = r*cosf(phi);
     float y = r*sinf(phi);
-    out->direction = Vec3(x,y,z);
+    *d = Vec3(x,y,z);
 
     //objspace to world space
-    *out = *AreaLight::objToWorld**out;
+    *o = *AreaLight::objToWorld**o;
+    *d = *AreaLight::objToWorld**d;
 
     //if the dir is pointing on the opposite direction of the normal, flip it
     //because there is no emission in that direction
-    if(out->direction.dot(n) < 0.f)
-        out->direction *= -1.f;
+    if(d->dot(n) < 0.f)
+        *d *= -1.f;
 
     *pdf = AreaLight::invarea * INV_TWOPI;
     return AreaLight::c;
