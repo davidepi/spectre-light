@@ -80,12 +80,8 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     int matchcount = 0;
     Bdf* matching[_MAX_BDF_];
     for(int i=0;i<Bsdf::count;i++)
-    {
         if (Bsdf::bdfs[i]->isType(matchme))
-        {
             matching[matchcount++] = bdfs[i];
-        }
-    }
 
     if(matchcount==0)
     {
@@ -104,40 +100,35 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     //TODO: gained efficiency by creating an ad-hoc method?
     Color retval=matching[chosen]->df_s(&wo_shading_space, &tmpwi, r1, r2, pdf);
 
-    //if not specular, throw away retval and compute the value for the generated
-    //pair of directions
-
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
     wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->n.y * tmpwi.z;
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
 
     *val = matching[chosen]->getFlags();//val now is a subset of matchme
+
+    //if not specular, throw away retval and compute the value for the generated
+    //pair of directions
     if((*val & SPECULAR)==0)
     {
-        retval = Color();
+        for(int i=0;i<count;i++)
 
-        char nummatching = 1;
+
+        retval = Color();
         if (wo->dot(h->n) * wi->dot(h->n) > 0)
             *val = (BdfFlags)(*val & ~BTDF);
         else
             *val = (BdfFlags)(*val & ~BRDF);
         for (int i = 0; i < count; i++)
         {
-
             if (bdfs[i]->isType(*val))//add contribution only if matches
-            {
                 retval += bdfs[i]->df(&wo_shading_space, &tmpwi);
-                if(bdfs[i]!=matching[chosen])
-                {
-                    *pdf += bdfs[i]->pdf(&wo_shading_space, &tmpwi);
-                    nummatching++;
-                }
-            }
+            if(bdfs[i]!=matching[chosen] && bdfs[i]->isType(matchme))
+                *pdf+= bdfs[i]->pdf(&wo_shading_space, &tmpwi);
         }
-        if(nummatching>1) //most of times this will be 1. Division is expensive
-            *pdf /= nummatching;
     }
+    if(matchcount>1)
+        *pdf/=matchcount;
 
     return retval;
 }
