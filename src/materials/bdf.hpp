@@ -218,7 +218,7 @@ public:
 private:
 
     //number of Bdfs
-    char count;
+    unsigned char count;
 
     //Bdfs
     Bdf* bdfs[_MAX_BDF_];

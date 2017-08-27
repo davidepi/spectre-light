@@ -40,7 +40,7 @@ Color Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
     return (Color(1)-d.eval(wi->z)) * ((ei*ei)/(et*et)) * specular/fabsf(wi->z);
 }
 
-float Refraction::pdf(const Vec3* wo, const Vec3* wi)const
+float Refraction::pdf(const Vec3*, const Vec3*)const
 {
     return 0.f;
 }

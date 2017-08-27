@@ -36,7 +36,7 @@ public:
     Filter(float x_range, float y_range);
 
     ///Default destructor
-    ~Filter();
+    virtual ~Filter();
 
     /** \brief Compute the weight of a given sample in the final average
      *

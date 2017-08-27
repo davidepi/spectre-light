@@ -15,8 +15,8 @@
  */
 
 //f(x) for AAC
-#define AAC_FD ceil(powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(AAC_DELTA,AAC_ALPHA))
-#define AAC_F(X) ceil(powf(AAC_DELTA,1-AAC_ALPHA)*0.5*powf(X,AAC_ALPHA))
+#define AAC_FD ceilf(powf(AAC_DELTA,1-AAC_ALPHA)*0.5f*powf(AAC_DELTA,AAC_ALPHA))
+#define AAC_F(X) ceilf(powf(AAC_DELTA,1-AAC_ALPHA)*0.5f*powf(X,AAC_ALPHA))
 
 namespace bvhhelpers
 {
@@ -71,7 +71,7 @@ static inline char BSF(uint64_t val)
     _BitScanForward64(&out,val);
     return (char)out;
 #else
-    return __builtin_ffsll(val);
+    return (char)__builtin_ffsll(val);
 #endif
 }
 
@@ -149,15 +149,11 @@ static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
 //return number of nodes created
 static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
 {
-    if(n==19 && axis==1)
-    {
-        volatile int i=0;
-    }
     uint32_t created = 0;
     uint32_t* closest = (uint32_t*)malloc(sizeof(uint32_t)*c->size());
     uint32_t left = 0xFFFFFFFF; //ensure segfault if this is not set
     uint32_t right = 0xFFFFFFFF;
-    if(c->size()>n) //calculate best pair only if needed
+    if((int)c->size()>n) //calculate best pair only if needed
     {
         for (unsigned int i = 0; i < c->size(); i++)
         {
@@ -166,7 +162,7 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
             closest[i] = findBestMatch(c, at);
         }
     }
-    while(c->size()>n)
+    while((int)c->size()>n)
     {
         float best = INFINITY;
         //find best of best-pairs
@@ -193,7 +189,7 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
         c->at(right) = c->back();
         c->pop_back();
 
-        if(c->size()>n)
+        if((int)c->size()>n)
         {
             //update new nodes closest, reflecting previous computations.
             //closest is never shrinked, so c->size() is safe
@@ -271,13 +267,9 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
         for(int i=0;i<len;i++)
             bounding.engulf(tris[p[offs+i].index].computeAABB());
         node->leaf(bounding,offs,len);
-        if(std::isinf(bounding.bounds[0].x))
-        {
-            volatile int i=0;
-        }
         std::vector<BvhBuildNode*> tmp_cluster;
         tmp_cluster.push_back(node);
-        created+=combineCluster(&tmp_cluster,(int)AAC_FD,axis);
+        created+=combineCluster(&tmp_cluster,(int)(AAC_FD),axis);
         c->insert(c->end(),tmp_cluster.begin(),tmp_cluster.end());
     }
     else
@@ -299,7 +291,7 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
  *  \endcond
  */
 
-//<><><><><><><><> Bvh methods <><><><><><><><><><><><><><><><><><><><><><><><><
+// <><><><><><><><> Bvh methods <><><><><><><><><><><><><><><><><><><><><><><><>
 
 Bvh::~Bvh()
 {
@@ -363,8 +355,8 @@ void Bvh::buildTree(Triangle* tris, int len)
     //this is actually horrible but I don't want to deallocate array under
     //the hood. I really hope that memcpying the whole array is smh fast
     Triangle* tmp = (Triangle*)malloc(sizeof(Triangle)*len);
-    memcpy(tmp,tris,sizeof(Triangle)*len); //create a reference copy
-    for(uint32_t i=0;i<len;i++)
+    memcpy((void*)tmp,(void*)tris,sizeof(Triangle)*len); //create a reference copy
+    for(int i=0;i<len;i++)
     {
         tris[i].a = tmp[prims[i].index].a; //copy from the reference
         tris[i].b = tmp[prims[i].index].b;
@@ -419,7 +411,7 @@ bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h)const
     bool found = false;
 
     BvhNode* jobs[BVH_MAX_DEPTH];
-    char jobs_stack_top = 0;
+    unsigned char jobs_stack_top = 0;
     BvhNode* node = Bvh::nodesList;
     while(node!=NULL)
     {

@@ -35,7 +35,7 @@ Color Reflection::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
     return fc->eval(wo->z)*specular/fabsf(wo->z);
 }
 
-float Reflection::pdf(const Vec3* wo, const Vec3* wi)const
+float Reflection::pdf(const Vec3*, const Vec3*)const
 {
     return 0.f;
 }

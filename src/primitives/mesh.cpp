@@ -42,7 +42,7 @@ void Mesh::addTriangle(const Vertex *a, const Vertex *b, const Vertex *c)
         {
             unsigned int newsize = alloc<<1<_MAX_TRIS_?alloc<<1:_MAX_TRIS_;
             Triangle* tmp = new Triangle[newsize];
-            memcpy(tmp, Mesh::tris, Mesh::count*sizeof(Triangle));
+            memcpy((void*)tmp, (void*)Mesh::tris, Mesh::count*sizeof(Triangle));
             delete[] Mesh::tris;
             Mesh::tris = tmp;
             Mesh::alloc = newsize;
@@ -62,14 +62,14 @@ void Mesh::finalize()
     if(Mesh::alloc>Mesh::count)
     {
         Triangle *tmp = new Triangle[Mesh::count];
-        memcpy(tmp, Mesh::tris, Mesh::count*sizeof(Triangle));
+        memcpy((void*)tmp, (void*)Mesh::tris, Mesh::count*sizeof(Triangle));
         delete[] Mesh::tris;
         Mesh::tris = tmp;
         Mesh::alloc = Mesh::count;
     }
 
     //precompute the surface of the mesh and the aabb
-    for(int i=0;i<count;i++)
+    for(unsigned int i=0;i<count;i++)
     {
         Mesh::area += Mesh::tris[i].surface();
         AABB tmp = Mesh::tris[i].computeAABB();
@@ -108,7 +108,7 @@ float Mesh::surface()const
     return Mesh::area;
 }
 
-void Mesh::getRandomPoint(float r, float r1, Point3 *p, Normal *n) const
+void Mesh::getRandomPoint(float, float, Point3* , Normal*) const
 {
     Console.critical("Unimplemented Mesh::getRandomPoint");
 }

@@ -225,7 +225,7 @@ void KdTree::buildTree()
     
     //get the aabb for the whole scene
     scene_aabb = AABB(*(assetsList[0]->getAABB)());
-    for(unsigned int i=1;i<assets_number;i++)
+    for(int i=1;i<assets_number;i++)
         scene_aabb.engulf(assetsList[i]->getAABB());
     
     //copy the assets, since the original array will be rewritten in a
@@ -286,7 +286,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     
     //set variables
     SplitCandidate** sc = (SplitCandidate**)s_c;
-    char best_axis = -1;
+    unsigned char best_axis = 0xFF;
     int best_split = -1; //the offset in the sc structure for the best split
     float best_cost = INFINITY;
     float old_cost = SAH_INTERSECT*(float)a_n;
@@ -295,7 +295,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     float inv_area = 1.f/total_area;
     
     //usually this is the best split candidate, being the longest axis
-    char axis = area.longest_axis();
+    unsigned char axis = area.longest_axis();
     int isSearching = 3; //number of axis attemped. In the worst case
                          //bail out of the while at 0
     
@@ -355,7 +355,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
             if(!isAABBRightSide) //update assets count
                 left_a++;
         }
-        if(best_axis == -1) //nothing useful found
+        if(best_axis == 0xFF) //nothing useful found
         {
             isSearching--;  //try with another axis
             axis = (axis+1)%3;
@@ -365,7 +365,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     }
     
     //best cost sucks, better not to split at all -> make a leaf
-    if((best_cost > 4.0 * old_cost && a_n < 16) || best_axis == -1)
+    if((best_cost > 4.0 * old_cost && a_n < 16) || best_axis == 0xFF)
     {
         node->offset_start = KdTree::assets_number;
         node->assets_number = a_n;
@@ -391,7 +391,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     for(int i=0;i<best_split;i++)
         if(sc[best_axis][i].isLeftSide)
             as_left[as_left_index++] = sc[best_axis][i].whoami;
-    for(int i=best_split+1;i<2*a_n;i++)
+    for(unsigned int i=best_split+1;i<2*a_n;i++)
         if(!(sc[best_axis][i].isLeftSide))
             as_right[as_right_index++] = sc[best_axis][i].whoami;
     

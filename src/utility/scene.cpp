@@ -49,7 +49,8 @@ int Scene::inheritShape(Shape *addme)
     return  addme->getID();
 }
 
-int Scene::addAsset(int shapeid, Matrix4* transformMatrix,const Bsdf* material)
+unsigned int Scene::addAsset(unsigned int shapeid, Matrix4* transformMatrix,
+                             const Bsdf* material)
 {
     //complexity O(n), could be O(1), but who cares, this is done in the setup
     for(int i=0;i<Scene::shape_index;i++)
@@ -85,7 +86,7 @@ int Scene::addAsset(int shapeid, Matrix4* transformMatrix,const Bsdf* material)
     return 0; //shape not found, nothing added
 }
 
-int Scene::addLight(int shapeid, Matrix4* transform, Color c)
+unsigned int Scene::addLight(unsigned int shapeid, Matrix4* transform, Color c)
 {
     AreaLight* addme = NULL;
     int retval = 0;

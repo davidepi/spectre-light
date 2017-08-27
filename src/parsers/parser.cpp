@@ -126,7 +126,7 @@ static void parseCamera(char* string, Settings* out)
         if(out->ct == PERSPECTIVE) //parse fov
         {
             token = strtok_r(NULL," ",&savestring);
-            out->camera_fov = toRad(atof(token));
+            out->camera_fov = toRad((float)atof(token));
         }
     }
     else
@@ -198,7 +198,7 @@ static void parseIntegrator(char* string, Settings* out)
     }
 }
 
-static void parseMaterial(char* string, Settings* out)
+static void parseMaterial(char* string)
 {
     char* stringpos;
     char* token = strtok_r(string," ",&stringpos);
@@ -298,7 +298,8 @@ static void parseMaterial(char* string, Settings* out)
 
             addme = new Refraction(refracted,etai,etat);
         }
-        else;
+        else
+            return;
         mat->inheritBdf(addme);
     }
     else
@@ -508,7 +509,7 @@ void Parser::parse(const char* filename, Settings* out)
 {
     Console.log(MESSAGE_STARTED_PARSING,NULL);
     std::chrono::steady_clock::time_point a = std::chrono::steady_clock::now();
-    size_t buf_size = 512;
+    int buf_size = 512;
     char* buf = (char*)malloc(buf_size);
     FILE* fin = fopen(filename,"r");
     if(fin!=NULL)
@@ -538,7 +539,7 @@ void Parser::parse(const char* filename, Settings* out)
                     parseIntegrator(buf,out);
                     break;
                 case 'm':
-                    parseMaterial(buf,out);
+                    parseMaterial(buf);
                     break;
                 case 'a':
                     parseShape(buf, &(Parser::shapeids), out);
@@ -568,10 +569,14 @@ void Parser::parse(const char* filename, Settings* out)
         free(buf);
     }
     else
+    {
+        free(buf);
         Console.critical("Error opening input file");
-    std::chrono::steady_clock::time_point b = std::chrono::steady_clock::now();
-    int d = std::chrono::duration_cast<std::chrono::milliseconds>(b-a).count();
+    }
+    using namespace std::chrono;
+    steady_clock::time_point b = steady_clock::now();
+    long long d = duration_cast<milliseconds>(b-a).count();
     char log[64];
-    sprintf(log,MESSAGE_ENDED_PARSING,d);
+    sprintf(log,MESSAGE_ENDED_PARSING,(int)d);
     Console.log(log,NULL);
 }

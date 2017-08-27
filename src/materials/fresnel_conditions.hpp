@@ -1,12 +1,12 @@
 //Created,   9 Jun 2017
-//Last Edit  2 Jul 2017
+//Last Edit 27 Aug 2017
 
 /**
  *  \file fresnel_conditions.hpp
  *  \brief Implementation of the fresnel equations
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      2 Jul 2017
+ *  \date      27 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -37,6 +37,10 @@ public:
      *  \return The amount of light reflected or transmitted
      */
     virtual Color eval(float cosin)const = 0;
+    
+    //No need for virtual destructor...
+    ///Default destructor
+    virtual ~FresnelConditions();
 };
 
 

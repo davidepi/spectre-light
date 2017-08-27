@@ -73,7 +73,8 @@ public:
      *  will remain the default one
      *  \return the added assets id. 0 if nothing was added
      */
-    int addAsset(int shapeid, Matrix4* transform, const Bsdf* material = NULL);
+    unsigned int addAsset(unsigned int shapeid, Matrix4* transform,
+                          const Bsdf* material = NULL);
 
     /** \brief Given a shapeid and a matrix, create a light with those
      *
@@ -83,7 +84,7 @@ public:
      *  \return the added light id. Since a light is essentially an asset, this
      *  is an asset id. 0 if nothing was added
      */
-    int addLight(int shapeid, Matrix4* transform, Color c);
+    unsigned int addLight(unsigned int shapeid, Matrix4* transform, Color c);
 
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene

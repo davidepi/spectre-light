@@ -64,6 +64,9 @@ public:
      */
     Sampler(int startx, int endx, int starty, int endy, int spp,
             const unsigned int* seed);
+    
+    ///Default destructor
+    virtual ~Sampler();
 
     /** \brief Return a set of samples
      *

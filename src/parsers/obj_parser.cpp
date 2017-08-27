@@ -19,7 +19,7 @@ Mesh* parseObj(const char* path)
     FILE* fin = fopen(path,"r");
     std::vector<Point3>vertices;
     std::vector<Normal>normals;
-    size_t buf_size = 512;
+    int buf_size = 512;
     char* buf = (char*)malloc(buf_size);
     Mesh* retval = NULL;
     bool textures = false;
@@ -56,7 +56,6 @@ Mesh* parseObj(const char* path)
             retval = new Mesh(tris);
             Vertex a,b,c;
             char* token;
-            char* val;
             char* pos;
             while(fgets(buf, buf_size, fin)!=NULL) //second pass, faces
             {
@@ -101,6 +100,7 @@ Mesh* parseObj(const char* path)
     }
     else
     {
+        free(buf);
         Console.critical("Error opening .obj file");
     }
     return retval;

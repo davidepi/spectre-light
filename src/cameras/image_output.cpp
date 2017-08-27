@@ -4,7 +4,7 @@
 bool check_extension(const char* fn)
 {
     const char* name = strrchr(fn,'.');
-    if(name == NULL || (name-fn)<strlen(fn)-4) //null or position less than the
+    if(name == NULL || (name-fn)<(int)strlen(fn)-4) //null or position less than the
     {                                          //4 chr expected for an extension
         Console.warning(MESSAGE_MISSING_EXTENSION);
         return false;
@@ -58,6 +58,7 @@ ImageOutput::ImageOutput(int w, int h, const char* fn) :width(w), height(h)
                                               +strlen(folder)+1));
         sprintf(err,MESSAGE_W_DENIED,folder);
         Console.critical(err);
+        free(err);
     }
 
     if(fn != NULL)

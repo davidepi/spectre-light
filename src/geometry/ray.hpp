@@ -81,19 +81,6 @@ public:
      */
     Ray(const Point3 origin, const Vec3 direction);
     
-    /** \brief Constructor, given origin and direction
-     *
-     *  Construct a Ray given a Point3 representing the starting point, a
-     *  Vec3 representing the direction of the Ray and a float reprenting
-     *  the time-to-live of the ray
-     *  Its minimum extent will be 0 and maximum extent will be infinity.
-     *
-     *  \param[in] origin a Point3 representing the starting point of the Ray
-     *  \param[in] direction a Vec3 representing the direction of the Ray
-     *  \param[in] bounces an int representing the remaining bounces of the Ray
-     */
-    Ray(const Point3 origin, const Vec3 direction, unsigned char bounces);
-    
     /** \brief Constructor, given some floats
      *
      *  Construct a Ray given three floats representing the starting point

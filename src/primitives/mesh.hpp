@@ -122,7 +122,7 @@ public:
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
      *  set
      *
-     *  \param[in] transform The transform matrix used to transform the mesh
+     *  \param[in] trans The transform matrix used to transform the mesh
      *  from object space to world space
      *
      *  \return an AABB representing the world space bounding box
@@ -144,7 +144,7 @@ public:
      *  Useful for the light sources, this method returns a random point on the
      *  surface of the mesh.
      *
-     *  \param[in] r0 A random value in the interval (0.0,1.0)
+     *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point

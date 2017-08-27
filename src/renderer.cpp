@@ -157,7 +157,7 @@ void Renderer::setPathTracer()
 int Renderer::render(Scene* s)
 {
     //used just for seed generation, WELLrng will be the actual prng
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 
     //build the kd-tree, or rebuild it, just to be sure
     s->k.buildTree();
@@ -288,7 +288,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
 		io->deferredAddPixel(&ex);
         delete sam;
     }
-    delete samples;
+    delete[] samples;
 	io->forceAddPixel(&ex);
 }
 

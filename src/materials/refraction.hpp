@@ -75,7 +75,7 @@ public:
      *  generated, this method returns 1.0 as pdf
      *  \return The value of the BTDF
      */
-    Color df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf)const;
+    Color df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const;
 
     /** \brief Return the probability density function for this bdf
      *

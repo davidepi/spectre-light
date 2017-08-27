@@ -14,3 +14,8 @@ void Sampler::getRandomNumbers(float* container, int size)
     for(int i=0;i<size;i++)
         container[i] = rng.getNumberf();
 }
+
+Sampler::~Sampler()
+{
+    
+}

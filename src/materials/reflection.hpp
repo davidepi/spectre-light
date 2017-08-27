@@ -70,7 +70,7 @@ public:
      *  BRDF follows a delta distribution, and this function returns always 0
      *
      *  \param[in] wo outgoing ray
-     *  \param[in] wiincident ray
+     *  \param[in] wi incident ray
      *  \return 0
      */
     Color df(const Vec3* wo, const Vec3* wi)const;
@@ -89,7 +89,7 @@ public:
      *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
-    Color df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf)const;
+    Color df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const;
 
     /** \brief Return the probability density function for this bdf
      *

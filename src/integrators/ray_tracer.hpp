@@ -97,7 +97,7 @@ Color direct_l(const Scene *sc, const HitPoint *hp,
  *  function
  *  \param[in] ref BRDF for specular reflection, BTDF for specular
  *  refraction
- *  \param[in] l Since this function needs to compute the radiance arriving
+ *  \param[in] i Since this function needs to compute the radiance arriving
  *  through a specular direction, the integrator used to calla the radiance()
  *  function is passed here
  *  \return The radiance arriving at the film

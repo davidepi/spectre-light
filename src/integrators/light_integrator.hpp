@@ -53,6 +53,9 @@ public:
     virtual Color radiance(const Scene* sc, const HitPoint* hp,
                            const Ray* r, Sampler* sam,
                            OcclusionTester* ot)const = 0;
+    
+    ///Default destructor
+    virtual ~LightIntegrator(){};
 };
 
 

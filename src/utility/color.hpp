@@ -87,7 +87,7 @@ public:
     ///Blue component
     float b;
 
-    //<><><><> Operators <><><><><><><><><><><><><><><><><><><><><><><><><><><>
+    // <><><><> Operators <><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
     ///The addition operation between two colours
     Color operator+(const Color& c)const;
@@ -122,7 +122,7 @@ public:
     ///The division operation between a value and a colour
     void operator/=(float c);
 
-    //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+    // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 };
 
 #endif
