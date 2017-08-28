@@ -1,12 +1,12 @@
 //Created,  23 Aug 2017
-//Last Edit 26 Aug 2017
+//Last Edit 28 Aug 2017
 
 /**
  *  \file bidirpt.hpp
  *  \brief     LTE integrator that joins paths starting from light and camera
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      23 Aug 2017
+ *  \date      28 Aug 2017
  *  \copyright GNU GPLv3
  */
 
