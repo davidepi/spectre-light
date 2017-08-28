@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 21 May 2017
+//Last Edit 28 Aug 2017
 
 /**
  *  \file lanczos_filter.hpp
@@ -7,7 +7,7 @@
  *  \details   A filter based on the sinc function
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      21 May 2017
+ *  \date      28 Aug 2017
  *  \copyright GNU GPLv3
  */
 

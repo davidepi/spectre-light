@@ -11,22 +11,30 @@ LanczosFilter::LanczosFilter(float x_r, float y_r, float tau)
 float LanczosFilter::weight(float offset_x, float offset_y)const
 {
     float resx = fabsf(offset_x * LanczosFilter::inverse_width);
+    float sinc;
+    float lanczos;
     if(resx < 1E-5)
-        return 1.f;
-    if(resx > 1.f)
-        return 0.f;
-    resx *= M_PI;
-    float lanczos = sinf(resx * LanczosFilter::tau)/(resx * LanczosFilter::tau);
-    float sinc = sinf(resx)/resx;
-    resx = sinc * lanczos;
+        resx = 1.f;
+    else if(resx > 1.f)
+        resx = 0.f;
+    else
+    {
+        resx *= M_PI;
+        sinc = sinf(resx * LanczosFilter::tau) / (resx * LanczosFilter::tau);
+        lanczos = sinf(resx) / resx;
+        resx = sinc * lanczos;
+    }
     float resy = fabsf(offset_y * LanczosFilter::inverse_height);
     if (resy < 1E-5)
-        return 1.f;
-    if(resy > 1.f)
-        return 0.f;
-    resy *= M_PI;
-    lanczos = sinf(resy * LanczosFilter::tau) / (resy * LanczosFilter::tau);
-    sinc = sinf(resy)/resy;
-    resy = sinc * lanczos;
+        resy = 1.f;
+    else if(resy > 1.f)
+        resy = 0.f;
+    else
+    {
+        resy *= M_PI;
+        sinc = sinf(resy * LanczosFilter::tau) / (resy * LanczosFilter::tau);
+        lanczos = sinf(resy) / resy;
+        resy = sinc * lanczos;
+    }
     return resx * resy;
 }
