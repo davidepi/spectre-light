@@ -1,13 +1,13 @@
 //Created,  23 May 2017
-//Last Edit 15 Jun 2017
+//Last Edit 29 Aug 2017
 /**
  *  \file color.hpp
- *  \brief Spectrum and colours representations
+ *  \brief Colours representations using tristimulus values
  *  \details Contains a class to approximate the representation of the visible
  *  spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 15 June 2017
+ *  \date 29 Aug 2017
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <cmath> //pow
 
 /**
  *  \class Color color.hpp "utility/color.hpp"
@@ -71,7 +72,7 @@ public:
     Color(const char* hex);
 
     ///Default destructor
-    ~Color();
+    virtual ~Color();
 
     /** \brief Return true if the color is black
      *  \return true if every component is zero
@@ -123,6 +124,62 @@ public:
     void operator/=(float c);
 
     // <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
+};
+
+class ColorXYZ;
+
+/** \brief Representeation of an RGB color
+ *
+ *  Represents a Color using the three values R, G and B, in the range (0.0,1.0)
+ */
+class ColorRGB : public Color
+{
+public:
+    
+    //inherit cosntructors
+    using Color::Color;
+   
+    /** \brief Convert this RGB to the XYZ representation
+     *
+     *  Convert the color representation from RGB (sRGB color space assumed)
+     *  to CIE 1931 XYZ. The Standard illuminant (D65) is also assumed for the
+     *  XYZ range
+     */
+    ColorXYZ toXYZ()const;
+};
+
+/** \brief Representeation of an RGB color
+ *
+ *  Represents a Color using the CIE 1931 XYZ with values in range (0.0,1.0)
+ */
+class ColorXYZ : public Color
+{
+public:
+    
+    /** \brief Default Constructor, given X Y and Z values
+     *
+     *  Create a color with the given value for XYZ, using D65 standard
+     *  illuminant
+     *
+     *  \param[in] x The value of the X component
+     *  \param[in] y The value of the Y component
+     *  \param[in] z The value of the Z component
+     */
+    ColorXYZ(float x, float y, float z);
+    
+    /** \brief Convert this XYZ to the sRGB representation
+     *
+     *  Convert the color representation from CIE 1931 XYZ to sRGB, assuming
+     *  a D65 Illuminant for the XYZ range
+     */
+    ColorRGB toStandardRGB()const;
+    
+    /** \brief Convert this XYZ to the Adobe RGB representation
+     *
+     *  Convert the color representation from CIE 1931 XYZ to Adobe RGB, 
+     *  assuming a D65 Illuminant for the XYZ range
+     */
+    ColorRGB toAdobeRGB()const;
 };
 
 #endif

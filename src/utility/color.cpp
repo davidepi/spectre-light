@@ -174,3 +174,82 @@ void Color::operator/=(float c)
 }
 
 //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+ColorXYZ::ColorXYZ(float x, float y, float z)
+{
+    ColorXYZ::r = x;
+    ColorXYZ::g = y;
+    ColorXYZ::b = z;
+}
+
+ColorRGB ColorXYZ::toStandardRGB()const
+{
+    constexpr double EXP = 1/2.4; //periodic :(
+    double x = ColorXYZ::r*0.01;
+    double y = ColorXYZ::g*0.01;
+    double z = ColorXYZ::b*0.01;
+    
+    double r = x *  3.2406 + y * -1.5372 + z * -0.4986;
+    double g = x * -0.9689 + y *  1.8758 + z *  0.0415;
+    double b = x *  0.0557 + y * -0.2040 + z *  1.0570;
+    
+    if(r > 0.0031308)
+        r = 1.055*pow(r,EXP)-0.055;
+    else
+        r = 12.92*r;
+    if(g > 0.0031308)
+        g = 1.055*pow(g,EXP)-0.055;
+    else
+        g = 12.92*g;
+    if(b > 0.0031308)
+        b = 1.055*pow(b,EXP)-0.055;
+    else
+        r = 12.92*b;
+    
+    return ColorRGB((float)r,(float)g,(float)b);
+}
+
+ColorRGB ColorXYZ::toAdobeRGB()const
+{
+    constexpr double EXP = 1/2.19921875;
+    double x = ColorXYZ::r*0.01;
+    double y = ColorXYZ::g*0.01;
+    double z = ColorXYZ::b*0.01;
+    
+    double r = x *  2.04159 + y * -0.56501 + z * -0.34473;
+    double g = x * -0.96924 + y *  1.87597 + z *  0.03342;
+    double b = x *  0.01344 + y * -0.11836 + z *  1.34926;
+    
+    r = pow(r,EXP);
+    g = pow(g,EXP);
+    b = pow(b,EXP);
+    
+    return ColorRGB((float)r,(float)g,(float)b);
+}
+
+ColorXYZ ColorRGB::toXYZ()const
+{
+    double r;
+    double g;
+    double b;
+    
+    if(ColorRGB::r > 0.04045)
+        r = pow((ColorRGB::r+0.055)/1.055,2.4);
+    else
+        r = ColorRGB::r/12.92;
+    if(ColorRGB::g > 0.04045)
+        g = pow((ColorRGB::g+0.055)/1.055,2.4);
+    else
+        g = ColorRGB::g/12.92;
+    if(ColorRGB::b > 0.04045)
+        b = pow((ColorRGB::b+0.055)/1.055,2.4);
+    else
+        b = ColorRGB::b/12.92;
+    
+    float x = (float)(r * 0.4124 + g * 0.3576 + b * 0.1805);
+    float y = (float)(r * 0.2126 + g * 0.7152 + b * 0.0722);
+    float z = (float)(r * 0.0193 + g * 0.1192 + b * 0.9505);
+    
+    return ColorXYZ(x,y,z);
+}
