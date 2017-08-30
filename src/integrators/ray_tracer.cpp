@@ -45,6 +45,7 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
         if(lightpdf > 0 && !directrad.isBlack())
         {
             Color bsdf_f = mat->df(&wo,hp,&wi,flags);
+            wi.normalize();
             Ray r(hp->h,wi);
             if(!bsdf_f.isBlack() && !ot->isOccluded(&r,&light_distance))
             {
@@ -60,6 +61,7 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
                                  flags,&sampled_val);
         if(bsdfpdf>0 && !bsdf_f.isBlack())
         {
+            wi.normalize();
             float w = 1.f; //weight
             //if((sampled_val&SPECULAR)==0) //if not specular -> 100% guaranteed
             //{
@@ -77,7 +79,6 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
                         rad=light->emissiveSpectrum();
             if(!rad.isBlack())
                 L+=bsdf_f*rad*absdot(wi,hp->n)*w/bsdfpdf;
-
         }
     }
     return L;
@@ -86,7 +87,7 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
 Color spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
              OcclusionTester* ot, BdfFlags ref,const LightIntegrator* i)
 {
-    Vec3 wo = -r->direction;
+    Vec3 wo = normalize(-r->direction);
     Vec3 wi;
     float rand[3];
     float bsdfpdf;
@@ -96,16 +97,22 @@ Color spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
     Color bsdf_f = mat->df_s(rand[0], rand[1], rand[2], &wo, hp, &wi,
                        &bsdfpdf,sampleme,&sampled_val);
-    float adot = absdot(wi, hp->n);
-    if(bsdfpdf == 1.f && !bsdf_f.isBlack() && adot != 0)
+    
+    if(bsdfpdf==1.f && !bsdf_f.isBlack())
     {
-        Color reflr_rad;
-        Ray r2(hp->h,wi); //new ray to trace
-        r2.ricochet=r->ricochet+1;
-        HitPoint h2;
-        if(s->k.intersect(&r2,&h2)) //if intersection is found
-            reflr_rad = i->radiance(s,&h2,&r2,sam,ot);
-        return bsdf_f*reflr_rad*adot;
+        float adot = absdot(wi, hp->n);
+        if(adot != 0)
+        {
+            Color reflr_rad;
+            Ray r2(hp->h,wi); //new ray to trace
+            r2.ricochet=r->ricochet+1;
+            HitPoint h2;
+            if(s->k.intersect(&r2,&h2)) //if intersection is found
+                reflr_rad = i->radiance(s,&h2,&r2,sam,ot);
+            return bsdf_f*reflr_rad*adot;
+        }
+        else
+            return Color();
     }
     else
         return Color();

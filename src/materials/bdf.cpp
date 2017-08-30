@@ -106,14 +106,17 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
 
     *val = matching[chosen]->getFlags();//val now is a subset of matchme
-
+    if(wi->length()==0)
+    {
+        *pdf = 0.f;
+        return Color();
+    }
+    else
+        wi->normalize();
     //if not specular, throw away retval and compute the value for the generated
     //pair of directions
     if((*val & SPECULAR)==0)
     {
-        for(int i=0;i<count;i++)
-
-
         retval = Color();
         if (wo->dot(h->n) * wi->dot(h->n) > 0)
             *val = (BdfFlags)(*val & ~BTDF);
@@ -129,7 +132,6 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     }
     if(matchcount>1)
         *pdf/=matchcount;
-
     return retval;
 }
 

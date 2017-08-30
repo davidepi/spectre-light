@@ -1,5 +1,5 @@
 //Created,  29 Aug 2017
-//Last Edit 30 Aug 2017
+//Last Edit 31 Aug 2017
 
 #ifndef __SPECTRUM_HPP__
 #define __SPECTRUM_HPP__
@@ -8,9 +8,9 @@
 #include "settings.h"
 
 #if HQ_SPECTRUM==0
-#define SPECTRUM_SAMPLES 15
+#define SPECTRUM_SAMPLES 16
 #else
-#define SPECTRUM_SAMPLES 30
+#define SPECTRUM_SAMPLES 31
 #endif
 
 enum SpectrumType {BLACK, WHITE, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW};
@@ -21,6 +21,9 @@ public:
     
     Spectrum();
     Spectrum(SpectrumType);
+    
+    ColorXYZ toXYZ()const;
+    float yVal()const;
     
     ///The addition operation between two spectra
     Spectrum operator+(const Spectrum& s)const;

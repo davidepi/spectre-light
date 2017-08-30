@@ -1,5 +1,176 @@
 #include "spectrum.hpp"
 
+//lookup tables for spectrum to XYZ
+//taken from http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html
+#if HQ_SPECTRUM==0
+const float X[SPECTRUM_SAMPLES] =
+{
+    0.704719194064694f,
+    8.05919368162368f,
+    26.0397303584315f,
+    26.3344474095872f,
+    9.09217349249588f,
+    0.468913675410046f,
+    6.14434813643801f,
+    29.2570087297861f,
+    59.45f,
+    90.6445191071685f,
+    103.784866140455f,
+    84.6507668018606f,
+    44.2958425675426f,
+    16.1994298557152f,
+    4.63907953796373f,
+    1.04114730065218f
+};
+
+const float Y[SPECTRUM_SAMPLES+1] =
+{
+    0.0195016632319789f,
+    0.239892653121705f,
+    1.71963304882257f,
+    5.43351734723257f,
+    13.2161643551524f,
+    30.9100239096826f,
+    68.950326803714f,
+    96.1129005792559f,
+    99.5f,
+    86.0643147694386f,
+    61.6534085244091f,
+    37.7458551420146f,
+    17.3069266562178f,
+    5.99251195390313f,
+    1.6862166377033f,
+    0.37597729297547f,
+    526.927171336876f
+};
+
+const float Z[SPECTRUM_SAMPLES] =
+{
+    3.34138395279395f,
+    38.7186742138432f,
+    130.621831055477f,
+    151.16045260001f,
+    77.2844348592836f,
+    26.0294938186801f,
+    7.59910194772867f,
+    2.0451696873783f,
+    0.39f,
+    0.163225523487228f,
+    0.0781659696030543f,
+    0.0188233923280388f,
+    0.00197793447499632f,
+    0.f,
+    0.f,
+    0.f
+};
+#else
+const float X[SPECTRUM_SAMPLES] =
+{
+    0.704719194064694f,
+    2.45612825752715f,
+    8.05919368162368f,
+    16.3991923955296f,
+    26.0397303584315f,
+    29.3129037088222f,
+    26.3344474095872f,
+    17.8405649537739f,
+    9.09217349249588f,
+    2.94265977310254f,
+    0.468913675410046f,
+    0.898296138990984f,
+    6.14434813643801f,
+    16.8954464697615f,
+    29.2570087297861f,
+    44.3477175902877f,
+    59.45f,
+    74.4860262967351f,
+    90.6445191071685f,
+    95.9706456420296f,
+    103.784866140455f,
+    99.5521507183938f,
+    84.6507668018606f,
+    61.5120323038324f,
+    44.2958425675426f,
+    27.1334189988948f,
+    16.1994298557152f,
+    9.00732538761708f,
+    4.63907953796373f,
+    1.98461278785078f,
+    1.04114730065218f
+};
+
+const float Y[SPECTRUM_SAMPLES+1]
+{
+    0.0195016632319789f,
+    0.068304187350215f,
+    0.239892653121705f,
+    0.670062105629249f,
+    1.71963304882257f,
+    3.31317769463189f,
+    5.43351734723257f,
+    8.30842853959023f,
+    13.2161643551524f,
+    19.1231517026176f,
+    30.9100239096826f,
+    48.5852642916629f,
+    68.950326803714f,
+    87.9992438485462f,
+    96.1129005792559f,
+    101.796692192635f,
+    99.5f,
+    93.0464467058022f,
+    86.0643147694386f,
+    70.7880529582153f,
+    61.6534085244091f,
+    49.9448751359985f,
+    37.7458551420146f,
+    25.3746708600803f,
+    17.3069266562178f,
+    10.2408318620167f,
+    5.99251195390313f,
+    3.29787657212525f,
+    1.6862166377033f,
+    0.71778286291872f,
+    0.37597729297547f,
+    1050.2020328567f
+};
+
+const float Z[SPECTRUM_SAMPLES]
+{
+    3.34138395279395f,
+    11.7076764102765f,
+    38.7186742138432f,
+    80.0377632379214f,
+    130.621831055477f,
+    154.508298011424f,
+    151.16045260001f,
+    117.58919460011f,
+    77.2844348592836f,
+    42.7637136286111f,
+    26.0294938186801f,
+    15.2806934611155f,
+    7.59910194772867f,
+    4.30400013997066f,
+    2.0451696873783f,
+    0.895241836639712f,
+    0.39f,
+    0.205249514792211f,
+    0.163225523487228f,
+    0.102862428340868f,
+    0.0781659696030543f,
+    0.0337599553603171f,
+    0.0188233923280388f,
+    0.00478767278965021f,
+    0.00197793447499632f,
+    0.f,
+    0.f,
+    0.f,
+    0.f,
+    0.f,
+    0.f
+};
+#endif
+
 Spectrum::Spectrum()
 {
     //do nothing. Too expensive to initialize if I need to assign it later
@@ -34,8 +205,8 @@ Spectrum Spectrum::operator+(const Spectrum& s)const
     retval.w[12] = Spectrum::w[12] + s.w[12];
     retval.w[13] = Spectrum::w[13] + s.w[13];
     retval.w[14] = Spectrum::w[14] + s.w[14];
-#if HQ_SPECTRUM!=0
     retval.w[15] = Spectrum::w[15] + s.w[15];
+#if HQ_SPECTRUM!=0
     retval.w[16] = Spectrum::w[16] + s.w[16];
     retval.w[17] = Spectrum::w[17] + s.w[17];
     retval.w[18] = Spectrum::w[18] + s.w[18];
@@ -50,6 +221,7 @@ Spectrum Spectrum::operator+(const Spectrum& s)const
     retval.w[27] = Spectrum::w[27] + s.w[27];
     retval.w[28] = Spectrum::w[28] + s.w[28];
     retval.w[29] = Spectrum::w[29] + s.w[29];
+    retval.w[30] = Spectrum::w[30] + s.w[30];
 #endif
     return retval;
 }
@@ -71,8 +243,8 @@ void Spectrum::operator+=(const Spectrum& s)
     Spectrum::w[12] += s.w[12];
     Spectrum::w[13] += s.w[13];
     Spectrum::w[14] += s.w[14];
-#if HQ_SPECTRUM!=0
     Spectrum::w[15] += s.w[15];
+#if HQ_SPECTRUM!=0
     Spectrum::w[16] += s.w[16];
     Spectrum::w[17] += s.w[17];
     Spectrum::w[18] += s.w[18];
@@ -87,6 +259,7 @@ void Spectrum::operator+=(const Spectrum& s)
     Spectrum::w[27] += s.w[27];
     Spectrum::w[28] += s.w[28];
     Spectrum::w[29] += s.w[29];
+    Spectrum::w[30] += s.w[30];
 #endif
 }
 
@@ -108,8 +281,8 @@ Spectrum Spectrum::operator-(const Spectrum& s)const
     retval.w[12] = Spectrum::w[12] - s.w[12];
     retval.w[13] = Spectrum::w[13] - s.w[13];
     retval.w[14] = Spectrum::w[14] - s.w[14];
-#if HQ_SPECTRUM!=0
     retval.w[15] = Spectrum::w[15] - s.w[15];
+#if HQ_SPECTRUM!=0
     retval.w[16] = Spectrum::w[16] - s.w[16];
     retval.w[17] = Spectrum::w[17] - s.w[17];
     retval.w[18] = Spectrum::w[18] - s.w[18];
@@ -124,6 +297,7 @@ Spectrum Spectrum::operator-(const Spectrum& s)const
     retval.w[27] = Spectrum::w[27] - s.w[27];
     retval.w[28] = Spectrum::w[28] - s.w[28];
     retval.w[29] = Spectrum::w[29] - s.w[29];
+    retval.w[30] = Spectrum::w[30] - s.w[30];
 #endif
     return retval;
 
@@ -146,8 +320,8 @@ void Spectrum::operator-=(const Spectrum& s)
     Spectrum::w[12] -= s.w[12];
     Spectrum::w[13] -= s.w[13];
     Spectrum::w[14] -= s.w[14];
-#if HQ_SPECTRUM!=0
     Spectrum::w[15] -= s.w[15];
+#if HQ_SPECTRUM!=0
     Spectrum::w[16] -= s.w[16];
     Spectrum::w[17] -= s.w[17];
     Spectrum::w[18] -= s.w[18];
@@ -162,6 +336,7 @@ void Spectrum::operator-=(const Spectrum& s)
     Spectrum::w[27] -= s.w[27];
     Spectrum::w[28] -= s.w[28];
     Spectrum::w[29] -= s.w[29];
+    Spectrum::w[30] -= s.w[30];
 #endif
 }
 
@@ -183,8 +358,8 @@ Spectrum Spectrum::operator*(const Spectrum& s)const
     retval.w[12] = Spectrum::w[12] * s.w[12];
     retval.w[13] = Spectrum::w[13] * s.w[13];
     retval.w[14] = Spectrum::w[14] * s.w[14];
-#if HQ_SPECTRUM!=0
     retval.w[15] = Spectrum::w[15] * s.w[15];
+#if HQ_SPECTRUM!=0
     retval.w[16] = Spectrum::w[16] * s.w[16];
     retval.w[17] = Spectrum::w[17] * s.w[17];
     retval.w[18] = Spectrum::w[18] * s.w[18];
@@ -199,6 +374,7 @@ Spectrum Spectrum::operator*(const Spectrum& s)const
     retval.w[27] = Spectrum::w[27] * s.w[27];
     retval.w[28] = Spectrum::w[28] * s.w[28];
     retval.w[29] = Spectrum::w[29] * s.w[29];
+    retval.w[30] = Spectrum::w[30] * s.w[30];
 #endif
     return retval;
 
@@ -221,8 +397,8 @@ void Spectrum::operator*=(const Spectrum& s)
     Spectrum::w[12] *= s.w[12];
     Spectrum::w[13] *= s.w[13];
     Spectrum::w[14] *= s.w[14];
-#if HQ_SPECTRUM!=0
     Spectrum::w[15] *= s.w[15];
+#if HQ_SPECTRUM!=0
     Spectrum::w[16] *= s.w[16];
     Spectrum::w[17] *= s.w[17];
     Spectrum::w[18] *= s.w[18];
@@ -237,6 +413,7 @@ void Spectrum::operator*=(const Spectrum& s)
     Spectrum::w[27] *= s.w[27];
     Spectrum::w[28] *= s.w[28];
     Spectrum::w[29] *= s.w[29];
+    Spectrum::w[30] *= s.w[30];
 #endif
 }
 
@@ -258,8 +435,8 @@ Spectrum Spectrum::operator/(const Spectrum& s)const
     retval.w[12] = Spectrum::w[12] / s.w[12];
     retval.w[13] = Spectrum::w[13] / s.w[13];
     retval.w[14] = Spectrum::w[14] / s.w[14];
-#if HQ_SPECTRUM!=0
     retval.w[15] = Spectrum::w[15] / s.w[15];
+#if HQ_SPECTRUM!=0
     retval.w[16] = Spectrum::w[16] / s.w[16];
     retval.w[17] = Spectrum::w[17] / s.w[17];
     retval.w[18] = Spectrum::w[18] / s.w[18];
@@ -274,6 +451,7 @@ Spectrum Spectrum::operator/(const Spectrum& s)const
     retval.w[27] = Spectrum::w[27] / s.w[27];
     retval.w[28] = Spectrum::w[28] / s.w[28];
     retval.w[29] = Spectrum::w[29] / s.w[29];
+    retval.w[30] = Spectrum::w[30] / s.w[30];
 #endif
     return retval;
 }
@@ -295,8 +473,8 @@ void Spectrum::operator/=(const Spectrum& s)
     Spectrum::w[12] /= s.w[12];
     Spectrum::w[13] /= s.w[13];
     Spectrum::w[14] /= s.w[14];
-#if HQ_SPECTRUM!=0
     Spectrum::w[15] /= s.w[15];
+#if HQ_SPECTRUM!=0
     Spectrum::w[16] /= s.w[16];
     Spectrum::w[17] /= s.w[17];
     Spectrum::w[18] /= s.w[18];
@@ -311,6 +489,7 @@ void Spectrum::operator/=(const Spectrum& s)
     Spectrum::w[27] /= s.w[27];
     Spectrum::w[28] /= s.w[28];
     Spectrum::w[29] /= s.w[29];
+    Spectrum::w[30] /= s.w[30];
 #endif
 }
 
@@ -332,8 +511,8 @@ Spectrum Spectrum::operator+(float v)const
     retval.w[12] = Spectrum::w[12] + v;
     retval.w[13] = Spectrum::w[13] + v;
     retval.w[14] = Spectrum::w[14] + v;
-#if HQ_SPECTRUM!=0
     retval.w[15] = Spectrum::w[15] + v;
+#if HQ_SPECTRUM!=0
     retval.w[16] = Spectrum::w[16] + v;
     retval.w[17] = Spectrum::w[17] + v;
     retval.w[18] = Spectrum::w[18] + v;
@@ -348,6 +527,7 @@ Spectrum Spectrum::operator+(float v)const
     retval.w[27] = Spectrum::w[27] + v;
     retval.w[28] = Spectrum::w[28] + v;
     retval.w[29] = Spectrum::w[29] + v;
+    retval.w[30] = Spectrum::w[30] + v;
 #endif
     return retval;
 }
@@ -369,8 +549,8 @@ void Spectrum::operator+=(float v)
     Spectrum::w[12] += v;
     Spectrum::w[13] += v;
     Spectrum::w[14] += v;
-#if HQ_SPECTRUM!=0
     Spectrum::w[15] += v;
+#if HQ_SPECTRUM!=0
     Spectrum::w[16] += v;
     Spectrum::w[17] += v;
     Spectrum::w[18] += v;
@@ -385,6 +565,7 @@ void Spectrum::operator+=(float v)
     Spectrum::w[27] += v;
     Spectrum::w[28] += v;
     Spectrum::w[29] += v;
+    Spectrum::w[30] += v;
 #endif
 }
 
@@ -406,8 +587,8 @@ Spectrum Spectrum::operator-(float v)const
     retval.w[12] = Spectrum::w[12] - v;
     retval.w[13] = Spectrum::w[13] - v;
     retval.w[14] = Spectrum::w[14] - v;
-#if HQ_SPECTRUM!=0
     retval.w[15] = Spectrum::w[15] - v;
+#if HQ_SPECTRUM!=0
     retval.w[16] = Spectrum::w[16] - v;
     retval.w[17] = Spectrum::w[17] - v;
     retval.w[18] = Spectrum::w[18] - v;
@@ -422,6 +603,7 @@ Spectrum Spectrum::operator-(float v)const
     retval.w[27] = Spectrum::w[27] - v;
     retval.w[28] = Spectrum::w[28] - v;
     retval.w[29] = Spectrum::w[29] - v;
+    retval.w[30] = Spectrum::w[30] - v;
 #endif
     return retval;
 }
@@ -443,8 +625,8 @@ void Spectrum::operator-=(float v)
     Spectrum::w[12] -= v;
     Spectrum::w[13] -= v;
     Spectrum::w[14] -= v;
-#if HQ_SPECTRUM!=0
     Spectrum::w[15] -= v;
+#if HQ_SPECTRUM!=0
     Spectrum::w[16] -= v;
     Spectrum::w[17] -= v;
     Spectrum::w[18] -= v;
@@ -459,6 +641,7 @@ void Spectrum::operator-=(float v)
     Spectrum::w[27] -= v;
     Spectrum::w[28] -= v;
     Spectrum::w[29] -= v;
+    Spectrum::w[30] -= v;
 #endif
 }
 
@@ -480,8 +663,8 @@ Spectrum Spectrum::operator*(float v)const
     retval.w[12] = Spectrum::w[12] * v;
     retval.w[13] = Spectrum::w[13] * v;
     retval.w[14] = Spectrum::w[14] * v;
-#if HQ_SPECTRUM!=0
     retval.w[15] = Spectrum::w[15] * v;
+#if HQ_SPECTRUM!=0
     retval.w[16] = Spectrum::w[16] * v;
     retval.w[17] = Spectrum::w[17] * v;
     retval.w[18] = Spectrum::w[18] * v;
@@ -496,6 +679,7 @@ Spectrum Spectrum::operator*(float v)const
     retval.w[27] = Spectrum::w[27] * v;
     retval.w[28] = Spectrum::w[28] * v;
     retval.w[29] = Spectrum::w[29] * v;
+    retval.w[30] = Spectrum::w[30] * v;
 #endif
     return retval;
 }
@@ -517,8 +701,8 @@ void Spectrum::operator*=(float v)
     Spectrum::w[12] *= v;
     Spectrum::w[13] *= v;
     Spectrum::w[14] *= v;
-#if HQ_SPECTRUM!=0
     Spectrum::w[15] *= v;
+#if HQ_SPECTRUM!=0
     Spectrum::w[16] *= v;
     Spectrum::w[17] *= v;
     Spectrum::w[18] *= v;
@@ -533,6 +717,7 @@ void Spectrum::operator*=(float v)
     Spectrum::w[27] *= v;
     Spectrum::w[28] *= v;
     Spectrum::w[29] *= v;
+    Spectrum::w[30] *= v;
 #endif
 }
 
@@ -554,8 +739,8 @@ Spectrum Spectrum::operator/(float v)const
     retval.w[12] = Spectrum::w[12] / v;
     retval.w[13] = Spectrum::w[13] / v;
     retval.w[14] = Spectrum::w[14] / v;
-#if HQ_SPECTRUM!=0
     retval.w[15] = Spectrum::w[15] / v;
+#if HQ_SPECTRUM!=0
     retval.w[16] = Spectrum::w[16] / v;
     retval.w[17] = Spectrum::w[17] / v;
     retval.w[18] = Spectrum::w[18] / v;
@@ -570,6 +755,7 @@ Spectrum Spectrum::operator/(float v)const
     retval.w[27] = Spectrum::w[27] / v;
     retval.w[28] = Spectrum::w[28] / v;
     retval.w[29] = Spectrum::w[29] / v;
+    retval.w[30] = Spectrum::w[30] / v;
 #endif
     return retval;
 }
@@ -591,8 +777,8 @@ void Spectrum::operator/=(float v)
     Spectrum::w[12] /= v;
     Spectrum::w[13] /= v;
     Spectrum::w[14] /= v;
-#if HQ_SPECTRUM!=0
     Spectrum::w[15] /= v;
+#if HQ_SPECTRUM!=0
     Spectrum::w[16] /= v;
     Spectrum::w[17] /= v;
     Spectrum::w[18] /= v;
@@ -607,5 +793,6 @@ void Spectrum::operator/=(float v)
     Spectrum::w[27] /= v;
     Spectrum::w[28] /= v;
     Spectrum::w[29] /= v;
+    Spectrum::w[30] /= v;
 #endif
 }

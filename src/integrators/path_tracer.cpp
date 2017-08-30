@@ -15,7 +15,7 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     float rrprob = 1.f;
     Color retval(0.0);
     Vec3 wo = -r->direction;
-
+    wo.normalize();
     //if first hit is light or specular, use its emission
     if((r->ricochet==0 || (last&SPECULAR))
        && hp->hit->isLight() && dot(hp->n,wo)>0)
