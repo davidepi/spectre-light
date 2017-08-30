@@ -1,10 +1,17 @@
 //Created,  29 Aug 2017
-//Last Edit 29 Aug 2017
+//Last Edit 30 Aug 2017
 
 #ifndef __SPECTRUM_HPP__
 #define __SPECTRUM_HPP__
 
 #include "utility/color.hpp"
+#include "settings.h"
+
+#if HQ_SPECTRUM==0
+#define SPECTRUM_SAMPLES 15
+#else
+#define SPECTRUM_SAMPLES 30
+#endif
 
 enum SpectrumType {BLACK, WHITE, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW};
 
@@ -49,22 +56,8 @@ public:
     void operator/=(float v);
     
 private:
-    float nm400;
-    float nm420;
-    float nm440;
-    float nm460;
-    float nm480;
-    float nm500;
-    float nm520;
-    float nm540;
-    float nm560;
-    float nm580;
-    float nm600;
-    float nm620;
-    float nm640;
-    float nm660;
-    float nm680;
-    float nm700;
+    
+    float w[SPECTRUM_SAMPLES];
 };
 
 #endif
