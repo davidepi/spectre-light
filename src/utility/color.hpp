@@ -71,9 +71,6 @@ public:
      */
     Color(const char* hex);
 
-    ///Default destructor
-    virtual ~Color();
-
     /** \brief Return true if the color is black
      *  \return true if every component is zero
      */
@@ -138,6 +135,8 @@ public:
     
     //inherit cosntructors
     using Color::Color;
+    
+    ColorRGB(unsigned char r, unsigned char g, unsigned char b);
    
     /** \brief Convert this RGB to the XYZ representation
      *

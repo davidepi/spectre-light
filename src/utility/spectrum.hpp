@@ -21,9 +21,10 @@ public:
     
     Spectrum();
     Spectrum(SpectrumType);
+    Spectrum(float*);
     
     ColorXYZ toXYZ()const;
-    float yVal()const;
+    float luminance()const;
     
     ///The addition operation between two spectra
     Spectrum operator+(const Spectrum& s)const;

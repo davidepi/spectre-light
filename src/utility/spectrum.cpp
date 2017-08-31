@@ -192,6 +192,12 @@ Spectrum::Spectrum(SpectrumType st)
     }
 }
 
+Spectrum::Spectrum(float* vals)
+{
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+        Spectrum::w[i] = vals[i];
+}
+
 ColorXYZ Spectrum::toXYZ()const
 {
     float x = 0;
@@ -299,7 +305,7 @@ ColorXYZ Spectrum::toXYZ()const
     return ColorXYZ(x,y,z);
 }
 
-float Spectrum::yVal()const
+float Spectrum::luminance()const
 {
     float y = 0;
     y+=Spectrum::w[0]*Y[0];
