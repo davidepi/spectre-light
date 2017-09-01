@@ -13,14 +13,14 @@
 #define SPECTRUM_SAMPLES 31
 #endif
 
-enum SpectrumType {BLACK, WHITE, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW};
-
 class Spectrum
 {
 public:
     
     Spectrum();
-    Spectrum(float*);
+    Spectrum(int black);
+    Spectrum(const float* vals);
+    Spectrum(ColorRGB c, bool light);
     
     ColorXYZ toXYZ()const;
     float luminance()const;

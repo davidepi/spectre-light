@@ -452,7 +452,7 @@ const float Z[SPECTRUM_SAMPLES] =
     0.f
 };
 
-constexpr const float INVY_SUM = 1.f/1050.2020328567f
+constexpr const float INVY_SUM = 1.f/1050.2020328567f;
 
 const float spectrumWhite[SPECTRUM_SAMPLES] =
 {
@@ -482,7 +482,8 @@ const float spectrumWhiteL[SPECTRUM_SAMPLES] =
     1.1568023194808630E+00f,   1.1567677445485520E+00f,
     1.1563563182952830E+00f,   1.1567054702510189E+00f,
     1.1565134139372772E+00f,   1.1564336176499312E+00f,
-    1.1568023181530034E+00f,   1.1473147688514642E+00f,
+    1.1568023181530034E+00f,   1.1473
+    147688514642E+00f,
     1.1339317140561065E+00f,   1.1293876490671435E+00f,
     1.1290515328639648E+00f,   1.0504864823782283E+00f,
     1.0459696042230884E+00f,   9.9366687168595691E-01f,
@@ -591,7 +592,7 @@ const float spectrumYellow[SPECTRUM_SAMPLES] =
      1.0511460436960840E+00f,   1.0515123758830476E+00f,
      1.0508871369510702E+00f,   1.0508923708102380E+00f,
      1.0477492815668303E+00f,   1.0493272144017338E+00f,
-     1.0435963333422726E+00f,   1.0392280772051465E+00f
+     1.0435963333422726E+00f,
 };
 
 const float spectrumYellowL[SPECTRUM_SAMPLES] =
@@ -651,7 +652,7 @@ const float spectrumRedL[SPECTRUM_SAMPLES] =
      9.8879464276016282E-01f,   9.9897449966227203E-01f,
      9.8605140403564162E-01f,   9.9532502805345202E-01f,
      9.7433478377305371E-01f,   9.9134364616871407E-01f,
-     9.8866287772174755E-01f,   9.9713856089735531E-01f
+     9.8866287772174755E-01f,
 };
 
 const float spectrumGreen[SPECTRUM_SAMPLES] =
@@ -712,7 +713,7 @@ const float spectrumBlue[SPECTRUM_SAMPLES] =
      4.9814819505812249E-02f,   3.9840911064978023E-02f,
      3.0501024937233868E-02f,   2.1243054765241080E-02f,
      6.9596532104356399E-03f,
-}
+};
 
 const float spectrumBlueL[SPECTRUM_SAMPLES] =
 {
@@ -732,19 +733,140 @@ const float spectrumBlueL[SPECTRUM_SAMPLES] =
      1.5535067531939065E-01f,   1.4878477178237029E-01f,
      1.6624255403475907E-01f,   1.6997613960634927E-01f,
      1.5769743995852967E-01f,
-}
+};
 
 #endif
+
+//More memory usage but I avoid to construct and destroy these multiple times
+//while parsing RGB values
+const Spectrum SPECTRUM_WHITE(spectrumWhite);
+const Spectrum SPECTRUM_WHITEL(spectrumWhiteL);
+const Spectrum SPECTRUM_CYAN(spectrumCyan);
+const Spectrum SPECTRUM_CYANL(spectrumCyanL);
+const Spectrum SPECTRUM_MAGENTA(spectrumMagenta);
+const Spectrum SPECTRUM_MAGENTAL(spectrumMagentaL);
+const Spectrum SPECTRUM_YELLOW(spectrumYellow);
+const Spectrum SPECTRUM_YELLOWL(spectrumYellowL);
+const Spectrum SPECTRUM_RED(spectrumRed);
+const Spectrum SPECTRUM_REDL(spectrumRedL);
+const Spectrum SPECTRUM_GREEN(spectrumGreen);
+const Spectrum SPECTRUM_GREENL(spectrumGreenL);
+const Spectrum SPECTRUM_BLUE(spectrumBlue);
+const Spectrum SPECTRUM_BLUEL(spectrumBlueL);
 
 Spectrum::Spectrum()
 {
     //do nothing. Too expensive to initialize if I need to assign it later
 }
 
-Spectrum::Spectrum(float* vals)
+Spectrum::Spectrum(int)
+{
+    memset(Spectrum::w,0,sizeof(float)*SPECTRUM_SAMPLES);
+}
+
+Spectrum::Spectrum(const float* vals)
 {
     for(int i=0;i<SPECTRUM_SAMPLES;i++)
         Spectrum::w[i] = vals[i];
+}
+
+Spectrum::Spectrum(ColorRGB c, bool l)
+{
+    memset(Spectrum::w,0,sizeof(float)*SPECTRUM_SAMPLES);
+    if(!l)
+    {
+        if(c.r<c.g && c.r<c.b)
+        {
+            *this += SPECTRUM_WHITE*c.r;
+            if(c.g <= c.b)
+            {
+                *this += SPECTRUM_CYAN*(c.g-c.r);
+                *this += SPECTRUM_BLUE*(c.b-c.g);
+            }
+            else
+            {
+                *this += SPECTRUM_CYAN*(c.b-c.r);
+                *this += SPECTRUM_GREEN*(c.g-c.b);
+            }
+        }
+        else if(c.g<=c.r && c.g<=c.b)
+        {
+            *this += SPECTRUM_WHITE*c.g;
+            if(c.r <= c.b)
+            {
+                *this += SPECTRUM_MAGENTA*(c.r-c.g);
+                *this += SPECTRUM_BLUE*(c.b-c.r);
+            }
+            else
+            {
+                *this += SPECTRUM_MAGENTA*(c.r-c.g);
+                *this += SPECTRUM_RED*(c.r-c.b);
+            }
+        }
+        else
+        {
+            *this += SPECTRUM_WHITE*c.b;
+            if(c.r <= c.g)
+            {
+                *this += SPECTRUM_YELLOW*(c.r-c.b);
+                *this += SPECTRUM_GREEN*(c.g-c.r);
+            }
+            else
+            {
+                *this += SPECTRUM_YELLOW*(c.g-c.b);
+                *this += SPECTRUM_RED*(c.r-c.g);
+            }
+        }
+        *this *= 0.94f;
+    }
+    else
+    {
+        if(c.r<c.g && c.r<c.b)
+        {
+            *this += SPECTRUM_WHITEL*c.r;
+            if(c.g <= c.b)
+            {
+                *this += SPECTRUM_CYANL*(c.g-c.r);
+                *this += SPECTRUM_BLUEL*(c.b-c.g);
+            }
+            else
+            {
+                *this += SPECTRUM_CYANL*(c.b-c.r);
+                *this += SPECTRUM_GREENL*(c.g-c.b);
+            }
+        }
+        else if(c.g<=c.r && c.g<=c.b)
+        {
+            *this += SPECTRUM_WHITEL*c.g;
+            if(c.r <= c.b)
+            {
+                *this += SPECTRUM_MAGENTAL*(c.r-c.g);
+                *this += SPECTRUM_BLUEL*(c.b-c.r);
+            }
+            else
+            {
+                *this += SPECTRUM_MAGENTAL*(c.r-c.g);
+                *this += SPECTRUM_REDL*(c.r-c.b);
+            }
+        }
+        else
+        {
+            *this += SPECTRUM_WHITEL*c.b;
+            if(c.r <= c.g)
+            {
+                *this += SPECTRUM_YELLOWL*(c.r-c.b);
+                *this += SPECTRUM_GREENL*(c.g-c.r);
+            }
+            else
+            {
+                *this += SPECTRUM_YELLOWL*(c.g-c.b);
+                *this += SPECTRUM_REDL*(c.r-c.g);
+            }
+        }
+        *this *= 0.86445f;
+    }
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+        w[i] = w[i]<0.f?0.f:w[i]>1.f?1.f:w[i];
 }
 
 ColorXYZ Spectrum::toXYZ()const

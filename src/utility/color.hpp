@@ -1,5 +1,5 @@
 //Created,  23 May 2017
-//Last Edit 29 Aug 2017
+//Last Edit  1 Sep 2017
 /**
  *  \file color.hpp
  *  \brief Colours representations using tristimulus values
@@ -7,7 +7,7 @@
  *  spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 29 Aug 2017
+ *  \date 1 Sep 2017
  *  \copyright GNU GPLv3
  */
 
