@@ -482,8 +482,7 @@ const float spectrumWhiteL[SPECTRUM_SAMPLES] =
     1.1568023194808630E+00f,   1.1567677445485520E+00f,
     1.1563563182952830E+00f,   1.1567054702510189E+00f,
     1.1565134139372772E+00f,   1.1564336176499312E+00f,
-    1.1568023181530034E+00f,   1.1473
-    147688514642E+00f,
+    1.1568023181530034E+00f,   1.1473147688514642E+00f,
     1.1339317140561065E+00f,   1.1293876490671435E+00f,
     1.1290515328639648E+00f,   1.0504864823782283E+00f,
     1.0459696042230884E+00f,   9.9366687168595691E-01f,
@@ -890,6 +889,7 @@ ColorXYZ Spectrum::toXYZ()const
     x+=Spectrum::w[13]*X[13];
     x+=Spectrum::w[14]*X[14];
     x+=Spectrum::w[15]*X[15];
+    
     y+=Spectrum::w[0]*Y[0];
     y+=Spectrum::w[1]*Y[1];
     y+=Spectrum::w[2]*Y[2];
@@ -906,6 +906,7 @@ ColorXYZ Spectrum::toXYZ()const
     y+=Spectrum::w[13]*Y[13];
     y+=Spectrum::w[14]*Y[14];
     y+=Spectrum::w[15]*Y[15];
+    
     z+=Spectrum::w[0]*Z[0];
     z+=Spectrum::w[1]*Z[1];
     z+=Spectrum::w[2]*Z[2];

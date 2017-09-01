@@ -1,5 +1,6 @@
 //Created,  23 May 2017
 //Last Edit  1 Sep 2017
+
 /**
  *  \file color.hpp
  *  \brief Colours representations using tristimulus values
@@ -18,6 +19,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath> //pow
+#include "utility.hpp"
 
 /**
  *  \class Color color.hpp "utility/color.hpp"
@@ -125,7 +127,7 @@ public:
 
 class ColorXYZ;
 
-/** \brief Representeation of an RGB color
+/** \brief Representeation of an RGB colour
  *
  *  Represents a Color using the three values R, G and B, in the range (0.0,1.0)
  */
@@ -147,9 +149,9 @@ public:
     ColorXYZ toXYZ()const;
 };
 
-/** \brief Representeation of an RGB color
+/** \brief Representation of an XYZ colour
  *
- *  Represents a Color using the CIE 1931 XYZ with values in range (0.0,1.0)
+ *  Represents a color using the CIE 1931 XYZ with values in range (0.0,100.0)
  */
 class ColorXYZ : public Color
 {

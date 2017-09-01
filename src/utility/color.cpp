@@ -181,9 +181,9 @@ ColorXYZ::ColorXYZ(float x, float y, float z)
 ColorRGB ColorXYZ::toStandardRGB()const
 {
     constexpr const double EXP = 1.0/2.4; //periodic :(
-    double x = ColorXYZ::r*0.01;
-    double y = ColorXYZ::g*0.01;
-    double z = ColorXYZ::b*0.01;
+    double x = ColorXYZ::r;
+    double y = ColorXYZ::g;
+    double z = ColorXYZ::b;
     
     double r = x *  3.2404542 + y * -1.5371385 + z * -0.4985314;
     double g = x * -0.9692660 + y *  1.8760108 + z *  0.0415560;
@@ -202,25 +202,25 @@ ColorRGB ColorXYZ::toStandardRGB()const
     else
         b *= 12.92;
     
-    return ColorRGB((float)r,(float)g,(float)b);
+    return ColorRGB(clamp((float)r,0.f,1.f),
+                    clamp((float)g,0.f,1.f),
+                    clamp((float)b,0.f,1.f));
 }
 
 ColorRGB ColorXYZ::toAdobeRGB()const
 {
     constexpr const double EXP = 1/2.19921875;
-    double x = ColorXYZ::r*0.01;
-    double y = ColorXYZ::g*0.01;
-    double z = ColorXYZ::b*0.01;
+    double x = ColorXYZ::r;
+    double y = ColorXYZ::g;
+    double z = ColorXYZ::b;
     
     double r = x *  2.04159 + y * -0.56501 + z * -0.34473;
     double g = x * -0.96924 + y *  1.87597 + z *  0.03342;
     double b = x *  0.01344 + y * -0.11836 + z *  1.34926;
     
-    r = pow(r,EXP);
-    g = pow(g,EXP);
-    b = pow(b,EXP);
-    
-    return ColorRGB((float)r,(float)g,(float)b);
+    return ColorRGB(clamp((float)pow(r,EXP),0,1),
+                    clamp((float)pow(g,EXP),0,1),
+                    clamp((float)pow(b,EXP),0,1));
 }
 
 ColorRGB::ColorRGB(unsigned char r, unsigned char g, unsigned char b)
@@ -251,9 +251,13 @@ ColorXYZ ColorRGB::toXYZ()const
     else
         b = ColorRGB::b * INV;
     
-    float x = (float)(r * 0.4124564 + g * 0.3575761 + b * 0.1804375)*100.f;
-    float y = (float)(r * 0.2126729 + g * 0.7151522 + b * 0.0721750)*100.f;
-    float z = (float)(r * 0.0193339 + g * 0.1191920 + b * 0.9503041)*100.f;
+    float x = (float)(r * 0.4124564 + g * 0.3575761 + b * 0.1804375);
+    float y = (float)(r * 0.2126729 + g * 0.7151522 + b * 0.0721750);
+    float z = (float)(r * 0.0193339 + g * 0.1191920 + b * 0.9503041);
+    
+    x = clamp(x,0.f,100.f);
+    y = clamp(y,0.f,100.f);
+    z = clamp(z,0.f,100.f);
     
     return ColorXYZ(x,y,z);
 }
