@@ -1,9 +1,9 @@
 #include "lambertian.hpp"
 
-Lambertian::Lambertian(Color scattered_spectrum) : Bdf(BdfFlags(BRDF|DIFFUSE)),
-                                                   diffuse(scattered_spectrum)
+Lambertian::Lambertian(const Spectrum& scattered_spectrum)
+:Bdf(BdfFlags(BRDF|DIFFUSE)),diffuse(scattered_spectrum)
 {
-
+    Lambertian::diffuse*=INV_PI;
 }
 
 Bdf* Lambertian::clone()const
@@ -12,8 +12,8 @@ Bdf* Lambertian::clone()const
     return res;
 }
 
-Color Lambertian::df(const Vec3*, const Vec3* ) const
+Spectrum Lambertian::df(const Vec3*, const Vec3*)const
 {
     //equally scattered in every direction
-    return Lambertian::diffuse*INV_PI;
+    return Lambertian::diffuse;
 }

@@ -752,6 +752,7 @@ const Spectrum SPECTRUM_GREEN(spectrumGreen);
 const Spectrum SPECTRUM_GREENL(spectrumGreenL);
 const Spectrum SPECTRUM_BLUE(spectrumBlue);
 const Spectrum SPECTRUM_BLUEL(spectrumBlueL);
+const Spectrum SPECTRUM_BLACK(0);
 
 Spectrum::Spectrum()
 {
@@ -1015,6 +1016,14 @@ float Spectrum::luminance()const
 #endif
     
     return y*INVY_SUM;
+}
+
+bool Spectrum::isBlack()const
+{
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+        if(Spectrum::w[i]!=0)
+            return false;
+    return true;
 }
 
 Spectrum Spectrum::operator+(const Spectrum& s)const

@@ -3,11 +3,7 @@
 MaterialLibrary::MaterialLibrary()
 {
     Bsdf* defmatl = new Bsdf();
-    Color white;
-    white.r = 1.f;
-    white.g = 1.f;
-    white.b = 1.f;
-    defmatl->inheritBdf(new Lambertian(white));
+    defmatl->inheritBdf(new Lambertian(SPECTRUM_WHITE));
     lib.insert(std::make_pair("Default",defmatl));
 }
 

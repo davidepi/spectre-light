@@ -14,7 +14,7 @@
 #ifndef __FRESNEL_CONDITIONS_HPP__
 #define __FRESNEL_CONDITIONS_HPP__
 
-#include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "utility/utility.hpp"
 
 /**
@@ -36,7 +36,7 @@ public:
      *  \param cosin The angle between the two rays
      *  \return The amount of light reflected or transmitted
      */
-    virtual Color eval(float cosin)const = 0;
+    virtual Spectrum eval(float cosin)const = 0;
     
     //No need for virtual destructor...
     ///Default destructor
@@ -64,7 +64,7 @@ public:
      *  \param[in] refraction Refraction index for the material
      *  \param[in] absorption The portion of spectrum absorbed
      */
-    Conductor(Color refraction, Color absorption);
+    Conductor(const Spectrum& refraction, const Spectrum& absorption);
 
     /** \brief Evaluate the incident power reflected
      *
@@ -74,15 +74,15 @@ public:
      *  \param[in] cosin The angle between the two rays
      *  \return The amount of light reflected
      */
-    Color eval(float cosin)const;
+    Spectrum eval(float cosin)const;
 
 private:
 
     // ior
-    Color refraction_index;
+    Spectrum refraction_index;
 
     //absorbed spectrum
-    Color absorption;
+    Spectrum absorption;
 };
 
 
@@ -117,7 +117,7 @@ public:
      *  \param[in] cosin The angle between the two rays
      *  \return The amount of light reflected, depending on the angle
      */
-    Color eval(float cosin)const;
+    Spectrum eval(float cosin)const;
 
 private:
 

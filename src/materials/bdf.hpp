@@ -16,7 +16,7 @@
 #define __BDF_HPP__
 
 #include "primitives/shape.hpp"
-#include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
 #include "utility/console.hpp"
 
@@ -70,7 +70,7 @@ public:
      *  \return The value of the BxDF
      *  \sa df_s(const Vec3* woS, Vec3* wiS)const
      */
-    virtual Color df(const Vec3* woS, const Vec3* wiS)const = 0;
+    virtual Spectrum df(const Vec3* woS, const Vec3* wiS)const = 0;
 
     /** \brief Return the value of the Bdf
      *
@@ -93,8 +93,8 @@ public:
      *  \return The value of the Bdf for the pair of direction
      *  \sa df(const Vec3* woS, const Vec3* wiS)const
      */
-    virtual Color df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                       float* pdf)const;
+    virtual Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
+                          float* pdf)const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -175,8 +175,8 @@ public:
      *  \param[in] matchme The types of bdfs to consider when computing radiance
      *  \return The value of the BSDF
      */
-    Color df(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-             BdfFlags matchme)const;
+    Spectrum df(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+                BdfFlags matchme)const;
 
     /** \brief Return the value of the BSDF
      *
@@ -196,8 +196,9 @@ public:
      *  \param[out] matched The bdfs matched with the sampling
      *  \return A sampled value of the BSDF
      */
-    Color df_s(float r0, float r1, float r2, const Vec3* woW, const HitPoint* h,
-               Vec3* wiW, float* pdf, const BdfFlags matchme, BdfFlags* matched)
+    Spectrum df_s(float r0, float r1, float r2, const Vec3* woW,
+                  const HitPoint* h, Vec3* wiW, float* pdf,
+                  const BdfFlags matchme, BdfFlags* matched)
     const;
 
     /** \brief Return the probability density function for this bsdf

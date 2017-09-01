@@ -17,6 +17,7 @@
 #include "materials/bdf.hpp"
 #include "materials/fresnel_conditions.hpp"
 #include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
 
 /**
@@ -38,7 +39,7 @@ public:
      *  \param etai Index of refraction from the incoming material
      *  \param etat Index of refraction of the transmitted material
      */
-    Reflection(Color specular, float etai, float etat);
+    Reflection(const Spectrum& specular, float etai, float etat);
 
     /** \brief Default Constructor for metallic material
      *
@@ -47,7 +48,8 @@ public:
      *  index of refraction is different based on the wavelenght of light
      *  \param[in] absorption The amount of light absorbed by the material
      */
-    Reflection(Color specular, Color refraction, Color absorption);
+    Reflection(const Spectrum& specular, const Spectrum& refraction,
+               const Spectrum& absorption);
 
     ///Default destructor
     ~Reflection();
@@ -73,7 +75,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Color df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum df(const Vec3* wo, const Vec3* wi)const;
 
     /** \brief Returns the value of the BRDF
      *
@@ -89,7 +91,8 @@ public:
      *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
-    Color df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const;
+    Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf)const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -107,7 +110,7 @@ public:
 private:
 
     //scattered light
-    Color specular;
+    Spectrum specular;
 
     //fresnel term
     FresnelConditions* fc;

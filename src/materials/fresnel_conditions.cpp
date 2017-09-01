@@ -5,13 +5,13 @@ FresnelConditions::~FresnelConditions()
     
 }
 
-Conductor::Conductor(Color refraction, Color absorption) :
+Conductor::Conductor(const Spectrum& refraction, const Spectrum& absorption) :
 refraction_index(refraction),absorption(absorption)
 {
 
 }
 
-Color Conductor::eval(float cosin)const
+Spectrum Conductor::eval(float cosin)const
 {
     //conductors have complex index of refraction where the imaginary part
     //is the "transmitted" (absorbed) part
@@ -19,13 +19,13 @@ Color Conductor::eval(float cosin)const
     //reflected spectrum becomes
     //R = avg(Rparaller * Rparallel,Rperp * Rperp)
 
-    Color tmp = refraction_index*refraction_index+absorption*absorption;
-    Color cosinsq = cosin*cosin;
-    Color etacosin2 = refraction_index*(cosin*2.f);
+    Spectrum tmp = refraction_index*refraction_index+absorption*absorption;
+    float cosinsq = cosin*cosin;
+    Spectrum etacosin2 = refraction_index*(cosin*2.f);
 
-    Color rperpsq = (tmp-etacosin2+cosinsq)/(tmp+etacosin2+cosinsq);
+    Spectrum rperpsq = (tmp-etacosin2+cosinsq)/(tmp+etacosin2+cosinsq);
     tmp*=cosinsq;
-    Color rparsq = (tmp-etacosin2+1)/(tmp+etacosin2+1);
+    Spectrum rparsq = (tmp-etacosin2+1)/(tmp+etacosin2+1);
 
     return (rperpsq+rparsq)/2.f;
 }
@@ -36,7 +36,7 @@ Dielectric::Dielectric(float refractioni, float refractiont)
     Dielectric::etat = refractiont;
 }
 
-Color Dielectric::eval(float cosin)const
+Spectrum Dielectric::eval(float cosin)const
 {
     float ei = Dielectric::etai;
     float et = Dielectric::etat;
@@ -59,6 +59,6 @@ Color Dielectric::eval(float cosin)const
 
         float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
         float rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
-        return Color((rpar*rpar+rperp*rperp)/2.f);
+        return Spectrum((rpar*rpar+rperp*rperp)/2.f);
     }
 }

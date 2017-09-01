@@ -101,7 +101,7 @@ ImageOutput::~ImageOutput()
     free(ImageOutput::image);
 }
 
-void ImageOutput::addPixel(const Sample* s, const Color* c, ExecutorData* ex)
+void ImageOutput::addPixel(const Sample* s, const ColorXYZ c, ExecutorData* ex)
 {
     float ptmpx = s->posx-0.5f;
     float ptmpy = s->posy-0.5f;
@@ -123,18 +123,18 @@ void ImageOutput::addPixel(const Sample* s, const Color* c, ExecutorData* ex)
 				TodoPixel tp;
 				tp.x = x;
 				tp.y = y;
-				tp.r = c->r*weight;
-				tp.g = c->g*weight;
-				tp.b = c->b*weight;
+				tp.cie_x = c.r*weight;
+				tp.cie_y = c.g*weight;
+				tp.cie_z = c.b*weight;
 				tp.samples = weight;
 				ex->deferred.push(tp);
 			}
 			else
 			{
             	Pixel* val = image+(width*y+x);
-            	val->r += c->r*weight;
-            	val->g += c->g*weight;
-            	val->b += c->b*weight;
+            	val->cie_x += c.r*weight;
+            	val->cie_y += c.g*weight;
+            	val->cie_z += c.b*weight;
             	val->samples += weight;
 			}
         }
@@ -151,9 +151,9 @@ void ImageOutput::deferredAddPixel(ExecutorData* ex)
 			tp = ex->deferred.top();
 			ex->deferred.pop();
 			val = image+(width*tp.y+tp.x);
-			val->r += tp.r;
-			val->g += tp.g;
-			val->b += tp.b;
+			val->cie_x += tp.cie_x;
+			val->cie_y += tp.cie_y;
+			val->cie_z += tp.cie_z;
 			val->samples += tp.samples;
 		}
 		mtx.unlock();
@@ -170,9 +170,9 @@ void ImageOutput::forceAddPixel(ExecutorData* ex)
 		tp = ex->deferred.top();
 		ex->deferred.pop();
 		val = image+(width*tp.y+tp.x);
-		val->r += tp.r;
-		val->g += tp.g;
-		val->b += tp.b;
+		val->cie_x += tp.cie_x;
+		val->cie_y += tp.cie_y;
+		val->cie_z += tp.cie_z;
 		val->samples += tp.samples;
 	}
 	mtx.unlock();
@@ -188,6 +188,7 @@ bool ImageOutput::saveImage()
     uint8_t* tmp = (uint8_t*)malloc((size_t)(ImageOutput::width
                                              *ImageOutput::height*3));
     int i = 0;
+    int max_val = 255;
     
     //evaluate average for every pixel
     for(int j=0;j<ImageOutput::width*ImageOutput::height;j++)
@@ -195,9 +196,19 @@ bool ImageOutput::saveImage()
         if(image[j].samples>0.f) //if at least one sample
         {
             float weight = 1.f/image[j].samples;
-            tmp[i++] = (uint8_t)(image[j].r*255*weight);
-            tmp[i++] = (uint8_t)(image[j].g*255*weight);
-            tmp[i++] = (uint8_t)(image[j].b*255*weight);
+            ColorRGB col = ColorXYZ(image[j].cie_x*weight,
+                                    image[j].cie_y*weight,
+                                    image[j].cie_z*weight).toStandardRGB();
+            int val;
+            val = (int)(col.r*255);
+            max_val=val>max_val?val:max_val;
+            tmp[i++] = (uint8_t)(val);
+            val = (int)(col.g*255);
+            max_val=val>max_val?val:max_val;
+            tmp[i++] = (uint8_t)(val);
+            val = (int)(col.b*255);
+            max_val=val>max_val?val:max_val;
+            tmp[i++] = (uint8_t)(val);
         }
         else
         {
@@ -211,7 +222,9 @@ bool ImageOutput::saveImage()
     FILE* fout = fopen(filename,"wb"); //save as ppm
     if(fout != NULL)
     {
-        fprintf(fout,"P6 %d %d 255 ",width,height);
+        char maxval[6];
+        sprintf(maxval, "%d",max_val);
+        fprintf(fout,"P6 %d %d %s ",width,height,maxval);
         fwrite(tmp, sizeof(unsigned char), (size_t)(width*height*3), fout);
         fclose(fout);
         free(tmp);

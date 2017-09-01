@@ -1,17 +1,18 @@
 #include "refraction.hpp"
-Refraction::Refraction(Color s, float etai, float etat)
+Refraction::Refraction(const Spectrum& s, float etai, float etat)
         : Bdf(BdfFlags(BTDF|SPECULAR)), specular(s), d(etai,etat)
 {
     eta_i = etai;
     eta_t = etat;
 }
 
-Color Refraction::df(const Vec3*, const Vec3*) const
+Spectrum Refraction::df(const Vec3*, const Vec3*) const
 {
-    return Color();
+    return SPECTRUM_BLACK;
 }
 
-Color Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
+Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float,
+                          float* pdf) const
 {
     float ei = eta_i;
     float et = eta_t;
@@ -28,7 +29,7 @@ Color Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
     float sintransmitted2 = eta*eta*sinincident2;
     //total internal reflection
     if(sintransmitted2>=1)
-        return Color();
+        return SPECTRUM_BLACK;
     //calculate transmitted ray
     float costransmitted = fromOutside?-sqrtf(1.f-sintransmitted2):
                                         sqrtf(1-sintransmitted2);
@@ -37,7 +38,7 @@ Color Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
     wi->z = costransmitted;
     *pdf = 1.f;
     //return BTDF
-    return (Color(1)-d.eval(wi->z)) * ((ei*ei)/(et*et)) * specular/fabsf(wi->z);
+    return (SPECTRUM_WHITE-d.eval(wi->z)) * ((ei*ei)/(et*et)) * specular/fabsf(wi->z);
 }
 
 float Refraction::pdf(const Vec3*, const Vec3*)const

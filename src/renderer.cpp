@@ -222,7 +222,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
     Sample* samples = new Sample[spp];
     Ray r;
 	ExecutorData ex;
-    Color radiance;
+    Spectrum radiance;
     HitPoint h;
     OcclusionTester ot(s);
     while(!done)
@@ -267,22 +267,12 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
             {
                 c->createRay(&(samples[i]), &r);
                 if (s->k.intersect(&r, &h))
-                {
                     radiance = t->radiance(s, &h, &r, sam, &ot);
-                    if(radiance.r>1.f)
-                        radiance.r=1.f;
-                    if(radiance.g>1.f)
-                        radiance.g=1.f;
-                    if(radiance.b>1.f)
-                        radiance.b=1.f;
-                } else
-                {
-                    radiance.r = 0;
-                    radiance.g = 0;
-                    radiance.b = 0;
-                }
+                    
+                else
+                    radiance = SPECTRUM_BLACK;
                 //end
-                io->addPixel(&(samples[i]), &radiance, &ex);
+                io->addPixel(&(samples[i]), radiance.toXYZ(), &ex);
             }
         }
 		io->deferredAddPixel(&ex);

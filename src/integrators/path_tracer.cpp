@@ -1,19 +1,21 @@
 #include "path_tracer.hpp"
 
-Color PathTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
-                           Sampler* sam, OcclusionTester *ot)const
+Spectrum PathTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
+                              Sampler* sam, OcclusionTester *ot)const
 {
-    Color power(1.0f);
+    float weight[16] = {1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,
+        1.f,1.f,1.f};
+    Spectrum power(weight);
     BdfFlags last = DIFFUSE;
     return l_rec(sc,hp,r,sam,&power,last,ot);
 }
 
-Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
-                        Sampler *sam, Color *power, BdfFlags last,
+Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
+                        Sampler *sam, Spectrum *power, BdfFlags last,
                         OcclusionTester *ot) const
 {
     float rrprob = 1.f;
-    Color retval(0.0);
+    Spectrum retval = SPECTRUM_BLACK;
     Vec3 wo = -r->direction;
     wo.normalize();
     //if first hit is light or specular, use its emission
@@ -46,8 +48,8 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Vec3 wi;
     float pdf;
     BdfFlags matched;
-    Color f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,BdfFlags(ALL),
-    &matched);
+    Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
+                           BdfFlags(ALL), &matched);
     if(f.isBlack() || pdf==0)
         return retval;
 

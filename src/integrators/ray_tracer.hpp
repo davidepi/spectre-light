@@ -18,6 +18,7 @@
 #include "samplers/sampler.hpp"
 #include "utility/scene.hpp"
 #include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "primitives/shape.hpp"
 #include "lights/area_light.hpp"
 #include "utility/occlusion_tester.hpp"
@@ -61,8 +62,8 @@ class RayTracer : public LightIntegrator
      *  function
      *  \return The radiance arriving at the film
      */
-    Color radiance(const Scene* sc, const HitPoint* hp,
-                   const Ray* r, Sampler* sam, OcclusionTester* ot)const;
+    Spectrum radiance(const Scene* sc, const HitPoint* hp,
+                      const Ray* r, Sampler* sam, OcclusionTester* ot)const;
 };
 
 /** \brief Determine the radiance arriving at a point
@@ -80,8 +81,8 @@ class RayTracer : public LightIntegrator
  *  \return The radiance arriving at the film
  *  \sa RayTracer::radiance
  */
-Color direct_l(const Scene *sc, const HitPoint *hp,
-               const Ray *r, Sampler *sam, OcclusionTester *ot);
+Spectrum direct_l(const Scene *sc, const HitPoint *hp,
+                  const Ray *r, Sampler *sam, OcclusionTester *ot);
 
 /** \brief Determine the radiance arriving at a point
  *
@@ -102,8 +103,8 @@ Color direct_l(const Scene *sc, const HitPoint *hp,
  *  function is passed here
  *  \return The radiance arriving at the film
  */
-Color spec_l(const Scene *sc, const HitPoint *hp, const Ray *r,
-                   Sampler *sam, OcclusionTester *ot, BdfFlags ref,
-                   const LightIntegrator* i);
+Spectrum spec_l(const Scene *sc, const HitPoint *hp, const Ray *r,
+                Sampler *sam, OcclusionTester *ot, BdfFlags ref,
+                const LightIntegrator* i);
 
 #endif

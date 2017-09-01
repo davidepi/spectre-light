@@ -17,6 +17,7 @@
 #include "samplers/sampler.hpp"
 #include "utility/scene.hpp"
 #include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "primitives/shape.hpp"
 #include "geometry/ray.hpp"
 #include "utility/occlusion_tester.hpp"
@@ -50,9 +51,9 @@ public:
      *  function
      *  \return The radiance arriving at the film
      */
-    virtual Color radiance(const Scene* sc, const HitPoint* hp,
-                           const Ray* r, Sampler* sam,
-                           OcclusionTester* ot)const = 0;
+    virtual Spectrum radiance(const Scene* sc, const HitPoint* hp,
+                              const Ray* r, Sampler* sam,
+                              OcclusionTester* ot)const = 0;
     
     ///Default destructor
     virtual ~LightIntegrator(){};

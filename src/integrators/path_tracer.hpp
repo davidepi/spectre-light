@@ -18,6 +18,7 @@
 #include "samplers/sampler.hpp"
 #include "utility/scene.hpp"
 #include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "primitives/shape.hpp"
 #include "lights/area_light.hpp"
 #include "utility/occlusion_tester.hpp"
@@ -55,15 +56,15 @@ class PathTracer : public LightIntegrator
      *  function
      *  \return The radiance arriving at the film
      */
-    Color radiance(const Scene* sc, const HitPoint* hp,
-                   const Ray* r, Sampler* sam,OcclusionTester *ot)const;
+    Spectrum radiance(const Scene* sc, const HitPoint* hp,
+                      const Ray* r, Sampler* sam,OcclusionTester *ot)const;
 
 private:
 
     //recursive function for the radiance computation
-    Color l_rec(const Scene* sc, const HitPoint* hp,
-                   const Ray* r, Sampler* sam, Color* power, BdfFlags last,
-                OcclusionTester *ot)const;
+    Spectrum l_rec(const Scene* sc, const HitPoint* hp,
+                   const Ray* r, Sampler* sam, Spectrum* power, BdfFlags last,
+                   OcclusionTester *ot)const;
 };
 
 

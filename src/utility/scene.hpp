@@ -84,7 +84,8 @@ public:
      *  \return the added light id. Since a light is essentially an asset, this
      *  is an asset id. 0 if nothing was added
      */
-    unsigned int addLight(unsigned int shapeid, Matrix4* transform, Color c);
+    unsigned int addLight(unsigned int shapeid, Matrix4* transform,
+                          const Spectrum& c);
 
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene

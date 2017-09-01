@@ -16,6 +16,7 @@
 
 #include "materials/bdf.hpp"
 #include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
 #include "materials/fresnel_conditions.hpp"
 
@@ -36,7 +37,8 @@ public:
      *  \param[in] eta_incident Refraction index for the incident material
      *  \param[in] eta_transmitted Refraction index for the transmitted material
      */
-    Refraction(Color specular, float eta_incident, float eta_transmitted);
+    Refraction(const Spectrum& specular, float eta_incident,
+               float eta_transmitted);
 
     /** \brief Copy the BTDF
      *
@@ -59,7 +61,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Color df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum df(const Vec3* wo, const Vec3* wi)const;
 
     /** \brief Returns the value of the BTDF
      *
@@ -75,7 +77,8 @@ public:
      *  generated, this method returns 1.0 as pdf
      *  \return The value of the BTDF
      */
-    Color df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const;
+    Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf)const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -93,7 +96,7 @@ public:
 private:
 
     //scale factor
-    Color specular;
+    Spectrum specular;
 
     //incident ior
     float eta_i;

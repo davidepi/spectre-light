@@ -1,8 +1,9 @@
 #include "oren_nayar.hpp"
 
-OrenNayar::OrenNayar(Color diffuse, float sigma) : Bdf(BdfFlags(BRDF|DIFFUSE)),
-                                                   diffuse(diffuse)
+OrenNayar::OrenNayar(const Spectrum& diffuse, float sigma)
+:Bdf(BdfFlags(BRDF|DIFFUSE)),diffuse(diffuse)
 {
+    OrenNayar::diffuse*=INV_PI;
     float sigma2 = sigma*sigma;
     OrenNayar::A = 1.f - (sigma2/(2*(sigma2+0.33f)));
     OrenNayar::B = (0.45f*sigma2)/(sigma2+0.09f);
@@ -14,7 +15,7 @@ Bdf* OrenNayar::clone()const
     return res;
 }
 
-Color OrenNayar::df(const Vec3 *wout, const Vec3 *wincident) const
+Spectrum OrenNayar::df(const Vec3 *wout, const Vec3 *wincident) const
 {
     float costhetain = wincident->z;
     float costhetaout = wout->z;
@@ -48,5 +49,5 @@ Color OrenNayar::df(const Vec3 *wout, const Vec3 *wincident) const
     }
 
     //diffuse/pi * (A+B*max[0,cos(phiin-phiout)]*sinalpha*tanbeta)
-    return OrenNayar::diffuse * INV_PI * (A+B*maxcos*sinalpha*tanbeta);
+    return OrenNayar::diffuse * (A+B*maxcos*sinalpha*tanbeta);
 }

@@ -227,14 +227,14 @@ static void parseMaterial(char* string)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color diffuse((float)r/255,(float)g/255,(float)b/255);
+            ColorRGB diffuse(r,g,b);
 
             token = strtok_r(NULL," ",&stringpos); //parse roughness value
             float rough = (float)atof(token);
             if(rough>0) //oren-nayar
-                addme = new OrenNayar(diffuse,rough);
+                addme = new OrenNayar(Spectrum(diffuse,false),rough);
             else //lambertian
-                addme = new Lambertian(diffuse);
+                addme = new Lambertian(Spectrum(diffuse,false));
         }
         else if(strcmp(token,"reflection")==0)
         {
@@ -245,7 +245,7 @@ static void parseMaterial(char* string)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color reflected((float)r/255,(float)g/255,(float)b/255);
+            ColorRGB reflected(r,g,b);
 
             token = strtok_r(NULL," ",&stringpos);
             if(token[0]=='(') //conductor
@@ -256,7 +256,7 @@ static void parseMaterial(char* string)
                 g = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse z
                 b = (unsigned char)atoi(val);
-                Color absorbed((float)r/255,(float)g/255,(float)b/255);
+                ColorRGB absorbed(r,g,b);
 
                 token = strtok_r(NULL," ",&stringpos);
                 val = strtok(token,"(), "); //parse x
@@ -265,9 +265,11 @@ static void parseMaterial(char* string)
                 g = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse z
                 b = (unsigned char)atoi(val);
-                Color emitted((float)r/255,(float)g/255,(float)b/255);
+                ColorRGB emitted(r,g,b);
 
-                addme = new Reflection(reflected,absorbed,emitted);
+                addme = new Reflection(Spectrum(reflected,false),
+                                       Spectrum(absorbed,false),
+                                       Spectrum(emitted,false));
             }
             else //dielectric
             {
@@ -276,7 +278,7 @@ static void parseMaterial(char* string)
                 token = strtok_r(NULL," ",&stringpos); //parse ior transmitted
                 float etat = (float)atof(token);
 
-                addme = new Reflection(reflected,etai,etat);
+                addme = new Reflection(Spectrum(reflected,false),etai,etat);
             }
         }
         else if(strcmp(token,"refraction")==0)
@@ -288,7 +290,7 @@ static void parseMaterial(char* string)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color refracted((float)r/255,(float)g/255,(float)b/255);
+            ColorRGB refracted(r,g,b);
 
             token = strtok_r(NULL," ",&stringpos); //parse ior incident
             float etai = (float)atof(token);
@@ -296,7 +298,7 @@ static void parseMaterial(char* string)
             token = strtok_r(NULL," ",&stringpos); //parse ior transmitted
             float etat = (float)atof(token);
 
-            addme = new Refraction(refracted,etai,etat);
+            addme = new Refraction(Spectrum(refracted,false),etai,etat);
         }
         else
             return;
@@ -398,13 +400,13 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             //parse spectrum
             token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
             val = strtok(token,"(), "); //parse x
-            x = (float)atoi(val)*0.00392156862f;
+            x = atoi(val);
             val = strtok(NULL,"(), "); //parse y
-            y = (float)atoi(val)*0.00392156862f;
+            y = atoi(val);
             val = strtok(NULL,"(), "); //parse z
-            z = (float)atoi(val)*0.00392156862f;
+            z = atoi(val);
 
-            out->sc->addLight(got->second,m,Color(x,y,z));
+            out->sc->addLight(got->second,m,Spectrum(ColorRGB(x,y,z),true));
         }
         else
         {

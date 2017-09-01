@@ -82,6 +82,12 @@ public:
      */
     float luminance()const;
     
+    /** \brief Retun true if the spectrum is composed only by 0 values
+     * 
+     *  \return true if only 0 values compose this spectrum
+     */
+    bool isBlack()const;
+    
     ///The addition operation between two spectra
     Spectrum operator+(const Spectrum& s)const;
     ///The addition operation between two spectra
@@ -120,5 +126,10 @@ private:
     //wavelength samples
     float w[SPECTRUM_SAMPLES];
 };
+
+///Spectrum of white surfaces
+extern const Spectrum SPECTRUM_WHITE;
+///Spectrum composed of 0 values
+extern const Spectrum SPECTRUM_BLACK;
 
 #endif

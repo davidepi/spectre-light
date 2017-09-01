@@ -86,7 +86,8 @@ unsigned int Scene::addAsset(unsigned int shapeid, Matrix4* transformMatrix,
     return 0; //shape not found, nothing added
 }
 
-unsigned int Scene::addLight(unsigned int shapeid, Matrix4* transform, Color c)
+unsigned int Scene::addLight(unsigned int shapeid, Matrix4* transform,
+                             const Spectrum& c)
 {
     AreaLight* addme = NULL;
     int retval = 0;

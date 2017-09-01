@@ -14,7 +14,8 @@ BdfFlags Bdf::getFlags() const
     return Bdf::type;
 }
 
-Color Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const
+Spectrum Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                   float* pdf)const
 {
     //sample x,y points on the hemisphere, shirley's method maybe's better
     float t = TWO_PI * r0;
@@ -55,8 +56,8 @@ void Bsdf::inheritBdf(Bdf* addme)
     Bsdf::bdfs[count++] = addme;
 }
 
-Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
-               BdfFlags val)const
+Spectrum Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
+                  BdfFlags val)const
 {
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
     Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->n));
@@ -64,7 +65,7 @@ Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
         val = (BdfFlags)(val & ~BTDF);
     else                                //transmitted ray
         val = (BdfFlags)(val & ~BRDF);
-    Color retval;
+    Spectrum retval(0);
     for(int i=0;i<count;i++)
     {
         if(bdfs[i]->isType(val)) //add contribution only if matches refl/trans
@@ -73,9 +74,9 @@ Color Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
     return retval;
 }
 
-Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
-                 const HitPoint* h, Vec3* wi, float* pdf,const BdfFlags matchme,
-                 BdfFlags* val)const
+Spectrum Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
+                    const HitPoint* h, Vec3* wi, float* pdf,
+                    const BdfFlags matchme, BdfFlags* val)const
 {
     int matchcount = 0;
     Bdf* matching[_MAX_BDF_];
@@ -86,7 +87,7 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     if(matchcount==0)
     {
         *pdf = 0.f;
-        return Color(); //otherwise it will access invalid array positions
+        return SPECTRUM_BLACK;//otherwise it will access invalid array positions
     }
     int chosen = (int)(r0 * matchcount);
     if(chosen == matchcount) //out of array
@@ -98,7 +99,8 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
 
     //I don't care about the result, but I need to generate the &wi vector
     //TODO: gained efficiency by creating an ad-hoc method?
-    Color retval=matching[chosen]->df_s(&wo_shading_space, &tmpwi, r1, r2, pdf);
+    Spectrum retval;
+    retval=matching[chosen]->df_s(&wo_shading_space, &tmpwi, r1, r2, pdf);
 
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
@@ -109,7 +111,7 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     if(wi->length()==0)
     {
         *pdf = 0.f;
-        return Color();
+        return SPECTRUM_BLACK;
     }
     else
         wi->normalize();
@@ -117,7 +119,7 @@ Color Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     //pair of directions
     if((*val & SPECULAR)==0)
     {
-        retval = Color();
+        retval = SPECTRUM_BLACK;
         if (wo->dot(h->n) * wi->dot(h->n) > 0)
             *val = (BdfFlags)(*val & ~BTDF);
         else

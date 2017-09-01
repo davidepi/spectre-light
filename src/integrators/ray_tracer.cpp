@@ -1,9 +1,9 @@
 #include "ray_tracer.hpp"
 
-Color RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
+Spectrum RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
                           Sampler *sam, OcclusionTester *ot) const
 {
-    Color direct = direct_l(sc,hp,r,sam,ot)*sc->lightSize();
+    Spectrum direct = direct_l(sc,hp,r,sam,ot)*sc->lightSize();
     //specular reflection
     if(r->ricochet < DEFAULT_BOUNCES) //ensure termination
     {
@@ -13,10 +13,10 @@ Color RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
     return direct;
 }
 
-Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
-               OcclusionTester* ot)
+Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
+                  Sampler* sam, OcclusionTester* ot)
 {
-    Color L;
+    Spectrum L(0);
     int nlights = sc->lightSize();
     const AreaLight*const* lights = sc->getLights();
     if(hp->hit->isLight())
@@ -40,11 +40,11 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
         float light_distance;
 
         //multiple importance sampling, light first
-        Color directrad=light->radiance_i(rand[1],rand[2],&hp->h,&wi,
-                                          &lightpdf,&light_distance);
+        Spectrum directrad=light->radiance_i(rand[1],rand[2],&hp->h,&wi,
+                                             &lightpdf,&light_distance);
         if(lightpdf > 0 && !directrad.isBlack())
         {
-            Color bsdf_f = mat->df(&wo,hp,&wi,flags);
+            Spectrum bsdf_f = mat->df(&wo,hp,&wi,flags);
             wi.normalize();
             Ray r(hp->h,wi);
             if(!bsdf_f.isBlack() && !ot->isOccluded(&r,&light_distance))
@@ -57,8 +57,8 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
         }
 
         //mip bsdf sampling
-        Color bsdf_f = mat->df_s(rand[3],rand[4],rand[5],&wo,hp,&wi,&bsdfpdf,
-                                 flags,&sampled_val);
+        Spectrum bsdf_f = mat->df_s(rand[3],rand[4],rand[5],&wo,hp,&wi,&bsdfpdf,
+                                    flags,&sampled_val);
         if(bsdfpdf>0 && !bsdf_f.isBlack())
         {
             wi.normalize();
@@ -72,7 +72,7 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
             //}
             Ray r2(hp->h,wi);
             HitPoint h2;
-            Color rad;
+            Spectrum rad;
             if(sc->k.intersect(&r2,&h2))
                 if(h2.hit->getID() == light->getID())
                     if(dot(h2.n,-r2.direction)>0)
@@ -84,7 +84,7 @@ Color direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
     return L;
 }
 
-Color spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
+Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
              OcclusionTester* ot, BdfFlags ref,const LightIntegrator* i)
 {
     Vec3 wo = normalize(-r->direction);
@@ -95,7 +95,7 @@ Color spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     const Bsdf* mat = hp->hit->getMaterial();
     BdfFlags sampled_val;
     BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
-    Color bsdf_f = mat->df_s(rand[0], rand[1], rand[2], &wo, hp, &wi,
+    Spectrum bsdf_f = mat->df_s(rand[0], rand[1], rand[2], &wo, hp, &wi,
                        &bsdfpdf,sampleme,&sampled_val);
     
     if(bsdfpdf==1.f && !bsdf_f.isBlack())
@@ -103,7 +103,7 @@ Color spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
         float adot = absdot(wi, hp->n);
         if(adot != 0)
         {
-            Color reflr_rad;
+            Spectrum reflr_rad;
             Ray r2(hp->h,wi); //new ray to trace
             r2.ricochet=r->ricochet+1;
             HitPoint h2;
@@ -112,8 +112,8 @@ Color spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
             return bsdf_f*reflr_rad*adot;
         }
         else
-            return Color();
+            return SPECTRUM_BLACK;
     }
     else
-        return Color();
+        return SPECTRUM_BLACK;
 }

@@ -1,12 +1,13 @@
 #include "reflection.hpp"
 
-Reflection::Reflection(Color specular, Color refraction, Color absorption)
+Reflection::Reflection(const Spectrum& specular, const Spectrum& refraction,
+                       const Spectrum& absorption)
         : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
 {
     Reflection::fc = new Conductor(refraction,absorption);
 }
 
-Reflection::Reflection(Color specular, float etai, float etat)
+Reflection::Reflection(const Spectrum& specular, float etai, float etat)
         : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
 {
     Reflection::fc = new Dielectric(etai,etat);
@@ -17,12 +18,13 @@ Reflection::~Reflection()
     delete Reflection::fc;
 }
 
-Color Reflection::df(const Vec3*, const Vec3*) const
+Spectrum Reflection::df(const Vec3*, const Vec3*) const
 {
-    return Color();
+    return SPECTRUM_BLACK;
 }
 
-Color Reflection::df_s(const Vec3 *wo, Vec3 *wi, float, float, float* pdf) const
+Spectrum Reflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
+                          float* pdf) const
 {
     //wi = wo * [-1 0 0 0]
     //          [0 -1 0 0]
