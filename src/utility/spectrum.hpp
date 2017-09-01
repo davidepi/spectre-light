@@ -1,5 +1,5 @@
 //Created,  29 Aug 2017
-//Last Edit 31 Aug 2017
+//Last Edit  1 Sep 2017
 
 #ifndef __SPECTRUM_HPP__
 #define __SPECTRUM_HPP__
@@ -20,7 +20,6 @@ class Spectrum
 public:
     
     Spectrum();
-    Spectrum(SpectrumType);
     Spectrum(float*);
     
     ColorXYZ toXYZ()const;
