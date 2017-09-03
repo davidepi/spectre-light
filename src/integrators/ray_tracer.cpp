@@ -45,14 +45,16 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         if(lightpdf > 0 && !directrad.isBlack())
         {
             Spectrum bsdf_f = mat->df(&wo,hp,&wi,flags);
-            wi.normalize();
             Ray r(hp->h,wi);
             if(!bsdf_f.isBlack() && !ot->isOccluded(&r,&light_distance))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi,flags);
-                float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
-                        bsdfpdf*bsdfpdf);
-                L+=bsdf_f*directrad*absdot(wi,hp->n)*weight/lightpdf;
+                if(bsdfpdf>0)
+                {
+                    float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
+                                                        bsdfpdf*bsdfpdf);
+                    L+=bsdf_f*directrad*absdot(wi,hp->n)*weight/lightpdf;
+                }
             }
         }
 
@@ -61,7 +63,6 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                                     flags,&sampled_val);
         if(bsdfpdf>0 && !bsdf_f.isBlack())
         {
-            wi.normalize();
             float w = 1.f; //weight
             //if((sampled_val&SPECULAR)==0) //if not specular -> 100% guaranteed
             //{
@@ -78,7 +79,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                     if(dot(h2.n,-r2.direction)>0)
                         rad=light->emissiveSpectrum();
             if(!rad.isBlack())
-                L+=bsdf_f*rad*absdot(wi,hp->n)*w/bsdfpdf;
+                    L+=bsdf_f*rad*absdot(wi,hp->n)*w/bsdfpdf;
         }
     }
     return L;

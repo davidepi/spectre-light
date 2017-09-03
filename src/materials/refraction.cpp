@@ -38,7 +38,8 @@ Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float,
     wi->z = costransmitted;
     *pdf = 1.f;
     //return BTDF
-    return (SPECTRUM_WHITE-d.eval(wi->z)) * ((ei*ei)/(et*et)) * specular/fabsf(wi->z);
+    return (SPECTRUM_WHITE-d.eval(wi->z))*((ei*ei)/(et*et))*
+            specular/fabsf(wi->z);
 }
 
 float Refraction::pdf(const Vec3*, const Vec3*)const

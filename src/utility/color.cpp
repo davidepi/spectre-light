@@ -202,9 +202,7 @@ ColorRGB ColorXYZ::toStandardRGB()const
     else
         b *= 12.92;
     
-    return ColorRGB(clamp((float)r,0.f,1.f),
-                    clamp((float)g,0.f,1.f),
-                    clamp((float)b,0.f,1.f));
+    return ColorRGB((float)r,(float)g,(float)b);
 }
 
 ColorRGB ColorXYZ::toAdobeRGB()const
@@ -255,9 +253,5 @@ ColorXYZ ColorRGB::toXYZ()const
     float y = (float)(r * 0.2126729 + g * 0.7151522 + b * 0.0721750);
     float z = (float)(r * 0.0193339 + g * 0.1191920 + b * 0.9503041);
     
-    x = clamp(x,0.f,100.f);
-    y = clamp(y,0.f,100.f);
-    z = clamp(z,0.f,100.f);
-    
-    return ColorXYZ(x,y,z);
+    return ColorXYZ((float)x,(float)y,(float)z);
 }

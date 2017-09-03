@@ -770,6 +770,44 @@ Spectrum::Spectrum(const float* vals)
         Spectrum::w[i] = vals[i];
 }
 
+Spectrum::Spectrum(float val)
+{
+    Spectrum::w[0] = val;
+    Spectrum::w[1] = val;
+    Spectrum::w[2] = val;
+    Spectrum::w[3] = val;
+    Spectrum::w[4] = val;
+    Spectrum::w[5] = val;
+    Spectrum::w[6] = val;
+    Spectrum::w[7] = val;
+    Spectrum::w[8] = val;
+    Spectrum::w[9] = val;
+    Spectrum::w[10] = val;
+    Spectrum::w[11] = val;
+    Spectrum::w[12] = val;
+    Spectrum::w[13] = val;
+    Spectrum::w[14] = val;
+    Spectrum::w[15] = val;
+#if HQ_SPECTRUM!=0
+    Spectrum::w[16] = val;
+    Spectrum::w[17] = val;
+    Spectrum::w[18] = val;
+    Spectrum::w[19] = val;
+    Spectrum::w[20] = val;
+    Spectrum::w[21] = val;
+    Spectrum::w[22] = val;
+    Spectrum::w[23] = val;
+    Spectrum::w[24] = val;
+    Spectrum::w[25] = val;
+    Spectrum::w[26] = val;
+    Spectrum::w[27] = val;
+    Spectrum::w[28] = val;
+    Spectrum::w[29] = val;
+    Spectrum::w[30] = val;
+#endif
+
+}
+
 Spectrum::Spectrum(ColorRGB c, bool l)
 {
     memset(Spectrum::w,0,sizeof(float)*SPECTRUM_SAMPLES);
@@ -974,7 +1012,6 @@ ColorXYZ Spectrum::toXYZ()const
     x*=INVY_SUM;
     y*=INVY_SUM;
     z*=INVY_SUM;
-    
     return ColorXYZ(x,y,z);
 }
 

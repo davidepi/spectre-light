@@ -21,9 +21,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     //if first hit is light or specular, use its emission
     if((r->ricochet==0 || (last&SPECULAR))
        && hp->hit->isLight() && dot(hp->n,wo)>0)
-    {
         retval+=*power*((AreaLight *)hp->hit)->emissiveSpectrum();
-    }
 
     //calculate direct lighting at point
     const Bsdf* mat = hp->hit->getMaterial();
@@ -36,10 +34,11 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     //russian roulette
     if(r->ricochet>3)
     {
-        if (rand[0] < 0.5f)
+        float term = min(power->luminance(),0.5f);
+        if (rand[0] < term)
             return retval;
         else
-            rrprob = 0.5f; //survived russian roulette, need to cut down contrib
+            rrprob = term; //survived russian roulette, need to cut down contrib
     }
     if(r->ricochet==DEFAULT_BOUNCES)
         return retval;
@@ -50,11 +49,12 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     BdfFlags matched;
     Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
                            BdfFlags(ALL), &matched);
-    if(f.isBlack() || pdf==0)
+    float adot = absdot(wi,hp->n);
+    if(f.isBlack() || pdf==0 || adot==0)
         return retval;
 
     //calculate new power, new ray and new intersection point
-    *power *= f*absdot(wi,hp->n)/pdf*rrprob;
+    *power *= f*adot/pdf*rrprob;
     Ray r2(hp->h,wi);
     r2.ricochet = r->ricochet+1;
     HitPoint h2;

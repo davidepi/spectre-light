@@ -188,8 +188,6 @@ bool ImageOutput::saveImage()
     uint8_t* tmp = (uint8_t*)malloc((size_t)(ImageOutput::width
                                              *ImageOutput::height*3));
     int i = 0;
-    int max_val = 255;
-    
     //evaluate average for every pixel
     for(int j=0;j<ImageOutput::width*ImageOutput::height;j++)
     {
@@ -199,16 +197,9 @@ bool ImageOutput::saveImage()
             ColorRGB col = ColorXYZ(image[j].cie_x*weight,
                                     image[j].cie_y*weight,
                                     image[j].cie_z*weight).toStandardRGB();
-            int val;
-            val = (int)(col.r*255);
-            max_val=val>max_val?val:max_val;
-            tmp[i++] = (uint8_t)(val);
-            val = (int)(col.g*255);
-            max_val=val>max_val?val:max_val;
-            tmp[i++] = (uint8_t)(val);
-            val = (int)(col.b*255);
-            max_val=val>max_val?val:max_val;
-            tmp[i++] = (uint8_t)(val);
+            tmp[i++] = (uint8_t)(::clamp(col.r,0.f,1.f)*0xFF);
+            tmp[i++] = (uint8_t)(::clamp(col.g,0.f,1.f)*0xFF);
+            tmp[i++] = (uint8_t)(::clamp(col.b,0.f,1.f)*0xFF);
         }
         else
         {
@@ -222,9 +213,7 @@ bool ImageOutput::saveImage()
     FILE* fout = fopen(filename,"wb"); //save as ppm
     if(fout != NULL)
     {
-        char maxval[6];
-        sprintf(maxval, "%d",max_val);
-        fprintf(fout,"P6 %d %d %s ",width,height,maxval);
+        fprintf(fout,"P6 %d %d 255 ",width,height);
         fwrite(tmp, sizeof(unsigned char), (size_t)(width*height*3), fout);
         fclose(fout);
         free(tmp);

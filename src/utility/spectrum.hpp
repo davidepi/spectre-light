@@ -47,6 +47,12 @@ public:
      */
     Spectrum(int black);
     
+    /** \brief Initialize the spectrum with a constant value
+     *
+     *  \param[in] val The value of the spectrum
+     */
+    Spectrum(float val);
+    
     /** \brief Initialize the spectrum with the given values
      *
      *  Initialize this class by filling it with the given values
@@ -121,7 +127,7 @@ public:
     ///The division operation between a value and a spectrum
     void operator/=(float v);
     
-private:
+    //private:
     
     //wavelength samples
     float w[SPECTRUM_SAMPLES];
