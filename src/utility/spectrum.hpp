@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit  1 Sep 2017
+//Last Edit  4 Sep 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 1 Sep 2017
+ *  \date 4 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -22,6 +22,8 @@
 #else
 #define SPECTRUM_SAMPLES 31
 #endif
+
+enum SpectrumType {BLACK = 0, WHITE, CYAN, MAGENTA, YELLOW, RED, GREEN, BLUE};
 
 /**
  *  \class Spectrum spectrum.hpp "utility/spectrum.hpp"

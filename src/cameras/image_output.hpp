@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit 21 Jul 2017
+//Last Edit  4 Sep 2017
 
 /**
  *  \file image_output.hpp
  *  \brief     Buffer storing and saving an image, will be used by Camera
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      21 Jul 2017
+ *  \date      4 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -149,7 +149,7 @@ public:
 	 *	\sa deferredAddPixel(const ExecutorData* ex);
 	 *	\sa forceAddPixel(const ExecutorData* ex);
      */
-    void addPixel(const Sample* sample, const ColorXYZ c, ExecutorData* ex);
+    void addPixel(const Sample* sample, ColorXYZ c, ExecutorData* ex);
 
 
 	/** \brief Attempts the addition of pixels in critical areas

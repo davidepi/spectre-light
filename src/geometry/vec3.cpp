@@ -152,7 +152,8 @@ void Vec3::normalize()
 
 bool Vec3::isNormalized()const
 {
-    float len = Vec3::length();
+    //sqrt(1) = 1 so I don't need the expense of a Vec3::length()
+    float len = Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z;
     return len>1-FLT_EPSILON && len<1+FLT_EPSILON;
 }
 
@@ -585,7 +586,7 @@ void Normal::normalize()
 
 bool Normal::isNormalized()const
 {
-    float len = Normal::length();
+    float len = x*x+y*y+z*z;
     return len>0.999 && len<1.0001;
 }
 

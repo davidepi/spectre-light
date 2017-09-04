@@ -101,8 +101,11 @@ ImageOutput::~ImageOutput()
     free(ImageOutput::image);
 }
 
-void ImageOutput::addPixel(const Sample* s, const ColorXYZ c, ExecutorData* ex)
+void ImageOutput::addPixel(const Sample* s, ColorXYZ c, ExecutorData* ex)
 {
+    if(c.r<0)c.r=0;
+    if(c.g<0)c.g=0;
+    if(c.b<0)c.b=0;
     float ptmpx = s->posx-0.5f;
     float ptmpy = s->posy-0.5f;
     int p0x = (int)ceil(ptmpx-f->x_range);

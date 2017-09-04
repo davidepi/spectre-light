@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 15 Jun 2017
+//Last Edit  4 Sep 2017
 
 /**
  *  \file vec3.hpp
@@ -8,7 +8,7 @@
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
  *  \version   1.0
- *  \date      15 Jun 2017
+ *  \date      4 Sep 2017
  *  \warning   Since this is a low level class, some verification
  *             could be skipped. To enable them compile the project with the
  *             #_LOW_LEVEL_CHECKS_ preprocessor define

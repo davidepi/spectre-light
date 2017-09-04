@@ -81,7 +81,7 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
     *pdf = (r.origin.x-p.x)*(r.origin.x-p.x)+(r.origin.y-p.y)*(r.origin.y-p.y)+
            (r.origin.z-p.z)*(r.origin.z-p.z);
     *pdf/=(absdot(n,-(*wi))*AreaLight::area);
-    if(isinf(*pdf))
+    if(std::isinf(*pdf))
     {
         *pdf = 0;
         return SPECTRUM_BLACK;

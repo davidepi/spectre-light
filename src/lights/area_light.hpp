@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 17 Jul 2017
+//Last Edit  4 Sep 2017
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      17 Jul 2017
+ *  \date      4 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 #include "utility/spectrum.hpp"
 #include "primitives/asset.hpp"
 #include "primitives/shape.hpp"
+#include <cmath> //isinf
 
 /**
  * \class AreaLight area_light.hpp "lights/area_light.hpp"
