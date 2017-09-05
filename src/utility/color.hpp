@@ -1,5 +1,5 @@
 //Created,  23 May 2017
-//Last Edit  1 Sep 2017
+//Last Edit  5 Sep 2017
 
 /**
  *  \file color.hpp
@@ -8,7 +8,7 @@
  *  spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 1 Sep 2017
+ *  \date 5 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -23,12 +23,13 @@
 
 /**
  *  \class Color color.hpp "utility/color.hpp"
- *  \brief The representation of a visibile colour
+ *  \brief The representation of a visible colour
  *
  *  Color class contains an approximation of the visible spectrum. Instead of
- *  storing several samples of the spectral wave, this class stores the weighted
- *  sum of red, green and blue values. These correspond to the following
- *  wavelengths: Red 700.47nm, Green 546.09nm, Blue 455.79nm
+ *  storing several samples of the spectral wave, this class stores a
+ *  value composed of either Red Green and Blue component or X Y Z from the CIE
+ *  standard. For better control, this class can be specialized under
+ *  ColorXYZ and ColorRGB
  *
  *  This sacrifices precision, however, the supplied input will most likely be
  *  in RGB form.
@@ -48,18 +49,17 @@ public:
      *
      *  Create a color with the given value for each component
      *
-     *  \param r The value of the red component
-     *  \param g The value of the green component
-     *  \param b The value of the blue component
+     *  \param[in] r The value of the red or x component
+     *  \param[in] g The value of the green or y component
+     *  \param[in] b The value of the blue or z component
      */
     Color(float r, float g, float b);
 
     /** \brief Default Constructor, given a single component value
      *
      *  Create a color with the given value repeated for every component.
-     *  This will create a greyscale colour.
      *
-     *  \param rgb The value of the red, green and blue components
+     *  \param[in] rgb The value of the red, green and blue or x,y,z components
      */
     Color(float rgb);
 
@@ -68,8 +68,8 @@ public:
      *  Create a color with the given components values, encoded as hex string
      *  in the form #RRGGBB or #RGB which will be translated to #RRGGBB aswell
      *
-     *  \param hex The value of the red, green and blue components encoded as an
-     *  hex string
+     *  \param[in] hex The value of the red, green and blue components encoded
+     *  as an hex string
      */
     Color(const char* hex);
 
@@ -78,13 +78,13 @@ public:
      */
     bool isBlack()const;
     
-    ///Red component
+    ///Red or x component
     float r;
     
-    ///Green component
+    ///Green or y component
     float g;
     
-    ///Blue component
+    ///Blue or z component
     float b;
 
     // <><><><> Operators <><><><><><><><><><><><><><><><><><><><><><><><><><><>
@@ -134,17 +134,61 @@ class ColorXYZ;
 class ColorRGB : public Color
 {
 public:
-    
-    //inherit cosntructors
-    using Color::Color;
-    
+
+    /** \brief Default Constructor
+     *
+     *  Create a color with a value of 0.0 for each component, representing
+     *  the black color
+     */
+    ColorRGB();
+
+    /** \brief Default Constructor, given components values as floats
+     *
+     *  Create a color with the given value for each component. Values should be
+     *  in the interval [0.0,1.0]
+     *
+     *  \param[in] r The value of the red component
+     *  \param[in] g The value of the green component
+     *  \param[in] b The value of the blue component
+     *  \sa ColorRGB(unsigned char, unsigned char, unsigned char)
+     */
+    ColorRGB(float r, float g, float b);
+
+    /** \brief Default Constructor, given a single component value
+     *
+     *  Create a color with the given value repeated for every component.
+     *
+     *  \param[in] rgb The value of the red, green and blue
+     */
+    ColorRGB(float rgb);
+
+    /** \brief Default Constructor, given hex value
+     *
+     *  Create a color with the given components values, encoded as hex string
+     *  in the form #RRGGBB or #RGB which will be translated to #RRGGBB aswell
+     *
+     *  \param[in] hex The value of the red, green and blue components encoded
+     *  as an hex string
+     */
+    ColorRGB(const char* hex);
+
+    /** \brief Default Constructor, given components values as unsigned chars
+     *
+     *  Create a color with the given value for each component. Values should be
+     *  in the interval [0,255]
+     *
+     *  \param[in] r The value of the red component
+     *  \param[in] g The value of the green component
+     *  \param[in] b The value of the blue component
+     *  \sa ColorRGB(float,float,float)
+     */
     ColorRGB(unsigned char r, unsigned char g, unsigned char b);
    
     /** \brief Convert this RGB to the XYZ representation
      *
      *  Convert the color representation from RGB (sRGB color space assumed)
-     *  to CIE 1931 XYZ. The Standard illuminant (D65) is also assumed for the
-     *  XYZ range
+     *  to CIE 1931 XYZ. The Standard illuminant (D65) is also assumed to be the
+     *  white colour
      */
     ColorXYZ toXYZ()const;
 };
@@ -156,7 +200,22 @@ public:
 class ColorXYZ : public Color
 {
 public:
-    
+
+    /** \brief Default Constructor
+    *
+    *  Create a color with a value of 0.0 for each component, representing
+    *  the black color
+    */
+    ColorXYZ();
+
+    /** \brief Default Constructor, given a single component value
+     *
+     *  Create a color with the given value repeated for every component.
+     *
+     *  \param[in] rgb The value of x, y, z components
+     */
+    ColorXYZ(float xyz);
+
     /** \brief Default Constructor, given X Y and Z values
      *
      *  Create a color with the given value for XYZ, using D65 standard
@@ -171,14 +230,14 @@ public:
     /** \brief Convert this XYZ to the sRGB representation
      *
      *  Convert the color representation from CIE 1931 XYZ to sRGB, assuming
-     *  a D65 Illuminant for the XYZ range
+     *  a D65 Illuminant as white
      */
     ColorRGB toStandardRGB()const;
     
     /** \brief Convert this XYZ to the Adobe RGB representation
      *
      *  Convert the color representation from CIE 1931 XYZ to Adobe RGB, 
-     *  assuming a D65 Illuminant for the XYZ range
+     *  assuming a D65 Illuminant as white
      */
     ColorRGB toAdobeRGB()const;
 };

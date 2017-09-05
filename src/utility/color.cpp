@@ -170,6 +170,19 @@ void Color::operator/=(float c)
 
 //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
+ColorXYZ::ColorXYZ()
+{
+    ColorXYZ::r = 0.0f;
+    ColorXYZ::g = 0.0f;
+    ColorXYZ::b = 0.0f;
+}
+
+ColorXYZ::ColorXYZ(float xyz)
+{
+    ColorXYZ::r = xyz;
+    ColorXYZ::g = xyz;
+    ColorXYZ::b = xyz;
+}
 
 ColorXYZ::ColorXYZ(float x, float y, float z)
 {
@@ -216,9 +229,35 @@ ColorRGB ColorXYZ::toAdobeRGB()const
     double g = x * -0.96924 + y *  1.87597 + z *  0.03342;
     double b = x *  0.01344 + y * -0.11836 + z *  1.34926;
     
-    return ColorRGB(clamp((float)pow(r,EXP),0,1),
-                    clamp((float)pow(g,EXP),0,1),
-                    clamp((float)pow(b,EXP),0,1));
+    return ColorRGB((float)pow(r,EXP),
+                    (float)pow(g,EXP),
+                    (float)pow(b,EXP));
+}
+
+ColorRGB::ColorRGB()
+{
+    ColorRGB::r = 0.0f;
+    ColorRGB::g = 0.0f;
+    ColorRGB::b = 0.0f;
+}
+
+ColorRGB::ColorRGB(float r, float g, float b)
+{
+    ColorRGB::r = r;
+    ColorRGB::g = g;
+    ColorRGB::b = b;
+}
+
+ColorRGB::ColorRGB(float rgb)
+{
+    ColorRGB::r = rgb;
+    ColorRGB::g = rgb;
+    ColorRGB::b = rgb;
+}
+
+ColorRGB::ColorRGB(const char* hex) : Color(hex)
+{
+
 }
 
 ColorRGB::ColorRGB(unsigned char r, unsigned char g, unsigned char b)
