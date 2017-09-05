@@ -89,8 +89,10 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
 
     //convert wi to world space
     Spectrum retval;
-    if(dot(n,-(*wi))>0) //TODO:probably can be removed
+    if(dot(n,-(*wi))>0)
         retval = AreaLight::c;
+    else
+        retval = SPECTRUM_BLACK;
 
     *wi = *AreaLight::objToWorld**wi;
     wi->normalize();

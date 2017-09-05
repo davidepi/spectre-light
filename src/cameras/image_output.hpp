@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit  4 Sep 2017
+//Last Edit  5 Sep 2017
 
 /**
  *  \file image_output.hpp
  *  \brief     Buffer storing and saving an image, will be used by Camera
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      4 Sep 2017
+ *  \date      5 Sep 2017
  *  \copyright GNU GPLv3
  */
 

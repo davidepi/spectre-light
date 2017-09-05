@@ -271,8 +271,11 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
                     
                 else
                     radiance = SPECTRUM_BLACK;
-                //end
-                io->addPixel(&(samples[i]), radiance.toXYZ(), &ex);
+                
+                ColorXYZ cx = radiance.toXYZ();
+                if(cx.r < 0 || cx.g < 0 || cx.b < 0) //handle out of gamut
+                    continue;//TODO:probably integrator error, investigate
+                io->addPixel(&(samples[i]), cx, &ex);
             }
         }
 		io->deferredAddPixel(&ex);

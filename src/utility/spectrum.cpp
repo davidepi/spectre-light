@@ -1047,7 +1047,7 @@ Spectrum::Spectrum(ColorRGB c, bool l)
             }
             else
             {
-                *this += SPECTRUM_MAGENTA*(c.r-c.g);
+                *this += SPECTRUM_MAGENTA*(c.b-c.g);
                 *this += SPECTRUM_RED*(c.r-c.b);
             }
         }
@@ -1093,7 +1093,7 @@ Spectrum::Spectrum(ColorRGB c, bool l)
             }
             else
             {
-                *this += SPECTRUM_MAGENTAL*(c.r-c.g);
+                *this += SPECTRUM_MAGENTAL*(c.b-c.g);
                 *this += SPECTRUM_REDL*(c.r-c.b);
             }
         }
@@ -1113,8 +1113,6 @@ Spectrum::Spectrum(ColorRGB c, bool l)
         }
         *this *= 0.86445f;
     }
-    for(int i=0;i<SPECTRUM_SAMPLES;i++)
-        w[i] = w[i]<0.f?0.f:w[i]>1.f?1.f:w[i];
 }
 
 ColorXYZ Spectrum::toXYZ()const

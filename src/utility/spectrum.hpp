@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit  4 Sep 2017
+//Last Edit  5 Sep 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 4 Sep 2017
+ *  \date 5 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -139,5 +139,6 @@ public:
 extern const Spectrum SPECTRUM_WHITE;
 ///Spectrum composed of 0 values
 extern const Spectrum SPECTRUM_BLACK;
+extern const Spectrum SPECTRUM_RED;
 
 #endif
