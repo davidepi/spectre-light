@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit  5 Sep 2017
+//Last Edit  6 Sep 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 5 Sep 2017
+ *  \date 6 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -22,8 +22,6 @@
 #else
 #define SPECTRUM_SAMPLES 31
 #endif
-
-enum SpectrumType {BLACK = 0, WHITE, CYAN, MAGENTA, YELLOW, RED, GREEN, BLUE};
 
 /**
  *  \class Spectrum spectrum.hpp "utility/spectrum.hpp"
@@ -41,13 +39,15 @@ public:
     ///Default constructor, does nothing
     Spectrum();
     
-    /** \brief Initialize the spectrum as 0
+    /** \brief Initialize the spectrum given the temperature
      *
-     *  Initialize this class by filling it with zeroes
+     *  Consider this spectrum as an emission from a blackbody and initialize it
+     *  based on the temperature of the object.
+     *  The value 0 is used as an efficient way to indicate a black spectrum.
      *
-     *  \param[in] black unused, could be any value
+     *  \param[in] temperature The temperature of the body, in Kelvin degrees
      */
-    Spectrum(int black);
+    Spectrum(int temperature);
     
     /** \brief Initialize the spectrum with a constant value
      *
@@ -139,6 +139,5 @@ public:
 extern const Spectrum SPECTRUM_WHITE;
 ///Spectrum composed of 0 values
 extern const Spectrum SPECTRUM_BLACK;
-extern const Spectrum SPECTRUM_RED;
 
 #endif

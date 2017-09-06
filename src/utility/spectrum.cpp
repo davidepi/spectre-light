@@ -2,7 +2,9 @@
 
 //lookup tables for spectrum to XYZ
 //taken from http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html
+#define SPECTRUM_START 400
 #if HQ_SPECTRUM==0
+#define SPECTRUM_INTERVAL 20
 const float X[SPECTRUM_SAMPLES] =
 {
     0.048547909657160444f,
@@ -346,7 +348,7 @@ const float spectrumBlueL[SPECTRUM_SAMPLES] =
 };
 
 #else
-
+#define SPECTRUM_INTERVAL 10
 const float X[SPECTRUM_SAMPLES] =
 {
     0.024701516690453711f,
@@ -969,9 +971,27 @@ Spectrum::Spectrum()
     //do nothing. Too expensive to initialize if I need to assign it later
 }
 
-Spectrum::Spectrum(int)
+Spectrum::Spectrum(int t)
 {
-    memset(Spectrum::w,0,sizeof(float)*SPECTRUM_SAMPLES);
+    if(t==0) //black
+        memset(Spectrum::w,0,sizeof(float)*SPECTRUM_SAMPLES);
+    else //apply planck's law
+    {
+        //TODO: this must be changed if not vacuum
+        constexpr const float c = 299792458;
+        constexpr const float c2 = c*c;
+        ///first radiation constant: 2hc^2
+        constexpr float frc = 2.f*PLANCK_H*c2;
+        //second radiation constant: hc/kb
+        constexpr float src = PLANCK_H*c/BOLTZMANN_K;
+        float current_wavelength = SPECTRUM_START*10E-10f;
+        for(int i=0;i<SPECTRUM_SAMPLES;i++)
+        {
+            Spectrum::w[i]=frc/powf(current_wavelength,5);
+            w[i]*=1.f/(expf(src/(t*current_wavelength))+1.f);
+            current_wavelength+=SPECTRUM_INTERVAL*10E-10f;
+        }
+    }
 }
 
 Spectrum::Spectrum(const float* vals)

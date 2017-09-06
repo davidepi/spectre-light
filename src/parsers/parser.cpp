@@ -398,15 +398,22 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             *m *= scale;
 
             //parse spectrum
-            token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
-            val = strtok(token,"(), "); //parse x
-            x = atoi(val);
-            val = strtok(NULL,"(), "); //parse y
-            y = atoi(val);
-            val = strtok(NULL,"(), "); //parse z
-            z = atoi(val);
+            Spectrum emissive;
+            token = strtok_r(NULL," ",&pos);
+            if(token[0]=='(')//parse refracted color, rgb
+            {
+                val = strtok(token,"(), "); //parse x
+                x = atoi(val);
+                val = strtok(NULL,"(), "); //parse y
+                y = atoi(val);
+                val = strtok(NULL,"(), "); //parse z
+                z = atoi(val);
+                emissive = Spectrum(ColorRGB(x,y,z),true);
+            }
+            else //parse temperature, generate blackbody
+                emissive = Spectrum(atoi(token));
 
-            out->sc->addLight(got->second,m,Spectrum(ColorRGB(x,y,z),true));
+            out->sc->addLight(got->second,m,emissive);
         }
         else
         {

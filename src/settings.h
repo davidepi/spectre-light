@@ -63,7 +63,7 @@
 #define LANCZOS_FILTER_EXTENT 4
 
 ///The value 0 is used to sample every 20nm, the value 1 every 10nm
-#define HQ_SPECTRUM 0
+#define HQ_SPECTRUM 1
 
 #include "validator.h"
 #endif
