@@ -11,7 +11,7 @@ refraction_index(refraction),absorption(absorption)
 
 }
 
-Spectrum Conductor::eval(float cosin)const
+Spectrum Conductor::eval(float cosin, int)const
 {
     //conductors have complex index of refraction where the imaginary part
     //is the "transmitted" (absorbed) part
@@ -30,16 +30,16 @@ Spectrum Conductor::eval(float cosin)const
     return (rperpsq+rparsq)/2.f;
 }
 
-Dielectric::Dielectric(float refractioni, float refractiont)
+Dielectric::Dielectric(const Spectrum& refractioni, const Spectrum& refractiont)
 {
     Dielectric::etai = refractioni;
     Dielectric::etat = refractiont;
 }
 
-Spectrum Dielectric::eval(float cosin)const
+Spectrum Dielectric::eval(float cosin, int c)const
 {
-    float ei = Dielectric::etai;
-    float et = Dielectric::etat;
+    float ei = Dielectric::etai.w[c];
+    float et = Dielectric::etat.w[c];
     float abscosthetai = cosin;
     if (cosin < 0) //exiting ray
     {
@@ -59,6 +59,8 @@ Spectrum Dielectric::eval(float cosin)const
 
         float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
         float rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
-        return Spectrum((rpar*rpar+rperp*rperp)/2.f);
+        Spectrum retval = SPECTRUM_BLACK;
+        retval.w[c] = (rpar*rpar+rperp*rperp)/2.f;
+        return retval;
     }
 }

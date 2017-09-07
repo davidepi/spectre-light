@@ -112,22 +112,21 @@ private:
 /** \brief Calculates the ior by using the Cauchy equation
  *
  *  This method uses the Cauchy equation to calculate a wavelenght-dependent
- *  index of refraction. The wavelenght is measured in meters, so the parameters
- *  must comply with this.
+ *  index of refraction. The wavelenght is measured in micrometers, so the 
+ *  parameters must comply with this.
  *
- *  \param[in] A The A paramter of the Cauchy Equation
  *  \param[in] B The B paramter of the Cauchy Equation
  *  \param[in] C The C paramter of the Cauchy Equation
  *  \param[in] D The D paramter of the Cauchy Equation
  *  \return The wavelenght dependent ior
  */
-Spectrum cauchyEq(float A, float B, float C = 0, float D = 0);
+Spectrum cauchyEq(float B, float C, float D = 0);
 
 /** \brief Calculates the ior by using the Sellmeier equation
  *
  *  This method uses the Sellmeier equation to calculate a wavelenght-dependent
- *  index of refraction. The wavelenght is measured in meters, so the parameters
- *  must comply with this.
+ *  index of refraction. The wavelenght is measured in micrometers, so the
+ *  parameters must comply with this.
  *
  *  \param[in] B1 The B1 paramter of the Sellmeier equation
  *  \param[in] B2 The B2 paramter of the Sellmeier equation

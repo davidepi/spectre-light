@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 31 Jul 2017
+//Last Edit  7 Sep 2017
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      31 Jul 2017
+ *  \date      7 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -33,14 +33,6 @@ class Reflection : public Bdf
 {
 public:
 
-    /** \brief Default constructor
-     *
-     *  \param specular The spectrum of light reflected back
-     *  \param etai Index of refraction from the incoming material
-     *  \param etat Index of refraction of the transmitted material
-     */
-    Reflection(const Spectrum& specular, float etai, float etat);
-
     /** \brief Default Constructor for metallic material
      *
      *  \param[in] specular The spectrum of light reflected back
@@ -49,7 +41,7 @@ public:
      *  \param[in] absorption The amount of light absorbed by the material
      */
     Reflection(const Spectrum& specular, const Spectrum& refraction,
-               const Spectrum& absorption);
+               const Spectrum& absorption, bool isMetal);
 
     ///Default destructor
     ~Reflection();
@@ -114,6 +106,9 @@ private:
 
     //fresnel term
     FresnelConditions* fc;
+    
+    //is conductor
+    bool conductor;
 };
 
 

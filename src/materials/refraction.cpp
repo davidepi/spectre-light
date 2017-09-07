@@ -1,7 +1,7 @@
 #include "refraction.hpp"
 Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
                        const Spectrum& etat)
-: Bdf(BdfFlags(BTDF|SPECULAR)),specular(s),eta_i(etai),eta_t(etat),d(etai.w[0],etat.w[0])
+: Bdf(BdfFlags(BTDF|SPECULAR)),specular(s),eta_i(etai),eta_t(etat),d(etai,etat)
 {
     //TODO: change dielectric class
 }
@@ -42,7 +42,8 @@ Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float r0, float,
     //return BTDF
     Spectrum retval = SPECTRUM_BLACK;
     retval.w[sampled_spectrum] = SPECTRUM_WHITE.w[sampled_spectrum];
-    retval.w[sampled_spectrum] -= d.eval(wi->z).w[sampled_spectrum];
+    retval.w[sampled_spectrum] -=
+                            d.eval(wi->z,sampled_spectrum).w[sampled_spectrum];
     retval.w[sampled_spectrum] *= (ei*ei)/(et*et);
     retval.w[sampled_spectrum] *= specular.w[sampled_spectrum]/fabsf(wi->z);
     return retval;
@@ -59,17 +60,16 @@ Bdf* Refraction::clone()const
     return res;
 }
 
-Spectrum cauchyEq(float A, float B, float C, float D)
+Spectrum cauchyEq(float B, float C, float D)
 {
     Spectrum retval;
-    float current_wavelength = SPECTRUM_START*10E-10f;
+    float current_wavelength = SPECTRUM_START*1E-3f;
     for(int i=0;i<SPECTRUM_SAMPLES;i++)
     {
-        float b = B/(current_wavelength*current_wavelength);
-        float c = C/powf(current_wavelength,3);
+        float c = C/(current_wavelength*current_wavelength);
         float d = D/powf(current_wavelength,4);
-        retval.w[i] = A + b + c + d;
-        current_wavelength += SPECTRUM_INTERVAL*10E-10f;
+        retval.w[i] = B + c + d;
+        current_wavelength += SPECTRUM_INTERVAL*1E-3f;
     }
     return retval;
 }
@@ -77,7 +77,7 @@ Spectrum cauchyEq(float A, float B, float C, float D)
 Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3)
 {
     Spectrum retval;
-    float current_wavelength = SPECTRUM_START*10E-10f;
+    float current_wavelength = SPECTRUM_START*1E-3f;
     float p1,p2,p3;
     for(int i=0;i<SPECTRUM_SAMPLES;i++)
     {
@@ -88,7 +88,7 @@ Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3)
         p3 = (B3*current_wavelength*current_wavelength) /
              (current_wavelength*current_wavelength-C3);
         retval.w[i] = 1 + p1 + p2 + p3;
-        current_wavelength += SPECTRUM_INTERVAL*10E-10f;
+        current_wavelength += SPECTRUM_INTERVAL*1E-3f;
     }
     return retval;
 }

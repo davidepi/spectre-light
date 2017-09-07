@@ -981,12 +981,12 @@ Spectrum::Spectrum(int t)
         constexpr float frc = 2.f*PLANCK_H*c2;
         //second radiation constant: hc/kb
         constexpr float src = PLANCK_H*c/BOLTZMANN_K;
-        float current_wavelength = SPECTRUM_START*10E-10f;
+        float current_wavelength = SPECTRUM_START*1E-9f;
         for(int i=0;i<SPECTRUM_SAMPLES;i++)
         {
             Spectrum::w[i]=frc/powf(current_wavelength,5);
             w[i]*=1.f/(expf(src/(t*current_wavelength))+1.f);
-            current_wavelength+=SPECTRUM_INTERVAL*10E-10f;
+            current_wavelength+=SPECTRUM_INTERVAL*1E-9f;
         }
     }
 }

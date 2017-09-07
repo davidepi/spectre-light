@@ -1,12 +1,12 @@
 //Created,   9 Jun 2017
-//Last Edit 27 Aug 2017
+//Last Edit  7 Sep 2017
 
 /**
  *  \file fresnel_conditions.hpp
  *  \brief Implementation of the fresnel equations
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      27 Aug 2017
+ *  \date      7 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -33,10 +33,11 @@ public:
      *  Given an angle, determines how much of the incoming light is reflected
      *  or transmitted
      *
-     *  \param cosin The angle between the two rays
+     *  \param[in] cosin The angle between the two rays
+     *  \param[in] chosen Used to know the chosen wavelength to trace
      *  \return The amount of light reflected or transmitted
      */
-    virtual Spectrum eval(float cosin)const = 0;
+    virtual Spectrum eval(float cosin, int chosen)const = 0;
     
     //No need for virtual destructor...
     ///Default destructor
@@ -72,9 +73,10 @@ public:
      *  removing the one absorbed and turned into heat
      *
      *  \param[in] cosin The angle between the two rays
+     *  \param[in] c UNUSED
      *  \return The amount of light reflected
      */
-    Spectrum eval(float cosin)const;
+    Spectrum eval(float cosin, int c)const;
 
 private:
 
@@ -105,27 +107,30 @@ public:
      *  \param[in] refractioni Refraction index for the incident ray
      *  \param[in] refractiont Refraction index for the transmitted ray
      */
-    Dielectric(float refractioni, float refractiont);
+    Dielectric(const Spectrum& refractioni, const Spectrum& refractiont);
 
     /** \brief Evaluate the incident power reflected or transmitted
      *
      *  Given an angle, determines how much of the incoming light is reflected.
      *  In case the ray is transmitted, return the amount of incoming light
      *  reflected, so the remaining of the original spectrum is the potion of
-     *  light transmitted
+     *  light transmitted.
+     *
+     *  \note This amount is calculated only for the parameter set by \p chosen
      *
      *  \param[in] cosin The angle between the two rays
+     *  \param[in] chosen The chosen wavelength to trace
      *  \return The amount of light reflected, depending on the angle
      */
-    Spectrum eval(float cosin)const;
+    Spectrum eval(float cosin, int chosen)const;
 
 private:
 
     //ior incident
-    float etai;
+    Spectrum etai;
 
     //ior transmitted
-    float etat;
+    Spectrum etat;
 };
 
 #endif
