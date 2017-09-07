@@ -1,10 +1,7 @@
 #include "spectrum.hpp"
-
 //lookup tables for spectrum to XYZ
 //taken from http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html
-#define SPECTRUM_START 400
 #if HQ_SPECTRUM==0
-#define SPECTRUM_INTERVAL 20
 const float X[SPECTRUM_SAMPLES] =
 {
     0.048547909657160444f,
@@ -348,7 +345,7 @@ const float spectrumBlueL[SPECTRUM_SAMPLES] =
 };
 
 #else
-#define SPECTRUM_INTERVAL 10
+
 const float X[SPECTRUM_SAMPLES] =
 {
     0.024701516690453711f,

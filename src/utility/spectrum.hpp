@@ -17,10 +17,18 @@
 #include "utility/color.hpp"
 #include "settings.h"
 
+///The wavelenght of the first sample in nanometers
+#define SPECTRUM_START 400
 #if HQ_SPECTRUM==0
+///The number of samples
 #define SPECTRUM_SAMPLES 16
+///The interval in nanometers between each sample
+#define SPECTRUM_INTERVAL 20
 #else
+///The number of samples
 #define SPECTRUM_SAMPLES 31
+///The interval in nanometers between each sample
+#define SPECTRUM_INTERVAL 10
 #endif
 
 /**

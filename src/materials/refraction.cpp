@@ -58,3 +58,37 @@ Bdf* Refraction::clone()const
     Refraction* res = new Refraction(*this);
     return res;
 }
+
+Spectrum cauchyEq(float A, float B, float C, float D)
+{
+    Spectrum retval;
+    float current_wavelength = SPECTRUM_START*10E-10f;
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+    {
+        float b = B/(current_wavelength*current_wavelength);
+        float c = C/powf(current_wavelength,3);
+        float d = D/powf(current_wavelength,4);
+        retval.w[i] = A + b + c + d;
+        current_wavelength += SPECTRUM_INTERVAL*10E-10f;
+    }
+    return retval;
+}
+
+Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3)
+{
+    Spectrum retval;
+    float current_wavelength = SPECTRUM_START*10E-10f;
+    float p1,p2,p3;
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+    {
+        p1 = (B1*current_wavelength*current_wavelength) /
+             (current_wavelength*current_wavelength-C1);
+        p2 = (B2*current_wavelength*current_wavelength) /
+             (current_wavelength*current_wavelength-C2);
+        p3 = (B3*current_wavelength*current_wavelength) /
+             (current_wavelength*current_wavelength-C3);
+        retval.w[i] = 1 + p1 + p2 + p3;
+        current_wavelength += SPECTRUM_INTERVAL*10E-10f;
+    }
+    return retval;
+}
