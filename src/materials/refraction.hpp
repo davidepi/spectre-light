@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit  8 Aug 2017
+//Last Edit  7 Sep 2017
 
 /**
  *  \file refraction.hpp
  *  \brief Implementation of a BTDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      8 Aug 2017
+ *  \date      7 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -37,8 +37,8 @@ public:
      *  \param[in] eta_incident Refraction index for the incident material
      *  \param[in] eta_transmitted Refraction index for the transmitted material
      */
-    Refraction(const Spectrum& specular, float eta_incident,
-               float eta_transmitted);
+    Refraction(const Spectrum& specular, const Spectrum& eta_incident,
+               const Spectrum& eta_transmitted);
 
     /** \brief Copy the BTDF
      *
@@ -70,7 +70,8 @@ public:
      *
      *  \param[in] wo The outgoing direction
      *  \param[out] wi The incident direction
-     *  \param[in] r0 A random float in the interval (0.0,1.0) UNUSED
+     *  \param[in] r0 A random float in the interval (0.0,1.0) used to choose
+     *  among the wavelenghts the one to trace
      *  \param[in] r1 A random float in the interval (0.0,1.0) UNUSED
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. Since the only valid pair of direction is
@@ -99,10 +100,10 @@ private:
     Spectrum specular;
 
     //incident ior
-    float eta_i;
+    Spectrum eta_i;
 
     //transmitted ior
-    float eta_t;
+    Spectrum eta_t;
 
     //fresnel term
     Dielectric d;

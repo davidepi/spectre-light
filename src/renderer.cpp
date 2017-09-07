@@ -274,7 +274,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
                 
                 ColorXYZ cx = radiance.toXYZ();
                 if(cx.r < 0 || cx.g < 0 || cx.b < 0) //handle out of gamut
-                    continue;//TODO:probably integrator error, investigate
+                    continue;//TODO:probably pt integrator error, investigate
                 io->addPixel(&(samples[i]), cx, &ex);
             }
         }

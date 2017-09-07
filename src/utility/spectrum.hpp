@@ -129,9 +129,7 @@ public:
     ///The division operation between a value and a spectrum
     void operator/=(float v);
     
-    //private:
-    
-    //wavelength samples
+    ///Wavelength samples
     float w[SPECTRUM_SAMPLES];
 };
 
