@@ -46,19 +46,6 @@ public:
     ///Default destructor
     virtual ~Bdf();
 
-    /** \brief Copy the Bdf and its eventual derived class
-     *
-     *  Method used to copy this class, or its derived version, when only the
-     *  base pointer is available
-     *
-     *  \warning The returned Bdf is heap allocated, and must be deallocated.
-     *  Although this is really bad practice, it is the only possible
-     *  implementation without using reference counting.
-     *
-     *  \return an heap allocated pointer of the cloned class
-     */
-    virtual Bdf* clone()const = 0;
-
     /** \brief Return the value of the Bdf
      *
      *  Computes the value of the Bdf in the point, defining how the light is

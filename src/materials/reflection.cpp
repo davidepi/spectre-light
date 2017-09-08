@@ -1,18 +1,9 @@
 #include "reflection.hpp"
 
-Reflection::Reflection(const Spectrum& specular, const Spectrum& ior1,
-                       const Spectrum& ior2, bool conductor)
-    : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular),conductor(conductor)
+Reflection::Reflection(const Spectrum& specular)
+    : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
 {
-    if(conductor)
-        Reflection::fc = new Conductor(ior1,ior2);
-    else
-        Reflection::fc = new Dielectric(ior1,ior2);
-}
-
-Reflection::~Reflection()
-{
-    delete Reflection::fc;
+    
 }
 
 Spectrum Reflection::df(const Vec3*, const Vec3*) const
@@ -20,8 +11,29 @@ Spectrum Reflection::df(const Vec3*, const Vec3*) const
     return SPECTRUM_BLACK;
 }
 
-Spectrum Reflection::df_s(const Vec3 *wo, Vec3 *wi, float r0, float,
-                          float* pdf) const
+float Reflection::pdf(const Vec3*, const Vec3*)const
+{
+    return 0.f;
+}
+
+ConductorReflection::ConductorReflection(const Spectrum& specular,
+                                         const Spectrum& refraction,
+                                         const Spectrum& absorption)
+: Reflection(specular),ior(refraction)
+{
+    fresnel = (ior*ior)+(absorption*absorption);
+}
+
+DielectricReflection::DielectricReflection(const Spectrum& specular,
+                                           const Spectrum& ior_i,
+                                           const Spectrum& ior_t)
+: Reflection(specular),eta_i(ior_i),eta_t(ior_t)
+{
+    
+}
+
+Spectrum ConductorReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
+                                   float* pdf)const
 {
     //wi = wo * [-1 0 0 0]
     //          [0 -1 0 0]
@@ -30,24 +42,56 @@ Spectrum Reflection::df_s(const Vec3 *wo, Vec3 *wi, float r0, float,
     wi->x = -wo->x;
     wi->y = -wo->y;
     wi->z = wo->z;
-    int chosen = 0;
-    if(conductor)
-        *pdf = 1.f;
+    Spectrum eval;
+    float cosinsq = wo->z*wo->z;
+    Spectrum etacosin2 = ior*(wo->z*2.f);
+    Spectrum rperpsq = (fresnel-etacosin2+cosinsq)/(fresnel+etacosin2+cosinsq);
+    Spectrum tmp = fresnel*cosinsq;
+    Spectrum rparsq = (tmp-etacosin2+1)/(tmp+etacosin2+1);
+    eval = (rperpsq+rparsq)/2.f;
+    *pdf=1.f;
+    return eval*specular/fabsf(wo->z);
+}
+
+Spectrum DielectricReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
+                                    float* pdf)const
+{
+    wi->x = -wo->x;
+    wi->y = -wo->y;
+    wi->z = wo->z;
+    *pdf = 1.f;
+    const Spectrum* ei;
+    const Spectrum* et;
+    float abscosthetai = wo->z;
+    if (wo->z < 0) //exiting ray
+    {
+        ei = &eta_t;
+        et = &eta_i;
+        abscosthetai = fabsf(wo->z);
+    }
     else
     {
-        *pdf = 1.f/SPECTRUM_SAMPLES;
-        chosen = min((int)(r0*SPECTRUM_SAMPLES),SPECTRUM_SAMPLES-1);
+        ei = &eta_i;
+        et = &eta_t;
     }
-    return fc->eval(wo->z,chosen)*specular/fabsf(wo->z);
-}
-
-float Reflection::pdf(const Vec3*, const Vec3*)const
-{
-    return 0.f;
-}
-
-Bdf* Reflection::clone()const
-{
-    Reflection* res = new Reflection(*this);
-    return res;
+    Spectrum sinthetat = (*ei / *et);
+    sinthetat *= sqrtf(max(0.f, 1.f - abscosthetai*abscosthetai));
+    
+    Spectrum costhetat;
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+    {
+        if(sinthetat.w[i]>1)
+            sinthetat.w[i] = 1.f;
+        costhetat.w[i] = sqrtf(max(0.f,1.f-sinthetat.w[i]*sinthetat.w[i]));
+    }
+    
+    Spectrum etatcosi = *et*abscosthetai;
+    Spectrum etaicosi = *ei*abscosthetai;
+    Spectrum etatcost = *et*costhetat;
+    Spectrum etaicost = *ei*costhetat;
+        
+    Spectrum rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
+    Spectrum rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
+    Spectrum eval = (rpar*rpar+rperp*rperp)/2.f;
+    return eval*specular/fabsf(wo->z);
 }

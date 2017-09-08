@@ -267,9 +267,9 @@ static void parseMaterial(char* string)
                 b = (unsigned char)atoi(val);
                 ColorRGB emitted(r,g,b);
 
-                addme = new Reflection(Spectrum(reflected,false),
+                addme = new ConductorReflection(Spectrum(reflected,false),
                                        Spectrum(absorbed,false),
-                                       Spectrum(emitted,false),true);
+                                       Spectrum(emitted,false));
             }
             else //dielectric
             {
@@ -334,8 +334,8 @@ static void parseMaterial(char* string)
                     etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
                 }
 
-                addme = new Reflection(Spectrum(reflected,false),
-                                       etai, etat, false);
+                addme = new DielectricReflection(Spectrum(reflected,false),
+                                                 etai, etat);
             }
         }
         else if(strcmp(token,"refraction")==0)
