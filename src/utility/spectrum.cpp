@@ -344,6 +344,14 @@ const float spectrumBlueL[SPECTRUM_SAMPLES] =
     0.16615733676564479f
 };
 
+const float spectrumOne[SPECTRUM_SAMPLES] =
+{
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f
+};
+
 #else
 
 const float X[SPECTRUM_SAMPLES] =
@@ -943,6 +951,18 @@ const float spectrumBlueL[SPECTRUM_SAMPLES] =
     0.16870528814861985f
 };
 
+const float spectrumOne[SPECTRUM_SAMPLES] =
+{
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f
+};
+
 #endif
 
 //More memory usage but I avoid to construct and destroy these multiple times
@@ -961,6 +981,7 @@ const Spectrum SPECTRUM_GREEN(spectrumGreen);
 const Spectrum SPECTRUM_GREENL(spectrumGreenL);
 const Spectrum SPECTRUM_BLUE(spectrumBlue);
 const Spectrum SPECTRUM_BLUEL(spectrumBlueL);
+const Spectrum SPECTRUM_ONE(spectrumOne);
 const Spectrum SPECTRUM_BLACK(0);
 
 Spectrum::Spectrum()
@@ -1289,6 +1310,20 @@ bool Spectrum::isBlack()const
             return false;
     return true;
 }
+
+StratifiedSpectrum Spectrum::stratify(float r0, float* pdf)const
+{
+    unsigned char chosen;
+    chosen = (unsigned char)min((int)(r0*SPECTRUM_SAMPLES),SPECTRUM_SAMPLES-1);
+    *pdf/=SPECTRUM_SAMPLES;
+    return StratifiedSpectrum(Spectrum::w[chosen],chosen);
+}
+
+Spectrum Spectrum::weight()const
+{
+    return SPECTRUM_ONE;
+}
+
 
 Spectrum Spectrum::operator+(const Spectrum& s)const
 {
@@ -1898,4 +1933,29 @@ void Spectrum::operator/=(float v)
     Spectrum::w[29] /= v;
     Spectrum::w[30] /= v;
 #endif
+}
+
+StratifiedSpectrum::StratifiedSpectrum(float val, unsigned char index)
+{
+    memset(StratifiedSpectrum::w, 0, sizeof(float)*SPECTRUM_SAMPLES);
+    StratifiedSpectrum::chosen = index;
+    w[chosen] = val;
+}
+
+StratifiedSpectrum StratifiedSpectrum::stratify(float, float*)const
+{
+    return *this;
+}
+
+Spectrum StratifiedSpectrum::weight()const
+{
+    Spectrum retval;
+    memset(retval.w, 0, sizeof(float)*SPECTRUM_SAMPLES);
+    retval.w[StratifiedSpectrum::chosen] = 1.f;
+    return retval;
+}
+
+unsigned char StratifiedSpectrum::getComponent()const
+{
+    return StratifiedSpectrum::chosen;
 }

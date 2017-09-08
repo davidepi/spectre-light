@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit  6 Sep 2017
+//Last Edit  8 Sep 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 6 Sep 2017
+ *  \date 8 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -30,6 +30,8 @@
 ///The interval in nanometers between each sample
 #define SPECTRUM_INTERVAL 10
 #endif
+
+class StratifiedSpectrum;
 
 /**
  *  \class Spectrum spectrum.hpp "utility/spectrum.hpp"
@@ -104,6 +106,16 @@ public:
      */
     bool isBlack()const;
     
+    /** \brief Randomly choose only one component of the spectrum
+     *
+     *  \param[in] r0 A random number in the range [0.0,1.0]
+     *  \param[in] pdf The pdf for the chosen value
+     */
+    virtual StratifiedSpectrum stratify(float r0, float* pdf)const;
+    
+    ///Return the contribution of this spectrum. This is useful for subclasses
+    virtual Spectrum weight()const;
+    
     ///The addition operation between two spectra
     Spectrum operator+(const Spectrum& s)const;
     ///The addition operation between two spectra
@@ -141,9 +153,47 @@ public:
     float w[SPECTRUM_SAMPLES];
 };
 
+class StratifiedSpectrum : public Spectrum
+{
+public:
+    friend class Spectrum;
+    
+    /** \brief Randomly choose only one component of the spectrum
+     *
+     *  Since the StratifiedSpectrum is already stratified, this method
+     *  returns *this
+     *
+     *  \param[in] r0 UNUSED
+     *  \param[in] pdf UNUSED
+     */
+    StratifiedSpectrum stratify(float r0, float* pdf)const;
+    
+    /** \brief Weight the contribution of this class
+     *
+     *  In the StratifiedSpectrum class only one component has a meaningful
+     *  value. In order to weight correctly this value, when added to other
+     *  Spectrum classes, this method returns a Spectrum class where every
+     *  value is zero except the stratified one which has a value of one
+     */
+    Spectrum weight()const;
+    
+    ///Get the chosen component of this spectrum
+    unsigned char getComponent()const;
+    
+private:
+    
+    //constructor
+    StratifiedSpectrum(float val, unsigned char index);
+    
+    //index of the only non-zero value
+    unsigned char chosen;
+};
+
 ///Spectrum of white surfaces
 extern const Spectrum SPECTRUM_WHITE;
 ///Spectrum composed of 0 values
 extern const Spectrum SPECTRUM_BLACK;
+///Spectrum composed of 1 values
+extern const Spectrum SPECTRUM_ONE;
 
 #endif
