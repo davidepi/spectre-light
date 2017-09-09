@@ -19,17 +19,10 @@
 
 ///The wavelenght of the first sample in nanometers
 #define SPECTRUM_START 400
-#if HQ_SPECTRUM==0
 ///The number of samples
 #define SPECTRUM_SAMPLES 16
 ///The interval in nanometers between each sample
 #define SPECTRUM_INTERVAL 20
-#else
-///The number of samples
-#define SPECTRUM_SAMPLES 31
-///The interval in nanometers between each sample
-#define SPECTRUM_INTERVAL 10
-#endif
 
 class StratifiedSpectrum;
 
@@ -106,6 +99,7 @@ public:
      */
     bool isBlack()const;
     
+#ifdef SPECTRAL
     /** \brief Randomly choose only one component of the spectrum
      *
      *  \param[in] r0 A random number in the range [0.0,1.0]
@@ -115,6 +109,7 @@ public:
     
     ///Return the contribution of this spectrum. This is useful for subclasses
     virtual Spectrum weight()const;
+#endif
     
     ///The addition operation between two spectra
     Spectrum operator+(const Spectrum& s)const;
@@ -149,10 +144,16 @@ public:
     ///The division operation between a value and a spectrum
     void operator/=(float v);
     
+#ifdef SPECTRAL
     ///Wavelength samples
     float w[SPECTRUM_SAMPLES];
+#else
+    ///x,y,z components
+    float w[3];
+#endif
 };
 
+#ifdef SPECTRAL
 class StratifiedSpectrum : public Spectrum
 {
 public:
@@ -188,6 +189,7 @@ private:
     //index of the only non-zero value
     unsigned char chosen;
 };
+#endif
 
 ///Spectrum of white surfaces
 extern const Spectrum SPECTRUM_WHITE;
