@@ -24,13 +24,36 @@ ConductorReflection::ConductorReflection(const Spectrum& specular,
     fresnel = (ior*ior)+(absorption*absorption);
 }
 
+#ifdef DISPERSION
 DielectricReflection::DielectricReflection(const Spectrum& specular,
                                            const Spectrum& ior_i,
                                            const Spectrum& ior_t)
 : Reflection(specular),eta_i(ior_i),eta_t(ior_t)
 {
-    
+    //validator class guarantees no DISPERSION without SPECTRAL
 }
+#else
+DielectricReflection::DielectricReflection(const Spectrum& specular,
+                                           const Spectrum& ior_i,
+                                           const Spectrum& ior_t)
+: Reflection(specular)
+{
+#ifdef SPECTRAL
+    DielectricReflection::eta_i = 0;
+    DielectricReflection::eta_t = 0;
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+    {
+        eta_i+=ior_i.w[i];
+        eta_t+=ior_t.w[i];
+    }
+    eta_i*=INV_SPECTRUM_SAMPLES;
+    eta_t*=INV_SPECTRUM_SAMPLES;
+#else
+    eta_i = ior_i.w[0];
+    eta_t = ior_t.w[0];
+#endif
+}
+#endif
 
 Spectrum ConductorReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
                                    float* pdf)const
@@ -42,8 +65,8 @@ Spectrum ConductorReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
     wi->x = -wo->x;
     wi->y = -wo->y;
     wi->z = wo->z;
-    Spectrum eval;
     float cosinsq = wo->z*wo->z;
+    Spectrum eval;
     Spectrum etacosin2 = ior*(wo->z*2.f);
     Spectrum rperpsq = (fresnel-etacosin2+cosinsq)/(fresnel+etacosin2+cosinsq);
     Spectrum tmp = fresnel*cosinsq;
@@ -60,6 +83,7 @@ Spectrum DielectricReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
     wi->y = -wo->y;
     wi->z = wo->z;
     *pdf = 1.f;
+#ifdef DISPERSION
     const Spectrum* ei;
     const Spectrum* et;
     float abscosthetai = wo->z;
@@ -93,5 +117,37 @@ Spectrum DielectricReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
     Spectrum rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
     Spectrum rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
     Spectrum eval = (rpar*rpar+rperp*rperp)/2.f;
-    return eval*specular/fabsf(wo->z);
+#else
+    float ei;
+    float et;
+    float abscosthetai = wo->z;
+    if (wo->z < 0) //exiting ray
+    {
+        ei = eta_t;
+        et = eta_i;
+        abscosthetai = fabsf(wo->z);
+    }
+    else
+    {
+        ei = eta_i;
+        et = eta_t;
+    }
+    float sinthetat = (ei/et)* sqrtf(max(0.f, 1.f - abscosthetai*abscosthetai));
+    float eval;
+    if(sinthetat>1.f)
+        eval = 1.f;
+    else
+    {
+        float costhetat = sqrtf(max(0.f, 1.f - sinthetat * sinthetat));
+        float etatcosi = et * abscosthetai;
+        float etaicosi = ei * abscosthetai;
+        float etatcost = et * costhetat;
+        float etaicost = ei * costhetat;
+
+        float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
+        float rpar = (etatcosi - etaicost) / (etatcosi + etaicost);
+        eval = (rpar * rpar + rperp * rperp) / 2.f;
+    }
+#endif
+    return specular/fabsf(wo->z)*eval;
 }

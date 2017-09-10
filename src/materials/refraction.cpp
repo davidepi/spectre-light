@@ -3,7 +3,7 @@ Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
                        const Spectrum& etat)
 : Bdf(BdfFlags(BTDF|SPECULAR)),specular(s),eta_i(etai),eta_t(etat),d(etai,etat)
 {
-    //TODO: change dielectric class
+
 }
 
 Spectrum Refraction::df(const Vec3*, const Vec3*) const
@@ -62,21 +62,39 @@ Bdf* Refraction::clone()const
 
 Spectrum cauchyEq(float B, float C, float D)
 {
+#ifdef SPECTRAL
     Spectrum retval;
+#else
+    float ior = 0;
+#endif
+
     float current_wavelength = SPECTRUM_START*1E-3f;
     for(int i=0;i<SPECTRUM_SAMPLES;i++)
     {
         float c = C/(current_wavelength*current_wavelength);
         float d = D/powf(current_wavelength,4);
+#ifdef SPECTRAL
         retval.w[i] = B + c + d;
+#else
+        ior += B + c + d;
+#endif
         current_wavelength += SPECTRUM_INTERVAL*1E-3f;
     }
+#ifdef SPECTRAL
     return retval;
+#else
+    return Spectrum(ior*INV_SPECTRUM_SAMPLES);
+#endif
+
 }
 
 Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3)
 {
+#ifdef SPECTRAL
     Spectrum retval;
+#else
+    float ior = 0;
+#endif
     float current_wavelength = SPECTRUM_START*1E-3f;
     float p1,p2,p3;
     for(int i=0;i<SPECTRUM_SAMPLES;i++)
@@ -87,8 +105,16 @@ Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3)
              (current_wavelength*current_wavelength-C2);
         p3 = (B3*current_wavelength*current_wavelength) /
              (current_wavelength*current_wavelength-C3);
+#ifdef SPECTRAL
         retval.w[i] = 1 + p1 + p2 + p3;
+#else
+        ior+= 1 + p1 + p2 + p3;
+#endif
         current_wavelength += SPECTRUM_INTERVAL*1E-3f;
     }
+#ifdef SPECTRAL
     return retval;
+#else
+    return Spectrum(ior*INV_SPECTRUM_SAMPLES);
+#endif
 }

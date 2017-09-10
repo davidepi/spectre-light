@@ -64,6 +64,10 @@
 #define PATH_SEPARATOR '/'
 #endif
 
+#if defined(DISPERSION) && !defined(SPECTRAL)
+#error "DISPERION define requires SPECTRUM to be enabled"
+#endif
+
 #endif
 
 /**

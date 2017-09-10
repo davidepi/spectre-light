@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit  8 Sep 2017
+//Last Edit 10 Sep 2017
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      8 Sep 2017
+ *  \date      10 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -37,7 +37,7 @@ public:
      *
      *  \param[in] specular The spectrum of light reflected back
      */
-    Reflection(const Spectrum& specular);
+    explicit Reflection(const Spectrum& specular);
 
     /** \brief NOOP
      *
@@ -150,8 +150,13 @@ public:
     Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
                   float* pdf)const;
 private:
+#ifdef DISPERSION
     Spectrum eta_i;
     Spectrum eta_t;
+#else
+    float eta_i;
+    float eta_t;
+#endif
 };
 
 #endif

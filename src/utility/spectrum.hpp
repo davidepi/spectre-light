@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit  8 Sep 2017
+//Last Edit 10 Sep 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 8 Sep 2017
+ *  \date 10 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -21,6 +21,8 @@
 #define SPECTRUM_START 400
 ///The number of samples
 #define SPECTRUM_SAMPLES 16
+///The inverse of the number of samples
+#define INV_SPECTRUM_SAMPLES (1.f/SPECTRUM_SAMPLES)
 ///The interval in nanometers between each sample
 #define SPECTRUM_INTERVAL 20
 
