@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit 10 Sep 2017
+//Last Edit 11 Sep 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 10 Sep 2017
+ *  \date 11 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -26,7 +26,16 @@
 ///The interval in nanometers between each sample
 #define SPECTRUM_INTERVAL 20
 
-class StratifiedSpectrum;
+//#ifdef SPECTRAL: the class Spectrum samples the light wave every 20nm
+//#else this class uses a XYZ 1931 value
+//this is not elegant, however:
+// - Making two separate subclasses would have lead to a lot of vtable deref.
+//   and this has some serious impact since the addition and multiplication
+//   operators are used extensively
+// - Making two completely different classes would have lead to ifdef spreaded
+//   throughout the code.
+//
+//  this is the lesser of two evils
 
 /**
  *  \class Spectrum spectrum.hpp "utility/spectrum.hpp"
@@ -101,18 +110,6 @@ public:
      */
     bool isBlack()const;
     
-#ifdef SPECTRAL
-    /** \brief Randomly choose only one component of the spectrum
-     *
-     *  \param[in] r0 A random number in the range [0.0,1.0]
-     *  \param[in] pdf The pdf for the chosen value
-     */
-    virtual StratifiedSpectrum stratify(float r0, float* pdf)const;
-    
-    ///Return the contribution of this spectrum. This is useful for subclasses
-    virtual Spectrum weight()const;
-#endif
-    
     ///The addition operation between two spectra
     Spectrum operator+(const Spectrum& s)const;
     ///The addition operation between two spectra
@@ -149,49 +146,14 @@ public:
 #ifdef SPECTRAL
     ///Wavelength samples
     float w[SPECTRUM_SAMPLES];
+#ifdef DISPERSION
+    char chosen;
+#endif
 #else
     ///x,y,z components
     float w[3];
 #endif
 };
-
-#ifdef SPECTRAL
-class StratifiedSpectrum : public Spectrum
-{
-public:
-    friend class Spectrum;
-    
-    /** \brief Randomly choose only one component of the spectrum
-     *
-     *  Since the StratifiedSpectrum is already stratified, this method
-     *  returns *this
-     *
-     *  \param[in] r0 UNUSED
-     *  \param[in] pdf UNUSED
-     */
-    StratifiedSpectrum stratify(float r0, float* pdf)const;
-    
-    /** \brief Weight the contribution of this class
-     *
-     *  In the StratifiedSpectrum class only one component has a meaningful
-     *  value. In order to weight correctly this value, when added to other
-     *  Spectrum classes, this method returns a Spectrum class where every
-     *  value is zero except the stratified one which has a value of one
-     */
-    Spectrum weight()const;
-    
-    ///Get the chosen component of this spectrum
-    unsigned char getComponent()const;
-    
-private:
-    
-    //constructor
-    StratifiedSpectrum(float val, unsigned char index);
-    
-    //index of the only non-zero value
-    unsigned char chosen;
-};
-#endif
 
 ///Spectrum of white surfaces
 extern const Spectrum SPECTRUM_WHITE;

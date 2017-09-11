@@ -1,7 +1,7 @@
 #include "spectrum.hpp"
 //lookup tables for spectrum to XYZ
 //taken from http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html
-
+//EDIT: later changed with values from pbrt, however the results are similar
 const float X[SPECTRUM_SAMPLES] =
 {
     0.048547909657160444f,
@@ -384,7 +384,9 @@ const Spectrum SPECTRUM_ONE(spectrumOne);
 
 Spectrum::Spectrum()
 {
-    //do nothing. Too expensive to initialize if I need to assign it later
+#ifdef DISPERSION
+    Spectrum::chosen = -1;
+#endif
 }
 
 Spectrum::Spectrum(int t)
@@ -436,6 +438,9 @@ Spectrum::Spectrum(int t)
         Spectrum::w[1] = y*INVY_SUM;
         Spectrum::w[2] = z*INVY_SUM;
 #endif
+#ifdef DISPERSION
+        chosen = -1;
+#endif
     }
 }
 
@@ -471,7 +476,9 @@ Spectrum::Spectrum(float val)
     Spectrum::w[14] = val;
     Spectrum::w[15] = val;
 #endif
-
+#ifdef DISPERSION
+    Spectrum::chosen = -1;
+#endif
 }
 
 Spectrum::Spectrum(ColorRGB c, bool l)
@@ -575,6 +582,9 @@ Spectrum::Spectrum(ColorRGB c, bool l)
     Spectrum::w[0] = res.r;
     Spectrum::w[1] = res.g;
     Spectrum::w[2] = res.b;
+#endif
+#ifdef DISPERSION
+    Spectrum::chosen = -1;
 #endif
 }
 
@@ -680,21 +690,6 @@ bool Spectrum::isBlack()const
     return w[0]==0 && w[1]==0 && w[2]==0;
 #endif
 }
-
-#ifdef SPECTRAL
-StratifiedSpectrum Spectrum::stratify(float r0, float* pdf)const
-{
-    unsigned char chosen;
-    chosen = (unsigned char)min((int)(r0*SPECTRUM_SAMPLES),SPECTRUM_SAMPLES-1);
-    *pdf/=SPECTRUM_SAMPLES;
-    return StratifiedSpectrum(Spectrum::w[chosen],chosen);
-}
-
-Spectrum Spectrum::weight()const
-{
-    return SPECTRUM_ONE;
-}
-#endif
 
 Spectrum Spectrum::operator+(const Spectrum& s)const
 {
@@ -1065,30 +1060,3 @@ void Spectrum::operator/=(float v)
     Spectrum::w[15] /= v;
 #endif
 }
-
-#ifdef SPECTRAL
-StratifiedSpectrum::StratifiedSpectrum(float val, unsigned char index)
-{
-    memset(StratifiedSpectrum::w, 0, sizeof(float)*SPECTRUM_SAMPLES);
-    StratifiedSpectrum::chosen = index;
-    w[chosen] = val;
-}
-
-StratifiedSpectrum StratifiedSpectrum::stratify(float, float*)const
-{
-    return *this;
-}
-
-Spectrum StratifiedSpectrum::weight()const
-{
-    Spectrum retval;
-    memset(retval.w, 0, sizeof(float)*SPECTRUM_SAMPLES);
-    retval.w[StratifiedSpectrum::chosen] = 1.f;
-    return retval;
-}
-
-unsigned char StratifiedSpectrum::getComponent()const
-{
-    return StratifiedSpectrum::chosen;
-}
-#endif
