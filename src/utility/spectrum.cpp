@@ -438,10 +438,10 @@ Spectrum::Spectrum(int t)
         Spectrum::w[1] = y*INVY_SUM;
         Spectrum::w[2] = z*INVY_SUM;
 #endif
-#ifdef DISPERSION
-        chosen = -1;
-#endif
     }
+#ifdef DISPERSION
+    Spectrum::chosen = -1;
+#endif
 }
 
 Spectrum::Spectrum(const float* vals)
@@ -453,6 +453,9 @@ Spectrum::Spectrum(const float* vals)
     Spectrum::w[0] = vals[0];
     Spectrum::w[1] = vals[1];
     Spectrum::w[2] = vals[2];
+#endif
+#ifdef DISPERSION
+    Spectrum::chosen = -1;
 #endif
 }
 

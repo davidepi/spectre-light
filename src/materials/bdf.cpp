@@ -15,7 +15,7 @@ BdfFlags Bdf::getFlags() const
 }
 
 Spectrum Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                   float* pdf)const
+                   float* pdf, char* chosen)const
 {
     //sample x,y points on the hemisphere, shirley's method maybe's better
     float t = TWO_PI * r0;
@@ -76,7 +76,7 @@ Spectrum Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
 
 Spectrum Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
                     const HitPoint* h, Vec3* wi, float* pdf,
-                    const BdfFlags matchme, BdfFlags* val)const
+                    const BdfFlags matchme, BdfFlags* val,char* choose)const
 {
     int matchcount = 0;
     Bdf* matching[_MAX_BDF_];
@@ -100,7 +100,7 @@ Spectrum Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     //I don't care about the result, but I need to generate the &wi vector
     //TODO: gained efficiency by creating an ad-hoc method?
     Spectrum retval;
-    retval=matching[chosen]->df_s(&wo_shading_space, &tmpwi, r1, r2, pdf);
+    retval=matching[chosen]->df_s(&wo_shading_space, &tmpwi,r1,r2,pdf,choose);
 
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;

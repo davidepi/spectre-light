@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 10 Sep 2017
+//Last Edit 11 Sep 2017
 
 /**
  *  \file refraction.hpp
  *  \brief Implementation of a BTDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      10 Sep 2017
+ *  \date      11 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -79,7 +79,7 @@ public:
      *  \return The value of the BTDF
      */
     Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const;
+                  float* pdf, char* chosen)const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -99,14 +99,16 @@ private:
     //scale factor
     Spectrum specular;
 
+#ifdef DISPERSION
     //incident ior
     Spectrum eta_i;
 
     //transmitted ior
     Spectrum eta_t;
-
-    //fresnel term
-    Dielectric d;
+#else
+    float eta_i;
+    float eta_t;
+#endif
 };
 
 /** \brief Calculates the ior by using the Cauchy equation

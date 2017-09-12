@@ -1,10 +1,32 @@
 #include "refraction.hpp"
+#ifdef DISPERSION
 Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
                        const Spectrum& etat)
-: Bdf(BdfFlags(BTDF|SPECULAR)),specular(s),eta_i(etai),eta_t(etat),d(etai,etat)
+: Bdf(BdfFlags(BTDF|SPECULAR)),specular(s),eta_i(etai),eta_t(etat)
 {
 
 }
+#else
+Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
+                       const Spectrum& etat)
+: Bdf(BdfFlags(BTDF|SPECULAR)),specular(s)
+{
+#ifdef SPECTRAL
+    Refraction::eta_i = 0;
+    Refraction::eta_t = 0;
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+    {
+        eta_i+=etai.w[i];
+        eta_t+=etat.w[i];
+    }
+    eta_i*=INV_SPECTRUM_SAMPLES;
+    eta_t*=INV_SPECTRUM_SAMPLES;
+#else
+    eta_i = etai.w[0];
+    eta_t = etat.w[0];
+#endif
+}
+#endif
 
 Spectrum Refraction::df(const Vec3*, const Vec3*) const
 {
@@ -12,17 +34,41 @@ Spectrum Refraction::df(const Vec3*, const Vec3*) const
 }
 
 Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float r0, float,
-                          float* pdf) const
+                          float* pdf,char* choose) const
 {
-    int sampled_spectrum = min((int)(r0*SPECTRUM_SAMPLES),SPECTRUM_SAMPLES-1);
-    float ei = eta_i.w[sampled_spectrum];
-    float et = eta_t.w[sampled_spectrum];
+#ifdef DISPERSION
+    if(*choose==-1)
+        *choose = (char)min((int)(r0*SPECTRUM_SAMPLES),SPECTRUM_SAMPLES-1);
+#endif
+    float ei;
+    float et;
 
     //check if the incident ray is coming from outside the object or not
     //normal is (0,0,1) so z > 0 = coming from outside
     bool fromOutside = wo->z > 0;
+    float eval;
+    float abscosincident = wo->z;
     if(!fromOutside) //swaps the index, since I assume ei is for the outside
-        swap(&ei,&et);
+    {
+#ifdef DISPERSION
+        ei = Refraction::eta_t.w[*choose];
+        et = Refraction::eta_i.w[*choose];
+#else
+        ei = Refraction::eta_t;
+        et = Refraction::eta_i;
+#endif
+        abscosincident = fabsf(abscosincident);
+    }
+    else
+    {
+#ifdef DISPERSION
+        ei = Refraction::eta_i.w[*choose];
+        et = Refraction::eta_t.w[*choose];
+#else
+        ei = Refraction::eta_i;
+        et = Refraction::eta_t;
+#endif
+    }
 
     //calculate transmitted direction
     float sinincident2 = 1.f-(wo->z*wo->z);
@@ -37,15 +83,20 @@ Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float r0, float,
     wi->x = eta * -wo->x;
     wi->y = eta * -wo->y;
     wi->z = costransmitted;
-    *pdf = 1.f/SPECTRUM_SAMPLES;
+    *pdf = 1.f;
+
+    float etatcosi = et*abscosincident;
+    float etaicosi = ei*abscosincident;
+    float etatcost = et*costransmitted;
+    float etaicost = ei*costransmitted;
+    float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
+    float rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
+    eval = 1.f-(rpar*rpar+rperp*rperp)/2.f;
     
     //return BTDF
-    Spectrum retval = SPECTRUM_BLACK;
-    retval.w[sampled_spectrum] = SPECTRUM_WHITE.w[sampled_spectrum];
-    retval.w[sampled_spectrum] -=
-                            d.eval(wi->z,sampled_spectrum).w[sampled_spectrum];
-    retval.w[sampled_spectrum] *= (ei*ei)/(et*et);
-    retval.w[sampled_spectrum] *= specular.w[sampled_spectrum]/fabsf(wi->z);
+    Spectrum retval(eval);
+    retval *= (ei*ei)/(et*et);
+    retval *= specular/fabsf(wi->z);
     return retval;
 }
 

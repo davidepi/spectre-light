@@ -59,8 +59,9 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         }
 
         //mip bsdf sampling
+        char* res; //guaranteed to be non specular by BdfFlags
         Spectrum bsdf_f = mat->df_s(rand[3],rand[4],rand[5],&wo,hp,&wi,&bsdfpdf,
-                                    flags,&sampled_val);
+                                    flags,&sampled_val,res);
         if(bsdfpdf>0 && !bsdf_f.isBlack())
         {
             float w = 1.f; //weight
@@ -96,8 +97,9 @@ Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     const Bsdf* mat = hp->hit->getMaterial();
     BdfFlags sampled_val;
     BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
+    char* res; //Can't handle dispersion in direct_lighting
     Spectrum bsdf_f = mat->df_s(rand[0], rand[1], rand[2], &wo, hp, &wi,
-                       &bsdfpdf,sampleme,&sampled_val);
+                       &bsdfpdf,sampleme,&sampled_val,res);
     
     if(bsdfpdf==1.f && !bsdf_f.isBlack())
     {

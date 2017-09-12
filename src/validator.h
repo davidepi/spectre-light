@@ -65,7 +65,7 @@
 #endif
 
 #if defined(DISPERSION) && !defined(SPECTRAL)
-#error "DISPERION define requires SPECTRUM to be enabled"
+#error "DISPERION define requires SPECTRAL to be enabled"
 #endif
 
 #endif

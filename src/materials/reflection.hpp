@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 10 Sep 2017
+//Last Edit 11 Sep 2017
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      10 Sep 2017
+ *  \date      11 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -62,10 +62,12 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
+     *  \param[in,out] choose Used for the dispersion to choose the wavelength
+     *  sample
      *  \return The value of the BRDF for the pair of directions
      */
     virtual Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const = 0;
+                  float* pdf, char* chosen)const = 0;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -112,10 +114,12 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
+     *  \param[in,out] choose Used for the dispersion to choose the wavelength
+     *  sample
      *  \return The value of the BRDF for the pair of directions
      */
     Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const;
+                  float* pdf, char* chosen)const;
 private:
     Spectrum fresnel;
     Spectrum ior;
@@ -145,10 +149,12 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
+     *  \param[in,out] choose Used for the dispersion to choose the wavelength
+     *  sample
      *  \return The value of the BRDF for the pair of directions
      */
     Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const;
+                  float* pdf, char* choose)const;
 private:
 #ifdef DISPERSION
     Spectrum eta_i;

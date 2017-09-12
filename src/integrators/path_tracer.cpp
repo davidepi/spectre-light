@@ -47,16 +47,21 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Vec3 wi;
     float pdf;
     BdfFlags matched;
+#ifdef DISPERSION
     Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
-                           BdfFlags(ALL), &matched);
+                           BdfFlags(ALL), &matched,&(power->chosen));
+#else
+    Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
+                           BdfFlags(ALL), &matched,NULL);
+#endif
     float adot = absdot(wi,hp->n);
-    if(f.isBlack() || pdf==0 || adot==0)
+    if(f.isBlack() || pdf==0)
         return retval;
 
     //calculate new power, new ray and new intersection point
     *power *= f*adot/pdf*rrprob;
     Ray r2(hp->h,wi);
-    r2.ricochet = r->ricochet+1;
+    r2.ricochet = (unsigned char)(r->ricochet+1);
     HitPoint h2;
     if(!sc->k.intersect(&r2,&h2))
         return retval; //ray out of scene, return now

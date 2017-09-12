@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  26 Aug 2017
+//Last Edit  11 Sep 2017
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      26 Aug 2017
+ *  \date      11 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -77,11 +77,13 @@ public:
      *  \param[in] r1 A random float in the interval (0.0,1.0)
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
+     *  \param[in,out] choose Used for the dispersion to choose the wavelength
+     *  sample
      *  \return The value of the Bdf for the pair of direction
      *  \sa df(const Vec3* woS, const Vec3* wiS)const
      */
     virtual Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                          float* pdf)const;
+                          float* pdf, char* choose)const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -181,11 +183,13 @@ public:
      *  over the bdf hemisphere
      *  \param[in] matchme The types of bdfs to consider when computing radiance
      *  \param[out] matched The bdfs matched with the sampling
+     *  \param[in,out] choose Used for the dispersion to choose the wavelength
+     *  sample
      *  \return A sampled value of the BSDF
      */
     Spectrum df_s(float r0, float r1, float r2, const Vec3* woW,
                   const HitPoint* h, Vec3* wiW, float* pdf,
-                  const BdfFlags matchme, BdfFlags* matched)
+                  const BdfFlags matchme, BdfFlags* matched, char* choose)
     const;
 
     /** \brief Return the probability density function for this bsdf
