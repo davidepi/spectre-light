@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit 11 Sep 2017
+//Last Edit 13 Sep 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 11 Sep 2017
+ *  \date 13 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,7 @@
 
 #include "utility/color.hpp"
 #include "settings.h"
+#include <cmath>
 
 ///The wavelenght of the first sample in nanometers
 #define SPECTRUM_START 400
@@ -109,6 +110,15 @@ public:
      *  \return true if only 0 values compose this spectrum
      */
     bool isBlack()const;
+
+    /** \brief Checks if this class contains NaNs or infinite values
+     *
+     *  Checks if the class contains NaNs or infinite values. If this is the
+     *  case an error is printed to the stderr and false is returned. Otherwise
+     *  this method simply returns true
+     *  \return true if there are not NaNs or infinite values, false otherwise
+     */
+    bool isValid()const;
     
     ///The addition operation between two spectra
     Spectrum operator+(const Spectrum& s)const;

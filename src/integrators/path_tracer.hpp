@@ -1,12 +1,12 @@
 //Created,  15 Jul 2017
-//Last Edit  3 Aug 2017
+//Last Edit 13 Sep 2017
 
 /**
  *  \file path_tracer.hpp
  *  \brief     LTE integrator
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      3 Aug 2017
+ *  \date      13 Sep 2017
  *  \copyright GNU GPLv3
  */
 

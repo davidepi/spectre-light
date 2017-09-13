@@ -25,7 +25,8 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
 
     //calculate direct lighting at point
     const Bsdf* mat = hp->hit->getMaterial();
-    retval+=*power*direct_l(sc,hp,r,sam,ot);
+    Spectrum direct = direct_l(sc,hp,r,sam,ot);
+    retval+=*power*direct;
 
     //random samples
     float rand[4];
@@ -67,5 +68,6 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
         return retval; //ray out of scene, return now
 
     //recursive step
-    return retval+l_rec(sc,&h2,&r2,sam,power,matched,ot);
+    Spectrum rec = l_rec(sc,&h2,&r2,sam,power,matched,ot);
+    return retval+rec;
 }

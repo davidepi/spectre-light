@@ -694,6 +694,30 @@ bool Spectrum::isBlack()const
 #endif
 }
 
+bool Spectrum::isValid()const
+{
+    bool retval = true;
+    using std::isnan;
+    using std::isinf;
+    if(isnan(w[ 0]) || isnan(w[ 1]) || isnan (w[ 2]) || isnan(w[ 3]) ||
+       isnan(w[ 4]) || isnan(w[ 5]) || isnan (w[ 6]) || isnan(w[ 7]) ||
+       isnan(w[ 8]) || isnan(w[ 9]) || isnan (w[10]) || isnan(w[11]) ||
+       isnan(w[12]) || isnan(w[13]) || isnan (w[14]) || isnan(w[15]))
+    {
+        Console.severe(MESSAGE_SPECTRUM_NAN);
+        retval = false;
+    }
+    if(isinf(w[ 0]) || isinf(w[ 1]) || isinf (w[ 2]) || isinf(w[ 3]) ||
+       isinf(w[ 4]) || isinf(w[ 5]) || isinf (w[ 6]) || isinf(w[ 7]) ||
+       isinf(w[ 8]) || isinf(w[ 9]) || isinf (w[10]) || isinf(w[11]) ||
+       isinf(w[12]) || isinf(w[13]) || isinf (w[14]) || isinf(w[15]))
+    {
+        Console.severe(MESSAGE_SPECTRUM_INF);
+        retval = false;
+    }
+    return retval;
+}
+
 Spectrum Spectrum::operator+(const Spectrum& s)const
 {
     Spectrum retval;
