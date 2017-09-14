@@ -74,6 +74,8 @@
 
 #define MESSAGE_SPECTRUM_INF "Spectrum contains one or more infinite values"
 
+#define MESSAGE_SPECTRUM_NEG "Spectrum contains one or more negative values"
+
 #endif
 
 

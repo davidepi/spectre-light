@@ -189,38 +189,25 @@ void ImageOutput::setFilter(Filter* f)
 
 bool ImageOutput::saveImage()
 {
-    int i = 0;
-    float maxv = 1.f;
-    
-    //calculate scaling factor, in the meantime store the weighted color
-    ColorRGB* img = new ColorRGB[ImageOutput::width*ImageOutput::height];
+    uint8_t* tmp = (uint8_t*)malloc(ImageOutput::width*ImageOutput::height*3U);
+    unsigned int i = 0;
+    ColorRGB rgb;
+    //use scale stored colour and output as .ppm
     for(int j=0;j<ImageOutput::width*ImageOutput::height;j++)
     {
         if(image[j].samples>0.f) //if at least one sample
         {
             float weight = 1.f/image[j].samples;
-            img[j] = ColorXYZ(image[j].cie_x*weight,
-                                    image[j].cie_y*weight,
-                                    image[j].cie_z*weight).toStandardRGB();
-            if(img[j].r>maxv)maxv=img[j].r;
-            if(img[j].g>maxv)maxv=img[j].g;
-            if(img[j].b>maxv)maxv=img[j].b;
+            rgb = ColorXYZ(image[j].cie_x*weight,
+                           image[j].cie_y*weight,
+                           image[j].cie_z*weight).toStandardRGB();
         }
-        //else default constructor will initialize as (0,0,0)
+        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.r)*0xFF),255.0f);
+        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.g)*0xFF),255.0f);
+        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.b)*0xFF),255.0f);
     }
-    float scale = 1.f/maxv;
     free(ImageOutput::image);
     ImageOutput::image = NULL;
-    uint8_t* tmp = (uint8_t*)malloc((size_t)(ImageOutput::width
-                                             *ImageOutput::height*3));
-    //use scale stored colour and output as .ppm
-    for(int j=0;j<ImageOutput::width*ImageOutput::height;j++)
-    {
-        tmp[i++] = (uint8_t)::min((::max(0.f,img[j].r*scale)*0xFF),255.0f);
-        tmp[i++] = (uint8_t)::min((::max(0.f,img[j].g*scale)*0xFF),255.0f);
-        tmp[i++] = (uint8_t)::min((::max(0.f,img[j].b*scale)*0xFF),255.0f);
-    }
-    delete[] img;
     
     //TODO: consider moving this inside utility class
     FILE* fout = fopen(filename,"wb"); //save as ppm

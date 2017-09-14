@@ -1,12 +1,12 @@
 //Created,  15 Jul 2017
-//Last Edit 30 Jul 2017
+//Last Edit 14 Sep 2017
 
 /**
  *  \file ray_tracer.hpp
  *  \brief     Direct lighting integrator
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      30 Jul 2017
+ *  \date      14 Sep 2017
  *  \copyright GNU GPLv3
  */
 

@@ -74,13 +74,13 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
             //}
             Ray r2(hp->h,wi);
             HitPoint h2;
-            Spectrum rad;
             if(sc->k.intersect(&r2,&h2))
                 if(h2.hit->getID() == light->getID())
                     if(dot(h2.n,-r2.direction)>0)
-                        rad=light->emissiveSpectrum();
-            if(!rad.isBlack())
-                    L+=bsdf_f*rad*absdot(wi,hp->n)*w/bsdfpdf;
+                    {
+                        Spectrum rad = light->emissiveSpectrum();
+                        L += bsdf_f * rad * absdot(wi, hp->n) * w / bsdfpdf;
+                    }
         }
     }
     return L;

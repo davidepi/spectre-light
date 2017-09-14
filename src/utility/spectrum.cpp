@@ -416,12 +416,17 @@ Spectrum::Spectrum(int t)
         //second radiation constant: hc/kb
         constexpr float src = PLANCK_H*c/BOLTZMANN_K;
         float current_wavelength = SPECTRUM_START*1E-9f;
+        float maxval = FLT_MIN;
         for(int i=0;i<SPECTRUM_SAMPLES;i++)
         {
             values[i]=frc/powf(current_wavelength,5);
             values[i]*=1.f/(expf(src/(t*current_wavelength))+1.f);
+            if(values[i]>maxval)
+                maxval = values[i];
             current_wavelength+=SPECTRUM_INTERVAL*1E-9f;
         }
+        for(int i=0;i<SPECTRUM_SAMPLES;i++)
+            values[i]/=maxval;
 #ifndef SPECTRAL
         //convert to XYZ, cannot use the Spectrum method beacuse without
         //the #define SPECTRAL it would have only 3 component
@@ -580,6 +585,8 @@ Spectrum::Spectrum(ColorRGB c, bool l)
         }
         *this *= 0.86445f;
     }
+    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+        w[i] = clamp(w[i],0.f,1.f);
 #else
     ColorXYZ res = c.toXYZ();
     Spectrum::w[0] = res.r;
@@ -713,6 +720,15 @@ bool Spectrum::isValid()const
        isinf(w[12]) || isinf(w[13]) || isinf (w[14]) || isinf(w[15]))
     {
         Console.severe(MESSAGE_SPECTRUM_INF);
+        retval = false;
+    }
+
+    if(w[ 0]<0 || w[ 1]<0 || w[ 2]<0 || w[ 3]<0 ||
+       w[ 4]<0 || w[ 5]<0 || w[ 6]<0 || w[ 7]<0 ||
+       w[ 8]<0 || w[ 9]<0 || w[10]<0 || w[11]<0 ||
+       w[12]<0 || w[13]<0 || w[14]<0 || w[15]<0)
+    {
+        Console.severe(MESSAGE_SPECTRUM_NEG);
         retval = false;
     }
     return retval;
