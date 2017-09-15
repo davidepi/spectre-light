@@ -117,6 +117,7 @@ Spectrum DielectricReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
     Spectrum rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
     Spectrum rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
     Spectrum eval = (rpar*rpar+rperp*rperp)/2.f;
+    eval /= fabsf(wo->z)
 #else
     float ei;
     float et;
@@ -147,7 +148,8 @@ Spectrum DielectricReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
         float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
         float rpar = (etatcosi - etaicost) / (etatcosi + etaicost);
         eval = (rpar * rpar + rperp * rperp) / 2.f;
+        eval /= fabsf(wo->z);
     }
 #endif
-    return specular/fabsf(wo->z)*eval;
+    return specular*eval;
 }

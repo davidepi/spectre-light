@@ -77,9 +77,14 @@ Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float r0, float,
     //total internal reflection
     if(sintransmitted2>=1)
         return SPECTRUM_BLACK;
+
+    //transmitted angle
+    float costhetat = sqrtf(1.f-sintransmitted2);
+
+    //costhetat accounting the fact that is generated inside the object
+    float costransmitted = fromOutside?-costhetat:costhetat;
+
     //calculate transmitted ray
-    float costransmitted = fromOutside?-sqrtf(1.f-sintransmitted2):
-                                        sqrtf(1-sintransmitted2);
     wi->x = eta * -wo->x;
     wi->y = eta * -wo->y;
     wi->z = costransmitted;
@@ -87,16 +92,18 @@ Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float r0, float,
 
     float etatcosi = et*abscosincident;
     float etaicosi = ei*abscosincident;
-    float etatcost = et*costransmitted;
-    float etaicost = ei*costransmitted;
+    float etatcost = et*costhetat;
+    float etaicost = ei*costhetat;
     float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
     float rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
-    eval = 1.f-(rpar*rpar+rperp*rperp)/2.f;
+    eval = 1.f-((rpar*rpar+rperp*rperp)/2.f); //refracted part
+
+    eval *= (ei*ei)/(et*et); //these should be calculated directly on spectrum
+    eval/=fabsf(wi->z); //but they are wavelength independent so I put them here
     
     //return BTDF
     Spectrum retval(eval);
-    retval *= (ei*ei)/(et*et);
-    retval *= specular/fabsf(wi->z);
+    retval *= specular;
     return retval;
 }
 

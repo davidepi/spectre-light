@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 11 Sep 2017
+//Last Edit 15 Sep 2017
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Sep 2017
+ *  \date      15 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -15,7 +15,6 @@
 #define __REFLECTION_HPP__
 
 #include "materials/bdf.hpp"
-#include "materials/fresnel_conditions.hpp"
 #include "utility/color.hpp"
 #include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"

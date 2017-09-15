@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 11 Sep 2017
+//Last Edit 15 Sep 2017
 
 /**
  *  \file refraction.hpp
  *  \brief Implementation of a BTDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Sep 2017
+ *  \date      15 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -18,7 +18,6 @@
 #include "utility/color.hpp"
 #include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
-#include "materials/fresnel_conditions.hpp"
 
 /**
  *  \class Refraction refraction.hpp "materials/refraction.hpp"
