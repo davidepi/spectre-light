@@ -263,6 +263,8 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
 		ex.endy = todo.endy;
         while(sam->getSamples(samples))
         {
+            Spectrum res = SPECTRUM_BLACK;
+            Spectrum weight = SPECTRUM_BLACK;
             for(int i=0;i<spp;i++)
             {
                 c->createRay(&(samples[i]), &r);
@@ -271,10 +273,20 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
                     
                 else
                     radiance = SPECTRUM_BLACK;
-                
-                ColorXYZ cx = radiance.toXYZ();
-                io->addPixel(&(samples[i]), cx, &ex);
+
+                if(radiance.chosen!=-1)
+                {
+                    res += radiance.w[radiance.chosen];
+                    weight.w[radiance.chosen]+=1;
+                }
+                else
+                {
+                    res += radiance;
+                    weight += SPECTRUM_ONE;
+                }
             }
+            res/=weight;
+            io->addPixel(&(samples[spp/2]), res.toXYZ(), &ex);
         }
 		io->deferredAddPixel(&ex);
         delete sam;

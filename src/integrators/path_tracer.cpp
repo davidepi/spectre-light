@@ -69,5 +69,10 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
 
     //recursive step
     Spectrum rec = l_rec(sc,&h2,&r2,sam,power,matched,ot);
-    return retval+rec;
+    retval += rec;
+#ifdef DISPERSION
+    //propagate chosen wavelength also to the recursive result
+    retval.chosen = power->chosen;
+#endif
+    return retval;
 }

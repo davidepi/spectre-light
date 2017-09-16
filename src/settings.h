@@ -66,7 +66,7 @@
 #define SPECTRAL
 
 ///Enable different refractive index for each wavelength
-//#define DISPERSION
+#define DISPERSION
 
 #include "validator.h"
 #endif

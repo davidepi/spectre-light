@@ -117,7 +117,7 @@ Spectrum DielectricReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
     Spectrum rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
     Spectrum rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
     Spectrum eval = (rpar*rpar+rperp*rperp)/2.f;
-    eval /= fabsf(wo->z)
+    eval /= fabsf(wo->z);
 #else
     float ei;
     float et;
