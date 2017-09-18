@@ -61,7 +61,7 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
-     *  \param[in,out] choose Used for the dispersion to choose the wavelength
+     *  \param[in,out] chosen Used for the dispersion to choose the wavelength
      *  sample
      *  \return The value of the BRDF for the pair of directions
      */
@@ -113,7 +113,7 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
-     *  \param[in,out] choose Used for the dispersion to choose the wavelength
+     *  \param[in,out] chosen Used for the dispersion to choose the wavelength
      *  sample
      *  \return The value of the BRDF for the pair of directions
      */

@@ -65,8 +65,5 @@
 ///Enable full spectral rendering
 #define SPECTRAL
 
-///Enable different refractive index for each wavelength
-#define DISPERSION
-
 #include "validator.h"
 #endif

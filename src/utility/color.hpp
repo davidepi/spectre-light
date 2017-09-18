@@ -212,7 +212,7 @@ public:
      *
      *  Create a color with the given value repeated for every component.
      *
-     *  \param[in] rgb The value of x, y, z components
+     *  \param[in] xyz The value of x, y, z components
      */
     ColorXYZ(float xyz);
 
