@@ -1,12 +1,12 @@
 //Created,  24 Apr 2017
-//Last Edit 10 Sep 2017
+//Last Edit 108Sep 2017
 
 /**
  *  \file settings.h
  *  \brief User defined global definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 10 Sep 2017
+ *  \date 18 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -61,9 +61,6 @@
 
 ///Default extension for the sinc filter
 #define LANCZOS_FILTER_EXTENT 4
-
-///Enable full spectral rendering
-#define SPECTRAL
 
 #include "validator.h"
 #endif

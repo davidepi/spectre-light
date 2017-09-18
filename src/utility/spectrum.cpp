@@ -706,6 +706,7 @@ bool Spectrum::isValid()const
     bool retval = true;
     using std::isnan;
     using std::isinf;
+#ifdef SPECTRAL
     if(isnan(w[ 0]) || isnan(w[ 1]) || isnan (w[ 2]) || isnan(w[ 3]) ||
        isnan(w[ 4]) || isnan(w[ 5]) || isnan (w[ 6]) || isnan(w[ 7]) ||
        isnan(w[ 8]) || isnan(w[ 9]) || isnan (w[10]) || isnan(w[11]) ||
@@ -731,6 +732,23 @@ bool Spectrum::isValid()const
         Console.severe(MESSAGE_SPECTRUM_NEG);
         retval = false;
     }
+#else
+    if(isnan(w[0]) || isnan(w[1]) || isnan (w[2]))
+    {
+        Console.severe(MESSAGE_SPECTRUM_NAN);
+        retval = false;
+    }
+    if(isinf(w[0]) || isinf(w[1]) || isinf (w[2]))
+    {
+        Console.severe(MESSAGE_SPECTRUM_INF);
+        retval = false;
+    }
+    if(w[0]<0 || w[1]<0 || w[2]<0)
+    {
+        Console.severe(MESSAGE_SPECTRUM_NEG);
+        retval = false;
+    }
+#endif
     return retval;
 }
 
