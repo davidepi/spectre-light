@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     {
         //no args, call spectre-full that will handle the error
         strncat(cmd,"-full",BUF_SIZE);
-        execl(cmd,"spectre-full",0);
+        execl(cmd,"spectre-full",NULL);
     }
     else
     {
@@ -32,17 +32,17 @@ int main(int argc, char* argv[])
             if(strcmp(buf,"#RGB\n")==0) //requested rgb rendering
             {
                 strncat(cmd,"-rgb",BUF_SIZE);
-                execl(cmd,"spectre-rgb",argv[1],0);
+                execl(cmd,"spectre-rgb",argv[1],NULL);
             }
             else //defaulting to full spectral rendering
             {
-                execl(cmd,"spectre-full",argv[1],0);
+                execl(cmd,"spectre-full",argv[1],NULL);
             }
         }
         else //can't read input, spectre-full will handle the error
         {
             strncat(cmd,"-full",BUF_SIZE);
-            execl(cmd,"spectre-full",argv[1],0);
+            execl(cmd,"spectre-full",argv[1],NULL);
         }
     }
 }

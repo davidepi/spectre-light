@@ -65,11 +65,12 @@
 #endif
 
 #if defined(DISPERSION) && !defined(SPECTRAL)
-#error "DISPERSION define requires SPECTRAL to be enabled"
+//since SPECTRAL is defined automatically I undef dispersion when rgb is built
+#undef DISPERSION
 #endif
 
 #if defined(DISPERSION)
-#error "DISPERSION feature is still W.I.P.
+#error DISPERSION feature is still W.I.P.
 #endif
 
 #endif
