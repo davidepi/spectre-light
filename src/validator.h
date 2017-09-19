@@ -45,7 +45,10 @@
 #define INV_TWOPI 0.159154943091895335768883763372514362034459645740456448747f
 ///define 4 * π
 #define FOUR_PI 12.56637061435917295385057353311801153678867759750042328389f
-
+//define Planck's constant
+#define PLANCK_H 6.62606957E-34f
+//define Boltzmann constant
+#define BOLTZMANN_K 1.38064852E-23f
 //deprecated function, compatible with vs
 #ifdef _MSC_VER
 ///Tells the compiler about a deprecated function (Visual Studio style)
@@ -59,6 +62,15 @@
 #define PATH_SEPARATOR '\\'
 #else
 #define PATH_SEPARATOR '/'
+#endif
+
+#if defined(DISPERSION) && !defined(SPECTRAL)
+//since SPECTRAL is defined automatically I undef dispersion when rgb is built
+#undef DISPERSION
+#endif
+
+#if defined(DISPERSION)
+#error DISPERSION feature is still W.I.P.
 #endif
 
 #endif

@@ -8,7 +8,7 @@
 static bool check_extension(const char* path)
 {
     const char* val = strchr(path,'.');
-    if(val != NULL)
+    if(val)
         return val[1]=='o' && val[2]=='b' && val[3]=='j';
     else
         return false;

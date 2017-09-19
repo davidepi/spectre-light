@@ -1,31 +1,32 @@
 #include "path_tracer.hpp"
 
-Color PathTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
-                           Sampler* sam, OcclusionTester *ot)const
+Spectrum PathTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
+                              Sampler* sam, OcclusionTester *ot)const
 {
-    Color power(1.0f);
+    float weight[16] = {1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,
+        1.f,1.f,1.f};
+    Spectrum power(weight);
     BdfFlags last = DIFFUSE;
     return l_rec(sc,hp,r,sam,&power,last,ot);
 }
 
-Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
-                        Sampler *sam, Color *power, BdfFlags last,
+Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
+                        Sampler *sam, Spectrum *power, BdfFlags last,
                         OcclusionTester *ot) const
 {
     float rrprob = 1.f;
-    Color retval(0.0);
+    Spectrum retval = SPECTRUM_BLACK;
     Vec3 wo = -r->direction;
-
+    wo.normalize();
     //if first hit is light or specular, use its emission
     if((r->ricochet==0 || (last&SPECULAR))
        && hp->hit->isLight() && dot(hp->n,wo)>0)
-    {
         retval+=*power*((AreaLight *)hp->hit)->emissiveSpectrum();
-    }
 
     //calculate direct lighting at point
     const Bsdf* mat = hp->hit->getMaterial();
-    retval+=*power*direct_l(sc,hp,r,sam,ot);
+    Spectrum direct = direct_l(sc,hp,r,sam,ot);
+    retval+=*power*direct;
 
     //random samples
     float rand[4];
@@ -34,10 +35,11 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     //russian roulette
     if(r->ricochet>3)
     {
-        if (rand[0] < 0.5f)
+        float term = min(power->luminance(),0.5f);
+        if (rand[0] < term)
             return retval;
         else
-            rrprob = 0.5f; //survived russian roulette, need to cut down contrib
+            rrprob = term; //survived russian roulette, need to cut down contrib
     }
     if(r->ricochet==DEFAULT_BOUNCES)
         return retval;
@@ -46,19 +48,31 @@ Color PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Vec3 wi;
     float pdf;
     BdfFlags matched;
-    Color f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,BdfFlags(ALL),
-    &matched);
+#ifdef DISPERSION
+    Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
+                           BdfFlags(ALL), &matched,&(power->chosen));
+#else
+    Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
+                           BdfFlags(ALL), &matched,NULL);
+#endif
+    float adot = absdot(wi,hp->n);
     if(f.isBlack() || pdf==0)
         return retval;
 
     //calculate new power, new ray and new intersection point
-    *power *= f*absdot(wi,hp->n)/pdf*rrprob;
+    *power *= f*adot/pdf*rrprob;
     Ray r2(hp->h,wi);
-    r2.ricochet = r->ricochet+1;
+    r2.ricochet = (unsigned char)(r->ricochet+1);
     HitPoint h2;
     if(!sc->k.intersect(&r2,&h2))
         return retval; //ray out of scene, return now
 
     //recursive step
-    return retval+l_rec(sc,&h2,&r2,sam,power,matched,ot);
+    Spectrum rec = l_rec(sc,&h2,&r2,sam,power,matched,ot);
+    retval += rec;
+#ifdef DISPERSION
+    //propagate chosen wavelength also to the recursive result
+    retval.chosen = power->chosen;
+#endif
+    return retval;
 }

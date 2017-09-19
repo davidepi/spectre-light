@@ -227,14 +227,14 @@ static void parseMaterial(char* string)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color diffuse((float)r/255,(float)g/255,(float)b/255);
+            ColorRGB diffuse(r,g,b);
 
             token = strtok_r(NULL," ",&stringpos); //parse roughness value
             float rough = (float)atof(token);
             if(rough>0) //oren-nayar
-                addme = new OrenNayar(diffuse,rough);
+                addme = new OrenNayar(Spectrum(diffuse,false),rough);
             else //lambertian
-                addme = new Lambertian(diffuse);
+                addme = new Lambertian(Spectrum(diffuse,false));
         }
         else if(strcmp(token,"reflection")==0)
         {
@@ -245,7 +245,7 @@ static void parseMaterial(char* string)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color reflected((float)r/255,(float)g/255,(float)b/255);
+            ColorRGB reflected(r,g,b);
 
             token = strtok_r(NULL," ",&stringpos);
             if(token[0]=='(') //conductor
@@ -256,7 +256,7 @@ static void parseMaterial(char* string)
                 g = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse z
                 b = (unsigned char)atoi(val);
-                Color absorbed((float)r/255,(float)g/255,(float)b/255);
+                ColorRGB absorbed(r,g,b);
 
                 token = strtok_r(NULL," ",&stringpos);
                 val = strtok(token,"(), "); //parse x
@@ -265,18 +265,77 @@ static void parseMaterial(char* string)
                 g = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse z
                 b = (unsigned char)atoi(val);
-                Color emitted((float)r/255,(float)g/255,(float)b/255);
+                ColorRGB emitted(r,g,b);
 
-                addme = new Reflection(reflected,absorbed,emitted);
+                addme = new ConductorReflection(Spectrum(reflected,false),
+                                       Spectrum(absorbed,false),
+                                       Spectrum(emitted,false));
             }
             else //dielectric
             {
-                float etai = (float)atof(token);
+                Spectrum etai;
+                Spectrum etat;
+                if(token[0]=='[') //cauchy
+                {
+                    float bb,c,d;
+                    val = strtok(token,"[], ");
+                    bb = (float)atof(val);
+                    val = strtok(NULL,"[], ");
+                    c = (float)atof(val);
+                    val = strtok(NULL,"[], ");
+                    d = (float)atof(val);
+                    etai = Spectrum(cauchyEq(bb,c,d));
+                }
+                else
+                {
+                    float b1,b2,b3,c1,c2,c3;
+                    val = strtok(token,"{}, ");
+                    b1 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    b2 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    b3 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c1 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c2 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c3 = (float)atof(val);
+                    etai = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                }
 
-                token = strtok_r(NULL," ",&stringpos); //parse ior transmitted
-                float etat = (float)atof(token);
+                token = strtok_r(NULL," ",&stringpos);
+                if(token[0]=='[') //cauchy
+                {
+                    float bb,c,d;
+                    val = strtok(token,"[], ");
+                    bb = (float)atof(val);
+                    val = strtok(NULL,"[], ");
+                    c = (float)atof(val);
+                    val = strtok(NULL,"[], ");
+                    d = (float)atof(val);
+                    etat = Spectrum(cauchyEq(bb,c,d));
+                }
+                else
+                {
+                    float b1,b2,b3,c1,c2,c3;
+                    val = strtok(token,"{}, ");
+                    b1 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    b2 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    b3 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c1 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c2 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c3 = (float)atof(val);
+                    etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                }
 
-                addme = new Reflection(reflected,etai,etat);
+                addme = new DielectricReflection(Spectrum(reflected,false),
+                                                 etai, etat);
             }
         }
         else if(strcmp(token,"refraction")==0)
@@ -288,15 +347,71 @@ static void parseMaterial(char* string)
             g = (unsigned char)atoi(val);
             val = strtok(NULL,"(), "); //parse z
             b = (unsigned char)atoi(val);
-            Color refracted((float)r/255,(float)g/255,(float)b/255);
+            ColorRGB refracted(r,g,b);
 
+            Spectrum etai;
+            Spectrum etat;
             token = strtok_r(NULL," ",&stringpos); //parse ior incident
-            float etai = (float)atof(token);
-
+            if(token[0]=='[') //cauchy
+            {
+                float bb,c,d;
+                val = strtok(token,"[], ");
+                bb = (float)atof(val);
+                val = strtok(NULL,"[], ");
+                c = (float)atof(val);
+                val = strtok(NULL,"[], ");
+                d = (float)atof(val);
+                etai = Spectrum(cauchyEq(bb,c,d));
+            }
+            else
+            {
+                float b1,b2,b3,c1,c2,c3;
+                val = strtok(token,"{}, ");
+                b1 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                b2 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                b3 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                c1 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                c2 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                c3 = (float)atof(val);
+                etai = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+            }
+            
             token = strtok_r(NULL," ",&stringpos); //parse ior transmitted
-            float etat = (float)atof(token);
+            if(token[0]=='[') //cauchy
+            {
+                float bb,c,d;
+                val = strtok(token,"[], ");
+                bb = (float)atof(val);
+                val = strtok(NULL,"[], ");
+                c = (float)atof(val);
+                val = strtok(NULL,"[], ");
+                d = (float)atof(val);
+                etat = Spectrum(cauchyEq(bb,c,d));
+            }
+            else
+            {
+                float b1,b2,b3,c1,c2,c3;
+                val = strtok(token,"{}, ");
+                b1 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                b2 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                b3 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                c1 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                c2 = (float)atof(val);
+                val = strtok(NULL,"{}, ");
+                c3 = (float)atof(val);
+                etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+            }
 
-            addme = new Refraction(refracted,etai,etat);
+            addme = new Refraction(Spectrum(refracted,false),etai,etat);
         }
         else
             return;
@@ -396,15 +511,23 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             *m *= scale;
 
             //parse spectrum
-            token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
-            val = strtok(token,"(), "); //parse x
-            x = (float)atoi(val)*0.00392156862f;
-            val = strtok(NULL,"(), "); //parse y
-            y = (float)atoi(val)*0.00392156862f;
-            val = strtok(NULL,"(), "); //parse z
-            z = (float)atoi(val)*0.00392156862f;
+            Spectrum emissive;
+            token = strtok_r(NULL," ",&pos);
+            if(token[0]=='(')//parse refracted color, rgb
+            {
+                unsigned char r,g,b;
+                val = strtok(token,"(), "); //parse x
+                r = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse y
+                g = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse z
+                b = (unsigned char)atoi(val);
+                emissive = Spectrum(ColorRGB(x,y,z),true);
+            }
+            else //parse temperature, generate blackbody
+                emissive = Spectrum(atoi(token));
 
-            out->sc->addLight(got->second,m,Color(x,y,z));
+            out->sc->addLight((unsigned int)got->second,m,emissive);
         }
         else
         {
@@ -486,7 +609,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             *m *= rotz;
             *m *= scale;
 
-            out->sc->addAsset(got->second,m,mat);
+            out->sc->addAsset((unsigned int)got->second,m,mat);
         }
         else
         {
@@ -510,7 +633,7 @@ void Parser::parse(const char* filename, Settings* out)
     Console.log(MESSAGE_STARTED_PARSING,NULL);
     std::chrono::steady_clock::time_point a = std::chrono::steady_clock::now();
     int buf_size = 512;
-    char* buf = (char*)malloc(buf_size);
+    char* buf = (char*)malloc((size_t)buf_size);
     FILE* fin = fopen(filename,"r");
     if(fin!=NULL)
     {

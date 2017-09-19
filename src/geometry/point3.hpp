@@ -71,7 +71,7 @@ public:
     Point3();
     
     ///Destructor
-    ~Point3();
+    ~Point3() = default;
     
     /**  \brief Constructor, given equal coordinates
      *
@@ -104,7 +104,7 @@ public:
      *  \param[in] p A Point3 representing the point to which the
      *             distance should be calculated
      */
-    float distanceTo(const Point3 p)const;
+    float distanceTo(const Point3& p)const;
     
     /**  \brief Compute the maxium value between this point and another one
      *
@@ -114,7 +114,7 @@ public:
      *  \param[in] p A Point3 used to compare and choose the x, y and z values
      *  \sa min(const Point3 p)
      */
-    void max(const Point3 p);
+    void max(const Point3& p);
     
     /**  \brief Compute the minimum value between this point and another one
      *
@@ -124,9 +124,9 @@ public:
      *  \param[in] p A Point3 used to compare and choose the x, y and z values
      *  \sa max(const Point3 p)
      */
-    void min(const Point3 p);
+    void min(const Point3& p);
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
     ///Offsets the point along a direction
     Point3 operator+ (const Vec3&  v)const;
@@ -143,7 +143,7 @@ public:
     ///Check if two points are in different places
     bool operator!=  (const Point3&)const;
     ///Access a component of the point
-    float operator[] (const int)const;
+    float operator[] (int)const;
     
     /* Useless operation.
      i.e.: Cannot offset a point by a point
@@ -154,7 +154,7 @@ public:
      //void operator-=(const Point3&  p); <- super useless, point - point = vec
      */
     
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
 };
 

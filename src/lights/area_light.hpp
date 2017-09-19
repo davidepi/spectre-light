@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 17 Jul 2017
+//Last Edit  5 Sep 2017
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      17 Jul 2017
+ *  \date      5 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -14,9 +14,10 @@
 #ifndef __AREA_LIGHT_HPP__
 #define __AREA_LIGHT_HPP__
 
-#include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "primitives/asset.hpp"
 #include "primitives/shape.hpp"
+#include <cmath> //isinf
 
 /**
  * \class AreaLight area_light.hpp "lights/area_light.hpp"
@@ -38,7 +39,7 @@ public:
      *  light from object space to world space
      *  \param[in] c The emitted light
      */
-    AreaLight(Shape* sp, Matrix4* objToWorld, Color c);
+    AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c);
 
     /** \brief Return the radiance for a random ray
      *
@@ -54,7 +55,7 @@ public:
      *  \return The emitted radiance from the computed ray
      *  \sa radiance_i
      */
-    Color radiance_e(float r0, float r1, Ray* out, float* pdf)const;
+    Spectrum radiance_e(float r0, float r1, Ray* out, float* pdf)const;
 
     /** \brief Generate the incident vector and return the radiance
      *
@@ -74,18 +75,18 @@ public:
      *  \return The emitted radiance from the computed ray
      *  \sa radiance_e
      */
-    Color radiance_i(float r0, float r1, const Point3* current_pos, Vec3* wi,
+    Spectrum radiance_i(float r0, float r1, const Point3* current_pos, Vec3* wi,
                      float* pdf, float* distance)const;
 
     /** \brief Return the total emissive power over the surface
      *  \return Emissive power over the surface, given constant radiance
      */
-    Color emissivePower()const;
+    Spectrum emissivePower()const;
 
     /** \brief Return the light spectrum emitted
      *  \return The emitted light spectrum
      */
-    Color emissiveSpectrum()const;
+    Spectrum emissiveSpectrum()const;
 
     /** \brief Return true if this asset is a light
      *
@@ -118,7 +119,7 @@ public:
     
 private:
 
-    Color c;
+    Spectrum c;
     float area;
     float invarea;
 };

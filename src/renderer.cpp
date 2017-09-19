@@ -49,33 +49,27 @@ Renderer::Renderer(int w, int h, int spp, const char* o,int th) : film(w,h,o)
 
 Renderer::~Renderer()
 {
-    if(Renderer::c != NULL)
-        delete c;
-    if(Renderer::f != NULL)
-        delete f;
-    if(Renderer::t != NULL)
-        delete t;
+    delete c;
+    delete f;
+    delete t;
     delete[] Renderer::workers;
 }
 
 void Renderer::setPerspective(Point3 pos, Point3 target, Vec3 up, float fov)
 {
-    if(Renderer::c != NULL)
-        delete c;
+    delete c;
     c = new PerspectiveCamera(&pos,&target,&up,w,h,fov);
 }
 
 void Renderer::setOrthographic(Point3 pos, Point3 target, Vec3 up)
 {
-    if(Renderer::c != NULL)
-        delete c;
+    delete c;
     c = new OrthographicCamera(&pos,&target,&up,w,h);
 }
 
 void Renderer::setPanorama(Point3 pos, Point3 target, Vec3 up)
 {
-    if(Renderer::c != NULL)
-        delete c;
+    delete c;
     c = new Camera360(&pos,&target,&up,w,h);
 }
 
@@ -102,55 +96,48 @@ void Renderer::setStratifiedSampler()
 void Renderer::setBoxFilter()
 {
 
-    if(Renderer::f != NULL)
-        delete f;
+    delete f;
     f = new BoxFilter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
     film.setFilter(f);
 }
 
 void Renderer::setTentFilter()
 {
-    if(Renderer::f != NULL)
-        delete f;
+    delete f;
     f = new TentFilter(TENT_FILTER_EXTENT,TENT_FILTER_EXTENT);
     film.setFilter(f);
 }
 
 void Renderer::setGaussianFilter(float sigma)
 {
-    if(Renderer::f != NULL)
-        delete f;
+    delete f;
     f = new GaussianFilter(GAUSSIAN_FILTER_EXTENT,GAUSSIAN_FILTER_EXTENT,sigma);
     film.setFilter(f);
 }
 
 void Renderer::setMitchellFilter(float b, float c)
 {
-    if(Renderer::f != NULL)
-        delete f;
+    delete f;
     f = new MitchellFilter(MITCHELL_FILTER_EXTENT,MITCHELL_FILTER_EXTENT,b,c);
     film.setFilter(f);
 }
 
 void Renderer::setLanczosSincFilter(float tau)
 {
-    if(Renderer::f != NULL)
-        delete f;
+    delete f;
     f = new LanczosFilter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,tau);
     film.setFilter(f);
 }
 
 void Renderer::setRayTracer()
 {
-    if(Renderer::t != NULL)
-        delete t;
+    delete t;
     t = new RayTracer();
 }
 
 void Renderer::setPathTracer()
 {
-    if(Renderer::t != NULL)
-        delete t;
+    delete t;
     t = new PathTracer();
 }
 
@@ -222,14 +209,14 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
     Sample* samples = new Sample[spp];
     Ray r;
 	ExecutorData ex;
-    Color radiance;
+    Spectrum radiance;
     HitPoint h;
     OcclusionTester ot(s);
     while(!done)
     {
         lock->lock();
         //check if the job queue is empty
-        if(jobs->size() == 0)
+        if(jobs->empty())
         {
             lock->unlock();
             done = true;
@@ -267,22 +254,13 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
             {
                 c->createRay(&(samples[i]), &r);
                 if (s->k.intersect(&r, &h))
-                {
                     radiance = t->radiance(s, &h, &r, sam, &ot);
-                    if(radiance.r>1.f)
-                        radiance.r=1.f;
-                    if(radiance.g>1.f)
-                        radiance.g=1.f;
-                    if(radiance.b>1.f)
-                        radiance.b=1.f;
-                } else
-                {
-                    radiance.r = 0;
-                    radiance.g = 0;
-                    radiance.b = 0;
-                }
-                //end
-                io->addPixel(&(samples[i]), &radiance, &ex);
+                    
+                else
+                    radiance = SPECTRUM_BLACK;
+                
+                ColorXYZ cx = radiance.toXYZ();
+                io->addPixel(&(samples[i]), cx, &ex);
             }
         }
 		io->deferredAddPixel(&ex);
@@ -315,7 +293,7 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
 {
     unsigned long remaining;
     const unsigned long total_size = ts;
-    float done = 0.f;
+    float done;
     time_t start_time = time(NULL); //Precision not required for an eta
     time_t current_time;
     time_t eta;

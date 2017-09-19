@@ -50,11 +50,6 @@ Vec2::Vec2(const float* xy)
 #endif
 }
 
-Vec2::~Vec2()
-{
-    
-}
-
 float Vec2::length()const
 {
     return std::sqrt((Vec2::x * Vec2::x) + (Vec2::y * Vec2::y));
@@ -109,7 +104,7 @@ char* Vec2::toString()const
     return res;
 }
 
-void Vec2::clamp(const Vec2 min, const Vec2 max)
+void Vec2::clamp(const Vec2& min, const Vec2& max)
 {
     if (Vec2::x < min.x) Vec2::x = min.x;
     else if (Vec2::x > max.x) Vec2::x = max.x;
@@ -126,7 +121,7 @@ void Vec2::saturate()
     else if (Vec2::y > 1.0f) Vec2::y = 1.0f;
 }
 
-float Vec2::distanceTo(const Vec2 target)const
+float Vec2::distanceTo(const Vec2& target)const
 {
     float x = target.x - Vec2::x;
     float y = target.y - Vec2::y;
@@ -134,12 +129,12 @@ float Vec2::distanceTo(const Vec2 target)const
     return std::sqrt((x * x) + (y * y));
 }
 
-float Vec2::dot(const Vec2 target)const
+float Vec2::dot(const Vec2& target)const
 {
     return ((Vec2::x * target.x) + (Vec2::y * target.y));
 }
 
-void Vec2::max(const Vec2 vector2)
+void Vec2::max(const Vec2& vector2)
 {
     float x, y;
     if (Vec2::x > vector2.x)
@@ -155,7 +150,7 @@ void Vec2::max(const Vec2 vector2)
     Vec2::y = y;
 }
 
-void Vec2::min(const Vec2 vector2)
+void Vec2::min(const Vec2& vector2)
 {
     float x, y;
     if (Vec2::x < vector2.x)
@@ -171,7 +166,7 @@ void Vec2::min(const Vec2 vector2)
     Vec2::y = y;
 }
 
-void Vec2::reflect(const Vec2 centre)
+void Vec2::reflect(const Vec2& centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
@@ -299,7 +294,7 @@ void Vec2::operator/=(float f)
     Vec2::y /= f;
 }
 
-Vec2 Vec2::operator!(void)const
+Vec2 Vec2::operator!()const
 {
     return Vec2(-Vec2::x,-Vec2::y);
 }

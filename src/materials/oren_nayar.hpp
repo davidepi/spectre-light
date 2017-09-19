@@ -16,6 +16,7 @@
 
 #include "materials/bdf.hpp"
 #include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
 
 /**
@@ -38,7 +39,7 @@ public:
      *  \param[in] sigma The value of roughness, where 0 is equal to the
      *  Lambertian model
      */
-    OrenNayar(Color diffuse, float sigma);
+    OrenNayar(const Spectrum& diffuse, float sigma);
 
     /** \brief Copy the BRDF
      *
@@ -62,12 +63,12 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the BxDF
      */
-    Color df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum df(const Vec3* wo, const Vec3* wi)const;
 
 private:
 
     //Scattered portion of light
-    Color diffuse;
+    Spectrum diffuse;
 
     //Pre-computed A term
     float A;

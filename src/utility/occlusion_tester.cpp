@@ -7,7 +7,7 @@ OcclusionTester::OcclusionTester(const Scene *s)
         OcclusionTester::lasthit[i] = NULL;
 }
 
-bool OcclusionTester::isOccluded(const Ray *r, float* d)
+bool OcclusionTester::isOccluded(const Ray *r, const float* d)
 {
     HitPoint removeme;
     float newdistance = FLT_MAX;

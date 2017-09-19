@@ -52,7 +52,7 @@ public:
      *
      *  \param[in] p The only point that will be surrounded by the bounding box
      */
-    AABB(const Point3 p);
+    AABB(const Point3& p);
     
     /** \brief Constructor, given bottom left and top right points
      *

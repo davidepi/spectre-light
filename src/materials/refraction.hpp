@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit  8 Aug 2017
+//Last Edit 15 Sep 2017
 
 /**
  *  \file refraction.hpp
  *  \brief Implementation of a BTDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      8 Aug 2017
+ *  \date      15 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -16,8 +16,8 @@
 
 #include "materials/bdf.hpp"
 #include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
-#include "materials/fresnel_conditions.hpp"
 
 /**
  *  \class Refraction refraction.hpp "materials/refraction.hpp"
@@ -36,7 +36,8 @@ public:
      *  \param[in] eta_incident Refraction index for the incident material
      *  \param[in] eta_transmitted Refraction index for the transmitted material
      */
-    Refraction(Color specular, float eta_incident, float eta_transmitted);
+    Refraction(const Spectrum& specular, const Spectrum& eta_incident,
+               const Spectrum& eta_transmitted);
 
     /** \brief Copy the BTDF
      *
@@ -59,7 +60,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Color df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum df(const Vec3* wo, const Vec3* wi)const;
 
     /** \brief Returns the value of the BTDF
      *
@@ -68,14 +69,16 @@ public:
      *
      *  \param[in] wo The outgoing direction
      *  \param[out] wi The incident direction
-     *  \param[in] r0 A random float in the interval (0.0,1.0) UNUSED
+     *  \param[in] r0 A random float in the interval (0.0,1.0) used to choose
+     *  among the wavelenghts the one to trace
      *  \param[in] r1 A random float in the interval (0.0,1.0) UNUSED
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. Since the only valid pair of direction is
      *  generated, this method returns 1.0 as pdf
      *  \return The value of the BTDF
      */
-    Color df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const;
+    Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf, char* chosen)const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -93,16 +96,47 @@ public:
 private:
 
     //scale factor
-    Color specular;
+    Spectrum specular;
 
+#ifdef DISPERSION
     //incident ior
-    float eta_i;
+    Spectrum eta_i;
 
     //transmitted ior
+    Spectrum eta_t;
+#else
+    float eta_i;
     float eta_t;
-
-    //fresnel term
-    Dielectric d;
+#endif
 };
+
+/** \brief Calculates the ior by using the Cauchy equation
+ *
+ *  This method uses the Cauchy equation to calculate a wavelenght-dependent
+ *  index of refraction. The wavelenght is measured in micrometers, so the 
+ *  parameters must comply with this.
+ *
+ *  \param[in] B The B paramter of the Cauchy Equation
+ *  \param[in] C The C paramter of the Cauchy Equation
+ *  \param[in] D The D paramter of the Cauchy Equation
+ *  \return The wavelenght dependent ior
+ */
+Spectrum cauchyEq(float B, float C, float D = 0);
+
+/** \brief Calculates the ior by using the Sellmeier equation
+ *
+ *  This method uses the Sellmeier equation to calculate a wavelenght-dependent
+ *  index of refraction. The wavelenght is measured in micrometers, so the
+ *  parameters must comply with this.
+ *
+ *  \param[in] B1 The B1 paramter of the Sellmeier equation
+ *  \param[in] B2 The B2 paramter of the Sellmeier equation
+ *  \param[in] B3 The B3 paramter of the Sellmeier equation
+ *  \param[in] C1 The C1 paramter of the Sellmeier equation
+ *  \param[in] C2 The C2 paramter of the Sellmeier equation
+ *  \param[in] C3 The C3 paramter of the Sellmeier equation
+ *  \return The wavelenght dependent ior
+ */
+Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3);
 
 #endif

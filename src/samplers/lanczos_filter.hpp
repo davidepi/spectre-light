@@ -37,8 +37,8 @@ public:
      *
      *  \param[in] x_range The x extent of the filter
      *  \param[in] y_range The y extent of the filter
-     *  \param[in] tau The number of cycles of the sinc function before clamping it
-     *        to zero
+     *  \param[in] tau The number of cycles of the sinc function before clamping
+     *  it to zero
      */
     LanczosFilter(float x_range, float y_range, float tau);
     

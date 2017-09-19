@@ -5,7 +5,7 @@ Ray::Ray() : origin(), direction()
     Ray::ricochet = 0;
 }
 
-Ray::Ray(const Point3 o, const Vec3 d)
+Ray::Ray(const Point3& o, const Vec3& d)
     :origin(o.x, o.y, o.z), direction(d.x, d.y, d.z)
 {
     Ray::ricochet = 0;

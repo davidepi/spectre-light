@@ -35,5 +35,13 @@ else()
     COMPILE_FLAGS " -DSPECTRE_COLOURED_OUTPUT ")
 endif()
 
-add_executable(spectre src/main.cpp ${spectre_core_sources})
-target_link_libraries (spectre ${CMAKE_THREAD_LIBS_INIT})
+add_executable(spectre-full src/main.cpp ${spectre_core_sources})
+target_link_libraries (spectre-full ${CMAKE_THREAD_LIBS_INIT})
+target_compile_definitions (spectre-full PRIVATE SPECTRAL=1)
+
+add_executable(spectre-rgb src/main.cpp ${spectre_core_sources})
+target_link_libraries (spectre-rgb ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(spectre src/application_starter.cpp)
+add_dependencies(spectre spectre-full)
+add_dependencies(spectre spectre-rgb)

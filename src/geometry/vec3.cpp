@@ -32,7 +32,7 @@ Vec3::Vec3(float x,float y,float z)
     Vec3::z = z;
 }
 
-Vec3::Vec3(const Vec2 xy,float z)
+Vec3::Vec3(Vec2 xy,float z)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z),
@@ -72,7 +72,7 @@ Vec3::Vec3(const float* xyz)
 #endif
 }
 
-Vec3::Vec3(const Normal n)
+Vec3::Vec3(Normal n)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(n.x) || std::isnan(n.y) || std::isnan(n.z),
@@ -85,17 +85,12 @@ Vec3::Vec3(const Normal n)
     Vec3::z = n.z;
 }
 
-Vec3::~Vec3(void)
-{
-    
-}
-
-float Vec3::dot(const Vec3 target)const
+float Vec3::dot(const Vec3& target)const
 {
     return (Vec3::x * target.x + Vec3::y * target.y + Vec3::z * target.z);
 }
 
-float Vec3::dot(const Normal target)const
+float Vec3::dot(const Normal& target)const
 {
     return (Vec3::x * target.x + Vec3::y * target.y + Vec3::z * target.z);
 }
@@ -110,7 +105,7 @@ float Vec3::lengthSquared()const
     return Vec3::x * Vec3::x + Vec3::y * Vec3::y + Vec3::z * Vec3::z;
 }
 
-float Vec3::distanceTo(const Vec3 target)const
+float Vec3::distanceTo(const Vec3& target)const
 {
     float x = target.x - Vec3::x;
     float y = target.y - Vec3::y;
@@ -119,14 +114,14 @@ float Vec3::distanceTo(const Vec3 target)const
     return sqrtf((x * x) + (y * y) + (z*z));
 }
 
-void Vec3::cross(const Vec3 target, Vec3* output)const
+void Vec3::cross(const Vec3& target, Vec3* output)const
 {
     output->x = Vec3::y * target.z - Vec3::z * target.y;
     output->y = Vec3::z * target.x - Vec3::x * target.z;
     output->z = Vec3::x * target.y - Vec3::y * target.x;
 }
 
-Vec3 Vec3::cross(const Vec3 target)const
+Vec3 Vec3::cross(const Vec3& target)const
 {
     return Vec3(Vec3::y * target.z - Vec3::z * target.y,
                 Vec3::z * target.x - Vec3::x * target.z,
@@ -152,7 +147,8 @@ void Vec3::normalize()
 
 bool Vec3::isNormalized()const
 {
-    float len = Vec3::length();
+    //sqrt(1) = 1 so I don't need the expense of a Vec3::length()
+    float len = Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z;
     return len>1-FLT_EPSILON && len<1+FLT_EPSILON;
 }
 
@@ -182,7 +178,7 @@ char* Vec3::toString()const
     return res;
 }
 
-void Vec3::clamp(const Vec3 min, const Vec3 max)
+void Vec3::clamp(const Vec3& min, const Vec3& max)
 {
     if(Vec3::x < min.x)
         Vec3::x = min.x;
@@ -212,7 +208,7 @@ void Vec3::saturate()
     else if(Vec3::z > 1.0f)Vec3::z = 1.0f;
 }
 
-void Vec3::max(const Vec3 vector2)
+void Vec3::max(const Vec3& vector2)
 {
     float x, y, z;
     if (Vec3::x > vector2.x)
@@ -235,7 +231,7 @@ void Vec3::max(const Vec3 vector2)
     Vec3::z = z;
 }
 
-void Vec3::min(const Vec3 vector2)
+void Vec3::min(const Vec3& vector2)
 {
     float x, y, z;
     if (Vec3::x < vector2.x)
@@ -258,7 +254,7 @@ void Vec3::min(const Vec3 vector2)
     Vec3::z = z;
 }
 
-void Vec3::reflect(const Vec3 centre)
+void Vec3::reflect(const Vec3& centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.warning(!centre.isNormalized(),MESSAGE_REFLECT_NONORMALIZED);
@@ -269,7 +265,7 @@ void Vec3::reflect(const Vec3 centre)
     Vec3::z -= ((2 * dot) * centre.z);
 }
 
-void Vec3::reflect(const Normal centre)
+void Vec3::reflect(const Normal& centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
@@ -287,7 +283,7 @@ Vec3 Vec3::operator+(const Vec3& v)const
     return Vec3(Vec3::x + v.x, Vec3::y + v.y, Vec3::z + v.z);
 }
 
-Vec3 Vec3::operator+(const float f)const
+Vec3 Vec3::operator+(float f)const
 {
     return Vec3(Vec3::x + f, Vec3::y + f, Vec3::z + f);
 }
@@ -299,7 +295,7 @@ void Vec3::operator+=(const Vec3& v)
     Vec3::z += v.z;
 }
 
-void Vec3::operator+=(const float f)
+void Vec3::operator+=(float f)
 {
     Vec3::x += f;
     Vec3::y += f;
@@ -311,7 +307,7 @@ Vec3 Vec3::operator-(const Vec3& v)const
     return Vec3(Vec3::x - v.x, Vec3::y - v.y, Vec3::z - v.z);
 }
 
-Vec3 Vec3::operator-(const float f)const
+Vec3 Vec3::operator-(float f)const
 {
     return Vec3(Vec3::x - f, Vec3::y - f, Vec3::z - f);
 }
@@ -323,7 +319,7 @@ void Vec3::operator-=(const Vec3& v)
     Vec3::z -= v.z;
 }
 
-void Vec3::operator-=(const float f)
+void Vec3::operator-=(float f)
 {
     Vec3::x -= f;
     Vec3::y -= f;
@@ -335,7 +331,7 @@ Vec3 Vec3::operator*(const Vec3& v)const
     return Vec3(Vec3::x * v.x, Vec3::y * v.y, Vec3::z * v.z);
 }
 
-Vec3 Vec3::operator*(const float f)const
+Vec3 Vec3::operator*(float f)const
 {
     return Vec3(Vec3::x * f, Vec3::y * f, Vec3::z * f);
 }
@@ -347,7 +343,7 @@ void Vec3::operator*=(const Vec3& v)
     Vec3::z *= v.z;
 }
 
-void Vec3::operator*=(const float f)
+void Vec3::operator*=(float f)
 {
     Vec3::x *= f;
     Vec3::y *= f;
@@ -366,7 +362,7 @@ Vec3 Vec3::operator/(const Vec3& v)const
     return Vec3(Vec3::x / v.x, Vec3::y / v.y, Vec3::z / v.z);
 }
 
-Vec3 Vec3::operator/(const float f)const
+Vec3 Vec3::operator/(float f)const
 {
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
@@ -392,7 +388,7 @@ void Vec3::operator/=(const Vec3& v)
     Vec3::z /= v.z;
 }
 
-void Vec3::operator/=(const float f)
+void Vec3::operator/=(float f)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
@@ -430,12 +426,12 @@ bool Vec3::operator!=(const Vec3& v)const
     std::fabs(Vec3::z-v.z) > FLT_EPSILON;
 }
 
-float& Vec3::operator[](const int component)
+float& Vec3::operator[](int component)
 {
     return *(&(Vec3::x)+component);
 }
 
-float Vec3::operator[](const int component)const
+float Vec3::operator[](int component)const
 {
     return *(&(Vec3::x)+component);
 }
@@ -473,7 +469,7 @@ Normal::Normal(float x,float y,float z)
     Normal::z = z;
 }
 
-Normal::Normal(const Vec2 xy,float z)
+Normal::Normal(Vec2 xy,float z)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.severe(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z),
@@ -526,18 +522,13 @@ Normal::Normal(const Vec3 v)
     Normal::z = v.z;
 }
 
-Normal::~Normal(void)
-{
-    
-}
-
-float Normal::dot(const Normal target)const
+float Normal::dot(const Normal& target)const
 {
     return
     ((Normal::x * target.x) + (Normal::y * target.y) + (Normal::z*target.z));
 }
 
-float Normal::dot(const Vec3 target)const
+float Normal::dot(const Vec3& target)const
 {
     return
     ((Normal::x * target.x) + (Normal::y * target.y) + (Normal::z*target.z));
@@ -555,7 +546,7 @@ float Normal::lengthSquared()const
     return Normal::x*Normal::x + Normal::y*Normal::y + Normal::z*Normal::z;
 }
 
-float Normal::distanceTo(const Normal target)const
+float Normal::distanceTo(const Normal& target)const
 {
     float x = target.x - Normal::x;
     float y = target.y - Normal::y;
@@ -585,7 +576,7 @@ void Normal::normalize()
 
 bool Normal::isNormalized()const
 {
-    float len = Normal::length();
+    float len = x*x+y*y+z*z;
     return len>0.999 && len<1.0001;
 }
 
@@ -615,7 +606,7 @@ char* Normal::toString()const
     return res;
 }
 
-void Normal::clamp(const Vec3 min, const Vec3 max)
+void Normal::clamp(const Vec3& min, const Vec3& max)
 {
     if(Normal::x < min.x) Normal::x = min.x;
     else if(Normal::x > max.x)Normal::x = max.x;
@@ -639,7 +630,7 @@ void Normal::saturate()
     else if(Normal::z > 1.0f)Normal::z = 1.0f;
 }
 
-void Normal::max(const Normal n)
+void Normal::max(const Normal& n)
 {
     float x, y, z;
     if (Normal::x > n.x)
@@ -662,7 +653,7 @@ void Normal::max(const Normal n)
     Normal::z = z;
 }
 
-void Normal::min(const Normal n)
+void Normal::min(const Normal& n)
 {
     float x, y, z;
     if (Normal::x < n.x)
@@ -685,12 +676,12 @@ void Normal::min(const Normal n)
     Normal::z = z;
 }
 
-bool Normal::faceForward(const Vec3 reference)const
+bool Normal::faceForward(const Vec3& reference)const
 {
     return Normal::dot(reference)>=0.0f;
 }
 
-void Normal::flipToMatch(const Vec3 reference)
+void Normal::flipToMatch(const Vec3& reference)
 {
     if(Normal::dot(reference)<0.0f)
         (*this)=-(*this);
@@ -703,7 +694,7 @@ Normal Normal::operator+(const Normal& n)const
     return Normal(Normal::x + n.x, Normal::y + n.y, Normal::z + n.z);
 }
 
-Normal Normal::operator+(const float f)const
+Normal Normal::operator+(float f)const
 {
     return Normal(Normal::x + f, Normal::y + f, Normal::z + f);
 }
@@ -715,7 +706,7 @@ void Normal::operator+=(const Normal& n)
     Normal::z += n.z;
 }
 
-void Normal::operator+=(const float f)
+void Normal::operator+=(float f)
 {
     Normal::x += f;
     Normal::y += f;
@@ -727,7 +718,7 @@ Normal Normal::operator-(const Normal& n)const
     return Normal(Normal::x - n.x, Normal::y - n.y, Normal::z - n.z);
 }
 
-Normal Normal::operator-(const float f)const
+Normal Normal::operator-(float f)const
 {
     return Normal(Normal::x - f, Normal::y - f, Normal::z - f);
 }
@@ -739,7 +730,7 @@ void Normal::operator-=(const Normal& n)
     Normal::z -= n.z;
 }
 
-void Normal::operator-=(const float f)
+void Normal::operator-=(float f)
 {
     Normal::x -= f;
     Normal::y -= f;
@@ -751,7 +742,7 @@ Normal Normal::operator*(const Normal& n)const
     return Normal(Normal::x * n.x, Normal::y * n.y, Normal::z * n.z);
 }
 
-Normal Normal::operator*(const float f)const
+Normal Normal::operator*(float f)const
 {
     return Normal(Normal::x * f, Normal::y * f, Normal::z * f);
 }
@@ -763,7 +754,7 @@ void Normal::operator*=(const Normal& n)
     Normal::z *= n.z;
 }
 
-void Normal::operator*=(const float f)
+void Normal::operator*=(float f)
 {
     Normal::x *= f;
     Normal::y *= f;
@@ -782,7 +773,7 @@ Normal Normal::operator/(const Normal& n)const
     return Normal(Normal::x / n.x, Normal::y / n.y, Normal::z / n.z);
 }
 
-Normal Normal::operator/(const float f)const
+Normal Normal::operator/(float f)const
 {
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
@@ -808,7 +799,7 @@ void Normal::operator/=(const Normal& n)
     Normal::z /= n.z;
 }
 
-void Normal::operator/=(const float f)
+void Normal::operator/=(float f)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     if(f==0)
@@ -834,26 +825,20 @@ Normal Normal::operator-() const
 
 bool Normal::operator==(const Normal& n)const
 {
-    if(Normal::x == n.x && Normal::y == n.y && Normal::z == n.z)
-        return true;
-    else
-        return false;
+    return Normal::x == n.x && Normal::y == n.y && Normal::z == n.z;
 }
 
 bool Normal::operator!=(const Normal& n)const
 {
-    if(Normal::x != n.x || Normal::y != n.y || Normal::z != n.z)
-        return true;
-    else
-        return false;
+    return Normal::x != n.x || Normal::y != n.y || Normal::z != n.z;
 }
 
-float& Normal::operator[](const int component)
+float& Normal::operator[](int component)
 {
     return *(&(Normal::x)+component);
 }
 
-float Normal::operator[](const int component)const
+float Normal::operator[](int component)const
 {
     return *(&(Normal::x)+component);
 }

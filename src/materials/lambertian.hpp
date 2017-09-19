@@ -16,7 +16,7 @@
 
 #include "settings.h"
 #include "materials/bdf.hpp"
-#include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
 #include "utility/console.hpp"
 
@@ -38,7 +38,7 @@ public:
      *
      *  \param[in] scattered_spectrum The portion of light scattered by the BRDF
      */
-    Lambertian(Color scattered_spectrum);
+    Lambertian(const Spectrum& scattered_spectrum);
 
     /** \brief Copy the BRDF
      *
@@ -62,12 +62,12 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the BxDF
      */
-    Color df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum df(const Vec3* wo, const Vec3* wi)const;
 
 private:
 
     //scattered portion of spectrum
-    Color diffuse;
+    Spectrum diffuse;
 };
 
 #endif

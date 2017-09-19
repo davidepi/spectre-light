@@ -38,7 +38,7 @@ public:
     Shape();
     
     ///Default destructor
-    virtual ~Shape();
+    virtual ~Shape() = default;
     
     /** \brief Return the ID of this shape
      *  \return A unsigned int representing the ID of this shape
@@ -134,10 +134,10 @@ struct HitPoint
     Vec3 cross;
 
     ///u coordinate for texture
-    float u;
+    //float u;
 
     ///v coordinate for texture
-    float v;
+    //float v;
 
     ///Hit asset
     const Asset* hit;

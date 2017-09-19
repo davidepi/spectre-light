@@ -1,11 +1,7 @@
 #include "triangle.hpp"
 
-Triangle::Triangle()
-{
-
-}
-
-Triangle::Triangle(Vertex v0, Vertex v1, Vertex v2) : a(v0), b(v1), c(v2)
+Triangle::Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)
+        :a(v0), b(v1), c(v2)
 {
 
 }

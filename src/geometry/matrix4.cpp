@@ -1,9 +1,6 @@
 #include "matrix4.hpp"
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 
-Matrix4::Matrix4()
-{ }
-
 Matrix4::Matrix4(const float* v)
 {
 #ifdef _LOW_LEVEL_CHECKS_
@@ -34,11 +31,6 @@ Matrix4::Matrix4(const float* v)
         Console.warning(MESSAGE_MATRIX4_NULLINIT);
 #endif
 }
-
-Matrix4::~Matrix4()
-{
-    
-};
 
 char* Matrix4::toString()const
 {
@@ -281,7 +273,7 @@ void Matrix4::setRotateZ(float value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setInvLookAtLH(const Point3 pos, const Point3 eye, const Vec3 up)
+void Matrix4::setInvLookAtLH(const Point3& pos,const Point3& eye,const Vec3& up)
 {
     Vec3 newup = up;
 #ifdef _LOW_LEVEL_CHECKS_
@@ -1013,7 +1005,7 @@ Ray Matrix4::operator*(const Ray& r)const
     return Ray(origin,direction);
 }
 
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
 
 Normal transformNormal(const Normal& n, const Matrix4* inv)
 {

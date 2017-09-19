@@ -4,7 +4,7 @@
 bool check_extension(const char* fn)
 {
     const char* name = strrchr(fn,'.');
-    if(name == NULL || (name-fn)<(int)strlen(fn)-4) //null or position less than the
+    if(name == NULL || (name-fn)<(int)strlen(fn)-4) //null or position less than
     {                                          //4 chr expected for an extension
         Console.warning(MESSAGE_MISSING_EXTENSION);
         return false;
@@ -98,17 +98,21 @@ ImageOutput::ImageOutput(int w, int h, const char* fn) :width(w), height(h)
 
 ImageOutput::~ImageOutput()
 {
-    free(ImageOutput::image);
+    if(ImageOutput::image!=NULL)
+        free(ImageOutput::image);
 }
 
-void ImageOutput::addPixel(const Sample* s, const Color* c, ExecutorData* ex)
+void ImageOutput::addPixel(const Sample* s, ColorXYZ c, ExecutorData* ex)
 {
+    if(c.r<0)c.r=0;
+    if(c.g<0)c.g=0;
+    if(c.b<0)c.b=0;
     float ptmpx = s->posx-0.5f;
     float ptmpy = s->posy-0.5f;
-    int p0x = (int)ceil(ptmpx-f->x_range);
-    int p0y = (int)ceil(ptmpy-f->y_range);
-    int p1x = (int)floor(ptmpx+f->x_range);
-    int p1y = (int)floor(ptmpy+f->y_range);
+    int p0x = (int)ceilf(ptmpx-f->x_range);
+    int p0y = (int)ceilf(ptmpy-f->y_range);
+    int p1x = (int)floorf(ptmpx+f->x_range);
+    int p1y = (int)floorf(ptmpy+f->y_range);
     p0x = max(p0x,0);
     p0y = max(p0y,0);
     p1x = min(p1x,width);
@@ -123,18 +127,18 @@ void ImageOutput::addPixel(const Sample* s, const Color* c, ExecutorData* ex)
 				TodoPixel tp;
 				tp.x = x;
 				tp.y = y;
-				tp.r = c->r*weight;
-				tp.g = c->g*weight;
-				tp.b = c->b*weight;
+				tp.cie_x = c.r*weight;
+				tp.cie_y = c.g*weight;
+				tp.cie_z = c.b*weight;
 				tp.samples = weight;
 				ex->deferred.push(tp);
 			}
 			else
 			{
             	Pixel* val = image+(width*y+x);
-            	val->r += c->r*weight;
-            	val->g += c->g*weight;
-            	val->b += c->b*weight;
+            	val->cie_x += c.r*weight;
+            	val->cie_y += c.g*weight;
+            	val->cie_z += c.b*weight;
             	val->samples += weight;
 			}
         }
@@ -151,9 +155,9 @@ void ImageOutput::deferredAddPixel(ExecutorData* ex)
 			tp = ex->deferred.top();
 			ex->deferred.pop();
 			val = image+(width*tp.y+tp.x);
-			val->r += tp.r;
-			val->g += tp.g;
-			val->b += tp.b;
+			val->cie_x += tp.cie_x;
+			val->cie_y += tp.cie_y;
+			val->cie_z += tp.cie_z;
 			val->samples += tp.samples;
 		}
 		mtx.unlock();
@@ -170,9 +174,9 @@ void ImageOutput::forceAddPixel(ExecutorData* ex)
 		tp = ex->deferred.top();
 		ex->deferred.pop();
 		val = image+(width*tp.y+tp.x);
-		val->r += tp.r;
-		val->g += tp.g;
-		val->b += tp.b;
+		val->cie_x += tp.cie_x;
+		val->cie_y += tp.cie_y;
+		val->cie_z += tp.cie_z;
 		val->samples += tp.samples;
 	}
 	mtx.unlock();
@@ -185,27 +189,25 @@ void ImageOutput::setFilter(Filter* f)
 
 bool ImageOutput::saveImage()
 {
-    uint8_t* tmp = (uint8_t*)malloc((size_t)(ImageOutput::width
-                                             *ImageOutput::height*3));
-    int i = 0;
-    
-    //evaluate average for every pixel
+    uint8_t* tmp = (uint8_t*)malloc(ImageOutput::width*ImageOutput::height*3U);
+    unsigned int i = 0;
+    ColorRGB rgb;
+    //use scale stored colour and output as .ppm
     for(int j=0;j<ImageOutput::width*ImageOutput::height;j++)
     {
         if(image[j].samples>0.f) //if at least one sample
         {
             float weight = 1.f/image[j].samples;
-            tmp[i++] = (uint8_t)(image[j].r*255*weight);
-            tmp[i++] = (uint8_t)(image[j].g*255*weight);
-            tmp[i++] = (uint8_t)(image[j].b*255*weight);
+            rgb = ColorXYZ(image[j].cie_x*weight,
+                           image[j].cie_y*weight,
+                           image[j].cie_z*weight).toStandardRGB();
         }
-        else
-        {
-            tmp[i++] = 0;
-            tmp[i++] = 0;
-            tmp[i++] = 0;
-        }
+        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.r)*0xFF),255.0f);
+        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.g)*0xFF),255.0f);
+        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.b)*0xFF),255.0f);
     }
+    free(ImageOutput::image);
+    ImageOutput::image = NULL;
     
     //TODO: consider moving this inside utility class
     FILE* fout = fopen(filename,"wb"); //save as ppm

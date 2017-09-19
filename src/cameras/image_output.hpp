@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit 21 Jul 2017
+//Last Edit 14 Sep 2017
 
 /**
  *  \file image_output.hpp
  *  \brief     Buffer storing and saving an image, will be used by Camera
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      21 Jul 2017
+ *  \date      14 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -35,14 +35,14 @@
 struct Pixel
 {
     
-    ///The red value, from 0.0 to 1.0
-    float r;
+    ///The CIE X value, from 0.0 to 1.0
+    float cie_x;
     
-    ///The green value, from 0.0 to 1.0
-    float g;
+    ///The CIE Y value, from 0.0 to 1.0
+    float cie_y;
     
-    ///The blue value, from 0.0 to 1.0
-    float b;
+    ///The CIE Z value, from 0.0 to 1.0
+    float cie_z;
     
     /**
      *  The weight of the various samples added. The final value of r,g and b
@@ -54,14 +54,14 @@ struct Pixel
 ///Like the Pixel struct, but with the added x and y position on the image plane
 struct TodoPixel
 {
-	///The red value, from 0.0 to 1.0
-	float r;
+	///The CIE X value, from 0.0 to 1.0
+	float cie_x;
 
-	///The green value, from 0.0 to 1.0
-	float g;
+	///The CIE Y value, from 0.0 to 1.0
+	float cie_y;
 
-	///The blue vale, from 0.0 to 1.0
-	float b;
+	///The CIE Z vale, from 0.0 to 1.0
+	float cie_z;
 
 	///The weight of the various samples added
 	float samples;
@@ -149,7 +149,7 @@ public:
 	 *	\sa deferredAddPixel(const ExecutorData* ex);
 	 *	\sa forceAddPixel(const ExecutorData* ex);
      */
-    void addPixel(const Sample* sample, const Color* c, ExecutorData* ex);
+    void addPixel(const Sample* sample, ColorXYZ c, ExecutorData* ex);
 
 
 	/** \brief Attempts the addition of pixels in critical areas

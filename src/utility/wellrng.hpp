@@ -39,7 +39,7 @@ public:
     WELLrng(const unsigned int seed[WELL_R]);
     
     ///Default destructor
-    ~WELLrng();
+    ~WELLrng() = default;
     
     /** \brief Generate a random float number
      *

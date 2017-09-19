@@ -5,8 +5,3 @@ Camera::Camera(const Point3* p, const Point3* t, const Vec3* u,
 {
     camera2world.setInvLookAtLH(*p, *t, *u);
 }
-
-Camera::~Camera()
-{
-    
-}

@@ -84,7 +84,7 @@ public:
      *
      *  \warning values are NOT initialized
      */
-    Matrix4();
+    Matrix4() = default;
     
     /** \brief Construct a 4 by 4 matrix with the given array of single
      *         precision floating point numbers.
@@ -97,7 +97,7 @@ public:
     Matrix4(const float* values);
     
     ///Destructor
-    ~Matrix4();
+    ~Matrix4() = default;
     
     /**  \brief Represent the matrix with a C-string
      *
@@ -221,7 +221,7 @@ public:
      *  \param[in] up A vector representing the direction poiting upside the
      *  camera. With the camera parallel to the terrain, this will be (0,1,0)
      */
-    void setInvLookAtLH(const Point3 pos, const Point3 target, const Vec3 up);
+    void setInvLookAtLH(const Point3& pos,const Point3& target,const Vec3& up);
     
     /**  \brief Returns a new matrix that is the transpose of the current matrix
      *
@@ -244,7 +244,7 @@ public:
      */
     bool inverse(Matrix4* output)const;
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
     ///The addition operation between two matrices
     Matrix4 operator+(const Matrix4&)const;
@@ -275,7 +275,7 @@ public:
     Ray operator*(const Ray&)const;
     
     
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
 };
 

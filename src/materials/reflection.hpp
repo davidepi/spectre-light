@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 31 Jul 2017
+//Last Edit 15 Sep 2017
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      31 Jul 2017
+ *  \date      15 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -15,8 +15,8 @@
 #define __REFLECTION_HPP__
 
 #include "materials/bdf.hpp"
-#include "materials/fresnel_conditions.hpp"
 #include "utility/color.hpp"
+#include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
 
 /**
@@ -32,37 +32,11 @@ class Reflection : public Bdf
 {
 public:
 
-    /** \brief Default constructor
-     *
-     *  \param specular The spectrum of light reflected back
-     *  \param etai Index of refraction from the incoming material
-     *  \param etat Index of refraction of the transmitted material
-     */
-    Reflection(Color specular, float etai, float etat);
-
-    /** \brief Default Constructor for metallic material
+    /** \brief Default Constructor for perfectly specular reflective material
      *
      *  \param[in] specular The spectrum of light reflected back
-     *  \param[in] refraction The ior for the material. In a metallic material,
-     *  index of refraction is different based on the wavelenght of light
-     *  \param[in] absorption The amount of light absorbed by the material
      */
-    Reflection(Color specular, Color refraction, Color absorption);
-
-    ///Default destructor
-    ~Reflection();
-
-    /** \brief Copy the BRDF
-     *
-     *  Method used to copy this class
-     *
-     *  \warning The returned Bdf is heap allocated, and must be deallocated.
-     *  Although this is really bad practice, it is the only possible
-     *  implementation without using reference counting.
-     *
-     *  \return an heap allocated base pointer of the cloned class
-     */
-    Bdf* clone()const;
+    explicit Reflection(const Spectrum& specular);
 
     /** \brief NOOP
      *
@@ -73,7 +47,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Color df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum df(const Vec3* wo, const Vec3* wi)const;
 
     /** \brief Returns the value of the BRDF
      *
@@ -87,9 +61,12 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
+     *  \param[in,out] chosen Used for the dispersion to choose the wavelength
+     *  sample
      *  \return The value of the BRDF for the pair of directions
      */
-    Color df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1, float* pdf)const;
+    virtual Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf, char* chosen)const = 0;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -104,14 +81,87 @@ public:
      */
     float pdf(const Vec3* wo, const Vec3* wi)const;
 
-private:
+protected:
 
     //scattered light
-    Color specular;
-
-    //fresnel term
-    FresnelConditions* fc;
+    Spectrum specular;
 };
 
+class ConductorReflection : public Reflection
+{
+public:
+    
+    /** \brief Default Constructor for metallic material
+     *
+     *  \param[in] specular The spectrum of light reflected back
+     *  \param[in] refraction The index of refraction of the material if isMetal
+     *  is true. The incident index of refraction otherwise.
+     *  \param[in] absorption The amount of light absorbed by the material if
+     */
+    ConductorReflection(const Spectrum& specular, const Spectrum& refraction,
+                        const Spectrum& absorption);
+    
+    /** \brief Returns the value of the BRDF
+     *
+     *  Computes the incident vector, and the value of the BRDF for the pair
+     *  of rays
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[out] wi The incident direction
+     *  \param[in] r0 A random float in the interval (0.0,1.0) UNUSED
+     *  \param[in] r1 A random float in the interval (0.0,1.0) UNUSED
+     *  \param[out] pdf The probability density function of the chosen point
+     *  over the bdf hemisphere. This is a delta distribution, but this method
+     *  generates the only possible pair of directions, so the pdf is 1.0
+     *  \param[in,out] chosen Used for the dispersion to choose the wavelength
+     *  sample
+     *  \return The value of the BRDF for the pair of directions
+     */
+    Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf, char* chosen)const;
+private:
+    Spectrum fresnel;
+    Spectrum ior;
+};
+
+class DielectricReflection : public Reflection
+{
+public:
+    /** \brief Default Constructor for dielectric material
+     *
+     *  \param[in] specular The spectrum of light reflected back
+     *  \param[in] ior_i The incident index of refraction
+     *  \param[in] ior_t The transmitted index of refraction
+     */
+    DielectricReflection(const Spectrum& specular, const Spectrum& ior_i,
+                         const Spectrum& ior_t);
+    
+    /** \brief Returns the value of the BRDF
+     *
+     *  Computes the incident vector, and the value of the BRDF for the pair
+     *  of rays
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[out] wi The incident direction
+     *  \param[in] r0 A random float in the interval (0.0,1.0) UNUSED
+     *  \param[in] r1 A random float in the interval (0.0,1.0) UNUSED
+     *  \param[out] pdf The probability density function of the chosen point
+     *  over the bdf hemisphere. This is a delta distribution, but this method
+     *  generates the only possible pair of directions, so the pdf is 1.0
+     *  \param[in,out] choose Used for the dispersion to choose the wavelength
+     *  sample
+     *  \return The value of the BRDF for the pair of directions
+     */
+    Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf, char* choose)const;
+private:
+#ifdef DISPERSION
+    Spectrum eta_i;
+    Spectrum eta_t;
+#else
+    float eta_i;
+    float eta_t;
+#endif
+};
 
 #endif

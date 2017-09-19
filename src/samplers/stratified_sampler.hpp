@@ -44,8 +44,8 @@ public:
      * \param[in] endy The \a y coordinate of the ending pixel
      * \param[in] spp The number of samples per pixel
      * \param[in] seed The seed of the prng (128 bytes array)
-     * \param[in] random if the samples for each subregion are picked at random or
-     * in the centre
+     * \param[in] random if the samples for each subregion are picked at random
+     * or in the centre
      */
     StratifiedSampler(int startx, int endx, int starty, int endy, int spp,
                               const unsigned int* seed, bool random);

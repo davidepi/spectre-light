@@ -70,6 +70,12 @@
 
 #define MESSAGE_ENDED_PARSING "Parsing ended (%d ms)"
 
+#define MESSAGE_SPECTRUM_NAN "Spectrum contains one or more NaNs"
+
+#define MESSAGE_SPECTRUM_INF "Spectrum contains one or more infinite values"
+
+#define MESSAGE_SPECTRUM_NEG "Spectrum contains one or more negative values"
+
 #endif
 
 

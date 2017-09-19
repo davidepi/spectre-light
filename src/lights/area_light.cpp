@@ -1,23 +1,23 @@
 #include "area_light.hpp"
 
-AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, Color c)
+AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c)
 : Asset(sp,objToWorld), c(c)
 {
     AreaLight::area = sp->surface();
     AreaLight::invarea = 1.f/area;
 }
 
-Color AreaLight::emissivePower()const
+Spectrum AreaLight::emissivePower()const
 {
     return AreaLight::c * TWO_PI;
 }
 
-Color AreaLight::emissiveSpectrum()const
+Spectrum AreaLight::emissiveSpectrum()const
 {
     return AreaLight::c;
 }
 
-Color AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
+Spectrum AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
 {
     Normal n;
 
@@ -45,7 +45,7 @@ Color AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
     return AreaLight::c;
 }
 
-Color AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
+Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
                             Vec3 *wi, float *pdf, float* distance) const
 {
     Normal n;
@@ -71,7 +71,7 @@ Color AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
     if(!res)
     {
         *pdf = 0;
-        return Color();
+        return SPECTRUM_BLACK;
     }
 #endif
     p = r.apply(*distance);
@@ -81,11 +81,18 @@ Color AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
     *pdf = (r.origin.x-p.x)*(r.origin.x-p.x)+(r.origin.y-p.y)*(r.origin.y-p.y)+
            (r.origin.z-p.z)*(r.origin.z-p.z);
     *pdf/=(absdot(n,-(*wi))*AreaLight::area);
+    if(std::isinf(*pdf))
+    {
+        *pdf = 0;
+        return SPECTRUM_BLACK;
+    }
 
     //convert wi to world space
-    Color retval;
-    if(dot(n,-(*wi))>0) //TODO:probably can be removed
+    Spectrum retval;
+    if(dot(n,-(*wi))>0)
         retval = AreaLight::c;
+    else
+        retval = SPECTRUM_BLACK;
 
     *wi = *AreaLight::objToWorld**wi;
     wi->normalize();

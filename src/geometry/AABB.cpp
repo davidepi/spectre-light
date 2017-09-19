@@ -5,7 +5,7 @@ AABB::AABB() :bounds{Point3(INFINITY, INFINITY, INFINITY),
     
 }
 
-AABB::AABB(const Point3 p)
+AABB::AABB(const Point3& p)
 : bounds{Point3(p.x, p.y, p.z), Point3(p.x, p.y, p.z)}
 {
     

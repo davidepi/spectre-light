@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 15 Jun 2017
+//Last Edit  4 Sep 2017
 
 /**
  *  \file vec3.hpp
@@ -8,7 +8,7 @@
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
  *  \version   1.0
- *  \date      15 Jun 2017
+ *  \date      4 Sep 2017
  *  \warning   Since this is a low level class, some verification
  *             could be skipped. To enable them compile the project with the
  *             #_LOW_LEVEL_CHECKS_ preprocessor define
@@ -103,7 +103,7 @@ public:
      *  \param[in] z A float representing the z component of the vector
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy is NaN or Infinity
      */
-    Vec3(const Vec2 xy,float z);
+    Vec3(Vec2 xy,float z);
     
     /**  \brief Constructor, given an array
      *
@@ -131,10 +131,10 @@ public:
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p n contains NaN or
      *        Infinity values
      */
-    explicit Vec3(const Normal n);
+    explicit Vec3(Normal n);
     
     ///Destructor
-    ~Vec3(void);
+    ~Vec3() = default;
     
     /** \brief Returns the length of the vector
      *
@@ -159,7 +159,7 @@ public:
      *             distance should be calculated
      *  \return A float representing the distance from the \p target vector
      */
-    float distanceTo(const Vec3 target)const;
+    float distanceTo(const Vec3& target)const;
     
     /** \brief Normalize this vector
      *
@@ -180,7 +180,7 @@ public:
      *  \sa cross(const Vec3* target, Vec3* output)const
      *  \sa dot(const Normal* target)const
      */
-    float dot(const Vec3 target)const;
+    float dot(const Vec3& target)const;
     
     /**  \brief Compute the dot product
      *
@@ -193,7 +193,7 @@ public:
      *  \sa cross(const Vec3* target, Vec3* output)const
      *  \sa dot(const Vec3* target)const
      */
-    float dot(const Normal target)const;
+    float dot(const Normal& target)const;
     
     /**  \brief Compute the cross product
      *
@@ -206,7 +206,7 @@ public:
      *              of the cross product
      *  \sa dot(const Vec3* target)const
      */
-    void cross(const Vec3 target, Vec3* output)const;
+    void cross(const Vec3& target, Vec3* output)const;
     
     /**  \brief Compute the cross product
      *
@@ -219,7 +219,7 @@ public:
      *  \return The Vec3 representing the cross product
      *  \sa dot(const Vec3* target)const
      */
-    Vec3 cross(const Vec3 target)const;
+    Vec3 cross(const Vec3& target)const;
     
     /**  \brief Check if the current vector is normalized
      *
@@ -262,7 +262,7 @@ public:
      *  \param[in] max A Vec3 representing the maximum extent of the interval
      *  \sa saturate()
      */
-    void clamp(const Vec3 min, const Vec3 max);
+    void clamp(const Vec3& min, const Vec3& max);
     
     /**  \brief Clamp this vector in the interval [0-1]
      *
@@ -279,7 +279,7 @@ public:
      *             values
      *  \sa min(const Vec3 vector2)
      */
-    void max(const Vec3 vector2);
+    void max(const Vec3& vector2);
     
     /**  \brief Compute the minimum value between this vector and another one
      *
@@ -290,7 +290,7 @@ public:
      *             values
      *  \sa max(const Vec3 vector2)
      */
-    void min(const Vec3 vector2);
+    void min(const Vec3& vector2);
     
     /**  \brief Flip the vector according to a pivot
      *
@@ -300,7 +300,7 @@ public:
      *  \param[in] centre A Vec3 representing the centre of reflection
      *  \sa reflect(const Vec3 centre)
      */
-    void reflect(const Vec3 centre);
+    void reflect(const Vec3& centre);
     
     /**  \brief Flip the vector according to a pivot
      *
@@ -310,42 +310,42 @@ public:
      *  \param[in] centre A Normal representing the centre of reflection
      *  \sa reflect(const Normal centre)
      */
-    void reflect(const Normal centre);
+    void reflect(const Normal& centre);
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
     ///The addition operation between two vectors
     Vec3 operator+(const Vec3&)const;
     ///The addition operation between a vector and a float
-    Vec3 operator+(const float)const;
+    Vec3 operator+(float)const;
     ///The addition operation between two vectors
     void operator+=(const Vec3&);
     ///The addition operation between a vector and a float
-    void operator+=(const float);
+    void operator+=(float);
     ///The subtraction operation between two vectors
     Vec3 operator-(const Vec3&)const;
     ///The subtraction operation between a vector and a float
-    Vec3 operator-(const float)const;
+    Vec3 operator-(float)const;
     ///The subtraction operation between two vectors
     void operator-=(const Vec3&);
     ///The subtraction operation between a vector and a float
-    void operator-=(const float);
+    void operator-=(float);
     ///The element-wise multiplication between two vectors
     Vec3 operator*(const Vec3&)const;
     ///The element-wise multiplication between a vector and a float
-    Vec3 operator*(const float)const;
+    Vec3 operator*(float)const;
     ///The element-wise multiplication between two vectors
     void operator*=(const Vec3&);
     ///The element-wise multiplication between a vector and a float
-    void operator*=(const float);
+    void operator*=(float);
     ///The element-wise division between two vectors
     Vec3 operator/(const Vec3&)const;
     ///The element-wise division between a vector and a float
-    Vec3 operator/(const float)const;
+    Vec3 operator/(float)const;
     ///The element-wise division between two vectors
     void operator/=(const Vec3&);
     ///The element-wise division between a vector and a float
-    void operator/=(const float);
+    void operator/=(float);
     ///The negative of this vector
     Vec3 operator!()const;
     ///The negative of this vector
@@ -355,11 +355,11 @@ public:
     ///Check if two vector are different
     bool operator!=(const Vec3&)const;
     ///Return the nth component
-    float& operator[](const int);
+    float& operator[](int);
     ///Return the nth component, const version
-    float operator[](const int)const;
+    float operator[](int)const;
     
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
 };
 
@@ -435,7 +435,7 @@ public:
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy or \p z are
      *        NaN or Infinity
      */
-    Normal(const Vec2 xy,float z);
+    Normal(Vec2 xy,float z);
     
     /**  \brief Constructor, given an array
      *
@@ -466,7 +466,7 @@ public:
     explicit Normal(const Vec3 v);
     
     ///Destructor
-    ~Normal(void);
+    ~Normal() = default;
     
     /**  \brief Compute the dot product of this normal and another one.
      *
@@ -477,7 +477,7 @@ public:
      *  \return A float representing the dot product
      *  \sa dot(const Vec3* target)const
      */
-    float dot(const Normal target)const;
+    float dot(const Normal& target)const;
     
     /**  \brief Compute the dot product of this normal and a vector
      *
@@ -488,7 +488,7 @@ public:
      *  \return A float representing the dot product
      *  \sa dot(const Normal* target)const
      */
-    float dot(const Vec3 target)const;
+    float dot(const Vec3& target)const;
     
     /** \brief Returns the length of the normal
      *
@@ -512,7 +512,7 @@ public:
      *             distance should be calculated
      *  \return A float representing the distance from the \p target normal
      */
-    float distanceTo(const Normal target)const;
+    float distanceTo(const Normal& target)const;
     
     /** \brief Normalize this normal
      *  \note Despite the name, a Normal is not guaranteed to be normalized
@@ -565,7 +565,7 @@ public:
      *  \param[in] max A Vec3 representing the maximum extent of the interval
      *  \sa saturate()
      */
-    void clamp(const Vec3 min, const Vec3 max);
+    void clamp(const Vec3& min, const Vec3& max);
     
     /**  \brief Clamp this normal in the interval [0-1]
      *  \sa clamp(const Vec3* min, const Vec3* max)
@@ -581,7 +581,7 @@ public:
      *             values
      *  \sa min(const Normal n)
      */
-    void max(const Normal n);
+    void max(const Normal& n);
     
     /**  \brief Compute the minimum value between this normal and another one
      *
@@ -592,7 +592,7 @@ public:
      *             values
      *  \sa max(const Normal n)
      */
-    void min(const Normal n);
+    void min(const Normal& n);
     
     /** \brief Checks whether this normal is oriented in the same direction of a
      *          vector or not
@@ -602,7 +602,7 @@ public:
      *
      *  \sa flipToMatchThis(const Vec3 reference)
      */
-    bool faceForward(const Vec3 reference)const;
+    bool faceForward(const Vec3& reference)const;
     
     /** \brief Flips this normal if it is not oriented in the same direction of
      *         the input vector
@@ -610,43 +610,43 @@ public:
      *
      *  \sa faceForward(const Vec3 reference)
      */
-    void flipToMatch(const Vec3 reference);
+    void flipToMatch(const Vec3& reference);
     
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
     ///The addition operation between two normals
     Normal operator+(const Normal&)const;
     ///The addition operation between a normal and a float
-    Normal operator+(const float)const;
+    Normal operator+(float)const;
     ///The addition operation between two normals
     void operator+=(const Normal&);
     ///The addition operation between a normal and a float
-    void operator+=(const float);
+    void operator+=(float);
     ///The subtraction operation between two normals
     Normal operator-(const Normal&)const;
     ///The subtraction operation between a normal and a float
-    Normal operator-(const float)const;
+    Normal operator-(float)const;
     ///The subtraction operation between two normals
     void operator-=(const Normal&);
     ///The subtraction operation between a normal and a float
-    void operator-=(const float);
+    void operator-=(float);
     ///The element-wise multiplication between two normals
     Normal operator*(const Normal&)const;
     ///The element-wise multiplication between a normal and a float
-    Normal operator*(const float)const;
+    Normal operator*(float)const;
     ///The element-wise multiplication between two normals
     void operator*=(const Normal&);
     ///The element-wise multiplication between a normal and a float
-    void operator*=(const float);
+    void operator*=(float);
     ///The element-wise division between two normals
     Normal operator/(const Normal&)const;
     ///The element-wise division between a normal and a float
-    Normal operator/(const float)const;
+    Normal operator/(float)const;
     ///The element-wise division between two normals
     void operator/=(const Normal&);
     ///The element-wise division between a normal and a float
-    void operator/=(const float);
+    void operator/=(float);
     ///The negative of this normal
     Normal operator!()const;
     ///The negative of this normal
@@ -656,12 +656,11 @@ public:
     ///Check if two normals are different
     bool operator!=(const Normal&)const;
     ///Return the nth component
-    float& operator[](const int);
+    float& operator[](int);
     ///Return the nth component, const version
-    float operator[](const int)const;
+    float operator[](int)const;
 
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
-    
+    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
 };
 
 
@@ -681,7 +680,7 @@ public:
  *  \sa cross (const Vec3   source, const Vec3   target)
  *  \sa absdot(const Vec3   source, const Vec3   target)
  */
-inline float dot   (const Vec3   source, const Vec3   target)
+inline float dot   (const Vec3&   source, const Vec3&   target)
 {
     return ((source.x * target.x) +
             (source.y * target.y) +
@@ -703,7 +702,7 @@ inline float dot   (const Vec3   source, const Vec3   target)
  *  \sa cross (const Vec3   source, const Vec3   target)
  *  \sa absdot(const Vec3   source, const Normal target)
  */
-inline float dot   (const Vec3   source, const Normal target)
+inline float dot   (const Vec3&   source, const Normal& target)
 {
     return ((source.x * target.x) +
             (source.y * target.y) +
@@ -724,7 +723,7 @@ inline float dot   (const Vec3   source, const Normal target)
  *  \sa cross (const Vec3   source, const Vec3   target)
  *  \sa absdot(const Normal source, const Vec3   target)
  */
-inline float dot   (const Normal source, const Vec3   target)
+inline float dot   (const Normal& source, const Vec3&   target)
 {
     return ((source.x * target.x) +
             (source.y * target.y) +
@@ -745,7 +744,7 @@ inline float dot   (const Normal source, const Vec3   target)
  *  \sa cross (const Vec3   source, const Vec3   target)
  *  \sa absdot(const Normal source, const Normal target)
  */
-inline float dot (const Normal source, const Normal target)
+inline float dot (const Normal& source, const Normal& target)
 {
     return ((source.x * target.x) +
             (source.y * target.y) +
@@ -767,7 +766,7 @@ inline float dot (const Normal source, const Normal target)
  *  \sa cross (const Vec3   source, const Vec3   target)
  *  \sa dot   (const Vec3   source, const Vec3   target)
  */
-inline float absdot(const Vec3 source, const Vec3 target)
+inline float absdot(const Vec3& source, const Vec3& target)
 {
     return fabsf(dot(source,target));
 }
@@ -787,7 +786,7 @@ inline float absdot(const Vec3 source, const Vec3 target)
  *  \sa cross (const Vec3   source, const Vec3   target)
  *  \sa dot   (const Vec3   source, const Normal target)
  */
-inline float absdot(const Vec3 source, const Normal target)
+inline float absdot(const Vec3& source, const Normal& target)
 {
     return fabsf(dot(source,target));
 }
@@ -807,7 +806,7 @@ inline float absdot(const Vec3 source, const Normal target)
  *  \sa cross (const Vec3   source, const Vec3   target)
  *  \sa dot   (const Normal source, const Vec3   target)
  */
-inline float absdot(const Normal source, const Vec3 target)
+inline float absdot(const Normal& source, const Vec3& target)
 {
     return fabsf(dot(source,target));
 }
@@ -827,7 +826,7 @@ inline float absdot(const Normal source, const Vec3 target)
  *  \sa cross (const Vec3   source, const Vec3   target)
  *  \sa dot   (const Normal source, const Normal target)
  */
-inline float absdot(const Normal source, const Normal target)
+inline float absdot(const Normal& source, const Normal& target)
 {
     return fabsf(dot(source,target));
 }
@@ -843,7 +842,7 @@ inline float absdot(const Normal source, const Normal target)
  *  \return A Vec3 representing the cross product
  *  \sa dot   (const Vec3 source, const Vec3 target)
  */
-inline Vec3  cross (const Vec3 source, const Vec3 target)
+inline Vec3  cross (const Vec3& source, const Vec3& target)
 {
     return Vec3(source.y * target.z - source.z * target.y,
                 source.z * target.x - source.x * target.z,
@@ -858,7 +857,7 @@ inline Vec3  cross (const Vec3 source, const Vec3 target)
  *  in a division by zero error
  *  \note Use #_LOW_LEVEL_CHECKS_ to notify when a division by 0 occurs
  */
-inline Vec3 normalize(Vec3 v)
+inline Vec3 normalize(const Vec3& v)
 {
     float len = std::sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
 #ifdef _LOW_LEVEL_CHECKS_
@@ -881,7 +880,7 @@ inline Vec3 normalize(Vec3 v)
  *  in a division by zero error
  *  \note Use #_LOW_LEVEL_CHECKS_ to notify when a division by 0 occurs
  */
-inline Normal normalize(Normal n)
+inline Normal normalize(const Normal& n)
 {
     float len = std::sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
 #ifdef _LOW_LEVEL_CHECKS_
@@ -906,7 +905,7 @@ inline Normal normalize(Normal n)
  *
  *  \sa flipToMatch(const Normal target, const Vec3 reference)
  */
-inline bool faceForward(const Normal target, const Vec3 reference)
+inline bool faceForward(const Normal& target, const Vec3& reference)
 {
     return dot(target,reference)>=0.f;
 }
@@ -919,7 +918,7 @@ inline bool faceForward(const Normal target, const Vec3 reference)
  *
  *  \sa faceForward(const Normal target, const Vec3 reference)
  */
-inline Normal flipToMatch(const Normal target, const Vec3 reference)
+inline Normal flipToMatch(const Normal& target, const Vec3& reference)
 {
     if(dot(target,reference)<0.f)
         return -target;
@@ -938,7 +937,7 @@ inline Normal flipToMatch(const Normal target, const Vec3 reference)
  *             distance should be calculated
  *  \return A float representing the distance from \p vec1 to \p vec2
  */
-inline float distance(const Vec3 vec1, const Vec3 vec2)
+inline float distance(const Vec3& vec1, const Vec3& vec2)
 {
     float x = vec2.x - vec1.x;
     float y = vec2.y - vec1.y;
@@ -958,7 +957,7 @@ inline float distance(const Vec3 vec1, const Vec3 vec2)
  *             distance should be calculated
  *  \return A float representing the distance from \p n1 to \p n2
  */
-inline float distance(const Normal n1, const Normal n2)
+inline float distance(const Normal& n1, const Normal& n2)
 {
     float x = n2.x - n1.x;
     float y = n2.y - n1.y;
@@ -978,7 +977,7 @@ inline float distance(const Normal n1, const Normal n2)
  *  \return the clamped Vec3
  *  \sa saturate(const Vec3 vector)
  */
-inline Vec3 clamp(const Vec3 vector, const Vec3 min, const Vec3 max)
+inline Vec3 clamp(const Vec3& vector, const Vec3& min, const Vec3& max)
 {
     float x,y,z;
     if (vector.x < min.x) x = min.x;
@@ -999,7 +998,7 @@ inline Vec3 clamp(const Vec3 vector, const Vec3 min, const Vec3 max)
  *  \return the clamped Vec3
  *  \sa clamp(const Vec3 vector, const Vec3 min, const Vec3 max)
  */
-inline Vec3 saturate(const Vec3 vector)
+inline Vec3 saturate(const Vec3& vector)
 {
     float x,y,z;
     if (vector.x < .0f) x = .0f;
@@ -1025,7 +1024,7 @@ inline Vec3 saturate(const Vec3 vector)
  *  \return the clamped normal
  *  \sa saturate(const Normal n)
  */
-inline Normal clamp(const Normal n, const Vec3 min, const Vec3 max)
+inline Normal clamp(const Normal& n, const Vec3& min, const Vec3& max)
 {
     float x,y,z;
     if (n.x < min.x) x = min.x;
@@ -1046,7 +1045,7 @@ inline Normal clamp(const Normal n, const Vec3 min, const Vec3 max)
  *  \return the clamped normal
  *  \sa clamp(const Normal n, const Vec3 min, const Vec3 max)
  */
-inline Normal saturate(const Normal n)
+inline Normal saturate(const Normal& n)
 {
     float x,y,z;
     if (n.x < .0f) x = .0f;
@@ -1071,7 +1070,7 @@ inline Normal saturate(const Normal n)
  *  \return a Vec3 containing the maximum value of the two input vectors
  *  \sa min(const Vec3 v1, const Vec3 v2)
  */
-inline Vec3 max(const Vec3 v1, const Vec3 v2)
+inline Vec3 max(const Vec3& v1, const Vec3& v2)
 {
     return Vec3(max(v1.x,v2.x),max(v1.y,v2.y),max(v1.z,v2.z));
 }
@@ -1086,7 +1085,7 @@ inline Vec3 max(const Vec3 v1, const Vec3 v2)
  *  \return a Vec3 containing the minimum value of the two input vectors
  *  \sa max(const Vec3 v1, const Vec3 v2)
  */
-inline Vec3 min(const Vec3 v1, const Vec3 v2)
+inline Vec3 min(const Vec3& v1, const Vec3& v2)
 {
     return Vec3(min(v1.x,v2.x),min(v1.y,v2.y),min(v1.z,v2.z));
 }
@@ -1101,7 +1100,7 @@ inline Vec3 min(const Vec3 v1, const Vec3 v2)
  *  \return a Normal containing the maximum value of the two input normals
  *  \sa min(const Normal n1, const Normal n2)
  */
-inline Normal max(const Normal n1, const Normal n2)
+inline Normal max(const Normal& n1, const Normal& n2)
 {
     return Normal(max(n1.x,n2.x),max(n1.y,n2.y),max(n1.z,n2.z));
 }
@@ -1117,7 +1116,7 @@ inline Normal max(const Normal n1, const Normal n2)
  *  \return a Normal containing the minimum value of the two input normals
  *  \sa min(const Normal v1, const Normal v2)
  */
-inline Normal min(const Normal n1, const Normal n2)
+inline Normal min(const Normal& n1, const Normal& n2)
 {
     return Normal(min(n1.x,n2.x),min(n1.y,n2.y),min(n1.z,n2.z));
 }
@@ -1133,7 +1132,7 @@ inline Normal min(const Normal n1, const Normal n2)
  *  \return The reflected vector
  *  \sa reflect(const Vec3 centre)
  */
-inline Vec3 reflect(const Vec3 source, const Vec3 centre)
+inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.warning(!centre.isNormalized(),
@@ -1156,7 +1155,7 @@ inline Vec3 reflect(const Vec3 source, const Vec3 centre)
  *  \return The reflected vector
  *  \sa reflect(const Normal centre)
  */
-inline Vec3 reflect(const Vec3 source, const Normal centre)
+inline Vec3 reflect(const Vec3& source, const Normal& centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
     Console.warning(!centre.isNormalized(),

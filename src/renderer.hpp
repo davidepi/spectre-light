@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 19 Aug 2017
+//Last Edit 14 Sep 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      19 Aug 2017
+ *  \date      14 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -37,7 +37,7 @@
 #include <thread> //std::thread
 #include <stack> //std::stack
 #include <chrono> //std::this_thread::sleep_for, platform independent
-#include <time.h> //time for srand
+#include <ctime> //time for srand
 
 /**  \brief Struct containing the coordinates of a sub-image to be rendered
  *

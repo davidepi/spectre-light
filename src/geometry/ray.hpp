@@ -79,7 +79,7 @@ public:
      *  \param[in] origin a Point3 representing the starting point of the Ray
      *  \param[in] direction a Vec3 representing the direction of the Ray
      */
-    Ray(const Point3 origin, const Vec3 direction);
+    Ray(const Point3& origin, const Vec3& direction);
     
     /** \brief Constructor, given some floats
      *

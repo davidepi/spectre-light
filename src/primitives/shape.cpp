@@ -11,9 +11,3 @@ unsigned int Shape::getID()const
 {
     return Shape::id;
 }
-
-
-Shape::~Shape()
-{
-
-}
