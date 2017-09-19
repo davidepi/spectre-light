@@ -1,3 +1,7 @@
+#RGB
+#first line should be #RGB in order to use rgb renderer, anything else
+#will default to the better and slower spectrasl renderer
+
 #Input file example. The parser is still a temp version, just for debugging
 #Misplaced colon or spaces will break everything
 
@@ -34,9 +38,12 @@ integrator: pt
 #reflection (r,g,b) (r,g,b) (r,g,b) where second and third colour are ior and absorption of the metal
 #reflection (r,g,b) ior ior where ior is the index of refraction of the incident and transmitted material
 #refraction (r,g,b) ior ior where ior is the index of refraction of the incident and transmitted material
+#any ior can be in the form [val,val,val] or {val,val,val,val,val,val}
+#the first one will use Cauchy equation to determine wavelength-dependent ior, the other will use Sellmeier equation
+#if only 1 ior is available use [ior,0,0]. Rgb renderer also expects wavelength dependent iors
 material: Red diffuse (150,0,0) 20
-material: Glass reflection (255,255,255) 1.0 1.5
-material: Glass refraction (255,255,255) 1.0 1.5
+material: Glass reflection (255,255,255) [1,0,0] [1.5046,0.00420,0]
+material: Glass refraction (255,255,255) [1.5046,0.00420,0]
 material: Mirror reflection (255,255,255) (0,0,0) (255,255,255)
 
 #asset name_without_spaces obj_file_path || asset name sphere radius

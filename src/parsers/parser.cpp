@@ -515,12 +515,13 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             token = strtok_r(NULL," ",&pos);
             if(token[0]=='(')//parse refracted color, rgb
             {
+                unsigned char r,g,b;
                 val = strtok(token,"(), "); //parse x
-                x = atoi(val);
+                r = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse y
-                y = atoi(val);
+                g = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse z
-                z = atoi(val);
+                b = (unsigned char)atoi(val);
                 emissive = Spectrum(ColorRGB(x,y,z),true);
             }
             else //parse temperature, generate blackbody
