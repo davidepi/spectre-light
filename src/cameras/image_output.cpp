@@ -4,7 +4,7 @@
 bool check_extension(const char* fn)
 {
     const char* name = strrchr(fn,'.');
-    if(name == NULL || (name-fn)<(int)strlen(fn)-4) //null or position less than the
+    if(name == NULL || (name-fn)<(int)strlen(fn)-4) //null or position less than
     {                                          //4 chr expected for an extension
         Console.warning(MESSAGE_MISSING_EXTENSION);
         return false;
@@ -109,10 +109,10 @@ void ImageOutput::addPixel(const Sample* s, ColorXYZ c, ExecutorData* ex)
     if(c.b<0)c.b=0;
     float ptmpx = s->posx-0.5f;
     float ptmpy = s->posy-0.5f;
-    int p0x = (int)ceil(ptmpx-f->x_range);
-    int p0y = (int)ceil(ptmpy-f->y_range);
-    int p1x = (int)floor(ptmpx+f->x_range);
-    int p1y = (int)floor(ptmpy+f->y_range);
+    int p0x = (int)ceilf(ptmpx-f->x_range);
+    int p0y = (int)ceilf(ptmpy-f->y_range);
+    int p1x = (int)floorf(ptmpx+f->x_range);
+    int p1y = (int)floorf(ptmpy+f->y_range);
     p0x = max(p0x,0);
     p0y = max(p0y,0);
     p1x = min(p1x,width);

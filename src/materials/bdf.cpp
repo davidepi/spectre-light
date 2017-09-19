@@ -4,18 +4,13 @@ Bdf::Bdf(BdfFlags flags)
     Bdf::type = flags;
 }
 
-Bdf::~Bdf()
-{
-
-}
-
 BdfFlags Bdf::getFlags() const
 {
     return Bdf::type;
 }
 
 Spectrum Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                   float* pdf, char* chosen)const
+                   float* pdf, char*)const
 {
     //sample x,y points on the hemisphere, shirley's method maybe's better
     float t = TWO_PI * r0;
@@ -76,7 +71,7 @@ Spectrum Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
 
 Spectrum Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
                     const HitPoint* h, Vec3* wi, float* pdf,
-                    const BdfFlags matchme, BdfFlags* val,char* choose)const
+                    BdfFlags matchme, BdfFlags* val,char* choose)const
 {
     int matchcount = 0;
     Bdf* matching[_MAX_BDF_];
@@ -138,7 +133,7 @@ Spectrum Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
 }
 
 float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
-                const BdfFlags m)const
+                BdfFlags m)const
 {
     if(Bsdf::count == 0)
         return 0.f;

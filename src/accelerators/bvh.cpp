@@ -355,7 +355,7 @@ void Bvh::buildTree(Triangle* tris, int len)
     //this is actually horrible but I don't want to deallocate array under
     //the hood. I really hope that memcpying the whole array is smh fast
     Triangle* tmp = (Triangle*)malloc(sizeof(Triangle)*len);
-    memcpy((void*)tmp,(void*)tris,sizeof(Triangle)*len); //create a reference copy
+    memcpy((void*)tmp,(void*)tris,sizeof(Triangle)*len);//create reference copy
     for(int i=0;i<len;i++)
     {
         tris[i].a = tmp[prims[i].index].a; //copy from the reference
@@ -389,7 +389,7 @@ void Bvh::flatten(void* n, uint32_t* index)
         nodesList[myindex].bounding = node->bounding;
         nodesList[myindex].sibling = *index;
         nodesList[myindex].len = 0;
-        nodesList[myindex].axis = node->split;
+        nodesList[myindex].axis = (uint8_t)(node->split);
         flatten(node->right,index);
     }
     delete(node);
@@ -435,11 +435,11 @@ bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h)const
                 if(*(&rp.isXInvNeg+node->axis))//better try the other side first
                 {
                     jobs[jobs_stack_top++] = node+1;
-                    node = nodesList+node->offset;
+                    node = nodesList+node->sibling;
                 }
                 else
                 {
-                    jobs[jobs_stack_top++] = nodesList+node->offset;
+                    jobs[jobs_stack_top++] = nodesList+node->sibling;
                     node = node+1;
                 }
             }

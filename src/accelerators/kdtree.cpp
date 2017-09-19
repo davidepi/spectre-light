@@ -34,10 +34,7 @@ KdTreeNode::KdTreeNode(unsigned int primitive_offset, unsigned int p_number)
     KdTreeNode::data |= 0x80000000;
 }
 
-KdTreeNode::~KdTreeNode()
-{
-    
-}
+KdTreeNode::~KdTreeNode() = default;
 
 bool KdTreeNode::isLeaf()const
 {
@@ -85,8 +82,8 @@ namespace KdHelpers
     class KdTreeBuildNode
     {
     public:
-        KdTreeBuildNode(){};
-        ~KdTreeBuildNode(){};
+        KdTreeBuildNode() = default;
+        ~KdTreeBuildNode() = default;
         
         //where the assets are stored
         unsigned int offset_start;
@@ -260,7 +257,7 @@ void KdTree::buildTree()
 }
 
 void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
-                   unsigned int a_n, const AABB area)
+                   unsigned int a_n, AABB area)
 {
     using KdHelpers::KdTreeBuildNode;
     using KdHelpers::SplitCandidate;

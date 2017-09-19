@@ -44,7 +44,7 @@ public:
     Bdf(BdfFlags flags);
 
     ///Default destructor
-    virtual ~Bdf();
+    virtual ~Bdf() = default;
 
     /** \brief Return the value of the Bdf
      *
@@ -189,7 +189,7 @@ public:
      */
     Spectrum df_s(float r0, float r1, float r2, const Vec3* woW,
                   const HitPoint* h, Vec3* wiW, float* pdf,
-                  const BdfFlags matchme, BdfFlags* matched, char* choose)
+                  BdfFlags matchme, BdfFlags* matched, char* choose)
     const;
 
     /** \brief Return the probability density function for this bsdf
@@ -205,7 +205,7 @@ public:
      *  \return The pdf for this set of values
      */
     float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
-              const BdfFlags matchme)const;
+              BdfFlags matchme)const;
 
 private:
 

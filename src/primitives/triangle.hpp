@@ -58,7 +58,7 @@ public:
      *  is necessary, because an allocation with the malloc operator would leave
      *  the vtable pointer uninitialized
      */
-    Triangle();
+    Triangle() = default;
 
     /** \brief Constructor, given the vertices.
      *
@@ -68,7 +68,7 @@ public:
      *  \param[in] v1 The second vertex of the triangle
      *  \param[in] v2 The third vertex of the triangle
      */
-    Triangle(Vertex v0, Vertex v1, Vertex v2);
+    Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2);
 
     /** \brief Intersection of a Ray and this triangle
      *

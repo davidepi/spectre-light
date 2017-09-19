@@ -49,7 +49,7 @@ public:
            int width, int height);
     
     ///Default destructor
-    virtual ~Camera();
+    virtual ~Camera() = default;
     
     
     /** \brief Create a ray from a sample

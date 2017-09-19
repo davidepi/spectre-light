@@ -90,7 +90,7 @@ unsigned int Scene::addLight(unsigned int shapeid, Matrix4* transform,
                              const Spectrum& c)
 {
     AreaLight* addme = NULL;
-    int retval = 0;
+    unsigned int retval = 0;
 
     //complexity O(n), could be O(1), but who cares, this is done in the setup
     for(int i=0;i<Scene::shape_index;i++)

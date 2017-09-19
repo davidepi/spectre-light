@@ -277,14 +277,14 @@ static void parseMaterial(char* string)
                 Spectrum etat;
                 if(token[0]=='[') //cauchy
                 {
-                    float b,c,d;
+                    float bb,c,d;
                     val = strtok(token,"[], ");
-                    b = (float)atof(val);
+                    bb = (float)atof(val);
                     val = strtok(NULL,"[], ");
                     c = (float)atof(val);
                     val = strtok(NULL,"[], ");
                     d = (float)atof(val);
-                    etai = Spectrum(cauchyEq(b,c,d));
+                    etai = Spectrum(cauchyEq(bb,c,d));
                 }
                 else
                 {
@@ -307,14 +307,14 @@ static void parseMaterial(char* string)
                 token = strtok_r(NULL," ",&stringpos);
                 if(token[0]=='[') //cauchy
                 {
-                    float b,c,d;
+                    float bb,c,d;
                     val = strtok(token,"[], ");
-                    b = (float)atof(val);
+                    bb = (float)atof(val);
                     val = strtok(NULL,"[], ");
                     c = (float)atof(val);
                     val = strtok(NULL,"[], ");
                     d = (float)atof(val);
-                    etat = Spectrum(cauchyEq(b,c,d));
+                    etat = Spectrum(cauchyEq(bb,c,d));
                 }
                 else
                 {
@@ -354,14 +354,14 @@ static void parseMaterial(char* string)
             token = strtok_r(NULL," ",&stringpos); //parse ior incident
             if(token[0]=='[') //cauchy
             {
-                float b,c,d;
+                float bb,c,d;
                 val = strtok(token,"[], ");
-                b = (float)atof(val);
+                bb = (float)atof(val);
                 val = strtok(NULL,"[], ");
                 c = (float)atof(val);
                 val = strtok(NULL,"[], ");
                 d = (float)atof(val);
-                etai = Spectrum(cauchyEq(b,c,d));
+                etai = Spectrum(cauchyEq(bb,c,d));
             }
             else
             {
@@ -384,14 +384,14 @@ static void parseMaterial(char* string)
             token = strtok_r(NULL," ",&stringpos); //parse ior transmitted
             if(token[0]=='[') //cauchy
             {
-                float b,c,d;
+                float bb,c,d;
                 val = strtok(token,"[], ");
-                b = (float)atof(val);
+                bb = (float)atof(val);
                 val = strtok(NULL,"[], ");
                 c = (float)atof(val);
                 val = strtok(NULL,"[], ");
                 d = (float)atof(val);
-                etat = Spectrum(cauchyEq(b,c,d));
+                etat = Spectrum(cauchyEq(bb,c,d));
             }
             else
             {
@@ -527,7 +527,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             else //parse temperature, generate blackbody
                 emissive = Spectrum(atoi(token));
 
-            out->sc->addLight(got->second,m,emissive);
+            out->sc->addLight((unsigned int)got->second,m,emissive);
         }
         else
         {
@@ -609,7 +609,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             *m *= rotz;
             *m *= scale;
 
-            out->sc->addAsset(got->second,m,mat);
+            out->sc->addAsset((unsigned int)got->second,m,mat);
         }
         else
         {
@@ -633,7 +633,7 @@ void Parser::parse(const char* filename, Settings* out)
     Console.log(MESSAGE_STARTED_PARSING,NULL);
     std::chrono::steady_clock::time_point a = std::chrono::steady_clock::now();
     int buf_size = 512;
-    char* buf = (char*)malloc(buf_size);
+    char* buf = (char*)malloc((size_t)buf_size);
     FILE* fin = fopen(filename,"r");
     if(fin!=NULL)
     {

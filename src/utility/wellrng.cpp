@@ -47,8 +47,3 @@ double WELLrng::getNumber()
     state_i = (state_i + 31) & 0x0000001FU;
     return ((double) state[state_i] * 2.32830643653869628906e-10f);
 }
-
-WELLrng::~WELLrng()
-{
-    
-}

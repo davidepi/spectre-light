@@ -66,7 +66,7 @@ public:
             const unsigned int* seed);
     
     ///Default destructor
-    virtual ~Sampler();
+    virtual ~Sampler() = default;
 
     /** \brief Return a set of samples
      *

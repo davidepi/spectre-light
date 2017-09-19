@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 {
     //Since i cannot know the full path of the executable, I only append -full
     //or -rgb to argv[0]
-    unsigned char BUF_SIZE = 0xFF;
+    const unsigned char BUF_SIZE = 0xFF;
     char cmd[BUF_SIZE];
     strncpy(cmd,argv[0],BUF_SIZE);
     

@@ -1,5 +1,5 @@
-#include "parsers/parser.hpp"
 #include "utility/console.hpp"
+#include "parsers/parser.hpp"
 #include "renderer.hpp"
 
 int main(int argc, char* argv[])

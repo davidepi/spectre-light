@@ -229,7 +229,7 @@ private:
     
     //recursive step for the build
     void build(void* node, char depth, void* split_candidates,
-               Asset** assets_list, unsigned int assets_number,const AABB area);
+               Asset** assets_list, unsigned int assets_number, AABB area);
     
     //flatten out the tree into an array
     void finalize(void* node);

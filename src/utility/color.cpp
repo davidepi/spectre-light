@@ -31,9 +31,9 @@ Color::Color(const char* hex)
     }
     else
     {
-        unsigned char hexred = 0x0;
-        unsigned char hexgreen = 0x0;
-        unsigned char hexblue = 0x0;
+        unsigned char hexred;
+        unsigned char hexgreen;
+        unsigned char hexblue;
         char tmp[3];
         tmp[2] = '\0';
         if(strlen(hex)==4)
@@ -292,5 +292,5 @@ ColorXYZ ColorRGB::toXYZ()const
     float y = (float)(r * 0.2126729 + g * 0.7151522 + b * 0.0721750);
     float z = (float)(r * 0.0193339 + g * 0.1191920 + b * 0.9503041);
     
-    return ColorXYZ((float)x,(float)y,(float)z);
+    return ColorXYZ(x,y,z);
 }

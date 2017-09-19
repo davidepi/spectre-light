@@ -97,7 +97,7 @@ public:
     Vec2(const float* xy);
     
     ///Destructor
-    ~Vec2(void);
+    ~Vec2() = default;
     
     /**
      * \brief Returns the length of the vector
@@ -165,7 +165,7 @@ public:
      *  \param[in] max A Vec2 representing the maximum extent of the interval
      *  \sa saturate()
      */
-    void clamp(const Vec2 min, const Vec2 max);
+    void clamp(const Vec2& min, const Vec2& max);
     
     /**
      *  \brief Clamp this vector in the interval [0-1]
@@ -181,7 +181,7 @@ public:
      *             distance should be calculated
      *  \return A float representing the distance from the \p target vector
      */
-    float distanceTo(const Vec2 target)const;
+    float distanceTo(const Vec2& target)const;
     
     /**
      *  \brief Compute the dot product
@@ -191,7 +191,7 @@ public:
      *  \param[in] target The target Vec2 used to compute the dot product
      *  \return A float representing the dot product
      */
-    float dot(const Vec2 target)const;
+    float dot(const Vec2& target)const;
     
     /**
      *  \brief Compute the max value between two vectors
@@ -201,7 +201,7 @@ public:
      *  \param[in] vector2 a Vec2 used to compare and choose the x and y values
      *  \sa min(const Vec2 vector2)
      */
-    void max(const Vec2 vector2);
+    void max(const Vec2& vector2);
     
     /**
      *  \brief Compute the min value between two vectors
@@ -211,7 +211,7 @@ public:
      *  \param[in] vector2 a Vec2 used to compare and choose the x and y values
      *  \sa max(const Vec2 vector2)
      */
-    void min(const Vec2 vector2);
+    void min(const Vec2& vector2);
     
     /**
      *  \brief Flip this vector according to a pivot
@@ -221,42 +221,42 @@ public:
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
      *  \param[in] centre a Vec2 representing the centre of reflection
      */
-    void reflect(const Vec2 centre);
+    void reflect(const Vec2& centre);
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
     ///The addition operation between two vectors
     Vec2 operator+(const Vec2&)const;
     ///The addition operation between a vector and a float
-    Vec2 operator+(const float)const;
+    Vec2 operator+(float)const;
     ///The addition operation between two vectors
     void operator+=(const Vec2&);
     ///The addition operation between a vector and a float
-    void operator+=(const float);
+    void operator+=(float);
     ///The subtraction operation between two vectors
     Vec2 operator-(const Vec2&)const;
     ///The subtraction operation between a vector and a float
-    Vec2 operator-(const float)const;
+    Vec2 operator-(float)const;
     ///The subtraction operation between two vectors
     void operator-=(const Vec2&);
     ///The subtraction operation between a vector and a float
-    void operator-=(const float);
+    void operator-=(float);
     ///The element-wise multiplication between two vectors
     Vec2 operator*(const Vec2&)const;
     ///The element-wise multiplication between a vector and a float
-    Vec2 operator*(const float)const;
+    Vec2 operator*(float)const;
     ///The element-wise multiplication between two vectors
     void operator*=(const Vec2&);
     ///The element-wise multiplication between a vector and a float
-    void operator*=(const float);
+    void operator*=(float);
     ///The element-wise division between two vectors
     Vec2 operator/(const Vec2&)const;
     ///The element-wise division between a vector and a float
-    Vec2 operator/(const float)const;
+    Vec2 operator/(float)const;
     ///The element-wise division between two vectors
     void operator/=(const Vec2&);
     ///The element-wise division between a vector and a float
-    void operator/=(const float);
+    void operator/=(float);
     ///The negative of this vector
     Vec2 operator!()const;
     ///The negative of this vector
@@ -266,7 +266,7 @@ public:
     ///Check if two vector are different
     bool operator!=(const Vec2&)const;
     
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
     
 };
 

@@ -36,7 +36,7 @@ AABB Box::computeWorldAABB(const Matrix4* transform)const
 
 float Box::surface()const
 {
-    float la = 2*(edges.x+edges.z)*(edges.y); //lateral surface = perimeter * heigth
+    float la = 2*(edges.x+edges.z)*(edges.y);//lateral surface= perimeter*heigth
     return la+2*edges.x*edges.z;
 }
 

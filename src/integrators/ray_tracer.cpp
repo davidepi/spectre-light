@@ -28,7 +28,6 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         sam->getRandomNumbers(rand,6);
         const Vec3 wo = -r->direction;
         Vec3 wi;
-        Color retval;
         //choose a light to sample
         int sampledlight = min((int)(rand[0]*nlights),nlights-1);
         const AreaLight* light = lights[sampledlight];
@@ -45,8 +44,8 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         if(lightpdf > 0 && !directrad.isBlack())
         {
             Spectrum bsdf_f = mat->df(&wo,hp,&wi,flags);
-            Ray r(hp->h,wi);
-            if(!bsdf_f.isBlack() && !ot->isOccluded(&r,&light_distance))
+            Ray r2(hp->h,wi);
+            if(!bsdf_f.isBlack() && !ot->isOccluded(&r2,&light_distance))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi,flags);
                 if(bsdfpdf>0)

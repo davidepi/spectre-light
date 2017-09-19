@@ -37,7 +37,7 @@
 #include <thread> //std::thread
 #include <stack> //std::stack
 #include <chrono> //std::this_thread::sleep_for, platform independent
-#include <time.h> //time for srand
+#include <ctime> //time for srand
 
 /**  \brief Struct containing the coordinates of a sub-image to be rendered
  *
