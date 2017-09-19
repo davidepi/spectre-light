@@ -17,8 +17,8 @@
 ///The number of bounces before discarding the ray
 #define DEFAULT_BOUNCES 5
 
-///If defined performs several checks to avoid Nan values
-#define _LOW_LEVEL_CHECKS_
+///Performs several checks to avoid NaN values (enabled in debug mode)
+//#define _LOW_LEVEL_CHECKS_
 
 ///If defined, instead of writing errors in the console, writes them in a struct
 //#define _TEST_

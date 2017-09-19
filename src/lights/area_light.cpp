@@ -65,7 +65,6 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
     HitPoint hp;
     *distance = FLT_MAX;
     bool res=AreaLight::model->intersect(&r,distance,&hp);//will always succeed
-#ifdef _LOW_LEVEL_CHECKS_
     //TODO: erase this after all the intersections are tried
     //just to be sure
     if(!res)
@@ -73,7 +72,6 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
         *pdf = 0;
         return SPECTRUM_BLACK;
     }
-#endif
     p = r.apply(*distance);
     n = hp.n;
     *wi = r.direction;

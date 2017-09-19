@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(spectre-light C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(WIN32)
+else()
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -pipe -g -DLOW_LEVEL_CHECKS")
+    #no input coming from unstruted sources -> no need the stack protector hardening
+    #funroll-loops is used for several functions inside the Spectrum class. Some of them are unrolled by hand, others are not (code becomes really unmantainable)
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -pipe -flto -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")
+endif()
+
 file(GLOB spectre_core_sources
     src/lights/*.cpp
     src/renderer.cpp
@@ -45,3 +53,5 @@ target_link_libraries (spectre-rgb ${CMAKE_THREAD_LIBS_INIT})
 add_executable(spectre src/application_starter.cpp)
 add_dependencies(spectre spectre-full)
 add_dependencies(spectre spectre-rgb)
+
+set(CMAKE_VERBOSE_MAKEFILE ON)
