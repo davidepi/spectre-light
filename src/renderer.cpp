@@ -193,7 +193,8 @@ int Renderer::render(Scene* s)
     steady_clock::time_point b = steady_clock::now();
     
     //all these things to print the elapsed time!
-    char endmsg[strlen(MESSAGE_RENDERTIME)+MAX_TIME_FORMAT_LENGTH+1];
+    //sizeof because MSVC cannot resolve strlen a compile time
+    char endmsg[sizeof(MESSAGE_RENDERTIME)/sizeof(char)+MAX_TIME_FORMAT_LENGTH];
     char elapsed_formatted[16];
     formatSeconds(duration_cast<seconds>(b-a).count(),elapsed_formatted);
     sprintf(endmsg, MESSAGE_RENDERTIME,elapsed_formatted);

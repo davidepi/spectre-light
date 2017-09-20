@@ -16,11 +16,12 @@
 
 #include "settings.h" //M_PI
 #include "utility/console.hpp"
-#include <cstdio>
+#include <cstdio> //sprintf
 #include <climits>
 #include <cmath>
 #include <cfloat>
 #include <cstdlib> //EXIT_FAILURE
+#include <cstring> //strcpy
 
 /** \brief Convert from seconds to a better readable time format
  *
