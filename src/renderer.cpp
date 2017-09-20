@@ -143,6 +143,9 @@ void Renderer::setPathTracer()
 
 int Renderer::render(Scene* s)
 {
+    //too verbose otherwise
+    using namespace std::chrono;
+    
     //used just for seed generation, WELLrng will be the actual prng
     srand((unsigned int)time(NULL));
 
@@ -172,6 +175,7 @@ int Renderer::render(Scene* s)
             jobs.push(task);
         }
     }
+    steady_clock::time_point a = steady_clock::now();
     RendererProgressBar rb(&jobs);
     //create threads
     for(int i=0;i<Renderer::numthreads;i++)
@@ -186,9 +190,19 @@ int Renderer::render(Scene* s)
         Renderer::workers[i].join();
     }
     rb.kill();
-
+    steady_clock::time_point b = steady_clock::now();
+    
+    //all these things to print the elapsed time!
+    char endmsg[strlen(MESSAGE_RENDERTIME)+MAX_TIME_FORMAT_LENGTH+1];
+    char elapsed_formatted[16];
+    formatSeconds(duration_cast<seconds>(b-a).count(),elapsed_formatted);
+    sprintf(endmsg, MESSAGE_RENDERTIME,elapsed_formatted);
+    Console.log(endmsg,NULL);
+    
+    Console.log(MESSAGE_IMAGEO,NULL);
     //save the image
     Renderer::film.saveImage();
+    Console.log(MESSAGE_BYE,NULL);
 	
     return 0;
 }
@@ -287,6 +301,12 @@ RendererProgressBar::~RendererProgressBar()
 void RendererProgressBar::kill()
 {
     RendererProgressBar::alive = false;
+    //if alive variable is set when the thread is not sleeping it will print
+    //some garbage.
+    
+    //However this is fine, no point in setting a mutex every time just to
+    //avoid a bad print
+    Console.progressBarDone();
 }
 
 void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
@@ -308,5 +328,4 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
         std::this_thread::sleep_for
                 (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }
-    Console.progressBarDone();
 }

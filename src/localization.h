@@ -76,6 +76,12 @@
 
 #define MESSAGE_SPECTRUM_NEG "Spectrum contains one or more negative values"
 
+#define MESSAGE_RENDERTIME "Rendering ended (%s)"
+
+#define MESSAGE_IMAGEO "Saving image..."
+
+#define MESSAGE_BYE "Bye :)"
+
 #endif
 
 

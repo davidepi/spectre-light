@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit  2 Aug 2017
+//Last Edit 20 Sep 2017
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  2 Aug 2017
+ *  \date  20 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -22,12 +22,21 @@
 #include <cfloat>
 #include <cstdlib> //EXIT_FAILURE
 
-/**
- *  \brief Enables asserts for low level classes
- *  This flag enables checks for classes such as Vec3, Vec2, Matrix4, etc..
- *  The checks that are enabled range from warnings of non-normalized vector
- *  to critical errors like divisions by zero or null-pointers dereferencing
+/** \brief Convert from seconds to a better readable time format
+ *
+ *  Given a sequence of seconds as input, in the output there will be a string
+ *  with the number of days, hours, minutes, and seconds
+ *
+ *  \note This will write up to 15 characters, so out must be at least 16 bytes
+ *  long
+ *
+ *  \param[in] secs The number of seconds to format
+ *  \param[out] out The string where the output will be written
  */
+void formatSeconds(unsigned int secs, char* out);
+
+///Maximum amount of writable data for the formatSeconds function
+#define MAX_TIME_FORMAT_LENGTH 16
 
 /** \brief Swaps two float variables
  *

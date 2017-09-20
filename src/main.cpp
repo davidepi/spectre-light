@@ -4,12 +4,6 @@
 
 int main(int argc, char* argv[])
 {
-#ifdef SPECTRAL
-    Console.log("Using full-spectral renderer",NULL);
-#else
-    Console.log("Using rgb renderer",NULL);
-#endif
-    
     Parser p;
     Settings s;
     if(argc < 2)

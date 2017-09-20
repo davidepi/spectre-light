@@ -15,12 +15,14 @@ int Errors_count[5] = {0,0,0,0,0};
 #define SPRED  ""
 #define SPGRN  ""
 #define SPYEL  ""
+#define SPBLU  ""
 #define SPCYN  ""
 #else
 #define SPNRM  "\x1B[0m"
 #define SPRED  "\x1B[31m"
 #define SPGRN  "\x1B[32m"
 #define SPYEL  "\x1B[33m"
+#define SPBLU  "\x1B[34m"
 #define SPCYN  "\x1B[36m"
 #define NOTICE SPCYN "NOTICE" SPNRM
 #define WARNING SPYEL "WARNING" SPNRM
@@ -37,6 +39,12 @@ void Console::motd()
 {
     fprintf(stdout,"Spectre version %s\nReleased on %s, compiled on %s\n",
             SPECTRE_VERSION,SPECTRE_RELEASE,__DATE__);
+    
+#ifdef SPECTRAL
+    fprintf(stdout,"Using full-spectrum renderer\n");
+#else
+    fprintf(stdout,"Using " SPRED "r" SPGRN "g" SPBLU "b" SPNRM " renderer\n");
+#endif
 }
 
 void Console::log(const char* m, const char* v)
@@ -158,7 +166,7 @@ void Console::progressBarDone()const
     std::wcout<<"\r(████████████████████) "<<SPGRN<< "100% Done!"<<SPNRM
               <<std::endl;
 #else
-    std::cout<<"\r(████████████████████) "<<SPGRN<< "100% Done!"<<SPNRM
+    std::cout<<"\33[2K\r(████████████████████) "<<SPGRN<< "100% Done!"<<SPNRM
              <<std::endl;
 #endif
 }
@@ -198,7 +206,7 @@ void Console::progressBar(float done, float eta)const
 #ifdef WIN32
     std::wcout<<"\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
 #else
-    std::cout<<"\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
+    std::cout<<"\33[2K\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
 #endif
     fflush(stdout);
 }

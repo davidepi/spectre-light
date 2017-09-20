@@ -1,12 +1,12 @@
 //Created,  22 Mar 2017
-//Last Edit 14 Jul 2017
+//Last Edit 20 Sep 2017
 
 /**
  *  \file console.hpp
  *  \brief Console logging
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  14 Jul 2017
+ *  \date  20 Sep 2017
  *  \copyright GNU GPLv3
  */
 
