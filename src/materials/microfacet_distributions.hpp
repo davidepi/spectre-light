@@ -1,12 +1,12 @@
 //Created,  20 Sep 2017
-//Last Edit 21 Sep 2017
+//Last Edit 22 Sep 2017
 
 /**
  *  \file microfacet_distributions.hpp
  *  \brief Microfacet models and distributions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  21 Sep 2017
+ *  \date  22 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -56,7 +56,8 @@ public:
  *  This microfacet distribution approximate the orientation of the microfacets
  *  with an exponential falloff passed to the constructor. The most common
  *  orientation is the one following the normal direction falling off following
- *  the exponent
+ *  the exponent.
+ *  Prefer Beckmann distribution over this one, this is left only as Legacy
  *
  *  This model represents an isotropic BRDF
  */
@@ -100,7 +101,10 @@ private:
  *  is useful to represent anisotropic surfaces such as brushed metal, hairs,
  *  or some type of cloth
  *
- *  This model represents an isotropic BRDF
+ *  Since Beckmann distribution can also handle anisotropic values, prefer
+ *  that one since it is physically correct. This one is left here only for
+ *  Legacy purposes
+ *
  */
 class Anisotropic : public MicrofacetDist
 {
@@ -136,6 +140,50 @@ private:
     
     //y exponent
     float y;
+};
+
+/**
+ *  \class Beckmann microfacet_distributions.hpp
+ *  \brief Beckmann microfacet model
+ *
+ *  General purpose distribution, in contrast to the Blinn-Phong model this one
+ *  is physically correct. Only the isotropic version has been implemented.
+ *  Should be the preferred distribution, excluding metal and/or anisotropic
+ *  surfaces where GGX should be used
+ */
+class Beckmann : public MicrofacetDist
+{
+public:
+    
+    /** \brief Default isotropic constructor
+     *
+     *  Construct a Beckmann distribution for isotropic surfaces with the given
+     *  roughness
+     *
+     *  \param[in] roughness The roughness of the surface
+     */
+    Beckmann(float roughness);
+    
+    ///Default destructor
+    ~Beckmann() = default;
+    
+    /** \brief The distribution term
+     *
+     *  Following the Torrance-Sparrow model and notation, this function
+     *  computes the value corresponding to the Distribution term of the
+     *  equation. This indicates how microfacet values are distributed around
+     *  the input vector
+     *
+     *  \param[in] h The half vector between light and view directions. The half
+     *  vector is the vector laying exaclty in the middle between light and view
+     *  vectors
+     */
+    float d(const Vec3* h)const;
+    
+private:
+    
+    // 1/(alpha x * alpha x)
+    float inv_a2;
 };
 
 #endif

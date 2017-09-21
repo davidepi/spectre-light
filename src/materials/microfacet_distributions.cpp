@@ -25,3 +25,15 @@ float Anisotropic::d(const Vec3* h)const
     float exp = (x*h->x*h->x+y*h->y*h->y)/sin;
     return sqrtf((x+2)*(y+2))*INV_TWOPI*powf(cos,exp);
 }
+
+Beckmann::Beckmann(float roughness)
+{
+    Beckmann::inv_a2 = 1.f/(roughness*roughness);
+}
+
+float Beckmann::d(const Vec3* h)const
+{
+    float cos2 = fabsf(h->z)*fabsf(h->z);
+    float inv_cos2 = 1.f/cos2;
+    return inv_a2*INV_PI*inv_cos2*inv_cos2*exp(-((1-cos2)*inv_cos2)*inv_a2);
+}
