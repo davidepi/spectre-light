@@ -44,8 +44,7 @@
  *
  *  Spectrum class contains an approximation of the visible spectrum. It 
  *  represents a colour by sampling its EM spectrum. The samples span the range 
- *  400nm to 700nm (included) with an interval of either 20nm or 10nm if the
- *  macro HQ_SPECTRUM is set to 1
+ *  400nm to 700nm (included) with an interval of 20nm
  */
 class Spectrum
 {

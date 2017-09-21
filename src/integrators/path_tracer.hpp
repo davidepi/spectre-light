@@ -36,16 +36,16 @@
  *  The implementation of the radiance method calculates the direct radiance
  *  arriving at a point, then recursively it finds another point to which this
  *  radiance is reflected. After 3 bounces there is a 50% probability that the
- *  path is instantly terminated.
+ *  path is terminated due to russian roulette.
  */
 class PathTracer : public LightIntegrator
 {
-    /** \brief Determine the radiance arriving at a point
+    /** \brief Determines the radiance arriving at a point
      *
      *  The radiance method compute the arriving radiance at the film. This
      *  method requires as input the first intersection point found by
      *  intersecting a ray with the scene. Then it computes the radiance
-     *  emitted by that point.
+     *  arriving from that point.
      *
      *  \param[in] sc The rendered scene
      *  \param[in] hp The first intersection point

@@ -522,7 +522,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
                 g = (unsigned char)atoi(val);
                 val = strtok(NULL,"(), "); //parse z
                 b = (unsigned char)atoi(val);
-                emissive = Spectrum(ColorRGB(x,y,z),true);
+                emissive = Spectrum(ColorRGB(r,g,b),true);
             }
             else //parse temperature, generate blackbody
                 emissive = Spectrum(atoi(token));

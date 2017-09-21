@@ -19,9 +19,9 @@
 #include <vector>
 
 ///Alpha parameter for AAC. 0.4 for high quality trees, 0.3 for fast buildup
-#define AAC_ALPHA 0.4f
+#define AAC_ALPHA 0.3f
 ///Delta parameter for AAC. 20 for high quality trees, 4 for fast buildup
-#define AAC_DELTA 20
+#define AAC_DELTA 4
 
 /** \brief Node composing  the Bvh
  *  \struct BvhNode

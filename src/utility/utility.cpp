@@ -3,9 +3,9 @@
 void formatSeconds(unsigned int secs, char* out)
 {
     if(secs >= 8640000)
-        strcpy(out,"> 100 days");
+        strcpy(out,"more than 100d");
     else if (secs == 0)
-        strcpy(out,"< 1 s");
+        strcpy(out,"less than 1s");
     else
     {
         out[0] = 0x0;

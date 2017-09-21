@@ -3,9 +3,7 @@
 Spectrum PathTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
                               Sampler* sam, OcclusionTester *ot)const
 {
-    float weight[16] = {1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,
-        1.f,1.f,1.f};
-    Spectrum power(weight);
+    Spectrum power = SPECTRUM_ONE;
     BdfFlags last = DIFFUSE;
     return l_rec(sc,hp,r,sam,&power,last,ot);
 }
