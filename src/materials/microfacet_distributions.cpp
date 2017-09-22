@@ -33,7 +33,19 @@ Beckmann::Beckmann(float roughness)
 
 float Beckmann::d(const Vec3* h)const
 {
-    float cos2 = fabsf(h->z)*fabsf(h->z);
+    float cos2 = h->z*h->z;
     float inv_cos2 = 1.f/cos2;
     return inv_a2*INV_PI*inv_cos2*inv_cos2*exp(-((1-cos2)*inv_cos2)*inv_a2);
+}
+
+GGXiso::GGXiso(float roughness)
+{
+    GGXiso::a2 = roughness*roughness;
+}
+
+float GGXiso::d(const Vec3 *h)const
+{
+    float squared_term = 1+(h->z*h->z)*(a2-1);
+    squared_term*=squared_term;
+    return a2*INV_PI*(1.f/squared_term);
 }

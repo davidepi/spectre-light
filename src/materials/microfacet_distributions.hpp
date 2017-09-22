@@ -155,10 +155,7 @@ class Beckmann : public MicrofacetDist
 {
 public:
     
-    /** \brief Default isotropic constructor
-     *
-     *  Construct a Beckmann distribution for isotropic surfaces with the given
-     *  roughness
+    /** \brief Default constructor
      *
      *  \param[in] roughness The roughness of the surface
      */
@@ -184,6 +181,48 @@ private:
     
     // 1/(alpha x * alpha x)
     float inv_a2;
+};
+
+/**
+ *  \class GGXiso microfacet_distributions.hpp
+ *  \brief Isotropic GGX distribution function
+ *
+ *  Sometimes called Trowbridge-Reitz, the GGX distribution fall of more slowly
+ *  compared to the Beckmann one. It can be used to model in a better way
+ *  metallic surfaces.
+ *
+ *  This particular implementation consider the GGX distribution as isotropic
+ */
+class GGXiso : public MicrofacetDist
+{
+public:
+    
+    /** \brief Default constructor
+     *
+     *  \param[in] roughness The roughness of the surface
+     */
+    GGXiso(float roughness);
+    
+    ///Default destructor
+    ~GGXiso() = default;
+    
+    /** \brief The distribution term
+     *
+     *  Following the Torrance-Sparrow model and notation, this function
+     *  computes the value corresponding to the Distribution term of the
+     *  equation. This indicates how microfacet values are distributed around
+     *  the input vector
+     *
+     *  \param[in] h The half vector between light and view directions. The half
+     *  vector is the vector laying exaclty in the middle between light and view
+     *  vectors
+     */
+    float d(const Vec3* h)const;
+    
+private:
+    
+    //squared roughness
+    float a2;
 };
 
 #endif
