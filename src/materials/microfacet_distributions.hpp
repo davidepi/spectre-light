@@ -15,7 +15,7 @@
 #define __MICROFACET_HPP__
 
 #include "geometry/vec3.hpp"
-#include <cmath>
+#include <cmath> //isinf
 
 /**
  *  \class MicrofacetDist microfacet_distributions.hpp
@@ -108,6 +108,7 @@ private:
  */
 class Anisotropic : public MicrofacetDist
 {
+public:
     /** Default constructor
      *
      *  \param[in] x The exponent representing the highlight extent along the x
@@ -223,6 +224,48 @@ private:
     
     //squared roughness
     float a2;
+};
+
+/**
+ *  \class GGXaniso microfacet_distributions.hpp
+ *  \brief Anisotropic GGX distribution function
+ *
+ *  Exactly like the GGXiso class, but for anisotropic surfaces
+ */
+class GGXaniso : public MicrofacetDist
+{
+public:
+    
+    /** \brief Default constructor
+     *
+     *  \param[in] ax Alpha x value for the anisotropy
+     *  \param[in] ay Alpha y value for the anisotropy
+     */
+    GGXaniso(float ax, float ay);
+    
+    ///Default destructor
+    ~GGXaniso() = default;
+    
+    /** \brief The distribution term
+     *
+     *  Following the Torrance-Sparrow model and notation, this function
+     *  computes the value corresponding to the Distribution term of the
+     *  equation. This indicates how microfacet values are distributed around
+     *  the input vector
+     *
+     *  \param[in] h The half vector between light and view directions. The half
+     *  vector is the vector laying exaclty in the middle between light and view
+     *  vectors
+     */
+    float d(const Vec3* h)const;
+    
+private:
+    
+    //inverse of the alpha x
+    float inv_ax;
+    
+    //inverse of the alpha y
+    float inv_ay;
 };
 
 #endif
