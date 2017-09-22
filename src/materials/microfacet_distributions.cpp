@@ -8,7 +8,7 @@ float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
     return min(1.f,min(partial*fabsf(wo->z),partial*fabsf(wi->z)));
 }
 
-Blinn::Blinn(float exponent) : MicrofacetDist()
+Blinn::Blinn(float exponent)
 {
     Blinn::exponent = exponent;
 }

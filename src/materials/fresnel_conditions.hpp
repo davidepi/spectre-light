@@ -24,7 +24,7 @@
  *  Abstract class for the two types of fresnel equations: Conductor and
  *  Dielectric
  */
-class FresnelConditions
+class Fresnel
 {
 public:
 
@@ -40,7 +40,7 @@ public:
     
     //No need for virtual destructor...
     ///Default destructor
-    virtual ~FresnelConditions();
+    virtual ~Fresnel() = default;
 };
 
 
@@ -51,7 +51,7 @@ public:
  *  A class used to calculate the value of the fresnel equations in a conductive
  *  material, thus considering the absorbed light turned into heat
  */
-class Conductor : public FresnelConditions
+class Conductor : public Fresnel
 {
 public:
 
@@ -93,7 +93,7 @@ private:
  *  A class used to calculate the value of the fresnel equations in a dielectric
  *  material
  */
-class Dielectric : public FresnelConditions
+class Dielectric : public Fresnel
 {
 public:
 

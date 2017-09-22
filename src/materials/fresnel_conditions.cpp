@@ -1,10 +1,5 @@
 #include "fresnel_conditions.hpp"
 
-FresnelConditions::~FresnelConditions()
-{
-    
-}
-
 Conductor::Conductor(const Spectrum& refraction, const Spectrum& absorption) :
 refraction_index(refraction),absorption(absorption)
 {

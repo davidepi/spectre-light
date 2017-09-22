@@ -22,7 +22,7 @@
 
 ///Type of Bdf
 enum BdfFlags {BRDF = 0x1, BTDF = 0x2, DIFFUSE = 0x4, SPECULAR = 0x8,
-                ALL = BRDF | BTDF | DIFFUSE | SPECULAR};
+                GLOSSY = 0x10, ALL = BRDF | BTDF | DIFFUSE | SPECULAR | GLOSSY};
 
 /**
  *  \class Bdf bdf.hpp "materials/bdf.hpp"

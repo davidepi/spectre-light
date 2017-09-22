@@ -3,7 +3,7 @@
 
 /**
  *  \file microfacet_distributions.hpp
- *  \brief Microfacet models and distributions
+ *  \brief Microfacet distributions
  *  \author Davide Pizzolotto
  *  \version 0.1
  *  \date  22 Sep 2017
@@ -11,8 +11,8 @@
  */
 
 
-#ifndef __MICROFACET_HPP__
-#define __MICROFACET_HPP__
+#ifndef __MICROFACET_DISTRIBUTION_HPP__
+#define __MICROFACET_DISTRIBUTION_HPP__
 
 #include "geometry/vec3.hpp"
 #include "utility/utility.hpp"
@@ -22,9 +22,11 @@
  *  \class MicrofacetDist microfacet_distributions.hpp
  *  \brief Interface used to represent microfacet distributions
  *
- *  The microfacet class provides a single method called \a d, that is used to
- *  compute the value of the microfacet distribution for a given half vector.
- *  This can be used in model such as the Cook-Torrance one
+ *  The microfacet distribution class provides a method called \a D, that is
+ *  used to compute the value of the microfacet distribution for a given half
+ *  vector, and a method called \a G used for the geometric attenuation
+ *  These values are required by the Cook-Torrance model and are used to know
+ *  how the microfacets are distributed
  */
 class MicrofacetDist
 {
