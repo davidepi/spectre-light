@@ -15,6 +15,7 @@
 #define __MICROFACET_HPP__
 
 #include "geometry/vec3.hpp"
+#include "utility/utility.hpp"
 #include <cmath> //isinf
 
 /**
@@ -45,8 +46,25 @@ public:
      *  \param[in] h The half vector between light and view directions. The half
      *  vector is the vector laying exaclty in the middle between light and view
      *  vectors
+     *  \return The value of the distribution term
      */
-    virtual float d(const Vec3* h)const = 0;
+    virtual float D(const Vec3* h)const = 0;
+    
+    /** \brief The geometric attenuation G
+     *
+     *  Calculates the value of the geometric attenuation term, accounting the
+     *  fact that some microfacets will not be visible. The geometric term is
+     *  calculated by means of the Cook-Torrance formulation. For some kind of
+     *  distribution the Smith's integral provides better results, for some
+     *  other there is no closed form solution, for this reason this method is
+     *  left here as a base, general implementation
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[in] wi The incident direction
+     *  \param[in] wh The halfway vector between wi and wo
+     *  \return The value of the geometric attenuation term
+     */
+    virtual float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
 };
 
 /**
@@ -84,8 +102,9 @@ public:
      *  \param[in] h The half vector between light and view directions. The half
      *  vector is the vector laying exaclty in the middle between light and view
      *  vectors
+     *  \return The value of the distribution term
      */
-    float d(const Vec3* h)const;
+    float D(const Vec3* h)const;
     
 private:
     
@@ -131,8 +150,9 @@ public:
      *  \param[in] h The half vector between light and view directions. The half
      *  vector is the vector laying exaclty in the middle between light and view
      *  vectors
+     *  \return The value of the distribution term
      */
-    float d(const Vec3* h)const;
+    float D(const Vec3* h)const;
     
 private:
     
@@ -175,13 +195,28 @@ public:
      *  \param[in] h The half vector between light and view directions. The half
      *  vector is the vector laying exaclty in the middle between light and view
      *  vectors
+     *  \return The value of the distribution term
      */
-    float d(const Vec3* h)const;
+    float D(const Vec3* h)const;
+    
+    /** \brief The geometric attenuation G
+     *
+     *  Calculates the value of the geometric attenuation term, by means of
+     *  the Smith's integral. Thus, G(wi,wo) = G1(wi)G1(wo)
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[in] wi The incident direction
+     *  \param[in] wh The halfway vector between wi and wo
+     *  \return The value of the geometric attenuation term
+     */
+    float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
     
 private:
     
-    // 1/(alpha x * alpha x)
-    float inv_a2;
+    float G1(const Vec3* v)const;
+    
+    // 1/(alpha x)
+    float inv_a;
 };
 
 /**
@@ -217,10 +252,25 @@ public:
      *  \param[in] h The half vector between light and view directions. The half
      *  vector is the vector laying exaclty in the middle between light and view
      *  vectors
+     *  \return The value of the distribution term
      */
-    float d(const Vec3* h)const;
+    float D(const Vec3* h)const;
+    
+    /** \brief The geometric attenuation G
+     *
+     *  Calculates the value of the geometric attenuation term, by means of
+     *  the Smith's integral. Thus, G(wi,wo) = G1(wi)G1(wo)
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[in] wi The incident direction
+     *  \param[in] wh The halfway vector between wi and wo
+     *  \return The value of the geometric attenuation term
+     */
+    float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
     
 private:
+    
+    float G1(const Vec3* v)const;
     
     //squared roughness
     float a2;
@@ -256,8 +306,18 @@ public:
      *  \param[in] h The half vector between light and view directions. The half
      *  vector is the vector laying exaclty in the middle between light and view
      *  vectors
+     *  \return The value of the distribution term
      */
-    float d(const Vec3* h)const;
+    float D(const Vec3* h)const;
+    
+    /** \brief The geometric attenuation G
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[in] wi The incident direction
+     *  \param[in] wh The halfway vector between wi and wo
+     *  \return The value of the geometric attenuation term
+     */
+    float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
     
 private:
     
