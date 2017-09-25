@@ -39,22 +39,6 @@ float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
         return 0.f;
 }
 
-Anisotropic::Anisotropic(float x, float y) : MicrofacetDist()
-{
-    Anisotropic::x = x;
-    Anisotropic::y = y;
-}
-
-float Anisotropic::D(const Vec3* h)const
-{
-    float cos = fabsf(h->z);
-    float sin = 1.f-cos*cos;
-    if(sin==0)
-        return 0;
-    float exp = (x*h->x*h->x+y*h->y*h->y)/sin;
-    return sqrtf((x+2)*(y+2))*INV_TWOPI*powf(cos,exp);
-}
-
 Beckmann::Beckmann(float roughness)
 {
     Beckmann::inv_a = 1.f/roughness;
@@ -150,17 +134,6 @@ float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
     float ax = 1.f/inv_ax;
     float ay = 1.f/inv_ay;
     return 1.f/(1+lambdaGGXaniso(wo,ax,ay)+lambdaGGXaniso(wi,ax,ay));
-}
-
-void Anisotropic::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
-{
-    Console.critical("Uninplemented");
-}
-
-float Anisotropic::pdf(const Vec3 *wo, const Vec3 *wh, const Vec3 *wi)const
-{
-    Console.critical("Uninplemented");
-    return 0;
 }
 
 void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
