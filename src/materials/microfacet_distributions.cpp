@@ -18,6 +18,27 @@ float Blinn::D(const Vec3* h)const
     return (exponent+2)*INV_TWOPI*powf(fabsf(h->z),Blinn::exponent);
 }
 
+void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
+{
+    float cost = powf(r0,(1.f/Blinn::exponent+1));
+    float sint = sqrtf(1.f-cost*cost);
+    float phi = r1*TWO_PI;
+    *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
+    if(wo->z*wh->z<0) *wh = -*wh;
+}
+
+float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
+{
+    float dotwoh = dot(*wo,*wh);
+    if(dotwoh>=0.f)
+    {
+        float cost = fabsf(wh->z);
+        return ((Blinn::exponent+1)*powf(cost,exponent))/(FOUR_PI*2.f*dotwoh);
+    }
+    else
+        return 0.f;
+}
+
 Anisotropic::Anisotropic(float x, float y) : MicrofacetDist()
 {
     Anisotropic::x = x;
@@ -129,4 +150,48 @@ float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
     float ax = 1.f/inv_ax;
     float ay = 1.f/inv_ay;
     return 1.f/(1+lambdaGGXaniso(wo,ax,ay)+lambdaGGXaniso(wi,ax,ay));
+}
+
+void Anisotropic::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+{
+    Console.critical("Uninplemented");
+}
+
+float Anisotropic::pdf(const Vec3 *wo, const Vec3 *wh, const Vec3 *wi)const
+{
+    Console.critical("Uninplemented");
+    return 0;
+}
+
+void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+{
+    Console.critical("Uninplemented");
+}
+
+float Beckmann::pdf(const Vec3 *wo, const Vec3 *wh, const Vec3 *wi)const
+{
+    Console.critical("Uninplemented");
+    return 0;
+}
+
+void GGXiso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+{
+    Console.critical("Uninplemented");
+}
+
+float GGXiso::pdf(const Vec3 *wo, const Vec3 *wh, const Vec3 *wi)const
+{
+    Console.critical("Uninplemented");
+    return 0;
+}
+
+void GGXaniso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+{
+    Console.critical("Uninplemented");
+}
+
+float GGXaniso::pdf(const Vec3 *wo, const Vec3 *wh, const Vec3 *wi)const
+{
+    Console.critical("Uninplemented");
+    return 0;
 }
