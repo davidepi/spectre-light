@@ -30,7 +30,7 @@ void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
 float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
 {
     float dotwoh = dot(*wo,*wh);
-    if(dotwoh>=0.f)
+    if(dotwoh>0.f)
     {
         float cost = fabsf(wh->z);
         return ((Blinn::exponent+1)*powf(cost,exponent))/(FOUR_PI*2.f*dotwoh);

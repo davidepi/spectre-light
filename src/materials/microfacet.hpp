@@ -1,12 +1,12 @@
 //Created,  23 Sep 2017
-//Last Edit 23 Sep 2017
+//Last Edit 26 Sep 2017
 
 /**
  *  \file microfacet.hpp
  *  \brief Microfacet models
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  23 Sep 2017
+ *  \date  26 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -55,6 +55,38 @@ public:
      *  \return The value of the BxDF
      */
     Spectrum df(const Vec3* woS, const Vec3* wiS)const;
+    
+    /** \brief Returns the value of the BRDF
+     *
+     *  Computes the transmitted vector, and the value of the BRDF for the pair
+     *  of rays
+     *
+     *  \param[in] woS The outgoing direction
+     *  \param[out] wiS The incident direction
+     *  \param[in] r0 A random float in the interval [0.0,1.0] used to sample
+     *  the wi direction
+     *  \param[in] r1 A random float in the interval [0.0,1.0] used to smaple
+     *  the wi direction
+     *  \param[out] pdf The probability density function of the chosen point
+     *  over the bdf hemisphere
+     *  \return The value of the BRDF
+     */
+    Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
+                  float* pdf, char* choose)const;
+    
+    /** \brief Return the probability density function for this BRDF
+     *
+     *  Given a pair of vectors, return the pdf value for these directions. In
+     *  other words the probability that another random sample will be equal to
+     *  this one
+     *
+     *  \param[in] woS The outgoing direction, in shading space
+     *  \param[in] wiS The incident direction, in shading space
+     *  \return The pdf for this set of values
+     */
+    float pdf(const Vec3* woS, const Vec3* wiS)const;
+    
+    
     
 private:
     
