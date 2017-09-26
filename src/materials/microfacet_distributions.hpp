@@ -1,12 +1,12 @@
 //Created,  20 Sep 2017
-//Last Edit 25 Sep 2017
+//Last Edit 26 Sep 2017
 
 /**
  *  \file microfacet_distributions.hpp
  *  \brief Microfacet distributions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  25 Sep 2017
+ *  \date  26 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -92,7 +92,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The pdf
      */
-    virtual float pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const = 0;
+    virtual float pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const;
 };
 
 /**
@@ -226,24 +226,12 @@ public:
      */
     void sampleWh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
     
-    /** \brief Find the pdf of two pairs of directions
-     *
-     *  Given an outgoing direction, an incident direction, and the half vector
-     *  find the probability density function of chosing the incident direction
-     *
-     *  \param[in] wo The outgoing direction
-     *  \param[in] wh The half vector between wi and wo
-     *  \param[in] wi The incident direction
-     *  \return The pdf
-     */
-    float pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const;
-    
 private:
     
     float G1(const Vec3* v)const;
     
-    // 1/(alpha x)
-    float inv_a;
+    //alpha x
+    float a;
 };
 
 /**
@@ -308,18 +296,6 @@ public:
      */
     void sampleWh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
     
-    /** \brief Find the pdf of two pairs of directions
-     *
-     *  Given an outgoing direction, an incident direction, and the half vector
-     *  find the probability density function of chosing the incident direction
-     *
-     *  \param[in] wo The outgoing direction
-     *  \param[in] wh The half vector between wi and wo
-     *  \param[in] wi The incident direction
-     *  \return The pdf
-     */
-    float pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const;
-    
 private:
     
     float G1(const Vec3* v)const;
@@ -383,18 +359,6 @@ public:
      *  \param[out] wh The randomly chosen half vector
      */
     void sampleWh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
-    
-    /** \brief Find the pdf of two pairs of directions
-     *
-     *  Given an outgoing direction, an incident direction, and the half vector
-     *  find the probability density function of chosing the incident direction
-     *
-     *  \param[in] wo The outgoing direction
-     *  \param[in] wh The half vector between wi and wo
-     *  \param[in] wi The incident direction
-     *  \return The pdf
-     */
-    float pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const;
     
 private:
     

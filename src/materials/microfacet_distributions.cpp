@@ -8,6 +8,11 @@ float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
     return min(1.f,min(partial*fabsf(wo->z),partial*fabsf(wi->z)));
 }
 
+float MicrofacetDist::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
+{
+    return this->D(wh)*fabsf(wh->z);
+}
+
 Blinn::Blinn(float exponent)
 {
     Blinn::exponent = exponent;
@@ -20,10 +25,9 @@ float Blinn::D(const Vec3* h)const
 
 void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
 {
-    float cost = powf(r0,(1.f/Blinn::exponent+1));
-    float sint = sqrtf(1.f-cost*cost);
-    float phi = r1*TWO_PI;
-    *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
+    wh->x = powf(r0,(1.f/Blinn::exponent+1));
+    wh->y = sqrtf(1.f-wh->x*wh->x);
+    wh->z = r1*TWO_PI;
     if(wo->z*wh->z<0) *wh = -*wh;
 }
 
@@ -41,14 +45,14 @@ float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
 
 Beckmann::Beckmann(float roughness)
 {
-    Beckmann::inv_a = 1.f/roughness;
+    Beckmann::a = roughness;
 }
 
 float Beckmann::D(const Vec3* h)const
 {
     float cos2 = h->z*h->z;
     float inv_cos2 = 1.f/cos2;
-    float inv_a2 = inv_a*inv_a;
+    float inv_a2 = 1.f/(Beckmann::a*Beckmann::a);
     return inv_a2*INV_PI*inv_cos2*inv_cos2*exp((cos2-1.f)*inv_a2*inv_cos2);
 }
 
@@ -60,12 +64,25 @@ float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 float Beckmann::G1(const Vec3* v)const
 {
     float cos = fabsf(v->z);
-    float c = cos*inv_a*(1.f/sqrtf(1.f-cos*cos));
+    float c = cos*(1.f/sqrtf(1.f-cos*cos)*Beckmann::a);
     if(c>=1.6)
         return 1.f;
     else
         return (3.535f*c+2.181f*c*c)/(1+2.276*c+2.577*c*c);
         
+}
+
+void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+{
+    //sampling algorithm for beckmann and GGX
+    //https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf
+    //phi = arccos(1/sqrt(1-a2*log(1-r0)));
+    float l = log(1.f-r0);
+    float sqrt = 1.f-(Beckmann::a*Beckmann::a*l);
+    wh->x = 1.f/sqrtf(sqrt);
+    wh->y = sqrtf(1.f-wh->x*wh->x);
+    wh->z = TWO_PI*r1;
+    if(wo->z*wh->z<0) *wh = -*wh;
 }
 
 GGXiso::GGXiso(float roughness)
@@ -136,35 +153,12 @@ float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
     return 1.f/(1+lambdaGGXaniso(wo,ax,ay)+lambdaGGXaniso(wi,ax,ay));
 }
 
-void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
-{
-    Console.critical("Uninplemented");
-}
-
-float Beckmann::pdf(const Vec3 *wo, const Vec3 *wh, const Vec3 *wi)const
-{
-    Console.critical("Uninplemented");
-    return 0;
-}
-
 void GGXiso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     Console.critical("Uninplemented");
 }
 
-float GGXiso::pdf(const Vec3 *wo, const Vec3 *wh, const Vec3 *wi)const
-{
-    Console.critical("Uninplemented");
-    return 0;
-}
-
 void GGXaniso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     Console.critical("Uninplemented");
-}
-
-float GGXaniso::pdf(const Vec3 *wo, const Vec3 *wh, const Vec3 *wi)const
-{
-    Console.critical("Uninplemented");
-    return 0;
 }
