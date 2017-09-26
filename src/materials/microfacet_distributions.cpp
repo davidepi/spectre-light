@@ -2,9 +2,9 @@
 
 float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 {
-    float cosh = fabsf(wh->z);
-    float inv_dot = 1.f/absdot(*wo,*wh);
-    float partial = 2*cosh*inv_dot;
+    const float cosh = fabsf(wh->z);
+    const float inv_dot = 1.f/absdot(*wo,*wh);
+    const float partial = 2*cosh*inv_dot;
     return min(1.f,min(partial*fabsf(wo->z),partial*fabsf(wi->z)));
 }
 
@@ -25,9 +25,10 @@ float Blinn::D(const Vec3* h)const
 
 void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
 {
-    wh->x = powf(r0,(1.f/Blinn::exponent+1));
-    wh->y = sqrtf(1.f-wh->x*wh->x);
-    wh->z = r1*TWO_PI;
+    const float cost = powf(r0,(1.f/Blinn::exponent+1));
+    const float sint = sqrtf(1.f-cost*cost);
+    const float phi = r1*TWO_PI;
+    *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
     if(wo->z*wh->z<0) *wh = -*wh;
 }
 
@@ -36,7 +37,7 @@ float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
     float dotwoh = dot(*wo,*wh);
     if(dotwoh>0.f)
     {
-        float cost = fabsf(wh->z);
+        const float cost = fabsf(wh->z);
         return ((Blinn::exponent+1)*powf(cost,exponent))/(FOUR_PI*2.f*dotwoh);
     }
     else
@@ -50,9 +51,9 @@ Beckmann::Beckmann(float roughness)
 
 float Beckmann::D(const Vec3* h)const
 {
-    float cos2 = h->z*h->z;
-    float inv_cos2 = 1.f/cos2;
-    float inv_a2 = 1.f/(Beckmann::a*Beckmann::a);
+    const float cos2 = h->z*h->z;
+    const float inv_cos2 = 1.f/cos2;
+    const float inv_a2 = 1.f/(Beckmann::a*Beckmann::a);
     return inv_a2*INV_PI*inv_cos2*inv_cos2*exp((cos2-1.f)*inv_a2*inv_cos2);
 }
 
@@ -63,8 +64,8 @@ float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 
 float Beckmann::G1(const Vec3* v)const
 {
-    float cos = fabsf(v->z);
-    float c = cos*(1.f/sqrtf(1.f-cos*cos)*Beckmann::a);
+    const float cos = fabsf(v->z);
+    const float c = cos*(1.f/sqrtf(1.f-cos*cos)*Beckmann::a);
     if(c>=1.6)
         return 1.f;
     else
@@ -77,11 +78,12 @@ void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
     //sampling algorithm for beckmann and GGX
     //https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf
     //phi = arccos(1/sqrt(1-a2*log(1-r0)));
-    float l = log(1.f-r0);
-    float sqrt = 1.f-(Beckmann::a*Beckmann::a*l);
-    wh->x = 1.f/sqrtf(sqrt);
-    wh->y = sqrtf(1.f-wh->x*wh->x);
-    wh->z = TWO_PI*r1;
+    const float l = log(1.f-r0);
+    const float sqrt = 1.f-(Beckmann::a*Beckmann::a*l);
+    const float cost = 1.f/sqrtf(sqrt);
+    const float sint = sqrtf(1.f-wh->x*wh->x);
+    const float phi = TWO_PI*r1;
+    *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
     if(wo->z*wh->z<0) *wh = -*wh;
 }
 
@@ -104,26 +106,38 @@ float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *wh)const
 
 float GGXiso::G1(const Vec3* v)const
 {
-    float cos = v->z;
+    const float cos = v->z;
     return (2*cos)/(cos+sqrtf(a2+(1-a2)*cos*cos));
+}
+
+void GGXiso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+{
+    const float cos2t = (1.f-r0)/(r0*(a2-1)+1);
+    const float cost = sqrtf(cos2t);
+    const float sint = sqrtf(1.f-cos2t);
+    const float phi = TWO_PI*r1;
+    *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
+    if(wo->z*wh->z<0) *wh = -*wh;
 }
 
 GGXaniso::GGXaniso(float ax, float ay)
 {
-    GGXaniso::inv_ax = 1.f/ax;
-    GGXaniso::inv_ay = 1.f/ay;
+    GGXaniso::ax = ax;
+    GGXaniso::ay = ay;
 }
 
 float GGXaniso::D(const Vec3 *h)const
 {
-    float inv_cos2 = 1.f/(h->z*h->z);
-    float sin2 = 1.f-(h->z*h->z);
-    float inv_sin2 = 1.f/sin2;
-    float tan2 = sin2*inv_cos2;
+    const float inv_cos2 = 1.f/(h->z*h->z);
+    const float sin2 = 1.f-(h->z*h->z);
+    const float inv_sin2 = 1.f/sin2;
+    const float tan2 = sin2*inv_cos2;
+    const float inv_ax = 1.f/ax;
+    const float inv_ay = 1.f/ay;
     //cosphi = h->x/sintheta due to the chose shading space
-    float cosphi2 = h->x*h->x*inv_sin2;
+    const float cosphi2 = h->x*h->x*inv_sin2;
     //cosphi = h->x/sintheta due to the chose shading space
-    float sinphi2 = h->y*h->y*inv_sin2;
+    const float sinphi2 = h->y*h->y*inv_sin2;
     
     float sq_term = 1+(((cosphi2*inv_ax*inv_ax)+(sinphi2*inv_ay*inv_ay))*tan2);
     sq_term*=sq_term;
@@ -133,32 +147,37 @@ float GGXaniso::D(const Vec3 *h)const
 
 static inline float lambdaGGXaniso(const Vec3* v,float ax, float ay)
 {
-    float cos = v->z;
-    float sin = sqrtf(1.f-cos*cos);
-    float sin2 = sin*sin;
-    float tan = fabsf(sin/cos);
+    const float cos = v->z;
+    const float sin = sqrtf(1.f-cos*cos);
+    const float sin2 = sin*sin;
+    const float tan = fabsf(sin/cos);
     if(std::isinf(tan))
         return 0.f;
-    float cos2phi = (v->x*v->x)/sin2;
-    float sin2phi = (v->y*v->y)/sin2;
-    float alpha = sqrtf(cos2phi*ax*ax+sin2phi*ay*ay);
+    const float cos2phi = (v->x*v->x)/sin2;
+    const float sin2phi = (v->y*v->y)/sin2;
+    const float alpha = sqrtf(cos2phi*ax*ax+sin2phi*ay*ay);
     return (-1+sqrtf(1.f+(tan*tan*alpha*alpha)))*0.5f;
 }
 
 float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 {
     //this one is taken from pbrtv3
-    float ax = 1.f/inv_ax;
-    float ay = 1.f/inv_ay;
     return 1.f/(1+lambdaGGXaniso(wo,ax,ay)+lambdaGGXaniso(wi,ax,ay));
-}
-
-void GGXiso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
-{
-    Console.critical("Uninplemented");
 }
 
 void GGXaniso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
-    Console.critical("Uninplemented");
+    //again, anisotropic equations are taken from pbrtv3
+    float phi = atanf(ay/ax*tanf(TWO_PI*r1+.5f*M_PI));
+    if(r1 > .5f) phi += M_PI;
+    const float sinphi = std::sin(phi);
+    const float cosphi = std::cos(phi);
+    const float ax2 = ax * ax;
+    const float ay2 = ay * ay;
+    const float a2 = 1/(cosphi*cosphi/ax2+sinphi*sinphi/ay2);
+    const float tantheta2 = a2*r0/(1-r0);
+    const float cost = 1.f/sqrtf(1.f + tantheta2);
+    const float sint = (1.f-cost*cost);
+    *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
+    if(wo->z*wh->z<0) *wh = -*wh;
 }

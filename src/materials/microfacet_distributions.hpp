@@ -363,10 +363,10 @@ public:
 private:
     
     //inverse of the alpha x
-    float inv_ax;
+    float ax;
     
     //inverse of the alpha y
-    float inv_ay;
+    float ay;
 };
 
 #endif
