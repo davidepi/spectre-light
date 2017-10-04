@@ -36,10 +36,10 @@ public:
     /** \brief Default constructor
      *
      *  \param[in] spe The reflected spectrum
-     *  \param[in] f The fresnel term (Dielectric or Conductor) of this material
      *  \param[in] md The class used to know how the microfacets are distributed
+     *  \param[in] f The fresnel term (Dielectric or Conductor) of this material
      */
-    MicrofacetR(Spectrum& spe, Fresnel* f, MicrofacetDist* md);
+    MicrofacetR(Spectrum& spe, MicrofacetDist* md, Fresnel* f);
     
     ///Default destructor
     ~MicrofacetR();
@@ -98,6 +98,26 @@ private:
     
     //reflected spectrum
     Spectrum specular;
+};
+
+class MicrofacetT : public Bdf
+{
+public:
+    MicrofacetT(Spectrum& spe, MicrofacetDist* md,
+                Spectrum& etai, Spectrum& etat);
+    ~MicrofacetT();
+    Spectrum df(const Vec3* woS, const Vec3* wiS)const;
+    Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
+                  float* pdf, char* choose)const;
+    float pdf(const Vec3* woS, const Vec3* wiS)const;
+    
+private:
+    
+    Spectrum specular;
+    Dielectric d;
+    MicrofacetDist* md;
+    float eta_i;
+    float eta_t;
 };
 
 #endif

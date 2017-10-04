@@ -60,7 +60,7 @@ Spectrum Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
         val = (BdfFlags)(val & ~BTDF);
     else                                //transmitted ray
         val = (BdfFlags)(val & ~BRDF);
-    Spectrum retval(0);
+    Spectrum retval = SPECTRUM_BLACK;
     for(int i=0;i<count;i++)
     {
         if(bdfs[i]->isType(val)) //add contribution only if matches refl/trans

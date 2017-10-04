@@ -1,12 +1,12 @@
 //Created,   9 Jun 2017
-//Last Edit 22 Sep 2017
+//Last Edit 23 Sep 2017
 
 /**
  *  \file fresnel_conditions.hpp
  *  \brief Implementation of the fresnel equations
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      22 Sep 2017
+ *  \date      23 Sep 2017
  *  \copyright GNU GPLv3
  */
 
@@ -120,6 +120,18 @@ public:
      *  \return The amount of light reflected, depending on the angle
      */
     Spectrum eval(float cosin)const;
+    
+    /** \brief Return the incident ior
+     *
+     *  \return the incident index of refraction
+     */
+    float getEtaIncident()const;
+    
+    /** \brief Return the transmitted ior
+     *
+     *  \return the transmitted index of refraction
+     */
+    float getEtaTransmitted()const;
 
 private:
 

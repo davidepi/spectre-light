@@ -77,3 +77,13 @@ Spectrum Dielectric::eval(float cosin)const
         return Spectrum(retval);
     }
 }
+
+float Dielectric::getEtaIncident()const
+{
+    return Dielectric::eta_i;
+}
+
+float Dielectric::getEtaTransmitted()const
+{
+    return Dielectric::eta_t;
+}
