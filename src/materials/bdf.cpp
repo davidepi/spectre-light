@@ -25,6 +25,7 @@ Spectrum Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
 }
 float Bdf::pdf(const Vec3* wo, const Vec3* wi)const
 {
+    //default pdf is cos(theta)/pi
     return wo->z*wi->z>0?fabsf(wi->z)*INV_PI:0.f;
 }
 

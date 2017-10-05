@@ -20,6 +20,8 @@ Blinn::Blinn(float exponent)
 
 float Blinn::D(const Vec3* h)const
 {
+    //phong = 1/(pi*alpha2)*((h dot n)^(2/alpha2 - 2))
+    //assuming exponent = 2/alpha2 - 2, the result is the following
     return (exponent+2)*INV_TWOPI*powf(fabsf(h->z),Blinn::exponent);
 }
 
@@ -51,10 +53,10 @@ Beckmann::Beckmann(float roughness)
 
 float Beckmann::D(const Vec3* h)const
 {
-    const float cos2 = h->z*h->z;
-    const float inv_cos2 = 1.f/cos2;
-    const float inv_a2 = 1.f/(Beckmann::a*Beckmann::a);
-    return inv_a2*INV_PI*inv_cos2*inv_cos2*exp((cos2-1.f)*inv_a2*inv_cos2);
+    const float cost2 = h->z;
+    const float sint2 = 1.f-cost2;
+    const float a2 = Beckmann::a*Beckmann::a;
+    return 1.f/(M_PI*cost2*cost2*a2)*expf(-(sint2/cost2)/a2);
 }
 
 float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
@@ -65,7 +67,7 @@ float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 float Beckmann::G1(const Vec3* v)const
 {
     const float cos = fabsf(v->z);
-    const float c = cos*(1.f/sqrtf(1.f-cos*cos)*Beckmann::a);
+    const float c = cos/(sqrtf(1.f-cos*cos)*Beckmann::a);
     if(c>=1.6)
         return 1.f;
     else
@@ -77,11 +79,11 @@ void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     //sampling algorithm for beckmann and GGX
     //https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf
-    //phi = arccos(1/sqrt(1-a2*log(1-r0)));
+    //theta = arccos(1/sqrt(1-a2*log(1-r0)));
     const float l = log(1.f-r0);
     const float sqrt = 1.f-(Beckmann::a*Beckmann::a*l);
     const float cost = 1.f/sqrtf(sqrt);
-    const float sint = sqrtf(1.f-wh->x*wh->x);
+    const float sint = sqrtf(1.f-cost*cost);
     const float phi = TWO_PI*r1;
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
     if(wo->z*wh->z<0) *wh = -*wh;
