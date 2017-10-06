@@ -82,6 +82,8 @@
 
 #define MESSAGE_BYE "Bye :)"
 
+#define MESSAGE_INPUT_FILE "Write input file path or q to exit"
+
 #endif
 
 
