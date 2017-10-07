@@ -1,12 +1,12 @@
 //Created,  23 Sep 2017
-//Last Edit 26 Sep 2017
+//Last Edit  7 Oct 2017
 
 /**
  *  \file microfacet.hpp
  *  \brief Microfacet models
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  26 Sep 2017
+ *  \date  7 Oct 2017
  *  \copyright GNU GPLv3
  */
 

@@ -31,6 +31,7 @@ Spectrum MicrofacetR::df_s(const Vec3* wo, Vec3* wi, float r0, float r1,
 {
     Vec3 wh;
     MicrofacetR::md->sampleWh(wo, r0, r1, &wh);
+    wh.normalize();
     *wi = reflect(*wo, wh);
     if(wo->z*wi->z < 0)
     {
@@ -46,7 +47,6 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
     if(woS->z*wiS->z < 0)
         return 0.f;
     Vec3 wh = *woS+*wiS;
-    wh.normalize();
     if(wh.x!=0 || wh.y!=0 || wh.z != 0)
     {
         wh.normalize();
@@ -72,17 +72,19 @@ MicrofacetT::~MicrofacetT()
 
 Spectrum MicrofacetT::df(const Vec3* woS, const Vec3* wiS)const
 {
+    if(woS->z*wiS->z>0)
+        return SPECTRUM_BLACK;
     float costwo = woS->z;
     float costwi = wiS->z;
     if(costwo == 0 || costwi == 0)
         return SPECTRUM_BLACK;
     float eta;
     if(costwo>0)
-        eta = eta_i/eta_t;
-    else
         eta = eta_t/eta_i;
+    else
+        eta = eta_i/eta_t;
     
-    Vec3 wh = *woS+*wiS*eta;
+    Vec3 wh = *woS+(*wiS*eta);
     if(wh.x==0 && wh.y==0 && wh.z==0)
         return SPECTRUM_BLACK;
     wh.normalize();
@@ -91,11 +93,13 @@ Spectrum MicrofacetT::df(const Vec3* woS, const Vec3* wiS)const
     float dotwih = dot(*wiS,wh);
     
     float up= eta*eta*md->D(&wh)*md->G(woS,wiS,&wh)*fabsf(dotwoh)*fabsf(dotwih);
-    float inv = dotwoh+eta*dotwih;
-    inv*=inv;
-    inv*= costwo*costwi;
+    if(up<1E-3) //avoid calculating fresnel term
+        return SPECTRUM_BLACK;
+    float denom = dotwoh+eta*dotwih;
+    denom*=denom;
+    denom*= costwo*costwi;
     
-    return  specular * (SPECTRUM_ONE-d.eval(dotwoh)) * fabsf(up/inv);
+    return  specular * (SPECTRUM_ONE-d.eval(dotwoh)) * fabsf(up/denom);
 }
 
 Spectrum MicrofacetT::df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
@@ -106,9 +110,9 @@ Spectrum MicrofacetT::df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
     //refracted ray
     float eta;
     if(woS->z>0)
-        eta = eta_i/eta_t;
-    else
         eta = eta_t/eta_i;
+    else
+        eta = eta_i/eta_t;
     float costi = dot(wh,*woS);
     float sin2ti = 1.f-costi*costi;
     float sin2tt = eta*eta*sin2ti;
@@ -124,20 +128,20 @@ Spectrum MicrofacetT::df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
     float dotwih = dot(*wiS,wh);
     float inv = dotwoh+eta*dotwih;
     inv *= inv;
-    float term = fabsf(eta*eta*dotwih)/inv;
+    float term = fabsf((eta*eta*dotwih)/inv);
     *pdf = MicrofacetT::md->pdf(woS, &wh, wiS)*term;
     return MicrofacetT::df(woS,wiS);
 }
 
 float MicrofacetT::pdf(const Vec3* woS, const Vec3* wiS)const
 {
-    if(woS->z*wiS->z<0)
+    if(woS->z*wiS->z>0)
         return 0;
     float eta;
     if(woS->z>0)
-        eta = eta_i/eta_t;
-    else
         eta = eta_t/eta_i;
+    else
+        eta = eta_i/eta_t;
     Vec3 wh = (*woS+*wiS*eta);
     if(wh.x==0 && wh.y==0 && wh.z==0)
         return 0.f;
@@ -146,6 +150,6 @@ float MicrofacetT::pdf(const Vec3* woS, const Vec3* wiS)const
     float dotwih = dot(*wiS,wh);
     float inv = dotwoh+eta*dotwih;
     inv*=inv;
-    float term = fabsf(eta*eta*dotwih)/inv;
+    float term = fabsf((eta*eta*dotwih)/inv);
     return MicrofacetT::md->pdf(woS, &wh, wiS)*term;
 }
