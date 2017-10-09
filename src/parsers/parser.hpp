@@ -16,6 +16,8 @@
 #include "materials/bdf.hpp"
 #include "materials/lambertian.hpp"
 #include "materials/oren_nayar.hpp"
+#include "materials/microfacet.hpp"
+#include "materials/microfacet_distributions.hpp"
 #include "materials/refraction.hpp"
 #include "materials/reflection.hpp"
 #include "parsers/obj_parser.hpp"

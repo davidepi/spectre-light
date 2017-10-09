@@ -236,6 +236,61 @@ static void parseMaterial(char* string)
             else //lambertian
                 addme = new Lambertian(Spectrum(diffuse,false));
         }
+        //glossy reflection (color) <distribution> parameters
+        else if(strcmp(token,"glossy")==0)
+        {
+            token = strtok_r(NULL," \n",&stringpos);
+            Fresnel* d;
+            MicrofacetDist* md;
+            ColorRGB spec;
+            if(strcmp(token,"reflection")==0)
+            {
+                token = strtok_r(NULL," \n",&stringpos);
+                //parse color
+                val = strtok(token,"(), "); //parse x
+                r = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse y
+                g = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse z
+                b = (unsigned char)atoi(val);
+                spec = ColorRGB(r,g,b);
+                
+                //parse distribution
+                token = strtok_r(NULL," \n",&stringpos);
+                if(strcmp(token,"blinn")==0)
+                {
+                    //parse exponent
+                    token = strtok_r(NULL," \n",&stringpos);
+                    const float exponent = clamp((float)atof(token),0,10000);
+                    md = new Blinn(exponent);
+                }
+                else if (strcmp(token,"ggx")==0)
+                {
+                    token = strtok_r(NULL," \n",&stringpos);
+                    const float ax = clamp((float)atof(token),0.f,1.f);
+                    token = strtok_r(NULL," \n",&stringpos);
+                    if(token != NULL)
+                    {
+                        const float ay = clamp((float)atof(token),0.f,1.f);
+                        md = new GGXaniso(ax,ay);
+                    }
+                    else
+                        md = new GGXiso(ax);
+                    
+                }
+                else //beckmann
+                {
+                    token = strtok_r(NULL," \n",&stringpos);
+                    const float a = clamp((float)atof(token),0.f,1.f);
+                    md = new Beckmann(a);
+                }
+                d = new Dielectric(Spectrum(1.5f),Spectrum(1.0f));
+            }
+            else //refraction
+                ;
+            Spectrum s(spec,false);
+            addme = new MicrofacetR(s,md,d);
+        }
         else if(strcmp(token,"reflection")==0)
         {
             token = strtok_r(NULL," ",&stringpos);//parse reflected color, rgb
