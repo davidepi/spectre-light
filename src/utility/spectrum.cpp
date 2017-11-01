@@ -66,7 +66,7 @@ const float INVY_SUM = 0.17546832144055843f;
 
 #ifdef SPECTRAL
 
-const float spectrumWhite[] =
+const Spectrum SPECTRUM_WHITE(
 {
     1.0619347266616228f,
     1.0623373513955183f,
@@ -84,9 +84,9 @@ const float spectrumWhite[] =
     1.0622653248789862f,
     1.060266533148627f,
     1.0600420908765831f
-};
+});
 
-const float spectrumWhiteL[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_WHITEL(
 {
     1.1560446394211681f,
     1.1564162465744781f,
@@ -104,9 +104,9 @@ const float spectrumWhiteL[SPECTRUM_SAMPLES] =
     0.88940075523174911f,
     0.88083842252481404f,
     0.87810499922653207f
-};
+});
 
-const float spectrumCyan[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_CYAN(
 {
     1.0240953312699979f,
     1.0245612457188975f,
@@ -124,9 +124,9 @@ const float spectrumCyan[SPECTRUM_SAMPLES] =
     0.0018582205785167482f,
     0.0039837672915054804f,
     0.010507259067086385f
-};
+});
 
-const float spectrumCyanL[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_CYANL(
 {
     1.1352399582424499f,
     1.1358531764433719f,
@@ -144,9 +144,9 @@ const float spectrumCyanL[SPECTRUM_SAMPLES] =
     -0.01060685685959013f,
     -0.006931473364874461f,
     -0.0077818774183695668f
-};
+});
 
-const float spectrumMagenta[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_MAGENTA(
 {
     0.99302530302633674f,
     1.0170691330352013f,
@@ -164,9 +164,9 @@ const float spectrumMagenta[SPECTRUM_SAMPLES] =
     0.8937980881442511f,
     0.94958431903872431f,
     0.9395992587226637f
-};
+});
 
-const float spectrumMagentaL[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_MAGENTAL(
 {
     1.0765584064227334f,
     1.0770490751029975f,
@@ -184,9 +184,9 @@ const float spectrumMagentaL[SPECTRUM_SAMPLES] =
     1.0327505540054573f,
     1.0495214724241742f,
     1.0257450908661028f
-};
+});
 
-const float spectrumYellow[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_YELLOW(
 {
     -0.0059362362867909409f,
     -0.0040293484704144403f,
@@ -204,9 +204,9 @@ const float spectrumYellow[SPECTRUM_SAMPLES] =
     1.0513103386739624f,
     1.0507004197273715f,
     1.0485826837788901f
-};
+});
 
-const float spectrumYellowL[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_YELLOWL(
 {
     0.0001468672999305493f,
     -0.00013161147654402951f,
@@ -224,9 +224,9 @@ const float spectrumYellowL[SPECTRUM_SAMPLES] =
     0.6705682032005652f,
     0.60059597683336108f,
     0.58277723714307716f
-};
+});
 
-const float spectrumRed[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_RED(
 {
     0.11487922506830811f,
     0.060141120462551691f,
@@ -244,9 +244,9 @@ const float spectrumRed[SPECTRUM_SAMPLES] =
     1.0018494025816944f,
     0.99593834054491903f,
     0.9811979963396622f
-};
+});
 
-const float spectrumRedL[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_REDL(
 {
     0.057139392791085111f,
     0.043034047329456572f,
@@ -264,9 +264,9 @@ const float spectrumRedL[SPECTRUM_SAMPLES] =
     0.99410699787589729f,
     0.99018057306059759f,
     0.98278552726948454f
-};
+});
 
-const float spectrumGreen[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_GREEN(
 {
     -0.010865527381003439f,
     -0.010329458431599345f,
@@ -284,9 +284,9 @@ const float spectrumGreen[SPECTRUM_SAMPLES] =
     -0.0083927995026960873f,
     -0.0084413650357697944f,
     -0.0047501377518373699f
-};
+});
 
-const float spectrumGreenL[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_GREENL(
 {
     0.0064830780912117957f,
     0.00019032331867488899f,
@@ -304,9 +304,9 @@ const float spectrumGreenL[SPECTRUM_SAMPLES] =
     0.0088889810224966476f,
     0.00036631914529600032f,
     0.00099462806143045101f
-};
+});
 
-const float spectrumBlue[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_BLUE(
 {
     0.99498216185557875f,
     0.99569451590852531f,
@@ -324,9 +324,9 @@ const float spectrumBlue[SPECTRUM_SAMPLES] =
     0.049604490414015802f,
     0.043574051087547458f,
     0.027483432250758107f
-};
+});
 
-const float spectrumBlueL[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_BLUEL(
 {
     1.054236254920313f,
     1.0576206026996142f,
@@ -344,41 +344,23 @@ const float spectrumBlueL[SPECTRUM_SAMPLES] =
     0.12827536395203271f,
     0.15246421103968871f,
     0.16615733676564479f
-};
+});
 
-const float spectrumOne[SPECTRUM_SAMPLES] =
+const Spectrum SPECTRUM_ONE(
 {
     1.f, 1.f, 1.f, 1.f,
     1.f, 1.f, 1.f, 1.f,
     1.f, 1.f, 1.f, 1.f,
     1.f, 1.f, 1.f, 1.f
-};
+});
 
-//More memory usage but I avoid to construct and destroy these multiple times
-//while parsing RGB values
-const Spectrum SPECTRUM_WHITE(spectrumWhite);
-const Spectrum SPECTRUM_WHITEL(spectrumWhiteL);
-const Spectrum SPECTRUM_CYAN(spectrumCyan);
-const Spectrum SPECTRUM_CYANL(spectrumCyanL);
-const Spectrum SPECTRUM_MAGENTA(spectrumMagenta);
-const Spectrum SPECTRUM_MAGENTAL(spectrumMagentaL);
-const Spectrum SPECTRUM_YELLOW(spectrumYellow);
-const Spectrum SPECTRUM_YELLOWL(spectrumYellowL);
-const Spectrum SPECTRUM_RED(spectrumRed);
-const Spectrum SPECTRUM_REDL(spectrumRedL);
-const Spectrum SPECTRUM_GREEN(spectrumGreen);
-const Spectrum SPECTRUM_GREENL(spectrumGreenL);
-const Spectrum SPECTRUM_BLUE(spectrumBlue);
-const Spectrum SPECTRUM_BLUEL(spectrumBlueL);
-const Spectrum SPECTRUM_ONE(spectrumOne);
 const Spectrum SPECTRUM_BLACK(0);
 
 #else
 
-const float spectrumOne[3] = {1.f,1.f,1.f};
-const Spectrum SPECTRUM_WHITE(spectrumOne);
+const Spectrum SPECTRUM_WHITE({1.f,1.f,1.f});
 const Spectrum SPECTRUM_BLACK(0);
-const Spectrum SPECTRUM_ONE(spectrumOne);
+const Spectrum SPECTRUM_ONE({1.f,1.f,1.f});
 
 #endif
 

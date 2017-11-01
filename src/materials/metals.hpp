@@ -2,6 +2,7 @@
 #define __METALS_HPP__
 
 #include "utility/spectrum.hpp"
+#include <initializer_list>
 
 namespace metals
 {
@@ -9,7 +10,9 @@ namespace metals
     {
         const Spectrum n;
         const Spectrum k;
-        Metal(const float* ior,const float*,abs):n(ior),k(abs){};
+    public:
+        Metal(const std::initializer_list<float> ior,
+              const std::initializer_list<float> abs):n(ior),k(abs){};
     };
 }
 
@@ -50,9 +53,7 @@ const metals::Metal silver(
         4.8811230659484863f
     });
 
-const Metals::metal Aluminium
-{
-    const Spectrum n =
+const metals::Metal Aluminium(
     {
         0.51354420185089111f,
         0.57037156820297241f,
@@ -70,11 +71,8 @@ const Metals::metal Aluminium
         1.69751429557800290f,
         1.84196209907531740f,
         2.0029783248901367f,
-    };
-    
-    const Spectrum k =
-    {
-        4.959956169128418f0,
+    },{
+        4.9599561691284180f,
         5.2085542678833008f,
         5.4542770385742188f,
         5.6952328681945801f,
@@ -90,12 +88,9 @@ const Metals::metal Aluminium
         7.8930425643920898f,
         8.0657701492309570f,
         8.2151412963867188f
-    };
-}
+    });
 
-const Metals::metal Gold
-{
-    const Spectrum n =
+const metals::Metal Gold(
     {
         1.46212887763977050f,
         1.44386053085327150f,
@@ -113,10 +108,7 @@ const Metals::metal Gold
         0.13766665756702423f,
         0.13322222232818604f,
         0.13127875328063965f
-    };
-    
-    const Spectrum k =
-    {
+    },{
         1.9556787014007568f,
         1.9458420276641846f,
         1.9123861789703369f,
@@ -133,12 +125,9 @@ const Metals::metal Gold
         3.7917332649230957f,
         3.9721779823303223f,
         4.1496315002441406f
-    };
-}
+    });
 
-const Metals::metal Copper
-{
-    const Spectrum n =
+const metals::Metal Copper(
     {
         1.28916776180267330f,
         1.25370144844055180f,
@@ -156,10 +145,7 @@ const Metals::metal Copper
         0.21766665577888489f,
         0.21322222054004669f,
         0.21361127495765686f
-    };
-    
-    const Spectrum k =
-    {
+    },{
         2.1880841255187988f,
         2.2994711399078369f,
         2.3922898769378662f,
@@ -176,7 +162,6 @@ const Metals::metal Copper
         3.8538665771484375f,
         4.0574221611022949f,
         4.2534952163696289f
-    };
-}
+    });
 
 #endif
