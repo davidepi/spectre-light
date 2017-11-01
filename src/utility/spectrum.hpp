@@ -17,6 +17,7 @@
 #include "utility/color.hpp"
 #include "settings.h"
 #include <cmath>
+#include <initializer_list>
 
 ///The wavelenght of the first sample in nanometers
 #define SPECTRUM_START 400
@@ -76,6 +77,15 @@ public:
      *  \param[in] vals The values, sorted by nm, used for this spectrum
      */
     Spectrum(const float* vals);
+    
+    /** \brief Initialize the spectrum with the given values
+     *
+     *  Initialize this class by filling it with the given values, passed as
+     *  an initializer list {float1, float2, float3, ... }
+     *
+     *  \param[in] vals The values, sorted by nm, used for this spectrum
+     */
+    Spectrum(const std::initializer_list<float> vals);
     
     /** \brief Attempt to convert an sRGB colour to a spectrum
      *

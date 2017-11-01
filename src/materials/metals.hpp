@@ -3,18 +3,17 @@
 
 #include "utility/spectrum.hpp"
 
-namespace Metals
+namespace metals
 {
-    struct metal
+    class Metal
     {
         const Spectrum n;
         const Spectrum k;
+        Metal(const float* ior,const float*,abs):n(ior),k(abs){};
     };
 }
 
-const Metals::metal Silver
-{
-    const Spectrum n =
+const metals::Metal silver(
     {
         0.049347531050443649f,
         0.041602473706007004f,
@@ -32,10 +31,7 @@ const Metals::metal Silver
         0.047666668891906738f,
         0.043222222477197647f,
         0.038946233689785004f
-    };
-    
-    const Spectrum k =
-    {
+    },{
         2.2301845550537109f,
         2.4536008834838867f,
         2.6500174999237061f,
@@ -52,8 +48,7 @@ const Metals::metal Silver
         4.5658330917358398f,
         4.7236108779907227f,
         4.8811230659484863f
-    };
-}
+    });
 
 const Metals::metal Aluminium
 {

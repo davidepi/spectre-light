@@ -464,6 +464,32 @@ Spectrum::Spectrum(const float* vals)
 #endif
 }
 
+Spectrum::Spectrum(const std::initializer_list<float> vals)
+{
+    int i=0;
+#ifdef SPECTRAL
+    for(float val:vals)
+        Spectrum::w[i++] = val;
+#else
+    //not super precise... but whatever, this constructor is used where full
+    //spectrum rendering is almost required so the result won't be precise
+    //anyway (referring to Conductor reflection)
+    for(float val:vals)
+    {
+        if(i<6)
+            Spectrum::w[0] = val;
+        else if(i<12)
+            Spectrum::w[1] = val;
+        else
+            Spectrum::w[2] = val;
+        i++;
+    }
+#endif
+#ifdef DISPERSION
+    Spectrum::chosen = -1;
+#endif
+}
+
 Spectrum::Spectrum(float val)
 {
     Spectrum::w[0] = val;
