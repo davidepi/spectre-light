@@ -257,6 +257,42 @@ static void parseMaterial(char* string)
                 
                 //parse distribution
                 token = strtok_r(NULL," \n",&stringpos);
+                if(token[0]!='b' && token[0]!='g') //conductor
+                {
+                    switch(token[0])
+                    {
+                        case 'A':
+                            if(token[1]=='u')
+                                d = new Conductor(GOLD.n,GOLD.k);
+                            else if(token[1]=='g')
+                                d = new Conductor(SILVER.n,SILVER.k);
+                            else
+                                d = new Conductor(ALUMINIUM.n,ALUMINIUM.k);
+                            break;
+                        case 'C':
+                            d = new Conductor(COPPER.n,COPPER.k);
+                            break;
+                        case 'H':
+                            d = new Conductor(MERCURY.n,MERCURY.k);
+                            break;
+                        case 'P':
+                            if(token[1]=='b')
+                                d = new Conductor(LEAD.n,LEAD.k);
+                            else
+                                d = new Conductor(PLATINUM.n,PLATINUM.k);
+                            break;
+                        case 'W':
+                            d = new Conductor(TUNGSTEN.n,TUNGSTEN.k);
+                            break;
+                        case 'F':
+                        default:
+                            d = new Conductor(IRON.n,IRON.k);
+                            break;
+                    }
+                  token = strtok_r(NULL," \n",&stringpos);
+                }
+                else
+                    d = new Dielectric(Spectrum(1.5f),Spectrum(1.0f));
                 if(strcmp(token,"blinn")==0)
                 {
                     //parse exponent
@@ -284,7 +320,6 @@ static void parseMaterial(char* string)
                     const float a = clamp((float)atof(token),0.f,1.f);
                     md = new Beckmann(a);
                 }
-                d = new Dielectric(Spectrum(1.5f),Spectrum(1.0f));
             }
             else //refraction
                 ;
@@ -303,28 +338,44 @@ static void parseMaterial(char* string)
             ColorRGB reflected(r,g,b);
 
             token = strtok_r(NULL," ",&stringpos);
-            if(token[0]=='(') //conductor
+            if(token[0]!='[' && token[0]!='{') //conductor
             {
-                val = strtok(token,"(), "); //parse x
-                r = (unsigned char)atoi(val);
-                val = strtok(NULL,"(), "); //parse y
-                g = (unsigned char)atoi(val);
-                val = strtok(NULL,"(), "); //parse z
-                b = (unsigned char)atoi(val);
-                ColorRGB absorbed(r,g,b);
-
-                token = strtok_r(NULL," ",&stringpos);
-                val = strtok(token,"(), "); //parse x
-                r = (unsigned char)atoi(val);
-                val = strtok(NULL,"(), "); //parse y
-                g = (unsigned char)atoi(val);
-                val = strtok(NULL,"(), "); //parse z
-                b = (unsigned char)atoi(val);
-                ColorRGB emitted(r,g,b);
-
-                addme = new ConductorReflection(Spectrum(reflected,false),
-                                       Spectrum(absorbed,false),
-                                       Spectrum(emitted,false));
+                switch(token[0])
+                {
+                    case 'A':
+                        if(token[1]=='u')
+                            addme = new ConductorReflection(
+                            Spectrum(reflected,false),GOLD.n,GOLD.k);
+                        else if(token[1]=='g')
+                            addme = new ConductorReflection(
+                            Spectrum(reflected,false),SILVER.n,SILVER.k);
+                        else
+                            addme = new ConductorReflection(
+                            Spectrum(reflected,false),ALUMINIUM.n,ALUMINIUM.k);
+                        break;
+                            
+                    case 'C':
+                    addme = new ConductorReflection(Spectrum(reflected,false),
+                                                    COPPER.n,COPPER.k);break;
+                    case 'H':
+                    addme = new ConductorReflection(Spectrum(reflected,false),
+                                                   MERCURY.n, MERCURY.k);break;
+                    case 'P':
+                        if(token[1]=='b')
+                           addme = new ConductorReflection(
+                                     Spectrum(reflected,false),LEAD.n,LEAD.k);
+                        else
+                            addme = new ConductorReflection(
+                            Spectrum(reflected,false),PLATINUM.n,PLATINUM.k);
+                        break;
+                    case 'W':
+                        new ConductorReflection(Spectrum(reflected,false),
+                                                TUNGSTEN.n, TUNGSTEN.k);break;
+                    case 'F':
+                    default:
+                    addme = new ConductorReflection(Spectrum(reflected,false),
+                                                        IRON.n,IRON.k);break;
+                }
             }
             else //dielectric
             {

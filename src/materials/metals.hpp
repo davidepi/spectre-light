@@ -8,9 +8,9 @@ namespace metals
 {
     class Metal
     {
+    public:
         const Spectrum n;
         const Spectrum k;
-        public:
         Metal(const std::initializer_list<float> ior,
                 const std::initializer_list<float> abs):n(ior),k(abs){};
     };
