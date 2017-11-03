@@ -3,8 +3,7 @@
 float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 {
     const float cosh = fabsf(wh->z);
-    const float inv_dot = 1.f/absdot(*wo,*wh);
-    const float partial = 2*cosh*inv_dot;
+    const float partial = 2*cosh/absdot(*wo,*wh);
     return min(1.f,min(partial*fabsf(wo->z),partial*fabsf(wi->z)));
 }
 
@@ -22,12 +21,12 @@ float Blinn::D(const Vec3* h)const
 {
     //phong = 1/(pi*alpha2)*((h dot n)^(2/alpha2 - 2))
     //assuming exponent = 2/alpha2 - 2, the result is the following
-    return (exponent+2)*INV_TWOPI*powf(fabsf(h->z),Blinn::exponent);
+    return (exponent+2)*INV_TWOPI*powf(fabsf(h->z),exponent);
 }
 
 void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
 {
-    const float cost = powf(r0,(1.f/Blinn::exponent+1));
+    const float cost = powf(r0,(1.f/(Blinn::exponent+1)));
     const float sint = sqrtf(1.f-cost*cost);
     const float phi = r1*TWO_PI;
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
@@ -53,7 +52,7 @@ Beckmann::Beckmann(float roughness)
 
 float Beckmann::D(const Vec3* h)const
 {
-    const float cost2 = h->z;
+    const float cost2 = h->z*h->z;
     const float sint2 = 1.f-cost2;
     const float a2 = Beckmann::a*Beckmann::a;
     return 1.f/(M_PI*cost2*cost2*a2)*expf(-(sint2/cost2)/a2);

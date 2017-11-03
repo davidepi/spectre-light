@@ -62,5 +62,8 @@
 ///Default extension for the sinc filter
 #define LANCZOS_FILTER_EXTENT 4
 
+///Only for debug
+//#define FORCED_SEED 0
+
 #include "validator.h"
 #endif
