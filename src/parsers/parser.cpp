@@ -255,7 +255,7 @@ static void parseMaterial(char* string)
                 b = (unsigned char)atoi(val);
                 spec = ColorRGB(r,g,b);
                 
-                //parse distribution
+                
                 token = strtok_r(NULL," \n",&stringpos);
                 if(token[0]!='b' && token[0]!='g') //conductor
                 {
@@ -293,6 +293,7 @@ static void parseMaterial(char* string)
                 }
                 else
                     d = new Dielectric(Spectrum(1.5f),Spectrum(1.0f));
+                //parse distribution
                 if(strcmp(token,"blinn")==0)
                 {
                     //parse exponent
@@ -320,11 +321,117 @@ static void parseMaterial(char* string)
                     const float a = clamp((float)atof(token),0.f,1.f);
                     md = new Beckmann(a);
                 }
+                Spectrum s(spec,false);
+                addme = new MicrofacetR(s,md,d);
             }
-            else //refraction
-                ;
-            Spectrum s(spec,false);
-            addme = new MicrofacetR(s,md,d);
+            else //refraction glossy
+            {
+                token = strtok_r(NULL," \n",&stringpos);
+                
+                //parse color
+                val = strtok(token,"(), "); //parse x
+                r = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse y
+                g = (unsigned char)atoi(val);
+                val = strtok(NULL,"(), "); //parse z
+                b = (unsigned char)atoi(val);
+                spec = ColorRGB(r,g,b);
+                
+                //parse ior
+                token = strtok_r(NULL," \n",&stringpos);
+                Spectrum etai;
+                Spectrum etat;
+                if(token[0]=='[') //cauchy
+                {
+                    float bb,c,d;
+                    val = strtok(token,"[], ");
+                    bb = (float)atof(val);
+                    val = strtok(NULL,"[], ");
+                    c = (float)atof(val);
+                    val = strtok(NULL,"[], ");
+                    d = (float)atof(val);
+                    etai = Spectrum(cauchyEq(bb,c,d));
+                }
+                else
+                {
+                    float b1,b2,b3,c1,c2,c3;
+                    val = strtok(token,"{}, ");
+                    b1 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    b2 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    b3 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c1 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c2 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c3 = (float)atof(val);
+                    etai = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                }
+                
+                token = strtok_r(NULL," ",&stringpos);
+                if(token[0]=='[') //cauchy
+                {
+                    float bb,c,d;
+                    val = strtok(token,"[], ");
+                    bb = (float)atof(val);
+                    val = strtok(NULL,"[], ");
+                    c = (float)atof(val);
+                    val = strtok(NULL,"[], ");
+                    d = (float)atof(val);
+                    etat = Spectrum(cauchyEq(bb,c,d));
+                }
+                else
+                {
+                    float b1,b2,b3,c1,c2,c3;
+                    val = strtok(token,"{}, ");
+                    b1 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    b2 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    b3 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c1 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c2 = (float)atof(val);
+                    val = strtok(NULL,"{}, ");
+                    c3 = (float)atof(val);
+                    etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                }
+                
+                //parse distribution
+                token = strtok_r(NULL," \n",&stringpos);
+                if(strcmp(token,"blinn")==0)
+                {
+                    //parse exponent
+                    token = strtok_r(NULL," \n",&stringpos);
+                    const float exponent = clamp((float)atof(token),0,10000);
+                    md = new Blinn(exponent);
+                }
+                else if (strcmp(token,"ggx")==0)
+                {
+                    token = strtok_r(NULL," \n",&stringpos);
+                    const float ax = clamp((float)atof(token),0.f,1.f);
+                    token = strtok_r(NULL," \n",&stringpos);
+                    if(token != NULL)
+                    {
+                        const float ay = clamp((float)atof(token),0.f,1.f);
+                        md = new GGXaniso(ax,ay);
+                    }
+                    else
+                        md = new GGXiso(ax);
+                    
+                }
+                else //beckmann
+                {
+                    token = strtok_r(NULL," \n",&stringpos);
+                    const float a = clamp((float)atof(token),0.f,1.f);
+                    md = new Beckmann(a);
+                }
+                Spectrum s(spec,false);
+                addme = new MicrofacetT(s,md,etai,etat);
+            }
         }
         else if(strcmp(token,"reflection")==0)
         {

@@ -42,8 +42,10 @@ integrator: pt
 #the first one will use Cauchy equation to determine wavelength-dependent ior, the other will use Sellmeier equation
 #if only 1 ior is available use [ior,0,0]. Rgb renderer also expects wavelength dependent iors
 #
-#glossy (r,g,b) metal distribution intensity
-#metal can be Au, Ag...etc. If omitted the material will be assumed to be dielectric with ior = 1.5
+#glossy reflection_t (r,g,b) metal|ior distribution intensity
+#reflection_t is the type of reflection: reflection or refraction
+#metal can be Au, Ag...etc. If omitted the material will be assumed to be dielectric with ior = 1.5. Only for reflection
+#ior is the index of refraction, with cauchy [...] or sellemeier {...} equations like before. Only for refraction
 #distirbution can be blinn, beckmann or ggx
 #blinn intensity ranges from 0.0 (maximum roughness) to 100000 (maximum specularity)
 #beckmann intensity ranges from 0.0(minimum roughness) to 1.0(maximum roughness)

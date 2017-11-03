@@ -218,8 +218,8 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
         //assuming RAND_MAX=2^31, sum two randoms
         WELLseed[i] = ((unsigned int)rand()+(unsigned int)rand());
 #else
-    Console.log("Forced seed",NULL);
 #ifdef FORCED_SEED
+    Console.log("Forced seed",NULL);
     for(int i=0;i<WELL_R;i++)
         //used defined seed
         WELLseed[i] = FORCED_SEED;
