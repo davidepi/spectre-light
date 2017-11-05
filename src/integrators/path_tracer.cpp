@@ -53,10 +53,6 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
                            BdfFlags(ALL), &matched,NULL);
 #endif
-    if(!f.isValid())
-    {
-        volatile int i = 0;
-    }
     float adot = absdot(wi,hp->n);
     if(f.isBlack() || pdf==0)
         return retval;

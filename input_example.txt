@@ -1,6 +1,6 @@
 #RGB
 #first line should be #RGB in order to use rgb renderer, anything else
-#will default to the better and slower spectrasl renderer
+#will default to the better and slower spectral renderer
 
 #Input file example. The parser is still a temp version, just for debugging
 #Misplaced colon or spaces will break everything

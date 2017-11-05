@@ -476,7 +476,7 @@ static void parseMaterial(char* string)
                             Spectrum(reflected,false),PLATINUM.n,PLATINUM.k);
                         break;
                     case 'W':
-                        new ConductorReflection(Spectrum(reflected,false),
+                        addme=new ConductorReflection(Spectrum(reflected,false),
                                                 TUNGSTEN.n, TUNGSTEN.k);break;
                     case 'F':
                     default:

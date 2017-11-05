@@ -1,6 +1,4 @@
 #include "microfacet_distributions.hpp"
-int urcz = 0;
-int total = 0;
 
 float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 {
@@ -16,7 +14,7 @@ float MicrofacetDist::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
 
 Blinn::Blinn(float exponent)
 {
-    Blinn::exponent = exponent;
+    Blinn::exponent = clamp(exponent,0.f,100000.f);
 }
 
 float Blinn::D(const Vec3* h)const
@@ -49,13 +47,15 @@ float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
 
 Beckmann::Beckmann(float roughness)
 {
-    Beckmann::a = roughness;
+    Beckmann::a = clamp(roughness,0.f,1.f);
 }
 
 float Beckmann::D(const Vec3* h)const
 {
     const float cost2 = h->z*h->z;
     const float sint2 = 1.f-cost2;
+    if(cost2==0)
+        return 0.f;
     const float a2 = Beckmann::a*Beckmann::a;
     return 1.f/(M_PI*cost2*cost2*a2)*expf(-(sint2/cost2)/a2);
 }
@@ -68,6 +68,10 @@ float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 float Beckmann::G1(const Vec3* v)const
 {
     const float cos = fabsf(v->z);
+    if(cos==0)
+        return 0;
+    if(cos>=1) //fully visible
+        return 1;
     const float c = cos/(sqrtf(1.f-cos*cos)*Beckmann::a);
     if(c>=1.6)
         return 1.f;
@@ -92,14 +96,18 @@ void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 
 GGXiso::GGXiso(float roughness)
 {
+    roughness = clamp(roughness,0.f,1.f);
     GGXiso::a2 = roughness*roughness;
 }
 
 float GGXiso::D(const Vec3 *h)const
 {
+    if(h->z==0)
+        return 0.f;
     float inv_term = (h->z*h->z)*(a2-1)+1;
     inv_term*=inv_term;
     inv_term*=M_PI;
+    inv_term = max(inv_term,1e-7);
     return a2/inv_term;
 }
 
@@ -111,6 +119,10 @@ float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *wh)const
 float GGXiso::G1(const Vec3* v)const
 {
     const float cos = v->z;
+    if(cos==0)
+        return 0.f;
+    if(cos>=1)
+        return 1.f;
     return (2*cos)/(cos+sqrtf(a2+(1-a2)*cos*cos));
 }
 
@@ -128,18 +140,20 @@ GGXaniso::GGXaniso(float ax, float ay)
 {
     GGXaniso::ax = ax;
     GGXaniso::ay = ay;
+    GGXaniso::ax = clamp(GGXaniso::ax, 0.f, 1.f);
+    GGXaniso::ay = clamp(GGXaniso::ay, 0.f, 1.f);
 }
 
 float GGXaniso::D(const Vec3 *h)const
 {
+    if(h->z==0)
+        return 0.f;
     const float inv_cos2 = 1.f/(h->z*h->z);
     const float sin2 = 1.f-(h->z*h->z);
+    if(sin2==0)
+        return 1.f;
     const float inv_sin2 = 1.f/sin2;
     const float tan2 = sin2*inv_cos2;
-    if(std::isinf(tan2))
-        return 0;
-    if(tan2==0)
-        return 1;
     const float inv_ax = 1.f/ax;
     const float inv_ay = 1.f/ay;
     //cosphi = h->x/sintheta due to the chosen shading space

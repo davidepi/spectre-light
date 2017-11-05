@@ -33,12 +33,15 @@ Spectrum MicrofacetR::df_s(const Vec3* wo, Vec3* wi, float r0, float r1,
     MicrofacetR::md->sampleWh(wo, r0, r1, &wh);
     wh.normalize();
     *wi = -reflect(*wo, wh);
+    wi->normalize();
     if(wo->z*wi->z < 0)
     {
         *pdf = 0;
         return SPECTRUM_BLACK;
     }
     *pdf = MicrofacetR::md->pdf(wo, &wh, wi)/(4.f*dot(*wo,wh));
+    if(pdf==0)
+        return SPECTRUM_BLACK;
     return MicrofacetR::df(wo, wi);
 }
 
