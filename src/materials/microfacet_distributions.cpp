@@ -39,7 +39,7 @@ float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
     if(dotwoh>0.f)
     {
         const float cost = fabsf(wh->z);
-        return ((Blinn::exponent+1)*powf(cost,exponent))/(FOUR_PI*2.f*dotwoh);
+        return ((Blinn::exponent+2)*powf(cost,exponent))/TWO_PI;
     }
     else
         return 0.f;

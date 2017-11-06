@@ -39,6 +39,8 @@ Spectrum MicrofacetR::df_s(const Vec3* wo, Vec3* wi, float r0, float r1,
         *pdf = 0;
         return SPECTRUM_BLACK;
     }
+    //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
+    //to pdf wrt incident vector
     *pdf = MicrofacetR::md->pdf(wo, &wh, wi)/(4.f*dot(*wo,wh));
     if(pdf==0)
         return SPECTRUM_BLACK;
@@ -53,7 +55,9 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
     if(wh.x!=0 || wh.y!=0 || wh.z != 0)
     {
         wh.normalize();
-        return MicrofacetR::md->pdf(woS, &wh, wiS)/(4.f*dot(*woS,wh));;
+        //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
+        //to pdf wrt incident vector
+        return MicrofacetR::md->pdf(woS, &wh, wiS)/(4.f*dot(*woS,wh));
     }
     else
         return 0.f;
