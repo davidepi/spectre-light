@@ -133,6 +133,22 @@ public:
      */
     float D(const Vec3* h)const;
     
+    /** \brief The geometric attenuation G
+     *
+     *  Calculates the value of the geometric attenuation term, by means of
+     *  the Smith's integral. Thus, G(wi,wo) = G1(wi)G1(wo). For this particular
+     *  microfacet distribution, the Smith's integral has no closed form
+     *  solution. However, due to the similarities between the Beckmann
+     *  distribution and this one, the Beckmann G1 formula is used also for this
+     *  distribution
+     *
+     *  \param[in] wo The outgoing direction
+     *  \param[in] wi The incident direction
+     *  \param[in] wh The halfway vector between wi and wo
+     *  \return The value of the geometric attenuation term
+     */
+    float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
+    
     /** \brief Find a random half vector
      *
      *  Given the outgoing direction and two random numbers, this method
@@ -159,6 +175,8 @@ public:
     float pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const;
     
 private:
+    
+    float G1(const Vec3* v)const;
     
     //exponent for the specular highlight
     float exponent;

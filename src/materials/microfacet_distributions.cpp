@@ -24,6 +24,31 @@ float Blinn::D(const Vec3* h)const
     return (exponent+2)*INV_TWOPI*powf(fabsf(h->z),exponent);
 }
 
+float Blinn::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
+{
+    return Blinn::G1(wo)*Blinn::G1(wi);
+}
+
+float Blinn::G1(const Vec3* v)const
+{
+    const float cos = fabsf(v->z);
+    if(cos==0)
+        return 0;
+    if(cos>=1) //fully visible
+        return 1;
+    const float sin = sqrtf(1-cos*cos);
+    
+    //value suggested by Walter et al. in
+    //Microfacet Models for Refraction through Rough Surfaces
+    //http://www.cs.cornell.edu/~srm/publications/EGSR07-btdf.pdf
+    const float c = sqrtf(0.5f*Blinn::exponent+1)/(sin/cos);
+    
+    if(c>=1.6)
+        return 1.f;
+    else
+        return (3.535f*c+2.181f*c*c)/(1+2.276*c+2.577*c*c);
+}
+
 void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
 {
     const float cost = powf(r0,(1.f/(Blinn::exponent+1)));
@@ -77,7 +102,6 @@ float Beckmann::G1(const Vec3* v)const
         return 1.f;
     else
         return (3.535f*c+2.181f*c*c)/(1+2.276*c+2.577*c*c);
-        
 }
 
 void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
@@ -107,7 +131,6 @@ float GGXiso::D(const Vec3 *h)const
     float inv_term = (h->z*h->z)*(a2-1)+1;
     inv_term*=inv_term;
     inv_term*=M_PI;
-    inv_term = max(inv_term,1e-7);
     return a2/inv_term;
 }
 
