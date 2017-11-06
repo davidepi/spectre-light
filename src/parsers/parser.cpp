@@ -257,7 +257,7 @@ static void parseMaterial(char* string)
                 
                 
                 token = strtok_r(NULL," \n",&stringpos);
-                if(token[0]!='b' && token[0]!='g') //conductor
+                if(token[0]!='[' && token[0]!='{') //conductor
                 {
                     switch(token[0])
                     {
@@ -289,11 +289,75 @@ static void parseMaterial(char* string)
                             d = new Conductor(IRON.n,IRON.k);
                             break;
                     }
-                  token = strtok_r(NULL," \n",&stringpos);
                 }
                 else
-                    d = new Dielectric(Spectrum(1.5f),Spectrum(1.0f));
+                {
+                    //parse ior
+                    Spectrum etai;
+                    Spectrum etat;
+                    if(token[0]=='[') //cauchy
+                    {
+                        float bb,c,d;
+                        val = strtok(token,"[], ");
+                        bb = (float)atof(val);
+                        val = strtok(NULL,"[], ");
+                        c = (float)atof(val);
+                        val = strtok(NULL,"[], ");
+                        d = (float)atof(val);
+                        etai = Spectrum(cauchyEq(bb,c,d));
+                    }
+                    else
+                    {
+                        float b1,b2,b3,c1,c2,c3;
+                        val = strtok(token,"{}, ");
+                        b1 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        b2 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        b3 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        c1 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        c2 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        c3 = (float)atof(val);
+                        etai = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                    }
+                    
+                    token = strtok_r(NULL," ",&stringpos);
+                    if(token[0]=='[') //cauchy
+                    {
+                        float bb,c,d;
+                        val = strtok(token,"[], ");
+                        bb = (float)atof(val);
+                        val = strtok(NULL,"[], ");
+                        c = (float)atof(val);
+                        val = strtok(NULL,"[], ");
+                        d = (float)atof(val);
+                        etat = Spectrum(cauchyEq(bb,c,d));
+                    }
+                    else
+                    {
+                        float b1,b2,b3,c1,c2,c3;
+                        val = strtok(token,"{}, ");
+                        b1 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        b2 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        b3 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        c1 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        c2 = (float)atof(val);
+                        val = strtok(NULL,"{}, ");
+                        c3 = (float)atof(val);
+                        etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                    }
+                    d = new Dielectric(etai,etat);
+                }
+                
                 //parse distribution
+                token = strtok_r(NULL," \n",&stringpos);
                 if(strcmp(token,"blinn")==0)
                 {
                     //parse exponent

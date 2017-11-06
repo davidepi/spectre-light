@@ -44,8 +44,8 @@ integrator: pt
 #
 #glossy reflection_t (r,g,b) metal|ior distribution intensity
 #reflection_t is the type of reflection: reflection or refraction
-#metal can be Au, Ag...etc. If omitted the material will be assumed to be dielectric with ior = 1.5. Only for reflection
-#ior is the index of refraction, with cauchy [...] or sellemeier {...} equations like before. Only for refraction
+#metal can be Au, Ag...etc. if the material is a conductor, otherwise use ior
+#ior is the index of refraction, with cauchy [...] or sellemeier {...} equations like before.
 #distirbution can be blinn, beckmann or ggx
 #blinn intensity ranges from 0.0 (maximum roughness) to 100000 (maximum specularity)
 #beckmann intensity ranges from 0.0(minimum roughness) to 1.0(maximum roughness)
@@ -55,7 +55,7 @@ material: Glass reflection (255,255,255) [1,0,0] [1.5046,0.00420,0]
 material: Glass refraction (255,255,255) [1.5046,0.00420,0]
 material: Gold reflection (255,255,255) Au
 material: Brushed_silver glossy (255,255,255) Ag ggx 0.1 0.05
-material: Plastic glossy (30,30,255) beckmann 0.1
+material: Plastic glossy (30,30,255) [1.0,0,0] [1.5,0,0] beckmann 0.1
 material: Plastic diffuse (30,30,255) 0
 
 #asset name_without_spaces obj_file_path || asset name sphere radius
