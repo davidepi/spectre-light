@@ -50,22 +50,22 @@ char* Matrix4::toString()const
     char val14[CHAR_ARRAY_SIZE_PER_FLOAT];
     char val15[CHAR_ARRAY_SIZE_PER_FLOAT];
     char val16[CHAR_ARRAY_SIZE_PER_FLOAT];
-    snprintf(val1,sizeof(val1),"%f",Matrix4::m00);
-    snprintf(val2,sizeof(val2),"%f",Matrix4::m01);
-    snprintf(val3,sizeof(val3),"%f",Matrix4::m02);
-    snprintf(val4,sizeof(val4),"%f",Matrix4::m03);
-    snprintf(val5,sizeof(val5),"%f",Matrix4::m10);
-    snprintf(val6,sizeof(val6),"%f",Matrix4::m11);
-    snprintf(val7,sizeof(val7),"%f",Matrix4::m12);
-    snprintf(val8,sizeof(val8),"%f",Matrix4::m13);
-    snprintf(val9,sizeof(val9),"%f",Matrix4::m20);
-    snprintf(val10,sizeof(val10),"%f",Matrix4::m21);
-    snprintf(val11,sizeof(val11),"%f",Matrix4::m22);
-    snprintf(val12,sizeof(val12),"%f",Matrix4::m23);
-    snprintf(val13,sizeof(val13),"%f",Matrix4::m30);
-    snprintf(val14,sizeof(val14),"%f",Matrix4::m31);
-    snprintf(val15,sizeof(val15),"%f",Matrix4::m32);
-    snprintf(val16,sizeof(val16),"%f",Matrix4::m33);
+    snprintf(val1,sizeof(val1),"%f",(double)Matrix4::m00);
+    snprintf(val2,sizeof(val2),"%f",(double)Matrix4::m01);
+    snprintf(val3,sizeof(val3),"%f",(double)Matrix4::m02);
+    snprintf(val4,sizeof(val4),"%f",(double)Matrix4::m03);
+    snprintf(val5,sizeof(val5),"%f",(double)Matrix4::m10);
+    snprintf(val6,sizeof(val6),"%f",(double)Matrix4::m11);
+    snprintf(val7,sizeof(val7),"%f",(double)Matrix4::m12);
+    snprintf(val8,sizeof(val8),"%f",(double)Matrix4::m13);
+    snprintf(val9,sizeof(val9),"%f",(double)Matrix4::m20);
+    snprintf(val10,sizeof(val10),"%f",(double)Matrix4::m21);
+    snprintf(val11,sizeof(val11),"%f",(double)Matrix4::m22);
+    snprintf(val12,sizeof(val12),"%f",(double)Matrix4::m23);
+    snprintf(val13,sizeof(val13),"%f",(double)Matrix4::m30);
+    snprintf(val14,sizeof(val14),"%f",(double)Matrix4::m31);
+    snprintf(val15,sizeof(val15),"%f",(double)Matrix4::m32);
+    snprintf(val16,sizeof(val16),"%f",(double)Matrix4::m33);
     
     int res_len = (int)(16*4 +strlen(val1 ) + strlen(val2 ) + strlen(val3 ) +
                         strlen(val4 ) + strlen(val5 ) + strlen(val6 ) +
@@ -471,7 +471,7 @@ bool Matrix4::inverse(Matrix4 *output)const
     return true;
 }
 
-//♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//------ Operators -------------------------------------------------------------
 
 Matrix4 Matrix4::operator+(const Matrix4& mat)const
 {
@@ -979,7 +979,7 @@ Point3 Matrix4::operator*(const Point3& p)const
     float z = Matrix4::m20*p.x+Matrix4::m21*p.y+Matrix4::m22*p.z+Matrix4::m23;
     float w = Matrix4::m30*p.x+Matrix4::m31*p.y+Matrix4::m32*p.z+Matrix4::m33;
     
-    if(w==1.0)
+    if(w==1.f)
         return Point3(x,y,z);
     else
     {
@@ -1005,7 +1005,7 @@ Ray Matrix4::operator*(const Ray& r)const
     return Ray(origin,direction);
 }
 
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//------------------------------------------------------------------------------
 
 Normal transformNormal(const Normal& n, const Matrix4* inv)
 {
@@ -1137,7 +1137,7 @@ void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output)
     (input1->m33 * input2->m33);
 }
 
-//- - - - - - - - - - - - - OLD AND UNTESTED - - - - - - - - - - - - - - - - - -
+//XXXXXXXXXXXXXXXXXXXXXXXXX OLD AND UNTESTED XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 void viewLeftHand(Vec3* target, Vec3* position, Vec3* up,
                   Matrix4* output)
@@ -1385,9 +1385,9 @@ void YawPitchRollRotation(float yaw, float pitch, float roll, Matrix4* output)
     float sinroll = sinf(halfroll);
     float cosroll = cosf(halfroll);
     
-    quaternion[0] = (cosyaw*sinpitch*cosroll)+(sinyaw*cospitch*sinroll),
-    quaternion[1] = (sinyaw*cospitch*cosroll)-(cosyaw*sinpitch*sinroll),
-    quaternion[2] = (cosyaw*cospitch*sinroll)-(sinyaw*sinpitch*cosroll),
+    quaternion[0] = (cosyaw*sinpitch*cosroll)+(sinyaw*cospitch*sinroll);
+    quaternion[1] = (sinyaw*cospitch*cosroll)-(cosyaw*sinpitch*sinroll);
+    quaternion[2] = (cosyaw*cospitch*sinroll)-(sinyaw*sinpitch*cosroll);
     quaternion[3] = (cosyaw*cospitch*cosroll)+(sinyaw*sinpitch*sinroll);
     
     float xx = quaternion[0] * quaternion[0];
@@ -1420,4 +1420,4 @@ void YawPitchRollRotation(float yaw, float pitch, float roll, Matrix4* output)
     return;
 }
 
-//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

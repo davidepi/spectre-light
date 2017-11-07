@@ -93,8 +93,8 @@ char* Vec2::toString()const
 {
     char val1[CHAR_ARRAY_SIZE_PER_FLOAT];
     char val2[CHAR_ARRAY_SIZE_PER_FLOAT];
-    snprintf(val1,sizeof(val1),"%f",Vec2::x);
-    snprintf(val2,sizeof(val2),"%f",Vec2::y);
+    snprintf(val1,sizeof(val1),"%f",(double)Vec2::x);
+    snprintf(val2,sizeof(val2),"%f",(double)Vec2::y);
     
     //aperta tonda + chiusa tonda + virgola + '/0' + scritta "vec2" + spazio
     int res_len = (int)(9 + strlen(val1) + strlen(val2));
@@ -176,7 +176,7 @@ void Vec2::reflect(const Vec2& centre)
     Vec2::y -= ((2 * dot) * centre.y);
 }
 
-//♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//------ Operators -------------------------------------------------------------
 
 Vec2 Vec2::operator+(const Vec2& v)const
 {
@@ -316,4 +316,4 @@ bool Vec2::operator!=(const Vec2& v)const
     std::fabs(Vec2::y-v.y) > FLT_EPSILON;
 }
 
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//------------------------------------------------------------------------------

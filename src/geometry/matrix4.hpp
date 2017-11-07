@@ -244,7 +244,7 @@ public:
      */
     bool inverse(Matrix4* output)const;
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //------ Operators ---------------------------------------------------------
     
     ///The addition operation between two matrices
     Matrix4 operator+(const Matrix4&)const;
@@ -275,7 +275,7 @@ public:
     Ray operator*(const Ray&)const;
     
     
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //--------------------------------------------------------------------------
     
 };
 
@@ -317,7 +317,7 @@ void sub(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
 void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
 
 
-//- - - - - - - - - - - - - - OLD AND UNTESTED - - - - - - - - - - - - - - - - -
+//XXXXXXXXXXXXXXXXXXXXXXXXXXX OLD AND UNTESTED XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
 /** \brief Creates a View Space transform matrix with a Left Hand coordinate
@@ -420,6 +420,6 @@ DEPRECATED
  */
 void Scale(Vec3* source, Matrix4* output);
 
-//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 #endif
