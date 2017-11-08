@@ -7,7 +7,7 @@ float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
     return min(1.f,min(partial*fabsf(wo->z),partial*fabsf(wi->z)));
 }
 
-float MicrofacetDist::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
+float MicrofacetDist::pdf(const Vec3*, const Vec3* wh, const Vec3*)const
 {
     return this->D(wh)*fabsf(wh->z);
 }
@@ -24,7 +24,7 @@ float Blinn::D(const Vec3* h)const
     return (exponent+2)*INV_TWOPI*powf(fabsf(h->z),exponent);
 }
 
-float Blinn::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
+float Blinn::G(const Vec3* wo, const Vec3* wi, const Vec3*)const
 {
     return Blinn::G1(wo)*Blinn::G1(wi);
 }
@@ -43,10 +43,10 @@ float Blinn::G1(const Vec3* v)const
     //http://www.cs.cornell.edu/~srm/publications/EGSR07-btdf.pdf
     const float c = sqrtf(0.5f*Blinn::exponent+1)/(sin/cos);
     
-    if(c>=1.6)
+    if(c>=1.6f)
         return 1.f;
     else
-        return (3.535f*c+2.181f*c*c)/(1+2.276*c+2.577*c*c);
+        return (3.535f*c+2.181f*c*c)/(1+2.276f*c+2.577f*c*c);
 }
 
 void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
@@ -133,7 +133,7 @@ float GGXiso::D(const Vec3 *h)const
     inv_term*=M_PI;
     return a2/inv_term;
 }
-
+static inline float lambdaGGXaniso(const Vec3* v,float ax, float ay);
 float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *wh)const
 {
     return GGXiso::G1(wo)*GGXiso::G1(wi);
@@ -141,12 +141,13 @@ float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *wh)const
 
 float GGXiso::G1(const Vec3* v)const
 {
-    const float cos = v->z;
+    const float cos = fabsf(v->z);
     if(cos==0)
         return 0.f;
     if(cos>=1)
         return 1.f;
     return (2*cos)/(cos+sqrtf(a2+(1-a2)*cos*cos));
+    
 }
 
 void GGXiso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const

@@ -1,12 +1,12 @@
 //Created,  20 Sep 2017
-//Last Edit  6 Nov 2017
+//Last Edit  8 Nov 2017
 
 /**
  *  \file microfacet_distributions.hpp
  *  \brief Microfacet distributions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  6 Nov 2017
+ *  \date  8 Nov 2017
  *  \copyright GNU GPLv3
  */
 
