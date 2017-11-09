@@ -1,5 +1,5 @@
 //Created,   9 Jun 2017
-//Last Edit 23 Sep 2017
+//Last Edit  9 Nov 2017
 
 /**
  *  \file fresnel_conditions.hpp

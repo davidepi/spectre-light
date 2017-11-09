@@ -115,9 +115,9 @@ inline float max(const float f1, const float f2)
  *  \brief Compute the minimum value between two integers
  *  Return An int containing the minimum of the two input values
  *
- *  \param[in] i1 A float used for the comparison
- *  \param[in] i2 A float used for the comparison
- *  \return A float containing the minimum value between \p f1 and \p f2
+ *  \param[in] i1 An int used for the comparison
+ *  \param[in] i2 An int used for the comparison
+ *  \return An int containing the minimum value between \p i1 and \p i2
  *  \sa max(const int i1, const int i2)
  */
 inline int min(const int i1, const int i2)

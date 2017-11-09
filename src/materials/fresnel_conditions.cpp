@@ -51,7 +51,7 @@ Spectrum Dielectric::eval(float cosin)const
     if (cosin < 0) //exiting ray
     {
         ei = eta_t;
-        et = eta_t;
+        et = eta_i;
         abscosthetai = -cosin;
     }
     else
