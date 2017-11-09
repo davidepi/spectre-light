@@ -64,6 +64,16 @@ const float Z[SPECTRUM_SAMPLES] =
 
 const float INVY_SUM = 0.17546832144055843f;
 
+const Spectrum SPECTRUM_ONE(
+{
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f
+});
+
+const Spectrum SPECTRUM_BLACK(0);
+
 #ifdef SPECTRAL
 
 const Spectrum SPECTRUM_WHITE(
@@ -345,22 +355,9 @@ const Spectrum SPECTRUM_BLUEL(
     0.15246421103968871f,
     0.16615733676564479f
 });
-
-const Spectrum SPECTRUM_ONE(
-{
-    1.f, 1.f, 1.f, 1.f,
-    1.f, 1.f, 1.f, 1.f,
-    1.f, 1.f, 1.f, 1.f,
-    1.f, 1.f, 1.f, 1.f
-});
-
-const Spectrum SPECTRUM_BLACK(0);
-
 #else
 
-const Spectrum SPECTRUM_WHITE({1.f,1.f,1.f});
-const Spectrum SPECTRUM_BLACK(0);
-const Spectrum SPECTRUM_ONE({1.f,1.f,1.f});
+const Spectrum SPECTRUM_WHITE = SPECTRUM_ONE;
 
 #endif
 
@@ -448,6 +445,8 @@ Spectrum::Spectrum(const float* vals)
 
 Spectrum::Spectrum(const std::initializer_list<float> vals)
 {
+    if(vals.size()!=16)
+        throw "Incorrect sized spectrum";
     int i=0;
 #ifdef SPECTRAL
     for(float val:vals)
@@ -458,14 +457,17 @@ Spectrum::Spectrum(const std::initializer_list<float> vals)
     //anyway (referring to Conductor reflection)
     for(float val:vals)
     {
-        if(i<6)
-            Spectrum::w[0] = val;
-        else if(i<12)
-            Spectrum::w[1] = val;
+        if(i<5)
+            Spectrum::w[0] += val;
+        else if(i<11)
+            Spectrum::w[1] += val;
         else
-            Spectrum::w[2] = val;
+            Spectrum::w[2] += val;
         i++;
     }
+    Spectrum::w[0]/=5;
+    Spectrum::w[1]/=6;
+    Spectrum::w[2]/=5;
 #endif
 #ifdef DISPERSION
     Spectrum::chosen = -1;

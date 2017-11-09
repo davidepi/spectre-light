@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit  4 Nov 2017
+//Last Edit  9 Nov 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 4 Nov 2017
+ *  \date 9 Nov 2017
  *  \copyright GNU GPLv3
  */
 
