@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit  7 Nov 2017
+//Last Edit 12 Nov 2017
 
 /**
  *  \file vec3.hpp

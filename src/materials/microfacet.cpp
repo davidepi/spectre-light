@@ -97,22 +97,24 @@ Spectrum MicrofacetT::df(const Vec3* woS, const Vec3* wiS)const
         etao = eta_t;
         etai = eta_i;
     }
-    
     Vec3 wh = -*woS*etao-*wiS*etai;
     if(wh.x==0 && wh.y==0 && wh.z==0)
         return SPECTRUM_BLACK;
     wh.normalize();
-    if(wh.z<0) wh = -wh;
+    if(wh.z<0)
+        wh = -wh;
     float dotwoh = dot(*woS,wh);
     float dotwih = dot(*wiS,wh);
-    float up= etao*etao*md->D(&wh)*md->G(woS,wiS,&wh)*fabsf(dotwoh)*fabsf(dotwih);
-    if(up<1.0E-3f) //avoid calculating fresnel term
+    //abs are made at the end. Every value is always positive in the formula
+    float up= etao*etao*md->D(&wh)*md->G(woS,wiS,&wh)*dotwoh*dotwih;
+    if(up==0) //avoid calculating fresnel term
+    {
         return SPECTRUM_BLACK;
+    }
     float denom = etao*dotwoh+etai*dotwih;
     denom*=denom;
     denom*=costwo*costwi;
-    
-    return  specular * (SPECTRUM_ONE-d.eval(dotwih)) * up/denom;
+    return  specular * (SPECTRUM_ONE-d.eval(dotwoh)) * fabsf(up/denom);
 }
 
 Spectrum MicrofacetT::df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,

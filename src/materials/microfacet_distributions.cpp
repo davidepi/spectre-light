@@ -82,7 +82,8 @@ float Beckmann::D(const Vec3* h)const
     if(cost2==0)
         return 0.f;
     const float a2 = Beckmann::a*Beckmann::a;
-    return 1.f/(M_PI*cost2*cost2*a2)*expf(-(sint2/cost2)/a2);
+    const float exp = expf(-(sint2/cost2)/a2);
+    return exp/(M_PI*cost2*cost2*a2)*exp;
 }
 
 float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
