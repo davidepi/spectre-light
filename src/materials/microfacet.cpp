@@ -138,8 +138,8 @@ Spectrum MicrofacetT::df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
     }
     else
     {
-        etai = eta_t;
-        etao = eta_i;
+        etao = eta_t;
+        etai = eta_i;
     }
     
     //-woS because the vector is pointing outside
