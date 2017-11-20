@@ -10,8 +10,11 @@ int main(int argc, char* argv[])
         Console.critical("Input should be in the form: executable input_file");
     else
         p.parse(argv[1],&s);
-
+#ifndef DEBUG
     Renderer r(s.resolution[0],s.resolution[1],s.spp,s.output);
+#else
+    Renderer r(s.resolution[0], s.resolution[1],s.spp,s.output,1);
+#endif
 
     switch (s.ct)
     {

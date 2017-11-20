@@ -1,12 +1,12 @@
 //Created,  29 Aug 2017
-//Last Edit 14 Sep 2017
+//Last Edit  9 Nov 2017
 
 /**
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 14 Sep 2017
+ *  \date 9 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 #include "utility/color.hpp"
 #include "settings.h"
 #include <cmath>
+#include <initializer_list>
 
 ///The wavelenght of the first sample in nanometers
 #define SPECTRUM_START 400
@@ -27,7 +28,7 @@
 ///The interval in nanometers between each sample
 #define SPECTRUM_INTERVAL 20
 
-//#ifdef SPECTRAL: the class Spectrum samples the light wave every 20nm
+//#if defined SPECTRAL: the class Spectrum samples the light wave every 20nm
 //#else this class uses a XYZ 1931 value
 //this is not elegant, however:
 // - Making two separate subclasses would have lead to a lot of vtable deref.
@@ -36,7 +37,7 @@
 // - Making two completely different classes would have lead to ifdef spreaded
 //   throughout the code.
 //
-//  this is the lesser of two evils
+//  In this way the ifdef are less spreaded (just some checks in some materials)
 
 /**
  *  \class Spectrum spectrum.hpp "utility/spectrum.hpp"
@@ -44,7 +45,8 @@
  *
  *  Spectrum class contains an approximation of the visible spectrum. It 
  *  represents a colour by sampling its EM spectrum. The samples span the range 
- *  400nm to 700nm (included) with an interval of 20nm
+ *  400nm to 700nm (included) with an interval of 20nm. For example, the first
+ *  sample is the value in the interval [400,410) nm
  */
 class Spectrum
 {
@@ -76,6 +78,15 @@ public:
      *  \param[in] vals The values, sorted by nm, used for this spectrum
      */
     Spectrum(const float* vals);
+    
+    /** \brief Initialize the spectrum with the given values
+     *
+     *  Initialize this class by filling it with the given values, passed as
+     *  an initializer list {float1, float2, float3, ... }
+     *
+     *  \param[in] vals The values, sorted by nm, used for this spectrum
+     */
+    Spectrum(const std::initializer_list<float> vals);
     
     /** \brief Attempt to convert an sRGB colour to a spectrum
      *

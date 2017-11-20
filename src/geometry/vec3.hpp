@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit  4 Sep 2017
+//Last Edit 12 Nov 2017
 
 /**
  *  \file vec3.hpp
@@ -8,7 +8,7 @@
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
  *  \version   1.0
- *  \date      4 Sep 2017
+ *  \date      7 Nov 2017
  *  \warning   Since this is a low level class, some verification
  *             could be skipped. To enable them compile the project with the
  *             #_LOW_LEVEL_CHECKS_ preprocessor define
@@ -295,24 +295,59 @@ public:
     /**  \brief Flip the vector according to a pivot
      *
      *  Given a vector as a centre of reflection transform this class in the
-     *  reflected vector around that centre of reflection
+     *  reflected vector around that centre of reflection.
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
      *  \param[in] centre A Vec3 representing the centre of reflection
-     *  \sa reflect(const Vec3 centre)
+     *  \sa reflect(const Normal centre)
+     *  \sa refract(const Vec3 centre)
      */
     void reflect(const Vec3& centre);
     
     /**  \brief Flip the vector according to a pivot
      *
      *  Given a vector as a centre of reflection transform this class in the
-     *  reflected vector around that centre of reflection
+     *  reflected vector around that centre of reflection.
      *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
      *  \param[in] centre A Normal representing the centre of reflection
-     *  \sa reflect(const Normal centre)
+     *  \sa reflect(const Vec3 centre)
+     *  \sa refract(const Normal centre)
      */
     void reflect(const Normal& centre);
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    /**  \brief Generate the refracted vector
+     *
+     *  Given a vector that will be treated as a Normal, refract and transform
+     *  this class in the refracted vector. The interface normal is the Vec3
+     *  passed as input.
+     *  If the refracted vector does not exists due to Total Internal Reflection
+     *  the class is not transformed and false is returned
+     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p interface is not
+     *  normalized
+     *  \param[in] interface A Vec3 representing the interface normal
+     *  \param[in] eta The index of refraction used for refracting the vector
+     *  \return true if the vector was successfully refracted, false otherwise
+     *  \sa refract(const Normal& interface, float eta)
+     *  \sa reflect(const Vec3 centre)
+     */
+    bool refract(const Vec3& interface, float eta);
+    
+    /**  \brief Generate the refracted vector
+     *
+     *  Given a Normal representing the interface of a material, refract and
+     *  transform this class in the refracted vector.
+     *  If the refracted vector does not exists due to Total Internal Reflection
+     *  the class is not transformed and false is returned
+     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p interface is not
+     *  normalized
+     *  \param[in] interface A Vec3 representing the interface normal
+     *  \param[in] eta The index of refraction used for refracting the vector
+     *  \return true if the vector was successfully refracted, false otherwise
+     *  \sa refract(const Vec3& interface, float eta)
+     *  \sa reflect(const Normal centre)
+     */
+    bool refract(const Normal& interface, float eta);
+    
+    //------ Operators ---------------------------------------------------------
     
     ///The addition operation between two vectors
     Vec3 operator+(const Vec3&)const;
@@ -359,7 +394,7 @@ public:
     ///Return the nth component, const version
     float operator[](int)const;
     
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //--------------------------------------------------------------------------
     
 };
 
@@ -613,7 +648,7 @@ public:
     void flipToMatch(const Vec3& reference);
     
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //------ Operators ---------------------------------------------------------
     
     ///The addition operation between two normals
     Normal operator+(const Normal&)const;
@@ -660,11 +695,11 @@ public:
     ///Return the nth component, const version
     float operator[](int)const;
 
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //--------------------------------------------------------------------------
 };
 
 
-//----------------------------//INLINE FUNCTIONS//----------------------------//
+//++++++++++++++++++++++++++++//INLINE FUNCTIONS//++++++++++++++++++++++++++++//
 
 /**  \brief Compute the dot product
  *
@@ -1135,8 +1170,7 @@ inline Normal min(const Normal& n1, const Normal& n2)
 inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.warning(!centre.isNormalized(),
-                    "Reflecting around a non normalized centre");
+    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1158,8 +1192,7 @@ inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 inline Vec3 reflect(const Vec3& source, const Normal& centre)
 {
 #ifdef _LOW_LEVEL_CHECKS_
-    Console.warning(!centre.isNormalized(),
-                    "Reflecting around a non normalized centre");
+    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1167,6 +1200,42 @@ inline Vec3 reflect(const Vec3& source, const Normal& centre)
                 source.z - ((2 * dot) * centre.z));
 }
 
-//----------------------------//----------------//----------------------------//
+inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
+{
+#ifdef _LOW_LEVEL_CHECKS_
+    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+#endif
+    const float cosi = dot(source,interface); //cos incident
+    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
+    if(cos2t<0.f)
+        return Vec3(0,0,0);
+    else
+    {
+        Vec3 retval;
+        retval = source*eta;
+        retval -= interface*(cosi*eta+sqrtf(cos2t));
+        return retval;
+    }
+}
+
+inline Vec3 refract(const Vec3& source, const Normal& interface, float eta)
+{
+#ifdef _LOW_LEVEL_CHECKS_
+    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+#endif
+    const float cosi = dot(source,interface); //cos incident
+    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
+    if(cos2t<0.f)
+        return Vec3(0,0,0);
+    else
+    {
+        Vec3 retval;
+        retval = source*eta;
+        retval -= (Vec3)(interface*(cosi*eta+sqrtf(cos2t)));
+        return retval;
+    }
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 
 #endif

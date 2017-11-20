@@ -213,11 +213,27 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
 {
     //generate seed for WELLrng. Constant WELL_R is inside wellrng.h
     unsigned int WELLseed[WELL_R];
+#ifndef DEBUG
     for(int i=0;i<WELL_R;i++)
-    {
         //assuming RAND_MAX=2^31, sum two randoms
         WELLseed[i] = ((unsigned int)rand()+(unsigned int)rand());
-    }
+#else
+#ifdef FORCED_SEED
+    Console.log("Forced seed",NULL);
+    for(int i=0;i<WELL_R;i++)
+        //used defined seed
+        WELLseed[i] = FORCED_SEED;
+#else
+    int debug_seed = (int)rand();
+    char seedstr[128];
+    snprintf(seedstr, 128, "Seed is %d",debug_seed);
+    Console.log(seedstr,NULL);
+    for(int i=0;i<WELL_R;i++)
+        //debug seed is easier to replicate, but really predictable
+        WELLseed[i] = debug_seed;
+#endif
+#endif
+    
     bool done = false;
     Renderer_task todo;
     Sampler* sam;
@@ -243,6 +259,7 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
             jobs->pop();
             lock->unlock();
         }
+        
 	for(int i=0;i<WELL_R;i++) //alterate the seed
 	    WELLseed[i]++; //Predictable, but it is only a seed
 

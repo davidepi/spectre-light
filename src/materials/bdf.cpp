@@ -25,6 +25,7 @@ Spectrum Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
 }
 float Bdf::pdf(const Vec3* wo, const Vec3* wi)const
 {
+    //default pdf is cos(theta)/pi
     return wo->z*wi->z>0?fabsf(wi->z)*INV_PI:0.f;
 }
 
@@ -60,7 +61,7 @@ Spectrum Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
         val = (BdfFlags)(val & ~BTDF);
     else                                //transmitted ray
         val = (BdfFlags)(val & ~BRDF);
-    Spectrum retval(0);
+    Spectrum retval = SPECTRUM_BLACK;
     for(int i=0;i<count;i++)
     {
         if(bdfs[i]->isType(val)) //add contribution only if matches refl/trans

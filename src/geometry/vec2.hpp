@@ -223,7 +223,7 @@ public:
      */
     void reflect(const Vec2& centre);
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //------ Operators ---------------------------------------------------------
     
     ///The addition operation between two vectors
     Vec2 operator+(const Vec2&)const;
@@ -266,12 +266,12 @@ public:
     ///Check if two vector are different
     bool operator!=(const Vec2&)const;
     
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //--------------------------------------------------------------------------
     
 };
 
 
-//----------------------------//INLINE FUNCTIONS//----------------------------//
+//++++++++++++++++++++++++++++//INLINE FUNCTIONS//++++++++++++++++++++++++++++//
 
 /**
  * \brief Returns the length of the vector
@@ -464,6 +464,6 @@ inline Vec2 reflect(const Vec2 source,const Vec2 centre)
     return Vec2(source.x-((2*dot)*centre.x), source.y-((2*dot)*centre.y));
 }
 
-//----------------------------//----------------//----------------------------//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 
 #endif

@@ -149,7 +149,7 @@ bool Vec3::isNormalized()const
 {
     //sqrt(1) = 1 so I don't need the expense of a Vec3::length()
     float len = Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z;
-    return len>1-FLT_EPSILON && len<1+FLT_EPSILON;
+    return len>1-1E-5 && len<1+1E-5;
 }
 
 float* Vec3::toArray()const
@@ -166,9 +166,9 @@ char* Vec3::toString()const
     char val1[CHAR_ARRAY_SIZE_PER_FLOAT];
     char val2[CHAR_ARRAY_SIZE_PER_FLOAT];
     char val3[CHAR_ARRAY_SIZE_PER_FLOAT];
-    snprintf(val1,sizeof(val1),"%f",Vec3::x);
-    snprintf(val2,sizeof(val2),"%f",Vec3::y);
-    snprintf(val3,sizeof(val3),"%f",Vec3::z);
+    snprintf(val1,sizeof(val1),"%f",(double)Vec3::x);
+    snprintf(val2,sizeof(val2),"%f",(double)Vec3::y);
+    snprintf(val3,sizeof(val3),"%f",(double)Vec3::z);
     
     //( + ) + 2 commas + '/0' + "vec3" + 2 space
     int res_len = (int)(11 + strlen(val1) + strlen(val2) + strlen(val3));
@@ -276,7 +276,41 @@ void Vec3::reflect(const Normal& centre)
     Vec3::z -= ((2 * dot) * centre.z);
 }
 
-//♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+bool Vec3::refract(const Vec3 &interface, float eta)
+{
+#ifdef _LOW_LEVEL_CHECKS_
+    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+#endif
+    const float cosi = Vec3::dot(interface); //cos incident
+    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
+    if(cos2t<0.f)
+        return false;
+    else
+    {
+        Vec3::operator*=(eta);
+        Vec3::operator-=(interface*(cosi*eta+sqrtf(cos2t)));
+        return true;
+    }
+}
+
+bool Vec3::refract(const Normal &interface, float eta)
+{
+#ifdef _LOW_LEVEL_CHECKS_
+    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+#endif
+    const float cosi = Vec3::dot(interface); //cos incident
+    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
+    if(cos2t<0.f)
+        return false;
+    else
+    {
+        Vec3::operator*=(eta);
+        Vec3::operator-=((Vec3)(interface*(cosi*eta+sqrtf(cos2t))));
+        return true;
+    }
+}
+
+//------ Operators -------------------------------------------------------------
 
 Vec3 Vec3::operator+(const Vec3& v)const
 {
@@ -436,7 +470,7 @@ float Vec3::operator[](int component)const
     return *(&(Vec3::x)+component);
 }
 
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//------------------------------------------------------------------------------
 
 Normal::Normal()
 {
@@ -577,7 +611,7 @@ void Normal::normalize()
 bool Normal::isNormalized()const
 {
     float len = x*x+y*y+z*z;
-    return len>0.999 && len<1.0001;
+    return len>0.999f && len<1.0001f;
 }
 
 float* Normal::toArray()const
@@ -594,9 +628,9 @@ char* Normal::toString()const
     char val1[CHAR_ARRAY_SIZE_PER_FLOAT];
     char val2[CHAR_ARRAY_SIZE_PER_FLOAT];
     char val3[CHAR_ARRAY_SIZE_PER_FLOAT];
-    snprintf(val1,sizeof(val1),"%f",Normal::x);
-    snprintf(val2,sizeof(val2),"%f",Normal::y);
-    snprintf(val3,sizeof(val3),"%f",Normal::z);
+    snprintf(val1,sizeof(val1),"%f",(double)Normal::x);
+    snprintf(val2,sizeof(val2),"%f",(double)Normal::y);
+    snprintf(val3,sizeof(val3),"%f",(double)Normal::z);
     
     //( + ) + 2 comma + '/0' + "Normal" + 2 space
     int res_len = (int)(13 + strlen(val1) + strlen(val2) + strlen(val3));
@@ -687,7 +721,7 @@ void Normal::flipToMatch(const Vec3& reference)
         (*this)=-(*this);
 }
 
-//♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//------ Operators -------------------------------------------------------------
 
 Normal Normal::operator+(const Normal& n)const
 {
@@ -843,4 +877,4 @@ float Normal::operator[](int component)const
     return *(&(Normal::x)+component);
 }
 
-//♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+//------------------------------------------------------------------------------

@@ -21,18 +21,18 @@ Spectrum OrenNayar::df(const Vec3 *wout, const Vec3 *wincident) const
     float costhetaout = wout->z;
     float abscosthetain = fabsf(costhetain);
     float abscosthetaout = fabsf(costhetaout);
-    float sinthetain = sqrtf(1.f-costhetain*costhetain);
-    float sinthetaout = sqrtf(1.f-costhetaout*costhetaout);
+    float sinthetain = sqrtf(max(0.f,1.f-costhetain*costhetain));
+    float sinthetaout = sqrtf(max(0.f,1.f-costhetaout*costhetaout));
 
     //cos(phiin - phiout) = cos(phiin)*cos(phiout)+sin(phiin)*sin(phiout)
     float maxcos = 0.0f;
-    if(sinthetain>0 && sinthetaout>0) //cos(phiin - phiout) positive
+    if(sinthetain>1E-3f && sinthetaout>1E-3f) //cos(phiin - phiout) positive
     {
         float cosphiin, cosphiout, sinphiin, sinphiout;
         cosphiin = sinthetain==0.f?1.f:clamp(wincident->x/sinthetain,-1.f,1.f);
         cosphiout = sinthetaout==0.f?1.f:clamp(wout->x/sinthetaout,-1.f,1.f);
-        sinphiin = sqrtf(1.f - cosphiin * cosphiin);
-        sinphiout = sqrtf(1.f - cosphiout * cosphiout);
+        sinphiin = max(0.f,sqrtf(1.f - cosphiin * cosphiin));
+        sinphiout = max(0.f,sqrtf(1.f - cosphiout * cosphiout));
         maxcos = max(0.0f, cosphiin * cosphiout + sinphiin * sinphiout);
     }
 

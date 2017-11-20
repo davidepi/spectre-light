@@ -126,7 +126,7 @@ public:
      */
     void min(const Point3& p);
     
-    //♥ ♥ ♥ Operators ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //------ Operators ---------------------------------------------------------
     
     ///Offsets the point along a direction
     Point3 operator+ (const Vec3&  v)const;
@@ -154,12 +154,12 @@ public:
      //void operator-=(const Point3&  p); <- super useless, point - point = vec
      */
     
-    //♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥ ♥
+    //--------------------------------------------------------------------------
     
 };
 
 
-//----------------------------//INLINE FUNCTIONS//----------------------------//
+//++++++++++++++++++++++++++++//INLINE FUNCTIONS//++++++++++++++++++++++++++++//
 
 /**  \brief Compute the distance between two points
  *
@@ -213,6 +213,6 @@ inline Point3 max(const Point3 p1, const Point3 p2)
     Point3(max(p1.x,p2.x),max(p1.y,p2.y),max(p1.z,p2.z));
 }
 
-//----------------------------//----------------//----------------------------//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 
 #endif

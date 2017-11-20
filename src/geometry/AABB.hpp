@@ -205,7 +205,7 @@ public:
     bool intersect(const Ray* r, const RayProperties* rp, float* p1, float* p2)
     const;
 
-    //<><><><> Operators <><><><><><><><><><><><><><><><><><><><><><><><><><><><
+    //------ Operators ---------------------------------------------------------
     
     ///Return a new AABB including the old one and the input point
     AABB operator+(const Point3& p)const;
@@ -228,7 +228,7 @@ public:
     ///Determine if the two AABBs have different volumes
     bool operator!=(const AABB& b)const;
 
-    //<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+    //--------------------------------------------------------------------------
 };
 
 #endif
