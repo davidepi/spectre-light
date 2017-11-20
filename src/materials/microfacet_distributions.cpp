@@ -52,7 +52,7 @@ float Blinn::G1(const Vec3* v)const
 void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
 {
     const float cost = powf(r0,(1.f/(Blinn::exponent+1)));
-    const float sint = sqrtf(1.f-cost*cost);
+    const float sint = sqrtf(max(0.f,1.f-cost*cost));
     const float phi = r1*TWO_PI;
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
     if(wo->z*wh->z<0) *wh = -*wh;
@@ -98,7 +98,7 @@ float Beckmann::G1(const Vec3* v)const
         return 0;
     if(cos>=1) //fully visible
         return 1;
-    const float c = cos/(sqrtf(1.f-cos*cos)*Beckmann::a);
+    const float c = cos/(sqrtf(max(0.f,1.f-cos*cos))*Beckmann::a);
     if(c>=1.6)
         return 1.f;
     else
@@ -154,8 +154,8 @@ float GGXiso::G1(const Vec3* v)const
 void GGXiso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     const float cos2t = (1.f-r0)/(r0*(a2-1)+1);
-    const float cost = sqrtf(cos2t);
-    const float sint = sqrtf(1.f-cos2t);
+    const float cost = sqrtf(max(0.f,cos2t));
+    const float sint = sqrtf(max(0.f,1.f-cos2t));
     const float phi = TWO_PI*r1;
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
     if(wo->z*wh->z<0)*wh = -*wh;
@@ -174,7 +174,7 @@ float GGXaniso::D(const Vec3 *h)const
     if(h->z==0)
         return 0.f;
     const float inv_cos2 = 1.f/(h->z*h->z);
-    const float sin2 = 1.f-(h->z*h->z);
+    const float sin2 = max(0.f,1.f-(h->z*h->z));
     if(sin2==0)
         return 1.f;
     const float inv_sin2 = 1.f/sin2;
@@ -195,7 +195,7 @@ float GGXaniso::D(const Vec3 *h)const
 static inline float lambdaGGXaniso(const Vec3* v,float ax, float ay)
 {
     const float cos = v->z;
-    const float sin = sqrtf(1.f-cos*cos);
+    const float sin = sqrtf(max(0.f,1.f-cos*cos));
     const float sin2 = sin*sin;
     const float tan = fabsf(sin/cos);
     if(std::isinf(tan))
@@ -226,7 +226,7 @@ void GGXaniso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
     const float a2 = 1/(cosphi*cosphi/ax2+sinphi*sinphi/ay2);
     const float tantheta2 = a2*r0/(1-r0);
     const float cost = 1.f/sqrtf(1.f + tantheta2);
-    const float sint = sqrtf(1.f-cost*cost);
+    const float sint = sqrtf(max(0.f,1.f-cost*cost));
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
     if(wo->z*wh->z<0) *wh = -*wh;
 }

@@ -23,9 +23,9 @@ sampler: stratified 25
 
 #filter type optional_values
 #type can be box, tent, gaussian, mitchell and lanczos
-#gaussian requires a sigma parameter, the falloff speed. Default is 2
-#mitchell requires the B and C parameters, default are 0.33 and 0.33
-#lanczos requires the tau parameter, default is 3
+#gaussian requires a sigma parameter, the falloff speed. Suggested a value of 2
+#mitchell requires the B and C parameters, suggested values are 0.33 and 0.33
+#lanczos requires the tau parameter, the suggested value is 3
 filter: mitchell 0.33 0.33
 
 #integrator type
