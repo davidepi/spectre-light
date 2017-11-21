@@ -363,9 +363,7 @@ const Spectrum SPECTRUM_WHITE = SPECTRUM_ONE;
 
 Spectrum::Spectrum()
 {
-#ifdef DISPERSION
-    Spectrum::chosen = -1;
-#endif
+
 }
 
 Spectrum::Spectrum(int t)
@@ -423,9 +421,6 @@ Spectrum::Spectrum(int t)
         Spectrum::w[2] = z*INVY_SUM;
 #endif
     }
-#ifdef DISPERSION
-    Spectrum::chosen = -1;
-#endif
 }
 
 Spectrum::Spectrum(const float* vals)
@@ -437,9 +432,6 @@ Spectrum::Spectrum(const float* vals)
     Spectrum::w[0] = vals[0];
     Spectrum::w[1] = vals[1];
     Spectrum::w[2] = vals[2];
-#endif
-#ifdef DISPERSION
-    Spectrum::chosen = -1;
 #endif
 }
 
@@ -469,9 +461,6 @@ Spectrum::Spectrum(const std::initializer_list<float> vals)
     Spectrum::w[1]/=6;
     Spectrum::w[2]/=5;
 #endif
-#ifdef DISPERSION
-    Spectrum::chosen = -1;
-#endif
 }
 
 Spectrum::Spectrum(float val)
@@ -493,9 +482,6 @@ Spectrum::Spectrum(float val)
     Spectrum::w[13] = val;
     Spectrum::w[14] = val;
     Spectrum::w[15] = val;
-#endif
-#ifdef DISPERSION
-    Spectrum::chosen = -1;
 #endif
 }
 
@@ -603,9 +589,6 @@ Spectrum::Spectrum(ColorRGB c, bool l)
     Spectrum::w[0] = res.r;
     Spectrum::w[1] = res.g;
     Spectrum::w[2] = res.b;
-#endif
-#ifdef DISPERSION
-    Spectrum::chosen = -1;
 #endif
 }
 

@@ -1,12 +1,4 @@
 #include "refraction.hpp"
-#ifdef DISPERSION
-Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
-                       const Spectrum& etat)
-: Bdf(BdfFlags(BTDF|SPECULAR)),specular(s),eta_i(etai),eta_t(etat)
-{
-
-}
-#else
 Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
                        const Spectrum& etat)
 : Bdf(BdfFlags(BTDF|SPECULAR)),specular(s)
@@ -26,7 +18,6 @@ Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
     eta_t = etat.w[0];
 #endif
 }
-#endif
 
 Spectrum Refraction::df(const Vec3*, const Vec3*) const
 {
@@ -34,12 +25,8 @@ Spectrum Refraction::df(const Vec3*, const Vec3*) const
 }
 
 Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float,
-                          float* pdf,char*) const
+                          float* pdf) const
 {
-#ifdef DISPERSION
-    if(*choose==-1)
-        *choose = (char)min((int)(r0*SPECTRUM_SAMPLES),SPECTRUM_SAMPLES-1);
-#endif
     float ei;
     float et;
 
@@ -50,24 +37,15 @@ Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float,
     float abscosincident = wo->z;
     if(!fromOutside) //swaps the index, since I assume ei is for the outside
     {
-#ifdef DISPERSION
-        ei = Refraction::eta_t.w[*choose];
-        et = Refraction::eta_i.w[*choose];
-#else
+
         ei = Refraction::eta_t;
         et = Refraction::eta_i;
-#endif
         abscosincident = fabsf(abscosincident);
     }
     else
     {
-#ifdef DISPERSION
-        ei = Refraction::eta_i.w[*choose];
-        et = Refraction::eta_t.w[*choose];
-#else
         ei = Refraction::eta_i;
         et = Refraction::eta_t;
-#endif
     }
 
     //calculate transmitted direction

@@ -78,7 +78,7 @@ public:
      *  \return The value of the BTDF
      */
     Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf, char* chosen)const;
+                  float* pdf)const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -98,16 +98,8 @@ private:
     //scale factor
     Spectrum specular;
 
-#ifdef DISPERSION
-    //incident ior
-    Spectrum eta_i;
-
-    //transmitted ior
-    Spectrum eta_t;
-#else
     float eta_i;
     float eta_t;
-#endif
 };
 
 /** \brief Calculates the ior by using the Cauchy equation

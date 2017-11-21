@@ -72,7 +72,7 @@ public:
      *  \return The value of the BRDF
      */
     Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                  float* pdf, char* choose)const;
+                  float* pdf)const;
     
     /** \brief Return the probability density function for this BRDF
      *
@@ -108,7 +108,7 @@ public:
     ~MicrofacetT();
     Spectrum df(const Vec3* woS, const Vec3* wiS)const;
     Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                  float* pdf, char* choose)const;
+                  float* pdf)const;
     float pdf(const Vec3* woS, const Vec3* wiS)const;
     
 private:

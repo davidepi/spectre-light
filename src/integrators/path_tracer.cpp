@@ -46,13 +46,8 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Vec3 wi;
     float pdf;
     BdfFlags matched;
-#ifdef DISPERSION
     Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
-                           BdfFlags(ALL), &matched,&(power->chosen));
-#else
-    Spectrum f = mat->df_s(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
-                           BdfFlags(ALL), &matched,NULL);
-#endif
+                           BdfFlags(ALL), &matched);
     float adot = absdot(wi,hp->n);
     if(f.isBlack() || pdf==0)
         return retval;
@@ -68,9 +63,5 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     //recursive step
     Spectrum rec = l_rec(sc,&h2,&r2,sam,power,matched,ot);
     retval += rec;
-#ifdef DISPERSION
-    //propagate chosen wavelength also to the recursive result
-    retval.chosen = power->chosen;
-#endif
     return retval;
 }

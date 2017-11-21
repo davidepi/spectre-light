@@ -1,17 +1,17 @@
 ### V0.1 FOUNDATIONS ###
-- basic framework (vectors, matrices, rays) *DONE*
-- spheres, boxes sdl *DONE*
-- kd-tree accelerator *DONE*
-- basic materials (lambert, perfect reflection/refraction) *DONE*
-- area lights *DONE*
-- direct lighting tracer *DONE*
-- path tracer *DONE*
-- simple parser *DONE*
-- dispersion *POSTPONED: difficult to test without bdpt*
-- bdpt *POSTPONED: there are more important features*
-- triangle meshes *Missing area light sampling* **<-**
-- bvh aac accelerator *DONE*
-- microfacet reflection and transmission (blinn, beckmann, ggx isotropic, ggx anisotropic) *DONE*
+- [x] basic framework (vectors, matrices, rays)
+- [x] spheres, boxes sdl
+- [x] kd-tree accelerator
+- [x] basic materials (lambert, perfect reflection/refraction)
+- [x] area lights
+- [x] direct lighting tracer
+- [x] path tracer
+- [x] simple parser
+- [x] dispersion **POSTPONED ->** difficult to test without bdpt
+- [x] bdpt **POSTPONED ->** there are more important features
+- [ ] triangle meshes *Missing area light sampling* **<-**
+- [x] bvh aac accelerator
+- [x] microfacet reflection and transmission (blinn, beckmann, ggx isotropic, ggx anisotropic)
 
 ### V0.2 ###
 - bdpt

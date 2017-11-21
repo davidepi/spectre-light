@@ -26,7 +26,7 @@ Spectrum MicrofacetR::df(const Vec3* woS, const Vec3* wiS)const
 }
 
 Spectrum MicrofacetR::df_s(const Vec3* wo, Vec3* wi, float r0, float r1,
-                           float* pdf, char*)const
+                           float* pdf)const
 {
     Vec3 wh;
     MicrofacetR::md->sampleWh(wo, r0, r1, &wh);
@@ -118,7 +118,7 @@ Spectrum MicrofacetT::df(const Vec3* woS, const Vec3* wiS)const
 }
 
 Spectrum MicrofacetT::df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                            float* pdf, char*)const
+                            float* pdf)const
 {
     Vec3 wh;
     if(woS->z == 0)

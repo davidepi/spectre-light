@@ -166,9 +166,6 @@ public:
 #ifdef SPECTRAL
     ///Wavelength samples
     float w[SPECTRUM_SAMPLES];
-#ifdef DISPERSION
-    char chosen;
-#endif
 #else
     ///x,y,z components
     float w[3];
