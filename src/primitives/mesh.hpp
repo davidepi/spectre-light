@@ -1,5 +1,5 @@
 //Created,   6 Aug 2017
-//Last Edit 20 Aug 2017
+//Last Edit 21 Nov 2017
 
 /**
  *  \file triangle.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date     20 Aug 2017
+ *  \date     21 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -138,11 +138,36 @@ public:
      *  units
      */
     float surface()const;
+    
+    /** \brief Return the number of face of the mesh
+     *
+     *  This function returns the number of tris composing the mesh
+     *
+     *  \return The number of faces in a Mesh
+     */
+    int getNumberOfFaces()const;
+    
+    /** \brief Populate the Cdf array
+     *
+     *  This function populates the Cdf array of the class. For each
+     *  triangle, ordered, the area of the current triangle is calculated and
+     *  added to the previous result. With this array it is possible to random
+     *  sample a mesh with differently sized triangles.
+     *  For more info checks the Mesh::getRandomPoint method.
+     *
+     *  The cdf array is not automatically populated because it is needed only
+     *  in area lights.
+     */
+    void calculateCdf();
 
     /** \brief Returns a random point on the surface of the mesh
      *
      *  Useful for the light sources, this method returns a random point on the
      *  surface of the mesh.
+     *  In the Mesh implementation of this method, the random value is lerped
+     *  in order to get the random tris. With the cdf array the tris is found
+     *  relatively fast and then the Triangle::getRandomPoint() function is
+     *  called
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
@@ -152,7 +177,10 @@ public:
     void getRandomPoint(float r, float r1, Point3* p, Normal* n)const;
 
 private:
-
+    
+    //array of tris densities
+    float* cdf;
+    
     //array of triangles
     Triangle* tris;
 

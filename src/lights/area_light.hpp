@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit  5 Sep 2017
+//Last Edit 21 Nov 2017
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      5 Sep 2017
+ *  \date      21 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -40,6 +40,9 @@ public:
      *  \param[in] c The emitted light
      */
     AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c);
+    
+    ///Default destructor
+    virtual ~AreaLight();
 
     /** \brief Return the radiance for a random ray
      *
@@ -122,6 +125,7 @@ private:
     Spectrum c;
     float area;
     float invarea;
+    float* cdf; //contains the cumulative area for every triangle
 };
 
 #endif

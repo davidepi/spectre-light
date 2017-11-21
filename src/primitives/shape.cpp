@@ -11,3 +11,13 @@ unsigned int Shape::getID()const
 {
     return Shape::id;
 }
+
+int Shape::getNumberOfFaces()const
+{
+    return 1;
+}
+
+void Shape::calculateCdf()
+{
+    return;
+}

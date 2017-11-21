@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 11 Jul 2017
+//Last Edit 21 Nov 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Jul 2017
+ *  \date      21 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -94,6 +94,26 @@ public:
      *  \return A float representing the area of the shape in world-space units
      */
     virtual float surface()const = 0;
+    
+    /** \brief Return the number of face of the shape
+     *
+     *  Useful only for Mesh objects, this function returns the number of tris
+     *  composing the shape. It returns 1 if the shape is an sdl (i.e. Sphere
+     *  or Box)
+     *
+     *  \return The number of faces in a Mesh, 1 in an sdl
+     */
+    virtual int getNumberOfFaces()const;
+    
+    /** \brief Populate the Cdf array
+     *
+     *  Useful only for Mesh objects, this function populates the Cdf array.
+     *  For each triangle, ordered, the area of the current triangle is
+     *  calculated and added to the previous result. With this array it is
+     *  possible to random sample a mesh with differently sized triangles.
+     *  For more info checks the Mesh::getRandomPoint method
+     */
+    virtual void calculateCdf();
 
     /** \brief Returns a random point on the surface of the shape
      *
@@ -132,12 +152,6 @@ struct HitPoint
 
     ///Cross between normal and right
     Vec3 cross;
-
-    ///u coordinate for texture
-    //float u;
-
-    ///v coordinate for texture
-    //float v;
 
     ///Hit asset
     const Asset* hit;

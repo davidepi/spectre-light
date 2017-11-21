@@ -7,7 +7,7 @@ else()
     set(CMAKE_CXX_FLAGS_DEBUG "-O0 -pipe -g -Wall -Wextra -Wpedantic -Werror -Wdouble-promotion -D_LOW_LEVEL_CHECKS_ -DDEBUG")
     #no input coming from unstruted sources -> no need the stack protector hardening
     #funroll-loops is used for several functions inside the Spectrum class. Some of them are unrolled by hand, others are not (code becomes really unmantainable)
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -pipe -flto -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -pipe -flto -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")
 endif()
 
 file(GLOB spectre_core_sources

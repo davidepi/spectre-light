@@ -4,7 +4,13 @@ AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c)
 : Asset(sp,objToWorld), c(c)
 {
     AreaLight::area = sp->surface();
+    sp->calculateCdf();
     AreaLight::invarea = 1.f/area;
+}
+
+AreaLight::~AreaLight()
+{
+    delete cdf;
 }
 
 Spectrum AreaLight::emissivePower()const

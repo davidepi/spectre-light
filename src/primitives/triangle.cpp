@@ -41,7 +41,7 @@ AABB Triangle::computeWorldAABB(const Matrix4* transform)const
     pmin = *transform*pmin;
     pmax = *transform*pmax;
 
-    return AABB(&pmin, &pmax);
+    return AABB(min(pmin,pmax), min(pmin,pmax));
 }
 
 float Triangle::surface()const

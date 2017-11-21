@@ -8,11 +8,14 @@ Mesh::Mesh(unsigned int size)
     //can't use malloc, vtable pointer would be uninitialized
     Mesh::tris = new Triangle[size];
     Mesh::area = 0;
+    Mesh::cdf = NULL;
 }
 
 Mesh::~Mesh()
 {
    delete[] Mesh::tris;
+    if(Mesh::cdf!=NULL)
+        free(Mesh::cdf);
 }
 
 void Mesh::addTriangle(const Point3 *a, const Point3 *b, const Point3 *c,
@@ -108,7 +111,50 @@ float Mesh::surface()const
     return Mesh::area;
 }
 
-void Mesh::getRandomPoint(float, float, Point3* , Normal*) const
+int Mesh::getNumberOfFaces()const
 {
-    Console.critical("Unimplemented Mesh::getRandomPoint");
+    return Mesh::count;
+}
+
+void Mesh::calculateCdf()
+{
+    if(Mesh::cdf!=NULL)
+        return;
+    else
+        Mesh::cdf = (float*)malloc(sizeof(float)*count);
+    float sum = 0;
+    for(unsigned int i=0;i<count;i++)
+    {
+        sum+=tris[i].surface();
+        cdf[i]=sum;
+    }
+}
+
+void Mesh::getRandomPoint(float r0, float r1, Point3* p, Normal* n) const
+{
+    float res = lerp(r0, 0.0f, Mesh::area);
+    
+    //divide et impera search
+    int start = 0;
+    int end = count-1;
+    int mid;
+    
+    //limit cases
+    if(res < cdf[0])
+        tris[0].getRandomPoint(res, r1, p, n);
+    if(res>cdf[end-1])
+        tris[end].getRandomPoint(res-cdf[end],r1,p,n);
+    
+    while(true)
+    {
+        mid = (start+end)/2;
+        if(cdf[mid]<=res && cdf[mid+1]>res) //mid contains the value
+            break;
+        else if(cdf[mid]>res)
+            end = mid;
+        else
+            start = mid;
+    }
+
+    tris[mid].getRandomPoint(res-cdf[mid], r1, p, n);
 }
