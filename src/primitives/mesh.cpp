@@ -121,7 +121,10 @@ void Mesh::calculateCdf()
     if(Mesh::cdf!=NULL)
         return;
     else
+    {
+        Console.warning(MESSAGE_WARNING_MESHLIGHTS);
         Mesh::cdf = (float*)malloc(sizeof(float)*count);
+    }
     float sum = 0;
     for(unsigned int i=0;i<count;i++)
     {

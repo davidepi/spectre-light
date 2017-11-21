@@ -15,6 +15,7 @@
 #ifndef __MESH_HPP__
 #define __MESH_HPP__
 
+#include "localization.h"
 #include "primitives/shape.hpp"
 #include "primitives/triangle.hpp"
 #include "geometry/matrix4.hpp"

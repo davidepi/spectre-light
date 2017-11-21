@@ -129,10 +129,11 @@ float GGXiso::D(const Vec3 *h)const
 {
     if(h->z==0)
         return 0.f;
-    float inv_term = (h->z*h->z)*(a2-1)+1;
-    inv_term*=inv_term;
-    inv_term*=ONE_PI;
-    return a2/inv_term;
+    const float cos2t = h->z*h->z;
+    const float sin2t = max(0.f,1-cos2t);
+    float sqr_term = a2+(sin2t/cos2t);
+    sqr_term*=sqr_term;
+    return a2/(sqr_term*cos2t*cos2t*ONE_PI);
 }
 
 float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *)const
@@ -142,12 +143,11 @@ float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *)const
 
 float GGXiso::G1(const Vec3* v)const
 {
-    const float cos = fabsf(v->z);
-    if(cos==0)
+    const float cos2 = v->z*v->z;
+    if(cos2==0)
         return 0.f;
-    if(cos>=1)
-        return 1.f;
-    return (2*cos)/(cos+sqrtf(a2+(1-a2)*cos*cos));
+    const float sin2 = max(0.f,1-cos2*cos2);
+    return 2/(1+sqrtf(1+a2*sin2/cos2));
     
 }
 

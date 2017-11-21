@@ -2,6 +2,9 @@
 - [x] basic framework (vectors, matrices, rays)
 - [x] spheres, boxes sdl
 - [x] kd-tree accelerator
+- [x] cameras (orthographic, perpsective, 360 panorama)
+- [x] samplers (stratified and pure random)
+- [x] filters (box, tent, gaussian, mitchell, lanczos)
 - [x] basic materials (lambert, perfect reflection/refraction)
 - [x] area lights
 - [x] direct lighting tracer
@@ -9,13 +12,14 @@
 - [x] simple parser
 - [x] dispersion **POSTPONED ->** difficult to test without bdpt
 - [x] bdpt **POSTPONED ->** there are more important features
-- [ ] triangle meshes *Missing area light sampling* **<-**
+- [x] triangle meshes
 - [x] bvh aac accelerator
 - [x] microfacet reflection and transmission (blinn, beckmann, ggx isotropic, ggx anisotropic)
 
 ### V0.2 ###
 - bdpt
 - mlt and erpt (depending on the effort)
+- unit testing
 - better parser (lex/yacc, .3ds parsing, .mtl parsing)
 - better image IO (at least .jpg and .tiff input and output)
 - diffuse textures

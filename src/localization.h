@@ -87,6 +87,9 @@
 
 #define MESSAGE_INPUT_FILE "Write input file path or q to exit"
 
+#define MESSAGE_WARNING_MESHLIGHTS "Meshes with high polycount can increase "\
+                                "the render time dramatically if used as lights"
+
 #endif
 
 
