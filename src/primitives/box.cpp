@@ -31,7 +31,7 @@ AABB Box::computeWorldAABB(const Matrix4* transform)const
     const Point3 pmin=*transform*Point3();
     const Point3 pmax=*transform*Point3(Box::edges.x,Box::edges.y,Box::edges.z);
     
-    return AABB(&pmin, &pmax);
+    return AABB(min(pmin,pmax),max(pmin,pmax));
 }
 
 float Box::surface()const
@@ -104,7 +104,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     h->n[axis] = 1;
     h->n[axis]*=sign(h->h[axis]);
     if(h->n.z!=0)
-        h->right = Vec3(1,0,0);
+        h->right = Vec3(h->n.z,0,0);
     else
         h->right = Vec3(-h->n.y,h->n.x,0);
     return true;
@@ -112,66 +112,72 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 
 void Box::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
 {
-
+    /*
+      frn bck top btm lft rgt
+     |---|---|---|---|---|---|
+     | y | y | z | z | y | y |
+     |---|---|---|---|---|---|
+       x   x   x   x   z   z
+     */
     float res = lerp(r0,0,edges.x*4+edges.z*2);
-    unsigned char face = (unsigned char)res/6;
-    switch(face)
+    if(res<edges.x)
     {
         //front
-        case 0:
-            p->x=res;
-            p->y = lerp(r1,0,edges.y);
-            p->z = 0;
-            n->x = 0;
-            n->y = 0;
-            n->z = -1;
-            break;
+        p->x=res;
+        p->y = lerp(r1,0,edges.y);
+        p->z = 0;
+        n->x = 0;
+        n->y = 0;
+        n->z = -1;
+    }
+    else if(res<2*edges.x)
+    {
         //back
-        case 1:
-            p->x=res-edges.x;
-            p->y = lerp(r1,0,edges.y);
-            p->z = edges.z;
-            n->x = 0;
-            n->y = 0;
-            n->z = 1;
-            break;
-        //left
-        case 2:
-            p->x=0;
-            p->y = lerp(r1,0,edges.y);
-            p->z = res-(edges.x*2);
-            n->x = -1;
-            n->y = 0;
-            n->z = 0;
-            break;
-        //right
-        case 3:
-            p->x=edges.x;
-            p->y = lerp(r1,0,edges.y);
-            p->z = res-(edges.x*2)-edges.z;
-            n->x = 1;
-            n->y = 0;
-            n->z = 0;
-            break;
-        //bottom
-        case 4:
-            p->x=res-(edges.x*2)-(edges.z*2);
-            p->y = 0;
-            p->z = lerp(r1,0,edges.z);
-            n->x = 0;
-            n->y = -1;
-            n->z = 0;
-            break;
+        p->x=res-edges.x;
+        p->y = lerp(r1,0,edges.y);
+        p->z = edges.z;
+        n->x = 0;
+        n->y = 0;
+        n->z = 1;
+    }
+    else if(res<3*edges.x)
+    {
         //top
-        case 5:
-            p->x=res-(edges.x*3)-(edges.z*2);
-            p->y = edges.y;
-            p->z = lerp(r1,0,edges.z);
-            n->x = 0;
-            n->y = 1;
-            n->z = 0;
-            break;
-        default:
-            printf("%d\n",face);
+        p->x = res-2*edges.x;
+        p->y = edges.y;
+        p->z = lerp(r1,0,edges.z);
+        n->x = 0;
+        n->y = 1;
+        n->z = 0;
+    }
+    else if(res<4*edges.x)
+    {
+        //bottom
+        p->x = res-3*edges.x;
+        p->y = 0;
+        p->z = lerp(r1,0,edges.z);
+        n->x = 0;
+        n->y = -1;
+        n->z = 0;
+    }
+    else if(res<(4*edges.x+edges.z))
+    {
+        //left
+        p->x = 0;
+        p->y = lerp(r1,0,edges.y);
+        p->z = res-4*edges.x;
+        n->x = -1;
+        n->y = 0;
+        n->z = 0;
+    }
+    else
+    {
+        //right
+        p->x = edges.x;
+        p->y = lerp(r1,0,edges.y);
+        p->z = res-4*edges.x-edges.z;
+        n->x = 1;
+        n->y = 0;
+        n->z = 0;
     }
 }

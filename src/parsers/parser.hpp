@@ -25,6 +25,7 @@
 #include "utility/scene.hpp"
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
+#include "primitives/box.hpp"
 #include "primitives/mesh.hpp"
 #include <cstdio>
 #include <cstring>

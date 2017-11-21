@@ -706,14 +706,26 @@ static void parseMaterial(char* string)
 static void parseShape(char* string, std::unordered_map<std::string,int>* map,
                         Settings* out)
 {
-    char* token = strtok(string," \n");
+    char* pos;
+    char* token = strtok_r(string," \n", &pos);
     if(strcmp(token,"asset:")==0)
     {
-        std::string name(strtok(NULL," \n"));
-        token = strtok(NULL," \n");
+        std::string name(strtok_r(NULL," \n",&pos));
+        token = strtok_r(NULL," \n",&pos);
         Shape* res;
         if(strcmp(token,"sphere")==0) //sdl sphere
-            res = new Sphere((float)atof(strtok(NULL," \n")));
+            res = new Sphere((float)atof(strtok_r(NULL," \n",&pos)));
+        else if(strcmp(token, "box")==0)
+        {
+            token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
+            char* val = strtok(token,"(), "); //parse x
+            float x = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse y
+            float y = (float)atof(val);
+            val = strtok(NULL,"(), "); //parse z
+            float z = (float)atof(val);
+            res = new Box(Vec3(x,y,z));
+        }
         else
         {
             res = parseObj(token);
