@@ -56,7 +56,7 @@ DielectricReflection::DielectricReflection(const Spectrum& specular,
 #endif
 
 Spectrum ConductorReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
-                                   float* pdf, char* choose)const
+                                   float* pdf, char*)const
 {
     //wi = wo * [-1 0 0 0]
     //          [0 -1 0 0]
@@ -77,7 +77,7 @@ Spectrum ConductorReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
 }
 
 Spectrum DielectricReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
-                                    float* pdf, char* choose)const
+                                    float* pdf, char*)const
 {
     wi->x = -wo->x;
     wi->y = -wo->y;

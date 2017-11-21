@@ -15,6 +15,7 @@
 
 #include "geometry/vec3.hpp"
 #include "utility/utility.hpp"
+#include "settings.h" //ONE_PI
 #include <cmath> //isinf
 
 /**

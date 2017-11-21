@@ -14,8 +14,8 @@ bool RandomSampler::getSamples(Sample *res)
         return false;
     for(int i=0;i<spp;i++)
     {
-        res->posx = nextx+rng.getNumberf();
-        res->posy = nexty+rng.getNumberf();
+        res->posx = nextx+rng.getNumber();
+        res->posy = nexty+rng.getNumber();
         res++;
     }
     if(++nextx==endx)

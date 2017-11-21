@@ -9,7 +9,7 @@ Camera360::Camera360(const Point3* p,const Point3* t,
 
 void Camera360::createRay(Sample *s, Ray *r)const
 {
-    float t = (float)M_PI * s->posy * Camera360::invY;
+    float t = (float)ONE_PI * s->posy * Camera360::invY;
     float p = TWO_PI * s->posx * Camera360::invX;
 
     r->origin = camera2world * Point3(0,0,0);

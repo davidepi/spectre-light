@@ -17,7 +17,7 @@
 
 #include <cmath>
 #include "samplers/filter.hpp"
-#include "utility/utility.hpp" //M_PI
+#include "settings.h" //ONE_PI
 
 /**
  *  \class LanczosFilter lanczos_filter.hpp "samplers/lanczos_filter.hpp"

@@ -58,7 +58,7 @@ void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
     if(wo->z*wh->z<0) *wh = -*wh;
 }
 
-float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const
+float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3*)const
 {
     float dotwoh = dot(*wo,*wh);
     if(dotwoh>0.f)
@@ -83,10 +83,10 @@ float Beckmann::D(const Vec3* h)const
         return 0.f;
     const float a2 = Beckmann::a*Beckmann::a;
     const float exp = expf(-(sint2/cost2)/a2);
-    return exp/(M_PI*cost2*cost2*a2)*exp;
+    return exp/(ONE_PI*cost2*cost2*a2)*exp;
 }
 
-float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
+float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3*)const
 {
     return Beckmann::G1(wo)*Beckmann::G1(wi);
 }
@@ -99,10 +99,10 @@ float Beckmann::G1(const Vec3* v)const
     if(cos>=1) //fully visible
         return 1;
     const float c = cos/(sqrtf(max(0.f,1.f-cos*cos))*Beckmann::a);
-    if(c>=1.6)
+    if(c>=1.6f)
         return 1.f;
     else
-        return (3.535f*c+2.181f*c*c)/(1+2.276*c+2.577*c*c);
+        return (3.535f*c+2.181f*c*c)/(1.f+2.276f*c+2.577f*c*c);
 }
 
 void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
@@ -131,11 +131,11 @@ float GGXiso::D(const Vec3 *h)const
         return 0.f;
     float inv_term = (h->z*h->z)*(a2-1)+1;
     inv_term*=inv_term;
-    inv_term*=M_PI;
+    inv_term*=ONE_PI;
     return a2/inv_term;
 }
-static inline float lambdaGGXaniso(const Vec3* v,float ax, float ay);
-float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *wh)const
+
+float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *)const
 {
     return GGXiso::G1(wo)*GGXiso::G1(wi);
 }
@@ -208,7 +208,7 @@ static inline float lambdaGGXaniso(const Vec3* v,float ax, float ay)
     return (-1+sqrtf(1.f+(tan*tan*alpha*alpha)))*0.5f;
 }
 
-float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
+float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3*)const
 {
     //this one is taken from pbrtv3
     return 1.f/(1+lambdaGGXaniso(wo,ax,ay)+lambdaGGXaniso(wi,ax,ay));
@@ -217,8 +217,8 @@ float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
 void GGXaniso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     //again, anisotropic equations are taken from pbrtv3
-    float phi = atanf(ay/ax*tanf(TWO_PI*r1+.5f*M_PI));
-    if(r1 > .5f) phi += M_PI;
+    float phi = atanf(ay/ax*tanf(TWO_PI*r1+.5f*ONE_PI));
+    if(r1 > .5f) phi += ONE_PI;
     const float sinphi = sinf(phi);
     const float cosphi = cosf(phi);
     const float ax2 = ax * ax;

@@ -362,7 +362,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     }
     
     //best cost sucks, better not to split at all -> make a leaf
-    if((best_cost > 4.0 * old_cost && a_n < 16) || best_axis == 0xFF)
+    if((best_cost > 4.f * old_cost && a_n < 16) || best_axis == 0xFF)
     {
         node->offset_start = KdTree::assets_number;
         node->assets_number = a_n;

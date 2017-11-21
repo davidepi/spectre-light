@@ -21,8 +21,8 @@ bool StratifiedSampler::getSamples(Sample *res)
     {
         for(int x=0;x<strata_x;x++)
         {
-            float randomization_x = isRandomized?rng.getNumberf():0.5f;
-            float randomization_y = isRandomized?rng.getNumberf():0.5f;
+            float randomization_x = isRandomized?rng.getNumber():0.5f;
+            float randomization_y = isRandomized?rng.getNumber():0.5f;
             res->posx = (nextx)+((x+randomization_x)*dx);
             res->posy = (nexty)+((y+randomization_y)*dy);
             res++;

@@ -149,7 +149,7 @@ bool Vec3::isNormalized()const
 {
     //sqrt(1) = 1 so I don't need the expense of a Vec3::length()
     float len = Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z;
-    return len>1-1E-5 && len<1+1E-5;
+    return len>1.f-1E-5f && len<1.f+1E-5f;
 }
 
 float* Vec3::toArray()const

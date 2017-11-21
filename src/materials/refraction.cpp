@@ -33,8 +33,8 @@ Spectrum Refraction::df(const Vec3*, const Vec3*) const
     return SPECTRUM_BLACK;
 }
 
-Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float r0, float,
-                          float* pdf,char* choose) const
+Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float,
+                          float* pdf,char*) const
 {
 #ifdef DISPERSION
     if(*choose==-1)

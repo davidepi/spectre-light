@@ -14,7 +14,7 @@
 #ifndef __UTILITY_HPP__
 #define __UTILITY_HPP__
 
-#include "settings.h" //M_PI
+#include "settings.h" //ONE_PI
 #include "utility/console.hpp"
 #include <cstdio> //sprintf
 #include <climits>
@@ -66,7 +66,7 @@ inline void swap(float *f1, float *f2)
  */
 inline float toRad(const float deg)
 {
-    return ((float)M_PI/180.f) * deg;
+    return (ONE_PI/180.f) * deg;
 }
 
 /** \brief Convert radians to degrees
@@ -80,7 +80,7 @@ inline float toRad(const float deg)
  */
 inline float toDeg(const float rad)
 {
-    return (180.f/(float)M_PI) * rad;
+    return (180.f/ONE_PI) * rad;
 }
 
 /**

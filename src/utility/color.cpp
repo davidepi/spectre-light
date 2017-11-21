@@ -194,26 +194,26 @@ ColorXYZ::ColorXYZ(float x, float y, float z)
 ColorRGB ColorXYZ::toStandardRGB()const
 {
     constexpr const double EXP = 1.0/2.4; //periodic :(
-    double x = ColorXYZ::r;
-    double y = ColorXYZ::g;
-    double z = ColorXYZ::b;
+    float x = ColorXYZ::r;
+    float y = ColorXYZ::g;
+    float z = ColorXYZ::b;
     
-    double r = x *  3.2404542 + y * -1.5371385 + z * -0.4985314;
-    double g = x * -0.9692660 + y *  1.8760108 + z *  0.0415560;
-    double b = x *  0.0556434 + y * -0.2040259 + z *  1.0572252;
+    float r = x *  3.2404542f + y * -1.5371385f + z * -0.4985314f;
+    float g = x * -0.9692660f + y *  1.8760108f + z *  0.0415560f;
+    float b = x *  0.0556434f + y * -0.2040259f + z *  1.0572252f;
     
-    if(r > 0.0031308)
-        r = 1.055*pow(r,EXP)-0.055;
+    if(r > 0.0031308f)
+        r = 1.055f*powf(r,EXP)-0.055f;
     else
-        r *= 12.92;
-    if(g > 0.0031308)
-        g = 1.055*pow(g,EXP)-0.055;
+        r *= 12.92f;
+    if(g > 0.0031308f)
+        g = 1.055f*powf(g,EXP)-0.055f;
     else
-        g *= 12.92;
-    if(b > 0.0031308)
-        b = 1.055*pow(b,EXP)-0.055;
+        g *= 12.92f;
+    if(b > 0.0031308f)
+        b = 1.055f*powf(b,EXP)-0.055f;
     else
-        b *= 12.92;
+        b *= 12.92f;
     
     return ColorRGB((float)r,(float)g,(float)b);
 }
@@ -221,13 +221,13 @@ ColorRGB ColorXYZ::toStandardRGB()const
 ColorRGB ColorXYZ::toAdobeRGB()const
 {
     constexpr const double EXP = 1/2.19921875;
-    double x = ColorXYZ::r;
-    double y = ColorXYZ::g;
-    double z = ColorXYZ::b;
+    float x = ColorXYZ::r;
+    float y = ColorXYZ::g;
+    float z = ColorXYZ::b;
     
-    double r = x *  2.04159 + y * -0.56501 + z * -0.34473;
-    double g = x * -0.96924 + y *  1.87597 + z *  0.03342;
-    double b = x *  0.01344 + y * -0.11836 + z *  1.34926;
+    float r = x *  2.04159f + y * -0.56501f + z * -0.34473f;
+    float g = x * -0.96924f + y *  1.87597f + z *  0.03342f;
+    float b = x *  0.01344f + y * -0.11836f + z *  1.34926f;
     
     return ColorRGB((float)pow(r,EXP),
                     (float)pow(g,EXP),
@@ -270,27 +270,27 @@ ColorRGB::ColorRGB(unsigned char r, unsigned char g, unsigned char b)
 
 ColorXYZ ColorRGB::toXYZ()const
 {
-    constexpr const double INV = 1.0/12.92;
-    double r;
-    double g;
-    double b;
+    constexpr const float INV = 1.f/12.92f;
+    float r;
+    float g;
+    float b;
     
-    if(ColorRGB::r > 0.04045)
-        r = pow((ColorRGB::r+0.055)/1.055,2.4);
+    if(ColorRGB::r > 0.04045f)
+        r = pow((ColorRGB::r+0.055f)/1.055f,2.4f);
     else
         r = ColorRGB::r * INV;
-    if(ColorRGB::g > 0.04045)
-        g = pow((ColorRGB::g+0.055)/1.055,2.4);
+    if(ColorRGB::g > 0.04045f)
+        g = powf((ColorRGB::g+0.055f)/1.055f,2.4f);
     else
         g = ColorRGB::g * INV;
-    if(ColorRGB::b > 0.04045)
-        b = pow((ColorRGB::b+0.055)/1.055,2.4);
+    if(ColorRGB::b > 0.04045f)
+        b = powf((ColorRGB::b+0.055f)/1.055f,2.4f);
     else
         b = ColorRGB::b * INV;
     
-    float x = (float)(r * 0.4124564 + g * 0.3575761 + b * 0.1804375);
-    float y = (float)(r * 0.2126729 + g * 0.7151522 + b * 0.0721750);
-    float z = (float)(r * 0.0193339 + g * 0.1191920 + b * 0.9503041);
+    float x = (float)(r * 0.4124564f + g * 0.3575761f + b * 0.1804375f);
+    float y = (float)(r * 0.2126729f + g * 0.7151522f + b * 0.0721750f);
+    float z = (float)(r * 0.0193339f + g * 0.1191920f + b * 0.9503041f);
     
     return ColorXYZ(x,y,z);
 }

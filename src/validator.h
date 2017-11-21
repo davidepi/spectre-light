@@ -29,14 +29,8 @@
 #define _MAX_ASSETS_ 4096
 #endif
 
-//for vs
-#ifdef M_PI
-#undef M_PI //redefine pi as a floating point
-#endif
-#ifndef M_PI
-///The number π, redefined as a floating point
-#define M_PI 3.1415926535897932384626433832795028841971693993751058209749445923f
-#endif
+///The number π, defined as a floating point
+#define ONE_PI 3.14159265358979323846264338327950288419716939937510582097494459f
 ///define the inverse of the pi
 #define INV_PI 0.318309886183790671537767526745028724068919291480912897495f
 ///define 2 * π, used extensively in sphere computations
