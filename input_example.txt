@@ -69,6 +69,7 @@ asset: Default_sphere sphere 1.0
 #light asset_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z) (r,g,b)
 #instead of (r,g,b) it is possible to insert a temperature in Kelvin degrees (6000K = white)
 #rotation in sexagesimal degrees
+#using asset with high polycount can dramatically increase rendering time
 light: Default_sphere (0,2,0) (0,0,0) (1,1,1) 3500K
 
 #world asset_name material_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z)

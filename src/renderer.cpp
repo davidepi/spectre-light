@@ -287,7 +287,6 @@ void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
                 c->createRay(&(samples[i]), &r);
                 if (s->k.intersect(&r, &h))
                     radiance = t->radiance(s, &h, &r, sam, &ot);
-                    
                 else
                     radiance = SPECTRUM_BLACK;
                 

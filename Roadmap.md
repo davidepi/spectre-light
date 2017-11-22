@@ -10,6 +10,7 @@
 - [x] direct lighting tracer
 - [x] path tracer
 - [x] simple parser
+- [x] spectrum (rgb and spectral rendering, blackbody radiation)
 - [x] dispersion **POSTPONED ->** difficult to test without bdpt
 - [x] bdpt **POSTPONED ->** there are more important features for a 0.1 release
 - [x] triangled meshes

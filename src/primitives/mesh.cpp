@@ -121,10 +121,7 @@ void Mesh::calculateCdf()
     if(Mesh::cdf!=NULL)
         return;
     else
-    {
-        Console.warning(MESSAGE_WARNING_MESHLIGHTS);
         Mesh::cdf = (float*)malloc(sizeof(float)*count);
-    }
     float sum = 0;
     for(unsigned int i=0;i<count;i++)
     {
@@ -135,29 +132,41 @@ void Mesh::calculateCdf()
 
 void Mesh::getRandomPoint(float r0, float r1, Point3* p, Normal* n) const
 {
-    float res = lerp(r0, 0.0f, Mesh::area);
+    //flatten the random value between 0.0 and the total area
+    float extended_sample = lerp(r0, 0.0f, Mesh::area);
     
     //divide et impera search
     int start = 0;
     int end = count-1;
     int mid;
     
-    //limit cases
-    if(res < cdf[0])
-        tris[0].getRandomPoint(res, r1, p, n);
-    if(res>cdf[end-1])
-        tris[end].getRandomPoint(res-cdf[end],r1,p,n);
+    //limit cases, they generate infinite loops
+    //first triangle of the array
+    if(extended_sample < cdf[0])
+    {
+        tris[0].getRandomPoint(extended_sample, r1, p, n);
+        return;
+    }
+    //last triangle of the array
+    if(extended_sample>cdf[end-1])
+    {
+        tris[end].getRandomPoint(extended_sample-cdf[end],r1,p,n);
+        return;
+    }
     
+    //find the sampled triangle by using cumulative areas (cdf)
     while(true)
     {
         mid = (start+end)/2;
-        if(cdf[mid]<=res && cdf[mid+1]>res) //mid contains the value
+        //mid contains the value
+        if(cdf[mid]<=extended_sample && cdf[mid+1]>extended_sample)
             break;
-        else if(cdf[mid]>res)
+        else if(cdf[mid]>extended_sample)
             end = mid;
         else
             start = mid;
     }
 
-    tris[mid].getRandomPoint(res-cdf[mid], r1, p, n);
+    //sample the triangle
+    tris[mid].getRandomPoint(extended_sample-cdf[mid], r1, p, n);
 }
