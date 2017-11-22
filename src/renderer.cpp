@@ -342,7 +342,9 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
         done = (float)(total_size-remaining)/(float)total_size;
         eta = (time_t)((float)(current_time-start_time)/(total_size-remaining)*
                 remaining);
-        Console.progressBar(done,eta);
+        //avoid garbage values... it is useless, but it runs once per second...
+        if(eta>0)
+            Console.progressBar(done,eta);
         std::this_thread::sleep_for
                 (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }

@@ -1,18 +1,18 @@
-### V0.1 FOUNDATIONS ###
-- [x] basic framework (vectors, matrices, rays)
+### V0.1 - FOUNDATIONS ###
+- [x] basic geometric framework (vectors, matrices, rays)
 - [x] spheres, boxes sdl
 - [x] kd-tree accelerator
-- [x] cameras (orthographic, perpsective, 360 panorama)
+- [x] cameras (orthographic, perspective, 360 panorama)
 - [x] samplers (stratified and pure random)
 - [x] filters (box, tent, gaussian, mitchell, lanczos)
-- [x] basic materials (lambert, perfect reflection/refraction)
+- [x] basic materials (lambert/oren-nayar, perfect reflection/refraction)
 - [x] area lights
 - [x] direct lighting tracer
 - [x] path tracer
 - [x] simple parser
 - [x] dispersion **POSTPONED ->** difficult to test without bdpt
-- [x] bdpt **POSTPONED ->** there are more important features
-- [x] triangle meshes
+- [x] bdpt **POSTPONED ->** there are more important features for a 0.1 release
+- [x] triangled meshes
 - [x] bvh aac accelerator
 - [x] microfacet reflection and transmission (blinn, beckmann, ggx isotropic, ggx anisotropic)
 
