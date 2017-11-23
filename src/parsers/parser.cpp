@@ -1,3 +1,9 @@
+/**
+ * \cond
+ *  No documentation for files under parser/ folder since they will be replaced
+ *  by flex/bison parsing as soon as possible
+ */
+
 #include "parser.hpp"
 
 #define SETTINGS_OUT_SIZE 512
@@ -992,3 +998,7 @@ void Parser::parse(const char* filename, Settings* out)
     sprintf(log,MESSAGE_ENDED_PARSING,(int)d);
     Console.log(log,NULL);
 }
+
+/**
+ * \endcond
+ */

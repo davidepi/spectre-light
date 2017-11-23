@@ -1,3 +1,9 @@
+/**
+ * \cond
+ *  No documentation for files under parser/ folder since they will be replaced
+ *  by flex/bison parsing as soon as possible
+ */
+
 #include "obj_parser.hpp"
 
 #if defined(WIN32) || defined(WIN64)
@@ -105,3 +111,7 @@ Mesh* parseObj(const char* path)
     }
     return retval;
 }
+
+/**
+ * \endcond
+ */

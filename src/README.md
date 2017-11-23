@@ -31,8 +31,9 @@ the direction and origin of the ray are created
 This involves calculating every interaction with the lights and the materials
 - A filter weights the calculated radiance and affects several pixels near the sample. Filters
 are defined in the same folder of the samplers.
--If the pixel does not interfere with other threads' works the radiance is added to the average,
-otherwise a mutex is checked and if it is locked, instead of stopping the thread, the value is
+-If the pixel does not interfere with other threads' works the radiance converted to rgb is added
+to the average.
+Otherwise a mutex is checked and if it is locked, instead of stopping the thread, the value is
 put into a queue and will be added to the image in the next lock attempt
 
 When every sub-image has been processed the image is saved onto the disk

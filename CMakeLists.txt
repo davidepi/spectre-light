@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(WIN32)
 else()
-    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -pipe -g -Wall -Wextra -Wpedantic -Werror -Wdouble-promotion -D_LOW_LEVEL_CHECKS_ -DDEBUG")
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -pipe -g -Wall -Wextra -Wpedantic -Werror -Wdouble-promotion -DDEBUG")
     #no input coming from unstruted sources -> no need the stack protector hardening
     #funroll-loops is used for several functions inside the Spectrum class. Some of them are unrolled by hand, others are not (code becomes really unmantainable)
     set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -pipe -flto -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")

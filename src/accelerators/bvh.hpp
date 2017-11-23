@@ -23,8 +23,8 @@
 ///Delta parameter for AAC. 20 for high quality trees, 4 for fast buildup
 #define AAC_DELTA 4
 
-/** \brief Node composing  the Bvh
- *  \struct BvhNode
+/** \struct BvhNode
+ *  \brief Node composing  the Bvh
  *
  *  BvhNode represent a node of the Bvh. The Bvh, like the KdTree is flattened
  *  so every node contain its left child on the next position in the array, and
@@ -95,7 +95,9 @@ public:
      *  passed as input in the buildTree() method, in an efficient way
      *
      *  \param[in] r The ray used for the intersection test
-     *  \param[in] h The hit triangle
+     *  \param[in,out] distance As input, the already-found intersection
+     *  distance, that will be updated if a closer intersection is found
+     *  \param[out] h The hit triangle
      *  \return true if there is an intersection, false otherwise
      */
     bool intersect(const Ray* r, float* distance, HitPoint* h)const;

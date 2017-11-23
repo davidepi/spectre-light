@@ -220,7 +220,7 @@ public:
      *  fail
      *
      *  \param[in] r The ray used for the intersection test
-     *  \param[out] hit The hit asset\
+     *  \param[out] hit The hit asset
      *  \return true if there is an intersection, false otherwise
      */
     bool intersect(const Ray* r, HitPoint* hit)const;

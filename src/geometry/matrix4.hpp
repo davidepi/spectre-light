@@ -323,7 +323,7 @@ void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
 /** \brief Creates a View Space transform matrix with a Left Hand coordinate
  *         system
  *
- *  \deprecated Embedded into \a Transform class
+ *  \deprecated Unmantained
  *  \param[in] target A Vec3 containing the target point of the camera view
  *  \param[in] position A Vec3 containing the position of the camera
  *  \param[in] up A Vec3 containing the up vector for the camera,
@@ -333,74 +333,73 @@ void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
 DEPRECATED
 void viewLeftHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
 
-DEPRECATED
 /** \brief Creates a View Space transform matrix with a Right Hand coordinate
  *         system
  *
- *  \deprecated Embedded into \a Transform class
+ *  \deprecated Unmantained
  *  \param[in] target A Vec3 containing the target point of the camera view
  *  \param[in] position A Vec3 containing the position of the camera
  *  \param[in] up A Vec3 containing the up vector for the camera, usually
  *                v(0,1,0)
  *  \param[out] output The resulting Matrix4
  */
+DEPRECATED
 void viewRightHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
 
-DEPRECATED
 /** \brief Creates a Perspective transform matrix with a Left Hand coordinate
  *         system
  *
- *  \deprecated Embedded into \a Transform class
+ *  \deprecated Unmantained
  *  \param[in] fov A float representing the field of view of the camera
  *  \param[in] aspectRatio A float representing the aspect ratio of the screen
  *  \param[in] nearPlane A float representing the z value of the near plane
  *  \param[in] farPlane A float representing the z value of the far plane
  *  \param[out] output The resulting matrix
  */
+DEPRECATED
 void PerspectiveLeftHand(float fov, float aspectRatio, float nearPlane,
                          float farPlane, Matrix4* output);
 
-DEPRECATED
 /** \brief Creates a Perspective transform matrix with a Right Hand coordinate
  *         system
  *
- *  \deprecated Embedded into \a Transform class
+ *  \deprecated Unmantained
  *  \param[in] fovX A float representing the x-axis field of view of the camera
  *  \param[in] fovY A float representing the y-axis field of view of the camera
  *  \param[in] nearPlane A float representing the z value of the near plane
  *  \param[in] farPlane A float representing the z value of the far plane
  *  \param[out] output The resulting matrix
  */
+DEPRECATED
 void PerspectiveRightHand(float fovX, float fovY, float nearPlane,
                           float farPlane, Matrix4* output);
 
-DEPRECATED
 /** \brief Creates an Orthographic transform matrix with a Right Hand coordinate
  *         system
  *
- *  \deprecated Embedded into \a Transform class
+ *  \deprecated Unmantained
  *  \param[in] width A float representing the height of the screen
  *  \param[in] height A float representing the width of the screen
  *  \param[in] nearPlane A float representing the z value of the near plane
  *  \param[in] farPlane A float representing the z value of the far plane
  *  \param[out] output The resulting matrix
  */
+DEPRECATED
 void OrthographicRightHand(float width, float height, float nearPlane,
                            float farPlane, Matrix4* output);
 
-DEPRECATED
 /** \brief Creates a Translation matrix
  *
- *  \deprecated Embedded into \a Transform class
+ *  \deprecated Unmantained
  *  \param[in] source A Vec3 containing the translation value of the object
  *  \param[out] output The resulting matrix
  */
+DEPRECATED
 void Translation(Vec3* source, Matrix4* output);
 
-DEPRECATED
 /** \brief Creates a Rotation matrix
  *
- *  \deprecated Embedded into \a Transform class
+ *  \deprecated Unmantained
  *  \param[in] yaw A float containing the yaw value of the rotation
  *                  (Z-rotation)
  *  \param[in] pitch A float containing the pitch value of the rotation
@@ -409,15 +408,16 @@ DEPRECATED
  *                  (X-rotation)
  *  \param[out] output The resulting matrix
  */
+DEPRECATED
 void YawPitchRollRotation(float yaw, float pitch, float roll, Matrix4* output);
 
-DEPRECATED
 /** \brief Creates a Scaling matrix
  *
- *  \deprecated Embedded into \a Transform class
+ *  \deprecated Unmantained
  *  \param[in] source A Vec3 containing the scaling value of the object
  *  \param[out] output The resulting matrix
  */
+DEPRECATED
 void Scale(Vec3* source, Matrix4* output);
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

@@ -81,10 +81,17 @@ public:
 
 protected:
 
-    //scattered light
+    ///Scattered light
     Spectrum specular;
 };
 
+/**
+ *  \class ConductorReflection reflection.hpp "materials/reflection.hpp"
+ *  \brief BRDF for a smooth mirror-like reflection
+ *
+ *  Reflection class used when the reflecting surface is a conductor. Avoids
+ *  allocating a Conductor class by embedding everything into a single method
+ */
 class ConductorReflection : public Reflection
 {
 public:
@@ -120,6 +127,13 @@ private:
     Spectrum ior;
 };
 
+/**
+ *  \class DielectricReflection reflection.hpp "materials/reflection.hpp"
+ *  \brief BRDF for a smooth mirror-like reflection
+ *
+ *  Reflection class used when the reflecting surface is a dielectric. Avoids
+ *  allocating a Dielectric class by embedding everything into a single method
+ */
 class DielectricReflection : public Reflection
 {
 public:

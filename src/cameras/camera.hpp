@@ -64,7 +64,7 @@ public:
     
 protected:
         
-    //Ray direction is define in camera space
+    ///Transformation matrix used to transform from camera space to world space
     Matrix4 camera2world;
 };
 

@@ -1165,7 +1165,7 @@ inline Normal min(const Normal& n1, const Normal& n2)
  *  \param[in] source The vector to flip
  *  \param[in] centre A Vec3 representing the centre of reflection
  *  \return The reflected vector
- *  \sa reflect(const Vec3 centre)
+ *  \sa reflect(const Vec3 source, const Vec3 centre)
  */
 inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 {
@@ -1187,7 +1187,7 @@ inline Vec3 reflect(const Vec3& source, const Vec3& centre)
  *  \param[in] source The vector to flip
  *  \param[in] centre A Normal representing the centre of reflection
  *  \return The reflected vector
- *  \sa reflect(const Normal centre)
+ *  \sa reflect(const Vec3 source, const Normal centre)
  */
 inline Vec3 reflect(const Vec3& source, const Normal& centre)
 {
@@ -1200,6 +1200,22 @@ inline Vec3 reflect(const Vec3& source, const Normal& centre)
                 source.z - ((2 * dot) * centre.z));
 }
 
+/**  \brief Generate the refracted vector
+ *
+ *  Given a vector that will be treated as a Normal, refract and transform
+ *  the input vector in the refracted vector. The interface normal is the Vec3
+ *  passed as input.
+ *  If the refracted vector does not exists due to Total Internal Reflection
+ *  (0,0,0) is returned
+ *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p interface is not
+ *  normalized
+ *  \param[in] source The Vec3 that will be transformed
+ *  \param[in] interface A Vec3 representing the interface normal
+ *  \param[in] eta The index of refraction used for refracting the vector
+ *  \return The refracted vector, a zero length vector otherwise
+ *  \sa refract(const Vec3 source, const Normal interface, float eta)
+ *  \sa reflect(const Vec3 source, const Vec3 centre)
+ */
 inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
 {
 #ifdef _LOW_LEVEL_CHECKS_
@@ -1218,6 +1234,22 @@ inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
     }
 }
 
+/**  \brief Generate the refracted vector
+ *
+ *  Given a vector that will be treated as a Normal, refract and transform
+ *  the input vector in the refracted vector. The interface normal is the Vec3
+ *  passed as input.
+ *  If the refracted vector does not exists due to Total Internal Reflection
+ *  (0,0,0) is returned
+ *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p interface is not
+ *  normalized
+ *  \param[in] source The Vec3 that will be transformed
+ *  \param[in] interface A Vec3 representing the interface normal
+ *  \param[in] eta The index of refraction used for refracting the vector
+ *  \return The refracted vector, a zero length vector otherwise
+ *  \sa refract(const Vec3 source, const Vec3 interface, float eta)
+ *  \sa reflect(const Vec3 source, const Vec3 centre)
+ */
 inline Vec3 refract(const Vec3& source, const Normal& interface, float eta)
 {
 #ifdef _LOW_LEVEL_CHECKS_

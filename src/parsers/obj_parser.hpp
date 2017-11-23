@@ -22,8 +22,8 @@
     //very restrictive, yet temporary, parser for debug purposes
     Mesh* parseObj(const char* path);
 
+#endif
+
 /**
  * \endcond
  */
-
-#endif

@@ -65,8 +65,8 @@ private:
     std::unordered_map<std::string,int>shapeids;
 };
 
+#endif
+
 /**
  * \endcond
  */
-
-#endif

@@ -1,6 +1,7 @@
 # spectre-light
 >Yet another photorealistic renderer with great ambitions
-[![](https://img.shields.io/github/release/davidepi/spectre-light.svg)]
+
+[![](https://img.shields.io/github/release/davidepi/spectre-light.svg)](https://github.com/davidepi/spectre-light/releases)
 [![Build status](https://travis-ci.org/davidepi/spectre-light.svg?branch=master)](https://travis-ci.org/davidepi/spectre-light)
 [![Build status](https://ci.appveyor.com/api/projects/status/d4bx9kjo42nnpfy5/branch/master?svg=true)](https://ci.appveyor.com/project/darkstar13/spectre-light/branch/master)
 
@@ -64,12 +65,6 @@ or
 ```
 magick out.ppm out.jpg
 ```
-
-## How it works
-
-You can find a detailed explanation of the whole rendering process inside the src/ folder,
- then, for every subfolder, another readme file will explain the purpose of the component
- you are viewing
  
  ## Documentation
  

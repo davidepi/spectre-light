@@ -90,22 +90,22 @@ public:
     
 protected:
 
-    //The random number generator
+    ///The random number generator
     WELLrng rng;
     
-    //The starting pixel (x-coordinate)
+    ///The starting pixel (x-coordinate)
     int startx;
     
-    //The starting pixel (y-coordinate)
+    ///The starting pixel (y-coordinate)
     int starty;
     
-    //The ending pixel (x-coordinate)
+    ///The ending pixel (x-coordinate)
     int endx;
     
-    //The ending pixel (y-coordinate)
+    ///The ending pixel (y-coordinate)
     int endy;
     
-    //The number of samples per pixel
+    ///The number of samples per pixel
     int spp;
 };
 

@@ -66,7 +66,8 @@ public:
     /** \brief Default Constructor, given hex value
      *
      *  Create a color with the given components values, encoded as hex string
-     *  in the form #RRGGBB or #RGB which will be translated to #RRGGBB aswell
+     *  in the form \#RRGGBB or \#RGB which will be translated to \#RRGGBB
+     *  aswell
      *
      *  \param[in] hex The value of the red, green and blue components encoded
      *  as an hex string
@@ -165,7 +166,8 @@ public:
     /** \brief Default Constructor, given hex value
      *
      *  Create a color with the given components values, encoded as hex string
-     *  in the form #RRGGBB or #RGB which will be translated to #RRGGBB aswell
+     *  in the form \#RRGGBB or \#RGB which will be translated to \#RRGGBB
+     *  aswell
      *
      *  \param[in] hex The value of the red, green and blue components encoded
      *  as an hex string

@@ -35,6 +35,8 @@ public:
     /** \brief Construct an asset, given the underlying shape
      *
      *  \param[in] sp A pointer to the Shape wrapped in this class
+     *  \param[in] transform The transformation matrix that will be applied to
+     *  the shape
      */
     Asset(Shape* sp, Matrix4* transform);
     
@@ -106,13 +108,13 @@ public:
     
 protected:
 
-    //underlying model
+    ///Underlying model
     Shape* model;
 
-    //ObjToWorld matrix
+    ///ObjToWorld matrix
     Matrix4* objToWorld;
 
-    //WorldToObj matrix
+    ///WorldToObj matrix
     Matrix4 worldToObj;
 
 private:
