@@ -111,7 +111,11 @@ public:
      *  For each triangle, ordered, the area of the current triangle is
      *  calculated and added to the previous result. With this array it is
      *  possible to random sample a mesh with differently sized triangles.
-     *  For more info checks the Mesh::getRandomPoint method
+     *
+     *  Since it is needed only by Mesh objects, that are treated as AreaLight
+     *  object, the default implementation of this method does nothing
+     *
+     *  For more info check the Mesh::getRandomPoint method
      */
     virtual void calculateCdf();
 

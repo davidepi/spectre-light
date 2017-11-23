@@ -167,8 +167,8 @@ public:
      *  surface of the mesh.
      *  In the Mesh implementation of this method, the random value is lerped
      *  in order to get the random tris. With the cdf array the tris is found
-     *  relatively fast and then the Triangle::getRandomPoint() function is
-     *  called
+     *  in O(log2(n)) steps, where n is the number of faces. Then the
+     *  Triangle::getRandomPoint() function is called
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
@@ -179,7 +179,9 @@ public:
 
 private:
     
-    //array of tris densities
+    //array of tris densities. First element is the area of tris[0],
+    //second element is the area of tris[0] + the area of tris[1],
+    //third one is tris[0]+tris[1]+tris[2] and so on and so forth
     float* cdf;
     
     //array of triangles

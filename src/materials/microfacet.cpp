@@ -114,7 +114,7 @@ Spectrum MicrofacetT::df(const Vec3* woS, const Vec3* wiS)const
     float denom = etao*dotwoh+etai*dotwih;
     denom*=denom;
     denom*=costwo*costwi;
-    return  specular * (SPECTRUM_ONE-d.eval(dotwoh)) * fabsf(up/denom);
+    return  specular * (SPECTRUM_ONE-d.eval(dotwih)) * fabsf(up/denom);
 }
 
 Spectrum MicrofacetT::df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,

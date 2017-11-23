@@ -112,13 +112,21 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 
 void Box::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
 {
-    /*
-      frn bck top btm lft rgt
-     |---|---|---|---|---|---|
-     | y | y | z | z | y | y |
-     |---|---|---|---|---|---|
-       x   x   x   x   z   z
-     */
+    //works like the Mesh::getRandomPoint but in a simpler way
+    //instead of using the area of faces this one just uses the x and z edges
+    //
+    // the value is interpolated from left to right with the following schema
+    //
+    //  front back   top  botm  left  right
+    // |-----|-----|-----|-----|-----|-----|
+    // |  y  |  y  |  z  |  z  |  y  |  y  |
+    // |-----|-----|-----|-----|-----|-----|
+    //    x     x     x     x     z     z
+    //
+    // Then when the face has been found, the other point (the axis marked
+    //  inside the faces in the previous schema) is interpolated using
+    //  the second random value
+    
     float res = lerp(r0,0,edges.x*4+edges.z*2);
     if(res<edges.x)
     {
