@@ -101,9 +101,34 @@ AABB Mesh::computeWorldAABB(const Matrix4 *trans) const
         return AABB();
     }
 #endif
-    Point3 pmin = *trans * Mesh::aabb.bounds[0];
-    Point3 pmax = *trans * Mesh::aabb.bounds[1];
-    return AABB(min(pmin,pmax), max(pmin,pmax));
+    const Point3 p0 = *trans*Point3(Mesh::aabb.bounds[0].x,
+                                    Mesh::aabb.bounds[0].y,
+                                    Mesh::aabb.bounds[0].z);
+    const Point3 p1 = *trans*Point3(Mesh::aabb.bounds[1].x,
+                                    Mesh::aabb.bounds[0].y,
+                                    Mesh::aabb.bounds[0].z);
+    const Point3 p2 = *trans*Point3(Mesh::aabb.bounds[1].x,
+                                    Mesh::aabb.bounds[1].y,
+                                    Mesh::aabb.bounds[0].z);
+    const Point3 p3 = *trans*Point3(Mesh::aabb.bounds[0].x,
+                                    Mesh::aabb.bounds[1].y,
+                                    Mesh::aabb.bounds[0].z);
+    const Point3 p4 = *trans*Point3(Mesh::aabb.bounds[0].x,
+                                    Mesh::aabb.bounds[0].y,
+                                    Mesh::aabb.bounds[1].z);
+    const Point3 p5 = *trans*Point3(Mesh::aabb.bounds[1].x,
+                                    Mesh::aabb.bounds[0].y,
+                                    Mesh::aabb.bounds[1].z);
+    const Point3 p6 = *trans*Point3(Mesh::aabb.bounds[1].x,
+                                    Mesh::aabb.bounds[1].y,
+                                    Mesh::aabb.bounds[1].z);
+    const Point3 p7 = *trans*Point3(Mesh::aabb.bounds[0].x,
+                                    Mesh::aabb.bounds[1].y,
+                                    Mesh::aabb.bounds[1].z);
+    
+    const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
+    const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
+    return AABB(min(pmi,pma), max(pmi,pma));
 }
 
 float Mesh::surface()const

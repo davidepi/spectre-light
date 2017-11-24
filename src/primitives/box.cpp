@@ -28,10 +28,21 @@ AABB Box::computeWorldAABB(const Matrix4* transform)const
         return AABB();
     }
 #endif
-    const Point3 pmin=*transform*Point3();
-    const Point3 pmax=*transform*Point3(Box::edges.x,Box::edges.y,Box::edges.z);
     
-    return AABB(min(pmin,pmax),max(pmin,pmax));
+    //transforming min and max is not enough for rotation, i.e. in 90 deg rot
+    const Point3 p0=*transform*Point3(0,0,0);
+    const Point3 p1=*transform*Point3(Box::edges.x,0,0);
+    const Point3 p2=*transform*Point3(Box::edges.x,Box::edges.y,0);
+    const Point3 p3=*transform*Point3(0,Box::edges.y,0);
+    const Point3 p4=*transform*Point3(0,0,Box::edges.z);
+    const Point3 p5=*transform*Point3(Box::edges.x,0,Box::edges.z);
+    const Point3 p6=*transform*Point3(Box::edges.x,Box::edges.y,Box::edges.z);
+    const Point3 p7=*transform*Point3(0,Box::edges.y,Box::edges.z);
+    
+    const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
+    const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
+    
+    return AABB(pmi,pma);
 }
 
 float Box::surface()const
