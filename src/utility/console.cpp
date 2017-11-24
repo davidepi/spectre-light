@@ -163,10 +163,10 @@ void Console::critical(bool b, const char* s)
 void Console::progressBarDone()const
 {
 #ifdef WIN32
-    std::wcout<<"\r(████████████████████) "<<SPGRN<< "100% Done!"<<SPNRM
+    std::wcout<<"\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
               <<std::endl;
 #else
-    std::cout<<"\33[2K\r(████████████████████) "<<SPGRN<< "100% Done!"<<SPNRM
+    std::cout<<"\33[2K\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
              <<std::endl;
 #endif
 }
@@ -174,15 +174,9 @@ void Console::progressBarDone()const
 void Console::progressBar(float done, float eta)const
 {
     done*=20;
-#ifdef WIN32
-    std::wstring progress;
-    const wchar_t fullblock = L'█';
-    const wchar_t emptyblock = L'░';
-#else
-    const char fullblock[] = "█";
-    const char emptyblock[] = "░";
+    const char fullblock[] = "#";
+    const char emptyblock[] = "-";
     std::string progress;
-#endif
 
     int i=0;
     while(i<(int)done)
@@ -204,7 +198,7 @@ void Console::progressBar(float done, float eta)const
         i++;
     }
 #ifdef WIN32
-    std::wcout<<"\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
+    std::cout<<"("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s\r";
 #else
     std::cout<<"\33[2K\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
 #endif

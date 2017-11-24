@@ -56,6 +56,7 @@ int main(int argc, char* argv[])
         }
         else //defaulting to full spectral rendering
         {
+            strncat(cmd,"-full",BUF_SIZE);
             execl(cmd,"spectre-full",input,NULL);
         }
     }

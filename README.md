@@ -4,7 +4,7 @@
 [![](https://img.shields.io/github/release/davidepi/spectre-light.svg)](https://github.com/davidepi/spectre-light/releases)
 [![Build status](https://travis-ci.org/davidepi/spectre-light.svg?branch=master)](https://travis-ci.org/davidepi/spectre-light)
 [![Build status](https://ci.appveyor.com/api/projects/status/d4bx9kjo42nnpfy5/branch/master?svg=true)](https://ci.appveyor.com/project/darkstar13/spectre-light/branch/master)
-[![](https://tokei.rs/b1/github/davidepi/spectre-light)](https://github.com/davidepi/spectre-light).
+[![](https://tokei.rs/b1/github/davidepi/spectre-light)](https://github.com/davidepi/spectre-light)
 
 spectre-light is a photorealistic unbiased physically-based renderer. It inherits its base
 structure from the great [pbrt](http://pbrt.org "pbrt homepage") by M.Pharr, W. Jakob and G.
@@ -29,7 +29,7 @@ site
 ### Building
 
 Building spectre-light works exactly like any other cmake project.
-Here are the instructions step by step, assuming cmake 3.1+ is already installed
+Here are the instructions step by step, assuming cmake 3.1+ and the build tools (build-essential, Xcode command line tools or Visual Studio) are already installed
 
 #### Linux and macOS
 ```
@@ -43,9 +43,16 @@ make
 ```
 md build\
 cd build
-cmake -DCMAKE_BUILD_TYPE="Release" -G "Visual Studio 14 2015 Win64" ..
+cmake -G "Visual Studio XX 20XX Win64" ..
 ```
-At this point you need to open the generated solution and compile it with visual studio
+where the visual studio values can be
+- `Visual Studio 10 2010 Win64` for Visual Studio 2010
+- `Visual Studio 11 2012 Win64` for Visual Studio 2012
+- `Visual Studio 12 2013 Win64` for Visual Studio 2013
+- `Visual Studio 14 2015 Win64` for Visual Studio 2013
+- `Visual Studio 15 2017 Win64` for Visual Studio 2017
+At this point you need to open the generated solution and compile all targets with visual
+studio
 
 ### Running
 

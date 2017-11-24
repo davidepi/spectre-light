@@ -26,9 +26,9 @@
 - [ ] bump/normal textures
 - [ ] environment (sky) system
 - [ ] sun position and sunlight
+- [ ] irradiance caching
 - metropolis light transport
 - energy redistribution path tracing
-- irradiance caching
 - tessellation and displacement mapping
 
 ### V0.3 ###
