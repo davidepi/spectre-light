@@ -471,6 +471,19 @@ bool Matrix4::inverse(Matrix4 *output)const
     return true;
 }
 
+Vec3 Matrix4::extractTranslation()const
+{
+    return Vec3(Matrix4::m03,Matrix4::m13,Matrix4::m23);
+}
+
+Vec3 Matrix4::extractScale()const
+{
+    const Vec3 x(Matrix4::m00,Matrix4::m10,Matrix4::m20);
+    const Vec3 y(Matrix4::m01,Matrix4::m11,Matrix4::m21);
+    const Vec3 z(Matrix4::m02,Matrix4::m12,Matrix4::m22);
+    return Vec3(x.length(),y.length(),z.length());
+}
+
 //------ Operators -------------------------------------------------------------
 
 Matrix4 Matrix4::operator+(const Matrix4& mat)const

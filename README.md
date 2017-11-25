@@ -51,6 +51,7 @@ where the visual studio values can be
 - `Visual Studio 12 2013 Win64` for Visual Studio 2013
 - `Visual Studio 14 2015 Win64` for Visual Studio 2013
 - `Visual Studio 15 2017 Win64` for Visual Studio 2017
+
 At this point you need to open the generated solution and compile all targets with visual
 studio
 
