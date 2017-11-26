@@ -136,6 +136,16 @@ float Mesh::surface()const
     return Mesh::area;
 }
 
+float Mesh::surface(const Matrix4 *transform)const
+{
+    float totalArea = 0;
+    for(unsigned int i=0;i<Mesh::count;i++)
+    {
+        totalArea += tris[i].surface(transform);
+    }
+    return totalArea;
+}
+
 int Mesh::getNumberOfFaces()const
 {
     return Mesh::count;

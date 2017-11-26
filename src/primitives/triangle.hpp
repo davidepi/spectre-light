@@ -121,6 +121,20 @@ public:
      *  units
      */
     float surface()const;
+    
+    /** \brief Return the surface of the triangle considering the scaling factor
+     *
+     *  This method should compute the surface area of the triangle, useful
+     *  if the triangle is a light source. Compared to the other surface()
+     *  method, this one accounts also for the scaling factor of the transform
+     *  matrix
+     *
+     *  \param[in] transform The transform matrix
+     *
+     *  \return A float representing the area of the triangle in world-space
+     *  units
+     */
+    float surface(const Matrix4* transform)const;
 
     /** \brief Returns a random point on the surface of the triangle
      *

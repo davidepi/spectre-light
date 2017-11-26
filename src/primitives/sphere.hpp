@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit  2 Aug 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      2 Aug 2017
+ *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -30,7 +30,7 @@
  *  This class contains the definition of a sphere, centered in (0,0,0) with
  *  a given radius. To center the sphere somewhere else, the
  *  Shape#transformMatrix matrix should be set. If the matrix contains a
- *  non-uniform scaling value, this class will rely upon the \a x value
+ *  non-uniform scaling value, this class will exhibit undefined behaviour
  *
  */
 class Sphere : public Shape
@@ -95,6 +95,18 @@ public:
      *  \return A float representing the area of the sphere in world-space units
      */
     float surface()const;
+    
+    /** \brief Return the surface of the sphere considering the scaling factor
+     *
+     *  This method computes the surface area of the sphere, useful if the
+     *  sphere is a light source. Compared to the other surface() method, this
+     *  one accounts also for the scaling factor of the transform matrix
+     *
+     *  \param[in] transform The transform matrix
+     *
+     *  \return A float representing the area of the sphere in world-space units
+     */
+    float surface(const Matrix4* transform)const;
 
     /** \brief Returns a random point on the surface of the sphere
      *

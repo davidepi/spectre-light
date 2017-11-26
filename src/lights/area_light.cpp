@@ -3,7 +3,7 @@
 AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c)
 : Asset(sp,objToWorld), c(c)
 {
-    AreaLight::area = sp->surface();
+    AreaLight::area = sp->surface(objToWorld);
     sp->calculateCdf();
     AreaLight::invarea = 1.f/area;
 }
@@ -40,7 +40,7 @@ Spectrum AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
     out->direction = Vec3(x,y,z);
 
     //objspace to world space
-    *out = *AreaLight::objToWorld**out;
+    *out = AreaLight::objToWorld**out;
 
     //if the dir is pointing on the opposite direction of the normal, flip it
     //because there is no emission in that direction
@@ -98,7 +98,7 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
     else
         retval = SPECTRUM_BLACK;
 
-    *wi = *AreaLight::objToWorld**wi;
+    *wi = AreaLight::objToWorld**wi;
     wi->normalize();
     return retval;
 }

@@ -163,7 +163,7 @@ void Console::critical(bool b, const char* s)
 void Console::progressBarDone()const
 {
 #ifdef WIN32
-    std::wcout<<"\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
+    std::cout<<"\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
               <<std::endl;
 #else
     std::cout<<"\33[2K\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
@@ -174,27 +174,19 @@ void Console::progressBarDone()const
 void Console::progressBar(float done, float eta)const
 {
     done*=20;
-    const char fullblock[] = "#";
-    const char emptyblock[] = "-";
+    const char fullblock = '#';
+    const char emptyblock = '-';
     std::string progress;
 
     int i=0;
     while(i<(int)done)
     {
-#ifdef WIN32
         progress.push_back(fullblock);
-#else
-        progress.append(fullblock);
-#endif
         i++;
     }
     while(i<20)
     {
-#ifdef WIN32
         progress.push_back(emptyblock);
-#else
-        progress.append(emptyblock);
-#endif
         i++;
     }
 #ifdef WIN32

@@ -83,6 +83,14 @@ float Sphere::surface()const
     return FOUR_PI*Sphere::radius*Sphere::radius;
 }
 
+float Sphere::surface(const Matrix4* transform)const
+{
+    Vec3 scale = transform->extractScale();
+    const float val = (scale.x+scale.y+scale.z)/3.f;
+    const float radius = Sphere::radius*val;
+    return FOUR_PI*radius*radius;
+}
+
 void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
 {
     float z = 1.f - 2.f * r0;

@@ -1,5 +1,5 @@
 //Created,   6 Aug 2017
-//Last Edit 24 Nov 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file triangle.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date     24 Nov 2017
+ *  \date     26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -130,7 +130,7 @@ public:
      */
     AABB computeWorldAABB(const Matrix4* trans)const;
 
-    /** \brief Returns the surface of the triangle
+    /** \brief Returns the surface of the mesh
      *
      *  This method computes the surface area of the mesh, useful if it is a
      *  light source. This value is precomputed int the Mesh::finalize method
@@ -139,6 +139,21 @@ public:
      *  units
      */
     float surface()const;
+    
+    /** \brief Return the surface of the mesh considering the scaling factor
+     *
+     *  This method computes the surface area of the mesh, useful if the mesh is
+     *  a light source. Compared to the other surface() method, this one
+     *  accounts also for the scaling factor of the transform matrix
+     *
+     *  \warning Unlike the Mesh::surface() method, this one does not precompute
+     *  anything, use it with discretion, even for low-poly models
+     *
+     *  \param[in] transform The transform matrix
+     *
+     *  \return A float representing the area of the mesh in world-space units
+     */
+    float surface(const Matrix4* transform)const;
     
     /** \brief Return the number of face of the mesh
      *

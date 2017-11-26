@@ -49,6 +49,15 @@ float Triangle::surface()const
     return 0.5f*cross(b.p-a.p,c.p-a.p).length();
 }
 
+float Triangle::surface(const Matrix4* transform)const
+{
+    const Vec3 scale = transform->extractScale();
+    const Point3 point_a(a.p.x*scale.x,a.p.y*scale.y,a.p.z*scale.z);
+    const Point3 point_b(b.p.x*scale.x,b.p.y*scale.y,b.p.z*scale.z);
+    const Point3 point_c(c.p.x*scale.x,c.p.y*scale.y,c.p.z*scale.z);
+    return 0.5f*cross(point_b-point_a,point_c-point_a).length();
+}
+
 void Triangle::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
 {
     float sq = sqrtf(r0);

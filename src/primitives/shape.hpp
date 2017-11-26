@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 21 Nov 2017
+//Last Edit 25 Nov 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      21 Nov 2017
+ *  \date      25 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -94,6 +94,16 @@ public:
      *  \return A float representing the area of the shape in world-space units
      */
     virtual float surface()const = 0;
+    
+    /** \brief Return the surface of the shape after the transformation
+     *
+     *  In its implementations, this method should compute the surface area of
+     *  the shape, accounting also for the scaling from the matrix.
+     *
+     *  \return A float representing the area of the shape in world-space units,
+     *  considering also the scaling factor of the transform matrix
+     */
+    virtual float surface(const Matrix4* transform)const = 0;
     
     /** \brief Return the number of face of the shape
      *

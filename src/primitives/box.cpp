@@ -51,6 +51,14 @@ float Box::surface()const
     return la+2*edges.x*edges.z;
 }
 
+float Box::surface(const Matrix4* transform)const
+{
+    Vec3 scale = transform->extractScale();
+    float la = 2*(edges.x*scale.x+edges.z*scale.z)
+                *(edges.y*scale.y);
+    return la+2*edges.x*scale.x*edges.z*scale.z;
+}
+
 bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 {
 

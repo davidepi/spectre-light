@@ -2,13 +2,13 @@
 unsigned static int _asset_ID_pool = 1;
 
 Asset::Asset(Shape* sp, Matrix4* transform)
-        :id(_asset_ID_pool++),aabb(sp->computeWorldAABB(transform))
+        :objToWorld(*transform),id(_asset_ID_pool++),
+         aabb(sp->computeWorldAABB(transform))
+
 {
     Asset::model = sp;
-    Asset::objToWorld = transform;
     Asset::material = MtlLib.get("Default");
-
-    transform->inverse(&(Asset::worldToObj));
+    Asset::objToWorld.inverse(&(Asset::worldToObj));
 }
 
 unsigned int Asset::getID()const
@@ -25,11 +25,11 @@ bool Asset::intersect(const Ray* r,float* distance, HitPoint* h)const
     if(res)
     {
         //retransform back to world space
-        h->h = *objToWorld*h->h;
+        h->h = objToWorld*h->h;
         //normal requires the inverse of the transformation. Since I want a
         //objToWorld, its inverse is a worldToObj
         h->n = transformNormal(h->n,&worldToObj);
-        h->right = *objToWorld*h->right;
+        h->right = objToWorld*h->right;
         h->n.normalize();
         h->right.normalize();
         h->cross = normalize(cross(Vec3(h->n),h->right));

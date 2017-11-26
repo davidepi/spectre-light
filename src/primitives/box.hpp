@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 24 Nov 2017
+//Last Edit 25 Nov 2017
 
 /**
  *  \file box.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      24 Nov 2017
+ *  \date      25 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -101,13 +101,34 @@ public:
     
     /** \brief Return the surface of the box
      *
-     *  This method should compute the surface area of the sphere, useful
-     *  if the sphere is a light source.
+     *  This method should compute the surface area of the box, useful
+     *  if the box is a light source.
      *
-     *  \return A float representing the area of the sphere in world-space units
+     *  \return A float representing the area of the box in world-space units
      */
     float surface()const;
-    void getRandomPoint(float r, float r1, Point3* p, Normal* n)const;
+    
+    /** \brief Return the surface of the box accounting for the scaling factor
+     *
+     *  This method should compute the surface area of the box, useful
+     *  if the box is a light source. Compared to the other surface() method,
+     *  this one accounts also for the scaling factor of the transform matrix
+     *
+     *  \return A float representing the area of the box in world-space units
+     */
+    float surface(const Matrix4* transform)const;
+    
+    /** \brief Returns a random point on the surface of the box
+     *
+     *  Useful for the light sources, this method returns a random point on the
+     *  surface of the shape. The normal is always pointing outside the box
+     *
+     *  \param[in] r0 A random value in the interval (0.0,1.0)
+     *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[out] p The computed point in object space
+     *  \param[out] n The normal of the computed point
+     */
+    void getRandomPoint(float r0, float r1, Point3* p, Normal* n)const;
     
 private:
 
