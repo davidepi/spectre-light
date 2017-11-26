@@ -59,7 +59,7 @@ material: Plastic glossy (30,30,255) [1.0,0,0] [1.5,0,0] beckmann 0.1
 material: Plastic diffuse (30,30,255) 0
 
 #asset name_without_spaces obj_file_path
-#asset name sphere radius
+#asset name sphere
 #asset name box (x_edge_length,y_edge_length,z_edge_length)
 #path is absolute or relative to the executable
 asset: Ico /home/user/Desktop/test.obj

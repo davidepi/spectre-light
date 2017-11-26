@@ -37,13 +37,11 @@ class Sphere : public Shape
 {
 public:
     
-    /** \brief Constructor, given the radius.
+    /** \brief Default constructor
      *
-     *  Construct a sphere with the given radius and centered in (0,0,0)
-     *
-     *  \param[in] radius The radius of the sphere
+     *  Construct a sphere centered in (0,0,0) with radius 1
      */
-    Sphere(float radius);
+    Sphere() = default;
     
     /** \brief Intersection of a Ray and this sphere
      *

@@ -720,7 +720,7 @@ static void parseShape(char* string, std::unordered_map<std::string,int>* map,
         token = strtok_r(NULL," \n",&pos);
         Shape* res;
         if(strcmp(token,"sphere")==0) //sdl sphere
-            res = new Sphere((float)atof(strtok_r(NULL," \n",&pos)));
+            res = new Sphere();
         else if(strcmp(token, "box")==0)
         {
             token = strtok_r(NULL," ",&pos);//parse refracted color, rgb
