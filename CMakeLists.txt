@@ -7,7 +7,7 @@ else()
     set(CMAKE_CXX_FLAGS_DEBUG "-O0 -pipe -g -Wall -Wextra -Wpedantic -Werror -Wdouble-promotion -DDEBUG")
     #no input coming from unstruted sources -> no need the stack protector hardening
     #funroll-loops is used for several functions inside the Spectrum class. Some of them are unrolled by hand, others are not (code becomes really unmantainable)
-    set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -pipe -flto -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -pipe -flto -s -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")
 endif()
 
 file(GLOB spectre_core_sources
@@ -20,7 +20,7 @@ file(GLOB spectre_core_sources
     src/utility/*.cpp
     src/cameras/*.cpp
     src/integrators/*.cpp
-        src/parsers/*.cpp
+    src/parsers/*.cpp
     src/materials/*.cpp)
 include_directories(src)
 find_package (Threads REQUIRED)
@@ -40,7 +40,14 @@ endif()
 if(WIN32)
 else()
     set_property(SOURCE src/utility/console.cpp APPEND_STRING PROPERTY
-    COMPILE_FLAGS " -DSPECTRE_COLOURED_OUTPUT ")
+        COMPILE_FLAGS " -DSPECTRE_COLOURED_OUTPUT ")
+endif()
+
+include(TestBigEndian)
+TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+if(IS_BIG_ENDIAN)
+    set_property(SOURCE src/utility/imageIO.cpp APPEND_STRING PROPERTY
+        COMPILE_FLAGS " -DIS_BIG_ENDIAN ")
 endif()
 
 add_executable(spectre-full src/main.cpp ${spectre_core_sources})

@@ -217,6 +217,9 @@ private:
     //filename of the image
     char* filename;
     
+    //extesion of the file, using the defines at the beginning of this .hpp
+    char extension;
+    
     //mutex for concurrent write
     std::mutex mtx;
 };

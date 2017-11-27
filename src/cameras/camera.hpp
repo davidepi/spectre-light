@@ -15,7 +15,7 @@
 #ifndef __CAMERA_HPP__
 #define __CAMERA_HPP__
 
-#include "cameras/image_output.hpp"
+#include "cameras/image_film.hpp"
 #include "samplers/sampler.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/ray.hpp"

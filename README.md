@@ -65,15 +65,8 @@ where `input.txt` is an ASCII file containing the description of the scene that 
 rendered and where the output file will be saved. More information about the input file can be
 found in the [input_example.txt](./input_example.txt) file
 
-The output file will be a `.ppm` image, that you can convert, if you have ImageMagick installed,
-using
-```
-convert out.ppm out.jpg
-```
-or
-```
-magick out.ppm out.jpg
-```
+The output file can be a `.ppm` or a `.bmp` image. If the extension is omitted, the default will
+be the `.ppm`
  
  ## Documentation
  

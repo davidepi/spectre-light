@@ -1,7 +1,7 @@
 #include "image_film.hpp"
 
 //check if extension is supported
-int check_extension(const char* fn)
+char check_extension(const char* fn)
 {
     const char* name = strrchr(fn,'.');
     int retval;
@@ -16,7 +16,7 @@ int check_extension(const char* fn)
         {
             case 'p':
             {
-                if(strcmp(".ppm",name))
+                if(strcmp(".ppm",name)==0)
                     retval = EXTENSION_PPM;
                 else
                     retval = EXTENSION_NOT_SUPPORTED;
@@ -24,7 +24,7 @@ int check_extension(const char* fn)
             }
             case 'b':
             {
-                if(strcmp(".bmp",name))
+                if(strcmp(".bmp",name)==0)
                     retval = EXTENSION_BMP;
                 else
                     retval = EXTENSION_NOT_SUPPORTED;
@@ -79,12 +79,13 @@ ImageFilm::ImageFilm(int w, int h, const char* fn) :width(w), height(h)
     if(fn != NULL)
     {
         //check extension, add .ppm if not supported
-        int res = check_extension(fn);
+        ImageFilm::extension = check_extension(fn);
         int len = (int)strlen(fn)+1;
-        len += res?0:4; //to add the .ppm at the end, if there was no extension
+        len += ImageFilm::extension?0:4; //to add the .ppm at the end,
+                                         //if there was no extension
         ImageFilm::filename = (char*)malloc(sizeof(char)*len);
         memcpy(ImageFilm::filename,fn,sizeof(char)*len);
-        if(res==EXTENSION_NOT_SUPPORTED)
+        if(ImageFilm::extension==EXTENSION_NOT_SUPPORTED)
         {
             len-=5; //point to the \0 of the string
             filename[len] = '.';    //add the new extension
@@ -221,7 +222,13 @@ bool ImageFilm::saveImage()
         tmp[i++] = (uint8_t)::min((::max(0.f,rgb.b)*0xFF),255.0f);
     }
     free(ImageFilm::image);
-    bool retval = savePPM(filename, width, height, tmp);
+    bool retval;
+    switch(ImageFilm::extension)
+    {
+        case EXTENSION_BMP:retval=saveBMP(filename, width, height, tmp);break;
+        case EXTENSION_PPM:retval=savePPM(filename, width, height, tmp);break;
+        default:retval=savePPM(filename, width, height, tmp);break;
+    }
     free(tmp);
     ImageFilm::image = NULL;
     return retval;

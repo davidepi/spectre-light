@@ -1,7 +1,7 @@
 #include "renderer.hpp"
 
 //st = sampler type
-static void executor(Camera* c,ImageOutput* io,std::mutex* lock,int spp, int st,
+static void executor(Camera* c,ImageFilm* io,std::mutex* lock,int spp, int st,
               std::stack<Renderer_task>* jobs, Scene* s, LightIntegrator* t);
 
 
@@ -208,7 +208,7 @@ int Renderer::render(Scene* s)
     return 0;
 }
 
-void executor(Camera* c, ImageOutput* io, std::mutex* lock, int spp, int st,
+void executor(Camera* c, ImageFilm* io, std::mutex* lock, int spp, int st,
               std::stack<Renderer_task>* jobs, Scene* s, LightIntegrator* t)
 {
     //generate seed for WELLrng. Constant WELL_R is inside wellrng.h

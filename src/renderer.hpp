@@ -21,6 +21,7 @@
 #include "cameras/perspective_camera.hpp"
 #include "cameras/orthographic_camera.hpp"
 #include "cameras/camera360.hpp"
+#include "cameras/image_film.hpp"
 #include "samplers/box_filter.hpp"
 #include "samplers/tent_filter.hpp"
 #include "samplers/gaussian_filter.hpp"
@@ -244,7 +245,7 @@ private:
     Filter* f;
 
     //Actual image
-    ImageOutput film;
+    ImageFilm film;
 
     //Number of rendering threads
     int numthreads;
