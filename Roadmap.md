@@ -20,7 +20,7 @@
 ### V0.2 ###
 - [ ] bidirectional path tracer
 - [ ] unit testing
-- [ ] extended image support (.jpg/.tiff support)
+- [ ] extended image support (.jpg/.tiff support, metadata)
 - [ ] lex/yacc parser (.3ds parsing, .mtl parsing, quad/ngon parsing)
 - [ ] diffuse texture mapping
 - [ ] bump/normal textures

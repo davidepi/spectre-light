@@ -124,9 +124,9 @@ void Box::getDensitiesArray(const Matrix4* transform, float* array)const
     array[0] = scale.x*scale.y;
     array[1] = array[0]*2;
     array[2] = array[1]+(scale.x*scale.z);
-    array[3] = array[2]*2;
+    array[3] = array[2]+(scale.x*scale.z);
     array[4] = array[3]+(scale.z*scale.y);
-    array[5] = array[4]*2;
+    array[5] = array[4]+(scale.z*scale.y);
 }
 
 void Box::getRandomPoint(float r0, float r1, const float* cd, Point3* p,
