@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "microfacet_distributions.hpp"
 
 float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const

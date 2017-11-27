@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "area_light.hpp"
 
 AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c)

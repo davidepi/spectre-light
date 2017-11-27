@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "camera360.hpp"
 
 Camera360::Camera360(const Point3* p,const Point3* t,

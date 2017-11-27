@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "kdtree.hpp"
 #define KDNODE_ALLOC 1 //AT LEAST 1!!! otherwise when doubling the array size
                        //0 * 2 = guess what :^)

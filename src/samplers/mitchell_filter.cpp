@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "mitchell_filter.hpp"
 
 MitchellFilter::MitchellFilter(float x_r, float y_r, float b, float c)

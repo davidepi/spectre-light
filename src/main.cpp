@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "utility/console.hpp"
 #include "parsers/parser.hpp"
 #include "renderer.hpp"

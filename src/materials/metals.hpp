@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #ifndef __METALS_HPP__
 #define __METALS_HPP__
 

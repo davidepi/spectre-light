@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "refraction.hpp"
 Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
                        const Spectrum& etat)

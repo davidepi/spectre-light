@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "orthographic_camera.hpp"
 
 OrthographicCamera::OrthographicCamera(const Point3* p,const Point3* t,

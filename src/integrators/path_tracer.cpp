@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "path_tracer.hpp"
 
 Spectrum PathTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,

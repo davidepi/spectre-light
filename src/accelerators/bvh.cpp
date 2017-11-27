@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include <cmath>
 #include "bvh.hpp"
 #ifdef __BMI2__

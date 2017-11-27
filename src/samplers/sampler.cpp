@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "sampler.hpp"
 Sampler::Sampler(int startx, int endx, int starty, int endy, int spp,
                  const unsigned int* seed) : rng(seed)

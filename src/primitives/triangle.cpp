@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "triangle.hpp"
 
 Triangle::Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)

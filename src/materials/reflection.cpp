@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "reflection.hpp"
 
 Reflection::Reflection(const Spectrum& specular)

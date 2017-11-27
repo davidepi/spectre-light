@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "microfacet.hpp"
 MicrofacetR::MicrofacetR(Spectrum& spe, MicrofacetDist* md, Fresnel* f)
 : Bdf(BdfFlags(BRDF|GLOSSY)),specular(spe)

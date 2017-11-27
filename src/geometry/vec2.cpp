@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "vec2.hpp"
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 

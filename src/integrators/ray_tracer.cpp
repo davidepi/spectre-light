@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "ray_tracer.hpp"
 
 Spectrum RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,

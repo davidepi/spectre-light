@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #if defined(WIN32) || defined(WIN64)
 #include <process.h>
 #define execl _execl

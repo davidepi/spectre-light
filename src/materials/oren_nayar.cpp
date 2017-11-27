@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "oren_nayar.hpp"
 
 OrenNayar::OrenNayar(const Spectrum& diffuse, float sigma)

@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "tent_filter.hpp"
 
 TentFilter::TentFilter(float x_r, float y_r) : Filter(x_r, y_r)

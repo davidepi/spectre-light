@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "spectrum.hpp"
 //lookup tables for spectrum to XYZ
 //taken from http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html

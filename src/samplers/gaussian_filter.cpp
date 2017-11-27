@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "gaussian_filter.hpp"
 
 GaussianFilter::GaussianFilter(float x_r, float y_r, float falloff)

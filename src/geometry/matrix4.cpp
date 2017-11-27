@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "matrix4.hpp"
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 

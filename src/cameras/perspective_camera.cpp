@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "perspective_camera.hpp"
 
 PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,

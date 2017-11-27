@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "shape.hpp"
 
 unsigned static int _shape_ID_pool = 1;

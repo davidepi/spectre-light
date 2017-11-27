@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "fresnel_conditions.hpp"
 
 Conductor::Conductor(const Spectrum& refraction, const Spectrum& absorption) :

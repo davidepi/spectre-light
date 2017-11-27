@@ -6,6 +6,7 @@
 #Misplaced colon or spaces will break everything
 
 #Output file, absolute or relative to the executable
+#supported .ppm and .bmp files
 out: /home/user/Desktop/test.ppm
 
 #Resolution width height (width = 2x height suggested with panorama camera)
@@ -17,8 +18,9 @@ resolution: 800 600
 #fov is in degrees and used only with perspective camera
 camera: perspective (0,2,-10) (0,0,0) (0,1,0) 55
 
-#sampler type samples per pixel
+#sampler type samples_per_pixel
 #type can be random or stratified
+#sampels_per_pixel is the quality of the image, higher is better
 sampler: stratified 25
 
 #filter type optional_values

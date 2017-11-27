@@ -81,4 +81,4 @@ be the `.ppm`
  ## License
  
  spectre-light is released under the terms of the GNU GPLv3 License. You may find the
- content of the license in the [LICENSE.txt](./LICENSE.txt) file
+ content of the license in the [LICENSE](./LICENSE) file

@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "mesh.hpp"
 
 Mesh::Mesh(unsigned int size)

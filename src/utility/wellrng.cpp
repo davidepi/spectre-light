@@ -1,3 +1,5 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
 //Original code by:
 //      Francois Panneton and Pierre L'Ecuyer, University of Montreal
 //      Makoto Matsumoto, Hiroshima University

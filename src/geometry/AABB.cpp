@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "AABB.hpp"
 AABB::AABB() :bounds{Point3(INFINITY, INFINITY, INFINITY),
                      Point3(-INFINITY, -INFINITY, -INFINITY)}

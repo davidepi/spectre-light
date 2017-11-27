@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "imageIO.hpp"
 
 bool savePPM(const char* name, int width, int height, const uint8_t* array)

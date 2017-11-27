@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "bdf.hpp"
 Bdf::Bdf(BdfFlags flags)
 {
