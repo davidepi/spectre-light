@@ -1,5 +1,5 @@
 //Created,   4 Aug 2017
-//Last Edit  6 Aug 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file triangle.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      6 Aug 2017
+ *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -143,10 +143,12 @@ public:
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] cd Unused in the triangle
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, Point3* p, Normal* n)const;
+    void getRandomPoint(float r0, float r1, const float* cd, Point3* p,
+                        Normal* n)const;
 
     ///First vertex of the triangle
     Vertex a;

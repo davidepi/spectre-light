@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 25 Nov 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherit
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      25 Nov 2017
+ *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -108,39 +108,35 @@ public:
     /** \brief Return the number of face of the shape
      *
      *  Useful only for Mesh objects, this function returns the number of tris
-     *  composing the shape. It returns 1 if the shape is an sdl (i.e. Sphere
-     *  or Box)
+     *  composing the shape. It returns 1 if the shape is a Sphere, 6 if the
+     *  Shape is a Box
      *
-     *  \return The number of faces in a Mesh, 1 in an sdl
+     *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
      */
     virtual int getNumberOfFaces()const;
     
-    /** \brief Populate the Cdf array
+    /** \brief Populate the cumulative densities array
      *
-     *  Useful only for Mesh objects, this function populates the Cdf array.
-     *  For each triangle, ordered, the area of the current triangle is
-     *  calculated and added to the previous result. With this array it is
-     *  possible to random sample a mesh with differently sized triangles.
+     *  For this specific class, nothing is done. Check subclasses
      *
-     *  Since it is needed only by Mesh objects, that are treated as AreaLight
-     *  object, the default implementation of this method does nothing
-     *
-     *  For more info check the Mesh::getRandomPoint method
+     *  \param[in] transform UNUSED
+     *  \param[out] array UNUSED
      */
-    virtual void calculateCdf();
+    virtual void getDensitiesArray(const Matrix4* transform,float* array)const;
 
     /** \brief Returns a random point on the surface of the shape
      *
      *  Useful for the light sources, this method returns a random point on the
-     *  surface of the shape. Its implementation may chose a point that is
-     *  actually facing the viewer, in order to reduce variance
+     *  surface of the shape
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] cd The array of densities of the shape's faces
      *  \param[out] p The computed point
      *  \param[out] n The normal of the computed point
      */
-    virtual void getRandomPoint(float r, float r1, Point3* p, Normal* n)const=0;
+    virtual void getRandomPoint(float r, float r1, const float* cd, Point3* p,
+                                Normal* n)const = 0;
     
     
 private:

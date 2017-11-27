@@ -79,7 +79,8 @@ float Sphere::surface(const Matrix4* transform)const
     return FOUR_PI*val*val;
 }
 
-void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
+void Sphere::getRandomPoint(float r0, float r1, const float*, Point3* p,
+                            Normal* n)const
 {
     float z = 1.f - 2.f * r0;
     float r = sqrtf(max(0.f,1.f-z*z));

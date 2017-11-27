@@ -163,41 +163,38 @@ public:
      */
     int getNumberOfFaces()const;
     
-    /** \brief Populate the Cdf array
+    /** \brief Populate the array of cumulative densities
      *
-     *  This function populates the Cdf array of the class. For each
-     *  triangle, ordered, the area of the current triangle is calculated and
-     *  added to the previous result. With this array it is possible to random
-     *  sample a mesh with differently sized triangles.
-     *  For more info checks the Mesh::getRandomPoint method.
+     *  This function populates the densities array. For each triangle, ordered,
+     *  the area of the current triangle is calculated and added to the previous
+     *  result. With this array it is possible to random sample a mesh with
+     *  differently sized triangles. Every surface is calculated considering
+     *  the world-space transformed shape
      *
-     *  The cdf array is not automatically populated because it is needed only
-     *  in area lights.
+     *  \param[in] transform The object to world space matrix
+     *  \param[out] array The array of cumulative densities
      */
-    void calculateCdf();
+    void getDensitiesArray(const Matrix4* transform,float* array)const;
 
     /** \brief Returns a random point on the surface of the mesh
      *
      *  Useful for the light sources, this method returns a random point on the
      *  surface of the mesh.
      *  In the Mesh implementation of this method, the random value is lerped
-     *  in order to get the random tris. With the cdf array the tris is found
+     *  in order to get the random tris. With the cd array the tris is found
      *  in O(log2(n)) steps, where n is the number of faces. Then the
      *  Triangle::getRandomPoint() function is called
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] cd The array generated from the getDensitiesArray function
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r, float r1, Point3* p, Normal* n)const;
+    void getRandomPoint(float r, float r1, const float* cd, Point3* p,
+                        Normal* n)const;
 
 private:
-    
-    //array of tris densities. First element is the area of tris[0],
-    //second element is the area of tris[0] + the area of tris[1],
-    //third one is tris[0]+tris[1]+tris[2] and so on and so forth
-    float* cdf;
     
     //array of triangles
     Triangle* tris;
@@ -210,9 +207,6 @@ private:
 
     //number of triangles allocated
     unsigned int alloc;
-
-    //precomputed surface of the mesh
-    float area;
 
     //BVH for faster intersections
     Bvh bvh;

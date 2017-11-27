@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 25 Nov 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file box.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      25 Nov 2017
+ *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -29,10 +29,10 @@
  *  \class Box box.hpp "primitives/box.hpp"
  *  \brief Implementation of a Box
  *
- *  This class contains the definition of a box. This class expects three Vec3
- *  representing the length of every edge. The front bottom left point is
- *  always centered in (0,0,0). For this reason, a Box will be constructed as an
- *  axis aligned box, and then oriented with the transform matrix.
+ *  This class contains the definition of a box.The front bottom left point is
+ *  always centered in (0,0,0) and the back top right point in (1,1,1).
+ *  For this reason, a Box will be constructed as an axis aligned box, and then
+ *  oriented with the transform matrix.
  */
 class Box : public Shape
 {
@@ -43,17 +43,7 @@ public:
      *  Construct an Axis Aligned Box with the bottom left corner in (0,0,0)
      *  and the top right corner in (1,1,1)
      */
-    Box();
-    
-    /** \brief Constructor, given the edges length and the transform matrix.
-     *
-     *  Construct an axis aligned box with the bottom left corner in (0,0,0)
-     *  and the length of the edges as specified by the component of the vector.
-     *
-     *  \param[in] edges A vector with each component representing the length of
-     *  an edge
-     */
-    Box(Vec3 edges);
+    Box() = default;
     
     /** \brief Intersection of a Ray and this box
      *
@@ -99,6 +89,16 @@ public:
      */
     AABB computeWorldAABB(const Matrix4* transform)const;
     
+    /** \brief Return the number of face of the box
+     *
+     *  Useful only for Mesh objects, this function returns the number of tris
+     *  composing the shape. It returns 1 if the shape is a Sphere, 6 if the
+     *  Shape is a Box
+     *
+     *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
+     */
+    int getNumberOfFaces()const;
+    
     /** \brief Return the surface of the box
      *
      *  This method should compute the surface area of the box, useful
@@ -118,22 +118,35 @@ public:
      */
     float surface(const Matrix4* transform)const;
     
+    /** \brief Populate the array of cumulative densities
+     *
+     *  This function populates the densities array. Every cell represent a
+     *  face in the following order: front, back, top, bottom, left, right.
+     *  The densities are cumulative, the third cell for example contains the
+     *  surface for the front, back and top faces. Every surface is calculated
+     *  considering the world-space transformed shape
+     *
+     *  \param[in] transform The object to world space matrix
+     *  \param[out] array The array of cumulative densities
+     */
+    void getDensitiesArray(const Matrix4* transform,float* array)const;
+    
     /** \brief Returns a random point on the surface of the box
      *
      *  Useful for the light sources, this method returns a random point on the
-     *  surface of the shape. The normal is always pointing outside the box
+     *  surface of the shape. The normal is always pointing outside the box.
+     *  The cd array is required in order to weight the sample correctly with
+     *  respect to non-uniform scaling
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] cd An array of densities calculated with the
+     *  getDensitiesArray method
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, Point3* p, Normal* n)const;
-    
-private:
-
-    ///The length of the three edges of the box
-    Vec3 edges;
+    void getRandomPoint(float r0, float r1, const float* cd, Point3* p,
+                        Normal* n)const;
 };
 
 #endif

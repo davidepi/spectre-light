@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit 20 Sep 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  20 Sep 2017
+ *  \date  26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -172,6 +172,21 @@ inline float clamp(const float value, const float min, const float max)
 inline float lerp(const float value, const float min, const float max)
 {
     return (1 - value) * min + value * max;
+}
+
+/** \brief Perform the inverse of a linear interpolation
+ *
+ *  Perform an inverse linear interpolation of a value between [min,max] in
+ *  order to map it in an interval [0,1]
+ *
+ *  \param[in] value The value in the interval [min,max]
+ *  \param[in] min The minimum value of the interval
+ *  \param[in] max The maximum value of theinterval
+ *  \return The original value mapped in the interval [0,1]
+ */
+inline float inverse_lerp(float value, float min, float max)
+{
+    return (value - min) / (max - min);
 }
 
 /**

@@ -113,15 +113,12 @@ public:
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] cd Unused in the sphere
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, Point3* p, Normal* n)const;
-    
-private:
-    
-    //radius of the sphere
-    float radius;
+    virtual void getRandomPoint(float r0, float r1, const float* cd, Point3* p,
+                                Normal* n)const;
 };
 
 #endif

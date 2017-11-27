@@ -7,15 +7,11 @@ Mesh::Mesh(unsigned int size)
 
     //can't use malloc, vtable pointer would be uninitialized
     Mesh::tris = new Triangle[size];
-    Mesh::area = 0;
-    Mesh::cdf = NULL;
 }
 
 Mesh::~Mesh()
 {
    delete[] Mesh::tris;
-    if(Mesh::cdf!=NULL)
-        free(Mesh::cdf);
 }
 
 void Mesh::addTriangle(const Point3 *a, const Point3 *b, const Point3 *c,
@@ -74,7 +70,6 @@ void Mesh::finalize()
     //precompute the surface of the mesh and the aabb
     for(unsigned int i=0;i<count;i++)
     {
-        Mesh::area += Mesh::tris[i].surface();
         AABB tmp = Mesh::tris[i].computeAABB();
         aabb.engulf(&tmp);
     }
@@ -133,7 +128,12 @@ AABB Mesh::computeWorldAABB(const Matrix4 *trans) const
 
 float Mesh::surface()const
 {
-    return Mesh::area;
+    float totalArea = 0;
+    for(unsigned int i=0;i<Mesh::count;i++)
+    {
+        totalArea += tris[i].surface();
+    }
+    return totalArea;
 }
 
 float Mesh::surface(const Matrix4 *transform)const
@@ -151,41 +151,42 @@ int Mesh::getNumberOfFaces()const
     return Mesh::count;
 }
 
-void Mesh::calculateCdf()
+void Mesh::getDensitiesArray(const Matrix4* transform,float* array)const
 {
-    if(Mesh::cdf!=NULL)
-        return;
-    else
-        Mesh::cdf = (float*)malloc(sizeof(float)*count);
     float sum = 0;
     for(unsigned int i=0;i<count;i++)
     {
-        sum+=tris[i].surface();
-        cdf[i]=sum;
+        sum+=tris[i].surface(transform);
+        array[i]=sum;
     }
 }
 
-void Mesh::getRandomPoint(float r0, float r1, Point3* p, Normal* n) const
+void Mesh::getRandomPoint(float r0, float r1, const float* cd, Point3* p,
+                          Normal* n)const
 {
     //flatten the random value between 0.0 and the total area
-    float extended_sample = lerp(r0, 0.0f, Mesh::area);
+    float extSample = lerp(r0, 0.0f, cd[count-1]);
     
     //divide et impera search
     int start = 0;
     int end = count-1;
     int mid;
+    //the sample in the interval [0,1]. After processing the lerp step
+    float sample01;
     
     //limit cases, they generate infinite loops
     //first triangle of the array
-    if(extended_sample < cdf[0])
+    if(extSample < cd[0])
     {
-        tris[0].getRandomPoint(extended_sample, r1, p, n);
+        sample01 = inverse_lerp(extSample,0,cd[0]);
+        tris[0].getRandomPoint(sample01, r1, NULL, p, n);
         return;
     }
     //last triangle of the array
-    if(extended_sample>cdf[end-1])
+    if(extSample>cd[end-1])
     {
-        tris[end].getRandomPoint(extended_sample-cdf[end],r1,p,n);
+        sample01 = inverse_lerp(extSample-cd[end-1],0,cd[end]-cd[end-1]);
+        tris[end].getRandomPoint(sample01, r1, NULL, p, n);
         return;
     }
     
@@ -194,14 +195,15 @@ void Mesh::getRandomPoint(float r0, float r1, Point3* p, Normal* n) const
     {
         mid = (start+end)/2;
         //mid contains the value
-        if(cdf[mid]<=extended_sample && cdf[mid+1]>extended_sample)
+        if(cd[mid]<=extSample && cd[mid+1]>extSample)
             break;
-        else if(cdf[mid]>extended_sample)
+        else if(cd[mid]>extSample)
             end = mid;
         else
             start = mid;
     }
 
     //sample the triangle
-    tris[mid].getRandomPoint(extended_sample-cdf[mid], r1, p, n);
+    sample01 = inverse_lerp(extSample, 0, cd[mid+1]-cd[mid]);
+    tris[mid].getRandomPoint(sample01, r1, NULL, p, n);
 }

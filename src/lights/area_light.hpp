@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 25 Nov 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      25 Nov 2017
+ *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -125,7 +125,7 @@ private:
     Spectrum c;
     float area;
     float invarea;
-    float* cdf; //contains the cumulative area for every triangle
+    float* cd; //contains the cumulative area for every triangle
 };
 
 #endif

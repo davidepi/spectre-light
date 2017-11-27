@@ -17,7 +17,7 @@ int Shape::getNumberOfFaces()const
     return 1;
 }
 
-void Shape::calculateCdf()
+void Shape::getDensitiesArray(const Matrix4*,float*)const
 {
     return;
 }

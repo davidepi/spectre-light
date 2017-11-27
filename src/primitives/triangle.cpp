@@ -58,7 +58,8 @@ float Triangle::surface(const Matrix4* transform)const
     return 0.5f*cross(point_b-point_a,point_c-point_a).length();
 }
 
-void Triangle::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
+void Triangle::getRandomPoint(float r0, float r1, const float*, Point3* p,
+                              Normal* n)const
 {
     float sq = sqrtf(r0);
     float u = 1.f-sq;
