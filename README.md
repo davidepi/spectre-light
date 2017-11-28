@@ -6,7 +6,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/d4bx9kjo42nnpfy5/branch/master?svg=true)](https://ci.appveyor.com/project/darkstar13/spectre-light/branch/master)
 [![](https://tokei.rs/b1/github/davidepi/spectre-light)](https://github.com/davidepi/spectre-light)
 
-spectre-light is a photorealistic unbiased physically-based renderer. It inherits its base
+*spectre-light* is a photorealistic unbiased physically-based renderer. It inherits its base
 structure from the great [pbrt](http://pbrt.org "pbrt homepage") by M.Pharr, W. Jakob and G.
 Humphreys, but it is slowly diverging from it. The long term goal of this project is a
 GPU-based physically based renderer, however, in order to reach that point, first a solid CPU
@@ -17,10 +17,10 @@ list of features that will be implemented during the way
 
 ## Getting started
 
-These instruction will get you a running copy of spectre-light in your machine in the fastest
+These instruction will get you a running copy of *spectre-light* in your machine in the fastest
 possible way.
 
-spectre-light uses [cmake](https://cmake.org "cmake homepage") as a build system, so this
+*spectre-light* uses [cmake](https://cmake.org "cmake homepage") as a build system, so this
 is the only mandatory dependency. This tool is available in almost every package manager
 if you are running a Linux distribution, as well as in `brew` if you are running macOS.
 Furthermore, you can download the Windows or macOS installer of cmake from the official
@@ -28,7 +28,7 @@ site
 
 ### Building
 
-Building spectre-light works exactly like any other cmake project.
+Building *spectre-light* works exactly like any other cmake project.
 Here are the instructions step by step, assuming cmake 3.1+ and the build tools (build-essential, Xcode command line tools or Visual Studio) are already installed
 
 #### Linux and macOS
@@ -53,11 +53,11 @@ where the visual studio values can be
 - `Visual Studio 15 2017 Win64` for Visual Studio 2017
 
 At this point you need to open the generated solution and compile all targets with visual
-studio
+studio. Be sure to use a Release configuration for 64 bit
 
 ### Running
 
-After building spectre-light you can run it with the following command
+After building *spectre-light* you can run it with the following command
 ```
 spectre input.txt
 ```
@@ -80,5 +80,8 @@ be the `.ppm`
  
  ## License
  
- spectre-light is released under the terms of the GNU GPLv3 License. You may find the
- content of the license in the [LICENSE](./LICENSE) file
+ *spectre-light* is released under the terms of the GNU GPLv3 License. You may find the
+ content of the license in the [LICENSE.txt](./LICENSE.txt) file.
+ 
+ The images in this README are done with models taken from the Stanford scanning
+ repository

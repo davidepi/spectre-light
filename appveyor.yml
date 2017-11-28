@@ -2,6 +2,7 @@ version: 0.1.{build}
 image: Visual Studio 2015
 clone_folder: c:\projects\spectre-light
 platform: x64
+configuration: Release
 before_build:
     - md c:\projects\spectre-light\build
     - cd c:\projects\spectre-light\build
