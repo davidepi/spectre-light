@@ -4,22 +4,24 @@
 #include "image_film.hpp"
 
 //check if extension is supported
-char check_extension(const char* fn)
+char check_extension(const char* fullpath)
 {
-    const char* name = strrchr(fn,'.');
+    //dot included
+    const char* extension = strrchr(fullpath,'.');
     int retval;
-    if(name == NULL || (name-fn)<(int)strlen(fn)-4) //null or position less than
-    {                                          //4 chr expected for an extension
+    //null or pos less than 4 chr expected for an extension
+    if(extension == NULL || (extension-fullpath)<(int)strlen(fullpath)-4)
+    {
         Console.warning(MESSAGE_MISSING_EXTENSION);
         retval = EXTENSION_NOT_SUPPORTED;
     }
     else
     {
-        switch(name[1])
+        switch(extension[1])
         {
             case 'p':
             {
-                if(strcmp(".ppm",name)==0)
+                if(strcmp(".ppm",extension)==0)
                     retval = EXTENSION_PPM;
                 else
                     retval = EXTENSION_NOT_SUPPORTED;
@@ -27,7 +29,7 @@ char check_extension(const char* fn)
             }
             case 'b':
             {
-                if(strcmp(".bmp",name)==0)
+                if(strcmp(".bmp",extension)==0)
                     retval = EXTENSION_BMP;
                 else
                     retval = EXTENSION_NOT_SUPPORTED;
@@ -40,23 +42,24 @@ char check_extension(const char* fn)
     return retval;
 }
 
-ImageFilm::ImageFilm(int w, int h, const char* fn) :width(w), height(h)
+ImageFilm::ImageFilm(int width, int height, const char* fullpath)
+:width(width), height(height)
 {
     //allocate image
-    ImageFilm::image = (Pixel*)malloc(sizeof(Pixel)*w*h);
+    ImageFilm::buffer = (Pixel*)malloc(sizeof(Pixel)*width*height);
     //set as zero, I need to have number of samples = 0 for every pixel
-    memset(ImageFilm::image, 0, sizeof(Pixel)*w*h);
-    ImageFilm::f = NULL;
+    memset(ImageFilm::buffer, 0, sizeof(Pixel)*width*height);
+    ImageFilm::filter = NULL;
     ImageFilm::filename = NULL;
 
     //check if folder is writable
-    const char* file = strrchr(fn,PATH_SEPARATOR);
+    const char* file = strrchr(fullpath,PATH_SEPARATOR);
     char* folder;
     if(file!=NULL) //the path references another folder
     {
-        int last_separator=(int)(file-fn)+1;
+        int last_separator=(int)(file-fullpath)+1;
         folder = (char*) malloc(sizeof(char)*(last_separator+1));
-        memcpy(folder, fn, sizeof(char)*last_separator);
+        memcpy(folder, fullpath, sizeof(char)*last_separator);
         folder[last_separator] = '\0';
     }
     else //current folder
@@ -79,29 +82,29 @@ ImageFilm::ImageFilm(int w, int h, const char* fn) :width(w), height(h)
         free(err);
     }
 
-    if(fn != NULL)
+    if(fullpath != NULL)
     {
         //check extension, add .ppm if not supported
-        ImageFilm::extension = check_extension(fn);
-        int len = (int)strlen(fn)+1;
-        len += ImageFilm::extension?0:4; //to add the .ppm at the end,
+        ImageFilm::extension = check_extension(fullpath);
+        int path_len = (int)strlen(fullpath)+1;
+        path_len += ImageFilm::extension?0:4; //to add the .ppm at the end,
                                          //if there was no extension
-        ImageFilm::filename = (char*)malloc(sizeof(char)*len);
-        memcpy(ImageFilm::filename,fn,sizeof(char)*len);
+        ImageFilm::filename = (char*)malloc(sizeof(char)*path_len);
+        memcpy(ImageFilm::filename,fullpath,sizeof(char)*path_len);
         if(ImageFilm::extension==EXTENSION_NOT_SUPPORTED)
         {
-            len-=5; //point to the \0 of the string
-            filename[len] = '.';    //add the new extension
-            filename[len+1] = 'p';
-            filename[len+2] = 'p';
-            filename[len+3] = 'm';
-            filename[len+4] = '\0';
+            path_len-=5; //point to the \0 of the string
+            filename[path_len] = '.';    //add the new extension
+            filename[path_len+1] = 'p';
+            filename[path_len+2] = 'p';
+            filename[path_len+3] = 'm';
+            filename[path_len+4] = '\0';
         }
     }
     else
     {
         ImageFilm::filename = (char*)malloc(sizeof(char)*8);
-        filename[0] = 'o'; //what about memcpy?
+        filename[0] = 'o';
         filename[1] = 'u';
         filename[2] = 't';
         filename[3] = '.';
@@ -110,129 +113,153 @@ ImageFilm::ImageFilm(int w, int h, const char* fn) :width(w), height(h)
         filename[6] = 'm';
         filename[7] = '\0';
     }
-
     free(folder);
 }
 
 ImageFilm::~ImageFilm()
 {
-    if(ImageFilm::image!=NULL)
-        free(ImageFilm::image);
+    if(ImageFilm::buffer!=NULL)
+        free(ImageFilm::buffer);
 }
 
-void ImageFilm::addPixel(const Sample* s, ColorXYZ c, ExecutorData* ex)
+void ImageFilm::addPixel(const Sample* sample, ColorXYZ color,
+                         ExecutorData* secure_area)
 {
-    if(c.r<0)c.r=0;
-    if(c.g<0)c.g=0;
-    if(c.b<0)c.b=0;
-    float ptmpx = s->posx-0.5f;
-    float ptmpy = s->posy-0.5f;
-    int p0x = (int)ceilf(ptmpx-f->x_range);
-    int p0y = (int)ceilf(ptmpy-f->y_range);
-    int p1x = (int)floorf(ptmpx+f->x_range);
-    int p1y = (int)floorf(ptmpy+f->y_range);
-    p0x = max(p0x,0);
-    p0y = max(p0y,0);
-    p1x = min(p1x,width);
-    p1y = min(p1y,height);
-    for(int y=p0y;y<p1y;y++)
-        for(int x=p0x;x<p1x;x++)
+    if(color.r<0)color.r=0;
+    if(color.g<0)color.g=0;
+    if(color.b<0)color.b=0;
+    
+    //calculate the affected pixels
+    float centre_x = sample->posx-0.5f;
+    float centre_y = sample->posy-0.5f;
+    int update_x0 = (int)ceilf(centre_x-filter->x_range);
+    int update_y0 = (int)ceilf(centre_y-filter->y_range);
+    int update_x1 = (int)floorf(centre_x+filter->x_range);
+    int update_y1 = (int)floorf(centre_y+filter->y_range);
+    update_x0 = max(update_x0,0);
+    update_y0 = max(update_y0,0);
+    update_x1 = min(update_x1,width);
+    update_y1 = min(update_y1,height);
+    
+    //foreach affected pixel
+    for(int y=update_y0;y<update_y1;y++)
+        for(int x=update_x0;x<update_x1;x++)
         {
-			float weight = f->weight(x-ptmpx, y-ptmpy);
-			if(x < ex->startx || x > ex->endx || y < ex->starty || y > ex->endy)
+			float weight = filter->weight(x-centre_x, y-centre_y);
+			if(x < secure_area->startx || x > secure_area->endx ||
+               y < secure_area->starty || y > secure_area->endy)
 			{
-				//critical section, deferred processing
-				TodoPixel tp;
-				tp.x = x;
-				tp.y = y;
-				tp.cie_x = c.r*weight;
-				tp.cie_y = c.g*weight;
-				tp.cie_z = c.b*weight;
-				tp.samples = weight;
-				ex->deferred.push(tp);
+				//critical section, other threads could interfere. deferred add
+				TodoPixel pixel_toadd;
+				pixel_toadd.x = x;
+				pixel_toadd.y = y;
+				pixel_toadd.cie_x = color.r*weight;
+				pixel_toadd.cie_y = color.g*weight;
+				pixel_toadd.cie_z = color.b*weight;
+				pixel_toadd.samples = weight;
+				secure_area->deferred.push(pixel_toadd);
 			}
 			else
 			{
-            	Pixel* val = image+(width*y+x);
-            	val->cie_x += c.r*weight;
-            	val->cie_y += c.g*weight;
-            	val->cie_z += c.b*weight;
+                //no chance that other threads will write this pixel, insta add
+            	Pixel* val = buffer+(width*y+x);
+            	val->cie_x += color.r*weight;
+            	val->cie_y += color.g*weight;
+            	val->cie_z += color.b*weight;
             	val->samples += weight;
 			}
         }
 }
 
-void ImageFilm::deferredAddPixel(ExecutorData* ex)
+void ImageFilm::deferredAddPixel(ExecutorData* secure_area)
 {
+    //try to gain the lock
 	if(mtx.try_lock())
 	{
-		Pixel* val;
-		TodoPixel tp;
-		while(!ex->deferred.empty())
+		Pixel* value;
+		TodoPixel pixel_toadd;
+        //until the pixel not in the secure area are finished
+		while(!secure_area->deferred.empty())
 		{
-			tp = ex->deferred.top();
-			ex->deferred.pop();
-			val = image+(width*tp.y+tp.x);
-			val->cie_x += tp.cie_x;
-			val->cie_y += tp.cie_y;
-			val->cie_z += tp.cie_z;
-			val->samples += tp.samples;
+            //add the current pixel, since I have the lock
+			pixel_toadd = secure_area->deferred.top();
+			secure_area->deferred.pop();
+			value = buffer+(width*pixel_toadd.y+pixel_toadd.x);
+			value->cie_x += pixel_toadd.cie_x;
+			value->cie_y += pixel_toadd.cie_y;
+			value->cie_z += pixel_toadd.cie_z;
+			value->samples += pixel_toadd.samples;
 		}
 		mtx.unlock();
 	}
 }
 
-void ImageFilm::forceAddPixel(ExecutorData* ex)
+void ImageFilm::forceAddPixel(ExecutorData* secure_area)
 {
-	Pixel* val;
-	TodoPixel tp;
+	Pixel* value;
+	TodoPixel pixel_toadd;
+    
+    //last chance to add the pixel, now I need the lock at any cost
 	mtx.lock();
-	while(!ex->deferred.empty())
+    //add every leftover
+	while(!secure_area->deferred.empty())
 	{
-		tp = ex->deferred.top();
-		ex->deferred.pop();
-		val = image+(width*tp.y+tp.x);
-		val->cie_x += tp.cie_x;
-		val->cie_y += tp.cie_y;
-		val->cie_z += tp.cie_z;
-		val->samples += tp.samples;
+		pixel_toadd = secure_area->deferred.top();
+		secure_area->deferred.pop();
+		value = buffer+(width*pixel_toadd.y+pixel_toadd.x);
+		value->cie_x += pixel_toadd.cie_x;
+		value->cie_y += pixel_toadd.cie_y;
+		value->cie_z += pixel_toadd.cie_z;
+		value->samples += pixel_toadd.samples;
 	}
 	mtx.unlock();
 }
 
 void ImageFilm::setFilter(Filter* f)
 {
-    ImageFilm::f = f;
+    ImageFilm::filter = f;
 }
 
 bool ImageFilm::saveImage()
 {
-    uint8_t* tmp = (uint8_t*)malloc(ImageFilm::width*ImageFilm::height*3U);
+    uint8_t* rgb_buffer=(uint8_t*)malloc(ImageFilm::width*ImageFilm::height*3);
     unsigned int i = 0;
     ColorRGB rgb;
     //use scale stored colour and output as .ppm
     for(int j=0;j<ImageFilm::width*ImageFilm::height;j++)
     {
-        if(image[j].samples>0.f) //if at least one sample
+        if(buffer[j].samples>0.f) //if at least one sample
         {
-            float weight = 1.f/image[j].samples;
-            rgb = ColorXYZ(image[j].cie_x*weight,
-                           image[j].cie_y*weight,
-                           image[j].cie_z*weight).toStandardRGB();
+            float weight = 1.f/buffer[j].samples;
+            rgb = ColorXYZ(buffer[j].cie_x*weight,
+                           buffer[j].cie_y*weight,
+                           buffer[j].cie_z*weight).toStandardRGB();
         }
-        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.r)*0xFF),255.0f);
-        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.g)*0xFF),255.0f);
-        tmp[i++] = (uint8_t)::min((::max(0.f,rgb.b)*0xFF),255.0f);
+        rgb_buffer[i++] = (uint8_t)::min((::max(0.f,rgb.r)*0xFF),255.0f);
+        rgb_buffer[i++] = (uint8_t)::min((::max(0.f,rgb.g)*0xFF),255.0f);
+        rgb_buffer[i++] = (uint8_t)::min((::max(0.f,rgb.b)*0xFF),255.0f);
     }
-    free(ImageFilm::image);
+    free(ImageFilm::buffer);
+    ImageFilm::buffer = NULL;
     bool retval;
     switch(ImageFilm::extension)
     {
-        case EXTENSION_BMP:retval=saveBMP(filename, width, height, tmp);break;
-        case EXTENSION_PPM:retval=savePPM(filename, width, height, tmp);break;
-        default:retval=savePPM(filename, width, height, tmp);break;
+        case EXTENSION_BMP:
+        {
+            retval=saveBMP(filename, width, height, rgb_buffer);
+            break;
+        }
+        case EXTENSION_PPM:
+        {
+            retval=savePPM(filename, width, height, rgb_buffer);
+            break;
+        }
+        default:
+        {
+            retval=savePPM(filename, width, height, rgb_buffer);
+            break;
+        }
     }
-    free(tmp);
-    ImageFilm::image = NULL;
+    free(rgb_buffer);
     return retval;
 }

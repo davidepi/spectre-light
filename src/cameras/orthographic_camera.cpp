@@ -3,27 +3,27 @@
 
 #include "orthographic_camera.hpp"
 
-OrthographicCamera::OrthographicCamera(const Point3* p,const Point3* t,
-                                       const Vec3* u, int w, int h)
-: Camera(p,t,u,w,h)
+OrthographicCamera::OrthographicCamera(const Point3* pos,const Point3* target,
+                                       const Vec3* up, int width, int height)
+: Camera(pos,target,up,width,height)
 {
     raster2world = camera2world;
     
-    float ar = (float)w/(float)h;
-    float b[4]; //screen-space bounds
-    if(ar > 1) //horizontal image
+    float aspect_ratio = (float)width/(float)height;
+    float bounds[4]; //screen-space bounds
+    if(aspect_ratio > 1) //horizontal image
     {
-        b[0] = -ar; //minx
-        b[1] = ar;  //maxx
-        b[2] = -1.f;//miny
-        b[3] = 1.f; //maxy
+        bounds[0] = -aspect_ratio; //minx
+        bounds[1] = aspect_ratio;  //maxx
+        bounds[2] = -1.f;//miny
+        bounds[3] = 1.f; //maxy
     }
     else
     {
-        b[0] = -1.f; //minx
-        b[1] = 1.f;  //maxx
-        b[2] = -1.f/ar;//miny
-        b[3] = 1.f/ar; //maxy
+        bounds[0] = -1.f; //minx
+        bounds[1] = 1.f;  //maxx
+        bounds[2] = -1.f/aspect_ratio;//miny
+        bounds[3] = 1.f/aspect_ratio; //maxy
     }
     float f = 1.0f; //far plane
     float n = 0.0f; //near plane
@@ -48,10 +48,10 @@ OrthographicCamera::OrthographicCamera(const Point3* p,const Point3* t,
     //[      0              0           1                     0          ]
     //[      0              0           0                     1          ]
     
-    values[0] = (b[1]-b[0])/w;
-    values[3] = b[0];
-    values[5] = (b[2]-b[3])/h;
-    values[7] = b[3];
+    values[0] = (bounds[1]-bounds[0])/width;
+    values[3] = bounds[0];
+    values[5] = (bounds[2]-bounds[3])/height;
+    values[7] = bounds[3];
     values[10] = 1.f;
     values[11] = 0.f;
     
@@ -60,9 +60,9 @@ OrthographicCamera::OrthographicCamera(const Point3* p,const Point3* t,
     raster2world *= raster2screen;
 }
 
-void OrthographicCamera::createRay(Sample *s, Ray *r)const
+void OrthographicCamera::createRay(Sample* sample, Ray* ray)const
 {
-    r->origin = raster2world * Point3(s->posx,s->posy,0);
-    r->direction = camera2world * Vec3(0,0,1);
-    r->direction.normalize();
+    ray->origin = raster2world * Point3(sample->posx,sample->posy,0);
+    ray->direction = camera2world * Vec3(0,0,1);
+    ray->direction.normalize();
 }
