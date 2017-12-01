@@ -24,14 +24,14 @@
  * \brief Container for every material used
  *
  *  This class is used to store every material used in the renderer. It is a
- *  singleton, since this class store constant values that will be assigned to
+ *  singleton, since this class stores constant values that will be assigned to
  *  the various shape at creation time. The library must be unique and
  *  accessible everywhere.
  *
  *  The library contains a default material that represents a white matte
  *  surface
  *
- *  A define grant access to this singleton just by writing "MtlLib"
+ *  A define grants access to this singleton just by writing "MtlLib"
  */
 class MaterialLibrary
 {

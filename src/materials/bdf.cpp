@@ -12,7 +12,7 @@ BdfFlags Bdf::getFlags() const
     return Bdf::type;
 }
 
-Spectrum Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+Spectrum Bdf::sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
                    float* pdf)const
 {
     //sample x,y points on the hemisphere, shirley's method maybe's better
@@ -24,7 +24,7 @@ Spectrum Bdf::df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
     //if the wo was flipped, flip also wi
     if(wo->z < 0) wi->z *= -1.f;
     *pdf = fabsf(wi->z)*INV_PI;
-    return df(wo,wi);
+    return value(wo,wi);
 }
 float Bdf::pdf(const Vec3* wo, const Vec3* wi)const
 {
@@ -55,7 +55,7 @@ void Bsdf::inheritBdf(Bdf* addme)
     Bsdf::bdfs[count++] = addme;
 }
 
-Spectrum Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
+Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
                   BdfFlags val)const
 {
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
@@ -68,12 +68,12 @@ Spectrum Bsdf::df(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
     for(int i=0;i<count;i++)
     {
         if(bdfs[i]->isType(val)) //add contribution only if matches refl/trans
-            retval += bdfs[i]->df(&wo_shading_space,&wi_shading_space);
+            retval += bdfs[i]->value(&wo_shading_space,&wi_shading_space);
     }
     return retval;
 }
 
-Spectrum Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
+Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
                     const HitPoint* h, Vec3* wi, float* pdf,
                     BdfFlags matchme, BdfFlags* val)const
 {
@@ -99,7 +99,7 @@ Spectrum Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
     //I don't care about the result, but I need to generate the &wi vector
     //TODO: gained efficiency by creating an ad-hoc method?
     Spectrum retval;
-    retval=matching[chosen]->df_s(&wo_shading_space, &tmpwi,r1,r2,pdf);
+    retval=matching[chosen]->sample_value(&wo_shading_space, &tmpwi,r1,r2,pdf);
 
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
@@ -126,7 +126,7 @@ Spectrum Bsdf::df_s(float r0, float r1, float r2, const Vec3* wo,
         for (int i = 0; i < count; i++)
         {
             if (bdfs[i]->isType(*val))//add contribution only if matches
-                retval += bdfs[i]->df(&wo_shading_space, &tmpwi);
+                retval += bdfs[i]->value(&wo_shading_space, &tmpwi);
             if(bdfs[i]!=matching[chosen] && bdfs[i]->isType(matchme))
                 *pdf+= bdfs[i]->pdf(&wo_shading_space, &tmpwi);
         }

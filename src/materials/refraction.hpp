@@ -39,18 +39,6 @@ public:
     Refraction(const Spectrum& specular, const Spectrum& eta_incident,
                const Spectrum& eta_transmitted);
 
-    /** \brief Copy the BTDF
-     *
-     *  Method used to copy this class
-     *
-     *  \warning The returned Bdf is heap allocated, and must be deallocated.
-     *  Although this is really bad practice, it is the only possible
-     *  implementation without using reference counting.
-     *
-     *  \return an heap allocated base pointer of the cloned class
-     */
-    Bdf* clone()const;
-
     /** \brief NOOP
      *
      *  Refraction follows a delta distribution, so  this function returns
@@ -60,7 +48,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Spectrum df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi)const;
 
     /** \brief Returns the value of the BTDF
      *
@@ -77,7 +65,7 @@ public:
      *  generated, this method returns 1.0 as pdf
      *  \return The value of the BTDF
      */
-    Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+    Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
                   float* pdf)const;
 
     /** \brief Return the probability density function for this bdf

@@ -7,7 +7,7 @@
 #include <x86intrin.h> //for pdep
 #endif
 
-#ifdef WIN32 //BMI2 and windows
+#if defined(WIN32) || defined(WIN64) //BMI2 and windows
 #include <intrin.h> //for bsf
 #include <immintrin.h> //for pdep
 #endif

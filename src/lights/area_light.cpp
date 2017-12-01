@@ -6,20 +6,19 @@
 AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c)
 : Asset(sp,objToWorld), c(c)
 {
+    //calculate the surface of the world-space object
     AreaLight::area = sp->surface(objToWorld);
+    
+    //get the cumulative densities of the various faces of the light
     cd = (float*)malloc(sizeof(float)*sp->getNumberOfFaces());
     sp->getDensitiesArray(objToWorld, cd);
+    
     AreaLight::invarea = 1.f/area;
 }
 
 AreaLight::~AreaLight()
 {
     delete cd;
-}
-
-Spectrum AreaLight::emissivePower()const
-{
-    return AreaLight::c * TWO_PI;
 }
 
 Spectrum AreaLight::emissiveSpectrum()const
@@ -58,23 +57,24 @@ Spectrum AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
 Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
                             Vec3 *wi, float *pdf, float* distance) const
 {
-    Normal n;
-    Point3 p;
-    Ray r;
-    r.origin = worldToObj**current_pos;
+    Normal normal;
+    Point3 light_point;
+    Ray ray;
+    ray.origin = worldToObj**current_pos;
 
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
-    AreaLight::model->getRandomPoint(r0,r1,cd,&p,&n);
+    AreaLight::model->getRandomPoint(r0,r1,cd,&light_point,&normal);
 
     //in the next steps a ray originating from the current_pos and pointing to
     //the sampled point is tested against the light. This because if the sampled
     //point is on the backface, a point facing the current_pos is selected
-    r.direction = p-r.origin;
-    r.direction.normalize();
-    HitPoint hp;
+    ray.direction = light_point-ray.origin;
+    ray.direction.normalize();
+    HitPoint hit;
     *distance = FLT_MAX;
-    bool res=AreaLight::model->intersect(&r,distance,&hp);//will always succeed
+    //will always succeed
+    bool res=AreaLight::model->intersect(&ray,distance,&hit);
     //TODO: erase this after all the intersections are tried
     //just to be sure
     if(!res)
@@ -82,13 +82,13 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
         *pdf = 0;
         return SPECTRUM_BLACK;
     }
-    p = r.apply(*distance);
-    n = hp.n;
-    *wi = r.direction;
-
-    *pdf = (r.origin.x-p.x)*(r.origin.x-p.x)+(r.origin.y-p.y)*(r.origin.y-p.y)+
-           (r.origin.z-p.z)*(r.origin.z-p.z);
-    *pdf/=(absdot(n,-(*wi))*AreaLight::area);
+    light_point = ray.apply(*distance);
+    normal = hit.n;
+    *wi = ray.direction;
+    *pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
+           (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
+           (ray.origin.z-light_point.z)*(ray.origin.z-light_point.z);
+    *pdf/=(absdot(normal,-(*wi))*AreaLight::area);
     if(std::isinf(*pdf))
     {
         *pdf = 0;
@@ -97,7 +97,7 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
 
     //convert wi to world space
     Spectrum retval;
-    if(dot(n,-(*wi))>0)
+    if(dot(normal,-(*wi))>0)
         retval = AreaLight::c;
     else
         retval = SPECTRUM_BLACK;
@@ -109,18 +109,20 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
 
 float AreaLight::pdf(const Point3* p, const Vec3* wi)const
 {
-    Ray r;
-    r.origin = AreaLight::worldToObj * *p;
-    r.direction = AreaLight::worldToObj * *wi;
-    HitPoint hp;
+    Ray ray;
+    ray.origin = AreaLight::worldToObj * *p;
+    ray.direction = AreaLight::worldToObj * *wi;
+    HitPoint hit;
     float distance = FLT_MAX;
-    bool res=AreaLight::model->intersect(&r,&distance,&hp);//will always succeed
+    //will always succeed
+    bool res=AreaLight::model->intersect(&ray,&distance,&hit);
     if(!res)
         return 0;
-    Point3 ps = r.apply(distance);
-    float pdf = (r.origin.x-ps.x)*(r.origin.x-ps.x)+(r.origin.y-ps.y)*
-                (r.origin.y-ps.y)+(r.origin.z-ps.z)*(r.origin.z-ps.z);
-    pdf/=(absdot(hp.n,-(r.direction))*AreaLight::area);
+    Point3 light_point = ray.apply(distance);
+    float pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
+                (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
+                (ray.origin.z-light_point.z)*(ray.origin.z-light_point.z);
+    pdf/=(absdot(hit.n,-(ray.direction))*AreaLight::area);
     return pdf;
 }
 

@@ -13,7 +13,7 @@ Vec3::Vec3()
 
 Vec3::Vec3(float xyz)
 {
-#ifdef _DEBUG
+#ifdef DEBUG
     Console.severe(std::isnan(xyz), MESSAGE_NAN("Vec3"));
     Console.severe(std::isinf(xyz), MESSAGE_INFINITY("Vec3"));
 #endif
@@ -63,7 +63,7 @@ Vec3::Vec3(const float* xyz)
         Vec3::x = xyz[0];
         Vec3::y = xyz[1];
         Vec3::z = xyz[2];
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     }
     else
     {

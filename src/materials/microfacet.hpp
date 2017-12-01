@@ -24,7 +24,7 @@
  *  \brief Represent a class composed by reflective microfacets
  *
  *  The MicrofacetR class assumes that every microfacet composing the surface
- *  is made of a perfectly specular material. The values values passed to the
+ *  is made of a perfectly specular material. The values passed to the
  *  constructor are used to tune the distribution of these microfacets and
  *  give different specular results. The underlying model is the Cook-Torrance
  *  one.
@@ -36,10 +36,12 @@ public:
     /** \brief Default constructor
      *
      *  \param[in] spe The reflected spectrum
-     *  \param[in] md The class used to know how the microfacets are distributed
-     *  \param[in] f The fresnel term (Dielectric or Conductor) of this material
+     *  \param[in] distribution The class used to know how the microfacets are
+     *  distributed
+     *  \param[in] fresnel The fresnel term (Dielectric or Conductor) of this
+     *  material
      */
-    MicrofacetR(Spectrum& spe, MicrofacetDist* md, Fresnel* f);
+    MicrofacetR(Spectrum& spe, MicrofacetDist* distribution, Fresnel* fresnel);
     
     ///Default destructor
     ~MicrofacetR();
@@ -54,7 +56,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The value of the BRDF
      */
-    Spectrum df(const Vec3* woS, const Vec3* wiS)const;
+    Spectrum value(const Vec3* woS, const Vec3* wiS)const;
     
     /** \brief Returns the value of the BRDF
      *
@@ -71,7 +73,7 @@ public:
      *  over the bdf hemisphere
      *  \return The value of the BRDF
      */
-    Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
+    Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
                   float* pdf)const;
     
     /** \brief Return the probability density function for this BRDF
@@ -91,10 +93,10 @@ public:
 private:
     
     //fresnel term
-    Fresnel* f;
+    Fresnel* fresnel;
     
     //microfacet distribution
-    MicrofacetDist* md;
+    MicrofacetDist* distribution;
     
     //reflected spectrum
     Spectrum specular;
@@ -120,13 +122,14 @@ public:
     
     /** \brief Default constructor
      *
-     *  \param[in] spe The reflected spectrum
-     *  \param[in] md The class used to know how the microfacets are distributed
+     *  \param[in] spectrum The reflected spectrum
+     *  \param[in] distribution The class used to know how the microfacets are
+     *  distributed
      *  \param[in] etai The index of refraction of the material outside the
      *  object
      *  \param[in] etat The index of refraction of the microfacets
      */
-    MicrofacetT(Spectrum& spe, MicrofacetDist* md,
+    MicrofacetT(Spectrum& spectrum, MicrofacetDist* distribution,
                 Spectrum& etai, Spectrum& etat);
     
     ///Default destructor
@@ -142,7 +145,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The value of the BTDF
      */
-    Spectrum df(const Vec3* woS, const Vec3* wiS)const;
+    Spectrum value(const Vec3* woS, const Vec3* wiS)const;
     
     /** \brief Returns the value of the BTDF
      *
@@ -159,7 +162,7 @@ public:
      *  over the bdf hemisphere
      *  \return The value of the BTDF
      */
-    Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
+    Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
                   float* pdf)const;
     
     /** \brief Return the probability density function for this BRDF
@@ -180,10 +183,10 @@ private:
     Spectrum specular;
     
     //fresnel term
-    Dielectric d;
+    Dielectric fresnel_diel;
     
     //microfacet distribution
-    MicrofacetDist* md;
+    MicrofacetDist* distribution;
     
     //ior incident
     float eta_i;

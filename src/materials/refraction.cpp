@@ -22,13 +22,13 @@ Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
 #endif
 }
 
-Spectrum Refraction::df(const Vec3*, const Vec3*) const
+Spectrum Refraction::value(const Vec3*, const Vec3*) const
 {
     return SPECTRUM_BLACK;
 }
 
-Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float,
-                          float* pdf) const
+Spectrum Refraction::sample_value(const Vec3 *wo, Vec3 *wi, float, float,
+                                  float* pdf) const
 {
     float ei;
     float et;
@@ -91,12 +91,6 @@ Spectrum Refraction::df_s(const Vec3 *wo, Vec3 *wi, float, float,
 float Refraction::pdf(const Vec3*, const Vec3*)const
 {
     return 0.f;
-}
-
-Bdf* Refraction::clone()const
-{
-    Refraction* res = new Refraction(*this);
-    return res;
 }
 
 Spectrum cauchyEq(float B, float C, float D)

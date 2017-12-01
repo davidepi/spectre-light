@@ -9,7 +9,7 @@ Reflection::Reflection(const Spectrum& specular)
     
 }
 
-Spectrum Reflection::df(const Vec3*, const Vec3*) const
+Spectrum Reflection::value(const Vec3*, const Vec3*) const
 {
     return SPECTRUM_BLACK;
 }
@@ -48,8 +48,8 @@ DielectricReflection::DielectricReflection(const Spectrum& specular,
 #endif
 }
 
-Spectrum ConductorReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
-                                   float* pdf)const
+Spectrum ConductorReflection::sample_value(const Vec3 *wo, Vec3 *wi,
+                                           float, float, float* pdf)const
 {
     //wi = wo * [-1 0 0 0]
     //          [0 -1 0 0]
@@ -69,8 +69,8 @@ Spectrum ConductorReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
     return eval*specular/fabsf(wo->z);
 }
 
-Spectrum DielectricReflection::df_s(const Vec3 *wo, Vec3 *wi, float, float,
-                                    float* pdf)const
+Spectrum DielectricReflection::sample_value(const Vec3 *wo, Vec3 *wi,
+                                            float, float, float* pdf)const
 {
     wi->x = -wo->x;
     wi->y = -wo->y;
