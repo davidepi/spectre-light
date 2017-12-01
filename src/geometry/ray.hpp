@@ -52,13 +52,9 @@ public:
      *  An unsigned char representing the maximum number of bounces for this
      *  ray. In a raytrace-based renderer, rays bounces from a surface to
      *  another until they are absorbed. However, if the scene is full of
-     *  specular reflecting surfaces, a ray will bounce for a lot of time, if
+     *  specular reflecting surfaces, a ray could bounce for a lot of time, if
      *  not forever. This value is a sort of "Time-to-live" for the ray: when it
      *  reaches a determined value, the ray must be destroyed.
-     *  Despite the fact that in pathtrace-based algorithms rays are guaranteed
-     *  to be eventually destroyed, due to the russian roulette, this value can
-     *  be used as a minimum number of bounces before starting the russian
-     *  roulette
      */
     unsigned char ricochet;
     
@@ -66,7 +62,6 @@ public:
     /** \brief Default constructor
      *
      *  Construct a Ray with origin and direction in (0,0,0).
-     *  Its minimum extent will be 0 and maximum extent will be infinity.
      */
     Ray();
     
@@ -74,7 +69,6 @@ public:
      *
      *  Construct a Ray given a Point3 representing the starting point and a
      *  Vec3 representing the direction of the Ray.
-     *  Its minimum extent will be 0 and maximum extent will be infinity.
      *
      *  \param[in] origin a Point3 representing the starting point of the Ray
      *  \param[in] direction a Vec3 representing the direction of the Ray
@@ -85,7 +79,6 @@ public:
      *
      *  Construct a Ray given three floats representing the starting point
      *  and three floats representing the direction of the Ray.
-     *  Its minimum extent will be 0 and maximum extent will be infinity.
      *
      *  \param[in] ox a float representing the x component of the origin point
      *  \param[in] oy a float representing the y component of the origin point
@@ -93,9 +86,6 @@ public:
      *  \param[in] dx a float representing the x component of the direction
      *  \param[in] dy a float representing the y component of the direction
      *  \param[in] dz a float representing the z component of the direction
-     *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the input values are NaN or
-     *        Infinity
      */
     Ray(float ox, float oy, float oz, float dx, float dy, float dz);
     

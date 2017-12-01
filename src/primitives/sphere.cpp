@@ -77,7 +77,7 @@ float Sphere::surface()const
 
 float Sphere::surface(const Matrix4* transform)const
 {
-    Vec3 scale = transform->extractScale();
+    Vec3 scale = transform->getScale();
     const float val = (scale.x+scale.y+scale.z)/3.f;
     return FOUR_PI*val*val;
 }

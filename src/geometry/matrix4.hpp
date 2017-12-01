@@ -9,9 +9,6 @@
  *  \author    Davide Pizzolotto
  *  \version   0.1
  *  \date      25 Nov 2017
- *  \warning   Since this is a low level class, some verification are skipped.
- *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
- *             preprocessor define.
  *  \copyright GNU GPLv3
  */
 
@@ -33,13 +30,13 @@
  *  \brief A 4 by 4 transformation matrix
  *
  *  The Matrix4 class represents a 4x4 transformation matrix in 3D space. A 4x4
- *  Matrix is usually used to perform transformation such as scaling, rotating
- *  or translating a model (by performing these operations vertex by vertex).
- *  This class contains all the methods to generate such matrices, that can be
- *  further multiplied by points, vectors or normals
+ *  Matrix is usually used to perform transformations such as scaling, rotations
+ *  or translations of a model.
+ *  The matrix is 4x4 instead of 3x3 because some transformations requires an
+ *  homogeneus space instead of a cartesian one
  *
  *  This Matrix4 consist of 16 distinct variables in form mXY where \e X is the
- *  row 0-based and Y is the column 0-based.
+ *  row number 0-based and Y is the column number 0-based.
  */
 class Matrix4
 {
@@ -79,6 +76,7 @@ public:
     float m33;
     
     /** \brief Default constructor
+     *
      *  Allocate a matrix of 4 by 4 single precision floating point, with
      *  undefined values
      *
@@ -86,17 +84,16 @@ public:
      */
     Matrix4() = default;
     
-    /** \brief Construct a 4 by 4 matrix with the given array of single
-     *         precision floating point numbers.
+    /** \brief Construct a 4 by 4 matrix with the given array of floats
      *
      * \note The contents of the array values are assumed to be in row-major
      *       order
      *
-     * \param values An array of float containing the values of the matrix
+     * \param[in] values An array of float containing the values of the matrix
      */
     Matrix4(const float* values);
     
-    ///Destructor
+    ///Default destructor
     ~Matrix4() = default;
     
     /**  \brief Represent the matrix with a C-string
@@ -116,31 +113,30 @@ public:
      *  Copy the components of this matrix in an unidimensional array of float,
      *  heap allocated
      *
-     *  \return  An heap allocated 0-based array containing the value of the
-     *           matrix in row major order
-     *  \note A float* is allocated on heap and must be deleted
+     *  \param[out] values An array of 16 elements containing the values of the
+     *              matrix in row major order
      *  \sa toString()
      */
-    float* toArray()const;
+    void toArray(float* values)const;
     
-    /** \brief set this matrix to a zero-matrix
+    /** \brief Set this matrix to a zero-matrix
      *
      *  Fill this matrix with 0 values
      *  \sa setIdentity()
      */
     void setZero();
     
-    /** \brief set this matrix to the identity matrix
+    /** \brief Set this matrix to the identity matrix
      *
      *  Set this matrix to the identity matrix (unit matrix), filled with
      *  1 values in the diagonal and 0 values everywhere else
      */
     void setIdentity();
     
-    /** \brief set this matrix to a translation matrix
+    /** \brief Set this matrix to a translation matrix
      *
      *  Set this matrix to a transformation matrix responsible of the
-     *  translation. The input vector will define the magnitude and direction
+     *  translation. The input vector defines the magnitude and direction
      *  of the translation
      *
      *  \param[in] direction The vector representing the direction of the
@@ -148,7 +144,7 @@ public:
      */
     void setTranslation(Vec3 direction);
     
-    /** \brief set this matrix to a scale matrix
+    /** \brief Set this matrix to a scale matrix
      *
      *  Set this matrix to a transformation matrix responsible of the
      *  uniform scaling. The input float defines the magnitude of the scaling
@@ -158,18 +154,18 @@ public:
      */
     void setScale(float value);
     
-    /** \brief set this matrix to a scale matrix
+    /** \brief Set this matrix to a scale matrix
      *
      *  Set this matrix to a transformation matrix responsible of the
      *  non-unfirom scaling. The input vector defines the magnitude of the
      *  scaling factor for each component
      *
      *  \param[in] value The vector representing the magnitude of the
-     *             scaling
+     *             scaling for each component
      */
     void setScale(Vec3 value);
     
-    /** \brief set this matrix to a rotation matrix
+    /** \brief Set this matrix to a rotation matrix
      *
      *  Set this matrix to a transformation matrix responsible of the rotation
      *  around the X axis. The input float defines the angle of rotation
@@ -208,7 +204,7 @@ public:
      */
     void setRotateZ(float value);
     
-    /** \brief set this matrix to an inverted LookAt matrix
+    /** \brief Set this matrix to an inverted LookAt matrix
      *
      *  Set this matrix to a transformation LookAt matrix in a LeftHanded
      *  system. This matrix is used to align the world with the camera (can be
@@ -234,8 +230,7 @@ public:
      *
      *   This method tries to invert the matrix (if it is invertible) and writes
      *   the resulting matrix in the input parameter. If the matrix is not
-     *   invertible nothing is written and the function return false.
-     *   The inverted matrix is calculated using the Gauss-Jordan elimination
+     *   invertible nothing is written and the function returns false.
      *
      *  \param[out] output A pointer to the allocated area where the new matrix
      *                     will be written
@@ -251,7 +246,7 @@ public:
      *
      *  \return A Vec3 representing the translation component of the matrix
      */
-    Vec3 extractTranslation()const;
+    Vec3 getTranslation()const;
     
     /** \brief Extract the scale component from the matrix
      *
@@ -260,7 +255,7 @@ public:
      *
      *  \return A Vec3 representing the scale component of the matrix
      */
-    Vec3 extractScale()const;
+    Vec3 getScale()const;
     
     
     //------ Operators ---------------------------------------------------------

@@ -26,10 +26,10 @@
 - [ ] bump/normal textures
 - [ ] environment (sky) system
 - [ ] sun position and sunlight
+- [ ] camera lenses
+- [ ] depth of field
 - [ ] irradiance caching
-- metropolis light transport
-- energy redistribution path tracing
-- tessellation and displacement mapping
+- [ ] metropolis light transport
 
 ### V0.3 ###
 - bvh exporter/importer/generator
@@ -39,8 +39,10 @@
 - load and unload models from memory
 - better occlusion testing
 - ad hoc intersection methods for occlusion testing
+- tessellation and displacement mapping
 - more?
 
 ### V0.4 ###
 - gpu rendering
+- energy redistribution path tracing
 - volume rendering

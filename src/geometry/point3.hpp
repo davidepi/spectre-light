@@ -8,12 +8,8 @@
  *  \details   Definition and implementation of a point in a three dimensional
  *             and its interaction with the Vec3 class
  *  \author    Davide Pizzolotto
- *  \version   1.0
+ *  \version   0.1
  *  \date      18 April 2017
- *  \warning   Since this is a low level class, some verification
- *             could be skipped. To enable them compile the project with the
- *             #_LOW_LEVEL_CHECKS_ preprocessor define
- *             More details are provided for every method
  *  \copyright GNU GPLv3
  */
 
@@ -37,7 +33,7 @@
  *  methods like dot and cross. However, for the sake of simplicity, it has not
  *  been designed as an inherited class.
  *
- *  A Point3 consist of three coordinates, usually called x, y and z.
+ *  A Point3 consists of three coordinates, usually called x, y and z.
  */
 class Point3
 {
@@ -70,7 +66,7 @@ public:
      */
     Point3();
     
-    ///Destructor
+    ///Default destructor
     ~Point3() = default;
     
     /**  \brief Constructor, given equal coordinates
@@ -79,7 +75,6 @@ public:
      *  and \p z
      *
      *  \param[in] xyz A float representing the x, y and z coordinates
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xyz is NaN
      */
     Point3(float xyz);
     
@@ -91,15 +86,14 @@ public:
      *  \param[in] x The value of the x coordinate
      *  \param[in] y The value of the y coordinate
      *  \param[in] z The value of the z coordinate
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p x, \p y or \p z
-     *        are NaN
      */
     Point3(float x, float y, float z);
     
-    /**  \brief Compute the distance between to another point
+    /**  \brief Compute the distance to another point
      *
      *  Compute the euclidean distance between this point and another one
-     *  passed in input, as the length of the segment connecting them
+     *  passed as input. This distance is the length of the segment connecting
+     *  them
      *
      *  \param[in] p A Point3 representing the point to which the
      *             distance should be calculated
@@ -112,7 +106,7 @@ public:
      *  of this point and the one passed as argument
      *
      *  \param[in] p A Point3 used to compare and choose the x, y and z values
-     *  \sa min(const Point3 p)
+     *  \sa min(const Point3& p)
      */
     void max(const Point3& p);
     
@@ -122,7 +116,7 @@ public:
      *  of this point and the one passed as argument
      *
      *  \param[in] p A Point3 used to compare and choose the x, y and z values
-     *  \sa max(const Point3 p)
+     *  \sa max(const Point3& p)
      */
     void min(const Point3& p);
     
@@ -145,7 +139,7 @@ public:
     ///Access a component of the point
     float operator[] (int)const;
     
-    /* Useless operation.
+    /* Useless operations.
      i.e.: Cannot offset a point by a point
      But if I remove these, I will surely forgot why
      //Point3 operator+ (const Point3& p)const;
@@ -172,7 +166,7 @@ public:
  *             distance should be calculated
  *  \return A float representing the distance from \p p1 to \p p2
  */
-inline float distance(const Point3 p1, const Point3 p2)
+inline float distance(const Point3& p1, const Point3& p2)
 {
     float x = p1.x - p2.x;
     float y = p1.y - p2.y;
@@ -191,7 +185,7 @@ inline float distance(const Point3 p1, const Point3 p2)
  *  \return A Point3 with minimized coordinates, chosen between the inputs
  *  \sa max(const Point3 p1, const Point3 p2)
  */
-inline Point3 min(const Point3 p1, const Point3 p2)
+inline Point3 min(const Point3& p1, const Point3& p2)
 {
     return
     Point3(min(p1.x,p2.x),min(p1.y,p2.y),min(p1.z,p2.z));
@@ -207,7 +201,7 @@ inline Point3 min(const Point3 p1, const Point3 p2)
  *  \return A Point3 with maximized coordinates, chosen between the inputs
  *  \sa min(const Point3 p1, const Point3 p2)
  */
-inline Point3 max(const Point3 p1, const Point3 p2)
+inline Point3 max(const Point3& p1, const Point3& p2)
 {
     return
     Point3(max(p1.x,p2.x),max(p1.y,p2.y),max(p1.z,p2.z));

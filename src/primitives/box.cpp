@@ -48,7 +48,7 @@ float Box::surface()const
 
 float Box::surface(const Matrix4* transform)const
 {
-    Vec3 scale = transform->extractScale();
+    Vec3 scale = transform->getScale();
     float la = 2*(scale.x+scale.z)*scale.y;
     return la+2*scale.x*scale.z;
 }
@@ -123,7 +123,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 
 void Box::getDensitiesArray(const Matrix4* transform, float* array)const
 {
-    Vec3 scale = transform->extractScale();
+    Vec3 scale = transform->getScale();
     array[0] = scale.x*scale.y;
     array[1] = array[0]*2;
     array[2] = array[1]+(scale.x*scale.z);

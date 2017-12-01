@@ -27,7 +27,7 @@ while a scene is continuous. Sampling always the same point for a pixel would cr
 aliasing
 - A camera takes a sample as input and generates a light ray. Depending on the type of camera
 the direction and origin of the ray are created
-- An integrator takes the light ray and calculated the amount of radiance carried by it.
+- An integrator takes the light ray and calculates the amount of radiance carried by it.
 This involves calculating every interaction with the lights and the materials
 - A filter weights the calculated radiance and affects several pixels near the sample. Filters
 are defined in the same folder of the samplers.
