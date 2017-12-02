@@ -4,8 +4,9 @@
 #include "renderer.hpp"
 
 //st = sampler type
-static void executor(Camera* c,ImageFilm* io,std::mutex* lock,int spp, int st,
-              std::stack<Renderer_task>* jobs, Scene* s, LightIntegrator* t);
+static void executor(Camera* camera,ImageFilm* film,std::mutex* lock,int spp,
+                     int sampler_type, std::stack<Renderer_task>* jobs,
+                     Scene* scene, LightIntegrator* mc_solver);
 
 
 static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
@@ -14,27 +15,28 @@ static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
 #define SPECTRE_USE_RANDOM_SAMPLER 0
 #define SPECTRE_USE_STRATIFIED_SAMPLER 1
 
-Renderer::Renderer(int w, int h, int spp, const char* o,int th) : film(w,h,o)
+Renderer::Renderer(int width, int height, int spp, const char* out,
+                   int thread_number) : film(width,height,out)
 {
-    if(w%SPLIT_SIZE)
+    if(width%SPLIT_SIZE)
     {
         char errmsg[256];
         snprintf(errmsg,256,MESSAGE_WIDTH_MULTIPLE,SPLIT_SIZE);
         Console.severe(errmsg);
         //set w and h as 0 so no image will be rendered
-        Renderer::w = 0;
-        Renderer::h = 0;
+        Renderer::width = 0;
+        Renderer::height = 0;
     }
     else
     {
-        Renderer::w = w;
-        Renderer::h = h;
+        Renderer::width = width;
+        Renderer::height = height;
     }
 
-    if(th<1)
+    if(thread_number<1)
         Renderer::numthreads = (int)std::thread::hardware_concurrency();
     else
-        Renderer::numthreads = th;
+        Renderer::numthreads = thread_number;
     numthreads = numthreads > 0 ? numthreads : 1;
 
     //print number of rendering threads
@@ -43,37 +45,37 @@ Renderer::Renderer(int w, int h, int spp, const char* o,int th) : film(w,h,o)
     Console.log(threads,threads);
 
     Renderer::spp = spp;
-    Renderer::c = NULL;
-    Renderer::f = NULL;
-    Renderer::t = NULL;
+    Renderer::camera = NULL;
+    Renderer::filter = NULL;
+    Renderer::mc_solver = NULL;
     Renderer::sampler_t = -1;
     Renderer::workers=new std::thread[numthreads];//dflt ctor won't start thread
 }
 
 Renderer::~Renderer()
 {
-    delete c;
-    delete f;
-    delete t;
+    delete camera;
+    delete filter;
+    delete mc_solver;
     delete[] Renderer::workers;
 }
 
 void Renderer::setPerspective(Point3 pos, Point3 target, Vec3 up, float fov)
 {
-    delete c;
-    c = new PerspectiveCamera(&pos,&target,&up,w,h,fov);
+    delete camera;
+    camera = new PerspectiveCamera(&pos,&target,&up,width,height,fov);
 }
 
 void Renderer::setOrthographic(Point3 pos, Point3 target, Vec3 up)
 {
-    delete c;
-    c = new OrthographicCamera(&pos,&target,&up,w,h);
+    delete camera;
+    camera = new OrthographicCamera(&pos,&target,&up,width,height);
 }
 
 void Renderer::setPanorama(Point3 pos, Point3 target, Vec3 up)
 {
-    delete c;
-    c = new Camera360(&pos,&target,&up,w,h);
+    delete camera;
+    camera = new Camera360(&pos,&target,&up,width,height);
 }
 
 void Renderer::setRandomSampler()
@@ -99,49 +101,52 @@ void Renderer::setStratifiedSampler()
 void Renderer::setBoxFilter()
 {
 
-    delete f;
-    f = new BoxFilter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
-    film.setFilter(f);
+    delete filter;
+    filter = new BoxFilter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
+    film.setFilter(filter);
 }
 
 void Renderer::setTentFilter()
 {
-    delete f;
-    f = new TentFilter(TENT_FILTER_EXTENT,TENT_FILTER_EXTENT);
-    film.setFilter(f);
+    delete filter;
+    filter = new TentFilter(TENT_FILTER_EXTENT,TENT_FILTER_EXTENT);
+    film.setFilter(filter);
 }
 
 void Renderer::setGaussianFilter(float sigma)
 {
-    delete f;
-    f = new GaussianFilter(GAUSSIAN_FILTER_EXTENT,GAUSSIAN_FILTER_EXTENT,sigma);
-    film.setFilter(f);
+    delete filter;
+    filter = new GaussianFilter(GAUSSIAN_FILTER_EXTENT,GAUSSIAN_FILTER_EXTENT,
+                                sigma);
+    film.setFilter(filter);
 }
 
 void Renderer::setMitchellFilter(float b, float c)
 {
-    delete f;
-    f = new MitchellFilter(MITCHELL_FILTER_EXTENT,MITCHELL_FILTER_EXTENT,b,c);
-    film.setFilter(f);
+    delete filter;
+    filter = new MitchellFilter(MITCHELL_FILTER_EXTENT,MITCHELL_FILTER_EXTENT,
+                                b,c);
+    film.setFilter(filter);
 }
 
 void Renderer::setLanczosSincFilter(float tau)
 {
-    delete f;
-    f = new LanczosFilter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,tau);
-    film.setFilter(f);
+    delete filter;
+    filter = new LanczosFilter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,
+                               tau);
+    film.setFilter(filter);
 }
 
 void Renderer::setRayTracer()
 {
-    delete t;
-    t = new RayTracer();
+    delete mc_solver;
+    mc_solver = new RayTracer();
 }
 
 void Renderer::setPathTracer()
 {
-    delete t;
-    t = new PathTracer();
+    delete mc_solver;
+    mc_solver = new PathTracer();
 }
 
 int Renderer::render(Scene* s)
@@ -156,22 +161,22 @@ int Renderer::render(Scene* s)
     s->k.buildTree();
 
     //checks if the settings are ok
-    if (Renderer::c == NULL)
+    if (Renderer::camera == NULL)
         Console.critical(MESSAGE_MISSING_CAMERA);
-    if (Renderer::f == NULL)
+    if (Renderer::filter == NULL)
         Console.critical(MESSAGE_MISSING_FILTER);
-    if (Renderer::t == NULL)
+    if (Renderer::mc_solver == NULL)
         Console.critical(MESSAGE_MISSING_INTEGRATOR);
     if(Renderer::sampler_t == -1)
         Console.critical(MESSAGE_MISSING_SAMPLER);
 
     //add part of the image as renderer_tasks
     Renderer_task task;
-    for(int y=0;y<h;y+=SPLIT_SIZE)
+    for(int y=0;y<height;y+=SPLIT_SIZE)
     {
         task.starty = y;
-        task.endy = y+SPLIT_SIZE<h?y+SPLIT_SIZE:h;
-        for(int x=0;x<w;x+=SPLIT_SIZE)
+        task.endy = y+SPLIT_SIZE<height?y+SPLIT_SIZE:height;
+        for(int x=0;x<width;x+=SPLIT_SIZE)
 		{
             task.startx = x;
             task.endx = x+SPLIT_SIZE;
@@ -179,12 +184,12 @@ int Renderer::render(Scene* s)
         }
     }
     steady_clock::time_point a = steady_clock::now();
-    RendererProgressBar rb(&jobs);
+    RendererProgressBar progress_bar(&jobs);
     //create threads
     for(int i=0;i<Renderer::numthreads;i++)
     {
-        Renderer::workers[i] = std::thread(executor,c,&film,&jobs_mtx,spp,
-                                           sampler_t,&jobs,s,Renderer::t);
+        Renderer::workers[i] = std::thread(executor,camera,&film,&jobs_mtx,spp,
+                                           sampler_t,&jobs,s,Renderer::mc_solver);
     }
 
     //wait for them to finish
@@ -192,7 +197,7 @@ int Renderer::render(Scene* s)
     {
         Renderer::workers[i].join();
     }
-    rb.kill();
+    progress_bar.kill();
     steady_clock::time_point b = steady_clock::now();
     
     //all these things to print the elapsed time!
@@ -211,8 +216,9 @@ int Renderer::render(Scene* s)
     return 0;
 }
 
-void executor(Camera* c, ImageFilm* io, std::mutex* lock, int spp, int st,
-              std::stack<Renderer_task>* jobs, Scene* s, LightIntegrator* t)
+void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
+              int sampler_type, std::stack<Renderer_task>* jobs, Scene* scene,
+              LightIntegrator* mc_solver)
 {
     //generate seed for WELLrng. Constant WELL_R is inside wellrng.h
     unsigned int WELLseed[WELL_R];
@@ -245,7 +251,7 @@ void executor(Camera* c, ImageFilm* io, std::mutex* lock, int spp, int st,
 	ExecutorData ex;
     Spectrum radiance;
     HitPoint h;
-    OcclusionTester ot(s);
+    OcclusionTester ot(scene);
     while(!done)
     {
         lock->lock();
@@ -266,7 +272,7 @@ void executor(Camera* c, ImageFilm* io, std::mutex* lock, int spp, int st,
 	for(int i=0;i<WELL_R;i++) //alterate the seed
 	    WELLseed[i]++; //Predictable, but it is only a seed
 
-        switch(st)
+        switch(sampler_type)
         {
             case SPECTRE_USE_RANDOM_SAMPLER:
                 sam = new RandomSampler(todo.startx, todo.endx, todo.starty,
@@ -287,21 +293,21 @@ void executor(Camera* c, ImageFilm* io, std::mutex* lock, int spp, int st,
         {
             for(int i=0;i<spp;i++)
             {
-                c->createRay(&(samples[i]), &r);
-                if (s->k.intersect(&r, &h))
-                    radiance = t->radiance(s, &h, &r, sam, &ot);
+                camera->createRay(&(samples[i]), &r);
+                if (scene->k.intersect(&r, &h))
+                    radiance = mc_solver->radiance(scene, &h, &r, sam, &ot);
                 else
                     radiance = SPECTRUM_BLACK;
                 
                 ColorXYZ cx = radiance.toXYZ();
-                io->addPixel(&(samples[i]), cx, &ex);
+                film->addPixel(&(samples[i]), cx, &ex);
             }
         }
-		io->deferredAddPixel(&ex);
+		film->deferredAddPixel(&ex);
         delete sam;
     }
     delete[] samples;
-	io->forceAddPixel(&ex);
+	film->forceAddPixel(&ex);
 }
 
 RendererProgressBar::RendererProgressBar(std::stack<Renderer_task> *jobs)
@@ -329,10 +335,10 @@ void RendererProgressBar::kill()
     Console.progressBarDone();
 }
 
-void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
+void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
+                 bool& alive)
 {
     unsigned long remaining;
-    const unsigned long total_size = ts;
     float done;
     time_t start_time = time(NULL); //Precision not required for an eta
     time_t current_time;
@@ -341,8 +347,8 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts, bool& alive)
     {
         remaining = jobs->size(); //I don't care about dirty reads, it's an
         current_time = time(NULL); //eta, I cannot block n threads for an eta
-        done = (float)(total_size-remaining)/(float)total_size;
-        eta = (time_t)((float)(current_time-start_time)/(total_size-remaining)*
+        done = (float)(jobs_no-remaining)/(float)jobs_no;
+        eta = (time_t)((float)(current_time-start_time)/(jobs_no-remaining)*
                 remaining);
         //avoid garbage values... it is useless, but it runs once per second...
         if(eta>0)

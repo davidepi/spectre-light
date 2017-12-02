@@ -4,7 +4,7 @@
 /**
  *  \file asset.hpp
  *  \brief     Wrapper of shape, texture and material
- *  \details   Containst the class that merge toghether a shape with its
+ *  \details   Containst the class that merge together a shape with its
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.1
@@ -24,7 +24,7 @@
  *  \class Asset asset.hpp "primitives/asset.hpp"
  *  \brief A container for shapes, materials and textures
  *
- *  The asset class is a wrapper that merge a Shape, used to define the
+ *  The asset class is a wrapper that merges a Shape, used to define the
  *  structure of the object, a Material, used to define the physical properties
  *  of the object, and a Texture.
  */
@@ -44,6 +44,7 @@ public:
     virtual ~Asset() = default;
     
     /** \brief Return the ID of this asset
+     *
      *  \return A unsigned int representing the ID of this asset
      */
     unsigned int getID()const;
@@ -55,7 +56,7 @@ public:
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[out] distance The distance of the point of intersection
-     *  \param[out] h an HitPoint class containing information about the
+     *  \param[out] h An HitPoint class containing information about the
      *  intersection point
      */
     bool intersect(const Ray* r,float* distance, HitPoint* h)const;
@@ -67,11 +68,11 @@ public:
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[in] rp A pointer to the RayProperties struct, used for fast
      *                intersection
-     *  \param[out] p1 The entry point of the AABB
-     *  \param[out] p2 The exit point of the AABB
+     *  \param[out] entry_point The entry point of the AABB
+     *  \param[out] exit_point The exit point of the AABB
      */
-    bool intersectFast(const Ray* r, const RayProperties* rp,
-                       float* p1, float* p2)const;
+    bool intersectAABB(const Ray* r, const RayProperties* rp,
+                       float* entry_point, float* exit_point)const;
     
     /** \brief Return a pointer to the AABB
      *

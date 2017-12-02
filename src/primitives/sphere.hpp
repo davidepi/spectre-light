@@ -75,9 +75,6 @@ public:
      *  This method returns an AABB that can fit well on the world space sphere,
      *  without actually transforming the sphere.
      *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *
      *  \param[in] transform The transform matrix used to transform the Sphere
      *  from object space to world space
      *
@@ -90,7 +87,8 @@ public:
      *  This method computes the surface area of the sphere, useful
      *  if the sphere is a light source.
      *
-     *  \return A float representing the area of the sphere in world-space units
+     *  \return A float representing the area of the sphere in object-space
+     *  units
      */
     float surface()const;
     
@@ -113,12 +111,12 @@ public:
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
-     *  \param[in] cd Unused in the sphere
+     *  \param[in] densities Unused in the sphere
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    virtual void getRandomPoint(float r0, float r1, const float* cd, Point3* p,
-                                Normal* n)const;
+    virtual void getRandomPoint(float r0, float r1, const float* densities,
+                                Point3* p, Normal* n)const;
 };
 
 #endif

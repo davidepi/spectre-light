@@ -15,7 +15,7 @@ AABB Sphere::computeAABB()const
 
 AABB Sphere::computeWorldAABB(const Matrix4* transform)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(transform==NULL)
     {
         Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);

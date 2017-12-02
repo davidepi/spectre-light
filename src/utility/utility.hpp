@@ -221,7 +221,6 @@ inline int sign(float a)
  *
  *  Solve a linear equation in form \f$ax+b=0\f$
  *
- *  \note use #_LOW_LEVEL_CHECKS_ to check if \p a is zero
  *  
  *  \param[in] a The coefficient of the unknown variable
  *  \param[in] b The other constant of the equation
@@ -229,7 +228,7 @@ inline int sign(float a)
  */
 inline float equation1(const float a, const float b)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(a==0)
     {
         Console.severe(MESSAGE_LINEAR_EQUATION_IMPOSSIBLE);

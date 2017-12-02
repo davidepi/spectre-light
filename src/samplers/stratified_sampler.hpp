@@ -26,8 +26,8 @@
  *  unbiased behaviour, the strafied sampler firstly subdivides the region
  *  in \a n identical subregions, where \a n is the number of samples required.
  *  Then for each subregion, one random sample is picked. This decreases
- *  considerably the probability of oversampling in some part of the region
- *  and undersampling in others.
+ *  considerably the probability of oversampling some part of the region
+ *  and undersampling others.
  */
 class StratifiedSampler : public Sampler
 {

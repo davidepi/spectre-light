@@ -40,10 +40,10 @@ bool Asset::intersect(const Ray* r,float* distance, HitPoint* h)const
     return res;
 }
 
-bool Asset::intersectFast(const Ray* r, const RayProperties* rp,
-                         float* p1, float* p2)const
+bool Asset::intersectAABB(const Ray* r, const RayProperties* rp,
+                         float* entry_point, float* exit_point)const
 {
-    return aabb.intersect(r,rp,p1,p2);
+    return aabb.intersect(r,rp,entry_point,exit_point);
 }
 
 const AABB* Asset::getAABB()const

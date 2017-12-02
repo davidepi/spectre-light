@@ -79,9 +79,6 @@ public:
      *  This method return an AABB that can fit well on the world space box,
      *  without actually transforming the box.
      *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *
      *  \param[in] transform The transformation matrix used to transform the box
      *  box from object space to world space
      *
@@ -104,7 +101,7 @@ public:
      *  This method should compute the surface area of the box, useful
      *  if the box is a light source.
      *
-     *  \return A float representing the area of the box in world-space units
+     *  \return A float representing the area of the box in objects-space units
      */
     float surface()const;
     
@@ -140,12 +137,12 @@ public:
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
-     *  \param[in] cd An array of densities calculated with the
+     *  \param[in] densities An array of densities calculated with the
      *  getDensitiesArray method
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, const float* cd, Point3* p,
+    void getRandomPoint(float r0, float r1, const float* densities, Point3* p,
                         Normal* n)const;
 };
 

@@ -495,7 +495,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
                 current_asset = assetsList[n->getAssetOffset()+i];
                 
                 //firstly try with the aabb since it's faster
-                if(current_asset->intersectFast(r, &rp, &res1, &res2))
+                if(current_asset->intersectAABB(r, &rp, &res1, &res2))
                 {
                     //then try with the actual asset
                     if(res1<bestdistance && //don't try if AABB > best distance

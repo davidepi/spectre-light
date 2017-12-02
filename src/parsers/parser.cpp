@@ -19,12 +19,12 @@ Settings::Settings()
     resolution[0] = 800;
     resolution[1] = 600;
     spp = 256;
-    ct = ORTHOGRAPHIC;
-    ft = BOX;
+    type_camera = ORTHOGRAPHIC;
+    type_filter = BOX;
     f_val[0] = 1;
     f_val[1] = 1;
-    it = DIRECT_LIGHT;
-    sc = new Scene;
+    type_integrator = DIRECT_LIGHT;
+    scene = new Scene;
 }
 
 Settings::~Settings()
@@ -75,9 +75,9 @@ static void parseSpp(char* string, Settings* out)
     {
         token = strtok(NULL," ");
         if(strcmp(token,"random")==0)
-            out->st = RANDOM;
+            out->type_sampler = RANDOM;
         else
-            out->st = STRATIFIED;
+            out->type_sampler = STRATIFIED;
         token = strtok(NULL," ");
         out->spp = atoi(token);
     }
@@ -99,11 +99,11 @@ static void parseCamera(char* string, Settings* out)
     {
         token = strtok_r(NULL," ",&savestring); //parse camera type
         if(strcmp(token,"perspective")==0)
-            out->ct = PERSPECTIVE;
+            out->type_camera = PERSPECTIVE;
         else if(strcmp(token,"panorama")==0)
-            out->ct = PANORAMA;
+            out->type_camera = PANORAMA;
         else
-            out->ct = ORTHOGRAPHIC;
+            out->type_camera = ORTHOGRAPHIC;
 
         token = strtok_r(NULL," ",&savestring); //parse Vec3 position
         val = strtok(token,"(), "); //parse x
@@ -129,7 +129,7 @@ static void parseCamera(char* string, Settings* out)
         val = strtok(NULL,"(), "); //parse z
         out->camera_up.z = (float)atof(val);
 
-        if(out->ct == PERSPECTIVE) //parse fov
+        if(out->type_camera == PERSPECTIVE) //parse fov
         {
             token = strtok_r(NULL," ",&savestring);
             out->camera_fov = toRad((float)atof(token));
@@ -151,18 +151,18 @@ static void parseFilter(char* string, Settings* out)
     {
         token = strtok(NULL," \n"); //parse camera type
         if(strcmp(token,"box")==0)
-            out->ft = BOX;
+            out->type_filter = BOX;
         else if(strcmp(token,"tent")==0)
-            out->ft = TENT;
+            out->type_filter = TENT;
         else if(strcmp(token,"gaussian")==0)
         {
-            out->ft = GAUSSIAN;
+            out->type_filter = GAUSSIAN;
             token = strtok(NULL," ");
             out->f_val[0] = (float)atof(token);
         }
         else if(strcmp(token,"mitchell")==0)
         {
-            out->ft = MITCHELL;
+            out->type_filter = MITCHELL;
             token = strtok(NULL," ");
             out->f_val[0] = (float)atof(token);
             token = strtok(NULL," ");
@@ -170,7 +170,7 @@ static void parseFilter(char* string, Settings* out)
         }
         else
         {
-            out->ft = LANCZOS;
+            out->type_filter = LANCZOS;
             token = strtok(NULL, " ");
             out->f_val[0] = (float) atof(token);
         }
@@ -191,9 +191,9 @@ static void parseIntegrator(char* string, Settings* out)
     {
         token = strtok(NULL," \n");
         if(strcmp(token,"direct")==0)
-            out->it = DIRECT_LIGHT;
+            out->type_integrator = DIRECT_LIGHT;
         else
-            out->it = PATH_TRACE;
+            out->type_integrator = PATH_TRACE;
     }
     else
     {
@@ -731,7 +731,7 @@ static void parseShape(char* string, std::unordered_map<std::string,int>* map,
             mesh->finalize();
         }
         if(res!=NULL)
-            map->insert(std::make_pair(name,out->sc->inheritShape(res)));
+            map->insert(std::make_pair(name,out->scene->inheritShape(res)));
     }
     else
     {
@@ -813,7 +813,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             else //parse temperature, generate blackbody
                 emissive = Spectrum(atoi(token));
 
-            out->sc->addLight((unsigned int)got->second,m,emissive);
+            out->scene->addLight((unsigned int)got->second,m,emissive);
         }
         else
         {
@@ -895,7 +895,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             *m *= rotz;
             *m *= scale;
 
-            out->sc->addAsset((unsigned int)got->second,m,mat);
+            out->scene->addAsset((unsigned int)got->second,m,mat);
         }
         else
         {

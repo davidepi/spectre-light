@@ -92,7 +92,7 @@ AABB Mesh::computeAABB()const
 
 AABB Mesh::computeWorldAABB(const Matrix4 *trans) const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(trans==NULL)
     {
         Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
@@ -164,11 +164,11 @@ void Mesh::getDensitiesArray(const Matrix4* transform,float* array)const
     }
 }
 
-void Mesh::getRandomPoint(float r0, float r1, const float* cd, Point3* p,
+void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
                           Normal* n)const
 {
     //flatten the random value between 0.0 and the total area
-    float extSample = lerp(r0, 0.0f, cd[count-1]);
+    float extSample = lerp(r0, 0.0f, densities[count-1]);
     
     //divide et impera search
     int start = 0;
@@ -179,16 +179,17 @@ void Mesh::getRandomPoint(float r0, float r1, const float* cd, Point3* p,
     
     //limit cases, they generate infinite loops
     //first triangle of the array
-    if(extSample < cd[0])
+    if(extSample < densities[0])
     {
-        sample01 = inverse_lerp(extSample,0,cd[0]);
+        sample01 = inverse_lerp(extSample,0,densities[0]);
         tris[0].getRandomPoint(sample01, r1, NULL, p, n);
         return;
     }
     //last triangle of the array
-    if(extSample>cd[end-1])
+    if(extSample>densities[end-1])
     {
-        sample01 = inverse_lerp(extSample-cd[end-1],0,cd[end]-cd[end-1]);
+        sample01 = inverse_lerp(extSample-densities[end-1],0,
+                                densities[end]-densities[end-1]);
         tris[end].getRandomPoint(sample01, r1, NULL, p, n);
         return;
     }
@@ -198,15 +199,15 @@ void Mesh::getRandomPoint(float r0, float r1, const float* cd, Point3* p,
     {
         mid = (start+end)/2;
         //mid contains the value
-        if(cd[mid]<=extSample && cd[mid+1]>extSample)
+        if(densities[mid]<=extSample && densities[mid+1]>extSample)
             break;
-        else if(cd[mid]>extSample)
+        else if(densities[mid]>extSample)
             end = mid;
         else
             start = mid;
     }
 
     //sample the triangle
-    sample01 = inverse_lerp(extSample, 0, cd[mid+1]-cd[mid]);
+    sample01 = inverse_lerp(extSample, 0, densities[mid+1]-densities[mid]);
     tris[mid].getRandomPoint(sample01, r1, NULL, p, n);
 }

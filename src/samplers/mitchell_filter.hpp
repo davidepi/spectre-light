@@ -22,7 +22,7 @@
  *  \class MitchellFilter mitchell_filter.hpp "samplers/mitchell_filter.hpp"
  *  \brief Improvement over the gaussian filter
  *
- *  The Mitchell-Netravali filter is similar to the gaussian filter, but gives
+ *  The Mitchell-Netravali filter is similar to the Gaussian filter, but gives
  *  sharper edges, instead of the blurry ones typical of the gaussian filter.
  *  This is done by assuming negative values near the limit of the filter,
  *  yet mantaining a limit of 0.0. As in the gaussian filter the value in the

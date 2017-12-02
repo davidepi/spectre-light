@@ -4,7 +4,7 @@
 /**
  *  \file shape.hpp
  *  \brief     Shape abstract class definition
- *  \details   The superclass from which every shape inherit
+ *  \details   The superclass from which every shape inherits
  *  \author    Davide Pizzolotto
  *  \version   0.1
  *  \date      26 Nov 2017
@@ -91,7 +91,7 @@ public:
      *  In its implementations, this method should compute the surface area of
      *  the shape
      *
-     *  \return A float representing the area of the shape in world-space units
+     *  \return A float representing the area of the shape in object-space units
      */
     virtual float surface()const = 0;
     
@@ -131,12 +131,12 @@ public:
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
-     *  \param[in] cd The array of densities of the shape's faces
+     *  \param[in] densities The array of densities of the shape's faces
      *  \param[out] p The computed point
      *  \param[out] n The normal of the computed point
      */
-    virtual void getRandomPoint(float r, float r1, const float* cd, Point3* p,
-                                Normal* n)const = 0;
+    virtual void getRandomPoint(float r, float r1, const float* densities,
+                                Point3* p, Normal* n)const = 0;
     
     
 private:

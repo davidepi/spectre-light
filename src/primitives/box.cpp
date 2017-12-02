@@ -12,7 +12,7 @@ AABB Box::computeAABB()const
 
 AABB Box::computeWorldAABB(const Matrix4* transform)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(transform==NULL)
     {
         Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
@@ -132,7 +132,7 @@ void Box::getDensitiesArray(const Matrix4* transform, float* array)const
     array[5] = array[4]+(scale.z*scale.y);
 }
 
-void Box::getRandomPoint(float r0, float r1, const float* cd, Point3* p,
+void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
                             Normal* n)const
 {
     //works like the Mesh::getRandomPoint
@@ -155,53 +155,53 @@ void Box::getRandomPoint(float r0, float r1, const float* cd, Point3* p,
     //   one outside the square
     
     //cd[5] contains the total surface in world space units
-    float res = lerp(r0,0,cd[5]);
-    if(res<cd[0])
+    float res = lerp(r0,0,densities[5]);
+    if(res<densities[0])
     {
         //front
-        p->x = inverse_lerp(res,0,cd[0]);
+        p->x = inverse_lerp(res,0,densities[0]);
         p->y = r1;
         p->z = 0;
         n->x = 0;
         n->y = 0;
         n->z = -1;
     }
-    else if(res<cd[1])
+    else if(res<densities[1])
     {
         //back
-        p->x = inverse_lerp(res-cd[0],0,cd[1]-cd[0]);
+        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
         p->y = r1;
         p->z = 1;
         n->x = 0;
         n->y = 0;
         n->z = 1;
     }
-    else if(res<cd[2])
+    else if(res<densities[2])
     {
         //top
-        p->x = inverse_lerp(res-cd[1],0,cd[2]-cd[1]);
+        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
         p->y = 1;
         p->z = r1;
         n->x = 0;
         n->y = 1;
         n->z = 0;
     }
-    else if(res<cd[3])
+    else if(res<densities[3])
     {
         //bottom
-        p->x = inverse_lerp(res-cd[2],0,cd[3]-cd[2]);
+        p->x = inverse_lerp(res-densities[2],0,densities[3]-densities[2]);
         p->y = 0;
         p->z = r1;
         n->x = 0;
         n->y = -1;
         n->z = 0;
     }
-    else if(res<cd[4])
+    else if(res<densities[4])
     {
         //left
         p->x = 0;
         p->y = r1;
-        p->z = inverse_lerp(res-cd[3],0,cd[4]-cd[3]);
+        p->z = inverse_lerp(res-densities[3],0,densities[4]-densities[3]);
         n->x = -1;
         n->y = 0;
         n->z = 0;
@@ -211,7 +211,7 @@ void Box::getRandomPoint(float r0, float r1, const float* cd, Point3* p,
         //right
         p->x = 1;
         p->y = r1;
-        p->z = inverse_lerp(res-cd[4],0,cd[5]-cd[4]);
+        p->z = inverse_lerp(res-densities[4],0,densities[5]-densities[4]);
         n->x = 1;
         n->y = 0;
         n->z = 0;

@@ -102,9 +102,6 @@ public:
      *  This method returns an AABB that can fit well on the world space
      *  triangle, without actually transforming it.
      *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *
      *  \param[in] transform The transform matrix used to transform the triangle
      *  from object space to world space
      *
@@ -117,7 +114,7 @@ public:
      *  This method computes the surface area of the triangle, useful
      *  if it is a light source.
      *
-     *  \return A float representing the area of the triangle in world-space
+     *  \return A float representing the area of the triangle in object-space
      *  units
      */
     float surface()const;
@@ -143,11 +140,11 @@ public:
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
-     *  \param[in] cd Unused in the triangle
+     *  \param[in] densities Unused in the triangle
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, const float* cd, Point3* p,
+    void getRandomPoint(float r0, float r1, const float* densities, Point3* p,
                         Normal* n)const;
 
     ///First vertex of the triangle

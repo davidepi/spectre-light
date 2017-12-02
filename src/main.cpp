@@ -7,45 +7,95 @@
 
 int main(int argc, char* argv[])
 {
-    Parser p;
-    Settings s;
+    Parser parser;
+    Settings settings;
     if(argc < 2)
         Console.critical("Input should be in the form: executable input_file");
     else
-        p.parse(argv[1],&s);
+        parser.parse(argv[1],&settings);
 #ifndef DEBUG
-    Renderer r(s.resolution[0],s.resolution[1],s.spp,s.output);
+    Renderer renderer(settings.resolution[0],settings.resolution[1],
+                      settings.spp,settings.output);
 #else
-    Renderer r(s.resolution[0], s.resolution[1],s.spp,s.output,1);
+    Renderer renderer(settings.resolution[0], settings.resolution[1],
+                      settings.spp,settings.output,1);
 #endif
 
-    switch (s.ct)
+    switch(settings.type_camera)
     {
-        case ORTHOGRAPHIC:r.setOrthographic(s.camera_pos,s.camera_target,
-                                            s.camera_up);break;
-        case PERSPECTIVE:r.setPerspective(s.camera_pos,s.camera_target,
-                                          s.camera_up,s.camera_fov);break;
-        case PANORAMA:r.setPanorama(s.camera_pos,s.camera_target, s.camera_up);
-                        break;
+        case ORTHOGRAPHIC:
+        {
+            renderer.setOrthographic(settings.camera_pos,settings.camera_target,
+                                     settings.camera_up);
+            break;
+        }
+        case PERSPECTIVE:
+        {
+            renderer.setPerspective(settings.camera_pos, settings.camera_target,
+                                    settings.camera_up, settings.camera_fov);
+            break;
+        }
+        case PANORAMA:
+        {
+            renderer.setPanorama(settings.camera_pos,settings.camera_target,
+                                 settings.camera_up);
+            break;
+        }
     }
-    switch(s.st)
+    switch(settings.type_sampler)
     {
-        case RANDOM:r.setRandomSampler();break;
-        case STRATIFIED:r.setStratifiedSampler();break;
+        case RANDOM:
+        {
+            renderer.setRandomSampler();
+            break;
+        }
+        case STRATIFIED:
+        {
+            renderer.setStratifiedSampler();
+            break;
+        }
     }
-    switch(s.ft)
+    switch(settings.type_filter)
     {
-        case BOX:r.setBoxFilter();break;
-        case TENT:r.setTentFilter();break;
-        case GAUSSIAN:r.setGaussianFilter(s.f_val[0]);break;
-        case MITCHELL:r.setMitchellFilter(s.f_val[0],s.f_val[1]);break;
-        case LANCZOS:r.setLanczosSincFilter(s.f_val[0]);break;
+        case BOX:
+        {
+            renderer.setBoxFilter();
+            break;
+        }
+        case TENT:
+        {
+            renderer.setTentFilter();
+            break;
+        }
+        case GAUSSIAN:
+        {
+            renderer.setGaussianFilter(settings.f_val[0]);
+            break;
+        }
+        case MITCHELL:
+        {
+            renderer.setMitchellFilter(settings.f_val[0],settings.f_val[1]);
+            break;
+        }
+        case LANCZOS:
+        {
+            renderer.setLanczosSincFilter(settings.f_val[0]);
+            break;
+        }
     }
-    switch(s.it)
+    switch(settings.type_integrator)
     {
-        case DIRECT_LIGHT:r.setRayTracer();break;
-        case PATH_TRACE:r.setPathTracer();break;
+        case DIRECT_LIGHT:
+        {
+            renderer.setRayTracer();
+            break;
+        }
+        case PATH_TRACE:
+        {
+            renderer.setPathTracer();
+            break;
+        }
     }
 
-    return r.render(s.sc);
+    return renderer.render(settings.scene);
 }

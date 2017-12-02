@@ -231,18 +231,18 @@ public:
      *  perform the rendering. A camera and a filter are needed. The output
      *  image will be saved in the path given in the constructor
      *
-     * \param[in] s The scene that will be rendered
+     * \param[in] scene The scene that will be rendered
      * \return 0 if everything was ok, 1 otherwise
      */
-    int render(Scene* s);
+    int render(Scene* scene);
 
 private:
 
     //Camera for the renderer
-    Camera* c;
+    Camera* camera;
 
     //Filter for the renderer
-    Filter* f;
+    Filter* filter;
 
     //Actual image
     ImageFilm film;
@@ -251,10 +251,10 @@ private:
     int numthreads;
 
     //width of the image
-    int w;
+    int width;
 
     //height of the image
-    int h;
+    int height;
 
     //samples per pixel
     int spp;
@@ -269,7 +269,7 @@ private:
     std::thread* workers;
 
     //integrator
-    LightIntegrator* t;
+    LightIntegrator* mc_solver;
 
     //sampler
     int sampler_t;

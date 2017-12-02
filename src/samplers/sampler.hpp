@@ -24,7 +24,7 @@
  *
  *  The Sample structure contains the position of a sample in raster space
  *  where (0,0) is the top-left image corner and (image_size,image_size) is the
- *  bottom-right one. This structure is a POD
+ *  bottom-right one.
  */
 struct Sample
 {
