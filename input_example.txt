@@ -1,4 +1,3 @@
-#RGB
 #first line should be #RGB in order to use rgb renderer, anything else
 #will default to the better and slower spectral renderer
 
@@ -7,7 +6,7 @@
 
 #Output file, absolute or relative to the executable
 #supported .ppm and .bmp files
-out: /home/user/Desktop/test.ppm
+out: /Users/davide/Desktop/test.ppm
 
 #Resolution width height (width = 2x height suggested with panorama camera)
 #width MUST be a multiple of 32
@@ -16,7 +15,7 @@ resolution: 800 600
 #camera type (pos.x,pos.y,pos.z) (target.x,target.y,target.z) (up.x,up.y,up.z) fov
 #type can be perspective, orthographic or panorama
 #fov is in degrees and used only with perspective camera
-camera: perspective (0,2,-10) (0,0,0) (0,1,0) 55
+camera: perspective (0,2,3.5) (0,1.5,1) (0,1,0) 57.29
 
 #sampler type samples_per_pixel
 #type can be random or stratified
@@ -52,12 +51,15 @@ integrator: pt
 #blinn intensity ranges from 0.0 (maximum roughness) to 100000 (maximum specularity)
 #beckmann intensity ranges from 0.0(minimum roughness) to 1.0(maximum roughness)
 #ggx intensity is like beckmann one, but an optional second parameter can be used for anisotropic reflections
-material: Red diffuse (150,0,0) 20
+material: Red diffuse (200,70,70) 10
+material: Green diffuse (70,200,70) 10
+material: White diffuse (200,200,200) 10
 material: Glass reflection (255,255,255) [1,0,0] [1.5046,0.00420,0]
-material: Glass refraction (255,255,255) [1.5046,0.00420,0]
-material: Gold reflection (255,255,255) Au
-material: Brushed_silver glossy (255,255,255) Ag ggx 0.1 0.05
-material: Plastic glossy (30,30,255) [1.0,0,0] [1.5,0,0] beckmann 0.1
+material: Glass refraction (255,255,255) [1,0,0] [1.5046,0.00420,0]
+material: Polished_gold reflection (255,255,255) Au
+material: Polished_copper reflection (255,255,255) Cu
+material: Brushed_aluminium glossy reflection (255,255,255) Al ggx 0.1 0.05
+material: Plastic glossy reflection (30,30,255) [1.0,0,0] [1.5,0,0] beckmann 0.1
 material: Plastic diffuse (30,30,255) 0
 
 #asset name_without_spaces obj_file_path
@@ -65,21 +67,21 @@ material: Plastic diffuse (30,30,255) 0
 #asset name box (x_edge_length,y_edge_length,z_edge_length)
 #path is absolute or relative to the executable
 #WARNING!!!! Input meshes: only tris, v, and vn are REQUIRED otherwise segfault is waiting for you
-asset: Ico /home/user/Desktop/test.obj
-asset: Big_sphere sphere 100000
-asset: Default_sphere sphere 1.0
+#asset: Ico /home/user/Desktop/test.obj
+asset: Default_sphere sphere
 
 #light asset_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z) (r,g,b)
 #instead of (r,g,b) it is possible to insert a temperature in Kelvin degrees (6000K = white)
 #rotation in sexagesimal degrees
 #using asset with high polycount can dramatically increase rendering time
-light: Default_sphere (0,2,0) (0,0,0) (1,1,1) 3500K
+light: Default_sphere (0,5,0) (0,0,0) (1,1,1) 4500K
 
 #world asset_name material_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z)
 #rotation in degrees
-world: Big_sphere Red (0,-100001,0) (0,0,0) (1,1,1)
-world: Big_sphere Default (-100003,0,0) (0,0,0) (1,1,1)
-world: Big_sphere Default (100003,0,0) (0,0,0) (1,1,1)
-world: Big_sphere Default (0,0,100005) (0,0,0) (1,1,1)
-world: Big_sphere Default (0,100005,0) (0,0,0) (1,1,1)
-world: Ico Default (1,-1,0) (0,0,0) (1,1,1)
+world: Default_sphere Red (-100003,0,0) (0,0,0) (100000,100000,100000)
+world: Default_sphere Green (100003,0,0) (0,0,0) (100000,100000,100000)
+world: Default_sphere Default (0,-100000,0) (0,0,0) (100000,100000,100000)
+world: Default_sphere White (0,0,100005) (0,0,0) (100000,100000,100000)
+world: Default_sphere White (0,100005,0) (0,0,0) (100000,100000,100000)
+world: Default_sphere White (0,0,-100010) (0,0,0) (100000,100000,100000)
+world: Default_sphere Polished_copper (0,1,0) (0,0,0) (1,1,1)
