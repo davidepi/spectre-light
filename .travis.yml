@@ -1,12 +1,14 @@
 language: cpp
-jobs:
+script:
+ - mkdir -p build && cd build/
+ - cmake -DCMAKE_BUILD_TYPE="Release" ..
+ - cmake --build .
+matrix:
     include:
-        - stage: compile
-          os: linux
+        - os: linux
           dist: trusty
           sudo: false
           compiler: gcc
-          script: mkdir -p build && cd build/ && cmake -DCMAKE_BUILD_TYPE="Release" .. && cmake --build .
-          os: osx
+        - os: osx
           compiler: clang
-          script: mkdir -p build && cd build/ && cmake -DCMAKE_BUILD_TYPE="Release" .. && cmake --build .
+
