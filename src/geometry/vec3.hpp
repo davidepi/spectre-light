@@ -7,12 +7,8 @@
  *             functions
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
- *  \version   1.0
+ *  \version   0.1
  *  \date      7 Nov 2017
- *  \warning   Since this is a low level class, some verification
- *             could be skipped. To enable them compile the project with the
- *             #_LOW_LEVEL_CHECKS_ preprocessor define
- *             More details are provided for every method
  *  \copyright GNU GPLv3
  */
 
@@ -43,7 +39,6 @@ class Normal;
  */
 class Vec3
 {
-private:
 public:
     
     /** \brief x component
@@ -80,8 +75,6 @@ public:
      *  \param[in] x A float representing the x component of the vector
      *  \param[in] y A float representing the y component of the vector
      *  \param[in] z A float representing the z component of the vector
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p x, \p y or \p z
-     *        are NaN or Infinity
      */
     Vec3(float x,float y,float z);
     
@@ -90,7 +83,6 @@ public:
      *  Construct a vector of three elements with the same given value
      *
      *  \param[in] xyz A float representing the x, y and z components
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xyz is NaN or Infinity
      */
     Vec3(float xyz);
     
@@ -101,7 +93,6 @@ public:
      *
      *  \param[in] xy A Vec2 representing the x and y components of the vector
      *  \param[in] z A float representing the z component of the vector
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy is NaN or Infinity
      */
     Vec3(Vec2 xy,float z);
     
@@ -113,8 +104,6 @@ public:
      *               position (0-based), y in the second and z in the third
      *  \warning It is not checked if \p xyz is a valid pointer nor if its
      *           length is correct
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xyz is NULL, Infinity or
-     *        NaN
      */
     Vec3(const float* xyz);
     
@@ -128,22 +117,20 @@ public:
      *        the Vec3 class, they are implemented as two different classes to
      *        avoid undesired casting. For this reason, this constructor is
      *        explicit
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p n contains NaN or
-     *        Infinity values
      */
     explicit Vec3(Normal n);
     
-    ///Destructor
+    ///Default destructor
     ~Vec3() = default;
     
-    /** \brief Returns the length of the vector
+    /** \brief Return the length of the vector
      *
      * \return A float representing the length of this vector
      * \sa lengthSquared()
      */
     float length()const;
     
-    /** \brief Returns the squared length of the vector
+    /** \brief Return the squared length of the vector
      *
      * \return A float representing the squared length of this vector
      * \sa length()
@@ -153,7 +140,8 @@ public:
     /**  \brief Compute the distance from another vector
      *
      *  Compute the euclidean distance between this vector and another one
-     *  passed in input, as the length of the segment connecting them
+     *  passed as input, corresponding to the length of the segment connecting
+     *  them
      *
      *  \param[in] target A Vec3 representing the target vector from which the
      *             distance should be calculated
@@ -165,7 +153,6 @@ public:
      *
      * \warning The input length is not checked, a 0-length vector will result
      *  in a division by zero error
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when a division by 0 occurs
      *  \sa isNormalized()
      */
     void normalize();
@@ -231,15 +218,14 @@ public:
     
     /**  \brief Represent this vector with an array
      *
-     *  Copy the components of this vector in an array of float, heap allocated
+     *  Copy the components of this vector in an array of floats
      *
-     *  \return  An heap allocated array containing the x value of the vector
-     *           in the first position (0-based), the y value in the second
-     *           and the z value in the third
-     *  \note A float* is allocated on heap and MUST be deleted
+     *  \param[in] values  An array containing the x value of the vector in the
+     *  first position (0-based), the y value in the second and the z value in
+     *  the third
      *  \sa toString()
      */
-    float* toArray()const;
+    void toArray(float* values)const;
     
     /**  \brief Represent this vector with a C-string
      *
@@ -295,8 +281,9 @@ public:
     /**  \brief Flip the vector according to a pivot
      *
      *  Given a vector as a centre of reflection transform this class in the
-     *  reflected vector around that centre of reflection.
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
+     *  reflected vector around that centre of reflection. The vector is
+     *  pointing toward the centre of reflection. The resulting vector will not.
+     *
      *  \param[in] centre A Vec3 representing the centre of reflection
      *  \sa reflect(const Normal centre)
      *  \sa refract(const Vec3 centre)
@@ -306,8 +293,9 @@ public:
     /**  \brief Flip the vector according to a pivot
      *
      *  Given a vector as a centre of reflection transform this class in the
-     *  reflected vector around that centre of reflection.
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
+     *  reflected vector around that centre of reflection. The vector is
+     *  pointing toward the centre of reflection. The resulting vector will not.
+     *
      *  \param[in] centre A Normal representing the centre of reflection
      *  \sa reflect(const Vec3 centre)
      *  \sa refract(const Normal centre)
@@ -321,8 +309,7 @@ public:
      *  passed as input.
      *  If the refracted vector does not exists due to Total Internal Reflection
      *  the class is not transformed and false is returned
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p interface is not
-     *  normalized
+     *
      *  \param[in] interface A Vec3 representing the interface normal
      *  \param[in] eta The index of refraction used for refracting the vector
      *  \return true if the vector was successfully refracted, false otherwise
@@ -337,8 +324,7 @@ public:
      *  transform this class in the refracted vector.
      *  If the refracted vector does not exists due to Total Internal Reflection
      *  the class is not transformed and false is returned
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p interface is not
-     *  normalized
+     *
      *  \param[in] interface A Vec3 representing the interface normal
      *  \param[in] eta The index of refraction used for refracting the vector
      *  \return true if the vector was successfully refracted, false otherwise
@@ -446,8 +432,6 @@ public:
      *  \param[in] x A float representing the x component of the normal
      *  \param[in] y A float representing the y component of the normal
      *  \param[in] z A float representing the z component of the normal
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p x, \p y or \p z
-     *        are NaN or Infinity
      */
     Normal(float x,float y,float z);
     
@@ -456,7 +440,6 @@ public:
      *  Construct a normal of three elements with the same given value
      *
      *  \param[in] xyz A float representing the x, y and z components
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xyz is NaN or Infinity
      */
     Normal(float xyz);
     
@@ -467,8 +450,6 @@ public:
      *
      *  \param[in] xy A Vec2 representing the x and y components of the normal
      *  \param[in] z A float representing the z component of the normal
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy or \p z are
-     *        NaN or Infinity
      */
     Normal(Vec2 xy,float z);
     
@@ -480,8 +461,6 @@ public:
      *               position (0-based), y in the second and z in the third
      *  \warning It is not checked if \p xyz is a valid pointer nor if its
      *           length is correct
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xyz is null, NaN or
-     *        Infinity
      */
     Normal(const float* xyz);
     
@@ -495,12 +474,10 @@ public:
      *        the Normal class, they are implemented as two different classes to
      *        avoid undesired casting. For this reason, this constructor is
      *        explicit
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p v contains NaN or
-     *        Infinity values
      */
     explicit Normal(const Vec3 v);
     
-    ///Destructor
+    ///Default destructor
     ~Normal() = default;
     
     /**  \brief Compute the dot product of this normal and another one.
@@ -541,7 +518,8 @@ public:
     
     /**  \brief Compute the distance to another normal
      *  Compute the euclidean distance between this normal and another one
-     *  passed in input, as the length of the segment connecting them
+     *  passed as input, corresponding to the length of the segment connecting
+     *  them
      *
      *  \param[in] target A Normal representing the target normal from which the
      *             distance should be calculated
@@ -551,9 +529,8 @@ public:
     
     /** \brief Normalize this normal
      *  \note Despite the name, a Normal is not guaranteed to be normalized
-     * \warning The input length is not checked, a 0-length vector will result
+     *  \warning The input length is not checked, a 0-length vector will result
      *  in a division by zero error
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when a division by 0 occurs
      *  \sa isNormalized()
      */
     void normalize();
@@ -571,13 +548,12 @@ public:
      *
      *  Copy the components of this normal in an array of float, heap allocated
      *
-     *  \return  An heap allocated array containing the x value of the normal
-     *           in the first position (0-based), the y value in the second
-     *           and the z value in the third
-     *  \note The returned float* is allocated on heap and must be deleted
+     *  \param[in] values An array containing the x value of the normal in the
+     *  first position (0-based), the y value in the second and the z value in
+     *  the third
      *  \sa toString()
      */
-    float* toArray() const;
+    void toArray(float* values) const;
     
     /**  \brief Represent this normal with a C-string
      *
@@ -603,7 +579,7 @@ public:
     void clamp(const Vec3& min, const Vec3& max);
     
     /**  \brief Clamp this normal in the interval [0-1]
-     *  \sa clamp(const Vec3* min, const Vec3* max)
+     *   \sa clamp(const Vec3* min, const Vec3* max)
      */
     void saturate();
     
@@ -631,6 +607,7 @@ public:
     
     /** \brief Checks whether this normal is oriented in the same direction of a
      *          vector or not
+     *
      *  \param reference The reference Vec3
      *  \return A boolean value true if this normal and vector are oriented
      *          alongside the same direction
@@ -641,8 +618,8 @@ public:
     
     /** \brief Flips this normal if it is not oriented in the same direction of
      *         the input vector
-     *  \param reference The reference Vec3
      *
+     *  \param reference The reference Vec3
      *  \sa faceForward(const Vec3 reference)
      */
     void flipToMatch(const Vec3& reference);
@@ -885,17 +862,16 @@ inline Vec3  cross (const Vec3& source, const Vec3& target)
 }
 
 /** \brief Normalize this vector
- *  \return A normalized version of this vector
  *
  *  \param[in] v A pointer to the Vec3 that will be normalized
- * \warning The input length is not checked, a 0-length vector will result
+ *  \warning The input length is not checked, a 0-length vector will result
  *  in a division by zero error
- *  \note Use #_LOW_LEVEL_CHECKS_ to notify when a division by 0 occurs
+ *  \return A normalized version of this vector
  */
 inline Vec3 normalize(const Vec3& v)
 {
     float len = std::sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(len==0)
     {
         Console.critical("Trying to normalize a zero-length vector");
@@ -913,12 +889,11 @@ inline Vec3 normalize(const Vec3& v)
  *  \param[in] n The Normal that will be normalized
  *  \warning The input length is not checked, a 0-length normal will result
  *  in a division by zero error
- *  \note Use #_LOW_LEVEL_CHECKS_ to notify when a division by 0 occurs
  */
 inline Normal normalize(const Normal& n)
 {
     float len = std::sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(len==0)
     {
         Console.critical("Trying to normalize a zero-length normal");
@@ -933,9 +908,10 @@ inline Normal normalize(const Normal& n)
 
 /** \brief Checks whether a normal is oriented in the same direction of a
  *         vector or not
- *  \param target The Normal that has to be checked
- *  \param reference The reference Vec3
- *  \return A boolean value true if the input normal and vector are oriented
+ *
+ *  \param[in] target The Normal that has to be checked
+ *  \param[in] reference The reference Vec3
+ *  \return[in] A boolean value true if the input normal and vector are oriented
  *          alongside the same direction
  *
  *  \sa flipToMatch(const Normal target, const Vec3 reference)
@@ -947,8 +923,8 @@ inline bool faceForward(const Normal& target, const Vec3& reference)
 
 /** \brief Flips a normal if it is not oriented in the same direction of the
  *          input vector
- *  \param target The Normal that has to be checked and potentially flipped
- *  \param reference The reference Vec3
+ *  \param[in] target The Normal that has to be checked and potentially flipped
+ *  \param[in] reference The reference Vec3
  *  \return The flipped normal
  *
  *  \sa faceForward(const Normal target, const Vec3 reference)
@@ -963,8 +939,8 @@ inline Normal flipToMatch(const Normal& target, const Vec3& reference)
 
 /**  \brief Compute the distance between two vectors
  *
- *  Compute the euclidean distance between two vectors, as the length of the
- *  segment connecting them
+ *  Compute the euclidean distance between two vectors, defined as the length of
+ *  the segment connecting them
  *
  *  \param[in] vec1 A Vec3 representing the vector from which the
  *             distance should be calculated
@@ -1001,15 +977,15 @@ inline float distance(const Normal& n1, const Normal& n2)
     return std::sqrt((x * x) + (y * y) + (z*z));
 }
 
-/**
- *  \brief Clamp the input vector by restricting it between two boundaries
+/** \brief Clamp the input vector by restricting it between two boundaries
+ *
  *  Restrict the value of the vector in an interval defined by \p min as the
  *  minimum value and \p max as the maximum one
  *
  *  \param[in] vector The Vec3 that will be clamped
- *  \param[in] min a Vec3 representing the minimum extent of the interval
- *  \param[in] max a Vec3 representing the maximum extent of the interval
- *  \return the clamped Vec3
+ *  \param[in] min A Vec3 representing the minimum extent of the interval
+ *  \param[in] max A Vec3 representing the maximum extent of the interval
+ *  \return The clamped Vec3
  *  \sa saturate(const Vec3 vector)
  */
 inline Vec3 clamp(const Vec3& vector, const Vec3& min, const Vec3& max)
@@ -1027,10 +1003,10 @@ inline Vec3 clamp(const Vec3& vector, const Vec3& min, const Vec3& max)
     return Vec3(x,y,z);
 }
 
-/**
- *  \brief Clamp this vector in the interval [0-1]
+/** \brief Clamp this vector in the interval [0-1]
+ *
  *  \param[in] vector The Vec3 that will be clamped
- *  \return the clamped Vec3
+ *  \return The clamped Vec3
  *  \sa clamp(const Vec3 vector, const Vec3 min, const Vec3 max)
  */
 inline Vec3 saturate(const Vec3& vector)
@@ -1048,15 +1024,15 @@ inline Vec3 saturate(const Vec3& vector)
     return Vec3(x,y,z);
 }
 
-/**
- *  \brief Clamp the input normal by restricting it between two boundaries
+/** \brief Clamp the input normal by restricting it between two boundaries
+ *
  *  Restrict the value of the normal in an interval defined by \p min as the
  *  minimum value and \p max as the maximum one
  *
  *  \param[in] n The Normal that will be clamped
- *  \param[in] min a Vec3 representing the minimum extent of the interval
- *  \param[in] max a Vec3 representing the maximum extent of the interval
- *  \return the clamped normal
+ *  \param[in] min A Vec3 representing the minimum extent of the interval
+ *  \param[in] max A Vec3 representing the maximum extent of the interval
+ *  \return The clamped normal
  *  \sa saturate(const Normal n)
  */
 inline Normal clamp(const Normal& n, const Vec3& min, const Vec3& max)
@@ -1074,10 +1050,10 @@ inline Normal clamp(const Normal& n, const Vec3& min, const Vec3& max)
     return Normal(x,y,z);
 }
 
-/**
- *  \brief Clamp this normal in the interval [0-1]
+/** \brief Clamp this normal in the interval [0-1]
+ *
  *  \param[in] n The Normal that will be clamped
- *  \return the clamped normal
+ *  \return The clamped normal
  *  \sa clamp(const Normal n, const Vec3 min, const Vec3 max)
  */
 inline Normal saturate(const Normal& n)
@@ -1095,14 +1071,14 @@ inline Normal saturate(const Normal& n)
     return Normal(x,y,z);
 }
 
-/**
- *  \brief Compute the maximum value between two vectors
+/** \brief Compute the maximum value between two vectors
+ *
  *  Return a vector containing the maximum value in x, y and z by choosing
  *  between the value of the two input vectors
  *
- *  \param[in] v1 a Vec3 used to compare and choose the x, y and z values
- *  \param[in] v2 a Vec3 used to compare and choose the x, y and z values
- *  \return a Vec3 containing the maximum value of the two input vectors
+ *  \param[in] v1 A Vec3 used to compare and choose the x, y and z values
+ *  \param[in] v2 A Vec3 used to compare and choose the x, y and z values
+ *  \return A Vec3 containing the maximum value of the two input vectors
  *  \sa min(const Vec3 v1, const Vec3 v2)
  */
 inline Vec3 max(const Vec3& v1, const Vec3& v2)
@@ -1110,14 +1086,14 @@ inline Vec3 max(const Vec3& v1, const Vec3& v2)
     return Vec3(max(v1.x,v2.x),max(v1.y,v2.y),max(v1.z,v2.z));
 }
 
-/**
- *  \brief Compute the minimum value between two vectors
+/** \brief Compute the minimum value between two vectors
+ *
  *  Return a vector containing the minimum value in x, y and z by choosing
  *  between the value of the two input vectors
  *
- *  \param[in] v1 a Vec3 used to compare and choose the x, y and z values
- *  \param[in] v2 a Vec3 used to compare and choose the x, y and z values
- *  \return a Vec3 containing the minimum value of the two input vectors
+ *  \param[in] v1 A Vec3 used to compare and choose the x, y and z values
+ *  \param[in] v2 A Vec3 used to compare and choose the x, y and z values
+ *  \return A Vec3 containing the minimum value of the two input vectors
  *  \sa max(const Vec3 v1, const Vec3 v2)
  */
 inline Vec3 min(const Vec3& v1, const Vec3& v2)
@@ -1125,14 +1101,14 @@ inline Vec3 min(const Vec3& v1, const Vec3& v2)
     return Vec3(min(v1.x,v2.x),min(v1.y,v2.y),min(v1.z,v2.z));
 }
 
-/**
- *  \brief Compute the maximum value between two normals
+/** \brief Compute the maximum value between two normals
+ *
  *  Return a normal containing the maximum value in x, y and z by choosing
  *  between the value of the two input normal
  *
- *  \param[in] n1 a Normal used to compare and choose the x, y and z values
- *  \param[in] n2 a Normal used to compare and choose the x, y and z values
- *  \return a Normal containing the maximum value of the two input normals
+ *  \param[in] n1 A Normal used to compare and choose the x, y and z values
+ *  \param[in] n2 A Normal used to compare and choose the x, y and z values
+ *  \return A Normal containing the maximum value of the two input normals
  *  \sa min(const Normal n1, const Normal n2)
  */
 inline Normal max(const Normal& n1, const Normal& n2)
@@ -1141,14 +1117,14 @@ inline Normal max(const Normal& n1, const Normal& n2)
 }
 
 
-/**
- *  \brief Compute the minimum value between two normals
+/** \brief Compute the minimum value between two normals
+ *
  *  Return a normal containing the minimum value in x, y and z by choosing
  *  between the value of the two input normals
  *
- *  \param[in] n1 a Normal used to compare and choose the x, y and z values
- *  \param[in] n2 a Normal used to compare and choose the x, y and z values
- *  \return a Normal containing the minimum value of the two input normals
+ *  \param[in] n1 A Normal used to compare and choose the x, y and z values
+ *  \param[in] n2 A Normal used to compare and choose the x, y and z values
+ *  \return A Normal containing the minimum value of the two input normals
  *  \sa min(const Normal v1, const Normal v2)
  */
 inline Normal min(const Normal& n1, const Normal& n2)
@@ -1159,17 +1135,17 @@ inline Normal min(const Normal& n1, const Normal& n2)
 /**  \brief Flip the vector according to a pivot
  *
  *  Given a vector as a centre of reflection computes the reflected vector
- *  around the centre of reflection
+ *  around the centre of reflection. The source vector is condidered as
+ *  pointing toward the centre of reflection. The resulting vector will not.
  *
- *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
  *  \param[in] source The vector to flip
  *  \param[in] centre A Vec3 representing the centre of reflection
  *  \return The reflected vector
- *  \sa reflect(const Vec3 centre)
+ *  \sa reflect(const Vec3 source, const Vec3 centre)
  */
 inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
@@ -1181,17 +1157,17 @@ inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 /**  \brief Flip the vector according to a pivot
  *
  *  Given a vector as a centre of reflection computes the reflected vector
- *  around the centre of reflection
+ *  around the centre of reflection. The source vector is condidered as
+ *  pointing toward the centre of reflection. The resulting vector will not.
  *
- *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
  *  \param[in] source The vector to flip
  *  \param[in] centre A Normal representing the centre of reflection
  *  \return The reflected vector
- *  \sa reflect(const Normal centre)
+ *  \sa reflect(const Vec3 source, const Normal centre)
  */
 inline Vec3 reflect(const Vec3& source, const Normal& centre)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
@@ -1200,9 +1176,24 @@ inline Vec3 reflect(const Vec3& source, const Normal& centre)
                 source.z - ((2 * dot) * centre.z));
 }
 
+/**  \brief Generate the refracted vector
+ *
+ *  Given a vector that will be treated as a Normal, refract and transform
+ *  the input vector in the refracted vector. The interface normal is the Vec3
+ *  passed as input.
+ *  If the refracted vector does not exists due to Total Internal Reflection
+ *  (0,0,0) is returned
+ *
+ *  \param[in] source The Vec3 that will be transformed
+ *  \param[in] interface A Vec3 representing the interface normal
+ *  \param[in] eta The index of refraction used for refracting the vector
+ *  \return The refracted vector, a zero length vector otherwise
+ *  \sa refract(const Vec3 source, const Normal interface, float eta)
+ *  \sa reflect(const Vec3 source, const Vec3 centre)
+ */
 inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = dot(source,interface); //cos incident
@@ -1218,9 +1209,24 @@ inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
     }
 }
 
+/**  \brief Generate the refracted vector
+ *
+ *  Given a vector that will be treated as a Normal, refract and transform
+ *  the input vector in the refracted vector. The interface normal is the Vec3
+ *  passed as input.
+ *  If the refracted vector does not exists due to Total Internal Reflection
+ *  (0,0,0) is returned
+ *
+ *  \param[in] source The Vec3 that will be transformed
+ *  \param[in] interface A Vec3 representing the interface normal
+ *  \param[in] eta The index of refraction used for refracting the vector
+ *  \return The refracted vector, a zero length vector otherwise
+ *  \sa refract(const Vec3 source, const Vec3 interface, float eta)
+ *  \sa reflect(const Vec3 source, const Vec3 centre)
+ */
 inline Vec3 refract(const Vec3& source, const Normal& interface, float eta)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = dot(source,interface); //cos incident

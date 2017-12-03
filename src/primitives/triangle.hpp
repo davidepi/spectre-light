@@ -1,5 +1,5 @@
 //Created,   4 Aug 2017
-//Last Edit  6 Aug 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file triangle.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      6 Aug 2017
+ *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -102,9 +102,6 @@ public:
      *  This method returns an AABB that can fit well on the world space
      *  triangle, without actually transforming it.
      *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *
      *  \param[in] transform The transform matrix used to transform the triangle
      *  from object space to world space
      *
@@ -117,10 +114,24 @@ public:
      *  This method computes the surface area of the triangle, useful
      *  if it is a light source.
      *
-     *  \return A float representing the area of the triangle in world-space
+     *  \return A float representing the area of the triangle in object-space
      *  units
      */
     float surface()const;
+    
+    /** \brief Return the surface of the triangle considering the scaling factor
+     *
+     *  This method should compute the surface area of the triangle, useful
+     *  if the triangle is a light source. Compared to the other surface()
+     *  method, this one accounts also for the scaling factor of the transform
+     *  matrix
+     *
+     *  \param[in] transform The transform matrix
+     *
+     *  \return A float representing the area of the triangle in world-space
+     *  units
+     */
+    float surface(const Matrix4* transform)const;
 
     /** \brief Returns a random point on the surface of the triangle
      *
@@ -129,10 +140,12 @@ public:
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] densities Unused in the triangle
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, Point3* p, Normal* n)const;
+    void getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+                        Normal* n)const;
 
     ///First vertex of the triangle
     Vertex a;

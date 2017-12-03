@@ -1,13 +1,13 @@
 //Created,   6 Aug 2017
-//Last Edit 20 Aug 2017
+//Last Edit 26 Nov 2017
 
 /**
- *  \file triangle.hpp
- *  \brief     Triangle primitive definition
- *  \details   All the methods to represent a triangle in the space
+ *  \file mesh.hpp
+ *  \brief     A collection of triangles
+ *  \details   All the methods to represent a triangle mesh in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date     20 Aug 2017
+ *  \date     26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -15,6 +15,7 @@
 #ifndef __MESH_HPP__
 #define __MESH_HPP__
 
+#include "localization.h"
 #include "primitives/shape.hpp"
 #include "primitives/triangle.hpp"
 #include "geometry/matrix4.hpp"
@@ -30,9 +31,7 @@
  *  \brief Implementation of a collection of triangles
  *
  *  This class contains the definition of several triangles. These triangles
- *  are grouped together in order to form a single shape. For computational
- *  efficiency, this class caches the results of several functions, and
- *  implements a partitioning intersection routine.
+ *  are grouped together in order to form a single shape.
  *
  *  In order to create a Mesh it is necessary to give the number of triangles
  *  as a parameter to the constructor. Then call the Mesh::addTriangle function
@@ -79,6 +78,7 @@ public:
                      const Normal* n);
 
     /** \brief Finalize the mesh
+     *
      *  Perform some computation after every vertex has been added. These
      *  computation includes building the acceleration structure and
      *  precomputing the results of some function that will not change during
@@ -119,9 +119,6 @@ public:
      *  mesh, without actually transforming it. This AABB is precomputed in the
      *  Mesh::finalize method
      *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *
      *  \param[in] trans The transform matrix used to transform the mesh
      *  from object space to world space
      *
@@ -129,30 +126,70 @@ public:
      */
     AABB computeWorldAABB(const Matrix4* trans)const;
 
-    /** \brief Returns the surface of the triangle
+    /** \brief Returns the surface of the mesh
      *
      *  This method computes the surface area of the mesh, useful if it is a
-     *  light source. This value is precomputed int the Mesh::finalize method
+     *  light source.
      *
-     *  \return A float representing the area of the mesh in world-space
+     *  \return A float representing the area of the mesh in obbject-space
      *  units
      */
     float surface()const;
+    
+    /** \brief Return the surface of the mesh considering the scaling factor
+     *
+     *  This method computes the surface area of the mesh, useful if the mesh is
+     *  a light source. Compared to the other surface() method, this one
+     *  accounts also for the scaling factor of the transform matrix
+     *
+     *  \param[in] transform The transform matrix
+     *
+     *  \return A float representing the area of the mesh in world-space units
+     */
+    float surface(const Matrix4* transform)const;
+    
+    /** \brief Return the number of face of the mesh
+     *
+     *  This function returns the number of tris composing the mesh
+     *
+     *  \return The number of faces in a Mesh
+     */
+    int getNumberOfFaces()const;
+    
+    /** \brief Populate the array of cumulative densities
+     *
+     *  This function populates the densities array. For each triangle, ordered,
+     *  the area of the current triangle is calculated and added to the previous
+     *  result. With this array it is possible to random sample a mesh with
+     *  differently sized triangles. Every surface is calculated considering
+     *  the world-space transformed shape
+     *
+     *  \param[in] transform The object to world space matrix
+     *  \param[out] array The array of cumulative densities
+     */
+    void getDensitiesArray(const Matrix4* transform, float* array)const;
 
     /** \brief Returns a random point on the surface of the mesh
      *
      *  Useful for the light sources, this method returns a random point on the
      *  surface of the mesh.
+     *  In the Mesh implementation of this method, the random value is lerped
+     *  in order to get the random tris. With the cd array the tris is found
+     *  in O(log2(n)) steps, where n is the number of faces. Then the
+     *  Triangle::getRandomPoint() function is called
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] densities The array generated from the getDensitiesArray
+     *  function
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r, float r1, Point3* p, Normal* n)const;
+    void getRandomPoint(float r, float r1, const float* densities, Point3* p,
+                        Normal* n)const;
 
 private:
-
+    
     //array of triangles
     Triangle* tris;
 
@@ -164,9 +201,6 @@ private:
 
     //number of triangles allocated
     unsigned int alloc;
-
-    //precomputed surface of the mesh
-    float area;
 
     //BVH for faster intersections
     Bvh bvh;

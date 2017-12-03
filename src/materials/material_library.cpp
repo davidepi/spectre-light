@@ -1,10 +1,13 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "material_library.hpp"
 
 MaterialLibrary::MaterialLibrary()
 {
-    Bsdf* defmatl = new Bsdf();
-    defmatl->inheritBdf(new Lambertian(SPECTRUM_WHITE));
-    lib.insert(std::make_pair("Default",defmatl));
+    Bsdf* default_mat = new Bsdf();
+    default_mat->inheritBdf(new Lambertian(SPECTRUM_WHITE));
+    lib.insert(std::make_pair("Default",default_mat));
 }
 
 void MaterialLibrary::add(const std::string& name, Bsdf* material)
@@ -15,8 +18,7 @@ void MaterialLibrary::add(const std::string& name, Bsdf* material)
 const Bsdf* MaterialLibrary::get(const std::string& name)const
 {
     const Bsdf* retval;
-    std::unordered_map<std::string,Bsdf*>::const_iterator got =
-            lib.find(name);
+    std::unordered_map<std::string,Bsdf*>::const_iterator got = lib.find(name);
 
     if(got!=lib.end())
         retval = got->second;
@@ -28,8 +30,7 @@ const Bsdf* MaterialLibrary::get(const std::string& name)const
 Bsdf* MaterialLibrary::edit(const std::string& name)const
 {
     Bsdf* retval;
-    std::unordered_map<std::string,Bsdf*>::const_iterator got =
-            lib.find(name);
+    std::unordered_map<std::string,Bsdf*>::const_iterator got = lib.find(name);
 
     if(got!=lib.end())
         retval = got->second;
@@ -40,8 +41,7 @@ Bsdf* MaterialLibrary::edit(const std::string& name)const
 
 void MaterialLibrary::remove(const std::string& name)
 {
-    std::unordered_map<std::string,Bsdf*>::const_iterator got =
-            lib.find(name);
+    std::unordered_map<std::string,Bsdf*>::const_iterator got = lib.find(name);
 
     if(got!=lib.end())
     {

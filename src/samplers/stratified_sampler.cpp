@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "stratified_sampler.hpp"
 
 StratifiedSampler::StratifiedSampler(int startx, int endx, int starty, int endy,

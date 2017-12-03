@@ -25,16 +25,17 @@
 #include "utility/scene.hpp"
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
+#include "primitives/box.hpp"
 #include "primitives/mesh.hpp"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 #include <chrono>
 
-enum camera_type{ORTHOGRAPHIC,PERSPECTIVE,PANORAMA};
-enum sampler_type{STRATIFIED,RANDOM};
-enum filter_type{BOX,TENT,GAUSSIAN,MITCHELL,LANCZOS};
-enum integrator_type{DIRECT_LIGHT,PATH_TRACE};
+enum camera_t{ORTHOGRAPHIC,PERSPECTIVE,PANORAMA};
+enum sampler_t{STRATIFIED,RANDOM};
+enum filter_t{BOX,TENT,GAUSSIAN,MITCHELL,LANCZOS};
+enum integrator_t{DIRECT_LIGHT,PATH_TRACE};
 
 class Settings
 {
@@ -44,16 +45,16 @@ public:
     char* output;
     int resolution[2];
     int spp;
-    enum camera_type ct;
+    enum camera_t type_camera;
     Point3 camera_pos;
     Point3 camera_target;
     Vec3 camera_up;
     float camera_fov;
-    enum sampler_type st;
-    enum filter_type ft;
-    enum integrator_type it;
+    enum sampler_t type_sampler;
+    enum filter_t type_filter;
+    enum integrator_t type_integrator;
     float f_val[2];
-    Scene* sc;
+    Scene* scene;
 };
 
 class Parser
@@ -64,8 +65,8 @@ private:
     std::unordered_map<std::string,int>shapeids;
 };
 
+#endif
+
 /**
  * \endcond
  */
-
-#endif

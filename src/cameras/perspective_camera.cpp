@@ -1,14 +1,18 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "perspective_camera.hpp"
 
-PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
-                                     const Vec3* u, int w, int h, float fov)
-: Camera(p,t,u,w,h)
+PerspectiveCamera::PerspectiveCamera(const Point3* pos, const Point3* target,
+                                     const Vec3* up, int width, int heigth,
+                                     float fov)
+: Camera(pos,target,up,width,heigth)
 {
     float f = 1000.0f; //far plane
     float n = 0.01f; //near plane
-    float invar = 1.f/tanf(fov/2.f);
-    float values[16] = {invar, 0,  0,  0,
-                        0, invar,  0,  0,
+    float inv_aspect_ratio = 1.f/tanf(fov/2.f);
+    float values[16] = {inv_aspect_ratio, 0,  0,  0,
+                        0, inv_aspect_ratio,  0,  0,
                         0, 0, f/(f-n), (-f*n)/(f-n),
                         0, 0,  1,  0};
     
@@ -16,31 +20,31 @@ PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
     Matrix4 screen2camera;
     camera2screen.inverse(&screen2camera);
     
-    float ar = (float)w/(float)h;
-    float b[4]; //screen-space bounds
-    if(ar > 1) //horizontal image
+    float aspect_ratio = (float)width/(float)heigth;
+    float bounds[4]; //screen-space bounds
+    if(aspect_ratio > 1) //horizontal image
     {
-        b[0] = -ar; //minx
-        b[1] = ar;  //maxx
-        b[2] = -1.f;//miny
-        b[3] = 1.f; //maxy
+        bounds[0] = -aspect_ratio; //minx
+        bounds[1] = aspect_ratio;  //maxx
+        bounds[2] = -1.f;//miny
+        bounds[3] = 1.f; //maxy
     }
     else
     {
-        b[0] = -1.f; //minx
-        b[1] = 1.f;  //maxx
-        b[2] = -1.f/ar;//miny
-        b[3] = 1.f/ar; //maxy
+        bounds[0] = -1.f; //minx
+        bounds[1] = 1.f;  //maxx
+        bounds[2] = -1.f/aspect_ratio;//miny
+        bounds[3] = 1.f/aspect_ratio; //maxy
     }
     //Raster space to screen space values, see Orthographic camera
-    values[0] = (b[1]-b[0])/w;
+    values[0] = (bounds[1]-bounds[0])/width;
     values[1] = 0;
     values[2] = 0;
-    values[3] = b[0];
+    values[3] = bounds[0];
     values[4] = 0;
-    values[5] = (b[2]-b[3])/h;
+    values[5] = (bounds[2]-bounds[3])/heigth;
     values[6] = 0;
-    values[7] = b[3];
+    values[7] = bounds[3];
     values[8] = 0;
     values[9] = 0;
     values[10] = 1.f;
@@ -56,9 +60,9 @@ PerspectiveCamera::PerspectiveCamera(const Point3* p,const Point3* t,
     raster2camera *= raster2screen;
 }
 
-void PerspectiveCamera::createRay(Sample *s, Ray *r)const
+void PerspectiveCamera::createRay(Sample* sample, Ray* ray)const
 {
-    r->origin = camera2world * Point3(0,0,0);
-    Point3 dir = raster2camera * Point3(s->posx,s->posy,0);
-    r->direction = camera2world * normalize(Vec3(dir.x,dir.y,dir.z));
+    ray->origin = camera2world * Point3(0,0,0);
+    Point3 dir = raster2camera * Point3(sample->posx,sample->posy,0);
+    ray->direction = camera2world * normalize(Vec3(dir.x,dir.y,dir.z));
 }

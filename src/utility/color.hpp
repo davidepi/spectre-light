@@ -63,16 +63,6 @@ public:
      */
     Color(float rgb);
 
-    /** \brief Default Constructor, given hex value
-     *
-     *  Create a color with the given components values, encoded as hex string
-     *  in the form #RRGGBB or #RGB which will be translated to #RRGGBB aswell
-     *
-     *  \param[in] hex The value of the red, green and blue components encoded
-     *  as an hex string
-     */
-    Color(const char* hex);
-
     /** \brief Return true if the color is black
      *  \return true if every component is zero
      */
@@ -161,16 +151,6 @@ public:
      *  \param[in] rgb The value of the red, green and blue
      */
     ColorRGB(float rgb);
-
-    /** \brief Default Constructor, given hex value
-     *
-     *  Create a color with the given components values, encoded as hex string
-     *  in the form #RRGGBB or #RGB which will be translated to #RRGGBB aswell
-     *
-     *  \param[in] hex The value of the red, green and blue components encoded
-     *  as an hex string
-     */
-    ColorRGB(const char* hex);
 
     /** \brief Default Constructor, given components values as unsigned chars
      *

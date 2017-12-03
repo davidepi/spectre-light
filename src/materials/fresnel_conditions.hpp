@@ -18,7 +18,7 @@
 #include "utility/utility.hpp"
 
 /**
- *  \class FresnelConditions fresnel_conditions.hpp
+ *  \class Fresnel fresnel_conditions.hpp
  *  \brief Fresnel conditions interface
  *
  *  Abstract class for the two types of fresnel equations: Conductor and

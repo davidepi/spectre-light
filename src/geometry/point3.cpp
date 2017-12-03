@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "point3.hpp"
 Point3::Point3()
 {
@@ -8,7 +11,7 @@ Point3::Point3()
 
 Point3::Point3(float xyz)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(xyz), MESSAGE_NAN("Point3"));
 #endif
     Point3::x = xyz;
@@ -18,7 +21,7 @@ Point3::Point3(float xyz)
 
 Point3::Point3(float x, float y, float z)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(x) || std::isnan(y) || std::isnan(z),
                    MESSAGE_NAN("Point3"));
 #endif

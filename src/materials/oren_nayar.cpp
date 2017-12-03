@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "oren_nayar.hpp"
 
 OrenNayar::OrenNayar(const Spectrum& diffuse, float sigma)
@@ -9,13 +12,7 @@ OrenNayar::OrenNayar(const Spectrum& diffuse, float sigma)
     OrenNayar::B = (0.45f*sigma2)/(sigma2+0.09f);
 }
 
-Bdf* OrenNayar::clone()const
-{
-    OrenNayar* res = new OrenNayar(*this);
-    return res;
-}
-
-Spectrum OrenNayar::df(const Vec3 *wout, const Vec3 *wincident) const
+Spectrum OrenNayar::value(const Vec3 *wout, const Vec3 *wincident) const
 {
     float costhetain = wincident->z;
     float costhetaout = wout->z;

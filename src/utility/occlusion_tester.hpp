@@ -35,9 +35,9 @@ public:
 
     /** \brief default Constructor
      *
-     *  \param[in] s The scene used for the occlusion testing
+     *  \param[in] scene The scene used for the occlusion testing
      */
-    OcclusionTester(const Scene* s);
+    OcclusionTester(const Scene* scene);
 
     /** \brief Check if a path is occluded
      *
@@ -53,7 +53,7 @@ public:
 private:
 
     //scene
-    const Scene* s;
+    const Scene* scene;
 
     //test this asset first
     const Asset* lasthit[DEFAULT_BOUNCES];

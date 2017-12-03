@@ -38,8 +38,8 @@ public:
 
     /** \brief Default constructor
      *
-     *  \param flags The flag of the Bdf, used to distinguish between BRDF or
-     *  BTDF
+     *  \param[in] flags The flags of the Bdf, used to distinguish between BRDF
+     *  or BTDF
      */
     Bdf(BdfFlags flags);
 
@@ -48,28 +48,25 @@ public:
 
     /** \brief Return the value of the Bdf
      *
-     *  Computes the value of the Bdf in the point, defining how the light is
+     *  Compute the value of the Bdf in the point, defining how the light is
      *  reflected or transmitted. This function returns the ratio of reflected
      *  radiance to the incident irradiance on the surface.
      *
      *  \param[in] woS The outgoing direction, in shading space
      *  \param[in] wiS The incident direction, in shading space
      *  \return The value of the BxDF
-     *  \sa df_s(const Vec3* woS, Vec3* wiS)const
+     *  \sa sample_value(const Vec3* woS, Vec3* wiS)const
      */
-    virtual Spectrum df(const Vec3* woS, const Vec3* wiS)const = 0;
+    virtual Spectrum value(const Vec3* woS, const Vec3* wiS)const = 0;
 
     /** \brief Return the value of the Bdf
      *
-     *  This method is like the df one, but it is used in case of delta
-     *  ditributions, for example when light is reflected from a single outgoing
-     *  direction to a single incident direction.
+     *  This method is like the value one, but it first samples a direction
+     *  using importance sampling. Then the value is computed exactly like the
+     *  other method. The sampled direction is the incident one.
      *
-     *  This methods computes the incident direction, given the outgoing
-     *  direction and computes the value of the Bdf for these one.
-     *
-     *  In case the distribution is not a delta one, this method sample a single
-     *  incident direction by using importance sampling
+     *  The default implementation of this method samples randomly on the
+     *  hemisphere of the normal
      *
      *  \param[in] woS The outgoing direction, in shading space
      *  \param[out] wiS The incident direction, in shading space
@@ -77,19 +74,15 @@ public:
      *  \param[in] r1 A random float in the interval (0.0,1.0)
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
-     *  \param[in,out] choose Used for the dispersion to choose the wavelength
-     *  sample
      *  \return The value of the Bdf for the pair of direction
-     *  \sa df(const Vec3* woS, const Vec3* wiS)const
+     *  \sa value(const Vec3* woS, const Vec3* wiS)const
      */
-    virtual Spectrum df_s(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                          float* pdf, char* choose)const;
+    virtual Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0,float r1,
+                                  float* pdf)const;
 
     /** \brief Return the probability density function for this bdf
      *
-     *  Given a pair of vectors, return the pdf value for these directions. In
-     *  other words the probability that another random sample will be equal to
-     *  this one
+     *  Given a pair of vectors, return the pdf value for these directions
      *
      *  \param[in] woS The outgoing direction, in shading space
      *  \param[in] wiS The incident direction, in shading space
@@ -98,6 +91,7 @@ public:
     virtual float pdf(const Vec3* woS, const Vec3* wiS)const;
 
     /** \brief Returns the flags associated with this Bdf
+     *
      *  \return The flags representing the type of Bdf
      */
     BdfFlags getFlags()const;
@@ -126,7 +120,7 @@ private:
  *  \class Bsdf bdf.hpp "materials/bdf.hpp"
  *  \brief Wrapper for several Bdf
  *
- *  The BSDF defines how the light scatter on a surface. This class is composed
+ *  The BSDF defines how the light scatters on a surface. This class is composed
  *  by several BRDF and BTDF that represent respectively how the light is
  *  reflected and transmitted. By combining these Bdfs it is possible to define
  *  how the light behaves when reaching the surface
@@ -164,13 +158,13 @@ public:
      *  \param[in] matchme The types of bdfs to consider when computing radiance
      *  \return The value of the BSDF
      */
-    Spectrum df(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+    Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
                 BdfFlags matchme)const;
 
     /** \brief Return the value of the BSDF
      *
-     *  Similar to the df method, this one sample a single direction and returns
-     *  the light reflected or transmitted in that direction. The random
+     *  Similar to the value method, this one sample a single direction and
+     *  returns the light reflected or transmitted in that direction. The random
      *  incident ray is updated in the \p wi member
      *
      *  \param[in] r0 A random float in the interval (0.0,1.0)
@@ -183,20 +177,16 @@ public:
      *  over the bdf hemisphere
      *  \param[in] matchme The types of bdfs to consider when computing radiance
      *  \param[out] matched The bdfs matched with the sampling
-     *  \param[in,out] choose Used for the dispersion to choose the wavelength
-     *  sample
      *  \return A sampled value of the BSDF
      */
-    Spectrum df_s(float r0, float r1, float r2, const Vec3* woW,
-                  const HitPoint* h, Vec3* wiW, float* pdf,
-                  BdfFlags matchme, BdfFlags* matched, char* choose)
+    Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
+                          const HitPoint* h, Vec3* wiW, float* pdf,
+                          BdfFlags matchme, BdfFlags* matched)
     const;
 
     /** \brief Return the probability density function for this bsdf
      *
-     *  Given a pair of vectors, return the pdf value for these directions. In
-     *  other words the probability that another random sample will be equal to
-     *  this one
+     *  Given a pair of vectors, return the pdf value for these directions.
      *
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point

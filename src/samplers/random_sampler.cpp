@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "random_sampler.hpp"
 
 RandomSampler::RandomSampler(int startx, int endx, int starty, int endy,

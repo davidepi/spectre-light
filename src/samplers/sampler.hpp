@@ -24,7 +24,7 @@
  *
  *  The Sample structure contains the position of a sample in raster space
  *  where (0,0) is the top-left image corner and (image_size,image_size) is the
- *  bottom-right one. This structure is a POD
+ *  bottom-right one.
  */
 struct Sample
 {
@@ -90,22 +90,22 @@ public:
     
 protected:
 
-    //The random number generator
+    ///The random number generator
     WELLrng rng;
     
-    //The starting pixel (x-coordinate)
+    ///The starting pixel (x-coordinate)
     int startx;
     
-    //The starting pixel (y-coordinate)
+    ///The starting pixel (y-coordinate)
     int starty;
     
-    //The ending pixel (x-coordinate)
+    ///The ending pixel (x-coordinate)
     int endx;
     
-    //The ending pixel (y-coordinate)
+    ///The ending pixel (y-coordinate)
     int endy;
     
-    //The number of samples per pixel
+    ///The number of samples per pixel
     int spp;
 };
 

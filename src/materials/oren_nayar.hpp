@@ -41,18 +41,6 @@ public:
      */
     OrenNayar(const Spectrum& diffuse, float sigma);
 
-    /** \brief Copy the BRDF
-     *
-     *  Method used to copy this class
-     *
-     *  \warning The returned Bdf is heap allocated, and must be deallocated.
-     *  Although this is really bad practice, it is the only possible
-     *  implementation without using reference counting.
-     *
-     *  \return an heap allocated base pointer of the cloned class
-     */
-    Bdf* clone()const;
-
     /** \brief Return the value of the BRDF
      *
      *  Computes the value of the BRDF in the point, defining how the light is
@@ -63,7 +51,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the BxDF
      */
-    Spectrum df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi)const;
 
 private:
 

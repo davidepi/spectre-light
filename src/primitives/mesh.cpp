@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "mesh.hpp"
 
 Mesh::Mesh(unsigned int size)
@@ -7,7 +10,6 @@ Mesh::Mesh(unsigned int size)
 
     //can't use malloc, vtable pointer would be uninitialized
     Mesh::tris = new Triangle[size];
-    Mesh::area = 0;
 }
 
 Mesh::~Mesh()
@@ -71,7 +73,6 @@ void Mesh::finalize()
     //precompute the surface of the mesh and the aabb
     for(unsigned int i=0;i<count;i++)
     {
-        Mesh::area += Mesh::tris[i].surface();
         AABB tmp = Mesh::tris[i].computeAABB();
         aabb.engulf(&tmp);
     }
@@ -91,24 +92,122 @@ AABB Mesh::computeAABB()const
 
 AABB Mesh::computeWorldAABB(const Matrix4 *trans) const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(trans==NULL)
     {
         Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
         return AABB();
     }
 #endif
-    Point3 pmin = *trans * Mesh::aabb.bounds[0];
-    Point3 pmax = *trans * Mesh::aabb.bounds[1];
-    return AABB(min(pmin,pmax), max(pmin,pmax));
+    const Point3 p0 = *trans*Point3(Mesh::aabb.bounds[0].x,
+                                    Mesh::aabb.bounds[0].y,
+                                    Mesh::aabb.bounds[0].z);
+    const Point3 p1 = *trans*Point3(Mesh::aabb.bounds[1].x,
+                                    Mesh::aabb.bounds[0].y,
+                                    Mesh::aabb.bounds[0].z);
+    const Point3 p2 = *trans*Point3(Mesh::aabb.bounds[1].x,
+                                    Mesh::aabb.bounds[1].y,
+                                    Mesh::aabb.bounds[0].z);
+    const Point3 p3 = *trans*Point3(Mesh::aabb.bounds[0].x,
+                                    Mesh::aabb.bounds[1].y,
+                                    Mesh::aabb.bounds[0].z);
+    const Point3 p4 = *trans*Point3(Mesh::aabb.bounds[0].x,
+                                    Mesh::aabb.bounds[0].y,
+                                    Mesh::aabb.bounds[1].z);
+    const Point3 p5 = *trans*Point3(Mesh::aabb.bounds[1].x,
+                                    Mesh::aabb.bounds[0].y,
+                                    Mesh::aabb.bounds[1].z);
+    const Point3 p6 = *trans*Point3(Mesh::aabb.bounds[1].x,
+                                    Mesh::aabb.bounds[1].y,
+                                    Mesh::aabb.bounds[1].z);
+    const Point3 p7 = *trans*Point3(Mesh::aabb.bounds[0].x,
+                                    Mesh::aabb.bounds[1].y,
+                                    Mesh::aabb.bounds[1].z);
+    
+    const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
+    const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
+    return AABB(min(pmi,pma), max(pmi,pma));
 }
 
 float Mesh::surface()const
 {
-    return Mesh::area;
+    float totalArea = 0;
+    for(unsigned int i=0;i<Mesh::count;i++)
+    {
+        totalArea += tris[i].surface();
+    }
+    return totalArea;
 }
 
-void Mesh::getRandomPoint(float, float, Point3* , Normal*) const
+float Mesh::surface(const Matrix4 *transform)const
 {
-    Console.critical("Unimplemented Mesh::getRandomPoint");
+    float totalArea = 0;
+    for(unsigned int i=0;i<Mesh::count;i++)
+    {
+        totalArea += tris[i].surface(transform);
+    }
+    return totalArea;
+}
+
+int Mesh::getNumberOfFaces()const
+{
+    return Mesh::count;
+}
+
+void Mesh::getDensitiesArray(const Matrix4* transform,float* array)const
+{
+    float sum = 0;
+    for(unsigned int i=0;i<count;i++)
+    {
+        sum+=tris[i].surface(transform);
+        array[i]=sum;
+    }
+}
+
+void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+                          Normal* n)const
+{
+    //flatten the random value between 0.0 and the total area
+    float extSample = lerp(r0, 0.0f, densities[count-1]);
+    
+    //divide et impera search
+    int start = 0;
+    int end = count-1;
+    int mid;
+    //the sample in the interval [0,1]. After processing the lerp step
+    float sample01;
+    
+    //limit cases, they generate infinite loops
+    //first triangle of the array
+    if(extSample < densities[0])
+    {
+        sample01 = inverse_lerp(extSample,0,densities[0]);
+        tris[0].getRandomPoint(sample01, r1, NULL, p, n);
+        return;
+    }
+    //last triangle of the array
+    if(extSample>densities[end-1])
+    {
+        sample01 = inverse_lerp(extSample-densities[end-1],0,
+                                densities[end]-densities[end-1]);
+        tris[end].getRandomPoint(sample01, r1, NULL, p, n);
+        return;
+    }
+    
+    //find the sampled triangle by using cumulative areas (cdf)
+    while(true)
+    {
+        mid = (start+end)/2;
+        //mid contains the value
+        if(densities[mid]<=extSample && densities[mid+1]>extSample)
+            break;
+        else if(densities[mid]>extSample)
+            end = mid;
+        else
+            start = mid;
+    }
+
+    //sample the triangle
+    sample01 = inverse_lerp(extSample, 0, densities[mid+1]-densities[mid]);
+    tris[mid].getRandomPoint(sample01, r1, NULL, p, n);
 }

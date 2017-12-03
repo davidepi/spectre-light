@@ -1,25 +1,29 @@
 //Created,  25 May 2017
-//Last Edit  4 Oct 2017
+//Last Edit 27 Nov 2017
 
 /**
  *  \file image_output.hpp
- *  \brief     Buffer storing and saving an image, will be used by Camera
+ *  \brief     Buffer storing and saving an image
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      4 Oct 2017
+ *  \date      27 Nov 2017
  *  \copyright GNU GPLv3
  */
 
 
-#ifndef __IMAGE_OUTPUT_HPP__
-#define __IMAGE_OUTPUT_HPP__
+#ifndef __IMAGE_FILM_HPP__
+#define __IMAGE_FILM_HPP__
+
+#define EXTENSION_NOT_SUPPORTED -1
+#define EXTENSION_PPM 0
+#define EXTENSION_BMP 1
 
 #include "samplers/filter.hpp"
-#include "samplers/box_filter.hpp"
 #include "samplers/sampler.hpp"
 #include "utility/color.hpp"
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
+#include "utility/imageIO.hpp"
 #include <cstring>
 #include <cmath>
 #include <mutex>
@@ -45,7 +49,7 @@ struct Pixel
     float cie_z;
     
     /**
-     *  The weight of the various samples added. The final value of r,g and b
+     *  The weight of the various samples added. The final values of r,g and b
      *  have to be divided by this number
      */
     float samples;
@@ -73,7 +77,7 @@ struct TodoPixel
 	int y;
 };
 
-///Stores the rendered area and where to put the pixel samples
+///The thread's personal rendered area and where to put the critical pixels
 struct ExecutorData
 {
 	///The starting x point of the sub-image
@@ -93,37 +97,33 @@ struct ExecutorData
 };
 
 /**
- * \class ImageOutput image_output.hpp "cameras/image_output.hpp"
+ * \class ImageFilm image_film.hpp "cameras/image_film.hpp"
  * \brief Class used to store an image and filter every sample
  *
- *  This class is simply a wrapper around an array of pixel, however, new 
- *  samples results can be added, and their value will be filtered and added to
- *  the correct pixels. For this reason, this class will be used by the Camera
- *  to store an instance of the final rendered image.
- *
+ *  This class is simply a wrapper around an array of pixel. Unlike a simple
+ *  array, however, whenever new samples results will be added, their value will
+ *  be filtered, weighted and added also to the nearby pixels. The amount of
+ *  affected pixels depends by the chosen filter.
  *  This class provides also a method for saving the image on the disk after
- *  the render
+ *  the render.
  */
-class ImageOutput
+class ImageFilm
 {
 public:
     
-    /** \brief Default Constructor
+    /** \brief Construct an empty image
      *
-     *  Cosntruct an empty image with the given width, height and filename
-     *  If the filename has no extension, the image will be saved as .bmp
-     *
-     *  \warning If ImageMagick is not installed on the system, the image can be
-     *  saved only as a .bmp
+     *  Cosntruct an empty image with the given width, height and filename.
+     *  If the filename has no extension, the image will be saved as .ppm
      *
      *  \param[in] width The width of the image
      *  \param[in] height The height of the image
      *  \param[in] filename The name of the output image
      */
-    ImageOutput(int width, int height, const char* filename);
+    ImageFilm(int width, int height, const char* filename);
     
     ///Default destructor
-    ~ImageOutput();
+    ~ImageFilm();
     
     /** \brief Add a sample to this image
      *
@@ -142,52 +142,52 @@ public:
      *  ImageOutput::setFilter
      *
      *  \param[in] sample The sampled point
-     *  \param[in] c The color value of the sampled point
-	 *	\param[in,out] ex A struct containing the rendered sub-image coordinates
-	 *	and where to put the pixel values that cannot be updated. For these 
-	 *	values a mutex will be used.
+     *  \param[in] color The color value of the sampled point
+	 *	\param[in,out] area A struct containing the rendered sub-image
+     *  coordinates and where to put the pixel values that cannot be updated.
+     *  For these values a mutex will be used.
 	 *	\sa deferredAddPixel(const ExecutorData* ex);
 	 *	\sa forceAddPixel(const ExecutorData* ex);
      */
-    void addPixel(const Sample* sample, ColorXYZ c, ExecutorData* ex);
+    void addPixel(const Sample* sample, ColorXYZ color, ExecutorData* area);
 
 
 	/** \brief Attempts the addition of pixels in critical areas
 	 *	
 	 *	When using the addPixel method, every pixel that could be influenced by
-	 *	samples of other rendering thread is put on the ExecutorData struct.
+	 *	samples of other rendering threads is saved on the ExecutorData struct.
 	 *	This method tries the addition of these values in a thread safe way.
-	 * 	If the mutex is already locked nothing is done, otherwise the
+	 * 	If the mutex is already locked nothing is done, in the other case the
 	 *	ExecutorData stack is emptied
 	 *
-	 *	\param[in] ex The struct containing all the pixel values that will be
+	 *	\param[in] area The struct containing all the pixel values that will be
 	 *	updated
 	 *	\sa addPixel(const Sample* sample, const Color* c, ExecutorData* ex);
 	 *	\sa forceAddPixel(ExecutorData* ex);
 	 */
-	void deferredAddPixel(ExecutorData* ex);
+	void deferredAddPixel(ExecutorData* area);
 
 	/** \brief Force the addition of pixels in critical areas
 	 *	
 	 *	When using the addPixel method, every pixel that could be influenced by
-	 *	samples of other rendering thread is put on the ExecutorData struct.
+	 *	samples of other rendering threads is saved on the ExecutorData struct.
 	 *	This method force the addition of these values in a thread safe way.
 	 *
-	 *	\param[in] ex The struct containing all the pixel values that will be
+	 *	\param[in] data The struct containing all the pixel values that will be
 	 *	updated
 	 *	\sa addPixel(const Sample* sample, const Color* c, ExecutorData* ex);
 	 *	\sa deferredAddPixel(const ExecutorData* ex);
 	 */
-	void forceAddPixel(ExecutorData* ex);
+	void forceAddPixel(ExecutorData* data);
     
     /** \brief Set a Filter for this image
      *
-     *  Set the Filter that will be used to filter the various samples and 
+     *  Sets the Filter that will be used to filter the various samples and
      *  weight their contribution to every pixel.
      *
-     *  \param[in] f A pointer to the filter that will be used
+     *  \param[in] filter A pointer to the filter that will be used
      */
-    void setFilter(Filter* f);
+    void setFilter(Filter* filter);
     
     /** \brief Store the image on the disk
      *
@@ -208,13 +208,16 @@ private:
     const int height;
     
     //filter
-    Filter* f;
+    Filter* filter;
     
     //the buffer of the image
-    Pixel* image;
+    Pixel* buffer;
     
     //filename of the image
     char* filename;
+    
+    //extesion of the file, using the defines at the beginning of this .hpp
+    char extension;
     
     //mutex for concurrent write
     std::mutex mtx;

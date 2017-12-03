@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "vec3.hpp"
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 
@@ -10,7 +13,7 @@ Vec3::Vec3()
 
 Vec3::Vec3(float xyz)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(xyz), MESSAGE_NAN("Vec3"));
     Console.severe(std::isinf(xyz), MESSAGE_INFINITY("Vec3"));
 #endif
@@ -21,7 +24,7 @@ Vec3::Vec3(float xyz)
 
 Vec3::Vec3(float x,float y,float z)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(x) || std::isnan(y) || std::isnan(z),
                    MESSAGE_NAN("Vec3"));
     Console.severe(std::isinf(x) || std::isinf(y) || std::isinf(z),
@@ -34,7 +37,7 @@ Vec3::Vec3(float x,float y,float z)
 
 Vec3::Vec3(Vec2 xy,float z)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z),
                    MESSAGE_NAN("Vec3"));
     Console.severe(std::isinf(xy.x) || std::isinf(xy.y) || std::isinf(z),
@@ -47,7 +50,7 @@ Vec3::Vec3(Vec2 xy,float z)
 
 Vec3::Vec3(const float* xyz)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(xyz!=NULL)
     {
         Console.severe(std::isnan(xyz[0]) || std::isnan(xyz[1])
@@ -60,7 +63,7 @@ Vec3::Vec3(const float* xyz)
         Vec3::x = xyz[0];
         Vec3::y = xyz[1];
         Vec3::z = xyz[2];
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     }
     else
     {
@@ -74,7 +77,7 @@ Vec3::Vec3(const float* xyz)
 
 Vec3::Vec3(Normal n)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(n.x) || std::isnan(n.y) || std::isnan(n.z),
                    MESSAGE_NAN("Vec3"));
     Console.severe(std::isinf(n.x) || std::isinf(n.y) || std::isinf(n.z),
@@ -132,7 +135,7 @@ void Vec3::normalize()
 {
     float len;
     len = sqrtf(Vec3::x * Vec3::x + Vec3::y * Vec3::y + Vec3::z * Vec3::z);
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(len==0)
     {
         Console.critical(MESSAGE_NORMALIZE_ZERO);
@@ -152,13 +155,11 @@ bool Vec3::isNormalized()const
     return len>1.f-1E-5f && len<1.f+1E-5f;
 }
 
-float* Vec3::toArray()const
+void Vec3::toArray(float* res)const
 {
-    float* f = new float[3];
-    f[0] = Vec3::x;
-    f[1] = Vec3::y;
-    f[2] = Vec3::z;
-    return f;
+    res[0] = Vec3::x;
+    res[1] = Vec3::y;
+    res[2] = Vec3::z;
 }
 
 char* Vec3::toString()const
@@ -256,7 +257,7 @@ void Vec3::min(const Vec3& vector2)
 
 void Vec3::reflect(const Vec3& centre)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!centre.isNormalized(),MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
@@ -267,7 +268,7 @@ void Vec3::reflect(const Vec3& centre)
 
 void Vec3::reflect(const Normal& centre)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
@@ -278,7 +279,7 @@ void Vec3::reflect(const Normal& centre)
 
 bool Vec3::refract(const Vec3 &interface, float eta)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
@@ -295,7 +296,7 @@ bool Vec3::refract(const Vec3 &interface, float eta)
 
 bool Vec3::refract(const Normal &interface, float eta)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
@@ -386,7 +387,7 @@ void Vec3::operator*=(float f)
 
 Vec3 Vec3::operator/(const Vec3& v)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(v.x==0 || v.y==0 || v.z==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -398,7 +399,7 @@ Vec3 Vec3::operator/(const Vec3& v)const
 
 Vec3 Vec3::operator/(float f)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(f==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -410,7 +411,7 @@ Vec3 Vec3::operator/(float f)const
 
 void Vec3::operator/=(const Vec3& v)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(v.x==0 || v.y==0 || v.z==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -424,7 +425,7 @@ void Vec3::operator/=(const Vec3& v)
 
 void Vec3::operator/=(float f)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(f==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -481,7 +482,7 @@ Normal::Normal()
 
 Normal::Normal(float xyz)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(xyz), MESSAGE_NAN("Normal"));
     Console.severe(std::isinf(xyz), MESSAGE_INFINITY("Normal"));
 #endif
@@ -492,7 +493,7 @@ Normal::Normal(float xyz)
 
 Normal::Normal(float x,float y,float z)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(x) || std::isnan(y) || std::isnan(z),
                    MESSAGE_NAN("Normal"));
     Console.severe(std::isinf(x) || std::isinf(y) || std::isinf(z),
@@ -505,7 +506,7 @@ Normal::Normal(float x,float y,float z)
 
 Normal::Normal(Vec2 xy,float z)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z),
                    MESSAGE_NAN("Normal"));
     Console.severe(std::isinf(xy.x) || std::isinf(xy.y) || std::isinf(z),
@@ -518,7 +519,7 @@ Normal::Normal(Vec2 xy,float z)
 
 Normal::Normal(const float* xyz)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(xyz != NULL)
     {
         Console.severe(std::isnan(xyz[0]) || std::isnan(xyz[1]) ||
@@ -531,7 +532,7 @@ Normal::Normal(const float* xyz)
         Normal::x = xyz[0];
         Normal::y = xyz[1];
         Normal::z = xyz[2];
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     }
     else
     {
@@ -545,7 +546,7 @@ Normal::Normal(const float* xyz)
 
 Normal::Normal(const Vec3 v)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(v.x) || std::isnan(v.y) || std::isnan(v.z),
                    MESSAGE_NAN("Normal"));
     Console.severe(std::isinf(v.x) || std::isinf(v.y) || std::isinf(v.z),
@@ -595,7 +596,7 @@ void Normal::normalize()
     len = std::sqrt(Normal::x * Normal::x +
                     Normal::y * Normal::y +
                     Normal::z * Normal::z);
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(len==0)
     {
         Console.critical(MESSAGE_NORMALIZE_ZERO);
@@ -611,16 +612,14 @@ void Normal::normalize()
 bool Normal::isNormalized()const
 {
     float len = x*x+y*y+z*z;
-    return len>0.999f && len<1.0001f;
+    return len>1.f-1E-5f && len<1.f+1E-5f;
 }
 
-float* Normal::toArray()const
+void Normal::toArray(float* res)const
 {
-    float* f = new float[3];
-    f[0] = Normal::x;
-    f[1] = Normal::y;
-    f[2] = Normal::z;
-    return f;
+    res[0] = Normal::x;
+    res[1] = Normal::y;
+    res[2] = Normal::z;
 }
 
 char* Normal::toString()const
@@ -797,7 +796,7 @@ void Normal::operator*=(float f)
 
 Normal Normal::operator/(const Normal& n)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(n.x==0 || n.y==0 || n.z==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -809,7 +808,7 @@ Normal Normal::operator/(const Normal& n)const
 
 Normal Normal::operator/(float f)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(f==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -821,7 +820,7 @@ Normal Normal::operator/(float f)const
 
 void Normal::operator/=(const Normal& n)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(n.x==0 || n.y==0 || n.z==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -835,7 +834,7 @@ void Normal::operator/=(const Normal& n)
 
 void Normal::operator/=(float f)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(f==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);

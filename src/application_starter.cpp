@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #if defined(WIN32) || defined(WIN64)
 #include <process.h>
 #define execl _execl
@@ -56,6 +59,7 @@ int main(int argc, char* argv[])
         }
         else //defaulting to full spectral rendering
         {
+            strncat(cmd,"-full",BUF_SIZE);
             execl(cmd,"spectre-full",input,NULL);
         }
     }

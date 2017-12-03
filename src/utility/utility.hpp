@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit 20 Sep 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  20 Sep 2017
+ *  \date  26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -174,6 +174,21 @@ inline float lerp(const float value, const float min, const float max)
     return (1 - value) * min + value * max;
 }
 
+/** \brief Perform the inverse of a linear interpolation
+ *
+ *  Perform an inverse linear interpolation of a value between [min,max] in
+ *  order to map it in an interval [0,1]
+ *
+ *  \param[in] value The value in the interval [min,max]
+ *  \param[in] min The minimum value of the interval
+ *  \param[in] max The maximum value of theinterval
+ *  \return The original value mapped in the interval [0,1]
+ */
+inline float inverse_lerp(float value, float min, float max)
+{
+    return (value - min) / (max - min);
+}
+
 /**
  *  \brief Check if two floats are the same value
  *
@@ -206,7 +221,6 @@ inline int sign(float a)
  *
  *  Solve a linear equation in form \f$ax+b=0\f$
  *
- *  \note use #_LOW_LEVEL_CHECKS_ to check if \p a is zero
  *  
  *  \param[in] a The coefficient of the unknown variable
  *  \param[in] b The other constant of the equation
@@ -214,7 +228,7 @@ inline int sign(float a)
  */
 inline float equation1(const float a, const float b)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(a==0)
     {
         Console.severe(MESSAGE_LINEAR_EQUATION_IMPOSSIBLE);
@@ -252,6 +266,19 @@ inline bool equation2(const float a, const float b, const float c,
     }
     else
         return false;
+}
+
+/** \brief Swap endianness (32-bit)
+ *
+ *  Convert a big endian number to a little endian one and vice-versa
+ *
+ *  \param[in] num The number that will be converted
+ *  \return The same number but in another endianness
+ */
+inline uint32_t swap_endianness(uint32_t num)
+{
+   return ((num & 0x000000FF) << 24) | ((num & 0x0000FF00) << 8) |
+          ((num & 0x00FF0000) >>  8) | ((num & 0xFF000000) >> 24);
 }
 
 //define some structures useful to check if the program fired any kind of errors

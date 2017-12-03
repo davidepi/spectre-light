@@ -6,6 +6,7 @@
 #Misplaced colon or spaces will break everything
 
 #Output file, absolute or relative to the executable
+#supported .ppm and .bmp files
 out: /home/user/Desktop/test.ppm
 
 #Resolution width height (width = 2x height suggested with panorama camera)
@@ -17,8 +18,9 @@ resolution: 800 600
 #fov is in degrees and used only with perspective camera
 camera: perspective (0,2,-10) (0,0,0) (0,1,0) 55
 
-#sampler type samples per pixel
+#sampler type samples_per_pixel
 #type can be random or stratified
+#sampels_per_pixel is the quality of the image, higher is better
 sampler: stratified 25
 
 #filter type optional_values
@@ -58,8 +60,11 @@ material: Brushed_silver glossy (255,255,255) Ag ggx 0.1 0.05
 material: Plastic glossy (30,30,255) [1.0,0,0] [1.5,0,0] beckmann 0.1
 material: Plastic diffuse (30,30,255) 0
 
-#asset name_without_spaces obj_file_path || asset name sphere radius
+#asset name_without_spaces obj_file_path
+#asset name sphere
+#asset name box (x_edge_length,y_edge_length,z_edge_length)
 #path is absolute or relative to the executable
+#WARNING!!!! Input meshes: only tris, v, and vn are REQUIRED otherwise segfault is waiting for you
 asset: Ico /home/user/Desktop/test.obj
 asset: Big_sphere sphere 100000
 asset: Default_sphere sphere 1.0
@@ -67,6 +72,7 @@ asset: Default_sphere sphere 1.0
 #light asset_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z) (r,g,b)
 #instead of (r,g,b) it is possible to insert a temperature in Kelvin degrees (6000K = white)
 #rotation in sexagesimal degrees
+#using asset with high polycount can dramatically increase rendering time
 light: Default_sphere (0,2,0) (0,0,0) (1,1,1) 3500K
 
 #world asset_name material_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z)

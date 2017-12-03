@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit  3 Nov 2017
+//Last Edit 22 Nov 2017
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      3 Nov 2017
+ *  \date      22 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -21,6 +21,7 @@
 #include "cameras/perspective_camera.hpp"
 #include "cameras/orthographic_camera.hpp"
 #include "cameras/camera360.hpp"
+#include "cameras/image_film.hpp"
 #include "samplers/box_filter.hpp"
 #include "samplers/tent_filter.hpp"
 #include "samplers/gaussian_filter.hpp"
@@ -230,30 +231,30 @@ public:
      *  perform the rendering. A camera and a filter are needed. The output
      *  image will be saved in the path given in the constructor
      *
-     * \param[in] s The scene that will be rendered
+     * \param[in] scene The scene that will be rendered
      * \return 0 if everything was ok, 1 otherwise
      */
-    int render(Scene* s);
+    int render(Scene* scene);
 
 private:
 
     //Camera for the renderer
-    Camera* c;
+    Camera* camera;
 
     //Filter for the renderer
-    Filter* f;
+    Filter* filter;
 
     //Actual image
-    ImageOutput film;
+    ImageFilm film;
 
     //Number of rendering threads
     int numthreads;
 
     //width of the image
-    int w;
+    int width;
 
     //height of the image
-    int h;
+    int height;
 
     //samples per pixel
     int spp;
@@ -268,7 +269,7 @@ private:
     std::thread* workers;
 
     //integrator
-    LightIntegrator* t;
+    LightIntegrator* mc_solver;
 
     //sampler
     int sampler_t;

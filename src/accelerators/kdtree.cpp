@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "kdtree.hpp"
 #define KDNODE_ALLOC 1 //AT LEAST 1!!! otherwise when doubling the array size
                        //0 * 2 = guess what :^)
@@ -492,7 +495,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
                 current_asset = assetsList[n->getAssetOffset()+i];
                 
                 //firstly try with the aabb since it's faster
-                if(current_asset->intersectFast(r, &rp, &res1, &res2))
+                if(current_asset->intersectAABB(r, &rp, &res1, &res2))
                 {
                     //then try with the actual asset
                     if(res1<bestdistance && //don't try if AABB > best distance

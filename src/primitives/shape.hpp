@@ -1,13 +1,13 @@
 //Created,  25 Feb 2016
-//Last Edit 11 Jul 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file shape.hpp
  *  \brief     Shape abstract class definition
- *  \details   The superclass from which every shape inherit
+ *  \details   The superclass from which every shape inherits
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Jul 2017
+ *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -91,22 +91,52 @@ public:
      *  In its implementations, this method should compute the surface area of
      *  the shape
      *
-     *  \return A float representing the area of the shape in world-space units
+     *  \return A float representing the area of the shape in object-space units
      */
     virtual float surface()const = 0;
+    
+    /** \brief Return the surface of the shape after the transformation
+     *
+     *  In its implementations, this method should compute the surface area of
+     *  the shape, accounting also for the scaling from the matrix.
+     *
+     *  \return A float representing the area of the shape in world-space units,
+     *  considering also the scaling factor of the transform matrix
+     */
+    virtual float surface(const Matrix4* transform)const = 0;
+    
+    /** \brief Return the number of face of the shape
+     *
+     *  Useful only for Mesh objects, this function returns the number of tris
+     *  composing the shape. It returns 1 if the shape is a Sphere, 6 if the
+     *  Shape is a Box
+     *
+     *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
+     */
+    virtual int getNumberOfFaces()const;
+    
+    /** \brief Populate the cumulative densities array
+     *
+     *  For this specific class, nothing is done. Check subclasses
+     *
+     *  \param[in] transform UNUSED
+     *  \param[out] array UNUSED
+     */
+    virtual void getDensitiesArray(const Matrix4* transform,float* array)const;
 
     /** \brief Returns a random point on the surface of the shape
      *
      *  Useful for the light sources, this method returns a random point on the
-     *  surface of the shape. Its implementation may chose a point that is
-     *  actually facing the viewer, in order to reduce variance
+     *  surface of the shape
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] densities The array of densities of the shape's faces
      *  \param[out] p The computed point
      *  \param[out] n The normal of the computed point
      */
-    virtual void getRandomPoint(float r, float r1, Point3* p, Normal* n)const=0;
+    virtual void getRandomPoint(float r, float r1, const float* densities,
+                                Point3* p, Normal* n)const = 0;
     
     
 private:
@@ -132,12 +162,6 @@ struct HitPoint
 
     ///Cross between normal and right
     Vec3 cross;
-
-    ///u coordinate for texture
-    //float u;
-
-    ///v coordinate for texture
-    //float v;
 
     ///Hit asset
     const Asset* hit;

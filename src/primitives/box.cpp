@@ -1,49 +1,60 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "box.hpp"
-
-Box::Box() : edges(1,1,1)
-{
-    
-}
-
-Box::Box(Vec3 e) : edges(e)
-{
-#ifdef _LOW_LEVEL_CHECKS_
-        Console.severe(e.x==0 || e.y==0 || e.z==0,MESSAGE_DEGENERATE_BOX);
-#endif
-}
 
 AABB Box::computeAABB()const
 {
     const Point3 min(0,0,0);
-    const Point3 max(Box::edges.x,Box::edges.y,Box::edges.z);
+    const Point3 max(1,1,1);
     return AABB(&min,&max);
 }
 
 AABB Box::computeWorldAABB(const Matrix4* transform)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(transform==NULL)
     {
         Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
         return AABB();
     }
 #endif
-    const Point3 pmin=*transform*Point3();
-    const Point3 pmax=*transform*Point3(Box::edges.x,Box::edges.y,Box::edges.z);
     
-    return AABB(&pmin, &pmax);
+    //transforming min and max is not enough for rotation, i.e. in 90 deg rot
+    const Point3 p0=*transform*Point3(0,0,0);
+    const Point3 p1=*transform*Point3(1,0,0);
+    const Point3 p2=*transform*Point3(1,1,0);
+    const Point3 p3=*transform*Point3(0,1,0);
+    const Point3 p4=*transform*Point3(0,0,1);
+    const Point3 p5=*transform*Point3(1,0,1);
+    const Point3 p6=*transform*Point3(1,1,1);
+    const Point3 p7=*transform*Point3(0,1,1);
+    
+    const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
+    const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
+    
+    return AABB(pmi,pma);
+}
+
+int Box::getNumberOfFaces()const
+{
+    return 6;
 }
 
 float Box::surface()const
 {
-    float la = 2*(edges.x+edges.z)*(edges.y);//lateral surface= perimeter*heigth
-    return la+2*edges.x*edges.z;
+    return 6;
+}
+
+float Box::surface(const Matrix4* transform)const
+{
+    Vec3 scale = transform->getScale();
+    float la = 2*(scale.x+scale.z)*scale.y;
+    return la+2*scale.x*scale.z;
 }
 
 bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 {
-
-    Point3 top(edges.x,edges.y,edges.z);
     float mint;
     float maxt;
     char axis = 0; //used for normal identification
@@ -51,7 +62,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     //x plane
     float invr = 1.0f/r->direction.x;
     float near = (-r->origin.x) * invr;
-    float far = (top.x-r->origin.x) * invr;
+    float far = (1.f-r->origin.x) * invr;
     if(near>far)
         swap(&near,&far);
     mint = near;
@@ -62,7 +73,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     //y plane
     invr = 1.0f/r->direction.y;
     near = (-r->origin.y) * invr;
-    far = (top.y-r->origin.y) * invr;
+    far = (1.f-r->origin.y) * invr;
     if(near>far)
         swap(&near,&far);
     if(near > mint)
@@ -77,7 +88,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     //z plane
     invr = 1.0f/r->direction.z;
     near = (-r->origin.z) * invr;
-    far = (top.z-r->origin.z) * invr;
+    far = (1.f-r->origin.z) * invr;
     if(near>far)
         swap(&near,&far);
     if(near > mint)
@@ -104,74 +115,105 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     h->n[axis] = 1;
     h->n[axis]*=sign(h->h[axis]);
     if(h->n.z!=0)
-        h->right = Vec3(1,0,0);
+        h->right = Vec3(h->n.z,0,0);
     else
         h->right = Vec3(-h->n.y,h->n.x,0);
     return true;
 }
 
-void Box::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
+void Box::getDensitiesArray(const Matrix4* transform, float* array)const
 {
+    Vec3 scale = transform->getScale();
+    array[0] = scale.x*scale.y;
+    array[1] = array[0]*2;
+    array[2] = array[1]+(scale.x*scale.z);
+    array[3] = array[2]+(scale.x*scale.z);
+    array[4] = array[3]+(scale.z*scale.y);
+    array[5] = array[4]+(scale.z*scale.y);
+}
 
-    float res = lerp(r0,0,edges.x*4+edges.z*2);
-    unsigned char face = (unsigned char)res/6;
-    switch(face)
+void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+                            Normal* n)const
+{
+    //works like the Mesh::getRandomPoint
+    //
+    // useless drawing referring to the old implementation, but I like it :)
+    //
+    //  front back   top  botm  left  right
+    // |-----|-----|-----|-----|-----|-----|
+    // |  y  |  y  |  z  |  z  |  y  |  y  |
+    // |-----|-----|-----|-----|-----|-----|
+    //    x     x     x     x     z     z
+    //
+    //The actual interpolation is:
+    // - interpolate the sample from 0 to the total surface of the box
+    // - find in which face the sample fall using the densities array
+    // - from the interpolated sample remove the previous densities and sample
+    // - one dimension of the face
+    // - use the other sample to sample the other dimension
+    // - dimensions can be viewed on the previous schema. The first one is the
+    //   one outside the square
+    
+    //cd[5] contains the total surface in world space units
+    float res = lerp(r0,0,densities[5]);
+    if(res<densities[0])
     {
         //front
-        case 0:
-            p->x=res;
-            p->y = lerp(r1,0,edges.y);
-            p->z = 0;
-            n->x = 0;
-            n->y = 0;
-            n->z = -1;
-            break;
+        p->x = inverse_lerp(res,0,densities[0]);
+        p->y = r1;
+        p->z = 0;
+        n->x = 0;
+        n->y = 0;
+        n->z = -1;
+    }
+    else if(res<densities[1])
+    {
         //back
-        case 1:
-            p->x=res-edges.x;
-            p->y = lerp(r1,0,edges.y);
-            p->z = edges.z;
-            n->x = 0;
-            n->y = 0;
-            n->z = 1;
-            break;
-        //left
-        case 2:
-            p->x=0;
-            p->y = lerp(r1,0,edges.y);
-            p->z = res-(edges.x*2);
-            n->x = -1;
-            n->y = 0;
-            n->z = 0;
-            break;
-        //right
-        case 3:
-            p->x=edges.x;
-            p->y = lerp(r1,0,edges.y);
-            p->z = res-(edges.x*2)-edges.z;
-            n->x = 1;
-            n->y = 0;
-            n->z = 0;
-            break;
-        //bottom
-        case 4:
-            p->x=res-(edges.x*2)-(edges.z*2);
-            p->y = 0;
-            p->z = lerp(r1,0,edges.z);
-            n->x = 0;
-            n->y = -1;
-            n->z = 0;
-            break;
+        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
+        p->y = r1;
+        p->z = 1;
+        n->x = 0;
+        n->y = 0;
+        n->z = 1;
+    }
+    else if(res<densities[2])
+    {
         //top
-        case 5:
-            p->x=res-(edges.x*3)-(edges.z*2);
-            p->y = edges.y;
-            p->z = lerp(r1,0,edges.z);
-            n->x = 0;
-            n->y = 1;
-            n->z = 0;
-            break;
-        default:
-            printf("%d\n",face);
+        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
+        p->y = 1;
+        p->z = r1;
+        n->x = 0;
+        n->y = 1;
+        n->z = 0;
+    }
+    else if(res<densities[3])
+    {
+        //bottom
+        p->x = inverse_lerp(res-densities[2],0,densities[3]-densities[2]);
+        p->y = 0;
+        p->z = r1;
+        n->x = 0;
+        n->y = -1;
+        n->z = 0;
+    }
+    else if(res<densities[4])
+    {
+        //left
+        p->x = 0;
+        p->y = r1;
+        p->z = inverse_lerp(res-densities[3],0,densities[4]-densities[3]);
+        n->x = -1;
+        n->y = 0;
+        n->z = 0;
+    }
+    else
+    {
+        //right
+        p->x = 1;
+        p->y = r1;
+        p->z = inverse_lerp(res-densities[4],0,densities[5]-densities[4]);
+        n->x = 1;
+        n->y = 0;
+        n->z = 0;
     }
 }

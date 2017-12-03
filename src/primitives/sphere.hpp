@@ -1,5 +1,5 @@
 //Created,  22 Mar 2016
-//Last Edit  2 Aug 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file sphere.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      2 Aug 2017
+ *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -30,20 +30,18 @@
  *  This class contains the definition of a sphere, centered in (0,0,0) with
  *  a given radius. To center the sphere somewhere else, the
  *  Shape#transformMatrix matrix should be set. If the matrix contains a
- *  non-uniform scaling value, this class will rely upon the \a x value
+ *  non-uniform scaling value, this class will exhibit undefined behaviour
  *
  */
 class Sphere : public Shape
 {
 public:
     
-    /** \brief Constructor, given the radius.
+    /** \brief Default constructor
      *
-     *  Construct a sphere with the given radius and centered in (0,0,0)
-     *
-     *  \param[in] radius The radius of the sphere
+     *  Construct a sphere centered in (0,0,0) with radius 1
      */
-    Sphere(float radius);
+    Sphere() = default;
     
     /** \brief Intersection of a Ray and this sphere
      *
@@ -77,9 +75,6 @@ public:
      *  This method returns an AABB that can fit well on the world space sphere,
      *  without actually transforming the sphere.
      *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when the matrix has not been
-     *  set
-     *
      *  \param[in] transform The transform matrix used to transform the Sphere
      *  from object space to world space
      *
@@ -92,9 +87,22 @@ public:
      *  This method computes the surface area of the sphere, useful
      *  if the sphere is a light source.
      *
-     *  \return A float representing the area of the sphere in world-space units
+     *  \return A float representing the area of the sphere in object-space
+     *  units
      */
     float surface()const;
+    
+    /** \brief Return the surface of the sphere considering the scaling factor
+     *
+     *  This method computes the surface area of the sphere, useful if the
+     *  sphere is a light source. Compared to the other surface() method, this
+     *  one accounts also for the scaling factor of the transform matrix
+     *
+     *  \param[in] transform The transform matrix
+     *
+     *  \return A float representing the area of the sphere in world-space units
+     */
+    float surface(const Matrix4* transform)const;
 
     /** \brief Returns a random point on the surface of the sphere
      *
@@ -103,15 +111,12 @@ public:
      *
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
+     *  \param[in] densities Unused in the sphere
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, Point3* p, Normal* n)const;
-    
-private:
-    
-    //radius of the sphere
-    float radius;
+    virtual void getRandomPoint(float r0, float r1, const float* densities,
+                                Point3* p, Normal* n)const;
 };
 
 #endif

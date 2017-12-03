@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "utility.hpp"
 
 void formatSeconds(unsigned int secs, char* out)

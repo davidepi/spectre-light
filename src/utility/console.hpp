@@ -1,12 +1,12 @@
 //Created,  22 Mar 2017
-//Last Edit 20 Sep 2017
+//Last Edit 26 Nov 2017
 
 /**
  *  \file console.hpp
  *  \brief Console logging
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date  20 Sep 2017
+ *  \date  26 Nov 2017
  *  \copyright GNU GPLv3
  */
 
@@ -21,10 +21,10 @@
 #include <iostream> //std::wcout, std::cout
 
 ///Version of the software
-#define SPECTRE_VERSION "PRE"
+#define SPECTRE_VERSION "0.1.0"
 
 ///Release date of this version
-#define SPECTRE_RELEASE "N.A."
+#define SPECTRE_RELEASE "3 Dec 2017"
 
 /**
  * \class Console Console.hpp "utility/console.hpp"

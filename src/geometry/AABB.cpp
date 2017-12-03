@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "AABB.hpp"
 AABB::AABB() :bounds{Point3(INFINITY, INFINITY, INFINITY),
                      Point3(-INFINITY, -INFINITY, -INFINITY)}
@@ -190,7 +193,7 @@ const
 }
 
 
-//------ Operators ---------------------------------------------------------
+//------ Operators -------------------------------------------------------------
 
 AABB AABB::operator+(const Point3& p)const
 {
@@ -249,4 +252,4 @@ bool AABB::operator!=(const AABB &b)const
     return !(*(this)==b);
 }
 
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------

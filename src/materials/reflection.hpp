@@ -47,7 +47,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Spectrum df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi)const;
 
     /** \brief Returns the value of the BRDF
      *
@@ -61,12 +61,10 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
-     *  \param[in,out] chosen Used for the dispersion to choose the wavelength
-     *  sample
      *  \return The value of the BRDF for the pair of directions
      */
-    virtual Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf, char* chosen)const = 0;
+    virtual Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf)const = 0;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -83,10 +81,17 @@ public:
 
 protected:
 
-    //scattered light
+    ///Scattered light
     Spectrum specular;
 };
 
+/**
+ *  \class ConductorReflection reflection.hpp "materials/reflection.hpp"
+ *  \brief BRDF for a smooth mirror-like reflection
+ *
+ *  Reflection class used when the reflecting surface is a conductor. Avoids
+ *  allocating a Conductor class by embedding everything into a single method
+ */
 class ConductorReflection : public Reflection
 {
 public:
@@ -113,17 +118,22 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
-     *  \param[in,out] chosen Used for the dispersion to choose the wavelength
-     *  sample
      *  \return The value of the BRDF for the pair of directions
      */
-    Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf, char* chosen)const;
+    Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf)const;
 private:
     Spectrum fresnel;
     Spectrum ior;
 };
 
+/**
+ *  \class DielectricReflection reflection.hpp "materials/reflection.hpp"
+ *  \brief BRDF for a smooth mirror-like reflection
+ *
+ *  Reflection class used when the reflecting surface is a dielectric. Avoids
+ *  allocating a Dielectric class by embedding everything into a single method
+ */
 class DielectricReflection : public Reflection
 {
 public:
@@ -148,20 +158,13 @@ public:
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere. This is a delta distribution, but this method
      *  generates the only possible pair of directions, so the pdf is 1.0
-     *  \param[in,out] choose Used for the dispersion to choose the wavelength
-     *  sample
      *  \return The value of the BRDF for the pair of directions
      */
-    Spectrum df_s(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf, char* choose)const;
+    Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
+                  float* pdf)const;
 private:
-#ifdef DISPERSION
-    Spectrum eta_i;
-    Spectrum eta_t;
-#else
     float eta_i;
     float eta_t;
-#endif
 };
 
 #endif

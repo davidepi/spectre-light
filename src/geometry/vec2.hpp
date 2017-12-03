@@ -4,14 +4,10 @@
 /**
  *  \file vec2.hpp
  *  \brief     Vec2 class definition and its inline functions
- *  \details   A two component vector class
+ *  \details   A two components vector class
  *  \author    Davide Pizzolotto
- *  \version   1.0
+ *  \version   0.1
  *  \date      8 April 2017
- *  \warning   Since this is a low level class, some verification are skipped.
- *             To enable them compile the project with the #_LOW_LEVEL_CHECKS_
- *             preprocessor define.
- *             More details are provided for every method
  *  \copyright GNU GPLv3
  */
 
@@ -70,8 +66,6 @@ public:
      *
      *  \param[in] x A float representing the x component of the vector
      *  \param[in] y A float representing the y component of the vector
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p x or \p y are NaN or
-     *        Infinity
      */
     Vec2(float x, float y);
     
@@ -80,23 +74,21 @@ public:
      *  Construct a vector of two elements with the same given value
      *
      *  \param[in] xy A float representing the x and y components
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy is NaN or Infinity
      */
     Vec2(float xy);
     
     /**
      *  \brief Constructor, given an array
+     *
      *  Construct a vector of two elements given an input array
      *
      *  \param[in] xy An input array of floats, containing x in the first
      *               position (0-based) and y in the second one
      *  \warning It is not checked if \p xy is a valid pointer
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p xy is NULL, Infinity or
-     *        NaN
      */
     Vec2(const float* xy);
     
-    ///Destructor
+    ///Default destructor
     ~Vec2() = default;
     
     /**
@@ -118,9 +110,7 @@ public:
     /** \brief Normalize this vector
      *
      * \warning The input length is not checked, a 0-length vector will result
-     *  in a division by zero error
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when a division by 0 occurs
-     *  \sa isNormalized()
+     *  in a division by zero
      */
     void normalize();
     
@@ -134,18 +124,19 @@ public:
     
     /**
      *  \brief Represent this vector with an array
-     *  Copy the components of this vector in an array of float, heap allocated
      *
-     *  \return  An heap allocated array containing the x value of the vector
+     *  Copy the components of this vector in an array of floats
+     *
+     *  \param[out] values An array containing the x value of the vector
      *           in the first position (0-based) and the y value in the second
      *           one
-     *  \note A float* is allocated on heap and MUST be deleted
      *  \sa toString()
      */
-    float* toArray()const;
+    void toArray(float* values)const;
     
     /**
      *  \brief Represent this vector with a C-string
+     *
      *  Allocate in the heap a C-string and write the components of the vector
      *  as a string
      *
@@ -158,6 +149,7 @@ public:
     
     /**
      *  \brief Clamp this vector by restricting it between two boundaries
+     *
      *  Restrict the value of the vector in an interval defined by \p min as the
      *  minimum value and \p max as the maximum one
      *
@@ -175,6 +167,7 @@ public:
     
     /**
      *  \brief Compute the distance from another vector
+     *
      *  Compute the distance between this vector and another one passed in input
      *
      *  \param[in] target A Vec2 representing the target vector from which the
@@ -185,6 +178,7 @@ public:
     
     /**
      *  \brief Compute the dot product
+     *
      *  Compute the dot product of this vector and another one. The dot product
      *  is defined as the cosine of the angle between two vectors.
      *
@@ -195,31 +189,33 @@ public:
     
     /**
      *  \brief Compute the max value between two vectors
+     *
      *  Substitute the maximum value in x and y by choosing between the value of
      *  this vector and the one passed as argument
      *
-     *  \param[in] vector2 a Vec2 used to compare and choose the x and y values
+     *  \param[in] vector2 A Vec2 used to compare and choose the x and y values
      *  \sa min(const Vec2 vector2)
      */
     void max(const Vec2& vector2);
     
     /**
      *  \brief Compute the min value between two vectors
+     *
      *  Substitute the minimum value in x and y by choosing between the value of
      *  this vector and the one passed as argument
      *
-     *  \param[in] vector2 a Vec2 used to compare and choose the x and y values
+     *  \param[in] vector2 A Vec2 used to compare and choose the x and y values
      *  \sa max(const Vec2 vector2)
      */
     void min(const Vec2& vector2);
     
     /**
      *  \brief Flip this vector according to a pivot
+     *
      *  Given a vector as a centre of reflection transform this class in the
      *  reflected vector around that centre of reflection
      *
-     *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
-     *  \param[in] centre a Vec2 representing the centre of reflection
+     *  \param[in] centre A Vec2 representing the centre of reflection
      */
     void reflect(const Vec2& centre);
     
@@ -277,7 +273,7 @@ public:
  * \brief Returns the length of the vector
  *
  * \param[in] vector The Vec2 whose length will be computed
- * \return a float representing the length of this Vec2
+ * \return A float representing the length of this Vec2
  * \sa lengthSquared(const Vec2* vector)
  */
 inline float length(const Vec2 vector)
@@ -289,7 +285,7 @@ inline float length(const Vec2 vector)
  * \brief Returns the squared length of the vector
  *
  * \param[in] vector The Vec2 whose length will be computed
- * \return a float representing the squared length of this Vec2
+ * \return A float representing the squared length of this Vec2
  * \sa length(const Vec2* vector)
  */
 inline float lengthSquared(const Vec2 vector)
@@ -302,14 +298,13 @@ inline float lengthSquared(const Vec2 vector)
  *
  * \param[in] vector The Vec2 that will be normalized
  * \return The normalized Vec2
- * \warning the input length is not checked, a 0-length vector will result in a
+ * \warning The input length is not checked, a 0-length vector will result in a
  *          division by zero error
- *  \note Use #_LOW_LEVEL_CHECKS_ to notify when a division by 0 occurs
  */
 inline Vec2 normalize(const Vec2 vector)
 {
     float len = length(vector);
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(len==0)
     {
         Console.critical("Trying to normalize a zero-length vector");
@@ -322,13 +317,14 @@ inline Vec2 normalize(const Vec2 vector)
 
 /**
  *  \brief Clamp the input vector by restricting it between two boundaries
+ *
  *  Restrict the value of the vector in an interval defined by \p min as the
  *  minimum value and \p max as the maximum one
  *
  *  \param[in] vector The Vec2 that will be clamped
- *  \param[in] min a Vec2 representing the minimum extent of the interval
- *  \param[in] max a Vec2 representing the maximum extent of the interval
- *  \return the clamped Vec2
+ *  \param[in] min A Vec2 representing the minimum extent of the interval
+ *  \param[in] max A Vec2 representing the maximum extent of the interval
+ *  \return The clamped Vec2
  *  \sa saturate(const Vec2 vector)
  */
 inline Vec2 clamp(const Vec2 vector, const Vec2 min, const Vec2 max)
@@ -345,8 +341,9 @@ inline Vec2 clamp(const Vec2 vector, const Vec2 min, const Vec2 max)
 
 /**
  *  \brief Clamp this vector in the interval [0-1]
+ *
  *  \param[in] vector The Vec2 that will be clamped
- *  \return the clamped Vec2
+ *  \return The clamped Vec2
  *  \sa clamp(const Vec2 vector, const Vec2 min, const Vec2 max)
  */
 inline Vec2 saturate(const Vec2 vector)
@@ -363,13 +360,14 @@ inline Vec2 saturate(const Vec2 vector)
 
 /**
  *  \brief Compute the distance from another vector
+ *
  *  Compute the distance between two input vectors
  *
- *  \param[in] source a Vec2 representing the target vector from which the
+ *  \param[in] source A Vec2 representing the target vector from which the
  *             distance should be calculated
- *  \param[in] target a Vec2 representing the target vector to which the
+ *  \param[in] target A Vec2 representing the target vector to which the
  *             distance should be calculated
- *  \return a float representing the distance from the \p target vector
+ *  \return A float representing the distance from the \p target vector
  */
 inline float distance(const Vec2 source, const Vec2 target)
 {
@@ -381,13 +379,14 @@ inline float distance(const Vec2 source, const Vec2 target)
 
 /**
  *  \brief Compute the dot product
+ *
  *  Compute the dot product of two input vectors. The dot product
  *  is defined as the cosine of the angle between the two vectors;
  *
  *  The order of source and target doesn't change the output
- *  \param[in] source the first Vec2 used to compute the dot product
- *  \param[in] target the second Vec2 used to compute the dot product
- *  \return a float representing the dot product
+ *  \param[in] source The first Vec2 used to compute the dot product
+ *  \param[in] target The second Vec2 used to compute the dot product
+ *  \return A float representing the dot product
  */
 inline float dot(const Vec2 source, const Vec2 target)
 {
@@ -396,12 +395,13 @@ inline float dot(const Vec2 source, const Vec2 target)
 
 /**
  *  \brief Compute the maximum value between two vectors
+ *
  *  Return a vector containing the maximum value in x and y by choosing between
  *  the value of the two input vectors
  *
- *  \param[in] vector1 a Vec2 used to compare and choose the x and y values
- *  \param[in] vector2 a Vec2 used to compare and choose the x and y values
- *  \return a Vec2 containing the maximum value of the two input vectors
+ *  \param[in] vector1 A Vec2 used to compare and choose the x and y values
+ *  \param[in] vector2 A Vec2 used to compare and choose the x and y values
+ *  \return A Vec2 containing the maximum value of the two input vectors
  *  \sa min(const Vec2 vector1, const Vec2 vector2)
  */
 inline Vec2 max(const Vec2 vector1, const Vec2 vector2)
@@ -421,12 +421,13 @@ inline Vec2 max(const Vec2 vector1, const Vec2 vector2)
 
 /**
  *  \brief Compute the minimum value between two vectors
+ *
  *  Return a vector containing the minimum value in x and y by choosing between
  *  the value of the two input vectors
  *
- *  \param[in] vector1 a Vec2 used to compare and choose the x and y values
- *  \param[in] vector2 a Vec2 used to compare and choose the x and y values
- *  \return a Vec2 containing the minimum value of the two input vectors
+ *  \param[in] vector1 A Vec2 used to compare and choose the x and y values
+ *  \param[in] vector2 A Vec2 used to compare and choose the x and y values
+ *  \return A Vec2 containing the minimum value of the two input vectors
  *  \sa max(const Vec2 vector1, const Vec2 vector2)
  */
 inline Vec2 min (const Vec2 vector1, const Vec2 vector2)
@@ -446,17 +447,17 @@ inline Vec2 min (const Vec2 vector1, const Vec2 vector2)
 
 /**
  *  \brief Flip the vector according to a pivot
+ *
  *  Given a vector as a centre of reflection and a source vector, transform the
  *  source vector in the reflected vector around that centre of reflection
  *
- *  \note Use #_LOW_LEVEL_CHECKS_ to notify when \p centre is not normalized
- *  \param[in] source the Vec2 that will be transformed
- *  \param[in] centre a Vec2 representing the centre of reflection
- *  \return the reflected Vec2
+ *  \param[in] source The Vec2 that will be transformed
+ *  \param[in] centre A Vec2 representing the centre of reflection
+ *  \return The reflected Vec2
  */
 inline Vec2 reflect(const Vec2 source,const Vec2 centre)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!centre.isNormalized(),
                     "Reflecting around a non normalized centre");
 #endif

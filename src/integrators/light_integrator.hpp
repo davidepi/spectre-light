@@ -23,7 +23,7 @@
 #include "utility/occlusion_tester.hpp"
 
 /**
- * \class LightIntegrator light_integrator.hpp
+ *  \class LightIntegrator light_integrator.hpp
  * \brief The interface for rendering equation integrators
  *
  *  The integrator class is just an interface that exposes the radiance method,
@@ -37,23 +37,23 @@ public:
 
     /** \brief Determine the radiance arriving at a point
      *
-     *  The radiance method compute the arriving radiance at the film. This
+     *  The radiance method computes the arriving radiance at the film. This
      *  method requires as input the first intersection point found by
      *  intersecting a ray with the scene. Then it computes the radiance
      *  emitted by that point
      *
-     *  \param[in] sc The rendered scene
-     *  \param[in] hp The first intersection point
-     *  \param[in] r The originating ray, generated from the camera
-     *  \param[in] sam A sampler used to generate random numbers
-     *  \param[in] ot Class used in order to test the occlusion. It is passed
-     *  here to keep trace of cached assets between various call of this
+     *  \param[in] scene The rendered scene
+     *  \param[in] hit The first intersection point
+     *  \param[in] ray The originating ray, generated from the camera
+     *  \param[in] sampler A sampler used to generate random numbers
+     *  \param[in] visibility Class used in order to test the occlusion. It is
+     *  passed here to keep trace of cached assets between various call of this
      *  function
      *  \return The radiance arriving at the film
      */
-    virtual Spectrum radiance(const Scene* sc, const HitPoint* hp,
-                              const Ray* r, Sampler* sam,
-                              OcclusionTester* ot)const = 0;
+    virtual Spectrum radiance(const Scene* scene, const HitPoint* hit,
+                              const Ray* ray, Sampler* sampler,
+                              OcclusionTester* visibility)const = 0;
     
     ///Default destructor
     virtual ~LightIntegrator(){};

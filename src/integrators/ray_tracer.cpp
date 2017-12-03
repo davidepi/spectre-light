@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "ray_tracer.hpp"
 
 Spectrum RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
@@ -43,7 +46,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                                              &lightpdf,&light_distance);
         if(lightpdf > 0 && !directrad.isBlack())
         {
-            Spectrum bsdf_f = mat->df(&wo,hp,&wi,flags);
+            Spectrum bsdf_f = mat->value(&wo,hp,&wi,flags);
             Ray r2(hp->h,wi);
             if(!bsdf_f.isBlack() && !ot->isOccluded(&r2,&light_distance))
             {
@@ -59,8 +62,8 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
 
         //mip bsdf sampling
         //NULL is guaranteed not be used since the call will never be specular
-        Spectrum bsdf_f = mat->df_s(rand[3],rand[4],rand[5],&wo,hp,&wi,&bsdfpdf,
-                                    flags,&sampled_val,NULL);
+        Spectrum bsdf_f = mat->sample_value(rand[3],rand[4],rand[5],&wo,hp,
+                                            &wi,&bsdfpdf,flags,&sampled_val);
         if(bsdfpdf>0 && !bsdf_f.isBlack())
         {
             float w = 1.f; //weight
@@ -96,9 +99,8 @@ Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     const Bsdf* mat = hp->hit->getMaterial();
     BdfFlags sampled_val;
     BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
-    char* res = NULL; //Can't handle dispersion in direct_lighting
-    Spectrum bsdf_f = mat->df_s(rand[0], rand[1], rand[2], &wo, hp, &wi,
-                       &bsdfpdf,sampleme,&sampled_val,res);
+    Spectrum bsdf_f = mat->sample_value(rand[0], rand[1], rand[2], &wo, hp, &wi,
+                       &bsdfpdf,sampleme,&sampled_val);
     
     if(bsdfpdf==1.f && !bsdf_f.isBlack())
     {

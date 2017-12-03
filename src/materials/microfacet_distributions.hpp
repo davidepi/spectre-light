@@ -1,5 +1,5 @@
 //Created,  20 Sep 2017
-//Last Edit 20 Nov 2017
+//Last Edit 21 Nov 2017
 
 /**
  *  \file microfacet_distributions.hpp
@@ -79,7 +79,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    virtual void sampleWh(const Vec3* wo, float r0, float r1,
+    virtual void sample_wh(const Vec3* wo, float r0, float r1,
                           Vec3* wh)const = 0;
     
     /** \brief Find the pdf of two pairs of directions
@@ -161,7 +161,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sampleWh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
     
     /** \brief Find the pdf of two pairs of directions
      *
@@ -242,7 +242,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sampleWh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
     
 private:
     
@@ -312,7 +312,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sampleWh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
     
 private:
     
@@ -376,7 +376,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sampleWh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
     
 private:
     

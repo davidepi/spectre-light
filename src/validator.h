@@ -58,15 +58,6 @@
 #define PATH_SEPARATOR '/'
 #endif
 
-#if defined(DISPERSION) && !defined(SPECTRAL)
-//since SPECTRAL is defined automatically I undef dispersion when rgb is built
-#undef DISPERSION
-#endif
-
-#if defined(DISPERSION)
-#error DISPERSION feature is still W.I.P.
-#endif
-
 #endif
 
 /**

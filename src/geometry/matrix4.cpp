@@ -1,9 +1,12 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "matrix4.hpp"
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 
 Matrix4::Matrix4(const float* v)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(v!=NULL)
     {
         //checking if the values are not NaN or Infinity is too expensive,
@@ -25,7 +28,7 @@ Matrix4::Matrix4(const float* v)
         Matrix4::m31 = v[13];
         Matrix4::m32 = v[14];
         Matrix4::m33 = v[15];
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     }
     else
         Console.warning(MESSAGE_MATRIX4_NULLINIT);
@@ -85,9 +88,8 @@ char* Matrix4::toString()const
     return res;
 }
 
-float* Matrix4::toArray()const
+void Matrix4::toArray(float* res)const
 {
-    float* res = new float[16];
     res[0] = Matrix4::m00;
     res[1] = Matrix4::m01;
     res[2] = Matrix4::m02;
@@ -104,7 +106,6 @@ float* Matrix4::toArray()const
     res[13] = Matrix4::m31;
     res[14] = Matrix4::m32;
     res[15] = Matrix4::m33;
-    return res;
 }
 
 void Matrix4::setZero()
@@ -276,7 +277,7 @@ void Matrix4::setRotateZ(float value)
 void Matrix4::setInvLookAtLH(const Point3& pos,const Point3& eye,const Vec3& up)
 {
     Vec3 newup = up;
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(!(up.isNormalized()))
     {
         Console.warning(MESSAGE_UPVECTOR_NOTUNIT);
@@ -469,6 +470,19 @@ bool Matrix4::inverse(Matrix4 *output)const
     output->m33 = inv[15] * det;
     
     return true;
+}
+
+Vec3 Matrix4::getTranslation()const
+{
+    return Vec3(Matrix4::m03,Matrix4::m13,Matrix4::m23);
+}
+
+Vec3 Matrix4::getScale()const
+{
+    const Vec3 x(Matrix4::m00,Matrix4::m10,Matrix4::m20);
+    const Vec3 y(Matrix4::m01,Matrix4::m11,Matrix4::m21);
+    const Vec3 z(Matrix4::m02,Matrix4::m12,Matrix4::m22);
+    return Vec3(x.length(),y.length(),z.length());
 }
 
 //------ Operators -------------------------------------------------------------

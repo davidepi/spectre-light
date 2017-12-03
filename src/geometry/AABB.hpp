@@ -4,7 +4,7 @@
 /**
  *  \file aabb.hpp
  *  \brief     AABB class definition and its inline functions
- *  \details   An Axis Aligned Bounding Box, used to enclose some geometry
+ *  \details   An Axis Aligned Bounding Box, used to enclose some points
  *  \author    Davide Pizzolotto
  *  \version   0.1
  *  \date      13 Aug 2017
@@ -86,7 +86,7 @@ public:
     
     /** \brief Expand the bounding box by a fixed amount
      *
-     *  Expand the bounding box by a constant factor
+     *  Expands the bounding box by a constant factor
      *
      *  \param[in] value The magnitude of the expansion, in world-space units
      */
@@ -94,7 +94,7 @@ public:
     
     /** \brief Expand the bounding box until the new value is enclosed
      *
-     *  Expand the bounding box until it encloses the new point. If the new
+     *  Expands the bounding box until it encloses the new point. If the new
      *  point is already inside the bounding box, nothing happens
      *
      *  \param[in] p1 A pointer to the point that will be enclosed
@@ -103,7 +103,7 @@ public:
 
     /** \brief Expand the bounding box until the new value is enclosed
      *
-     *  Expand the bounding box until it encloses the new point. If the new
+     *  Expands the bounding box until it encloses the new point. If the new
      *  point is already inside the bounding box, nothing happens
      *
      *  \param[in] p1 The point that will be enclosed
@@ -133,7 +133,7 @@ public:
     /** \brief Check if two bounding boxes overlap
      *
      *  \param[in] aabb The bounding box used to perform the check
-     *  \return A true value if the two bounding boxes overlap
+     *  \return True if the two bounding boxes overlap, false otherwise
      */
     bool overlaps(const AABB* aabb)const;
     

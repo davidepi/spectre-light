@@ -1,16 +1,12 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "sphere.hpp"
-Sphere::Sphere(float rad) :Shape()
-{
-#ifdef _LOW_LEVEL_CHECKS_
-    Console.severe(rad <= 0,MESSAGE_DEGENERATE_SPHERE);
-#endif
-    Sphere::radius = rad;
-}
 
 AABB Sphere::computeAABB()const
 {
-    const Point3 pmin(-Sphere::radius,-Sphere::radius,-Sphere::radius);
-    const Point3 pmax( Sphere::radius, Sphere::radius, Sphere::radius);
+    const Point3 pmin(-1.f,-1.f,-1.f);
+    const Point3 pmax(1.f, 1.f, 1.f);
     
     //who cares if pmin and pmax are stack-allocated, the AABB constructor is
     //going to copy them anyway
@@ -19,19 +15,15 @@ AABB Sphere::computeAABB()const
 
 AABB Sphere::computeWorldAABB(const Matrix4* transform)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(transform==NULL)
     {
         Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
         return AABB();
     }
 #endif
-    const Point3 pmin = *transform * Point3(-Sphere::radius,
-                                                  -Sphere::radius,
-                                                  -Sphere::radius);
-    const Point3 pmax = *transform * Point3(Sphere::radius,
-                                                  Sphere::radius,
-                                                  Sphere::radius);
+    const Point3 pmin = *transform * Point3(-1.f,-1.f,-1.f);
+    const Point3 pmax = *transform * Point3(1.f,1.f,1.f);
     
     return AABB(&pmin, &pmax);
 }
@@ -44,7 +36,7 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
     const Vec3 tmp(r->origin.x,r->origin.y,r->origin.z);
     float a = r->direction.dot(r->direction);
     float b = 2*(r->direction.dot(tmp));
-    float c = tmp.dot(tmp) - (Sphere::radius*Sphere::radius);
+    float c = tmp.dot(tmp) - 1.f;
     float sol1;
     float sol2;
     if(equation2(a,b,c,&sol1,&sol2))
@@ -80,10 +72,18 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
 
 float Sphere::surface()const
 {
-    return FOUR_PI*Sphere::radius*Sphere::radius;
+    return FOUR_PI;
 }
 
-void Sphere::getRandomPoint(float r0, float r1, Point3* p, Normal* n)const
+float Sphere::surface(const Matrix4* transform)const
+{
+    Vec3 scale = transform->getScale();
+    const float val = (scale.x+scale.y+scale.z)/3.f;
+    return FOUR_PI*val*val;
+}
+
+void Sphere::getRandomPoint(float r0, float r1, const float*, Point3* p,
+                            Normal* n)const
 {
     float z = 1.f - 2.f * r0;
     float r = sqrtf(max(0.f,1.f-z*z));

@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(spectre-light C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-if(WIN32)
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_DEBUG "/Wall /DDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /GR- /GS- /GL /Gw /Gy /MT /LTCG /w /DNDEBUG")
 else()
-    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -pipe -g -Wall -Wextra -Wpedantic -Werror -Wdouble-promotion -D_LOW_LEVEL_CHECKS_ -DDEBUG")
-    #no input coming from unstruted sources -> no need the stack protector hardening
-    #funroll-loops is used for several functions inside the Spectrum class. Some of them are unrolled by hand, others are not (code becomes really unmantainable)
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -pipe -flto -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} "-O0 -pipe -g -Wall -Wextra -Wpedantic -Werror -Wdouble-promotion -DDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -pipe -flto -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")
 endif()
 
 file(GLOB spectre_core_sources
@@ -20,7 +20,7 @@ file(GLOB spectre_core_sources
     src/utility/*.cpp
     src/cameras/*.cpp
     src/integrators/*.cpp
-        src/parsers/*.cpp
+    src/parsers/*.cpp
     src/materials/*.cpp)
 include_directories(src)
 find_package (Threads REQUIRED)
@@ -31,16 +31,16 @@ if(DOXYGEN_FOUND)
     add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile ${CMAKE_CURRENT_SOURCE_DIR}/src/ ${CMAKE_CURRENT_BINARY_DIR})
 endif(DOXYGEN_FOUND)
 
-find_package(ImageMagick)
-if(ImageMagick_FOUND)
-    set_property(SOURCE src/cameras/image_output.cpp APPEND_STRING PROPERTY
-        COMPILE_FLAGS " -DIMAGEMAGICK_FOUND ")
+if(NOT WIN32)
+    set_property(SOURCE src/utility/console.cpp APPEND_STRING PROPERTY
+        COMPILE_FLAGS " -DSPECTRE_COLOURED_OUTPUT ")
 endif()
 
-if(WIN32)
-else()
-    set_property(SOURCE src/utility/console.cpp APPEND_STRING PROPERTY
-    COMPILE_FLAGS " -DSPECTRE_COLOURED_OUTPUT ")
+include(TestBigEndian)
+TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+if(IS_BIG_ENDIAN)
+    set_property(SOURCE src/utility/imageIO.cpp APPEND_STRING PROPERTY
+        COMPILE_FLAGS " -DIS_BIG_ENDIAN ")
 endif()
 
 add_executable(spectre-full src/main.cpp ${spectre_core_sources})

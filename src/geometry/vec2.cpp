@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "vec2.hpp"
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 
@@ -9,7 +12,7 @@ Vec2::Vec2()
 
 Vec2::Vec2(float xy)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(xy), MESSAGE_NAN("Vec2"));
     Console.severe(std::isinf(xy), MESSAGE_INFINITY("Vec2"));
 #endif
@@ -19,7 +22,7 @@ Vec2::Vec2(float xy)
 
 Vec2::Vec2(float x, float y)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(std::isnan(x) || std::isnan(y), MESSAGE_NAN("Vec2"));
     Console.severe(std::isinf(x) || std::isinf(y), MESSAGE_INFINITY("Vec2"));
 #endif
@@ -29,7 +32,7 @@ Vec2::Vec2(float x, float y)
 
 Vec2::Vec2(const float* xy)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(xy != NULL)
     {
         Console.severe(std::isnan(xy[0]) || std::isnan(xy[1]),
@@ -39,7 +42,7 @@ Vec2::Vec2(const float* xy)
 #endif
         Vec2::x = xy[0];
         Vec2::y = xy[1];
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     }
     else
     {
@@ -63,7 +66,7 @@ float Vec2::lengthSquared()const
 void Vec2::normalize()
 {
     float length = Vec2::length();
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(length==0)
     {
         Console.critical(MESSAGE_NORMALIZE_ZERO);
@@ -81,12 +84,10 @@ bool Vec2::isNormalized() const
     return len>1-FLT_EPSILON && len<1+FLT_EPSILON;
 }
 
-float* Vec2::toArray()const
+void Vec2::toArray(float* res)const
 {
-    float* res = new float[2];
     res[0] = Vec2::x;
     res[1] = Vec2::y;
-    return res;
 }
 
 char* Vec2::toString()const
@@ -168,7 +169,7 @@ void Vec2::min(const Vec2& vector2)
 
 void Vec2::reflect(const Vec2& centre)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec2::dot(centre);
@@ -246,7 +247,7 @@ void Vec2::operator*=(float f)
 
 Vec2 Vec2::operator/(const Vec2& v)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(v.x==0 || v.y==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -258,7 +259,7 @@ Vec2 Vec2::operator/(const Vec2& v)const
 
 Vec2 Vec2::operator/(float f)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(f==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -270,7 +271,7 @@ Vec2 Vec2::operator/(float f)const
 
 void Vec2::operator/=(const Vec2& v)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(v.x==0 || v.y==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);
@@ -283,7 +284,7 @@ void Vec2::operator/=(const Vec2& v)
 
 void Vec2::operator/=(float f)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(f==0)
     {
         Console.critical(MESSAGE_DIVISIONBY0);

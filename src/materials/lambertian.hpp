@@ -24,9 +24,9 @@
  *  \class Lambertian lambertian.hpp "materials/lambertian.hpp"
  *  \brief BRDF for a perfectly diffuse smooth surface
  *
- *  The Lambertian is a BRDF that defines an ideal matte surface, with very 
- *  subtle roughness. For surfaces with a more pronounced roughness, consider 
- *  using the Oren-Nayar model defined in the OrenNayar class
+ *  The Lambertian is a BRDF that defines an ideal matte surface.
+ *  For surfaces that reflects better a real world matter surface consider
+ *  using the slower Oren-Nayar model defined in the OrenNayar class
  */
 class Lambertian : public Bdf
 {
@@ -40,18 +40,6 @@ public:
      */
     Lambertian(const Spectrum& scattered_spectrum);
 
-    /** \brief Copy the BRDF
-     *
-     *  Method used to copy this class
-     *
-     *  \warning The returned Bdf is heap allocated, and must be deallocated.
-     *  Although this is really bad practice, it is the only possible
-     *  implementation without using reference counting.
-     *
-     *  \return an heap allocated base pointer of the cloned class
-     */
-    Bdf* clone()const;
-
     /** \brief Return the value of the BRDF
      *
      *  Computes the value of the BRDF in the point, defining how the light is
@@ -62,7 +50,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the BxDF
      */
-    Spectrum df(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi)const;
 
 private:
 

@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "microfacet_distributions.hpp"
 
 float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
@@ -49,7 +52,7 @@ float Blinn::G1(const Vec3* v)const
         return (3.535f*c+2.181f*c*c)/(1+2.276f*c+2.577f*c*c);
 }
 
-void Blinn::sampleWh(const Vec3* wo,float r0,float r1,Vec3* wh)const
+void Blinn::sample_wh(const Vec3* wo,float r0,float r1,Vec3* wh)const
 {
     const float cost = powf(r0,(1.f/(Blinn::exponent+1)));
     const float sint = sqrtf(max(0.f,1.f-cost*cost));
@@ -105,7 +108,7 @@ float Beckmann::G1(const Vec3* v)const
         return (3.535f*c+2.181f*c*c)/(1.f+2.276f*c+2.577f*c*c);
 }
 
-void Beckmann::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+void Beckmann::sample_wh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     //sampling algorithm for beckmann and GGX
     //https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf
@@ -129,10 +132,11 @@ float GGXiso::D(const Vec3 *h)const
 {
     if(h->z==0)
         return 0.f;
-    float inv_term = (h->z*h->z)*(a2-1)+1;
-    inv_term*=inv_term;
-    inv_term*=ONE_PI;
-    return a2/inv_term;
+    const float cos2t = h->z*h->z;
+    const float sin2t = max(0.f,1-cos2t);
+    float sqr_term = a2+(sin2t/cos2t);
+    sqr_term*=sqr_term;
+    return a2/(sqr_term*cos2t*cos2t*ONE_PI);
 }
 
 float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *)const
@@ -142,16 +146,15 @@ float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *)const
 
 float GGXiso::G1(const Vec3* v)const
 {
-    const float cos = fabsf(v->z);
-    if(cos==0)
+    const float cos2 = v->z*v->z;
+    if(cos2==0)
         return 0.f;
-    if(cos>=1)
-        return 1.f;
-    return (2*cos)/(cos+sqrtf(a2+(1-a2)*cos*cos));
+    const float sin2 = max(0.f,1-cos2*cos2);
+    return 2/(1+sqrtf(1+a2*sin2/cos2));
     
 }
 
-void GGXiso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+void GGXiso::sample_wh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     const float cos2t = (1.f-r0)/(r0*(a2-1)+1);
     const float cost = sqrtf(max(0.f,cos2t));
@@ -214,7 +217,7 @@ float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3*)const
     return 1.f/(1+lambdaGGXaniso(wo,ax,ay)+lambdaGGXaniso(wi,ax,ay));
 }
 
-void GGXaniso::sampleWh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
+void GGXaniso::sample_wh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     //again, anisotropic equations are taken from pbrtv3
     float phi = atanf(ay/ax*tanf(TWO_PI*r1+.5f*ONE_PI));
