@@ -21,10 +21,10 @@
 #include <iostream> //std::wcout, std::cout
 
 ///Version of the software
-#define SPECTRE_VERSION "PRE"
+#define SPECTRE_VERSION "0.1.0"
 
 ///Release date of this version
-#define SPECTRE_RELEASE "N.A."
+#define SPECTRE_RELEASE "3 Dec 2017"
 
 /**
  * \class Console Console.hpp "utility/console.hpp"

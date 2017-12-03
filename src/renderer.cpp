@@ -188,8 +188,8 @@ int Renderer::render(Scene* s)
     //create threads
     for(int i=0;i<Renderer::numthreads;i++)
     {
-        Renderer::workers[i] = std::thread(executor,camera,&film,&jobs_mtx,spp,
-                                           sampler_t,&jobs,s,Renderer::mc_solver);
+        Renderer::workers[i]=std::thread(executor,camera,&film,&jobs_mtx,spp,
+                                        sampler_t,&jobs,s,Renderer::mc_solver);
     }
 
     //wait for them to finish

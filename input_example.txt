@@ -64,6 +64,7 @@ material: Plastic diffuse (30,30,255) 0
 #asset name sphere
 #asset name box (x_edge_length,y_edge_length,z_edge_length)
 #path is absolute or relative to the executable
+#WARNING!!!! Input meshes: only tris, v, and vn are REQUIRED otherwise segfault is waiting for you
 asset: Ico /home/user/Desktop/test.obj
 asset: Big_sphere sphere 100000
 asset: Default_sphere sphere 1.0

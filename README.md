@@ -57,11 +57,17 @@ studio. Be sure to use a Release configuration for 64 bit
 
 ### Running
 
-After building *spectre-light* you can run it with the following command
+After building *spectre-light* you can run it with the following command on Linux/macOS
 ```
 spectre input.txt
 ```
-where `input.txt` is an ASCII file containing the description of the scene that will be
+or with
+```
+spectre-full.exe input.txt
+```
+on Windows
+
+`input.txt` is an ASCII file containing the description of the scene that will be
 rendered and where the output file will be saved. More information about the input file can be
 found in the [input_example.txt](./input_example.txt) file
 
@@ -83,5 +89,5 @@ be the `.ppm`
  *spectre-light* is released under the terms of the GNU GPLv3 License. You may find the
  content of the license in the [LICENSE.txt](./LICENSE.txt) file.
  
- The images in this README are done with models taken from the Stanford scanning
- repository
+ The images in this README are rendered with models courtesy of the [Stanford scanning
+ repository](http://graphics.stanford.edu/data/3Dscanrep/)
