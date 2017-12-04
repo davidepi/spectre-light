@@ -11,4 +11,6 @@ build/
 Makefile
 .idea
 cmake-build-debug/
-tests/
+xct/
+loc.sh
+TODO.txt

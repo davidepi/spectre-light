@@ -3,7 +3,7 @@
 
 #include "console.hpp"
 
-#ifdef _TEST_
+#ifdef TESTS
 int Errors_count[5] = {0,0,0,0,0};
 #endif
 
@@ -52,7 +52,7 @@ void Console::motd()
 
 void Console::log(const char* m, const char* v)
 {
-#ifndef _TEST_
+#ifndef TESTS
     if(v == NULL) //TODO or program not launched with verbose flag
         fprintf(stdout,"%s\n",m);
     else
@@ -64,7 +64,7 @@ void Console::log(const char* m, const char* v)
 
 void Console::notice(const char* s)
 {
-#ifndef _TEST_
+#ifndef TESTS
     fprintf(stdout,"[" NOTICE "] %s\n",s);
 #else
     Errors_count[NOTICE_INDEX]++;
@@ -73,7 +73,7 @@ void Console::notice(const char* s)
 
 void Console::warning(const char* s)
 {
-#ifndef _TEST_
+#ifndef TESTS
     fprintf(stderr,"[" WARNING "] %s\n",s);
 #else
     Errors_count[WARNING_INDEX]++;
@@ -82,7 +82,7 @@ void Console::warning(const char* s)
 
 void Console::severe(const char* s)
 {
-#ifndef _TEST_
+#ifndef TESTS
     fprintf(stderr,"[" ERROR "] %s\n",s);
 #else
     Errors_count[ERROR_INDEX]++;
@@ -91,7 +91,7 @@ void Console::severe(const char* s)
 
 void Console::critical(const char* s)
 {
-#ifndef _TEST_
+#ifndef TESTS
     fprintf(stderr,"[" CRITICAL "] %s\n",s);
     exit(EXIT_FAILURE);
 #else
@@ -103,7 +103,7 @@ void Console::log(bool b, const char* m, const char* v)
 {
     if(b)
     {
-#ifndef _TEST_
+#ifndef TESTS
         if(v == NULL) //TODO or program not launched with verbose flag
             fprintf(stdout,"%s\n",m);
         else
@@ -118,7 +118,7 @@ void Console::notice(bool b, const char* s)
 {
     if(b)
     {
-#ifndef _TEST_
+#ifndef TESTS
         fprintf(stdout,"[" NOTICE "] %s\n",s);
 #else
         Errors_count[NOTICE_INDEX]++;
@@ -130,7 +130,7 @@ void Console::warning(bool b, const char* s)
 {
     if(b)
     {
-#ifndef _TEST_
+#ifndef TESTS
         fprintf(stderr,"[" WARNING "] %s\n",s);
 #else
         Errors_count[WARNING_INDEX]++;
@@ -142,7 +142,7 @@ void Console::severe(bool b, const char* s)
 {
     if(b)
     {
-#ifndef _TEST_
+#ifndef TESTS
         fprintf(stderr,"[" ERROR "] %s\n",s);
 #else
         Errors_count[ERROR_INDEX]++;
@@ -154,7 +154,7 @@ void Console::critical(bool b, const char* s)
 {
     if(b)
     {
-#ifndef _TEST_
+#ifndef TESTS
         fprintf(stderr,"[" CRITICAL "] %s\n",s);
         exit(EXIT_FAILURE);
 #else

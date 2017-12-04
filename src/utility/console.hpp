@@ -254,4 +254,13 @@ private:
 ///Access the console just by writing "Console" instead of calling getInstance()
 #define Console Console::getInstance()
 
+#ifdef TESTS
+#define LOG_INDEX 0
+#define NOTICE_INDEX 1
+#define WARNING_INDEX 2
+#define ERROR_INDEX 3
+#define CRITICAL_INDEX 4
+extern int Errors_count[5];
+#endif
+
 #endif

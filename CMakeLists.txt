@@ -55,3 +55,13 @@ add_dependencies(spectre spectre-full)
 add_dependencies(spectre spectre-rgb)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
+
+find_package(GTest)
+if(GTEST_FOUND)
+    if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
+        set(CMAKE_CXX_FLAGS "-O0 -pipe -fprofile-arcs -ftest-coverage -DDEBUG -DTESTS")
+    endif(CMAKE_BUILD_TYPE STREQUAL "Coverage")
+    include_directories(${GTEST_INCLUDE_DIRS})
+    add_executable(runTests ${CMAKE_CURRENT_SOURCE_DIR}/tests/allTests.cxx ${spectre_core_sources})
+    target_link_libraries(runTests ${GTEST_BOTH_LIBRARIES})
+endif(GTEST_FOUND)
