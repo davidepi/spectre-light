@@ -1,7 +1,4 @@
 language: cpp
-os:
-    - linux
-    - osx
 jobs:
     include:
         - stage: compile
