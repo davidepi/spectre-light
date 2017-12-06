@@ -1188,8 +1188,10 @@ TEST(Vec3,inline_refract_vector)
 
     //Total Internal Reflection
     v = Vec3(0.5f,0.3f,-0.5f);
-    bool no_tir = v.refract(n,eta);
-    EXPECT_FALSE(no_tir);
+    refract(v,n,eta);
+    EXPECT_EQ(refracted.x,0.f);
+    EXPECT_EQ(refracted.y,0.f);
+    EXPECT_EQ(refracted.z,0.f);
 
     v = Vec3(0.3f,0.1f,0.8f);
     refracted = refract(v, n, eta);
@@ -1212,8 +1214,10 @@ TEST(Vec3,inline_refract_normal)
 
     //Total Internal Reflection
     v = Vec3(0.5f,0.3f,-0.5f);
-    bool no_tir = v.refract(n,eta);
-    EXPECT_FALSE(no_tir);
+    refracted = refract(v,n,eta);
+    EXPECT_EQ(refracted.x,0.f);
+    EXPECT_EQ(refracted.y,0.f);
+    EXPECT_EQ(refracted.z,0.f);
 
     v = Vec3(0.3f,0.1f,0.8f);
     refracted = refract(v, n, eta);
