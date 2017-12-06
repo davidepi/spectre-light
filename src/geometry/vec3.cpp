@@ -709,17 +709,6 @@ void Normal::min(const Normal& n)
     Normal::z = z;
 }
 
-bool Normal::faceForward(const Vec3& reference)const
-{
-    return Normal::dot(reference)>=0.0f;
-}
-
-void Normal::flipToMatch(const Vec3& reference)
-{
-    if(Normal::dot(reference)<0.0f)
-        (*this)=-(*this);
-}
-
 //------ Operators -------------------------------------------------------------
 
 Normal Normal::operator+(const Normal& n)const

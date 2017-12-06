@@ -605,25 +605,6 @@ public:
      */
     void min(const Normal& n);
     
-    /** \brief Checks whether this normal is oriented in the same direction of a
-     *          vector or not
-     *
-     *  \param reference The reference Vec3
-     *  \return A boolean value true if this normal and vector are oriented
-     *          alongside the same direction
-     *
-     *  \sa flipToMatchThis(const Vec3 reference)
-     */
-    bool faceForward(const Vec3& reference)const;
-    
-    /** \brief Flips this normal if it is not oriented in the same direction of
-     *         the input vector
-     *
-     *  \param reference The reference Vec3
-     *  \sa faceForward(const Vec3 reference)
-     */
-    void flipToMatch(const Vec3& reference);
-    
     
     //------ Operators ---------------------------------------------------------
     

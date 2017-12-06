@@ -1,18 +1,18 @@
 language: cpp
-script: mkdir -p build && cd build/ && cmake -DCMAKE_BUILD_TYPE="Release" .. && cmake --build .
 matrix:
     include:
         - os: linux
           dist: trusty
           sudo: false
           compiler: gcc
+          script: mkdir -p build && cd build/ && cmake -DCMAKE_BUILD_TYPE="Release" .. && cmake --build .
         - os: osx
           compiler: clang
+          script: mkdir -p build && cd build/ && cmake -DCMAKE_BUILD_TYPE="Release" .. && cmake --build .
     allow_failures:
         - stage: coverage
 jobs:
     include:
-        - stage: test
         - stage: coverage
           before_install: git clone https://github.com/google/googletest.git && cd googletest/ && mkdir -p build && cd build/ && cmake .. && sudo make install gtest && cd ../..
           script: mkdir -p build && cd build/ && cmake -DCMAKE_BUILD_TYPE="Coverage" .. && make runTests && ./runTests && cd CMakeFiles/runTests.dir/src && find . -name '*.cpp.gcno' -execdir gcov -b {} \;
