@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 12 Nov 2017
+//Last Edit  6 Dec 2017
 
 /**
  *  \file vec3.hpp
@@ -7,8 +7,8 @@
  *             functions
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      7 Nov 2017
+ *  \version   0.2
+ *  \date      6 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -885,37 +885,6 @@ inline Normal normalize(const Normal& n)
     return Normal(n.x * len,
                   n.y * len,
                   n.z * len);
-}
-
-/** \brief Checks whether a normal is oriented in the same direction of a
- *         vector or not
- *
- *  \param[in] target The Normal that has to be checked
- *  \param[in] reference The reference Vec3
- *  \return[in] A boolean value true if the input normal and vector are oriented
- *          alongside the same direction
- *
- *  \sa flipToMatch(const Normal target, const Vec3 reference)
- */
-inline bool faceForward(const Normal& target, const Vec3& reference)
-{
-    return dot(target,reference)>=0.f;
-}
-
-/** \brief Flips a normal if it is not oriented in the same direction of the
- *          input vector
- *  \param[in] target The Normal that has to be checked and potentially flipped
- *  \param[in] reference The reference Vec3
- *  \return The flipped normal
- *
- *  \sa faceForward(const Normal target, const Vec3 reference)
- */
-inline Normal flipToMatch(const Normal& target, const Vec3& reference)
-{
-    if(dot(target,reference)<0.f)
-        return -target;
-    else
-        return target;
 }
 
 /**  \brief Compute the distance between two vectors

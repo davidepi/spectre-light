@@ -741,3 +741,220 @@ TEST(Normal,min)
     EXPECT_EQ(value.z, sample.z);
 }
 
+TEST(Normal,inline_normalize)
+{
+    Errors_count[CRITICAL_INDEX] = 0;
+    Normal v1(3,1,2);
+    EXPECT_FLOAT_EQ(v1.length(),3.7416575f);
+    EXPECT_FALSE(v1.isNormalized());
+
+    Normal v2 = normalize(v1);
+
+    v1.normalize();
+    EXPECT_EQ(v1.x,v2.x);
+    EXPECT_EQ(v1.y,v2.y);
+    EXPECT_EQ(v1.z,v2.z);
+    EXPECT_TRUE(v1.isNormalized());
+    EXPECT_TRUE(v2.isNormalized());
+
+    Normal vzero;
+    normalize(vzero);
+    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
+    Errors_count[CRITICAL_INDEX] = 0;
+}
+
+TEST(Normal,inline_clamp)
+{
+    Normal sample(4.9,-5.8,3.6);;
+    Normal v1 = sample;
+    Vec3 min(-10,-10,-10);
+    Vec3 max(10,10,10);
+    Normal out;
+
+    //in range x
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.x, sample.x);
+    //min x
+    v1 = sample;
+    min.x = 5;
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.x, min.x);
+    min.x = -10;
+    //max x
+    v1 = sample;
+    max.x = 3;
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.x, max.x);
+    max.x = 10;
+
+    //in range y
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.y, sample.y);
+    //min y
+    v1 = sample;
+    min.y = 5;
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.y, min.y);
+    min.y = -10;
+    //max y
+    v1 = sample;
+    max.y = -6;
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.y, max.y);
+    max.y = 10;
+
+    //in range z
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.z, sample.z);
+    //min z
+    v1 = sample;
+    min.z = 5;
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.z, min.z);
+    min.z = -10;
+    //max z
+    v1 = sample;
+    max.z = 3;
+    out = clamp(v1,min,max);
+    EXPECT_EQ(out.z, max.z);
+    max.z = 10;
+}
+
+TEST(Normal,inline_saturate)
+{
+    Normal sample(0.9,0.5,0.3);;
+    Normal v1 = sample;
+    Normal out;
+    //in range x
+    out = saturate(v1);;
+    EXPECT_EQ(out.x, sample.x);
+    //min x
+    v1 = sample;
+    v1.x = -0.1;
+    out = saturate(v1);;
+    EXPECT_EQ(out.x, 0.f);
+    //max x
+    v1 = sample;
+    v1.x = 1.5;
+    out = saturate(v1);;
+    EXPECT_EQ(out.x, 1.f);
+
+    //in range y
+    out = saturate(v1);;
+    EXPECT_EQ(out.y, sample.y);
+    //min y
+    v1 = sample;
+    v1.y = -0.1;
+    out = saturate(v1);;
+    EXPECT_EQ(out.y, 0.f);
+    //max y
+    v1 = sample;
+    v1.y = 1.5;
+    out = saturate(v1);;
+    EXPECT_EQ(out.y, 1.f);
+
+    //in range z
+    out = saturate(v1);;
+    EXPECT_EQ(out.z, sample.z);
+    //min z
+    v1 = sample;
+    v1.z = -0.1;
+    out = saturate(v1);;
+    EXPECT_EQ(out.z, 0.f);
+    //max z
+    v1 = sample;
+    v1.z = 1.5;
+    out = saturate(v1);;
+    EXPECT_EQ(out.z, 1.f);
+}
+
+TEST(Normal,inline_distance)
+{
+    Normal a(1.5f,-2.f,1.7f);
+    Normal b(3.7f,2.5f,-4.6f);
+    float dist = distance(a,b);
+    EXPECT_EQ(8.0486023631f, dist);
+}
+
+TEST(Normal,inline_max)
+{
+    Normal sample(0.5,1.5,-3.5);
+    Normal value;
+    Normal compare;
+    Normal out;
+
+    //x is max
+    value = sample;
+    compare = Normal(0.2f,0.f,0.f);
+    out = max(value,compare);;
+    EXPECT_EQ(out.x, sample.x);
+    //x is not max
+    value = sample;
+    compare = Normal(1.0,0.f,0.f);
+    out = max(value,compare);;
+    EXPECT_EQ(out.x, compare.x);
+
+    //y is max
+    value = sample;
+    compare = Normal(0.f,1.f,0.f);
+    out = max(value,compare);;
+    EXPECT_EQ(out.y,sample.y);
+    //y is not max
+    value = sample;
+    compare = Normal(0.f,10.f,0.f);
+    out = max(value,compare);;
+    EXPECT_EQ(out.y, compare.y);
+
+    //z is max
+    value = sample;
+    compare = Normal(0.f,0.f,-5.f);
+    out = max(value,compare);;
+    EXPECT_EQ(out.z,sample.z);
+    //z is not max
+    value = sample;
+    compare = Normal(0.f,0.f,0.f);
+    out = max(value,compare);;
+    EXPECT_EQ(out.z, compare.z);
+}
+
+TEST(Normal,inline_min)
+{
+    Normal sample(0.5,1.5,-3.5);
+    Normal value;
+    Normal compare;
+    Normal out;
+
+    //x is max
+    value = sample;
+    compare = Normal(0.2f,0.f,0.f);
+    out = min(value,compare);;
+    EXPECT_EQ(out.x, compare.x);
+    //x is not max
+    value = sample;
+    compare = Normal(1.0,0.f,0.f);
+    out = min(value,compare);;
+    EXPECT_EQ(out.x, sample.x);
+
+    //y is max
+    value = sample;
+    compare = Normal(0.f,1.f,0.f);
+    out = min(value,compare);;
+    EXPECT_EQ(out.y,compare.y);
+    //y is not max
+    value = sample;
+    compare = Normal(0.f,10.f,0.f);
+    out = min(value,compare);;
+    EXPECT_EQ(out.y, sample.y);
+
+    //z is max
+    value = sample;
+    compare = Normal(0.f,0.f,-5.f);
+    out = min(value,compare);;
+    EXPECT_EQ(out.z,compare.z);
+    //z is not max
+    value = sample;
+    compare = Normal(0.f,0.f,0.f);
+    out = min(value,compare);;
+    EXPECT_EQ(out.z, sample.z);
+}
+
