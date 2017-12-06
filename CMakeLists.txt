@@ -22,6 +22,8 @@ file(GLOB spectre_core_sources
     src/integrators/*.cpp
     src/parsers/*.cpp
     src/materials/*.cpp)
+file(GLOB spectre_test_sources
+    tests/vec3_tests.cpp)
 include_directories(src)
 find_package (Threads REQUIRED)
 
@@ -62,6 +64,6 @@ if(GTEST_FOUND)
         set(CMAKE_CXX_FLAGS "-O0 -pipe -fprofile-arcs -ftest-coverage -DDEBUG -DTESTS")
     endif(CMAKE_BUILD_TYPE STREQUAL "Coverage")
     include_directories(${GTEST_INCLUDE_DIRS})
-    add_executable(runTests ${CMAKE_CURRENT_SOURCE_DIR}/tests/allTests.cxx ${spectre_core_sources})
+    add_executable(runTests ${CMAKE_CURRENT_SOURCE_DIR}/tests/allTests.cxx ${spectre_core_sources} ${spectre_test_sources})
     target_link_libraries(runTests ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 endif(GTEST_FOUND)
