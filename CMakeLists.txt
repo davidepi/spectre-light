@@ -25,7 +25,9 @@ file(GLOB spectre_core_sources
 file(GLOB spectre_test_sources
     tests/vec3_tests.cpp
     tests/normal_tests.cpp
-    tests/ray_tests.cpp)
+    tests/ray_tests.cpp
+    tests/vec2_tests.cpp
+    )
 include_directories(src)
 find_package (Threads REQUIRED)
 
