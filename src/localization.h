@@ -87,6 +87,9 @@
 
 #define MESSAGE_INPUT_FILE "Write input file path or q to exit"
 
+#define MESSAGE_COMPARE_INF "Comparing infinite values could lead to "\
+"undefined results"
+
 #endif
 
 

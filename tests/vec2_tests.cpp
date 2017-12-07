@@ -26,13 +26,13 @@ TEST(Vec2,given_constructor)
     EXPECT_EQ(v.x, 1.0f);
     EXPECT_EQ(v.y, 0.0f);
 
-    Errors_count[ERROR_INDEX] = 0;
+    errors_count[ERROR_INDEX] = 0;
     Vec2 nanx(NAN,1.f);
     Vec2 nany(1.f,NAN);
     Vec2 infx(INFINITY,1.f);
     Vec2 infy(1.f,INFINITY);
-    EXPECT_EQ(Errors_count[ERROR_INDEX], 4);
-    Errors_count[ERROR_INDEX] = 0;
+    EXPECT_EQ(errors_count[ERROR_INDEX], 4);
+    errors_count[ERROR_INDEX] = 0;
 }
 
 TEST(Vec2,same_value_constructor)
@@ -41,11 +41,11 @@ TEST(Vec2,same_value_constructor)
     EXPECT_EQ(v.x, 1.0f);
     EXPECT_EQ(v.y, v.x);
 
-    Errors_count[ERROR_INDEX] = 0;
+    errors_count[ERROR_INDEX] = 0;
     Vec2 nan(NAN);
     Vec2 inf(INFINITY);
-    EXPECT_EQ(Errors_count[ERROR_INDEX], 2);
-    Errors_count[ERROR_INDEX] = 0;
+    EXPECT_EQ(errors_count[ERROR_INDEX], 2);
+    errors_count[ERROR_INDEX] = 0;
 }
 
 TEST(Vec2,array_constructor)
@@ -56,7 +56,7 @@ TEST(Vec2,array_constructor)
     EXPECT_EQ(v.y, array[1]);
 
     //NaN checks
-    Errors_count[ERROR_INDEX] = 0;
+    errors_count[ERROR_INDEX] = 0;
     float array1[] = {NAN,1.5f};
     float array2[] = {1.5f,NAN};
     float array3[] = {INFINITY,1.5f};
@@ -65,16 +65,16 @@ TEST(Vec2,array_constructor)
     Vec2 v2(array2);
     Vec2 v3(array3);
     Vec2 v4(array4);
-    EXPECT_EQ(Errors_count[ERROR_INDEX], 4);
-    Errors_count[ERROR_INDEX] = 0;
+    EXPECT_EQ(errors_count[ERROR_INDEX], 4);
+    errors_count[ERROR_INDEX] = 0;
 
     //null pointer
     float* arr = NULL;
-    Errors_count[WARNING_INDEX] = 0;
+    errors_count[WARNING_INDEX] = 0;
     v = Vec2(arr);
     EXPECT_EQ(v.x, 0.0f);
     EXPECT_EQ(v.y, 0.0f);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
 }
 
 TEST(Vec2,clone)
@@ -130,11 +130,11 @@ TEST(Vec2,normalize)
     EXPECT_TRUE(v1.isNormalized());
     EXPECT_TRUE(v2.isNormalized());
 
-    Errors_count[CRITICAL_INDEX] = 0;
+    errors_count[CRITICAL_INDEX] = 0;
     Vec2 vzero;
     vzero.normalize();
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec2,toArray)
@@ -279,13 +279,13 @@ TEST(Vec2,div_vector)
     EXPECT_FLOAT_EQ(res.y, -21.f);
 
     //div by zero
-    Errors_count[CRITICAL_INDEX] = 0;
+    errors_count[CRITICAL_INDEX] = 0;
     Vec2 vzerox(0,1);
     Vec2 vzeroy(1,0);
     v1/vzerox;
     v1/vzeroy;
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 2);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 2);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec2,div_float)
@@ -296,11 +296,11 @@ TEST(Vec2,div_float)
     EXPECT_FLOAT_EQ(res.x, 0.4502046385f);
     EXPECT_FLOAT_EQ(res.y, 0.1637107776f);
 
-    Errors_count[CRITICAL_INDEX] = 0;
+    errors_count[CRITICAL_INDEX] = 0;
     float zero = 0.f;
     v1/zero;
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec2,div_vector_this)
@@ -313,13 +313,13 @@ TEST(Vec2,div_vector_this)
 
     Vec2 vzerox(0,1);
     Vec2 vzeroy(1,0);
-    Errors_count[CRITICAL_INDEX] = 0;
+    errors_count[CRITICAL_INDEX] = 0;
     v2 = v1;
     v2/=vzerox;
     v2 = v1;
     v2/=vzeroy;
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 2);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 2);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec2,div_float_this)
@@ -330,11 +330,11 @@ TEST(Vec2,div_float_this)
     EXPECT_FLOAT_EQ(v1.x, -0.061708772f);
     EXPECT_FLOAT_EQ(v1.y, -0.02243955345f);
 
-    Errors_count[CRITICAL_INDEX] = 0;
+    errors_count[CRITICAL_INDEX] = 0;
     float zero = 0.f;
     v1/=zero;
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec2,not_vector)
@@ -575,11 +575,11 @@ TEST(Vec2,inline_normalize)
     EXPECT_EQ(v2.y,0.f);
 
 
-    Errors_count[CRITICAL_INDEX] = 0;
+    errors_count[CRITICAL_INDEX] = 0;
     Vec2 vzero;
     normalize(vzero);
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec2,inline_clamp)

@@ -158,8 +158,8 @@ TEST(Vec3,normalize)
 
     Vec3 vzero;
     vzero.normalize();
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec3,toArray)
@@ -365,8 +365,8 @@ TEST(Vec3,div_vector)
     v1/vzeroy;
     v1/vzeroz;
 
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 3);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 3);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec3,div_float)
@@ -383,8 +383,8 @@ TEST(Vec3,div_float)
 
     float zero = 0.f;
     v1/zero;
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec3,div_vector_this)
@@ -411,8 +411,8 @@ TEST(Vec3,div_vector_this)
     v2 = v1;
     v2/=vzeroz;
 
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 3);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 3);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec3,div_float_this)
@@ -429,8 +429,8 @@ TEST(Vec3,div_float_this)
 
     float zero = 0.f;
     v1/=zero;
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec3,not_vector)
@@ -569,7 +569,10 @@ TEST(Vec3,access)
     EXPECT_EQ(v.x, v[0]);
     EXPECT_EQ(v.y, v[1]);
     EXPECT_EQ(v.z, v[2]);
+}
 
+TEST(Vec3,const_access)
+{
     const Vec3 v2(-72.74395f,-6.04488f,-51.11608f);
     EXPECT_EQ(v2.x,v2[0]);
     EXPECT_EQ(v2.y,v2[1]);
@@ -770,7 +773,7 @@ TEST(Vec3,min)
 
 TEST(Vec3,reflect_vector)
 {
-    Errors_count[WARNING_INDEX] = 0;
+    errors_count[WARNING_INDEX] = 0;
     Vec3 sample = Vec3(0.5f,0.3f,-0.5f);
     Vec3 n(0.f,0.f,1.f);
     Vec3 v = sample;
@@ -778,18 +781,18 @@ TEST(Vec3,reflect_vector)
     EXPECT_EQ(v.x, sample.x);
     EXPECT_EQ(v.y, sample.y);
     EXPECT_EQ(v.z, -sample.z);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 0);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    errors_count[WARNING_INDEX] = 0;
 
     n = Vec3(1,1,1);
     v.reflect(n);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
 }
 
 TEST(Vec3,reflect_normal)
 {
-    Errors_count[WARNING_INDEX] = 0;
+    errors_count[WARNING_INDEX] = 0;
     Vec3 sample = Vec3(0.5f,0.3f,-0.5f);
     Normal n(0.f,0.f,1.f);
     Vec3 v = sample;
@@ -797,13 +800,13 @@ TEST(Vec3,reflect_normal)
     EXPECT_EQ(v.x, sample.x);
     EXPECT_EQ(v.y, sample.y);
     EXPECT_EQ(v.z, -sample.z);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 0);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    errors_count[WARNING_INDEX] = 0;
 
     n = Normal(1,1,1);
     v.reflect(n);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
 }
 
 TEST(Vec3,refract_vector)
@@ -825,8 +828,8 @@ TEST(Vec3,refract_vector)
 
     n = Vec3(1,1,1);
     v.refract(n, eta);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
 }
 
 TEST(Vec3,refract_normal)
@@ -848,8 +851,8 @@ TEST(Vec3,refract_normal)
 
     n = Normal(1,1,1);
     v.refract(n, eta);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
 }
 
 // ------
@@ -925,7 +928,7 @@ TEST(Vec3,inline_cross)
 
 TEST(Vec3,inline_normalize)
 {
-    Errors_count[CRITICAL_INDEX] = 0;
+    errors_count[CRITICAL_INDEX] = 0;
     Vec3 v1(3,1,2);
     EXPECT_FLOAT_EQ(v1.length(),3.7416575f);
     EXPECT_FALSE(v1.isNormalized());
@@ -941,8 +944,8 @@ TEST(Vec3,inline_normalize)
 
     Vec3 vzero;
     normalize(vzero);
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Vec3,inline_clamp)
@@ -1142,7 +1145,7 @@ TEST(Vec3,inline_min)
 
 TEST(Vec3,inline_reflect_vector)
 {
-    Errors_count[WARNING_INDEX] = 0;
+    errors_count[WARNING_INDEX] = 0;
     Vec3 sample = Vec3(0.5f,0.3f,-0.5f);
     Vec3 n(0.f,0.f,1.f);
     Vec3 v = sample;
@@ -1151,18 +1154,18 @@ TEST(Vec3,inline_reflect_vector)
     EXPECT_EQ(reflected.x, sample.x);
     EXPECT_EQ(reflected.y, sample.y);
     EXPECT_EQ(reflected.z, -sample.z);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 0);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    errors_count[WARNING_INDEX] = 0;
 
     n = Vec3(1,1,1);
     reflected = reflect(v,n);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
 }
 
 TEST(Vec3,inline_reflect_normal)
 {
-    Errors_count[WARNING_INDEX] = 0;
+    errors_count[WARNING_INDEX] = 0;
     Vec3 sample = Vec3(0.5f,0.3f,-0.5f);
     Normal n(0.f,0.f,1.f);
     Vec3 v = sample;
@@ -1171,13 +1174,13 @@ TEST(Vec3,inline_reflect_normal)
     EXPECT_EQ(reflected.x, sample.x);
     EXPECT_EQ(reflected.y, sample.y);
     EXPECT_EQ(reflected.z, -sample.z);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 0);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    errors_count[WARNING_INDEX] = 0;
 
     n = Normal(1,1,1);
     reflected = reflect(v,n);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
 }
 
 TEST(Vec3,inline_refract_vector)
@@ -1202,8 +1205,8 @@ TEST(Vec3,inline_refract_vector)
 
     n = Vec3(1,1,1);
     refracted = refract(v, n, eta);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
 }
 
 TEST(Vec3,inline_refract_normal)
@@ -1228,7 +1231,7 @@ TEST(Vec3,inline_refract_normal)
 
     n = Normal(1,1,1);
     refracted = refract(v, n, eta);
-    EXPECT_EQ(Errors_count[WARNING_INDEX], 1);
-    Errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
 }
 

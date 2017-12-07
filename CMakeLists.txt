@@ -23,10 +23,7 @@ file(GLOB spectre_core_sources
     src/parsers/*.cpp
     src/materials/*.cpp)
 file(GLOB spectre_test_sources
-    tests/vec3_tests.cpp
-    tests/normal_tests.cpp
-    tests/ray_tests.cpp
-    tests/vec2_tests.cpp
+    tests/*.cpp
     )
 include_directories(src)
 find_package (Threads REQUIRED)

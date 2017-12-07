@@ -132,8 +132,8 @@ TEST(Normal,normalize)
 
     Normal vzero;
     vzero.normalize();
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Normal,toArray)
@@ -339,8 +339,8 @@ TEST(Normal,div_vector)
     v1/vzeroy;
     v1/vzeroz;
 
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 3);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 3);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Normal,div_float)
@@ -357,8 +357,8 @@ TEST(Normal,div_float)
 
     float zero = 0.f;
     v1/zero;
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Normal,div_vector_this)
@@ -385,8 +385,8 @@ TEST(Normal,div_vector_this)
     v2 = v1;
     v2/=vzeroz;
 
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 3);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 3);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Normal,div_float_this)
@@ -403,8 +403,8 @@ TEST(Normal,div_float_this)
 
     float zero = 0.f;
     v1/=zero;
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Normal,not_vector)
@@ -543,7 +543,10 @@ TEST(Normal,access)
     EXPECT_EQ(v.x, v[0]);
     EXPECT_EQ(v.y, v[1]);
     EXPECT_EQ(v.z, v[2]);
+}
 
+TEST(Normal,const_access)
+{
     const Normal v2(-72.74395f,-6.04488f,-51.11608f);
     EXPECT_EQ(v2.x,v2[0]);
     EXPECT_EQ(v2.y,v2[1]);
@@ -744,7 +747,7 @@ TEST(Normal,min)
 
 TEST(Normal,inline_normalize)
 {
-    Errors_count[CRITICAL_INDEX] = 0;
+    errors_count[CRITICAL_INDEX] = 0;
     Normal v1(3,1,2);
     EXPECT_FLOAT_EQ(v1.length(),3.7416575f);
     EXPECT_FALSE(v1.isNormalized());
@@ -760,8 +763,8 @@ TEST(Normal,inline_normalize)
 
     Normal vzero;
     normalize(vzero);
-    EXPECT_EQ(Errors_count[CRITICAL_INDEX], 1);
-    Errors_count[CRITICAL_INDEX] = 0;
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
 }
 
 TEST(Normal,inline_clamp)

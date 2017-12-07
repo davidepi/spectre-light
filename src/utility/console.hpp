@@ -260,7 +260,7 @@ private:
 #define WARNING_INDEX 2
 #define ERROR_INDEX 3
 #define CRITICAL_INDEX 4
-extern int Errors_count[5];
+extern int errors_count[5];
 #endif
 
 #endif
