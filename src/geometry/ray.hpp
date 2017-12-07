@@ -6,7 +6,7 @@
  *  \brief Ray class definition
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
- *  \version 0.1
+ *  \version 0.2
  *  \date 29 Jul 2017
  *  \copyright GNU GPLv3
  */

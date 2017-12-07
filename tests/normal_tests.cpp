@@ -152,6 +152,7 @@ TEST(Normal,toString)
     Normal v(0,1,0);
     char* str = v.toString();
     EXPECT_EQ(strcmp(str,"Normal(0.000000, 1.000000, 0.000000)"),0);
+    free(str);
 }
 
 TEST(Normal,sum_vector)

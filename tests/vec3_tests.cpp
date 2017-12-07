@@ -178,6 +178,7 @@ TEST(Vec3,toString)
     Vec3 v(0,1,0);
     char* str = v.toString();
     EXPECT_EQ(strcmp(str,"vec3(0.000000, 1.000000, 0.000000)"),0);
+    free(str);
 }
 
 TEST(Vec3,sum_vector)

@@ -6,7 +6,7 @@
  *  \brief     Vec2 class definition and its inline functions
  *  \details   A two components vector class
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      8 April 2017
  *  \copyright GNU GPLv3
  */
@@ -208,16 +208,6 @@ public:
      *  \sa max(const Vec2 vector2)
      */
     void min(const Vec2& vector2);
-    
-    /**
-     *  \brief Flip this vector according to a pivot
-     *
-     *  Given a vector as a centre of reflection transform this class in the
-     *  reflected vector around that centre of reflection
-     *
-     *  \param[in] centre A Vec2 representing the centre of reflection
-     */
-    void reflect(const Vec2& centre);
     
     //------ Operators ---------------------------------------------------------
     
@@ -443,26 +433,6 @@ inline Vec2 min (const Vec2 vector1, const Vec2 vector2)
         y = vector2.y;
     
     return Vec2(x,y);
-}
-
-/**
- *  \brief Flip the vector according to a pivot
- *
- *  Given a vector as a centre of reflection and a source vector, transform the
- *  source vector in the reflected vector around that centre of reflection
- *
- *  \param[in] source The Vec2 that will be transformed
- *  \param[in] centre A Vec2 representing the centre of reflection
- *  \return The reflected Vec2
- */
-inline Vec2 reflect(const Vec2 source,const Vec2 centre)
-{
-#ifdef DEBUG
-    Console.warning(!centre.isNormalized(),
-                    "Reflecting around a non normalized centre");
-#endif
-    float dot = ((source.x * centre.x) + (source.y * centre.y));
-    return Vec2(source.x-((2*dot)*centre.x), source.y-((2*dot)*centre.y));
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//

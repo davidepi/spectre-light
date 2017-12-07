@@ -167,16 +167,6 @@ void Vec2::min(const Vec2& vector2)
     Vec2::y = y;
 }
 
-void Vec2::reflect(const Vec2& centre)
-{
-#ifdef DEBUG
-    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
-#endif
-    float dot = Vec2::dot(centre);
-    Vec2::x -= ((2 * dot) * centre.x);
-    Vec2::y -= ((2 * dot) * centre.y);
-}
-
 //------ Operators -------------------------------------------------------------
 
 Vec2 Vec2::operator+(const Vec2& v)const
