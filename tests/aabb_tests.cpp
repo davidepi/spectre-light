@@ -5,6 +5,7 @@
 #include "geometry/AABB.hpp"
 #include "utility/utility.hpp"
 #include <climits>
+#include <cmath>
 #define EPSILON 1E-5f
 
 TEST(AABB,default_constructor)
@@ -121,7 +122,7 @@ TEST(AABB,expand)
     EXPECT_FLOAT_EQ(box.bounds[1].z,-150.f);
 }
 
-TEST(AABB,engulf_pointer)
+TEST(AABB,engulf_Point3_pointer)
 {
     Point3 p;
     AABB box(p);
@@ -146,11 +147,551 @@ TEST(AABB,engulf_pointer)
 
     //inf
     addme = Point3(INFINITY,0,0);
+    box.engulf(&addme);
     EXPECT_FLOAT_EQ(box.bounds[0].x,0.f);
     EXPECT_FLOAT_EQ(box.bounds[0].y,-15.f);
     EXPECT_FLOAT_EQ(box.bounds[0].z,0.f);
-    EXPECT_GT(box.bounds[1].x,1E200);
+    EXPECT_EQ(box.bounds[1].x,INFINITY);
     EXPECT_FLOAT_EQ(box.bounds[1].y,0.f);
     EXPECT_FLOAT_EQ(box.bounds[1].z,20.f);
+}
+
+TEST(AABB,engulf_Point3_reference)
+{
+    Point3 p;
+    AABB box(p);
+    Point3 addme(10,-15,20);
+    box.engulf(addme);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,-15.f);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,10.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,20.f);
+
+    //already inside
+    addme = Point3(2,-3,15);
+    box.engulf(addme);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,-15.f);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,10.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,20.f);
+
+    //inf
+    addme = Point3(INFINITY,-INFINITY,0);
+    box.engulf(addme);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,0.f);
+    EXPECT_EQ(box.bounds[0].y,-INFINITY);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,0.f);
+    EXPECT_EQ(box.bounds[1].x,INFINITY);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,20.f);
+}
+
+TEST(AABB,engulf_aabb_pointer)
+{
+    Point3 p;
+    AABB box(p);
+
+    //default
+    AABB def;
+    box.engulf(&def);
+    EXPECT_EQ(box.bounds[0].x, 0.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 0.f);
+    EXPECT_EQ(box.bounds[1].y, 0.f);
+    EXPECT_EQ(box.bounds[1].z, 0.f);
+
+    //outside
+    AABB addme(Point3(-59.28244,-3.01509,-47.61078),
+               Point3(67.30925,53.29163,82.07844));
+    box.engulf(&addme);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,addme.bounds[1].y);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+
+    //already inside
+    AABB addme2(Point3(-9.30374,8.49896,-35.41399),
+               Point3(58.56126,18.59649,37.76507));
+    box.engulf(&addme2);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,addme.bounds[1].y);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+
+    //inf
+    AABB addme3(Point3(-138.73003,-73.22298,INFINITY),
+                Point3(-INFINITY,INFINITY,53.70019));
+    box.engulf(&addme3);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme3.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme3.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_EQ(box.bounds[1].y, INFINITY);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+}
+
+TEST(AABB,engulf_aabb_reference)
+{
+    Point3 p;
+    AABB box(p);
+
+    //default
+    AABB def;
+    box.engulf(def);
+    EXPECT_EQ(box.bounds[0].x, 0.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 0.f);
+    EXPECT_EQ(box.bounds[1].y, 0.f);
+    EXPECT_EQ(box.bounds[1].z, 0.f);
+
+    //outside
+    AABB addme(Point3(-59.28244,-3.01509,-47.61078),
+               Point3(67.30925,53.29163,82.07844));
+    box.engulf(addme);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,addme.bounds[1].y);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+
+    //already inside
+    AABB addme2(Point3(-9.30374,8.49896,-35.41399),
+                Point3(58.56126,18.59649,37.76507));
+    box.engulf(addme2);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,addme.bounds[1].y);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+
+    //inf
+    AABB addme3(Point3(-138.73003,-73.22298,INFINITY),
+                Point3(-INFINITY,INFINITY,53.70019));
+    box.engulf(addme3);
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme3.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme3.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_EQ(box.bounds[1].y, INFINITY);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+}
+
+TEST(AABB,inside)
+{
+    AABB box(Point3(-10,-10,-10),Point3(10,10,10));
+
+    //point inside
+    Point3 ins(-5,-5,-5);
+    EXPECT_TRUE(box.inside(&ins));
+
+    //point inside border
+    Point3 border(10,10,10);
+    EXPECT_TRUE(box.inside(&border));
+
+    //point outside only x
+    Point3 outx(-10.000001f,-5,-5);
+    EXPECT_FALSE(box.inside(&outx));
+
+    //point outside only y
+    Point3 outy(-5,-10.000001f,-5);
+    EXPECT_FALSE(box.inside(&outy));
+
+    //point outside only z
+    Point3 outz(-5,-5,-10.000001f);
+    EXPECT_FALSE(box.inside(&outz));
+
+    //point outside every point
+    Point3 outall(11,11,11);
+    EXPECT_FALSE(box.inside(&outall));
+
+    //point outside infinite
+    Point3 inf(INFINITY,0,0);
+    Point3 minf(0,-INFINITY,0);
+    Point3 inf2(0,0,INFINITY);
+    EXPECT_FALSE(box.inside(&inf));
+    EXPECT_FALSE(box.inside(&minf));
+    EXPECT_FALSE(box.inside(&inf2));
+}
+
+TEST(AABB,surface)
+{
+    AABB box;
+
+    //zero length
+    Point3 p(-0.53123,-24.29362,84.26433);
+    box = AABB(p);
+    EXPECT_EQ(box.surface(), 0.f);
+
+    //normal length
+    box = AABB(Point3(-1,-1,-1),
+               Point3(3,4,5));
+    EXPECT_EQ(box.surface(),148);
+
+    //infinite length
+    box = AABB(Point3(-1,-1,-1),
+               Point3(1,1,INFINITY));
+    EXPECT_EQ(box.surface(), INFINITY);
+    box = AABB(Point3(-INFINITY,-INFINITY,-INFINITY),
+               Point3(INFINITY,INFINITY,INFINITY));
+    EXPECT_EQ(box.surface(), INFINITY);
+}
+
+TEST(AABB,volume)
+{
+    AABB box;
+
+    //zero length
+    Point3 p(-0.53123,-24.29362,84.26433);
+    box = AABB(p);
+    EXPECT_EQ(box.volume(), 0.f);
+
+    //normal length
+    box = AABB(Point3(-1,-1,-1),
+               Point3(3,4,5));
+    EXPECT_EQ(box.volume(),120);
+
+    //infinite length
+    box = AABB(Point3(-1,-1,-1),
+               Point3(1,1,INFINITY));
+    EXPECT_EQ(box.volume(), INFINITY);
+    box = AABB(Point3(-INFINITY,-INFINITY,-INFINITY),
+               Point3(INFINITY,INFINITY,INFINITY));
+    EXPECT_EQ(box.volume(), INFINITY);
+}
+
+TEST(AABB,longest_axis)
+{
+    AABB box;
+
+    //zero length -> return x
+    Point3 p(-0.53123,-24.29362,84.26433);
+    box = AABB(p);
+    EXPECT_EQ(box.longest_axis(), 0);
+
+    //longest x - non inf
+    box = AABB(Point3(-85.77731,5.98468,-10.75332),
+               Point3(74.13619,99.79995,37.72758));
+    EXPECT_EQ(box.longest_axis(),0);
+
+    //longest y - non inf
+    box = AABB(Point3(-27.68684,-73.58186,-69.54105),
+               Point3(65.46841,95.43746,-51.04507));
+    EXPECT_EQ(box.longest_axis(),1);
+
+    //longest z - non inf
+    box = AABB(Point3(17.90233,-46.71415,-88.93419),
+               Point3(76.75507,90.73106,95.81359));
+    EXPECT_EQ(box.longest_axis(),2);
+
+    //longest x - inf
+    box = AABB(Point3(-INFINITY,5.98468,-10.75332),
+               Point3(74.13619,99.79995,37.72758));
+    EXPECT_EQ(box.longest_axis(),0);
+
+    //longest y - inf
+    box = AABB(Point3(-27.68684,-73.58186,-69.54105),
+               Point3(65.46841,INFINITY,-51.04507));
+    EXPECT_EQ(box.longest_axis(),1);
+
+    //longest z - inf
+    box = AABB(Point3(17.90233,-46.71415,-INFINITY),
+               Point3(76.75507,90.73106,95.81359));
+    EXPECT_EQ(box.longest_axis(),2);
+
+    //everything infinite
+    box = AABB(Point3(-INFINITY,-INFINITY,-INFINITY),
+               Point3(INFINITY,INFINITY,INFINITY));
+    EXPECT_EQ(box.longest_axis(), 0);
+}
+
+TEST(AABB,center)
+{
+    AABB box;
+    Point3 center;
+
+    //zero length
+    Point3 p(-0.53123,-24.29362,84.26433);
+    box = AABB(p);
+    center = box.center();
+    EXPECT_FLOAT_EQ(center.x,p.x);
+    EXPECT_FLOAT_EQ(center.y,p.y);
+    EXPECT_FLOAT_EQ(center.z,p.z);
+
+    //normal box
+    box = AABB(Point3(-1,-1,-1),
+               Point3(1,1,1));
+    center = box.center();
+    EXPECT_FLOAT_EQ(center.x,0.f);
+    EXPECT_FLOAT_EQ(center.y,0.f);
+    EXPECT_FLOAT_EQ(center.z,0.f);
+
+    //1 inf val box
+    box = AABB(Point3(-1,-INFINITY,-1),
+               Point3(1,-1,1));
+    center = box.center();
+    EXPECT_FLOAT_EQ(center.x,0.f);
+    EXPECT_EQ(center.y,-INFINITY);
+    EXPECT_FLOAT_EQ(center.z,0.f);
+    box = AABB(Point3(-1,-1,-1),
+               Point3(1,1,INFINITY));
+    center = box.center();
+    EXPECT_FLOAT_EQ(center.x,0.f);
+    EXPECT_FLOAT_EQ(center.y,0.f);
+    EXPECT_EQ(center.z,INFINITY);
+
+    //infinite box
+    box = AABB(Point3(-INFINITY,-INFINITY,-INFINITY),
+               Point3(INFINITY,INFINITY,INFINITY));
+    center=box.center();
+    EXPECT_TRUE(std::isnan(center.x));
+    EXPECT_TRUE(std::isnan(center.y));
+    EXPECT_TRUE(std::isnan(center.z));
+}
+
+TEST(AABB,sum_point)
+{
+    Point3 p;
+    AABB box(p);
+    Point3 addme(10,-15,20);
+    AABB res = box + addme;
+    EXPECT_FLOAT_EQ(res.bounds[0].x,0.f);
+    EXPECT_FLOAT_EQ(res.bounds[0].y,-15.f);
+    EXPECT_FLOAT_EQ(res.bounds[0].z,0.f);
+    EXPECT_FLOAT_EQ(res.bounds[1].x,10.f);
+    EXPECT_FLOAT_EQ(res.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(res.bounds[1].z,20.f);
+
+    //already inside
+    addme = Point3(2,-3,15);
+    res = res + addme;
+    EXPECT_FLOAT_EQ(res.bounds[0].x,0.f);
+    EXPECT_FLOAT_EQ(res.bounds[0].y,-15.f);
+    EXPECT_FLOAT_EQ(res.bounds[0].z,0.f);
+    EXPECT_FLOAT_EQ(res.bounds[1].x,10.f);
+    EXPECT_FLOAT_EQ(res.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(res.bounds[1].z,20.f);
+
+    //inf
+    addme = Point3(INFINITY,-INFINITY,0);
+    res = res + addme;
+    EXPECT_FLOAT_EQ(res.bounds[0].x,0.f);
+    EXPECT_EQ(res.bounds[0].y,-INFINITY);
+    EXPECT_FLOAT_EQ(res.bounds[0].z,0.f);
+    EXPECT_EQ(res.bounds[1].x,INFINITY);
+    EXPECT_FLOAT_EQ(res.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(res.bounds[1].z,20.f);
+}
+
+TEST(AABB,sum_point_this)
+{
+    Point3 p;
+    AABB box(p);
+    Point3 addme(10,-15,20);
+    box += addme;
+    EXPECT_FLOAT_EQ(box.bounds[0].x,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,-15.f);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,10.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,20.f);
+
+    //already inside
+    addme = Point3(2,-3,15);
+    box += addme;
+    EXPECT_FLOAT_EQ(box.bounds[0].x,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,-15.f);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,10.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,20.f);
+
+    //inf
+    addme = Point3(INFINITY,-INFINITY,0);
+    box += addme;
+    EXPECT_FLOAT_EQ(box.bounds[0].x,0.f);
+    EXPECT_EQ(box.bounds[0].y,-INFINITY);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,0.f);
+    EXPECT_EQ(box.bounds[1].x,INFINITY);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,0.f);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,20.f);
+}
+
+TEST(AABB,sum_aabb)
+{
+    Point3 p;
+    AABB box(p);
+    AABB res;
+
+    //default
+    AABB def;
+    res = box + def;
+    EXPECT_EQ(res.bounds[0].x, 0.f);
+    EXPECT_EQ(res.bounds[0].y, 0.f);
+    EXPECT_EQ(res.bounds[0].z, 0.f);
+    EXPECT_EQ(res.bounds[1].x, 0.f);
+    EXPECT_EQ(res.bounds[1].y, 0.f);
+    EXPECT_EQ(res.bounds[1].z, 0.f);
+
+    //outside
+    AABB addme(Point3(-59.28244,-3.01509,-47.61078),
+               Point3(67.30925,53.29163,82.07844));
+    res = res + addme;
+    EXPECT_FLOAT_EQ(res.bounds[0].x,addme.bounds[0].x);
+    EXPECT_FLOAT_EQ(res.bounds[0].y,addme.bounds[0].y);
+    EXPECT_FLOAT_EQ(res.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(res.bounds[1].x,addme.bounds[1].x);
+    EXPECT_FLOAT_EQ(res.bounds[1].y,addme.bounds[1].y);
+    EXPECT_FLOAT_EQ(res.bounds[1].z,addme.bounds[1].z);
+
+    //already inside
+    AABB addme2(Point3(-9.30374,8.49896,-35.41399),
+                Point3(58.56126,18.59649,37.76507));
+    res = res + addme2;
+    EXPECT_FLOAT_EQ(res.bounds[0].x,addme.bounds[0].x);
+    EXPECT_FLOAT_EQ(res.bounds[0].y,addme.bounds[0].y);
+    EXPECT_FLOAT_EQ(res.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(res.bounds[1].x,addme.bounds[1].x);
+    EXPECT_FLOAT_EQ(res.bounds[1].y,addme.bounds[1].y);
+    EXPECT_FLOAT_EQ(res.bounds[1].z,addme.bounds[1].z);
+
+    //inf
+    AABB addme3(Point3(-138.73003,-73.22298,INFINITY),
+                Point3(-INFINITY,INFINITY,53.70019));
+    res = res + addme3;
+    EXPECT_FLOAT_EQ(res.bounds[0].x,addme3.bounds[0].x);
+    EXPECT_FLOAT_EQ(res.bounds[0].y,addme3.bounds[0].y);
+    EXPECT_FLOAT_EQ(res.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(res.bounds[1].x,addme.bounds[1].x);
+    EXPECT_EQ(res.bounds[1].y, INFINITY);
+    EXPECT_FLOAT_EQ(res.bounds[1].z,addme.bounds[1].z);
+}
+
+TEST(AABB,sum_aabb_this)
+{
+    Point3 p;
+    AABB box(p);
+
+    //default
+    AABB def;
+    box += def;
+    EXPECT_EQ(box.bounds[0].x, 0.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 0.f);
+    EXPECT_EQ(box.bounds[1].y, 0.f);
+    EXPECT_EQ(box.bounds[1].z, 0.f);
+
+    //outside
+    AABB addme(Point3(-59.28244,-3.01509,-47.61078),
+               Point3(67.30925,53.29163,82.07844));
+    box += addme;
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,addme.bounds[1].y);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+
+    //already inside
+    AABB addme2(Point3(-9.30374,8.49896,-35.41399),
+                Point3(58.56126,18.59649,37.76507));
+    box += addme2;
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_FLOAT_EQ(box.bounds[1].y,addme.bounds[1].y);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+
+    //inf
+    AABB addme3(Point3(-138.73003,-73.22298,INFINITY),
+                Point3(-INFINITY,INFINITY,53.70019));
+    box += addme3;
+    EXPECT_FLOAT_EQ(box.bounds[0].x,addme3.bounds[0].x);
+    EXPECT_FLOAT_EQ(box.bounds[0].y,addme3.bounds[0].y);
+    EXPECT_FLOAT_EQ(box.bounds[0].z,addme.bounds[0].z);
+    EXPECT_FLOAT_EQ(box.bounds[1].x,addme.bounds[1].x);
+    EXPECT_EQ(box.bounds[1].y, INFINITY);
+    EXPECT_FLOAT_EQ(box.bounds[1].z,addme.bounds[1].z);
+}
+
+TEST(AABB,less)
+{
+    AABB small(Point3(-0.53123,-0.29362,-0.26433),
+               Point3(0.14842,0.6715,0.59818));
+    AABB big(Point3(-1,-1,-1),Point3(3,4,5));
+    EXPECT_TRUE(small<big);
+    EXPECT_FALSE(big<small);
+    EXPECT_FALSE(small<small);
+}
+
+TEST(AABB,greater)
+{
+    AABB small(Point3(-0.53123,-0.29362,-0.26433),
+               Point3(0.14842,0.6715,0.59818));
+    AABB big(Point3(-1,-1,-1),Point3(3,4,5));
+    EXPECT_TRUE(big>small);
+    EXPECT_FALSE(small>big);
+    EXPECT_FALSE(big>big);
+}
+
+TEST(AABB,less_equal)
+{
+    AABB small(Point3(-0.53123,-0.29362,-0.26433),
+               Point3(0.14842,0.6715,0.59818));
+    AABB big(Point3(-1,-1,-1),Point3(3,4,5));
+    EXPECT_TRUE(small<big);
+    EXPECT_FALSE(big<small);
+    EXPECT_TRUE(small<=small);
+    EXPECT_FALSE(big<=small);
+}
+
+TEST(AABB,greater_equal)
+{
+    AABB small(Point3(-0.53123,-0.29362,-0.26433),
+               Point3(0.14842,0.6715,0.59818));
+    AABB big(Point3(-1,-1,-1),Point3(3,4,5));
+    EXPECT_TRUE(big>small);
+    EXPECT_FALSE(small>big);
+    EXPECT_TRUE(big>=big);
+    EXPECT_FALSE(small>=big);
+}
+
+TEST(AABB,equal)
+{
+    AABB small(Point3(-1,0,-2),
+               Point3(1,1,1));
+    AABB small_again(Point3(2,2,2),
+                     Point3(5,4,3));
+    AABB big(Point3(-100,0,-2),
+               Point3(1,1,100));
+    EXPECT_TRUE(small==small);
+    EXPECT_TRUE(small==small_again);
+    EXPECT_FALSE(small==big);
+}
+
+TEST(AABB,not_equal)
+{
+    AABB small(Point3(-1,0,-2),
+               Point3(1,1,1));
+    AABB small_again(Point3(2,2,2),
+                     Point3(5,4,3));
+    AABB big(Point3(-100,0,-2),
+             Point3(1,1,100));
+    EXPECT_FALSE(small!=small);
+    EXPECT_FALSE(small!=small_again);
+    EXPECT_TRUE(small!=big);
 }
 

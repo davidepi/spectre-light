@@ -56,18 +56,6 @@ void AABB::engulf(const AABB& aabb)
     AABB::bounds[1] = max(AABB::bounds[1],aabb.bounds[1]);
 }
 
-bool AABB::overlaps(const AABB* aabb)const
-{
-    bool x = (AABB::bounds[1].x >= aabb->bounds[0].x) &&
-             (AABB::bounds[0].x <= aabb->bounds[1].x);
-    bool y = (AABB::bounds[1].y >= aabb->bounds[0].y) &&
-             (AABB::bounds[0].y <= aabb->bounds[1].y);
-    bool z = (AABB::bounds[1].z >= aabb->bounds[0].z) &&
-             (AABB::bounds[0].z <= aabb->bounds[1].z);
-    
-    return x && y && z;
-}
-
 bool AABB::inside(const Point3* p)const
 {
     return p->x >= AABB::bounds[0].x && p->x <= AABB::bounds[1].x &&
@@ -90,9 +78,9 @@ float AABB::volume()const
 char AABB::longest_axis()const
 {
     Vec3 diagonal = AABB::bounds[1] - AABB::bounds[0];
-    if(diagonal.x > diagonal.y && diagonal.x > diagonal.z)
+    if(diagonal.x >= diagonal.y && diagonal.x >= diagonal.z)
         return 0;
-    else if (diagonal.y > diagonal.z)
+    else if (diagonal.y >= diagonal.z)
         return 1;
     else
         return 2;
@@ -100,9 +88,9 @@ char AABB::longest_axis()const
 
 Point3 AABB::center()const
 {
-    return Point3(bounds[0].x+bounds[1].x*0.5f,
-                  bounds[0].y+bounds[1].y*0.5f,
-                  bounds[0].z+bounds[1].z*0.5f);
+    return Point3((bounds[0].x+bounds[1].x)*0.5f,
+                  (bounds[0].y+bounds[1].y)*0.5f,
+                  (bounds[0].z+bounds[1].z)*0.5f);
 }
 
 bool AABB::intersect(const Ray* r, float* p1, float* p2)const
@@ -224,7 +212,7 @@ void AABB::operator+=(const AABB& aabb)
 
 bool AABB::operator<(const AABB& a)const
 {
-    return AABB::volume() < a.volume();
+    return AABB::surface() < a.surface();
 }
 
 bool AABB::operator>(const AABB& a)const
@@ -234,17 +222,17 @@ bool AABB::operator>(const AABB& a)const
 
 bool AABB::operator<=(const AABB& a)const
 {
-    return !(a > *(this));
+    return !(a < *(this));
 }
 
 bool AABB::operator>=(const AABB& a)const
 {
-    return !(a < *(this));
+    return !(a > *(this));
 }
 
 bool AABB::operator==(const AABB& a)const
 {
-    return AABB::volume() == a.volume();
+    return AABB::surface() == a.surface();
 }
 
 bool AABB::operator!=(const AABB &b)const
