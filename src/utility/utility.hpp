@@ -201,7 +201,7 @@ inline float inverse_lerp(float value, float min, float max)
  */
 inline bool flt_equal(const float val1, const float val2)
 {
-    return std::fabs(val1-val2) <= 1E-5;
+    return std::fabs(val1-val2) <= 1E-5f;
 }
 
 /** \brief Determine the sign of the given number

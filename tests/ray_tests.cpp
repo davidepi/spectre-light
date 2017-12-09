@@ -60,3 +60,66 @@ TEST(Ray,apply)
     EXPECT_FLOAT_EQ(point.z, 2.0412425f);
 }
 
+TEST(Ray,RayProperties_constructor)
+{
+    //dir x+
+    Ray r(Point3(0,0,0),Vec3(2,0,0));
+    RayProperties rp(r);
+    EXPECT_EQ(rp.inverseX, 0.5f);
+    EXPECT_EQ(rp.inverseY, INFINITY);
+    EXPECT_EQ(rp.inverseZ, INFINITY);
+    EXPECT_FALSE(rp.isXInvNeg);
+    EXPECT_FALSE(rp.isYInvNeg);
+    EXPECT_FALSE(rp.isZInvNeg);
+
+    //dir x-
+    r = Ray(Point3(0,0,0),Vec3(-2,0,0));
+    rp = RayProperties(r);
+    EXPECT_EQ(rp.inverseX, -0.5f);
+    EXPECT_EQ(rp.inverseY, INFINITY);
+    EXPECT_EQ(rp.inverseZ, INFINITY);
+    EXPECT_TRUE(rp.isXInvNeg);
+    EXPECT_FALSE(rp.isYInvNeg);
+    EXPECT_FALSE(rp.isZInvNeg);
+
+    //dir y+
+    r = Ray(Point3(0,0,0),Vec3(0,2,0));
+    rp = RayProperties(r);
+    EXPECT_EQ(rp.inverseX, INFINITY);
+    EXPECT_EQ(rp.inverseY, 0.5);
+    EXPECT_EQ(rp.inverseZ, INFINITY);
+    EXPECT_FALSE(rp.isXInvNeg);
+    EXPECT_FALSE(rp.isYInvNeg);
+    EXPECT_FALSE(rp.isZInvNeg);
+
+    //dir y-
+    r = Ray(Point3(0,0,0),Vec3(0,-2,0));
+    rp = RayProperties(r);
+    EXPECT_EQ(rp.inverseX, INFINITY);
+    EXPECT_EQ(rp.inverseY, -0.5);
+    EXPECT_EQ(rp.inverseZ, INFINITY);
+    EXPECT_FALSE(rp.isXInvNeg);
+    EXPECT_TRUE(rp.isYInvNeg);
+    EXPECT_FALSE(rp.isZInvNeg);
+
+    //dir z+
+    r = Ray(Point3(0,0,0),Vec3(0,0,2));
+    rp = RayProperties(r);
+    EXPECT_EQ(rp.inverseX, INFINITY);
+    EXPECT_EQ(rp.inverseY, INFINITY);
+    EXPECT_EQ(rp.inverseZ, 0.5);
+    EXPECT_FALSE(rp.isXInvNeg);
+    EXPECT_FALSE(rp.isYInvNeg);
+    EXPECT_FALSE(rp.isZInvNeg);
+
+    //dir y-
+    r = Ray(Point3(0,0,0),Vec3(0,0,-2));
+    rp = RayProperties(r);
+    EXPECT_EQ(rp.inverseX, INFINITY);
+    EXPECT_EQ(rp.inverseY, INFINITY);
+    EXPECT_EQ(rp.inverseZ, -0.5);
+    EXPECT_FALSE(rp.isXInvNeg);
+    EXPECT_FALSE(rp.isYInvNeg);
+    EXPECT_TRUE(rp.isZInvNeg);
+}
+

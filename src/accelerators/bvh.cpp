@@ -402,13 +402,7 @@ void Bvh::flatten(void* n, uint32_t* index)
 #define BVH_MAX_DEPTH 32
 bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h)const
 {
-    RayProperties rp;
-    rp.inverseX = 1.0f/r->direction.x;
-    rp.inverseY = 1.0f/r->direction.y;
-    rp.inverseZ = 1.0f/r->direction.z;
-    rp.isXInvNeg = rp.inverseX < 0;
-    rp.isYInvNeg = rp.inverseY < 0;
-    rp.isZInvNeg = rp.inverseZ < 0;
+    RayProperties rp(*r);
     float dmin;
     float dmax;
     bool found = false;

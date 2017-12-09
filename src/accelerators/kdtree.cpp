@@ -420,13 +420,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
     using KdHelpers::KdTravNode;
     
     //setup all the divisions since they won't change for this ray
-    RayProperties rp;
-    rp.inverseX = 1.0f/r->direction.x;
-    rp.inverseY = 1.0f/r->direction.y;
-    rp.inverseZ = 1.0f/r->direction.z;
-    rp.isXInvNeg = rp.inverseX < 0;
-    rp.isYInvNeg = rp.inverseY < 0;
-    rp.isZInvNeg = rp.inverseZ < 0;
+    RayProperties rp(*r);
     float mint, maxt;
     
     //if the scene is not insersected end here

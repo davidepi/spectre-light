@@ -120,9 +120,7 @@ bool AABB::intersect(const Ray* r, float* p1, float* p2)const
         maxyt = (bounds[0].y - r->origin.y) * invy;
     }
     
-    if(minyt > maxxt)
-        return false;
-    if(minxt > maxyt)
+    if((minyt > maxxt)||(minxt > maxyt))
         return false;
     if(minyt > minxt)
         minxt = minyt;
@@ -140,9 +138,7 @@ bool AABB::intersect(const Ray* r, float* p1, float* p2)const
         maxzt = (bounds[0].z - r->origin.z) * invz;
     }
     
-    if(minzt > maxxt)
-        return false;
-    if(minxt > maxzt)
+    if((minzt > maxxt)||(minxt > maxzt))
         return false;
     if(minzt > minxt)
         minxt = minzt;
