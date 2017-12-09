@@ -113,11 +113,11 @@ public:
  */
 struct RayProperties
 {
-    ///The inverse of the \a x component of the ray
+    ///The inverse of the \a x component of the ray's direction
     float inverseX;
-    ///The inverse of the \a y component of the ray
+    ///The inverse of the \a y component of the ray's direction
     float inverseY;
-    ///The inverse of the \a z component of the ray
+    ///The inverse of the \a z component of the ray's direction
     float inverseZ;
     ///true if the sign of the inverse of the \a x component is negative
     bool isXInvNeg;

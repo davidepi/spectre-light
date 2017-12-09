@@ -178,22 +178,39 @@ public:
      *  AABB, returning true or false if the intersection happened. If this is
      *  true, the variables \p p1 and \p p2 are set based on the result.
      *
+     *  \note If the ray intersects the box but the origin is greater than the
+     *  maximum plane of the box the values p1 and p2 will be negative.
+     *  In this case the result will be true but the intersection is not in the
+     *  bounds of the ray
+     *
      *  \param[in] r A pointer to the ray used to perform the intersection
-     *  \param[out] p1 The distance of the first point of intersection
-     *  \param[out] p2 The distance of the second point of intersection
+     *  \param[out] p1 The distance of the first point of intersection. Negative
+     *  if the origin is inside the box
+     *  \param[out] p2 The distance of the second point of intersection.
+     *  Negative if the origin is greater than the AABB, but the direction would
+     *  intersect it
+     *  \return true if the ray intersects the AABB, even if the origin is
+     *   greater than the box
      */
     bool intersect(const Ray* r, float* p1, float* p2)const;
     
     /** \brief Faster Intersection of a Ray and this AABB
      *
-     *  This function has the same purposeqwe of 
+     *  This function has the same purpose of
      *  AABB::intersect(const Ray* r, float* p1, float* p2)const, however, when
      *  used on a large amount of AABBs, this one is more efficient
+     *
+     *  \note If the ray intersects the box but the origin is greater than the
+     *  maximum plane of the box the values p1 and p2 will be negative.
+     *  In this case the result will be true but the intersection is not in the
+     *  bounds of the ray
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[in] rp A struct containing the inverse of the ray components
      *  \param[out] p1 The distance of the first point of intersection
      *  \param[out] p2 The distance of the second point of intersection
+     *  \return true if the ray intersects the AABB, even if the origin is
+     *   greater than the box
      */
     bool intersect(const Ray* r, const RayProperties* rp, float* p1, float* p2)
     const;
