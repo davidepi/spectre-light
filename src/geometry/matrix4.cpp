@@ -108,7 +108,7 @@ void Matrix4::toArray(float* res)const
     res[15] = Matrix4::m33;
 }
 
-void Matrix4::setZero()
+void Matrix4::set_zero()
 {
     Matrix4::m00 = 0.0f;
     Matrix4::m01 = 0.0f;
@@ -128,7 +128,7 @@ void Matrix4::setZero()
     Matrix4::m33 = 0.0f;
 }
 
-void Matrix4::setIdentity()
+void Matrix4::set_identity()
 {
     Matrix4::m00 = 1.0f;
     Matrix4::m01 = 0.0f;
@@ -148,7 +148,7 @@ void Matrix4::setIdentity()
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setTranslation(Vec3 direction)
+void Matrix4::set_translation(Vec3 direction)
 {
     Matrix4::m00 = 1.0f;
     Matrix4::m01 = 0.0f;
@@ -168,7 +168,7 @@ void Matrix4::setTranslation(Vec3 direction)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setScale(float value)
+void Matrix4::set_scale(float value)
 {
     Matrix4::m00 = value;
     Matrix4::m01 = 0.0f;
@@ -188,7 +188,7 @@ void Matrix4::setScale(float value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setScale(Vec3 value)
+void Matrix4::set_scale(Vec3 value)
 {
     Matrix4::m00 = value.x;
     Matrix4::m01 = 0.0f;
@@ -208,7 +208,7 @@ void Matrix4::setScale(Vec3 value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setRotateX(float value)
+void Matrix4::set_rotate_x(float value)
 {
     float sint = sinf(value);
     float cost = cosf(value);
@@ -230,7 +230,7 @@ void Matrix4::setRotateX(float value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setRotateY(float value)
+void Matrix4::set_rotate_y(float value)
 {
     float sint = sinf(value);
     float cost = cosf(value);
@@ -252,7 +252,7 @@ void Matrix4::setRotateY(float value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setRotateZ(float value)
+void Matrix4::set_rotate_z(float value)
 {
     float sint = sinf(value);
     float cost = cosf(value);
@@ -274,7 +274,7 @@ void Matrix4::setRotateZ(float value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::setInvLookAtLH(const Point3& pos,const Point3& eye,const Vec3& up)
+void Matrix4::set_lookAt_inverse(const Point3& pos,const Point3& eye,const Vec3& up)
 {
     Vec3 newup = up;
 #ifdef DEBUG

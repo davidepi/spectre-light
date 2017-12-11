@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 25 Nov 2017
+//Last Edit 11 Dec 2017
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      25 Nov 2017
+ *  \date      11 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -122,16 +122,16 @@ public:
     /** \brief Set this matrix to a zero-matrix
      *
      *  Fill this matrix with 0 values
-     *  \sa setIdentity()
+     *  \sa set_identity()
      */
-    void setZero();
+    void set_zero();
     
     /** \brief Set this matrix to the identity matrix
      *
      *  Set this matrix to the identity matrix (unit matrix), filled with
      *  1 values in the diagonal and 0 values everywhere else
      */
-    void setIdentity();
+    void set_identity();
     
     /** \brief Set this matrix to a translation matrix
      *
@@ -142,7 +142,7 @@ public:
      *  \param[in] direction The vector representing the direction of the
      *             translation
      */
-    void setTranslation(Vec3 direction);
+    void set_translation(Vec3 direction);
     
     /** \brief Set this matrix to a scale matrix
      *
@@ -152,7 +152,7 @@ public:
      *  \param[in] value The float representing the magnitude of the
      *             scaling
      */
-    void setScale(float value);
+    void set_scale(float value);
     
     /** \brief Set this matrix to a scale matrix
      *
@@ -163,7 +163,7 @@ public:
      *  \param[in] value The vector representing the magnitude of the
      *             scaling for each component
      */
-    void setScale(Vec3 value);
+    void set_scale(Vec3 value);
     
     /** \brief Set this matrix to a rotation matrix
      *
@@ -173,10 +173,10 @@ public:
      *
      *  \param[in] value The angle of rotation in radians
      *
-     *  \sa setRotateY(float value)
-     *  \sa setRotateZ(float value)
+     *  \sa set_rotate_y(float value)
+     *  \sa set_rotate_z(float value)
      */
-    void setRotateX(float value);
+    void set_rotate_x(float value);
     
     /** \brief set this matrix to a rotation matrix
      *
@@ -186,10 +186,10 @@ public:
      *
      *  \param[in] value The angle of rotation in radians
      *
-     *  \sa setRotateX(float value)
-     *  \sa setRotateZ(float value)
+     *  \sa set_rotate_x(float value)
+     *  \sa set_rotate_z(float value)
      */
-    void setRotateY(float value);
+    void set_rotate_y(float value);
     
     /** \brief set this matrix to a rotation matrix
      *
@@ -199,10 +199,10 @@ public:
      *
      *  \param[in] value The angle of rotation in radians
      *
-     *  \sa setRotateX(float value)
-     *  \sa setRotateY(float value)
+     *  \sa set_rotate_x(float value)
+     *  \sa set_rotate_y(float value)
      */
-    void setRotateZ(float value);
+    void set_rotate_z(float value);
     
     /** \brief Set this matrix to an inverted LookAt matrix
      *
@@ -217,7 +217,7 @@ public:
      *  \param[in] up A vector representing the direction poiting upside the
      *  camera. With the camera parallel to the terrain, this will be (0,1,0)
      */
-    void setInvLookAtLH(const Point3& pos,const Point3& target,const Vec3& up);
+    void set_lookAt_inverse(const Point3& pos,const Point3& target,const Vec3& up);
     
     /**  \brief Returns a new matrix that is the transpose of the current matrix
      *

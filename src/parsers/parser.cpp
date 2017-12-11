@@ -757,7 +757,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             char* val;
             float x,y,z;
             Matrix4* m = new Matrix4();
-            m->setIdentity();
+            m->set_identity();
             Matrix4 trans,rotx,roty,rotz,scale;
 
             //parse position
@@ -768,7 +768,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            trans.setTranslation(Vec3(x,y,z));
+            trans.set_translation(Vec3(x,y,z));
 
             token = strtok_r(NULL," ",&pos);//parse rotation
             val = strtok(token,"(), "); //parse x
@@ -777,9 +777,9 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            rotx.setRotateX(toRad(x));
-            roty.setRotateY(toRad(y));
-            rotz.setRotateZ(toRad(z));
+            rotx.set_rotate_x(toRad(x));
+            roty.set_rotate_y(toRad(y));
+            rotz.set_rotate_z(toRad(z));
 
             token = strtok_r(NULL," ",&pos);//parse translation
             val = strtok(token,"(), "); //parse x
@@ -788,7 +788,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            scale.setScale(Vec3(x,y,z));
+            scale.set_scale(Vec3(x,y,z));
 
             *m *= trans;
             rotz *= roty;
@@ -856,7 +856,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             char* val;
             float x,y,z;
             Matrix4* m = new Matrix4();
-            m->setIdentity();
+            m->set_identity();
             Matrix4 trans,rotx,roty,rotz,scale;
 
             //parse position
@@ -867,7 +867,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            trans.setTranslation(Vec3(x,y,z));
+            trans.set_translation(Vec3(x,y,z));
 
             token = strtok_r(NULL," ",&pos);//parse rotation
             val = strtok(token,"(), "); //parse x
@@ -876,9 +876,9 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            rotx.setRotateX(toRad(x));
-            roty.setRotateY(toRad(y));
-            rotz.setRotateZ(toRad(z));
+            rotx.set_rotate_x(toRad(x));
+            roty.set_rotate_y(toRad(y));
+            rotz.set_rotate_z(toRad(z));
 
             token = strtok_r(NULL," ",&pos);//parse translation
             val = strtok(token,"(), "); //parse x
@@ -887,7 +887,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            scale.setScale(Vec3(x,y,z));
+            scale.set_scale(Vec3(x,y,z));
 
             *m *= trans;
             rotz *= roty;

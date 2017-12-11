@@ -55,7 +55,7 @@ PerspectiveCamera::PerspectiveCamera(const Point3* pos, const Point3* target,
     values[15] = 1.f;
     
     Matrix4 raster2screen(values);
-    raster2camera.setIdentity();
+    raster2camera.set_identity();
     raster2camera*= screen2camera;
     raster2camera *= raster2screen;
 }
