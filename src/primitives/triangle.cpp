@@ -54,7 +54,7 @@ float Triangle::surface()const
 
 float Triangle::surface(const Matrix4* transform)const
 {
-    const Vec3 scale = transform->getScale();
+    const Vec3 scale = transform->get_scale();
     const Point3 point_a(a.p.x*scale.x,a.p.y*scale.y,a.p.z*scale.z);
     const Point3 point_b(b.p.x*scale.x,b.p.y*scale.y,b.p.z*scale.z);
     const Point3 point_c(c.p.x*scale.x,c.p.y*scale.y,c.p.z*scale.z);

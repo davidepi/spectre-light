@@ -206,11 +206,11 @@ public:
     
     /** \brief Set this matrix to an inverted LookAt matrix
      *
-     *  Set this matrix to a transformation LookAt matrix in a LeftHanded
-     *  system. This matrix is used to align the world with the camera (can be
-     *  seen as a result of placing the camera inside a scene).
+     *  Set this matrix to an inverse transformation LookAt matrix in a
+     *  left handed system. This matrix is used to align the world with the
+     *  camera (can be seen as a result of placing the camera inside a scene).
      *  This is done by transforming the camera space coordinates to world
-     *  space
+     *  space (camera to world transformation)
      *
      *  \param[in] pos The position of the camera
      *  \param[in] target The point the camera is looking at
@@ -246,7 +246,7 @@ public:
      *
      *  \return A Vec3 representing the translation component of the matrix
      */
-    Vec3 getTranslation()const;
+    Vec3 get_translation()const;
     
     /** \brief Extract the scale component from the matrix
      *
@@ -255,7 +255,7 @@ public:
      *
      *  \return A Vec3 representing the scale component of the matrix
      */
-    Vec3 getScale()const;
+    Vec3 get_scale()const;
     
     
     //------ Operators ---------------------------------------------------------
@@ -304,7 +304,7 @@ public:
  *  \param[in] inverse The inverse of the transformation matrix used
  *  \return The transformed normal
 */
-Normal transformNormal(const Normal& n, const Matrix4* inverse);
+Normal transform_normal(const Normal& n, const Matrix4* inverse);
 
 /**  /brief Sum two matrices together
  *
@@ -329,111 +329,5 @@ void sub(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
  *  \param[out] output The resulting matrix
  */
 void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
-
-
-//XXXXXXXXXXXXXXXXXXXXXXXXXXX OLD AND UNTESTED XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-
-/** \brief Creates a View Space transform matrix with a Left Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] target A Vec3 containing the target point of the camera view
- *  \param[in] position A Vec3 containing the position of the camera
- *  \param[in] up A Vec3 containing the up vector for the camera,
- *                usually v(0,1,0)
- *  \param[out] output The resulting Matrix4
- */
-DEPRECATED
-void viewLeftHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
-
-/** \brief Creates a View Space transform matrix with a Right Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] target A Vec3 containing the target point of the camera view
- *  \param[in] position A Vec3 containing the position of the camera
- *  \param[in] up A Vec3 containing the up vector for the camera, usually
- *                v(0,1,0)
- *  \param[out] output The resulting Matrix4
- */
-DEPRECATED
-void viewRightHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
-
-/** \brief Creates a Perspective transform matrix with a Left Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] fov A float representing the field of view of the camera
- *  \param[in] aspectRatio A float representing the aspect ratio of the screen
- *  \param[in] nearPlane A float representing the z value of the near plane
- *  \param[in] farPlane A float representing the z value of the far plane
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void PerspectiveLeftHand(float fov, float aspectRatio, float nearPlane,
-                         float farPlane, Matrix4* output);
-
-/** \brief Creates a Perspective transform matrix with a Right Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] fovX A float representing the x-axis field of view of the camera
- *  \param[in] fovY A float representing the y-axis field of view of the camera
- *  \param[in] nearPlane A float representing the z value of the near plane
- *  \param[in] farPlane A float representing the z value of the far plane
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void PerspectiveRightHand(float fovX, float fovY, float nearPlane,
-                          float farPlane, Matrix4* output);
-
-/** \brief Creates an Orthographic transform matrix with a Right Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] width A float representing the height of the screen
- *  \param[in] height A float representing the width of the screen
- *  \param[in] nearPlane A float representing the z value of the near plane
- *  \param[in] farPlane A float representing the z value of the far plane
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void OrthographicRightHand(float width, float height, float nearPlane,
-                           float farPlane, Matrix4* output);
-
-/** \brief Creates a Translation matrix
- *
- *  \deprecated Unmantained
- *  \param[in] source A Vec3 containing the translation value of the object
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void Translation(Vec3* source, Matrix4* output);
-
-/** \brief Creates a Rotation matrix
- *
- *  \deprecated Unmantained
- *  \param[in] yaw A float containing the yaw value of the rotation
- *                  (Z-rotation)
- *  \param[in] pitch A float containing the pitch value of the rotation
- *                  (Y-rotation)
- *  \param[in] roll A float containing the roll value of the rotation
- *                  (X-rotation)
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void YawPitchRollRotation(float yaw, float pitch, float roll, Matrix4* output);
-
-/** \brief Creates a Scaling matrix
- *
- *  \deprecated Unmantained
- *  \param[in] source A Vec3 containing the scaling value of the object
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void Scale(Vec3* source, Matrix4* output);
-
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 #endif
