@@ -212,6 +212,9 @@ public:
      *  This is done by transforming the camera space coordinates to world
      *  space (camera to world transformation)
      *
+     *  /note Recall that in the left handed system the front direction is Z,
+     *  and the up direction is Y instead of the usual Z-up Y-front
+     *
      *  \param[in] pos The position of the camera
      *  \param[in] target The point the camera is looking at
      *  \param[in] up A vector representing the direction poiting upside the

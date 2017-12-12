@@ -700,3 +700,88 @@ TEST(Matrix4,not_equal)
     EXPECT_FALSE(m1!=identity);
 }
 
+TEST(Matrix4,transform_point3)
+{
+    //no w component
+    Point3 p(1,1,1);
+    Matrix4 m;
+    m.set_scale(3);
+    p = m*p;
+    EXPECT_EQ(p.x, 3);
+    EXPECT_EQ(p.y, 3);
+    EXPECT_EQ(p.z, 3);
+
+    //with w component, a bit cheated but otherwise I'll need camera tests
+    p = Point3(0,1,1);
+    m.set_translation(Vec3(0,-1,2.5));
+    m.m30 = 1.f;
+    m.m32 = 1.f;
+    p = m*p;
+    EXPECT_EQ(p.x, 0);
+    EXPECT_EQ(p.y, 0);
+    EXPECT_EQ(p.z, 3.5f/2.f);
+}
+
+TEST(Matrix4,transform_vec3)
+{
+    //scale
+    Vec3 p(1,1,1);
+    Matrix4 m;
+    m.set_scale(3);
+    p = m*p;
+    EXPECT_EQ(p.x, 3);
+    EXPECT_EQ(p.y, 3);
+    EXPECT_EQ(p.z, 3);
+
+    //translation should leave vector unaffected
+    p = Vec3(0,1,1);
+    m.set_translation(Vec3(0,-1,2.5));
+    m.m30 = 1.f;
+    m.m32 = 1.f;
+    p = m*p;
+    EXPECT_EQ(p.x, 0);
+    EXPECT_EQ(p.y, 1);
+    EXPECT_EQ(p.z, 1);
+}
+
+TEST(Matrix4,transform_ray)
+{
+    Point3 p = Point3(0,0,0);
+    Vec3 v = Vec3(0,1,0);
+    Ray r(p,v);
+    Matrix4 m;
+    m.set_translation(Vec3(0,-1,2.5));
+
+    p=m*p;
+    v=m*v;
+    r=m*r;
+    //assert that transforming a ray is exactly like transforming origin and
+    //direction separately
+    EXPECT_TRUE(r.origin==p);
+    EXPECT_TRUE(r.direction==v);
+}
+
+TEST(Matrix4,transform_normal)
+{
+    //unchanged
+    Normal n(0,0,1);
+    Matrix4 trans;
+    Matrix4 inv_trans;
+    trans.set_translation(Vec3(1,1,1));
+    trans.inverse(&inv_trans);
+    Normal transformed = transform_normal(n, &inv_trans);
+    EXPECT_EQ(transformed.x,0);
+    EXPECT_EQ(transformed.y,0);
+    EXPECT_EQ(transformed.z,1);
+
+    //rotation 90 degree right
+    Normal n2(0,0,1);
+    trans.set_rotate_y(ONE_PI/2.f);
+    trans.inverse(&inv_trans);
+    transformed = transform_normal(n, &inv_trans);
+    EXPECT_FLOAT_EQ(transformed.x,1);
+    EXPECT_FLOAT_EQ(transformed.y,0);
+    EXPECT_TRUE(flt_equal(transformed.z,0)); //EXPECT_FLOAT_EQ is not suff.
+                                            //the comparison is 0 and -4e-8...
+}
+
