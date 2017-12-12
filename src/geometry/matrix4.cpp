@@ -574,84 +574,84 @@ Matrix4 Matrix4::operator*(const Matrix4& mat)const
 {
     float val[16];
     val[0] = (Matrix4::m00 * mat.m00) +
-    (Matrix4::m01 * mat.m10) +
-    (Matrix4::m02 * mat.m20) +
-    (Matrix4::m03 * mat.m30);
+             (Matrix4::m01 * mat.m10) +
+             (Matrix4::m02 * mat.m20) +
+             (Matrix4::m03 * mat.m30);
     
     val[1] = (Matrix4::m00 * mat.m01) +
-    (Matrix4::m01 * mat.m11) +
-    (Matrix4::m02 * mat.m21) +
-    (Matrix4::m03 * mat.m31);
+             (Matrix4::m01 * mat.m11) +
+             (Matrix4::m02 * mat.m21) +
+             (Matrix4::m03 * mat.m31);
     
     val[2] = (Matrix4::m00 * mat.m02) +
-    (Matrix4::m01 * mat.m12) +
-    (Matrix4::m02 * mat.m22) +
-    (Matrix4::m03 * mat.m32);
+             (Matrix4::m01 * mat.m12) +
+             (Matrix4::m02 * mat.m22) +
+             (Matrix4::m03 * mat.m32);
     
     val[3] = (Matrix4::m00 * mat.m03) +
-    (Matrix4::m01 * mat.m13) +
-    (Matrix4::m02 * mat.m23) +
-    (Matrix4::m03 * mat.m33);
+             (Matrix4::m01 * mat.m13) +
+             (Matrix4::m02 * mat.m23) +
+             (Matrix4::m03 * mat.m33);
     
     val[4] = (Matrix4::m10 * mat.m00) +
-    (Matrix4::m11 * mat.m10) +
-    (Matrix4::m12 * mat.m20) +
-    (Matrix4::m13 * mat.m30);
+             (Matrix4::m11 * mat.m10) +
+             (Matrix4::m12 * mat.m20) +
+             (Matrix4::m13 * mat.m30);
     
     val[5] = (Matrix4::m10 * mat.m01) +
-    (Matrix4::m11 * mat.m11) +
-    (Matrix4::m12 * mat.m21) +
-    (Matrix4::m13 * mat.m31);
+             (Matrix4::m11 * mat.m11) +
+             (Matrix4::m12 * mat.m21) +
+             (Matrix4::m13 * mat.m31);
     
     val[6] = (Matrix4::m10 * mat.m02) +
-    (Matrix4::m11 * mat.m12) +
-    (Matrix4::m12 * mat.m22) +
-    (Matrix4::m13 * mat.m32);
+             (Matrix4::m11 * mat.m12) +
+             (Matrix4::m12 * mat.m22) +
+             (Matrix4::m13 * mat.m32);
     
     val[7] = (Matrix4::m10 * mat.m03) +
-    (Matrix4::m11 * mat.m13) +
-    (Matrix4::m12 * mat.m23) +
-    (Matrix4::m13 * mat.m33);
+             (Matrix4::m11 * mat.m13) +
+             (Matrix4::m12 * mat.m23) +
+             (Matrix4::m13 * mat.m33);
     
     val[8] = (Matrix4::m20 * mat.m00) +
-    (Matrix4::m21 * mat.m10) +
-    (Matrix4::m22 * mat.m20) +
-    (Matrix4::m23 * mat.m30);
+             (Matrix4::m21 * mat.m10) +
+             (Matrix4::m22 * mat.m20) +
+             (Matrix4::m23 * mat.m30);
     
     val[9] = (Matrix4::m20 * mat.m01) +
-    (Matrix4::m21 * mat.m11) +
-    (Matrix4::m22 * mat.m21) +
-    (Matrix4::m23 * mat.m31);
+             (Matrix4::m21 * mat.m11) +
+             (Matrix4::m22 * mat.m21) +
+             (Matrix4::m23 * mat.m31);
     
     val[10] = (Matrix4::m20 * mat.m02) +
-    (Matrix4::m21 * mat.m12) +
-    (Matrix4::m22 * mat.m22) +
-    (Matrix4::m23 * mat.m32);
+              (Matrix4::m21 * mat.m12) +
+              (Matrix4::m22 * mat.m22) +
+              (Matrix4::m23 * mat.m32);
     
     val[11] = (Matrix4::m20 * mat.m03) +
-    (Matrix4::m21 * mat.m13) +
-    (Matrix4::m22 * mat.m23) +
-    (Matrix4::m23 * mat.m33);
+              (Matrix4::m21 * mat.m13) +
+              (Matrix4::m22 * mat.m23) +
+              (Matrix4::m23 * mat.m33);
     
     val[12] = (Matrix4::m30 * mat.m00) +
-    (Matrix4::m31 * mat.m10) +
-    (Matrix4::m32 * mat.m20) +
-    (Matrix4::m33 * mat.m30);
+              (Matrix4::m31 * mat.m10) +
+              (Matrix4::m32 * mat.m20) +
+              (Matrix4::m33 * mat.m30);
     
     val[13] = (Matrix4::m30 * mat.m01) +
-    (Matrix4::m31 * mat.m11) +
-    (Matrix4::m32 * mat.m21) +
-    (Matrix4::m33 * mat.m31);
+              (Matrix4::m31 * mat.m11) +
+              (Matrix4::m32 * mat.m21) +
+              (Matrix4::m33 * mat.m31);
     
     val[14] = (Matrix4::m30 * mat.m02) +
-    (Matrix4::m31 * mat.m12) +
-    (Matrix4::m32 * mat.m22) +
-    (Matrix4::m33 * mat.m32);
+              (Matrix4::m31 * mat.m12) +
+              (Matrix4::m32 * mat.m22) +
+              (Matrix4::m33 * mat.m32);
     
     val[15] = (Matrix4::m30 * mat.m03) +
-    (Matrix4::m31 * mat.m13) +
-    (Matrix4::m32 * mat.m23) +
-    (Matrix4::m33 * mat.m33);
+              (Matrix4::m31 * mat.m13) +
+              (Matrix4::m32 * mat.m23) +
+              (Matrix4::m33 * mat.m33);
     
     return Matrix4(val);
 }
@@ -660,271 +660,84 @@ void Matrix4::operator*=(const Matrix4& mat)
 {
     float val[16];
     val[0] = (Matrix4::m00 * mat.m00) +
-    (Matrix4::m01 * mat.m10) +
-    (Matrix4::m02 * mat.m20) +
-    (Matrix4::m03 * mat.m30);
+             (Matrix4::m01 * mat.m10) +
+             (Matrix4::m02 * mat.m20) +
+             (Matrix4::m03 * mat.m30);
     
     val[1] = (Matrix4::m00 * mat.m01) +
-    (Matrix4::m01 * mat.m11) +
-    (Matrix4::m02 * mat.m21) +
-    (Matrix4::m03 * mat.m31);
+             (Matrix4::m01 * mat.m11) +
+             (Matrix4::m02 * mat.m21) +
+             (Matrix4::m03 * mat.m31);
     
     val[2] = (Matrix4::m00 * mat.m02) +
-    (Matrix4::m01 * mat.m12) +
-    (Matrix4::m02 * mat.m22) +
-    (Matrix4::m03 * mat.m32);
+             (Matrix4::m01 * mat.m12) +
+             (Matrix4::m02 * mat.m22) +
+             (Matrix4::m03 * mat.m32);
     
     val[3] = (Matrix4::m00 * mat.m03) +
-    (Matrix4::m01 * mat.m13) +
-    (Matrix4::m02 * mat.m23) +
-    (Matrix4::m03 * mat.m33);
+             (Matrix4::m01 * mat.m13) +
+             (Matrix4::m02 * mat.m23) +
+             (Matrix4::m03 * mat.m33);
     
     val[4] = (Matrix4::m10 * mat.m00) +
-    (Matrix4::m11 * mat.m10) +
-    (Matrix4::m12 * mat.m20) +
-    (Matrix4::m13 * mat.m30);
+             (Matrix4::m11 * mat.m10) +
+             (Matrix4::m12 * mat.m20) +
+             (Matrix4::m13 * mat.m30);
     
     val[5] = (Matrix4::m10 * mat.m01) +
-    (Matrix4::m11 * mat.m11) +
-    (Matrix4::m12 * mat.m21) +
-    (Matrix4::m13 * mat.m31);
+             (Matrix4::m11 * mat.m11) +
+             (Matrix4::m12 * mat.m21) +
+             (Matrix4::m13 * mat.m31);
     
     val[6] = (Matrix4::m10 * mat.m02) +
-    (Matrix4::m11 * mat.m12) +
-    (Matrix4::m12 * mat.m22) +
-    (Matrix4::m13 * mat.m32);
+             (Matrix4::m11 * mat.m12) +
+             (Matrix4::m12 * mat.m22) +
+             (Matrix4::m13 * mat.m32);
     
     val[7] = (Matrix4::m10 * mat.m03) +
-    (Matrix4::m11 * mat.m13) +
-    (Matrix4::m12 * mat.m23) +
-    (Matrix4::m13 * mat.m33);
+             (Matrix4::m11 * mat.m13) +
+             (Matrix4::m12 * mat.m23) +
+             (Matrix4::m13 * mat.m33);
     
     val[8] = (Matrix4::m20 * mat.m00) +
-    (Matrix4::m21 * mat.m10) +
-    (Matrix4::m22 * mat.m20) +
-    (Matrix4::m23 * mat.m30);
+             (Matrix4::m21 * mat.m10) +
+             (Matrix4::m22 * mat.m20) +
+             (Matrix4::m23 * mat.m30);
     
     val[9] = (Matrix4::m20 * mat.m01) +
-    (Matrix4::m21 * mat.m11) +
-    (Matrix4::m22 * mat.m21) +
-    (Matrix4::m23 * mat.m31);
+             (Matrix4::m21 * mat.m11) +
+             (Matrix4::m22 * mat.m21) +
+             (Matrix4::m23 * mat.m31);
     
     val[10] = (Matrix4::m20 * mat.m02) +
-    (Matrix4::m21 * mat.m12) +
-    (Matrix4::m22 * mat.m22) +
-    (Matrix4::m23 * mat.m32);
+              (Matrix4::m21 * mat.m12) +
+              (Matrix4::m22 * mat.m22) +
+              (Matrix4::m23 * mat.m32);
     
     val[11] = (Matrix4::m20 * mat.m03) +
-    (Matrix4::m21 * mat.m13) +
-    (Matrix4::m22 * mat.m23) +
-    (Matrix4::m23 * mat.m33);
+              (Matrix4::m21 * mat.m13) +
+              (Matrix4::m22 * mat.m23) +
+              (Matrix4::m23 * mat.m33);
     
     val[12] = (Matrix4::m30 * mat.m00) +
-    (Matrix4::m31 * mat.m10) +
-    (Matrix4::m32 * mat.m20) +
-    (Matrix4::m33 * mat.m30);
+              (Matrix4::m31 * mat.m10) +
+              (Matrix4::m32 * mat.m20) +
+              (Matrix4::m33 * mat.m30);
     
     val[13] = (Matrix4::m30 * mat.m01) +
-    (Matrix4::m31 * mat.m11) +
-    (Matrix4::m32 * mat.m21) +
-    (Matrix4::m33 * mat.m31);
+              (Matrix4::m31 * mat.m11) +
+              (Matrix4::m32 * mat.m21) +
+              (Matrix4::m33 * mat.m31);
     
     val[14] = (Matrix4::m30 * mat.m02) +
-    (Matrix4::m31 * mat.m12) +
-    (Matrix4::m32 * mat.m22) +
-    (Matrix4::m33 * mat.m32);
+              (Matrix4::m31 * mat.m12) +
+              (Matrix4::m32 * mat.m22) +
+              (Matrix4::m33 * mat.m32);
     
     val[15] = (Matrix4::m30 * mat.m03) +
-    (Matrix4::m31 * mat.m13) +
-    (Matrix4::m32 * mat.m23) +
-    (Matrix4::m33 * mat.m33);
-    
-    Matrix4::m00 = val[0];
-    Matrix4::m01 = val[1];
-    Matrix4::m02 = val[2];
-    Matrix4::m03 = val[3];
-    Matrix4::m10 = val[4];
-    Matrix4::m11 = val[5];
-    Matrix4::m12 = val[6];
-    Matrix4::m13 = val[7];
-    Matrix4::m20 = val[8];
-    Matrix4::m21 = val[9];
-    Matrix4::m22 = val[10];
-    Matrix4::m23 = val[11];
-    Matrix4::m30 = val[12];
-    Matrix4::m31 = val[13];
-    Matrix4::m32 = val[14];
-    Matrix4::m33 = val[15];
-}
-
-Matrix4 Matrix4::operator/(const Matrix4& mat)const
-{
-    float val[16];
-    val[0] = (Matrix4::m00 / mat.m00) +
-    (Matrix4::m01 / mat.m10) +
-    (Matrix4::m02 / mat.m20) +
-    (Matrix4::m03 / mat.m30);
-    
-    val[1] = (Matrix4::m00 / mat.m01) +
-    (Matrix4::m01 / mat.m11) +
-    (Matrix4::m02 / mat.m21) +
-    (Matrix4::m03 / mat.m31);
-    
-    val[2] = (Matrix4::m00 / mat.m02) +
-    (Matrix4::m01 / mat.m12) +
-    (Matrix4::m02 / mat.m22) +
-    (Matrix4::m03 / mat.m32);
-    
-    val[3] = (Matrix4::m00 / mat.m03) +
-    (Matrix4::m01 / mat.m13) +
-    (Matrix4::m02 / mat.m23) +
-    (Matrix4::m03 / mat.m33);
-    
-    val[4] = (Matrix4::m10 / mat.m00) +
-    (Matrix4::m11 / mat.m10) +
-    (Matrix4::m12 / mat.m20) +
-    (Matrix4::m13 / mat.m30);
-    
-    val[5] = (Matrix4::m10 / mat.m01) +
-    (Matrix4::m11 / mat.m11) +
-    (Matrix4::m12 / mat.m21) +
-    (Matrix4::m13 / mat.m31);
-    
-    val[6] = (Matrix4::m10 / mat.m02) +
-    (Matrix4::m11 / mat.m12) +
-    (Matrix4::m12 / mat.m22) +
-    (Matrix4::m13 / mat.m32);
-    
-    val[7] = (Matrix4::m10 / mat.m03) +
-    (Matrix4::m11 / mat.m13) +
-    (Matrix4::m12 / mat.m23) +
-    (Matrix4::m13 / mat.m33);
-    
-    val[8] = (Matrix4::m20 / mat.m00) +
-    (Matrix4::m21 / mat.m10) +
-    (Matrix4::m22 / mat.m20) +
-    (Matrix4::m23 / mat.m30);
-    
-    val[9] = (Matrix4::m20 / mat.m01) +
-    (Matrix4::m21 / mat.m11) +
-    (Matrix4::m22 / mat.m21) +
-    (Matrix4::m23 / mat.m31);
-    
-    val[10] = (Matrix4::m20 / mat.m02) +
-    (Matrix4::m21 / mat.m12) +
-    (Matrix4::m22 / mat.m22) +
-    (Matrix4::m23 / mat.m32);
-    
-    val[11] = (Matrix4::m20 / mat.m03) +
-    (Matrix4::m21 / mat.m13) +
-    (Matrix4::m22 / mat.m23) +
-    (Matrix4::m23 / mat.m33);
-    
-    val[12] = (Matrix4::m30 / mat.m00) +
-    (Matrix4::m31 / mat.m10) +
-    (Matrix4::m32 / mat.m20) +
-    (Matrix4::m33 / mat.m30);
-    
-    val[13] = (Matrix4::m30 / mat.m01) +
-    (Matrix4::m31 / mat.m11) +
-    (Matrix4::m32 / mat.m21) +
-    (Matrix4::m33 / mat.m31);
-    
-    val[14] = (Matrix4::m30 / mat.m02) +
-    (Matrix4::m31 / mat.m12) +
-    (Matrix4::m32 / mat.m22) +
-    (Matrix4::m33 / mat.m32);
-    
-    val[15] = (Matrix4::m30 / mat.m03) +
-    (Matrix4::m31 / mat.m13) +
-    (Matrix4::m32 / mat.m23) +
-    (Matrix4::m33 / mat.m33);
-    
-    return Matrix4(val);
-}
-
-void Matrix4::operator/=(const Matrix4& mat)
-{
-    float val[16];
-    val[0] = (Matrix4::m00 / mat.m00) +
-    (Matrix4::m01 / mat.m10) +
-    (Matrix4::m02 / mat.m20) +
-    (Matrix4::m03 / mat.m30);
-    
-    val[1] = (Matrix4::m00 / mat.m01) +
-    (Matrix4::m01 / mat.m11) +
-    (Matrix4::m02 / mat.m21) +
-    (Matrix4::m03 / mat.m31);
-    
-    val[2] = (Matrix4::m00 / mat.m02) +
-    (Matrix4::m01 / mat.m12) +
-    (Matrix4::m02 / mat.m22) +
-    (Matrix4::m03 / mat.m32);
-    
-    val[3] = (Matrix4::m00 / mat.m03) +
-    (Matrix4::m01 / mat.m13) +
-    (Matrix4::m02 / mat.m23) +
-    (Matrix4::m03 / mat.m33);
-    
-    val[4] = (Matrix4::m10 / mat.m00) +
-    (Matrix4::m11 / mat.m10) +
-    (Matrix4::m12 / mat.m20) +
-    (Matrix4::m13 / mat.m30);
-    
-    val[5] = (Matrix4::m10 / mat.m01) +
-    (Matrix4::m11 / mat.m11) +
-    (Matrix4::m12 / mat.m21) +
-    (Matrix4::m13 / mat.m31);
-    
-    val[6] = (Matrix4::m10 / mat.m02) +
-    (Matrix4::m11 / mat.m12) +
-    (Matrix4::m12 / mat.m22) +
-    (Matrix4::m13 / mat.m32);
-    
-    val[7] = (Matrix4::m10 / mat.m03) +
-    (Matrix4::m11 / mat.m13) +
-    (Matrix4::m12 / mat.m23) +
-    (Matrix4::m13 / mat.m33);
-    
-    val[8] = (Matrix4::m20 / mat.m00) +
-    (Matrix4::m21 / mat.m10) +
-    (Matrix4::m22 / mat.m20) +
-    (Matrix4::m23 / mat.m30);
-    
-    val[9] = (Matrix4::m20 / mat.m01) +
-    (Matrix4::m21 / mat.m11) +
-    (Matrix4::m22 / mat.m21) +
-    (Matrix4::m23 / mat.m31);
-    
-    val[10] = (Matrix4::m20 / mat.m02) +
-    (Matrix4::m21 / mat.m12) +
-    (Matrix4::m22 / mat.m22) +
-    (Matrix4::m23 / mat.m32);
-    
-    val[11] = (Matrix4::m20 / mat.m03) +
-    (Matrix4::m21 / mat.m13) +
-    (Matrix4::m22 / mat.m23) +
-    (Matrix4::m23 / mat.m33);
-    
-    val[12] = (Matrix4::m30 / mat.m00) +
-    (Matrix4::m31 / mat.m10) +
-    (Matrix4::m32 / mat.m20) +
-    (Matrix4::m33 / mat.m30);
-    
-    val[13] = (Matrix4::m30 / mat.m01) +
-    (Matrix4::m31 / mat.m11) +
-    (Matrix4::m32 / mat.m21) +
-    (Matrix4::m33 / mat.m31);
-    
-    val[14] = (Matrix4::m30 / mat.m02) +
-    (Matrix4::m31 / mat.m12) +
-    (Matrix4::m32 / mat.m22) +
-    (Matrix4::m33 / mat.m32);
-    
-    val[15] = (Matrix4::m30 / mat.m03) +
-    (Matrix4::m31 / mat.m13) +
-    (Matrix4::m32 / mat.m23) +
-    (Matrix4::m33 / mat.m33);
+              (Matrix4::m31 * mat.m13) +
+              (Matrix4::m32 * mat.m23) +
+              (Matrix4::m33 * mat.m33);
     
     Matrix4::m00 = val[0];
     Matrix4::m01 = val[1];
@@ -1069,82 +882,82 @@ void sub(const Matrix4* input1, const Matrix4* input2, Matrix4* output)
 void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output)
 {
     output->m00 = (input1->m00 * input2->m00) +
-    (input1->m01 * input2->m10) +
-    (input1->m02 * input2->m20) +
-    (input1->m03 * input2->m30);
+                  (input1->m01 * input2->m10) +
+                  (input1->m02 * input2->m20) +
+                  (input1->m03 * input2->m30);
     
     output->m01 = (input1->m00 * input2->m01) +
-    (input1->m01 * input2->m11) +
-    (input1->m02 * input2->m21) +
-    (input1->m03 * input2->m31);
+                  (input1->m01 * input2->m11) +
+                  (input1->m02 * input2->m21) +
+                  (input1->m03 * input2->m31);
     
     output->m02 = (input1->m00 * input2->m02) +
-    (input1->m01 * input2->m12) +
-    (input1->m02 * input2->m22) +
-    (input1->m03 * input2->m32);
+                  (input1->m01 * input2->m12) +
+                  (input1->m02 * input2->m22) +
+                  (input1->m03 * input2->m32);
     
     output->m03 = (input1->m00 * input2->m03) +
-    (input1->m01 * input2->m13) +
-    (input1->m02 * input2->m23) +
-    (input1->m03 * input2->m33);
+                  (input1->m01 * input2->m13) +
+                  (input1->m02 * input2->m23) +
+                  (input1->m03 * input2->m33);
     
     output->m10 = (input1->m10 * input2->m00) +
-    (input1->m11 * input2->m10) +
-    (input1->m12 * input2->m20) +
-    (input1->m13 * input2->m30);
+                  (input1->m11 * input2->m10) +
+                  (input1->m12 * input2->m20) +
+                  (input1->m13 * input2->m30);
     
     output->m11 = (input1->m10 * input2->m01) +
-    (input1->m11 * input2->m11) +
-    (input1->m12 * input2->m21) +
-    (input1->m13 * input2->m31);
+                  (input1->m11 * input2->m11) +
+                  (input1->m12 * input2->m21) +
+                  (input1->m13 * input2->m31);
     
     output->m12 = (input1->m10 * input2->m02) +
-    (input1->m11 * input2->m12) +
-    (input1->m12 * input2->m22) +
-    (input1->m13 * input2->m32);
+                  (input1->m11 * input2->m12) +
+                  (input1->m12 * input2->m22) +
+                  (input1->m13 * input2->m32);
     
     output->m13 = (input1->m10 * input2->m03) +
-    (input1->m11 * input2->m13) +
-    (input1->m12 * input2->m23) +
-    (input1->m13 * input2->m33);
+                  (input1->m11 * input2->m13) +
+                  (input1->m12 * input2->m23) +
+                  (input1->m13 * input2->m33);
     
     output->m20 = (input1->m20 * input2->m00) +
-    (input1->m21 * input2->m10) +
-    (input1->m22 * input2->m20) +
-    (input1->m23 * input2->m30);
+                  (input1->m21 * input2->m10) +
+                  (input1->m22 * input2->m20) +
+                  (input1->m23 * input2->m30);
     
     output->m21 = (input1->m20 * input2->m01) +
-    (input1->m21 * input2->m11) +
-    (input1->m22 * input2->m21) +
-    (input1->m23 * input2->m31);
+                  (input1->m21 * input2->m11) +
+                  (input1->m22 * input2->m21) +
+                  (input1->m23 * input2->m31);
     
     output->m22 = (input1->m20 * input2->m02) +
-    (input1->m21 * input2->m12) +
-    (input1->m22 * input2->m22) +
-    (input1->m23 * input2->m32);
+                  (input1->m21 * input2->m12) +
+                  (input1->m22 * input2->m22) +
+                  (input1->m23 * input2->m32);
     
     output->m23 = (input1->m20 * input2->m03) +
-    (input1->m21 * input2->m13) +
-    (input1->m22 * input2->m23) +
-    (input1->m23 * input2->m33);
+                  (input1->m21 * input2->m13) +
+                  (input1->m22 * input2->m23) +
+                  (input1->m23 * input2->m33);
     
     output->m30 = (input1->m30 * input2->m00) +
-    (input1->m31 * input2->m10) +
-    (input1->m32 * input2->m20) +
-    (input1->m33 * input2->m30);
+                  (input1->m31 * input2->m10) +
+                  (input1->m32 * input2->m20) +
+                  (input1->m33 * input2->m30);
     
     output->m31 = (input1->m30 * input2->m01) +
-    (input1->m31 * input2->m11) +
-    (input1->m32 * input2->m21) +
-    (input1->m33 * input2->m31);
+                  (input1->m31 * input2->m11) +
+                  (input1->m32 * input2->m21) +
+                  (input1->m33 * input2->m31);
     
     output->m32 = (input1->m30 * input2->m02) +
-    (input1->m31 * input2->m12) +
-    (input1->m32 * input2->m22) +
-    (input1->m33 * input2->m32);
+                  (input1->m31 * input2->m12) +
+                  (input1->m32 * input2->m22) +
+                  (input1->m33 * input2->m32);
     
     output->m33 = (input1->m30 * input2->m03) +
-    (input1->m31 * input2->m13) +
-    (input1->m32 * input2->m23) +
-    (input1->m33 * input2->m33);
+                  (input1->m31 * input2->m13) +
+                  (input1->m32 * input2->m23) +
+                  (input1->m33 * input2->m33);
 }

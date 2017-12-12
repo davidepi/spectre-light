@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 11 Dec 2017
+//Last Edit 12 Dec 2017
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Dec 2017
+ *  \date      12 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -266,16 +266,12 @@ public:
     Matrix4 operator-(const Matrix4&)const;
     ///The multiplication operation between two matrices
     Matrix4 operator*(const Matrix4&)const;
-    ///The division operation between two matrices
-    Matrix4 operator/(const Matrix4&)const;
     ///The addition operation between two matrices
     void operator+=(const Matrix4&);
     ///The subtraction operation between two matrices
     void operator-=(const Matrix4&);
     ///The multiplication operation between two matrices
     void operator*=(const Matrix4&);
-    ///The division operation between two matrices
-    void operator/=(const Matrix4&);
     ///Checks if two matrices are equal
     bool operator==(const Matrix4&)const;
     ///Checks if two matrices are different

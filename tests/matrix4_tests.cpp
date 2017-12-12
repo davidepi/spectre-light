@@ -271,17 +271,17 @@ TEST(Matrix4,lookAt)
     up.normalize();
     m.set_lookAt_inverse(pos, target, up);
     EXPECT_EQ(errors_count[WARNING_INDEX], 0);
-    EXPECT_FLOAT_EQ(m.m00,0.688247f);
-    EXPECT_FLOAT_EQ(m.m01,0.652929f);
-    EXPECT_FLOAT_EQ(m.m02,-0.316228f);
+    EXPECT_FLOAT_EQ(m.m00,0.688247144f);
+    EXPECT_FLOAT_EQ(m.m01,0.65292853f);
+    EXPECT_FLOAT_EQ(m.m02,-0.31622776f);
     EXPECT_FLOAT_EQ(m.m03,1.f);
     EXPECT_FLOAT_EQ(m.m10,-0.688247f);
     EXPECT_FLOAT_EQ(m.m11,0.725476f);
     EXPECT_FLOAT_EQ(m.m12,0.f);
     EXPECT_FLOAT_EQ(m.m13,0.f);
-    EXPECT_FLOAT_EQ(m.m20,0.229416f);
-    EXPECT_FLOAT_EQ(m.m21,0.217643f);
-    EXPECT_FLOAT_EQ(m.m22,0.948683f);
+    EXPECT_FLOAT_EQ(m.m20,0.22941573f);
+    EXPECT_FLOAT_EQ(m.m21,0.21764286f);
+    EXPECT_FLOAT_EQ(m.m22,0.948683261f);
     EXPECT_FLOAT_EQ(m.m23,-2.f);
     EXPECT_FLOAT_EQ(m.m30,0.f);
     EXPECT_FLOAT_EQ(m.m31,0.f);
@@ -327,15 +327,15 @@ TEST(Matrix4,inverse)
     EXPECT_FLOAT_EQ(out.m00,0.05696867986878306f);
     EXPECT_FLOAT_EQ(out.m01,0.06042118741944838f);
     EXPECT_FLOAT_EQ(out.m02,-0.026891372703873692f);
-    EXPECT_FLOAT_EQ(out.m03,-0.02956952311205848f);
+    EXPECT_FLOAT_EQ(out.m03,-0.02956953311205848f);
     EXPECT_FLOAT_EQ(out.m10,-0.016213241351212312f);
     EXPECT_FLOAT_EQ(out.m11,-0.03287692440970072f);
     EXPECT_FLOAT_EQ(out.m12,0.02312255927369855f);
     EXPECT_FLOAT_EQ(out.m13,-0.004594680398068575f);
     EXPECT_FLOAT_EQ(out.m20,-0.020370360928440107f);
     EXPECT_FLOAT_EQ(out.m21,-0.040761643380056015f);
-    EXPECT_FLOAT_EQ(out.m22,0.014874897160732165f);
-    EXPECT_FLOAT_EQ(out.m23,0.0026574675235824666f);
+    EXPECT_FLOAT_EQ(out.m22,0.014874902160732165f);
+    EXPECT_FLOAT_EQ(out.m23,0.0026574715235824666f);
     EXPECT_FLOAT_EQ(out.m30,0.015605873796566723f);
     EXPECT_FLOAT_EQ(out.m31,0.027296551231286575f);
     EXPECT_FLOAT_EQ(out.m32,-0.021038931695497014f);
@@ -408,5 +408,295 @@ TEST(Matrix4,get_scale)
     EXPECT_FLOAT_EQ(extracted.x, scale.x);
     EXPECT_FLOAT_EQ(extracted.y, scale.y);
     EXPECT_FLOAT_EQ(extracted.z, scale.z);
+}
+
+TEST(Matrix4,sum)
+{
+    float val1[] = {-98.96f,98.99f,72.96f,98.37f,-61.17f,6.f,-13.05f,18.62f,
+                    43.24f,-19.56f,39.17f,-19.17f,-49.98f,-36.64f,48.f,45.27f};
+    float val2[] = {59.09f,-8.73f,-19.45f,88.6f,85.6f,-67.18f,31.89f,-71.7f,
+                    40.15f,38.28f,48.01f,-73.72f,37.04f,34.6f,-46.98f,-44.3f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    Matrix4 out = m1 + m2;
+    EXPECT_FLOAT_EQ(out.m00,-39.87f);
+    EXPECT_FLOAT_EQ(out.m01,90.26f);
+    EXPECT_FLOAT_EQ(out.m02,53.51f);
+    EXPECT_FLOAT_EQ(out.m03,186.97f);
+    EXPECT_FLOAT_EQ(out.m10,24.43f);
+    EXPECT_FLOAT_EQ(out.m11,-61.18f);
+    EXPECT_FLOAT_EQ(out.m12,18.84f);
+    EXPECT_FLOAT_EQ(out.m13,-53.08f);
+    EXPECT_FLOAT_EQ(out.m20,83.39f);
+    EXPECT_FLOAT_EQ(out.m21,18.72f);
+    EXPECT_FLOAT_EQ(out.m22,87.18f);
+    EXPECT_FLOAT_EQ(out.m23,-92.89f);
+    EXPECT_FLOAT_EQ(out.m30,-12.94f);
+    EXPECT_FLOAT_EQ(out.m31,-2.04f);
+    EXPECT_FLOAT_EQ(out.m32,1.02f);
+    EXPECT_FLOAT_EQ(out.m33,.97000122f);
+}
+
+TEST(Matrix4,sum_this)
+{
+    float val1[] = {-98.96f,98.99f,72.96f,98.37f,-61.17f,6.f,-13.05f,18.62f,
+                    43.24f,-19.56f,39.17f,-19.17f,-49.98f,-36.64f,48.f,45.27f};
+    float val2[] = {59.09f,-8.73f,-19.45f,88.6f,85.6f,-67.18f,31.89f,-71.7f,
+                    40.15f,38.28f,48.01f,-73.72f,37.04f,34.6f,-46.98f,-44.3f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    m1 += m2;
+    EXPECT_FLOAT_EQ(m1.m00,-39.87f);
+    EXPECT_FLOAT_EQ(m1.m01,90.26f);
+    EXPECT_FLOAT_EQ(m1.m02,53.51f);
+    EXPECT_FLOAT_EQ(m1.m03,186.97f);
+    EXPECT_FLOAT_EQ(m1.m10,24.43f);
+    EXPECT_FLOAT_EQ(m1.m11,-61.18f);
+    EXPECT_FLOAT_EQ(m1.m12,18.84f);
+    EXPECT_FLOAT_EQ(m1.m13,-53.08f);
+    EXPECT_FLOAT_EQ(m1.m20,83.39f);
+    EXPECT_FLOAT_EQ(m1.m21,18.72f);
+    EXPECT_FLOAT_EQ(m1.m22,87.18f);
+    EXPECT_FLOAT_EQ(m1.m23,-92.89f);
+    EXPECT_FLOAT_EQ(m1.m30,-12.94f);
+    EXPECT_FLOAT_EQ(m1.m31,-2.04f);
+    EXPECT_FLOAT_EQ(m1.m32,1.02f);
+    EXPECT_FLOAT_EQ(m1.m33,0.97000122f);
+}
+
+TEST(Matrix4,sum_pointer)
+{
+    float val1[] = {-98.96f,98.99f,72.96f,98.37f,-61.17f,6.f,-13.05f,18.62f,
+                    43.24f,-19.56f,39.17f,-19.17f,-49.98f,-36.64f,48.f,45.27f};
+    float val2[] = {59.09f,-8.73f,-19.45f,88.6f,85.6f,-67.18f,31.89f,-71.7f,
+                    40.15f,38.28f,48.01f,-73.72f,37.04f,34.6f,-46.98f,-44.3f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    Matrix4 out;
+    sum(&m1,&m2,&out);
+    EXPECT_FLOAT_EQ(out.m00,-39.87f);
+    EXPECT_FLOAT_EQ(out.m01,90.26f);
+    EXPECT_FLOAT_EQ(out.m02,53.51f);
+    EXPECT_FLOAT_EQ(out.m03,186.97f);
+    EXPECT_FLOAT_EQ(out.m10,24.43f);
+    EXPECT_FLOAT_EQ(out.m11,-61.18f);
+    EXPECT_FLOAT_EQ(out.m12,18.84f);
+    EXPECT_FLOAT_EQ(out.m13,-53.08f);
+    EXPECT_FLOAT_EQ(out.m20,83.39f);
+    EXPECT_FLOAT_EQ(out.m21,18.72f);
+    EXPECT_FLOAT_EQ(out.m22,87.18f);
+    EXPECT_FLOAT_EQ(out.m23,-92.89f);
+    EXPECT_FLOAT_EQ(out.m30,-12.94f);
+    EXPECT_FLOAT_EQ(out.m31,-2.04f);
+    EXPECT_FLOAT_EQ(out.m32,1.02f);
+    EXPECT_FLOAT_EQ(out.m33,.97000122f);
+}
+
+TEST(Matrix4,sub)
+{
+    float val1[] = {-20.64f,-25.69f,-17.56f,-97.15f,88.28f,28.07f,65.32f,46.34f,
+                    1.19f,-66.15f,92.73f,-3.68f,-20.59f,62.21f,73.89f,-29.04f};
+    float val2[] = {61.53f,75.87f,44.25f,-57.29f,-81.46f,97.1f,-62.07f,-27.39f,
+                    34.94f,61.01f,5.92f,-71.72f,90.79f,93.32f,-63.03f,45.79f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    Matrix4 out = m1 - m2;
+    EXPECT_FLOAT_EQ(out.m00,-82.17f);
+    EXPECT_FLOAT_EQ(out.m01,-101.56f);
+    EXPECT_FLOAT_EQ(out.m02,-61.81f);
+    EXPECT_FLOAT_EQ(out.m03,-39.86f);
+    EXPECT_FLOAT_EQ(out.m10,169.73999f); //fuck floats
+    EXPECT_FLOAT_EQ(out.m11,-69.03f);
+    EXPECT_FLOAT_EQ(out.m12,127.39f);
+    EXPECT_FLOAT_EQ(out.m13,73.73f);
+    EXPECT_FLOAT_EQ(out.m20,-33.75f);
+    EXPECT_FLOAT_EQ(out.m21,-127.16f);
+    EXPECT_FLOAT_EQ(out.m22,86.81f);
+    EXPECT_FLOAT_EQ(out.m23,68.04f);
+    EXPECT_FLOAT_EQ(out.m30,-111.38f);
+    EXPECT_FLOAT_EQ(out.m31,-31.11f);
+    EXPECT_FLOAT_EQ(out.m32,136.92f);
+    EXPECT_FLOAT_EQ(out.m33,-74.83f);
+}
+
+TEST(Matrix4,sub_this)
+{
+    float val1[] = {-20.64f,-25.69f,-17.56f,-97.15f,88.28f,28.07f,65.32f,46.34f,
+                    1.19f,-66.15f,92.73f,-3.68f,-20.59f,62.21f,73.89f,-29.04f};
+    float val2[] = {61.53f,75.87f,44.25f,-57.29f,-81.46f,97.1f,-62.07f,-27.39f,
+                    34.94f,61.01f,5.92f,-71.72f,90.79f,93.32f,-63.03f,45.79f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    m1 -= m2;
+    EXPECT_FLOAT_EQ(m1.m00,-82.17f);
+    EXPECT_FLOAT_EQ(m1.m01,-101.56f);
+    EXPECT_FLOAT_EQ(m1.m02,-61.81f);
+    EXPECT_FLOAT_EQ(m1.m03,-39.86f);
+    EXPECT_FLOAT_EQ(m1.m10,169.73999f); //fuck floats
+    EXPECT_FLOAT_EQ(m1.m11,-69.03f);
+    EXPECT_FLOAT_EQ(m1.m12,127.39f);
+    EXPECT_FLOAT_EQ(m1.m13,73.73f);
+    EXPECT_FLOAT_EQ(m1.m20,-33.75f);
+    EXPECT_FLOAT_EQ(m1.m21,-127.16f);
+    EXPECT_FLOAT_EQ(m1.m22,86.81f);
+    EXPECT_FLOAT_EQ(m1.m23,68.04f);
+    EXPECT_FLOAT_EQ(m1.m30,-111.38f);
+    EXPECT_FLOAT_EQ(m1.m31,-31.11f);
+    EXPECT_FLOAT_EQ(m1.m32,136.92f);
+    EXPECT_FLOAT_EQ(m1.m33,-74.83f);
+}
+
+TEST(Matrix4,sub_pointer)
+{
+    float val1[] = {-20.64f,-25.69f,-17.56f,-97.15f,88.28f,28.07f,65.32f,46.34f,
+                    1.19f,-66.15f,92.73f,-3.68f,-20.59f,62.21f,73.89f,-29.04f};
+    float val2[] = {61.53f,75.87f,44.25f,-57.29f,-81.46f,97.1f,-62.07f,-27.39f,
+                    34.94f,61.01f,5.92f,-71.72f,90.79f,93.32f,-63.03f,45.79f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    Matrix4 out;
+    sub(&m1,&m2,&out);
+    EXPECT_FLOAT_EQ(out.m00,-82.17f);
+    EXPECT_FLOAT_EQ(out.m01,-101.56f);
+    EXPECT_FLOAT_EQ(out.m02,-61.81f);
+    EXPECT_FLOAT_EQ(out.m03,-39.86f);
+    EXPECT_FLOAT_EQ(out.m10,169.73999f); //fuck floats
+    EXPECT_FLOAT_EQ(out.m11,-69.03f);
+    EXPECT_FLOAT_EQ(out.m12,127.39f);
+    EXPECT_FLOAT_EQ(out.m13,73.73f);
+    EXPECT_FLOAT_EQ(out.m20,-33.75f);
+    EXPECT_FLOAT_EQ(out.m21,-127.16f);
+    EXPECT_FLOAT_EQ(out.m22,86.81f);
+    EXPECT_FLOAT_EQ(out.m23,68.04f);
+    EXPECT_FLOAT_EQ(out.m30,-111.38f);
+    EXPECT_FLOAT_EQ(out.m31,-31.11f);
+    EXPECT_FLOAT_EQ(out.m32,136.92f);
+    EXPECT_FLOAT_EQ(out.m33,-74.83f);
+}
+
+TEST(Matrix4,mul)
+{
+    float val1[] = {46.3f,6.5f,-84.39f,6.06f,91.72f,78.04f,-64.94f,32.07f,
+                    -59.33f,-78.26f,54.08f,-73.42f,-27.12f,4.49f,69.9f,91.19f};
+    float val2[] = {-52.91f,12.02f,-58.9f,29.93f,-16.45f,78.46f,19.49f,27.82f,
+                    63.5f,74.75f,51.43f,8.44f,15.54f,25.59f,73.89f,-9.28f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    Matrix4 out = m1 * m2;
+    EXPECT_FLOAT_EQ(out.m00,-7821.25048f);
+    EXPECT_FLOAT_EQ(out.m01,-5086.56104f);
+    EXPECT_FLOAT_EQ(out.m02,-6492.78906f);
+    EXPECT_FLOAT_EQ(out.m03,798.100586f);
+    EXPECT_FLOAT_EQ(out.m10,-9761.98535f);
+    EXPECT_FLOAT_EQ(out.m11,3191.89941f);
+    EXPECT_FLOAT_EQ(out.m12,-4851.52051f);
+    EXPECT_FLOAT_EQ(out.m13,4070.54907f);
+    EXPECT_FLOAT_EQ(out.m20,6719.66064f);
+    EXPECT_FLOAT_EQ(out.m21,-4689.76367f);
+    EXPECT_FLOAT_EQ(out.m22,-674.419434f);
+    EXPECT_FLOAT_EQ(out.m23,-2815.16724f);
+    EXPECT_FLOAT_EQ(out.m30,7216.80126f);
+    EXPECT_FLOAT_EQ(out.m31,7584.87988f);
+    EXPECT_FLOAT_EQ(out.m32,12017.8643f);
+    EXPECT_FLOAT_EQ(out.m33,-943.077087f);
+}
+
+TEST(Matrix4,mul_this)
+{
+    float val1[] = {46.3f,6.5f,-84.39f,6.06f,91.72f,78.04f,-64.94f,32.07f,
+                    -59.33f,-78.26f,54.08f,-73.42f,-27.12f,4.49f,69.9f,91.19f};
+    float val2[] = {-52.91f,12.02f,-58.9f,29.93f,-16.45f,78.46f,19.49f,27.82f,
+                    63.5f,74.75f,51.43f,8.44f,15.54f,25.59f,73.89f,-9.28f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    m1 *= m2;
+    EXPECT_FLOAT_EQ(m1.m00,-7821.25048f);
+    EXPECT_FLOAT_EQ(m1.m01,-5086.56104f);
+    EXPECT_FLOAT_EQ(m1.m02,-6492.78906f);
+    EXPECT_FLOAT_EQ(m1.m03,798.100586f);
+    EXPECT_FLOAT_EQ(m1.m10,-9761.98535f);
+    EXPECT_FLOAT_EQ(m1.m11,3191.89941f);
+    EXPECT_FLOAT_EQ(m1.m12,-4851.52051f);
+    EXPECT_FLOAT_EQ(m1.m13,4070.54907f);
+    EXPECT_FLOAT_EQ(m1.m20,6719.66064f);
+    EXPECT_FLOAT_EQ(m1.m21,-4689.76367f);
+    EXPECT_FLOAT_EQ(m1.m22,-674.419434f);
+    EXPECT_FLOAT_EQ(m1.m23,-2815.16724f);
+    EXPECT_FLOAT_EQ(m1.m30,7216.80126f);
+    EXPECT_FLOAT_EQ(m1.m31,7584.87988f);
+    EXPECT_FLOAT_EQ(m1.m32,12017.8643f);
+    EXPECT_FLOAT_EQ(m1.m33,-943.077087f);
+}
+
+TEST(Matrix4,mul_pointer)
+{
+    float val1[] = {46.3f,6.5f,-84.39f,6.06f,91.72f,78.04f,-64.94f,32.07f,
+                    -59.33f,-78.26f,54.08f,-73.42f,-27.12f,4.49f,69.9f,91.19f};
+    float val2[] = {-52.91f,12.02f,-58.9f,29.93f,-16.45f,78.46f,19.49f,27.82f,
+                    63.5f,74.75f,51.43f,8.44f,15.54f,25.59f,73.89f,-9.28f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+    Matrix4 out;
+    mul(&m1,&m2,&out);
+    EXPECT_FLOAT_EQ(out.m00,-7821.25048f);
+    EXPECT_FLOAT_EQ(out.m01,-5086.56104f);
+    EXPECT_FLOAT_EQ(out.m02,-6492.78906f);
+    EXPECT_FLOAT_EQ(out.m03,798.100586f);
+    EXPECT_FLOAT_EQ(out.m10,-9761.98535f);
+    EXPECT_FLOAT_EQ(out.m11,3191.89941f);
+    EXPECT_FLOAT_EQ(out.m12,-4851.52051f);
+    EXPECT_FLOAT_EQ(out.m13,4070.54907f);
+    EXPECT_FLOAT_EQ(out.m20,6719.66064f);
+    EXPECT_FLOAT_EQ(out.m21,-4689.76367f);
+    EXPECT_FLOAT_EQ(out.m22,-674.419434f);
+    EXPECT_FLOAT_EQ(out.m23,-2815.16724f);
+    EXPECT_FLOAT_EQ(out.m30,7216.80126f);
+    EXPECT_FLOAT_EQ(out.m31,7584.87988f);
+    EXPECT_FLOAT_EQ(out.m32,12017.8643f);
+    EXPECT_FLOAT_EQ(out.m33,-943.077087f);
+}
+
+TEST(Matrix4,equal)
+{
+    float val1[] = {59.09f,-8.73f,-19.45f,88.6f,85.6f,-67.18f,31.89f,-71.7f,
+                    40.15f,38.28f,48.01f,-73.72f,37.04f,34.6f,-46.98f,-44.3f};
+    float val2[] = {-20.64f,-25.69f,-17.56f,-97.15f,88.28f,28.07f,65.32f,46.34f,
+                    1.19f,-66.15f,92.73f,-3.68f,-20.59f,62.21f,73.89f,-29.04f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+
+    //asserting M1 == M1 and M1 != M2
+    EXPECT_TRUE(m1==m1);
+    EXPECT_FALSE(m1==m2);
+
+    //asserting M1 * M1^-1 == identity
+    Matrix4 inverse;
+    m1.inverse(&inverse);
+    m1*=inverse;
+    Matrix4 identity;
+    identity.set_identity();
+    EXPECT_TRUE(m1==identity);
+}
+
+TEST(Matrix4,not_equal)
+{
+    float val1[] = {59.09f,-8.73f,-19.45f,88.6f,85.6f,-67.18f,31.89f,-71.7f,
+                    40.15f,38.28f,48.01f,-73.72f,37.04f,34.6f,-46.98f,-44.3f};
+    float val2[] = {-20.64f,-25.69f,-17.56f,-97.15f,88.28f,28.07f,65.32f,46.34f,
+                    1.19f,-66.15f,92.73f,-3.68f,-20.59f,62.21f,73.89f,-29.04f};
+    Matrix4 m1(val1);
+    Matrix4 m2(val2);
+
+    //asserting M1 == M1 and M1 != M2
+    EXPECT_FALSE(m1!=m1);
+    EXPECT_TRUE(m1!=m2);
+
+    //asserting M1 * M1^-1 == identity
+    Matrix4 inverse;
+    m1.inverse(&inverse);
+    m1*=inverse;
+    Matrix4 identity;
+    identity.set_identity();
+    EXPECT_FALSE(m1!=identity);
 }
 
