@@ -719,7 +719,7 @@ TEST(Box,get_random_point)
     b.get_densities_array(&m, densities);
 
     //top face //0,2 density interval
-    b.getRandomPoint(0.05f,0.5f,densities,&p,&n);
+    b.sample_point(0.05f,0.5f,densities,&p,&n);
     EXPECT_GE(p.x,0.f);
     EXPECT_LE(p.x,1.f);
     EXPECT_EQ(p.y,0.5f);
@@ -729,7 +729,7 @@ TEST(Box,get_random_point)
     EXPECT_EQ(n.z,1.f);
 
     //bottom face //2,4 density interval
-    b.getRandomPoint(0.1f,0.5f,densities,&p,&n);
+    b.sample_point(0.1f,0.5f,densities,&p,&n);
     EXPECT_GE(p.x,0.f);
     EXPECT_LE(p.x,1.f);
     EXPECT_EQ(p.y,0.5f);
@@ -739,7 +739,7 @@ TEST(Box,get_random_point)
     EXPECT_EQ(n.z,-1.f);
 
     //front face //4,7 density interval
-    b.getRandomPoint(0.2f,0.5f,densities,&p,&n);
+    b.sample_point(0.2f,0.5f,densities,&p,&n);
     EXPECT_GE(p.x,0.f);
     EXPECT_LE(p.x,1.f);
     EXPECT_EQ(p.y,0);
@@ -749,7 +749,7 @@ TEST(Box,get_random_point)
     EXPECT_EQ(n.z,0.f);
 
     //back face //7,10 density interval
-    b.getRandomPoint(0.35f,0.5f,densities,&p,&n);
+    b.sample_point(0.35f,0.5f,densities,&p,&n);
     EXPECT_GE(p.x,0.f);
     EXPECT_LE(p.x,1.f);
     EXPECT_EQ(p.y,1);
@@ -759,7 +759,7 @@ TEST(Box,get_random_point)
     EXPECT_EQ(n.z,0.f);
 
     //left face //10,16 density interval
-    b.getRandomPoint(0.5f,0.5f,densities,&p,&n);
+    b.sample_point(0.5f,0.5f,densities,&p,&n);
     EXPECT_EQ(p.x,0);
     EXPECT_EQ(p.y,0.5f);
     EXPECT_GE(p.z,0.f);
@@ -769,7 +769,7 @@ TEST(Box,get_random_point)
     EXPECT_EQ(n.z,0.f);
 
     //right face //16,22 density interval
-    b.getRandomPoint(0.9f,0.5f,densities,&p,&n);
+    b.sample_point(0.9f,0.5f,densities,&p,&n);
     EXPECT_EQ(p.x,1);
     EXPECT_EQ(p.y,0.5f);
     EXPECT_GE(p.z,0.f);

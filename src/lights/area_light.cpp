@@ -32,7 +32,7 @@ Spectrum AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
 
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
-    AreaLight::model->getRandomPoint(r0,r1,cd,&(out->origin),&n);
+    AreaLight::model->sample_point(r0,r1,cd,&(out->origin),&n);
 
     //generate random direction
     float z = 1.f - 2.f * r0;
@@ -64,7 +64,7 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
 
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
-    AreaLight::model->getRandomPoint(r0,r1,cd,&light_point,&normal);
+    AreaLight::model->sample_point(r0,r1,cd,&light_point,&normal);
 
     //in the next steps a ray originating from the current_pos and pointing to
     //the sampled point is tested against the light. This because if the sampled

@@ -135,7 +135,7 @@ void Box::get_densities_array(const Matrix4* transform, float* array)const
     array[5] = array[4]+(scale.z*scale.y);
 }
 
-void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
                             Normal* n)const
 {
     //works like the Mesh::getRandomPoint
@@ -162,7 +162,7 @@ void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     if(res<densities[0])
     {
         //top
-        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
+        p->x = inverse_lerp(res,0,densities[0]);
         p->y = r1;
         p->z = 1;
         n->x = 0;
@@ -172,7 +172,7 @@ void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     else if(res<densities[1])
     {
         //bottom
-        p->x = inverse_lerp(res-densities[2],0,densities[3]-densities[2]);
+        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
         p->y = r1;
         p->z = 0;
         n->x = 0;
@@ -182,7 +182,7 @@ void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     else if(res<densities[2])
     {
         //front
-        p->x = inverse_lerp(res,0,densities[0]);
+        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
         p->y = 0;
         p->z = r1;
         n->x = 0;
@@ -192,7 +192,7 @@ void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     else if(res<densities[3])
     {
         //back
-        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
+        p->x = inverse_lerp(res-densities[2],0,densities[3]-densities[2]);
         p->y = 1;
         p->z = r1;
         n->x = 0;

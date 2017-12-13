@@ -186,20 +186,20 @@ TEST(Sphere,get_random_point)
     //upper hemisphere
     for(float i=0.05f;i<0.5f;i+=0.05f)
     {
-        s.getRandomPoint(i,0.05f, NULL, &p,&n);
+        s.sample_point(i,0.05f, NULL, &p,&n);
         EXPECT_GT(p.z, 0);
     }
 
     //lower hemisphere
     for(float i=0.55f;i<1.f;i+=0.05f)
     {
-        s.getRandomPoint(i, 0.05f, NULL, &p, &n);
+        s.sample_point(i, 0.05f, NULL, &p, &n);
         EXPECT_LT(p.z, 0);
     }
 
     //corner cases
     //r0 less than 0
-    s.getRandomPoint(0.f-FLT_EPSILON, 0.0f, NULL, &p, &n);
+    s.sample_point(0.f-FLT_EPSILON, 0.0f, NULL, &p, &n);
     EXPECT_EQ(p.x,0.f);
     EXPECT_EQ(p.y,0.f);
     EXPECT_FLOAT_EQ(p.z,1.f);
@@ -208,7 +208,7 @@ TEST(Sphere,get_random_point)
     EXPECT_FLOAT_EQ(n.z,1.f);
 
     //r0 greater than 1
-    s.getRandomPoint(1.f+FLT_EPSILON, 0.0f, NULL, &p, &n);
+    s.sample_point(1.f+FLT_EPSILON, 0.0f, NULL, &p, &n);
     EXPECT_EQ(p.x,0.f);
     EXPECT_EQ(p.y,0.f);
     EXPECT_FLOAT_EQ(p.z,-1.f);
@@ -217,7 +217,7 @@ TEST(Sphere,get_random_point)
     EXPECT_FLOAT_EQ(n.z,-1.f);
 
     //r1 less than 0
-    s.getRandomPoint(0.f, 0.f-FLT_EPSILON, NULL, &p, &n);
+    s.sample_point(0.f, 0.f-FLT_EPSILON, NULL, &p, &n);
     EXPECT_EQ(p.x,0.f);
     EXPECT_EQ(p.y,0.f);
     EXPECT_FLOAT_EQ(p.z,1.f);
@@ -226,7 +226,7 @@ TEST(Sphere,get_random_point)
     EXPECT_FLOAT_EQ(n.z,1.f);
 
     //r1 greater than 0
-    s.getRandomPoint(0.f, 0.f+FLT_EPSILON, NULL, &p, &n);
+    s.sample_point(0.f, 0.f+FLT_EPSILON, NULL, &p, &n);
     EXPECT_EQ(p.x,0.f);
     EXPECT_EQ(p.y,0.f);
     EXPECT_FLOAT_EQ(p.z,1.f);

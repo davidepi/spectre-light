@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 26 Nov 2017
+//Last Edit 14 Dec 2017
 
 /**
  *  \file box.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      26 Nov 2017
+ *  \date      14 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -144,7 +144,7 @@ public:
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+    void sample_point(float r0, float r1, const float* densities, Point3* p,
                         Normal* n)const;
 };
 

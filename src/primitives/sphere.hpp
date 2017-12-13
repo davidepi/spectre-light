@@ -114,7 +114,7 @@ public:
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    virtual void getRandomPoint(float r0, float r1, const float* densities,
+    virtual void sample_point(float r0, float r1, const float* densities,
                                 Point3* p, Normal* n)const;
 };
 

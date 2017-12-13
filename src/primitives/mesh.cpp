@@ -164,7 +164,7 @@ void Mesh::get_densities_array(const Matrix4* transform,float* array)const
     }
 }
 
-void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+void Mesh::sample_point(float r0, float r1, const float* densities, Point3* p,
                           Normal* n)const
 {
     //flatten the random value between 0.0 and the total area
@@ -182,7 +182,7 @@ void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     if(extSample < densities[0])
     {
         sample01 = inverse_lerp(extSample,0,densities[0]);
-        tris[0].getRandomPoint(sample01, r1, NULL, p, n);
+        tris[0].sample_point(sample01, r1, NULL, p, n);
         return;
     }
     //last triangle of the array
@@ -190,7 +190,7 @@ void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     {
         sample01 = inverse_lerp(extSample-densities[end-1],0,
                                 densities[end]-densities[end-1]);
-        tris[end].getRandomPoint(sample01, r1, NULL, p, n);
+        tris[end].sample_point(sample01, r1, NULL, p, n);
         return;
     }
     
@@ -209,5 +209,5 @@ void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
 
     //sample the triangle
     sample01 = inverse_lerp(extSample, 0, densities[mid+1]-densities[mid]);
-    tris[mid].getRandomPoint(sample01, r1, NULL, p, n);
+    tris[mid].sample_point(sample01, r1, NULL, p, n);
 }
