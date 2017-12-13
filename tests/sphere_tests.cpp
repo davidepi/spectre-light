@@ -177,20 +177,69 @@ TEST(Sphere,surface_world)
 
 TEST(Sphere,get_random_point)
 {
-    //TODO: probably this requires a chi square test to assert uniform dist...
-    //just running it for now
-    Sphere s;
+    //just checking if both hemisphere are referenced, not a test to assert
+    //if the values are uniformly distribuited
     Point3 p;
     Normal n;
-    s.getRandomPoint(0.01, 0.8, NULL, &p, &n);
-    EXPECT_TRUE(true);
+    Sphere s;
+
+    //upper hemisphere
+    for(float i=0.05f;i<0.5f;i+=0.05f)
+    {
+        s.getRandomPoint(i,0.05f, NULL, &p,&n);
+        EXPECT_GT(p.z, 0);
+    }
+
+    //lower hemisphere
+    for(float i=0.55f;i<1.f;i+=0.05f)
+    {
+        s.getRandomPoint(i, 0.05f, NULL, &p, &n);
+        EXPECT_LT(p.z, 0);
+    }
+
+    //corner cases
+    //r0 less than 0
+    s.getRandomPoint(0.f-FLT_EPSILON, 0.0f, NULL, &p, &n);
+    EXPECT_EQ(p.x,0.f);
+    EXPECT_EQ(p.y,0.f);
+    EXPECT_FLOAT_EQ(p.z,1.f);
+    EXPECT_EQ(n.x,0.f);
+    EXPECT_EQ(n.y,0.f);
+    EXPECT_FLOAT_EQ(n.z,1.f);
+
+    //r0 greater than 1
+    s.getRandomPoint(1.f+FLT_EPSILON, 0.0f, NULL, &p, &n);
+    EXPECT_EQ(p.x,0.f);
+    EXPECT_EQ(p.y,0.f);
+    EXPECT_FLOAT_EQ(p.z,-1.f);
+    EXPECT_EQ(n.x,0.f);
+    EXPECT_EQ(n.y,0.f);
+    EXPECT_FLOAT_EQ(n.z,-1.f);
+
+    //r1 less than 0
+    s.getRandomPoint(0.f, 0.f-FLT_EPSILON, NULL, &p, &n);
+    EXPECT_EQ(p.x,0.f);
+    EXPECT_EQ(p.y,0.f);
+    EXPECT_FLOAT_EQ(p.z,1.f);
+    EXPECT_EQ(n.x,0.f);
+    EXPECT_EQ(n.y,0.f);
+    EXPECT_FLOAT_EQ(n.z,1.f);
+
+    //r1 greater than 0
+    s.getRandomPoint(0.f, 0.f+FLT_EPSILON, NULL, &p, &n);
+    EXPECT_EQ(p.x,0.f);
+    EXPECT_EQ(p.y,0.f);
+    EXPECT_FLOAT_EQ(p.z,1.f);
+    EXPECT_EQ(n.x,0.f);
+    EXPECT_EQ(n.y,0.f);
+    EXPECT_FLOAT_EQ(n.z,1.f);
 }
 
 TEST(Sphere,inherited_methods)
 {
     Sphere s;
-    EXPECT_EQ(s.get_id(),1);
-    EXPECT_GT(s.get_faces_number(), 0); //depends on the tests orderq
+    EXPECT_GT(s.get_id(),0); //depends on the tests orderq
+    EXPECT_EQ(s.get_faces_number(), 1);
     s.get_densities_array(NULL, NULL);
 }
 

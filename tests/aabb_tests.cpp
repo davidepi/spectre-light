@@ -663,7 +663,7 @@ TEST(AABB,intersect)
     EXPECT_GT(near, 0);
     EXPECT_GT(far, 0);
 
-    //hit y, point below
+    //hit y, point front
     ray = Ray(Point3(1.5,0,1.5),Vec3(0,1,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -671,7 +671,7 @@ TEST(AABB,intersect)
     EXPECT_GT(near, 0);
     EXPECT_GT(far, 0);
 
-    //hit y, point above
+    //hit y, point back
     ray = Ray(Point3(1.5,3,1.5),Vec3(0,-1,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -679,7 +679,7 @@ TEST(AABB,intersect)
     EXPECT_GT(near, 0);
     EXPECT_GT(far, 0);
 
-    //hit z, point front
+    //hit z, point above
     ray = Ray(Point3(1.5,1.5,0),Vec3(0,0,1));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -687,7 +687,7 @@ TEST(AABB,intersect)
     EXPECT_GT(near, 0);
     EXPECT_GT(far, 0);
 
-    //hit z, point back
+    //hit z, point below
     ray = Ray(Point3(1.5,1.5,3),Vec3(0,0,-1));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -743,49 +743,49 @@ TEST(AABB,intersect)
     EXPECT_LT(near, 0);
     EXPECT_LT(far, 0);
 
-    //complete miss, point above, x+ direction
+    //complete miss, point back, x+ direction
     ray = Ray(Point3(1.5,3,1.5),Vec3(1,0,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point above, x- direction
+    //complete miss, point back, x- direction
     ray = Ray(Point3(1.5,3,1.5),Vec3(-1,0,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point back, x+ direction
-    ray = Ray(Point3(1.5,1.5,3),Vec3(1,0,0));
-    EXPECT_FALSE(box.inside(&(ray.origin)));
-    res = box.intersect(&ray,&near,&far);
-    EXPECT_EQ(res,false);
-
-    //complete miss, point back, x- direction
-    ray = Ray(Point3(1.5,1.5,3),Vec3(-1,0,0));
-    EXPECT_FALSE(box.inside(&(ray.origin)));
-    res = box.intersect(&ray,&near,&far);
-    EXPECT_EQ(res,false);
-
     //complete miss, point below, x+ direction
-    ray = Ray(Point3(1.5,0,1.5),Vec3(1,0,0));
+    ray = Ray(Point3(1.5,1.5,3),Vec3(1,0,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
     //complete miss, point below, x- direction
-    ray = Ray(Point3(1.5,0,1.5),Vec3(-1,0,0));
+    ray = Ray(Point3(1.5,1.5,3),Vec3(-1,0,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
     //complete miss, point front, x+ direction
-    ray = Ray(Point3(1.5,1.5,3),Vec3(1,0,0));
+    ray = Ray(Point3(1.5,0,1.5),Vec3(1,0,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
     //complete miss, point front, x- direction
+    ray = Ray(Point3(1.5,0,1.5),Vec3(-1,0,0));
+    EXPECT_FALSE(box.inside(&(ray.origin)));
+    res = box.intersect(&ray,&near,&far);
+    EXPECT_EQ(res,false);
+
+    //complete miss, point above, x+ direction
+    ray = Ray(Point3(1.5,1.5,3),Vec3(1,0,0));
+    EXPECT_FALSE(box.inside(&(ray.origin)));
+    res = box.intersect(&ray,&near,&far);
+    EXPECT_EQ(res,false);
+
+    //complete miss, point above, x- direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(-1,0,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -803,13 +803,13 @@ TEST(AABB,intersect)
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point front, y+ direction
+    //complete miss, point below, y+ direction
     ray = Ray(Point3(1.5,1.5,0),Vec3(0,1,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point front, y- direction
+    //complete miss, point below, y- direction
     ray = Ray(Point3(1.5,1.5,0),Vec3(0,-1,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -827,13 +827,13 @@ TEST(AABB,intersect)
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point back, y+ direction
+    //complete miss, point above, y+ direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(0,1,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point back, y- direction
+    //complete miss, point above, y- direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(0,-1,0));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -851,13 +851,13 @@ TEST(AABB,intersect)
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point above, z+ direction
+    //complete miss, point back, z+ direction
     ray = Ray(Point3(1.5,3,1.5),Vec3(0,0,1));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point above, z- direction
+    //complete miss, point back, z- direction
     ray = Ray(Point3(1.5,3,1.5),Vec3(0,0,-1));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -875,13 +875,13 @@ TEST(AABB,intersect)
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point below, z direction
+    //complete miss, point front, z direction
     ray = Ray(Point3(1.5,0,1.5),Vec3(0,0,1));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point below, z- direction
+    //complete miss, point front, z- direction
     ray = Ray(Point3(1.5,0,1.5),Vec3(0,0,-1));
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&near,&far);
@@ -976,7 +976,7 @@ TEST(AABB,intersect_fast)
     EXPECT_GT(near, 0);
     EXPECT_GT(far, 0);
 
-    //hit y, point below
+    //hit y, point front
     ray = Ray(Point3(1.5,0,1.5),Vec3(0,1,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
@@ -985,7 +985,7 @@ TEST(AABB,intersect_fast)
     EXPECT_GT(near, 0);
     EXPECT_GT(far, 0);
 
-    //hit y, point above
+    //hit y, point back
     ray = Ray(Point3(1.5,3,1.5),Vec3(0,-1,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
@@ -994,7 +994,7 @@ TEST(AABB,intersect_fast)
     EXPECT_GT(near, 0);
     EXPECT_GT(far, 0);
 
-    //hit z, point front
+    //hit z, point above
     ray = Ray(Point3(1.5,1.5,0),Vec3(0,0,1));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
@@ -1003,7 +1003,7 @@ TEST(AABB,intersect_fast)
     EXPECT_GT(near, 0);
     EXPECT_GT(far, 0);
 
-    //hit z, point back
+    //hit z, point below
     ray = Ray(Point3(1.5,1.5,3),Vec3(0,0,-1));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
@@ -1066,56 +1066,56 @@ TEST(AABB,intersect_fast)
     EXPECT_LT(near, 0);
     EXPECT_LT(far, 0);
 
-    //complete miss, point above, x+ direction
+    //complete miss, point back, x+ direction
     ray = Ray(Point3(1.5,3,1.5),Vec3(1,0,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point above, x- direction
+    //complete miss, point front, x- direction
     ray = Ray(Point3(1.5,3,1.5),Vec3(-1,0,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point back, x+ direction
+    //complete miss, point above, x+ direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(1,0,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point back, x- direction
+    //complete miss, point above, x- direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(-1,0,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point below, x+ direction
+    //complete miss, point back, x+ direction
     ray = Ray(Point3(1.5,0,1.5),Vec3(1,0,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point below, x- direction
+    //complete miss, point back, x- direction
     ray = Ray(Point3(1.5,0,1.5),Vec3(-1,0,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point front, x+ direction
+    //complete miss, point below, x+ direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(1,0,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point front, x- direction
+    //complete miss, point below, x- direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(-1,0,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
@@ -1136,14 +1136,14 @@ TEST(AABB,intersect_fast)
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point front, y+ direction
+    //complete miss, point below, y+ direction
     ray = Ray(Point3(1.5,1.5,0),Vec3(0,1,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point front, y- direction
+    //complete miss, point below, y- direction
     ray = Ray(Point3(1.5,1.5,0),Vec3(0,-1,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
@@ -1164,14 +1164,14 @@ TEST(AABB,intersect_fast)
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point back, y+ direction
+    //complete miss, point above, y+ direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(0,1,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point back, y- direction
+    //complete miss, point above, y- direction
     ray = Ray(Point3(1.5,1.5,3),Vec3(0,-1,0));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
@@ -1192,14 +1192,14 @@ TEST(AABB,intersect_fast)
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point above, z+ direction
+    //complete miss, point back, z+ direction
     ray = Ray(Point3(1.5,3,1.5),Vec3(0,0,1));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point above, z- direction
+    //complete miss, point back, z- direction
     ray = Ray(Point3(1.5,3,1.5),Vec3(0,0,-1));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
@@ -1220,14 +1220,14 @@ TEST(AABB,intersect_fast)
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point below, z direction
+    //complete miss, point front, z direction
     ray = Ray(Point3(1.5,0,1.5),Vec3(0,0,1));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));
     res = box.intersect(&ray,&rp,&near,&far);
     EXPECT_EQ(res,false);
 
-    //complete miss, point below, z- direction
+    //complete miss, point front, z- direction
     ray = Ray(Point3(1.5,0,1.5),Vec3(0,0,-1));
     rp = RayProperties(ray);
     EXPECT_FALSE(box.inside(&(ray.origin)));

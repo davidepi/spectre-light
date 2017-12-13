@@ -6,7 +6,7 @@
  *  \brief     Box primitive definition
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      26 Nov 2017
  *  \copyright GNU GPLv3
  */
@@ -33,6 +33,8 @@
  *  always centered in (0,0,0) and the back top right point in (1,1,1).
  *  For this reason, a Box will be constructed as an axis aligned box, and then
  *  oriented with the transform matrix.
+ *
+ *  The pivot for the rotation of this box is in (0,0,0)
  */
 class Box : public Shape
 {

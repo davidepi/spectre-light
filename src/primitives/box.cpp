@@ -55,6 +55,7 @@ float Box::surface(const Matrix4* transform)const
 
 bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 {
+    bool inside = false;
     float mint;
     float maxt;
     char axis = 0; //used for normal identification
@@ -67,8 +68,6 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
         swap(&near,&far);
     mint = near;
     maxt = far;
-    if(mint>maxt)
-        return false;
     
     //y plane
     invr = 1.0f/r->direction.y;
@@ -103,7 +102,10 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     if(mint>SELF_INTERSECT_ERROR)
         tmpdistance = mint;
     else if(maxt>SELF_INTERSECT_ERROR)
+    {
+        inside = true;
         tmpdistance = maxt;
+    }
     else
         return false;
     if(tmpdistance>*distance)
@@ -112,8 +114,9 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
         *distance = tmpdistance;
     h->point_h = r->apply(*distance);
     h->normal_h = Normal();
-    h->normal_h[axis] = 1;
-    h->normal_h[axis]*=sign(h->point_h[axis]);
+    h->normal_h[axis] = -sign(r->direction[axis]);
+    if(inside)
+        h->normal_h[axis]*=-1;
     if(h->normal_h.z!=0)
         h->right = Vec3(h->normal_h.z,0,0);
     else
@@ -139,7 +142,7 @@ void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     //
     // useless drawing referring to the old implementation, but I like it :)
     //
-    //  front back   top  botm  left  right
+    //   top  botm  front back  left  right
     // |-----|-----|-----|-----|-----|-----|
     // |  y  |  y  |  z  |  z  |  y  |  y  |
     // |-----|-----|-----|-----|-----|-----|
@@ -158,42 +161,42 @@ void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     float res = lerp(r0,0,densities[5]);
     if(res<densities[0])
     {
-        //front
-        p->x = inverse_lerp(res,0,densities[0]);
-        p->y = r1;
-        p->z = 0;
-        n->x = 0;
-        n->y = 0;
-        n->z = -1;
-    }
-    else if(res<densities[1])
-    {
-        //back
-        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
+        //top
+        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
         p->y = r1;
         p->z = 1;
         n->x = 0;
         n->y = 0;
         n->z = 1;
     }
-    else if(res<densities[2])
-    {
-        //top
-        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
-        p->y = 1;
-        p->z = r1;
-        n->x = 0;
-        n->y = 1;
-        n->z = 0;
-    }
-    else if(res<densities[3])
+    else if(res<densities[1])
     {
         //bottom
         p->x = inverse_lerp(res-densities[2],0,densities[3]-densities[2]);
+        p->y = r1;
+        p->z = 0;
+        n->x = 0;
+        n->y = 0;
+        n->z = -1;
+    }
+    else if(res<densities[2])
+    {
+        //front
+        p->x = inverse_lerp(res,0,densities[0]);
         p->y = 0;
         p->z = r1;
         n->x = 0;
         n->y = -1;
+        n->z = 0;
+    }
+    else if(res<densities[3])
+    {
+        //back
+        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
+        p->y = 1;
+        p->z = r1;
+        n->x = 0;
+        n->y = 1;
         n->z = 0;
     }
     else if(res<densities[4])
