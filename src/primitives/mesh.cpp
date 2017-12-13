@@ -73,7 +73,7 @@ void Mesh::finalize()
     //precompute the surface of the mesh and the aabb
     for(unsigned int i=0;i<count;i++)
     {
-        AABB tmp = Mesh::tris[i].computeAABB();
+        AABB tmp = Mesh::tris[i].compute_AABB();
         aabb.engulf(&tmp);
     }
 
@@ -85,12 +85,12 @@ bool Mesh::intersect(const Ray* r,float* distance, HitPoint* h)const
     return bvh.intersect(r,distance,h);
 }
 
-AABB Mesh::computeAABB()const
+AABB Mesh::compute_AABB()const
 {
     return Mesh::aabb;
 }
 
-AABB Mesh::computeWorldAABB(const Matrix4 *trans) const
+AABB Mesh::compute_AABB(const Matrix4 *trans) const
 {
 #ifdef DEBUG
     if(trans==NULL)
@@ -149,12 +149,12 @@ float Mesh::surface(const Matrix4 *transform)const
     return totalArea;
 }
 
-int Mesh::getNumberOfFaces()const
+int Mesh::get_faces_number()const
 {
     return Mesh::count;
 }
 
-void Mesh::getDensitiesArray(const Matrix4* transform,float* array)const
+void Mesh::get_densities_array(const Matrix4* transform,float* array)const
 {
     float sum = 0;
     for(unsigned int i=0;i<count;i++)

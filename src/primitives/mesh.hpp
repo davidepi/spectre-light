@@ -111,7 +111,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB computeAABB()const;
+    AABB compute_AABB()const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -124,7 +124,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB computeWorldAABB(const Matrix4* trans)const;
+    AABB compute_AABB(const Matrix4* trans)const;
 
     /** \brief Returns the surface of the mesh
      *
@@ -154,7 +154,7 @@ public:
      *
      *  \return The number of faces in a Mesh
      */
-    int getNumberOfFaces()const;
+    int get_faces_number()const;
     
     /** \brief Populate the array of cumulative densities
      *
@@ -167,7 +167,7 @@ public:
      *  \param[in] transform The object to world space matrix
      *  \param[out] array The array of cumulative densities
      */
-    void getDensitiesArray(const Matrix4* transform, float* array)const;
+    void get_densities_array(const Matrix4* transform, float* array)const;
 
     /** \brief Returns a random point on the surface of the mesh
      *

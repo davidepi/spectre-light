@@ -95,7 +95,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB computeAABB()const;
+    AABB compute_AABB()const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -107,7 +107,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB computeWorldAABB(const Matrix4* transform)const;
+    AABB compute_AABB(const Matrix4* transform)const;
 
     /** \brief Returns the surface of the triangle
      *

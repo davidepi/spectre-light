@@ -1,13 +1,13 @@
 //Created,  22 Mar 2016
-//Last Edit 26 Nov 2017
+//Last Edit 13 Dec 2017
 
 /**
  *  \file sphere.hpp
  *  \brief     Sphere primitive definition
  *  \details   All the methods to represent a sphere in the space
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      26 Nov 2017
+ *  \version   0.2
+ *  \date      13 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -31,7 +31,6 @@
  *  a given radius. To center the sphere somewhere else, the
  *  Shape#transformMatrix matrix should be set. If the matrix contains a
  *  non-uniform scaling value, this class will exhibit undefined behaviour
- *
  */
 class Sphere : public Shape
 {
@@ -68,7 +67,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB computeAABB()const;
+    AABB compute_AABB()const;
     
     /** \brief Calculate the AABB in world space
      *
@@ -80,7 +79,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB computeWorldAABB(const Matrix4* transform)const;
+    AABB compute_AABB(const Matrix4* transform)const;
     
     /** \brief Return the surface of the sphere
      *

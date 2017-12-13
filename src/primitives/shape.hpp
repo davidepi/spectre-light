@@ -43,7 +43,7 @@ public:
     /** \brief Return the ID of this shape
      *  \return A unsigned int representing the ID of this shape
      */
-    unsigned int getID()const;
+    unsigned int get_id()const;
     
     /** \brief Intersection of a Ray and this shape
      *
@@ -71,7 +71,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    virtual AABB computeAABB()const = 0;
+    virtual AABB compute_AABB()const = 0;
     
     /** \brief Recalculate the AABB, in world space units
      *
@@ -84,7 +84,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    virtual AABB computeWorldAABB(const Matrix4* trans) const = 0;
+    virtual AABB compute_AABB(const Matrix4* trans)const = 0;
     
     /** \brief Return the surface of the shape
      *
@@ -113,16 +113,16 @@ public:
      *
      *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
      */
-    virtual int getNumberOfFaces()const;
+    virtual int get_faces_number()const;
     
     /** \brief Populate the cumulative densities array
      *
      *  For this specific class, nothing is done. Check subclasses
      *
-     *  \param[in] transform UNUSED
+     *  \param[in] transf UNUSED
      *  \param[out] array UNUSED
      */
-    virtual void getDensitiesArray(const Matrix4* transform,float* array)const;
+    virtual void get_densities_array(const Matrix4* transf,float* array)const;
 
     /** \brief Returns a random point on the surface of the shape
      *
@@ -152,10 +152,10 @@ class Asset;
 struct HitPoint
 {
     ///The hit point
-    Point3 h;
+    Point3 point_h;
 
     ///The normal of the hit point
-    Normal n;
+    Normal normal_h;
 
     ///Right direction, perpendicular to the normal
     Vec3 right;
@@ -164,7 +164,7 @@ struct HitPoint
     Vec3 cross;
 
     ///Hit asset
-    const Asset* hit;
+    const Asset* asset_h;
 };
 
 #endif

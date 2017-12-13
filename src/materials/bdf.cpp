@@ -58,9 +58,9 @@ void Bsdf::inheritBdf(Bdf* addme)
 Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
                   BdfFlags val)const
 {
-    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
-    Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->n));
-    if(wi->dot(h->n)*wo->dot(h->n) > 0)//reflected ray
+    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
+    if(wi->dot(h->normal_h)*wo->dot(h->normal_h) > 0)//reflected ray
         val = (BdfFlags)(val & ~BTDF);
     else                                //transmitted ray
         val = (BdfFlags)(val & ~BRDF);
@@ -93,7 +93,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
         chosen--;
 
     //transform to shading space
-    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
+    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     Vec3 tmpwi;
 
     //I don't care about the result, but I need to generate the &wi vector
@@ -102,9 +102,9 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     retval=matching[chosen]->sample_value(&wo_shading_space, &tmpwi,r1,r2,pdf);
 
     //transform incident ray to world space
-    wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->n.x * tmpwi.z;
-    wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->n.y * tmpwi.z;
-    wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->n.z * tmpwi.z;
+    wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->normal_h.x * tmpwi.z;
+    wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->normal_h.y * tmpwi.z;
+    wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
 
     *val = matching[chosen]->getFlags();//val now is a subset of matchme
     if(wi->length()==0)
@@ -119,7 +119,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     if((*val & SPECULAR)==0)
     {
         retval = SPECTRUM_BLACK;
-        if (wo->dot(h->n) * wi->dot(h->n) > 0)
+        if (wo->dot(h->normal_h) * wi->dot(h->normal_h) > 0)
             *val = (BdfFlags)(*val & ~BTDF);
         else
             *val = (BdfFlags)(*val & ~BRDF);
@@ -141,8 +141,8 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
 {
     if(Bsdf::count == 0)
         return 0.f;
-    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->n));
-    Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->n));
+    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
     float pdf = 0.f;
     int matching = 0;
     for (int i = 0; i < count; ++i)

@@ -268,7 +268,7 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
         BvhBuildNode* node = new BvhBuildNode;
         created++;
         for(int i=0;i<len;i++)
-            bounding.engulf(tris[p[offs+i].index].computeAABB());
+            bounding.engulf(tris[p[offs+i].index].compute_AABB());
         node->leaf(bounding,offs,len);
         std::vector<BvhBuildNode*> tmp_cluster;
         tmp_cluster.push_back(node);
@@ -310,7 +310,7 @@ void Bvh::buildTree(Triangle* tris, int len)
         Bvh::nodesList[0].len = (uint8_t)len;
         Bvh::nodesList[0].offset = 0;
         for(int i=0;i<len;i++)
-            Bvh::nodesList[0].bounding.engulf(tris[i].computeAABB());
+            Bvh::nodesList[0].bounding.engulf(tris[i].compute_AABB());
         return;
     }
     Primitive* prims = (Primitive*)malloc(sizeof(Primitive)*len);
@@ -319,7 +319,7 @@ void Bvh::buildTree(Triangle* tris, int len)
     for(int i=0;i<len;i++) //calculate centroid AABB
     {
         prims[i].index=i;
-        centroids[i] = tris[i].computeAABB().center();
+        centroids[i] = tris[i].compute_AABB().center();
         centroidaabb.engulf(centroids+i);
     }
     //calculate reciprocal of the centroidaabb, used to map distance in [0-1]

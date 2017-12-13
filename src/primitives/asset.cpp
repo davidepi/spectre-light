@@ -6,7 +6,7 @@ unsigned static int _asset_ID_pool = 1;
 
 Asset::Asset(Shape* sp, Matrix4* transform)
         :objToWorld(*transform),id(_asset_ID_pool++),
-         aabb(sp->computeWorldAABB(transform))
+         aabb(sp->compute_AABB(transform))
 
 {
     Asset::model = sp;
@@ -28,14 +28,14 @@ bool Asset::intersect(const Ray* r,float* distance, HitPoint* h)const
     if(res)
     {
         //retransform back to world space
-        h->h = objToWorld*h->h;
+        h->point_h = objToWorld*h->point_h;
         //normal requires the inverse of the transformation. Since I want a
         //objToWorld, its inverse is a worldToObj
-        h->n = transform_normal(h->n,&worldToObj);
+        h->normal_h = transform_normal(h->normal_h,&worldToObj);
         h->right = objToWorld*h->right;
-        h->n.normalize();
+        h->normal_h.normalize();
         h->right.normalize();
-        h->cross = normalize(cross(Vec3(h->n),h->right));
+        h->cross = normalize(cross(Vec3(h->normal_h),h->right));
     }
     return res;
 }

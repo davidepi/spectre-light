@@ -10,8 +10,8 @@ AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c)
     AreaLight::area = sp->surface(objToWorld);
     
     //get the cumulative densities of the various faces of the light
-    cd = (float*)malloc(sizeof(float)*sp->getNumberOfFaces());
-    sp->getDensitiesArray(objToWorld, cd);
+    cd = (float*)malloc(sizeof(float)*sp->get_faces_number());
+    sp->get_densities_array(objToWorld, cd);
     
     AreaLight::invarea = 1.f/area;
 }
@@ -83,7 +83,7 @@ Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
         return SPECTRUM_BLACK;
     }
     light_point = ray.apply(*distance);
-    normal = hit.n;
+    normal = hit.normal_h;
     *wi = ray.direction;
     *pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
            (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
@@ -122,7 +122,7 @@ float AreaLight::pdf(const Point3* p, const Vec3* wi)const
     float pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
                 (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
                 (ray.origin.z-light_point.z)*(ray.origin.z-light_point.z);
-    pdf/=(absdot(hit.n,-(ray.direction))*AreaLight::area);
+    pdf/=(absdot(hit.normal_h,-(ray.direction))*AreaLight::area);
     return pdf;
 }
 

@@ -3,14 +3,14 @@
 
 #include "box.hpp"
 
-AABB Box::computeAABB()const
+AABB Box::compute_AABB()const
 {
     const Point3 min(0,0,0);
     const Point3 max(1,1,1);
     return AABB(&min,&max);
 }
 
-AABB Box::computeWorldAABB(const Matrix4* transform)const
+AABB Box::compute_AABB(const Matrix4* transform)const
 {
 #ifdef DEBUG
     if(transform==NULL)
@@ -36,7 +36,7 @@ AABB Box::computeWorldAABB(const Matrix4* transform)const
     return AABB(pmi,pma);
 }
 
-int Box::getNumberOfFaces()const
+int Box::get_faces_number()const
 {
     return 6;
 }
@@ -110,18 +110,18 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
         return false;
     else
         *distance = tmpdistance;
-    h->h = r->apply(*distance);
-    h->n = Normal();
-    h->n[axis] = 1;
-    h->n[axis]*=sign(h->h[axis]);
-    if(h->n.z!=0)
-        h->right = Vec3(h->n.z,0,0);
+    h->point_h = r->apply(*distance);
+    h->normal_h = Normal();
+    h->normal_h[axis] = 1;
+    h->normal_h[axis]*=sign(h->point_h[axis]);
+    if(h->normal_h.z!=0)
+        h->right = Vec3(h->normal_h.z,0,0);
     else
-        h->right = Vec3(-h->n.y,h->n.x,0);
+        h->right = Vec3(-h->normal_h.y,h->normal_h.x,0);
     return true;
 }
 
-void Box::getDensitiesArray(const Matrix4* transform, float* array)const
+void Box::get_densities_array(const Matrix4* transform, float* array)const
 {
     Vec3 scale = transform->get_scale();
     array[0] = scale.x*scale.y;

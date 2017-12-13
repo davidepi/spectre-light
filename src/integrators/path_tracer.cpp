@@ -21,11 +21,11 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     wo.normalize();
     //if first hit is light or specular, use its emission
     if((r->ricochet==0 || (last&SPECULAR))
-       && hp->hit->isLight() && dot(hp->n,wo)>0)
-        retval+=*power*((AreaLight *)hp->hit)->emissiveSpectrum();
+       && hp->asset_h->isLight() && dot(hp->normal_h,wo)>0)
+        retval+=*power*((AreaLight *)hp->asset_h)->emissiveSpectrum();
 
     //calculate direct lighting at point
-    const Bsdf* mat = hp->hit->getMaterial();
+    const Bsdf* mat = hp->asset_h->getMaterial();
     Spectrum direct = direct_l(sc,hp,r,sam,ot);
     retval+=*power*direct;
 
@@ -51,13 +51,13 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     BdfFlags matched;
     Spectrum f = mat->sample_value(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
                            BdfFlags(ALL), &matched);
-    float adot = absdot(wi,hp->n);
+    float adot = absdot(wi,hp->normal_h);
     if(f.isBlack() || pdf==0)
         return retval;
 
     //calculate new power, new ray and new intersection point
     *power *= f*adot/pdf*rrprob;
-    Ray r2(hp->h,wi);
+    Ray r2(hp->point_h,wi);
     r2.ricochet = (unsigned char)(r->ricochet+1);
     HitPoint h2;
     if(!sc->k.intersect(&r2,&h2))

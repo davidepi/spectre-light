@@ -496,7 +496,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
                        current_asset->intersect(r,&bestdistance,h))
                     {
                         found = true; //record current intersection
-                        h->hit = current_asset;
+                        h->asset_h = current_asset;
                     }
                 }
             }

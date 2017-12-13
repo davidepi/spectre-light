@@ -49,7 +49,7 @@ int Scene::inheritShape(Shape *addme)
     }
 
     Scene::shapes[Scene::shape_index++] = addme; //add shape
-    return  addme->getID();
+    return  addme->get_id();
 }
 
 unsigned int Scene::addAsset(unsigned int shapeid, Matrix4* transformMatrix,
@@ -58,7 +58,7 @@ unsigned int Scene::addAsset(unsigned int shapeid, Matrix4* transformMatrix,
     //complexity O(n), could be O(1), but who cares, this is done in the setup
     for(int i=0;i<Scene::shape_index;i++)
     {
-        if(Scene::shapes[i]->getID() == shapeid) //found the shape
+        if(Scene::shapes[i]->get_id() == shapeid) //found the shape
         {
             if(Scene::assets_allocated == Scene::asset_index) //array full
             {
@@ -98,7 +98,7 @@ unsigned int Scene::addLight(unsigned int shapeid, Matrix4* transform,
     //complexity O(n), could be O(1), but who cares, this is done in the setup
     for(int i=0;i<Scene::shape_index;i++)
     {
-        if(Scene::shapes[i]->getID() == shapeid) //found the shape
+        if(Scene::shapes[i]->get_id() == shapeid) //found the shape
         {
             if(Scene::assets_allocated == Scene::asset_index) //array full
             {

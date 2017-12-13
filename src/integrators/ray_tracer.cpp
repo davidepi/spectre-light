@@ -22,9 +22,9 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
     Spectrum L(0);
     int nlights = sc->lightSize();
     const AreaLight*const* lights = sc->getLights();
-    if(hp->hit->isLight())
-        if(dot(hp->n,-r->direction)>0)
-            L+=((AreaLight *) hp->hit)->emissiveSpectrum();
+    if(hp->asset_h->isLight())
+        if(dot(hp->normal_h,-r->direction)>0)
+            L+=((AreaLight *) hp->asset_h)->emissiveSpectrum();
     if(nlights>0)
     {
         float rand[6];
@@ -34,7 +34,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         //choose a light to sample
         int sampledlight = min((int)(rand[0]*nlights),nlights-1);
         const AreaLight* light = lights[sampledlight];
-        const Bsdf* mat = hp->hit->getMaterial();
+        const Bsdf* mat = hp->asset_h->getMaterial();
         float lightpdf;
         float bsdfpdf;
         BdfFlags flags((BdfFlags)(ALL&~SPECULAR));
@@ -42,12 +42,12 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         float light_distance;
 
         //multiple importance sampling, light first
-        Spectrum directrad=light->radiance_i(rand[1],rand[2],&hp->h,&wi,
+        Spectrum directrad=light->radiance_i(rand[1],rand[2],&hp->point_h,&wi,
                                              &lightpdf,&light_distance);
         if(lightpdf > 0 && !directrad.isBlack())
         {
             Spectrum bsdf_f = mat->value(&wo,hp,&wi,flags);
-            Ray r2(hp->h,wi);
+            Ray r2(hp->point_h,wi);
             if(!bsdf_f.isBlack() && !ot->isOccluded(&r2,&light_distance))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi,flags);
@@ -55,7 +55,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                 {
                     float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
                                                         bsdfpdf*bsdfpdf);
-                    L+=bsdf_f*directrad*absdot(wi,hp->n)*weight/lightpdf;
+                    L+=bsdf_f*directrad*absdot(wi,hp->normal_h)*weight/lightpdf;
                 }
             }
         }
@@ -69,19 +69,19 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
             float w = 1.f; //weight
             //if((sampled_val&SPECULAR)==0) //if not specular -> 100% guaranteed
             //{
-                lightpdf = light->pdf(&hp->h, &wi);
+                lightpdf = light->pdf(&hp->point_h, &wi);
                 if(lightpdf == 0)
                     return L; //no contribution from bsdf sampling
                 w = (bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf+lightpdf*lightpdf);
             //}
-            Ray r2(hp->h,wi);
+            Ray r2(hp->point_h,wi);
             HitPoint h2;
             if(sc->k.intersect(&r2,&h2))
-                if(h2.hit->getID() == light->getID())
-                    if(dot(h2.n,-r2.direction)>0)
+                if(h2.asset_h->getID() == light->getID())
+                    if(dot(h2.normal_h,-r2.direction)>0)
                     {
                         Spectrum rad = light->emissiveSpectrum();
-                        L += bsdf_f * rad * absdot(wi, hp->n) * w / bsdfpdf;
+                        L += bsdf_f * rad * absdot(wi, hp->normal_h) * w / bsdfpdf;
                     }
         }
     }
@@ -96,7 +96,7 @@ Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     float rand[3];
     float bsdfpdf;
     sam->getRandomNumbers(rand,3);
-    const Bsdf* mat = hp->hit->getMaterial();
+    const Bsdf* mat = hp->asset_h->getMaterial();
     BdfFlags sampled_val;
     BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
     Spectrum bsdf_f = mat->sample_value(rand[0], rand[1], rand[2], &wo, hp, &wi,
@@ -104,11 +104,11 @@ Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     
     if(bsdfpdf==1.f && !bsdf_f.isBlack())
     {
-        float adot = absdot(wi, hp->n);
+        float adot = absdot(wi, hp->normal_h);
         if(adot != 0)
         {
             Spectrum reflr_rad;
-            Ray r2(hp->h,wi); //new ray to trace
+            Ray r2(hp->point_h,wi); //new ray to trace
             r2.ricochet=r->ricochet+1;
             HitPoint h2;
             if(s->k.intersect(&r2,&h2)) //if intersection is found

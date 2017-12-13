@@ -7,7 +7,7 @@
  *  \details   Definition and implementation of a 4 by 4 matrix and some inline
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      12 Dec 2017
  *  \copyright GNU GPLv3
  */

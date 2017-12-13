@@ -9,7 +9,7 @@ Triangle::Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)
 
 }
 
-AABB Triangle::computeAABB()const
+AABB Triangle::compute_AABB()const
 {
     Point3 pmin(min(min(a.p.x,b.p.x),c.p.x),
                 min(min(a.p.y,b.p.y),c.p.y),
@@ -24,7 +24,7 @@ AABB Triangle::computeAABB()const
     return AABB(&pmin, &pmax);
 }
 
-AABB Triangle::computeWorldAABB(const Matrix4* transform)const
+AABB Triangle::compute_AABB(const Matrix4* transform)const
 {
 #ifdef _LOW_LEVEL_CHECKS_
     if(transform==NULL)
@@ -104,17 +104,17 @@ bool Triangle::intersect(const Ray *r, float *distance, HitPoint *h)const
 
     *distance = dist;
     float w = 1.f-u-v;
-    h->h=r->apply(dist); //compute hit point
+    h->point_h=r->apply(dist); //compute hit point
 
     //compute normal in the point, given normals in the vertices
-    h->n = a.n*w+b.n*u+c.n*v;//TODO: change this after uv mapping implementation
+    h->normal_h = a.n*w+b.n*u+c.n*v;//TODO: change this after uv mapping implementation
 
     //compute default shading vector TODO: change also this after uv map impl
     h->right.x = b.p.x-a.p.x;
     h->right.y = b.p.y-a.p.y;
     h->right.z = b.p.z-a.p.z;
 
-    h->cross = cross(Vec3(h->n),h->right);
-    h->right = cross(Vec3(h->n),h->cross); //adjust right vector
+    h->cross = cross(Vec3(h->normal_h),h->right);
+    h->right = cross(Vec3(h->normal_h),h->cross); //adjust right vector
     return true;
 }
