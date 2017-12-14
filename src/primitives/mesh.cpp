@@ -17,26 +17,26 @@ Mesh::~Mesh()
    delete[] Mesh::tris;
 }
 
-void Mesh::addTriangle(const Point3 *a, const Point3 *b, const Point3 *c,
-                       const Normal *n)
+void Mesh::add_triangle(const Point3& a, const Point3& b, const Point3& c,
+                       const Normal& n)
 {
     Vertex v0;
     Vertex v1;
     Vertex v2;
-    v0.p = *a;
-    v0.n = *n;
-    v1.p = *b;
-    v1.n = *n;
-    v2.p = *c;
-    v2.n = *n;
-    Mesh::addTriangle(&v0,&v1,&v2);
+    v0.p = a;
+    v0.n = n;
+    v1.p = b;
+    v1.n = n;
+    v2.p = c;
+    v2.n = n;
+    Mesh::add_triangle(&v0,&v1,&v2);
 }
 
-void Mesh::addTriangle(const Vertex *a, const Vertex *b, const Vertex *c)
+void Mesh::add_triangle(const Vertex* a, const Vertex* b, const Vertex* c)
 {
     if(Mesh::count==_MAX_TRIS_) //max tris per primitive
     {
-        Console.warning(MESSAGE_MAXTRISNUMBER);
+        Console.severe(MESSAGE_MAXTRISNUMBER);
     }
     else
     {

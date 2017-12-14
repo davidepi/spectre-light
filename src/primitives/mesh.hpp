@@ -34,7 +34,7 @@
  *  are grouped together in order to form a single shape.
  *
  *  In order to create a Mesh it is necessary to give the number of triangles
- *  as a parameter to the constructor. Then call the Mesh::addTriangle function
+ *  as a parameter to the constructor. Then call the Mesh::add_triangle function
  *  for every triangle and in the end the Mesh::finalize function
  */
 class Mesh : public Shape
@@ -58,10 +58,10 @@ public:
      *  \param[in] a The first vertex
      *  \param[in] b The second vertex
      *  \param[in] c The third vertex
-     *  \sa addTriangle(const Point3* a, const Point3* b, const Point3* c,
+     *  \sa add_triangle(const Point3* a, const Point3* b, const Point3* c,
      *               const Normal* n);
      */
-    void addTriangle(const Vertex* a, const Vertex* b, const Vertex* c);
+    void add_triangle(const Vertex* a, const Vertex* b, const Vertex* c);
 
     /** \brief Add a triangle to this Mesh
      *
@@ -72,10 +72,10 @@ public:
      *  \param[in] b The second vertex position in the space
      *  \param[in] c The third vertex position in the space
      *  \param[in] n The normal for the three vertices
-     *  \sa addTriangle(const Vertex* a, const Vertex* b, const Vertex* c);
+     *  \sa add_triangle(const Vertex* a, const Vertex* b, const Vertex* c);
      */
-    void addTriangle(const Point3* a, const Point3* b, const Point3* c,
-                     const Normal* n);
+    void add_triangle(const Point3& a, const Point3& b, const Point3& c,
+                     const Normal& n);
 
     /** \brief Finalize the mesh
      *
