@@ -70,7 +70,7 @@ TEST(Triangle,AABB_world_space)
 
     m.set_rotate_z(-ONE_PI/2.f);
     box = t.compute_AABB(&m);
-    EXPECT_FLOAT_EQ(box.bounds[0].x, 0);
+    EXPECT_TRUE(flt_equal(box.bounds[0].x, 0)); //fuck floats
     EXPECT_EQ(box.bounds[0].y, -1);
     EXPECT_EQ(box.bounds[0].z, 0);
     EXPECT_FLOAT_EQ(box.bounds[1].x, 1);
@@ -245,6 +245,13 @@ TEST(Triangle,sample_point)
     distance = FLT_MAX;
     res = t.intersect(&r,&distance,&hit);
     EXPECT_TRUE(res);
+}
 
+TEST(Triangle,inherited_methods)
+{
+    Triangle t;
+    EXPECT_GT(t.get_id(),0); //depends on the tests orderq
+    EXPECT_EQ(t.get_faces_number(), 1);
+    t.get_densities_array(NULL, NULL);
 }
 

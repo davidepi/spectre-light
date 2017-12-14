@@ -5,7 +5,6 @@
 #include "primitives/sphere.hpp"
 #include "utility/utility.hpp"
 #include <climits>
-#define EPSILON 1E-5f
 
 TEST(Sphere,AABB_object_space)
 {
@@ -102,20 +101,20 @@ TEST(Sphere,intersect)
     EXPECT_EQ(h.right.z,0);
 
     //hit origin inside the sphere
-    r = Ray(Point3(0,0,0),Vec3(0,1,0));
+    r = Ray(Point3(0,0,0),Vec3(1,0,0));
     distance = FLT_MAX;
     res = s.intersect(&r,&distance,&h);
     EXPECT_TRUE(res);
     EXPECT_EQ(distance,1);
-    EXPECT_EQ(h.point_h.x,0);
-    EXPECT_EQ(h.point_h.y,1);
+    EXPECT_EQ(h.point_h.x,1);
+    EXPECT_EQ(h.point_h.y,0);
     EXPECT_EQ(h.point_h.z,0);
-    EXPECT_EQ(h.normal_h.x,0);
-    EXPECT_EQ(h.normal_h.y,1);
+    EXPECT_EQ(h.normal_h.x,1);
+    EXPECT_EQ(h.normal_h.y,0);
     EXPECT_EQ(h.normal_h.z,0);
     h.right.normalize();
-    EXPECT_EQ(h.right.x,-1);
-    EXPECT_EQ(h.right.y,0);
+    EXPECT_EQ(h.right.x,0);
+    EXPECT_EQ(h.right.y,1);
     EXPECT_EQ(h.right.z,0);
 
     //hit but origin after the sphere (= miss)

@@ -391,8 +391,8 @@ TEST(AABB,longest_axis)
     EXPECT_EQ(box.longest_axis(),1);
 
     //longest z - non inf
-    box = AABB(Point3(17.90233,-46.71415,-88.93419),
-               Point3(76.75507,90.73106,95.81359));
+    box = AABB(Point3(17.90233,-6.71415,-88.93419),
+               Point3(76.75507,50.73106,95.81359));
     EXPECT_EQ(box.longest_axis(),2);
 
     //longest x - inf
