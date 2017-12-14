@@ -274,7 +274,8 @@ void Matrix4::set_rotate_z(float value)
     Matrix4::m33 = 1.0f;
 }
 
-void Matrix4::set_lookAt_inverse(const Point3& pos,const Point3& eye,const Vec3& up)
+void Matrix4::set_lookAt_inverse(const Point3& pos,const Point3& eye,
+                                 const Vec3& up)
 {
     Vec3 newup = up;
     if(!(up.isNormalized()))

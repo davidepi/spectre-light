@@ -1,13 +1,13 @@
 //Created,   4 Aug 2017
-//Last Edit 26 Nov 2017
+//Last Edit 14 Dec 2017
 
 /**
  *  \file triangle.hpp
  *  \brief     Triangle primitive definition
  *  \details   All the methods to represent a triangle in the space
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      26 Nov 2017
+ *  \version   0.2
+ *  \date      14 Dec 2017
  *  \copyright GNU GPLv3
  */
 

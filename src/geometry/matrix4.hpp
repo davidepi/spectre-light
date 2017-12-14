@@ -220,7 +220,8 @@ public:
      *  \param[in] up A vector representing the direction poiting upside the
      *  camera. With the camera parallel to the terrain, this will be (0,1,0)
      */
-    void set_lookAt_inverse(const Point3& pos,const Point3& target,const Vec3& up);
+    void set_lookAt_inverse(const Point3& pos,const Point3& target,
+                            const Vec3& up);
     
     /**  \brief Returns a new matrix that is the transpose of the current matrix
      *
