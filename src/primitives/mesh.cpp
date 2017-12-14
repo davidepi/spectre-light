@@ -208,6 +208,7 @@ void Mesh::sample_point(float r0, float r1, const float* densities, Point3* p,
     }
 
     //sample the triangle
-    sample01 = inverse_lerp(extSample, 0, densities[mid+1]-densities[mid]);
+    sample01 = inverse_lerp(extSample-densities[mid], 0,
+                            densities[mid+1]-densities[mid]);
     tris[mid].sample_point(sample01, r1, NULL, p, n);
 }

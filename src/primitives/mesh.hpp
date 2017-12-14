@@ -1,5 +1,5 @@
 //Created,   6 Aug 2017
-//Last Edit 26 Nov 2017
+//Last Edit 15 Dec 2017
 
 /**
  *  \file mesh.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle mesh in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date     26 Nov 2017
+ *  \date      15 Dec 2017
  *  \copyright GNU GPLv3
  */
 
