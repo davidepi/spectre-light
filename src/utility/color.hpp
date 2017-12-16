@@ -7,7 +7,7 @@
  *  \details Contains a class to approximate the representation of the visible
  *  spectrum
  *  \author Davide Pizzolotto
- *  \version 0.1
+ *  \version 0.2
  *  \date 5 Sep 2017
  *  \copyright GNU GPLv3
  */
@@ -66,7 +66,7 @@ public:
     /** \brief Return true if the color is black
      *  \return true if every component is zero
      */
-    bool isBlack()const;
+    bool is_black()const;
     
     ///Red or x component
     float r;
@@ -170,7 +170,7 @@ public:
      *  to CIE 1931 XYZ. The Standard illuminant (D65) is also assumed to be the
      *  white colour
      */
-    ColorXYZ toXYZ()const;
+    ColorXYZ to_XYZ()const;
 };
 
 /** \brief Representation of an XYZ colour
@@ -212,14 +212,14 @@ public:
      *  Convert the color representation from CIE 1931 XYZ to sRGB, assuming
      *  a D65 Illuminant as white
      */
-    ColorRGB toStandardRGB()const;
+    ColorRGB to_sRGB()const;
     
     /** \brief Convert this XYZ to the Adobe RGB representation
      *
      *  Convert the color representation from CIE 1931 XYZ to Adobe RGB, 
      *  assuming a D65 Illuminant as white
      */
-    ColorRGB toAdobeRGB()const;
+    ColorRGB to_AdobeRGB()const;
 };
 
 #endif

@@ -588,7 +588,7 @@ Spectrum::Spectrum(ColorRGB c, bool l)
         w[i] = clamp(w[i],0.f,1.f);
 #else
     (void)l; //to avoid unused parameters warnings
-    ColorXYZ res = c.toXYZ();
+    ColorXYZ res = c.to_XYZ();
     Spectrum::w[0] = res.r;
     Spectrum::w[1] = res.g;
     Spectrum::w[2] = res.b;
