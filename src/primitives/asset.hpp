@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 25 Nov 2017
+//Last Edit 16 Dec 2017
 
 /**
  *  \file asset.hpp
@@ -7,8 +7,8 @@
  *  \details   Containst the class that merge together a shape with its
  *             materials and textures
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      25 Nov 2017
+ *  \version   0.2
+ *  \date      16 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -38,7 +38,7 @@ public:
      *  \param[in] transform The transformation matrix that will be applied to
      *  the shape
      */
-    Asset(Shape* sp, Matrix4* transform);
+    Asset(const Shape* sp, const Matrix4& transform);
     
     ///Default destructor
     virtual ~Asset() = default;
@@ -47,7 +47,7 @@ public:
      *
      *  \return A unsigned int representing the ID of this asset
      */
-    unsigned int getID()const;
+    unsigned int get_id()const;
     
     /** \brief Intersection of a Ray and this asset
      *
@@ -71,7 +71,7 @@ public:
      *  \param[out] entry_point The entry point of the AABB
      *  \param[out] exit_point The exit point of the AABB
      */
-    bool intersectAABB(const Ray* r, const RayProperties* rp,
+    bool intersect_AABB(const Ray* r, const RayProperties* rp,
                        float* entry_point, float* exit_point)const;
     
     /** \brief Return a pointer to the AABB
@@ -81,7 +81,7 @@ public:
      *
      *  \return A pointer to the aabb surrounding this asset
      */
-    const AABB* getAABB() const;
+    const AABB* get_AABB() const;
 
     /** \brief Set the material for the current asset
      *
@@ -91,7 +91,7 @@ public:
      *  \param[in] material The pointer of the material that will be associated
      *  with the current asset
      */
-    void setMaterial(const Bsdf* material);
+    void set_material(const Bsdf* material);
 
     /** \brief Return a pointer to the material
      *
@@ -99,18 +99,18 @@ public:
      *
      *  \return material A pointer to the material of the asset
      */
-    const Bsdf* getMaterial()const;
+    const Bsdf* get_material()const;
 
     /** \brief Return true if this asset is a light
      *
      *  \return true if the asset is a light
      */
-    virtual bool isLight()const;
+    virtual bool is_light()const;
     
 protected:
 
     ///Underlying model
-    Shape* model;
+    const Shape* model;
 
     ///ObjToWorld matrix
     Matrix4 objToWorld;
@@ -129,7 +129,6 @@ private:
     //Material
     const Bsdf* material;
 
-    //Texture
 };
 
 #endif

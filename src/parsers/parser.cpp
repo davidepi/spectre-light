@@ -756,8 +756,8 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
         {
             char* val;
             float x,y,z;
-            Matrix4* m = new Matrix4();
-            m->set_identity();
+            Matrix4 m;
+            m.set_identity();
             Matrix4 trans,rotx,roty,rotz,scale;
 
             //parse position
@@ -790,11 +790,11 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             z = (float)atof(val);
             scale.set_scale(Vec3(x,y,z));
 
-            *m *= trans;
+            m *= trans;
             rotz *= roty;
             rotz *= rotx;
-            *m *= rotz;
-            *m *= scale;
+            m *= rotz;
+            m *= scale;
 
             //parse spectrum
             Spectrum emissive;
@@ -855,8 +855,8 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
         {
             char* val;
             float x,y,z;
-            Matrix4* m = new Matrix4();
-            m->set_identity();
+            Matrix4 m;
+            m.set_identity();
             Matrix4 trans,rotx,roty,rotz,scale;
 
             //parse position
@@ -889,11 +889,11 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             z = (float)atof(val);
             scale.set_scale(Vec3(x,y,z));
 
-            *m *= trans;
+            m *= trans;
             rotz *= roty;
             rotz *= rotx;
-            *m *= rotz;
-            *m *= scale;
+            m *= rotz;
+            m *= scale;
 
             out->scene->addAsset((unsigned int)got->second,m,mat);
         }

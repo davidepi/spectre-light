@@ -153,7 +153,7 @@ public:
      *
      * \warning The input length is not checked, a 0-length vector will result
      *  in a division by zero error
-     *  \sa isNormalized()
+     *  \sa is_normalized()
      */
     void normalize();
     
@@ -214,7 +214,7 @@ public:
      *          not
      *  \sa normalize()
      */
-    bool isNormalized()const;
+    bool is_normalized()const;
     
     /**  \brief Represent this vector with an array
      *
@@ -531,7 +531,7 @@ public:
      *  \note Despite the name, a Normal is not guaranteed to be normalized
      *  \warning The input length is not checked, a 0-length vector will result
      *  in a division by zero error
-     *  \sa isNormalized()
+     *  \sa is_normalized()
      */
     void normalize();
     
@@ -542,7 +542,7 @@ public:
      *  \note Despite the name, a Normal is not guaranteed to be normalized
      *  \sa normalize()
      */
-    bool isNormalized()const;
+    bool is_normalized()const;
     
     /**  \brief Represent this normal with an array
      *
@@ -1096,7 +1096,7 @@ inline Normal min(const Normal& n1, const Normal& n2)
 inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
+    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1118,7 +1118,7 @@ inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 inline Vec3 reflect(const Vec3& source, const Normal& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
+    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1144,7 +1144,7 @@ inline Vec3 reflect(const Vec3& source, const Normal& centre)
 inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = dot(source,interface); //cos incident
     const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
@@ -1177,7 +1177,7 @@ inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
 inline Vec3 refract(const Vec3& source, const Normal& interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = dot(source,interface); //cos incident
     const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted

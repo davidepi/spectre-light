@@ -120,7 +120,7 @@ public:
      *          not
      *  \sa normalize()
      */
-    bool isNormalized()const;
+    bool is_normalized()const;
     
     /**
      *  \brief Represent this vector with an array

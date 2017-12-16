@@ -3,15 +3,15 @@
 
 #include "area_light.hpp"
 
-AreaLight::AreaLight(Shape* sp, Matrix4* objToWorld, const Spectrum& c)
+AreaLight::AreaLight(const Shape* sp, const Matrix4& objToWorld, const Spectrum& c)
 : Asset(sp,objToWorld), c(c)
 {
     //calculate the surface of the world-space object
-    AreaLight::area = sp->surface(objToWorld);
+    AreaLight::area = sp->surface(&objToWorld);
     
     //get the cumulative densities of the various faces of the light
     cd = (float*)malloc(sizeof(float)*sp->get_faces_number());
-    sp->get_densities_array(objToWorld, cd);
+    sp->get_densities_array(&objToWorld, cd);
     
     AreaLight::invarea = 1.f/area;
 }
@@ -131,7 +131,7 @@ float AreaLight::pdf() const
     return AreaLight::invarea;
 }
 
-bool AreaLight::isLight()const
+bool AreaLight::is_light()const
 {
     return true;
 }

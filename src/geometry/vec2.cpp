@@ -78,7 +78,7 @@ void Vec2::normalize()
     Vec2::y *= inverse;
 }
 
-bool Vec2::isNormalized() const
+bool Vec2::is_normalized() const
 {
     float len = Vec2::length();
     return len>1-FLT_EPSILON && len<1+FLT_EPSILON;

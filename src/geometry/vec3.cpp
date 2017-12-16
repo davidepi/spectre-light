@@ -148,7 +148,7 @@ void Vec3::normalize()
     Vec3::z *= len;
 }
 
-bool Vec3::isNormalized()const
+bool Vec3::is_normalized()const
 {
     //sqrt(1) = 1 so I don't need the expense of a Vec3::length()
     float len = Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z;
@@ -258,7 +258,7 @@ void Vec3::min(const Vec3& vector2)
 void Vec3::reflect(const Vec3& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.isNormalized(),MESSAGE_REFLECT_NONORMALIZED);
+    Console.warning(!centre.is_normalized(),MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
     Vec3::x -= ((2 * dot) * centre.x);
@@ -269,7 +269,7 @@ void Vec3::reflect(const Vec3& centre)
 void Vec3::reflect(const Normal& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
+    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
     Vec3::x -= ((2 * dot) * centre.x);
@@ -280,7 +280,7 @@ void Vec3::reflect(const Normal& centre)
 bool Vec3::refract(const Vec3 &interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
     const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
@@ -297,7 +297,7 @@ bool Vec3::refract(const Vec3 &interface, float eta)
 bool Vec3::refract(const Normal &interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
     const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
@@ -609,7 +609,7 @@ void Normal::normalize()
     Normal::z *= len;
 }
 
-bool Normal::isNormalized()const
+bool Normal::is_normalized()const
 {
     float len = x*x+y*y+z*z;
     return len>1.f-1E-5f && len<1.f+1E-5f;

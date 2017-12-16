@@ -224,9 +224,9 @@ void KdTree::buildTree()
     KdTreeBuildNode* node = new KdTreeBuildNode();
     
     //get the aabb for the whole scene
-    scene_aabb = AABB(*(assetsList[0]->getAABB)());
+    scene_aabb = AABB(*(assetsList[0]->get_AABB)());
     for(int i=1;i<assets_number;i++)
-        scene_aabb.engulf(assetsList[i]->getAABB());
+        scene_aabb.engulf(assetsList[i]->get_AABB());
     
     //copy the assets, since the original array will be rewritten in a
     //different order
@@ -305,10 +305,10 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
         //for each asset add left and right side of the aabbs as split panes
         for(unsigned int i=0;i<a_n;i++)
         {
-            sc[axis][i<<1].pos = a_l[i]->getAABB()->bounds[0][axis];
+            sc[axis][i<<1].pos = a_l[i]->get_AABB()->bounds[0][axis];
             sc[axis][i<<1].whoami = a_l[i];
             sc[axis][i<<1].isLeftSide = true;
-            sc[axis][(i<<1)+1].pos = a_l[i]->getAABB()->bounds[1][axis];
+            sc[axis][(i<<1)+1].pos = a_l[i]->get_AABB()->bounds[1][axis];
             sc[axis][(i<<1)+1].whoami = a_l[i];
             sc[axis][(i<<1)+1].isLeftSide = false;
         }
@@ -489,7 +489,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
                 current_asset = assetsList[n->getAssetOffset()+i];
                 
                 //firstly try with the aabb since it's faster
-                if(current_asset->intersectAABB(r, &rp, &res1, &res2))
+                if(current_asset->intersect_AABB(r, &rp, &res1, &res2))
                 {
                     //then try with the actual asset
                     if(res1<bestdistance && //don't try if AABB > best distance

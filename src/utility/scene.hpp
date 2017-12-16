@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 28 Jul 2017
+//Last Edit 16 Dec 2017
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      28 Jul 2017
+ *  \date      16 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -73,7 +73,7 @@ public:
      *  will remain the default one
      *  \return the added assets id. 0 if nothing was added
      */
-    unsigned int addAsset(unsigned int shapeid, Matrix4* transform,
+    unsigned int addAsset(unsigned int shapeid, const Matrix4& transform,
                           const Bsdf* material = NULL);
 
     /** \brief Given a shapeid and a matrix, create a light with those
@@ -84,7 +84,7 @@ public:
      *  \return the added light id. Since a light is essentially an asset, this
      *  is an asset id. 0 if nothing was added
      */
-    unsigned int addLight(unsigned int shapeid, Matrix4* transform,
+    unsigned int addLight(unsigned int shapeid, const Matrix4& transform,
                           const Spectrum& c);
 
     /** \brief Return the number of lights in the scene

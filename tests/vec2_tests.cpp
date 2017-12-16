@@ -120,15 +120,15 @@ TEST(Vec2,normalize)
 {
     Vec2 v1(3,1);
     EXPECT_EQ(v1.length(),3.1622776602f);
-    EXPECT_FALSE(v1.isNormalized());
+    EXPECT_FALSE(v1.is_normalized());
 
     Vec2 v2 = normalize(v1);
 
     v1.normalize();
     EXPECT_EQ(v1.x,v2.x);
     EXPECT_EQ(v1.y,v2.y);
-    EXPECT_TRUE(v1.isNormalized());
-    EXPECT_TRUE(v2.isNormalized());
+    EXPECT_TRUE(v1.is_normalized());
+    EXPECT_TRUE(v2.is_normalized());
 
     errors_count[CRITICAL_INDEX] = 0;
     Vec2 vzero;
@@ -562,15 +562,15 @@ TEST(Vec2,inline_normalize)
 {
     Vec2 v1(3,0);
     EXPECT_FLOAT_EQ(v1.length(),3.f);
-    EXPECT_FALSE(v1.isNormalized());
+    EXPECT_FALSE(v1.is_normalized());
 
     Vec2 v2 = normalize(v1);
 
     v1.normalize();
     EXPECT_EQ(v1.x,v2.x);
     EXPECT_EQ(v1.y,v2.y);
-    EXPECT_TRUE(v1.isNormalized());
-    EXPECT_TRUE(v2.isNormalized());
+    EXPECT_TRUE(v1.is_normalized());
+    EXPECT_TRUE(v2.is_normalized());
     EXPECT_EQ(v2.x,1.f);
     EXPECT_EQ(v2.y,0.f);
 

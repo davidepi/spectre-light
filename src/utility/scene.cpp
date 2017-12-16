@@ -52,7 +52,7 @@ int Scene::inheritShape(Shape *addme)
     return  addme->get_id();
 }
 
-unsigned int Scene::addAsset(unsigned int shapeid, Matrix4* transformMatrix,
+unsigned int Scene::addAsset(unsigned int shapeid, const Matrix4& transformMat,
                              const Bsdf* material)
 {
     //complexity O(n), could be O(1), but who cares, this is done in the setup
@@ -77,19 +77,19 @@ unsigned int Scene::addAsset(unsigned int shapeid, Matrix4* transformMatrix,
 
             }
 
-            Asset* addme = new Asset(Scene::shapes[i], transformMatrix);
+            Asset* addme = new Asset(Scene::shapes[i], transformMat);
             if(material!=NULL)
-                addme->setMaterial(material);
+                addme->set_material(material);
             Scene::assets[Scene::asset_index++] = addme;
             k.addAsset(addme); //add to kdtree
-            return addme->getID();
+            return addme->get_id();
         }
     }
 
     return 0; //shape not found, nothing added
 }
 
-unsigned int Scene::addLight(unsigned int shapeid, Matrix4* transform,
+unsigned int Scene::addLight(unsigned int shapeid, const Matrix4& transform,
                              const Spectrum& c)
 {
     AreaLight* addme = NULL;
@@ -120,7 +120,7 @@ unsigned int Scene::addLight(unsigned int shapeid, Matrix4* transform,
             addme=new AreaLight(Scene::shapes[i], transform,c);
             Scene::assets[Scene::asset_index++] = (Asset*)addme;
             k.addAsset(addme); //add to kdtree
-            retval = addme->getID();
+            retval = addme->get_id();
         }
     }
 

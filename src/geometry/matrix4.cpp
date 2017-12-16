@@ -278,7 +278,7 @@ void Matrix4::set_lookAt_inverse(const Point3& pos,const Point3& eye,
                                  const Vec3& up)
 {
     Vec3 newup = up;
-    if(!(up.isNormalized()))
+    if(!(up.is_normalized()))
     {
         Console.warning(MESSAGE_UPVECTOR_NOTUNIT);
         newup.normalize();

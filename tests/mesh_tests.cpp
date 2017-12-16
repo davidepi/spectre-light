@@ -6,8 +6,6 @@
 #include "utility/utility.hpp"
 #include <climits>
 
-//to speedup the max_tris test
-
 TEST(Mesh,add_triangle_points)
 {
     Mesh m(1);

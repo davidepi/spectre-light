@@ -22,7 +22,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
     Spectrum L(0);
     int nlights = sc->lightSize();
     const AreaLight*const* lights = sc->getLights();
-    if(hp->asset_h->isLight())
+    if(hp->asset_h->is_light())
         if(dot(hp->normal_h,-r->direction)>0)
             L+=((AreaLight *) hp->asset_h)->emissiveSpectrum();
     if(nlights>0)
@@ -34,7 +34,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         //choose a light to sample
         int sampledlight = min((int)(rand[0]*nlights),nlights-1);
         const AreaLight* light = lights[sampledlight];
-        const Bsdf* mat = hp->asset_h->getMaterial();
+        const Bsdf* mat = hp->asset_h->get_material();
         float lightpdf;
         float bsdfpdf;
         BdfFlags flags((BdfFlags)(ALL&~SPECULAR));
@@ -77,7 +77,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
             Ray r2(hp->point_h,wi);
             HitPoint h2;
             if(sc->k.intersect(&r2,&h2))
-                if(h2.asset_h->getID() == light->getID())
+                if(h2.asset_h->get_id() == light->get_id())
                     if(dot(h2.normal_h,-r2.direction)>0)
                     {
                         Spectrum rad = light->emissiveSpectrum();
@@ -96,7 +96,7 @@ Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     float rand[3];
     float bsdfpdf;
     sam->getRandomNumbers(rand,3);
-    const Bsdf* mat = hp->asset_h->getMaterial();
+    const Bsdf* mat = hp->asset_h->get_material();
     BdfFlags sampled_val;
     BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
     Spectrum bsdf_f = mat->sample_value(rand[0], rand[1], rand[2], &wo, hp, &wi,

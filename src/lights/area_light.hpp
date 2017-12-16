@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 26 Nov 2017
+//Last Edit 16 Dec 2017
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      26 Nov 2017
+ *  \date      16 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -35,11 +35,11 @@ public:
      *  Construct an object emitting light
      *
      *  \param[in] shape A pointer to the underlying shape
-     *  \param[in] objToWorld A pointer to the matrix used to transform the
+     *  \param[in] objToWorld The matrix used to transform the
      *  light from object space to world space
      *  \param[in] c The emitted light
      */
-    AreaLight(Shape* shape, Matrix4* objToWorld, const Spectrum& c);
+    AreaLight(const Shape* shape, const Matrix4& objToWorld, const Spectrum& c);
     
     ///Default destructor
     virtual ~AreaLight();
@@ -90,7 +90,7 @@ public:
      *
      *  \return true
      */
-    bool isLight()const;
+    bool is_light()const;
 
     /** \brief Return the probability density function for this light
      *
