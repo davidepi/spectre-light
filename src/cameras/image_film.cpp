@@ -246,17 +246,17 @@ bool ImageFilm::saveImage()
     {
         case EXTENSION_BMP:
         {
-            retval=saveBMP(filename, width, height, rgb_buffer);
+            retval=save_bmp(filename, width, height, rgb_buffer);
             break;
         }
         case EXTENSION_PPM:
         {
-            retval=savePPM(filename, width, height, rgb_buffer);
+            retval=save_ppm(filename, width, height, rgb_buffer);
             break;
         }
         default:
         {
-            retval=savePPM(filename, width, height, rgb_buffer);
+            retval=save_ppm(filename, width, height, rgb_buffer);
             break;
         }
     }

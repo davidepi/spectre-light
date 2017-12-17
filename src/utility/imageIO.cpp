@@ -3,7 +3,7 @@
 
 #include "imageIO.hpp"
 
-bool savePPM(const char* name, int width, int height, const uint8_t* array)
+bool save_ppm(const char* name, int width, int height, const uint8_t* array)
 {
     FILE* fout = fopen(name,"wb");
     if(fout != NULL)
@@ -20,7 +20,7 @@ bool savePPM(const char* name, int width, int height, const uint8_t* array)
     }
 }
 
-bool saveBMP(const char* name, int width, int height, const uint8_t* data)
+bool save_bmp(const char* name, int width, int height, const uint8_t* data)
 {
     FILE* fout = fopen(name,"wb");
     if(fout != NULL)

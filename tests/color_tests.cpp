@@ -242,11 +242,11 @@ TEST(Color,RGB_single_component)
 
 TEST(Color,XYZ_to_sRGB)
 {
-    ColorXYZ c(0.08f,0.149f,0.0595f);
+    ColorXYZ c(0.18f,0.139f,0.0595f);
     ColorRGB res = c.to_sRGB();
-    EXPECT_FLOAT_EQ(res.r, 0.0069778757f);
-    EXPECT_FLOAT_EQ(res.g, 0.48950666f);
-    EXPECT_FLOAT_EQ(res.b, 0.21196666f);
+    EXPECT_FLOAT_EQ(res.r, 0.61799586f);
+    EXPECT_FLOAT_EQ(res.g, 0.32961869f);
+    EXPECT_FLOAT_EQ(res.b, 0.23361403f);
 
     ColorXYZ c2(0.002f,0.002f,0.002f);
     ColorRGB res2 = c2.to_sRGB();

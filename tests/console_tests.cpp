@@ -28,6 +28,19 @@ TEST(Consolet,log)
     errors_count[LOG_INDEX] = 0;
 }
 
+TEST(Consolet,log_boolean)
+{
+    errors_count[LOG_INDEX] = 0;
+    Console.log(true,"test",NULL);
+    EXPECT_EQ(errors_count[LOG_INDEX], 1);
+    errors_count[LOG_INDEX] = 0;
+
+    errors_count[LOG_INDEX] = 0;
+    Console.log(false,"test",NULL);
+    EXPECT_EQ(errors_count[LOG_INDEX], 0);
+    errors_count[LOG_INDEX] = 0;
+}
+
 TEST(Consolet,notice)
 {
     errors_count[NOTICE_INDEX] = 0;
