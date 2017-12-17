@@ -332,7 +332,7 @@ void RendererProgressBar::kill()
     
     //However this is fine, no point in setting a mutex every time just to
     //avoid a bad print
-    Console.progressBarDone();
+    Console.progress_bar_done();
 }
 
 void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
@@ -352,7 +352,7 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
                 remaining);
         //avoid garbage values... it is useless, but it runs once per second...
         if(eta>0)
-            Console.progressBar(done,eta);
+            Console.progress_bar(done,eta);
         std::this_thread::sleep_for
                 (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }

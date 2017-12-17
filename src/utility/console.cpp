@@ -163,7 +163,7 @@ void Console::critical(bool b, const char* s)
     }
 }
 
-void Console::progressBarDone()const
+void Console::progress_bar_done()const
 {
 #ifdef WIN32
     std::cout<<"\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
@@ -174,7 +174,7 @@ void Console::progressBarDone()const
 #endif
 }
 
-void Console::progressBar(float done, float eta)const
+void Console::progress_bar(float done, float eta)const
 {
     done*=20;
     const char fullblock = '#';

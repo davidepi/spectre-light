@@ -5,7 +5,7 @@
  *  \file console.hpp
  *  \brief Console logging
  *  \author Davide Pizzolotto
- *  \version 0.1
+ *  \version 0.2
  *  \date  26 Nov 2017
  *  \copyright GNU GPLv3
  */
@@ -237,10 +237,10 @@ public:
      * \param[in] eta The estimated remainint time in seconds
      * \sa progressBarDone()
      */
-    void progressBar(float done, float eta)const;
+    void progress_bar(float done, float eta)const;
 
     ///Print a completed progress bar
-    void progressBarDone()const;
+    void progress_bar_done()const;
 
 private:
     

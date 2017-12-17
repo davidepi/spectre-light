@@ -247,6 +247,12 @@ TEST(Color,XYZ_to_sRGB)
     EXPECT_FLOAT_EQ(res.r, 0.0069778757f);
     EXPECT_FLOAT_EQ(res.g, 0.48950666f);
     EXPECT_FLOAT_EQ(res.b, 0.21196666f);
+
+    ColorXYZ c2(0.002f,0.002f,0.002f);
+    ColorRGB res2 = c2.to_sRGB();
+    EXPECT_FLOAT_EQ(res2.r,0.031131625);
+    EXPECT_FLOAT_EQ(res2.g,0.024504095);
+    EXPECT_FLOAT_EQ(res2.b,0.023484498);
 }
 
 TEST(Color,XYZ_to_Adobe_rgb)
@@ -265,5 +271,11 @@ TEST(Color,RGB_to_XYZ)
     EXPECT_FLOAT_EQ(res.r, 0.15441862f);
     EXPECT_FLOAT_EQ(res.g, 0.083299257f);
     EXPECT_FLOAT_EQ(res.b, 0.061038386f);
+
+    ColorRGB c2(0.03f,0.03f,0.03f);
+    ColorXYZ res2 = c2.to_XYZ();
+    EXPECT_FLOAT_EQ(res2.r,0.0022069735);
+    EXPECT_FLOAT_EQ(res2.g,0.0023219816);
+    EXPECT_FLOAT_EQ(res2.b,0.002528243);
 }
 
