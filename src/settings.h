@@ -26,8 +26,11 @@
 ///The amount of error to consider when comparing shadow ray distance
 #define OCCLUSION_INTERSECT_ERROR SELF_INTERSECT_ERROR
 
-///Defines the max number of assets
+///Defines the max number of assets in the scene
 #define _MAX_ASSETS_ 4096
+
+///Defines the max number of lights in the scene
+#define _MAX_LIGHTS_ 32
 
 #ifdef TESTS
 #define _MAX_TRIS_ 65 //low num because it is faster to check limit cases

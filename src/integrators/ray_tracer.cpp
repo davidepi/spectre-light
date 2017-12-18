@@ -6,7 +6,7 @@
 Spectrum RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
                           Sampler *sam, OcclusionTester *ot) const
 {
-    Spectrum direct = direct_l(sc,hp,r,sam,ot)*sc->lightSize();
+    Spectrum direct = direct_l(sc,hp,r,sam,ot)*sc->lights_size();
     //specular reflection
     if(r->ricochet < DEFAULT_BOUNCES) //ensure termination
     {
@@ -20,7 +20,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                   Sampler* sam, OcclusionTester* ot)
 {
     Spectrum L(0);
-    int nlights = sc->lightSize();
+    int nlights = sc->lights_size();
     const AreaLight*const* lights = sc->getLights();
     if(hp->asset_h->is_light())
         if(dot(hp->normal_h,-r->direction)>0)
@@ -48,7 +48,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         {
             Spectrum bsdf_f = mat->value(&wo,hp,&wi,flags);
             Ray r2(hp->point_h,wi);
-            if(!bsdf_f.isBlack() && !ot->isOccluded(&r2,&light_distance))
+            if(!bsdf_f.isBlack() && !ot->is_occluded(&r2,&light_distance))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi,flags);
                 if(bsdfpdf>0)

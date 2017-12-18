@@ -18,12 +18,11 @@ TEST(ImageIO,save_ppm)
     ASSERT_TRUE(res);
 
     //check if saved image is actually a .ppm
-    FILE* fp = popen("file test.ppm","r");
+    FILE* fp = popen("file -b --mime test.ppm","r");
     fgets(file_stat, 64, fp);
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
-                          "test.ppm: Netpbm image data, size = 16 x 10, "\
-                          "rawbits, pixmap\n"),0);
+                          "image/x-portable-pixmap; charset=binary\n"),0);
     unlink("test.ppm");
 
     //non existent folder
@@ -42,12 +41,11 @@ TEST(ImageIO,save_bmp)
     ASSERT_TRUE(res);
 
     //check if saved image is actually a .ppm
-    FILE* fp = popen("file test.bmp","r");
+    FILE* fp = popen("file -b --mime test.bmp","r");
     fgets(file_stat, 64, fp);
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
-                          "test.bmp: Netpbm image data, size = 18 x 15, "\
-                          "rawbits, pixmap\n"),0);
+                          "image/x-portable-pixmap; charset=binary\n"),0);
     unlink("test.bmp");
 
     //non existent folder

@@ -731,7 +731,7 @@ static void parseShape(char* string, std::unordered_map<std::string,int>* map,
             mesh->finalize();
         }
         if(res!=NULL)
-            map->insert(std::make_pair(name,out->scene->inheritShape(res)));
+            map->insert(std::make_pair(name,out->scene->inherit_shape(res)));
     }
     else
     {
@@ -813,7 +813,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             else //parse temperature, generate blackbody
                 emissive = Spectrum(atoi(token));
 
-            out->scene->addLight((unsigned int)got->second,m,emissive);
+            out->scene->add_light((unsigned int)got->second,m,emissive);
         }
         else
         {
@@ -895,7 +895,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             m *= rotz;
             m *= scale;
 
-            out->scene->addAsset((unsigned int)got->second,m,mat);
+            out->scene->add_asset((unsigned int)got->second,m,mat);
         }
         else
         {

@@ -5,149 +5,140 @@
 
 Scene::Scene()
 {
-    Scene::shapes_allocated = 1;
     Scene::assets_allocated = 1;
     Scene::lights_allocated = 1;
-    Scene::shape_index = 0;
     Scene::asset_index = 0;
     Scene::light_index = 0;
-    Scene::shapes = new Shape*[Scene::shapes_allocated];
     Scene::assets = new Asset*[Scene::assets_allocated];
     Scene::lights = new AreaLight*[Scene::lights_allocated];
 }
 
 Scene::~Scene()
 {
-    for(int i=0;i<shapes_allocated;i++)
+    for(int i=0;i<shapes.size();i++)
         delete Scene::shapes[i];
-    delete[] Scene::shapes;
 
     for(int i=0;i<assets_allocated;i++)
         delete Scene::assets[i];
     delete[] Scene::assets;
 
     delete[] Scene::lights;
-    //DO NOT DELETE individual lights. lights are a subclass of assets, the
-    //array is there just for faster lookup
+    //DO NOT DELETE individual lights. lights are just pointers owned in, the
+    //assets array.
+    //The light array is there just for faster lookup
 }
 
-int Scene::inheritShape(Shape *addme)
+unsigned int Scene::inherit_shape(Shape *addme)
 {
-    if(Scene::shapes_allocated == Scene::shape_index) //array full, doubles it
-    {
-        if (Scene::shape_index == _MAX_ASSETS_)
-            Console.warning(MESSAGE_MAXASSETNUMBER);
-        else
-        {
-            Shape **tmp = Scene::shapes;
-            Scene::shapes_allocated = min(Scene::shapes_allocated << 1,
-                                          _MAX_ASSETS_);
-            Scene::shapes = new Shape*[Scene::shapes_allocated];
-            memcpy(Scene::shapes,tmp,Scene::shape_index*sizeof(Shape*));
-            delete[] tmp;
-        }
-    }
-
-    Scene::shapes[Scene::shape_index++] = addme; //add shape
-    return  addme->get_id();
+    shapes.insert(std::make_pair(addme->get_id(),addme));
+    return addme->get_id();
 }
 
-unsigned int Scene::addAsset(unsigned int shapeid, const Matrix4& transformMat,
+unsigned int Scene::shapes_size()const
+{
+    return (unsigned int)shapes.size();
+}
+
+unsigned int Scene::add_asset(unsigned int shapeid, const Matrix4& transformMat,
                              const Bsdf* material)
 {
-    //complexity O(n), could be O(1), but who cares, this is done in the setup
-    for(int i=0;i<Scene::shape_index;i++)
+    //shape exists
+    if(shapes.count(shapeid))
     {
-        if(Scene::shapes[i]->get_id() == shapeid) //found the shape
+        if(Scene::assets_allocated == Scene::asset_index) //array full
         {
-            if(Scene::assets_allocated == Scene::asset_index) //array full
+            if(Scene::asset_index!=_MAX_ASSETS_)
             {
-                if (Scene::asset_index == _MAX_ASSETS_)
-                    Console.warning(MESSAGE_MAXASSETNUMBER);
-                else
-                {
-                    Asset **tmp = Scene::assets;
-                    Scene::assets_allocated = min(Scene::assets_allocated << 1,
-                                                  _MAX_ASSETS_);
-                    Scene::assets = new Asset*[Scene::assets_allocated];
-                    memcpy(Scene::assets,tmp,Scene::asset_index*sizeof(Asset*));
-                    delete[] tmp;
-                }
-
-
+                Asset **tmp = Scene::assets;
+                Scene::assets_allocated = min(Scene::assets_allocated << 1,
+                                              _MAX_ASSETS_);
+                Scene::assets = new Asset*[Scene::assets_allocated];
+                memcpy(Scene::assets,tmp,Scene::asset_index*sizeof(Asset*));
+                delete[] tmp;
             }
-
-            Asset* addme = new Asset(Scene::shapes[i], transformMat);
-            if(material!=NULL)
-                addme->set_material(material);
-            Scene::assets[Scene::asset_index++] = addme;
-            k.addAsset(addme); //add to kdtree
-            return addme->get_id();
+            else //max number of assets reached
+            {
+                Console.warning(MESSAGE_MAXASSETNUMBER);
+                return 0;
+            }
         }
+        Asset* addme = new Asset(shapes[shapeid], transformMat);
+        if(material!=NULL)
+            addme->set_material(material);
+        Scene::assets[Scene::asset_index++] = addme;
+        k.addAsset(addme); //add to kdtree
+        return addme->get_id();
     }
-
-    return 0; //shape not found, nothing added
+    else
+        return 0; //shape not found, nothing added
 }
 
-unsigned int Scene::addLight(unsigned int shapeid, const Matrix4& transform,
+unsigned int Scene::assets_size()const
+{
+    return Scene::asset_index;
+}
+
+unsigned int Scene::add_light(unsigned int shapeid, const Matrix4& transform,
                              const Spectrum& c)
 {
     AreaLight* addme = NULL;
     unsigned int retval = 0;
-
-    //complexity O(n), could be O(1), but who cares, this is done in the setup
-    for(int i=0;i<Scene::shape_index;i++)
+    unsigned int asset_array_index = UINT_MAX;
+    if(shapes.count(shapeid))
     {
-        if(Scene::shapes[i]->get_id() == shapeid) //found the shape
+        if(Scene::assets_allocated == Scene::asset_index) //array full
         {
-            if(Scene::assets_allocated == Scene::asset_index) //array full
+            if(Scene::asset_index!=_MAX_ASSETS_)
             {
-                if (Scene::asset_index == _MAX_ASSETS_)
-                    Console.warning(MESSAGE_MAXASSETNUMBER);
-                else
-                {
-                    Asset **tmp = Scene::assets;
-                    Scene::assets_allocated = min(Scene::assets_allocated << 1,
-                                                  _MAX_ASSETS_);
-                    Scene::assets = new Asset*[Scene::assets_allocated];
-                    memcpy(Scene::assets,tmp,Scene::asset_index*sizeof(Asset*));
-                    delete[] tmp;
-                }
-
-
+                Asset **tmp = Scene::assets;
+                Scene::assets_allocated = min(Scene::assets_allocated << 1,
+                                              _MAX_ASSETS_);
+                Scene::assets = new Asset*[Scene::assets_allocated];
+                memcpy(Scene::assets,tmp,Scene::asset_index*sizeof(Asset*));
+                delete[] tmp;
             }
-
-            addme=new AreaLight(Scene::shapes[i], transform,c);
-            Scene::assets[Scene::asset_index++] = (Asset*)addme;
-            k.addAsset(addme); //add to kdtree
-            retval = addme->get_id();
+            else //max number of assets reached
+            {
+                Console.warning(MESSAGE_MAXASSETNUMBER);
+                return 0;
+            }
+            //reserve the index
+            asset_array_index = Scene::asset_index++;
         }
     }
+    else
+        return 0; //shape not found, nothing added
 
-    if(addme!=NULL) //add the light also to the lights array
+    if(asset_array_index!=UINT_MAX) //add the light also to the lights array
     {
         if(Scene::lights_allocated == Scene::light_index)//array full
         {
-            if (Scene::light_index == _MAX_ASSETS_)
-                Console.warning(MESSAGE_MAXASSETNUMBER);
-            else
+            if(Scene::light_index != _MAX_LIGHTS_)
             {
                 AreaLight **tmp = Scene::lights;
                 Scene::lights_allocated = min(Scene::lights_allocated << 1,
-                                              _MAX_ASSETS_);
+                                              _MAX_LIGHTS_);
                 Scene::lights = new AreaLight*[Scene::lights_allocated];
                 memcpy(Scene::lights,tmp,Scene::light_index*sizeof(AreaLight*));
                 delete[] tmp;
             }
+            else
+            {
+                Console.warning(MESSAGE_MAXASSETNUMBER);
+                return 0;
+            }
         }
-
+        addme = new AreaLight(shapes[shapeid], transform,c);
+        Scene::assets[asset_array_index] = (Asset*)addme;
         Scene::lights[Scene::light_index++] = addme;
+        k.addAsset(addme); //add to kdtree
+        retval = addme->get_id();
     }
 
     return retval;
 }
 
-int Scene::lightSize()const
+unsigned int Scene::lights_size()const
 {
     return Scene::light_index;
 }

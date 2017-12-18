@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 16 Dec 2017
+//Last Edit 18 Dec 2017
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      16 Dec 2017
+ *  \date      18 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -22,6 +22,7 @@
 #include "utility/utility.hpp"
 #include "utility/console.hpp"
 #include "lights/area_light.hpp"
+#include <unordered_map>
 
 /**
  *  \class Scene scene.hpp "utility/scene.hpp"
@@ -33,7 +34,7 @@
  *
  *
  *  \warning The scene class is responsible for the lifecycle of the shapes and
- *  assets inside it, so the shapes added with the Scene::inheritShape() are
+ *  assets inside it, so the shapes added with the Scene::inherit_shape() are
  *  INHERITED and therefore MUST NOT be deallocated manually
  */
 class Scene
@@ -63,7 +64,12 @@ public:
      *  \param[in] addme The shape that will be added to the Scene
      *  \return The added shape id
      */
-    int inheritShape(Shape* addme);
+    unsigned int inherit_shape(Shape* addme);
+    
+    /** \brief Return the number of shapes in the scene
+     * \return The number of shapes in the scene
+     */
+    unsigned int shapes_size()const;
 
     /** \brief Given a shape id and a matrix, create an asset with those
      *
@@ -73,8 +79,13 @@ public:
      *  will remain the default one
      *  \return the added assets id. 0 if nothing was added
      */
-    unsigned int addAsset(unsigned int shapeid, const Matrix4& transform,
+    unsigned int add_asset(unsigned int shapeid, const Matrix4& transform,
                           const Bsdf* material = NULL);
+    
+    /** \brief Return the number of assets in the scene
+     * \return The number of assets in the scene
+     */
+    unsigned int assets_size()const;
 
     /** \brief Given a shapeid and a matrix, create a light with those
      *
@@ -84,13 +95,13 @@ public:
      *  \return the added light id. Since a light is essentially an asset, this
      *  is an asset id. 0 if nothing was added
      */
-    unsigned int addLight(unsigned int shapeid, const Matrix4& transform,
+    unsigned int add_light(unsigned int shapeid, const Matrix4& transform,
                           const Spectrum& c);
 
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene
      */
-    int lightSize()const;
+    unsigned int lights_size()const;
 
     /** \brief  Return the array of lights in the scene
      * \return The array of lights in the scene
@@ -99,14 +110,8 @@ public:
 
 private:
 
-    //Array of shape pointers
-    Shape** shapes;
-
-    //size of shape pointers array
-    int shapes_allocated;
-
-    //next insertion index in the shape pointers array
-    int shape_index;
+    //map of shapes
+    std::unordered_map<unsigned int,const Shape*> shapes;
 
     //Array of asset pointers
     Asset** assets;

@@ -130,6 +130,7 @@ TEST(Normal,normalize)
     EXPECT_TRUE(v1.is_normalized());
     EXPECT_TRUE(v2.is_normalized());
 
+    errors_count[CRITICAL_INDEX] = 0;
     Normal vzero;
     vzero.normalize();
     EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
