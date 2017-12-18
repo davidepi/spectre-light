@@ -37,7 +37,7 @@ TEST(ImageIO,save_bmp)
     uint8_t image_sample[18*15*3];
     for(int i=0;i<18*15*3;i+=3)
         image_sample[i] = i/3;
-    bool res = save_ppm("test.bmp",18,15,image_sample);
+    bool res = save_bmp("test.bmp",18,15,image_sample);
     ASSERT_TRUE(res);
 
     //check if saved image is actually a .ppm
@@ -45,7 +45,7 @@ TEST(ImageIO,save_bmp)
     fgets(file_stat, 64, fp);
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
-                          "image/x-portable-pixmap; charset=binary\n"),0);
+                          "image/x-ms-bmp; charset=binary\n"),0);
     unlink("test.bmp");
 
     //non existent folder
