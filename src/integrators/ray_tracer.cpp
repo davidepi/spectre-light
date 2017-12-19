@@ -48,7 +48,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         {
             Spectrum bsdf_f = mat->value(&wo,hp,&wi,flags);
             Ray r2(hp->point_h,wi);
-            if(!bsdf_f.isBlack() && !ot->is_occluded(&r2,&light_distance))
+            if(!bsdf_f.isBlack() && !ot->is_occluded(&r2,light_distance))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi,flags);
                 if(bsdfpdf>0)

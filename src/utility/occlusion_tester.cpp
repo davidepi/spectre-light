@@ -10,7 +10,7 @@ OcclusionTester::OcclusionTester(const Scene* scene)
         OcclusionTester::lasthit[i] = NULL;
 }
 
-bool OcclusionTester::is_occluded(const Ray* r, const float* distance)
+bool OcclusionTester::is_occluded(const Ray* r, float distance)
 {
     HitPoint removeme;
     float newdistance = FLT_MAX;
@@ -18,14 +18,14 @@ bool OcclusionTester::is_occluded(const Ray* r, const float* distance)
     if (lhit != NULL)
         if(lhit->intersect(r,&newdistance,&removeme))
         {
-            if(newdistance+OCCLUSION_INTERSECT_ERROR<*distance)
+            if(newdistance+OCCLUSION_INTERSECT_ERROR<distance)
                 return true;
         }
     if(scene->k.intersect(r,&removeme))
     {
         OcclusionTester::lasthit[r->ricochet] = removeme.asset_h;
         newdistance = removeme.point_h.distanceTo(r->origin);
-        return newdistance+OCCLUSION_INTERSECT_ERROR<*distance;
+        return newdistance+OCCLUSION_INTERSECT_ERROR<distance;
     }
     else
         return false;

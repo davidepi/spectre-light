@@ -48,7 +48,7 @@ public:
      *  \param[in] expected_dist The expected distance of the light
      *  \return true if the first intersection is closer than the light distance
      */
-    bool is_occluded(const Ray* r, const float* expected_dist);
+    bool is_occluded(const Ray* r, float expected_dist);
 
 private:
 

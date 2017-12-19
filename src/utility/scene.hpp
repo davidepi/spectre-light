@@ -39,7 +39,8 @@
  *
  *  \warning This class is not thread-safe
  *
- *  \note Before using the scene one MUST finalize its kd-tree
+ *  \note Before using the scene one MUST finalize the tree by calling
+ *  KdTree::buildTree()
  */
 class Scene
 {
@@ -63,7 +64,7 @@ public:
     /** \brief Add a Shape to the scene
      *
      *  Given a pointer to a shape, the scene inherits its ownership and use it
-     *  for subsequent addAsset calls
+     *  for subsequent add_asset calls
      *
      *  \param[in] addme The shape that will be added to the Scene
      *  \return The added shape id
