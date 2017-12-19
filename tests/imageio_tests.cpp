@@ -49,7 +49,7 @@ TEST(ImageIO,save_bmp)
     unlink("test.bmp");
 
     //non existent folder
-    res = save_ppm("/root/nonexistent/test.bmp",16,10,image_sample);
+    res = save_bmp("/root/nonexistent/test.bmp",16,10,image_sample);
     EXPECT_FALSE(res);
 }
 

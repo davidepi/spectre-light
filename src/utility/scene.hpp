@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 18 Dec 2017
+//Last Edit 19 Dec 2017
 
 /**
  *  \file scene.hpp
@@ -7,8 +7,8 @@
  *  \details   Agglomerate of Assets composing a scene, and the kdtree to
  *             intersect them
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      18 Dec 2017
+ *  \version   0.2
+ *  \date      19 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -36,6 +36,10 @@
  *  \warning The scene class is responsible for the lifecycle of the shapes and
  *  assets inside it, so the shapes added with the Scene::inherit_shape() are
  *  INHERITED and therefore MUST NOT be deallocated manually
+ *
+ *  \warning This class is not thread-safe
+ *
+ *  \note Before using the scene one MUST finalize its kd-tree
  */
 class Scene
 {
@@ -106,7 +110,7 @@ public:
     /** \brief  Return the array of lights in the scene
      * \return The array of lights in the scene
      */
-    const AreaLight* const* getLights()const;
+    const AreaLight* const* get_lights()const;
 
 private:
 
@@ -117,19 +121,19 @@ private:
     Asset** assets;
 
     //size of asset pointers array
-    int assets_allocated;
+    unsigned int assets_allocated;
 
     //next insertion index in the asset pointers array
-    int asset_index;
+    unsigned int asset_index;
 
     //Array of light pointers
     AreaLight** lights;
 
     //size of light pointers array
-    int lights_allocated;
+    unsigned int lights_allocated;
 
     //next insertion index in the asset pointers array
-    int light_index;
+    unsigned int light_index;
 
 };
 

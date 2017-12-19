@@ -21,7 +21,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
 {
     Spectrum L(0);
     int nlights = sc->lights_size();
-    const AreaLight*const* lights = sc->getLights();
+    const AreaLight*const* lights = sc->get_lights();
     if(hp->asset_h->is_light())
         if(dot(hp->normal_h,-r->direction)>0)
             L+=((AreaLight *) hp->asset_h)->emissiveSpectrum();

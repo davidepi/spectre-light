@@ -5,6 +5,7 @@
 
 #ifdef TESTS
 int errors_count[5] = {0,0,0,0,0};
+#define UNUSED(x) (void)x;
 #endif
 
 #undef Console
@@ -58,6 +59,8 @@ void Console::log(const char* m, const char* v)
     else
         fprintf(stdout,"%s\n",v);
 #else
+    UNUSED(m);
+    UNUSED(v);
     errors_count[LOG_INDEX]++;
 #endif
 }
@@ -67,6 +70,7 @@ void Console::notice(const char* s)
 #ifndef TESTS
     fprintf(stdout,"[" NOTICE "] %s\n",s);
 #else
+    UNUSED(s);
     errors_count[NOTICE_INDEX]++;
 #endif
 }
@@ -76,6 +80,7 @@ void Console::warning(const char* s)
 #ifndef TESTS
     fprintf(stderr,"[" WARNING "] %s\n",s);
 #else
+    UNUSED(s);
     errors_count[WARNING_INDEX]++;
 #endif
 }
@@ -85,6 +90,7 @@ void Console::severe(const char* s)
 #ifndef TESTS
     fprintf(stderr,"[" ERROR "] %s\n",s);
 #else
+    UNUSED(s);
     errors_count[ERROR_INDEX]++;
 #endif
 }
@@ -95,6 +101,7 @@ void Console::critical(const char* s)
     fprintf(stderr,"[" CRITICAL "] %s\n",s);
     exit(EXIT_FAILURE);
 #else
+    UNUSED(s);
     errors_count[CRITICAL_INDEX]++;
 #endif
 }
@@ -109,6 +116,8 @@ void Console::log(bool b, const char* m, const char* v)
         else
             fprintf(stdout,"%s\n",v);
 #else
+        UNUSED(m);
+        UNUSED(v);
         errors_count[LOG_INDEX]++;
 #endif
     }
@@ -121,6 +130,7 @@ void Console::notice(bool b, const char* s)
 #ifndef TESTS
         fprintf(stdout,"[" NOTICE "] %s\n",s);
 #else
+        UNUSED(s);
         errors_count[NOTICE_INDEX]++;
 #endif
     }
@@ -133,6 +143,7 @@ void Console::warning(bool b, const char* s)
 #ifndef TESTS
         fprintf(stderr,"[" WARNING "] %s\n",s);
 #else
+        UNUSED(s);
         errors_count[WARNING_INDEX]++;
 #endif
     }
@@ -145,6 +156,7 @@ void Console::severe(bool b, const char* s)
 #ifndef TESTS
         fprintf(stderr,"[" ERROR "] %s\n",s);
 #else
+        UNUSED(s);
         errors_count[ERROR_INDEX]++;
 #endif
     }
@@ -158,6 +170,7 @@ void Console::critical(bool b, const char* s)
         fprintf(stderr,"[" CRITICAL "] %s\n",s);
         exit(EXIT_FAILURE);
 #else
+        UNUSED(s);
         errors_count[CRITICAL_INDEX]++;
 #endif
     }

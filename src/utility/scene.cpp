@@ -15,10 +15,12 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    for(int i=0;i<shapes.size();i++)
-        delete Scene::shapes[i];
+    std::unordered_map<unsigned int,const Shape*>::iterator it;
+    for(it=shapes.begin();it!=shapes.end();++it)
+        delete it->second;
+    shapes.clear();
 
-    for(int i=0;i<assets_allocated;i++)
+    for(unsigned int i=0;i<Scene::asset_index;i++)
         delete Scene::assets[i];
     delete[] Scene::assets;
 
@@ -102,9 +104,9 @@ unsigned int Scene::add_light(unsigned int shapeid, const Matrix4& transform,
                 Console.warning(MESSAGE_MAXASSETNUMBER);
                 return 0;
             }
-            //reserve the index
-            asset_array_index = Scene::asset_index++;
         }
+        //reserve the index
+        asset_array_index = Scene::asset_index++;
     }
     else
         return 0; //shape not found, nothing added
@@ -125,6 +127,8 @@ unsigned int Scene::add_light(unsigned int shapeid, const Matrix4& transform,
             else
             {
                 Console.warning(MESSAGE_MAXASSETNUMBER);
+                //remove reserved index
+                Scene::asset_index--;
                 return 0;
             }
         }
@@ -143,7 +147,7 @@ unsigned int Scene::lights_size()const
     return Scene::light_index;
 }
 
-const AreaLight*const* Scene::getLights()const
+const AreaLight*const* Scene::get_lights()const
 {
     return (const AreaLight*const*)Scene::lights;
 }
