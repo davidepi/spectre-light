@@ -204,7 +204,7 @@ int Renderer::render(Scene* s)
     //sizeof because MSVC cannot resolve strlen a compile time
     char endmsg[sizeof(MESSAGE_RENDERTIME)/sizeof(char)+MAX_TIME_FORMAT_LENGTH];
     char elapsed_formatted[16];
-    formatSeconds((int)duration_cast<seconds>(b-a).count(),elapsed_formatted);
+    format_seconds((int)duration_cast<seconds>(b-a).count(),elapsed_formatted);
     sprintf(endmsg, MESSAGE_RENDERTIME,elapsed_formatted);
     Console.log(endmsg,NULL);
     

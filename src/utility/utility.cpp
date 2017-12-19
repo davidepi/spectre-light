@@ -3,12 +3,13 @@
 
 #include "utility.hpp"
 
-void formatSeconds(unsigned int secs, char* out)
+void format_seconds(unsigned int secs, char* out)
 {
+    out[0] = '\0';
     if(secs >= 8640000)
-        strcpy(out,"more than 100d");
+        strcpy(out,MESSAGE_MORE_THAN_100_DAYS);
     else if (secs == 0)
-        strcpy(out,"less than 1s");
+        strcpy(out,MESSAGE_LESS_THAN_1_SECOND);
     else
     {
         out[0] = 0x0;

@@ -132,7 +132,7 @@ static void parseCamera(char* string, Settings* out)
         if(out->type_camera == PERSPECTIVE) //parse fov
         {
             token = strtok_r(NULL," ",&savestring);
-            out->camera_fov = toRad((float)atof(token));
+            out->camera_fov = radians((float)atof(token));
         }
     }
     else
@@ -777,9 +777,9 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            rotx.set_rotate_x(toRad(x));
-            roty.set_rotate_y(toRad(y));
-            rotz.set_rotate_z(toRad(z));
+            rotx.set_rotate_x(radians(x));
+            roty.set_rotate_y(radians(y));
+            rotz.set_rotate_z(radians(z));
 
             token = strtok_r(NULL," ",&pos);//parse translation
             val = strtok(token,"(), "); //parse x
@@ -876,9 +876,9 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            rotx.set_rotate_x(toRad(x));
-            roty.set_rotate_y(toRad(y));
-            rotz.set_rotate_z(toRad(z));
+            rotx.set_rotate_x(radians(x));
+            roty.set_rotate_y(radians(y));
+            rotz.set_rotate_z(radians(z));
 
             token = strtok_r(NULL," ",&pos);//parse translation
             val = strtok(token,"(), "); //parse x

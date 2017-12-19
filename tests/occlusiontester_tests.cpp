@@ -16,24 +16,28 @@ TEST(OcclusionTester,is_occluded)
     Matrix4 m;
     m.set_identity();
     scene.add_asset(id, m);
-    m.set_translation(Vec3(-5,0,0));
+    m.set_translation(Vec3(-5.f,0.f,0.f));
     scene.add_asset(id, m);
-    m.set_translation(Vec3(5,0,0));
+    m.set_translation(Vec3(5.f,0.f,0.f));
     scene.add_asset(id, m);
     scene.k.buildTree();
     OcclusionTester tester(&scene);
 
     //not occluded, first bounce, not cached
-    Ray r(Point3(3,0,0),Vec3(-1,0,0));
+    Ray r(Point3(3.f,0.f,0.f),Vec3(-1.f,0.f,0.f));
     HitPoint hit;
     EXPECT_FALSE(tester.is_occluded(&r, 2.f));
 
     //occluded, first bounce, not cached
-    r = Ray(Point3(13,0,0),Vec3(-1,0,0));
+    r = Ray(Point3(13.f,0.f,0.f),Vec3(-1.f,0.f,0.f));
     EXPECT_TRUE(tester.is_occluded(&r, 12.f));
 
-    //occluded, first bounce, cached
-    r = Ray(Point3(14,0,0),Vec3(-1,0,0));
+    //occluded, first bounce, cached hit
+    r = Ray(Point3(14.f,0.f,0.f),Vec3(-1.f,0.f,0.f));
+    EXPECT_TRUE(tester.is_occluded(&r, 13.f));
+
+    //occluded, first bounce, cached miss
+    r = Ray(Point3(-14.f,0.f,0.f),Vec3(1.f,0.f,0.f));
     EXPECT_TRUE(tester.is_occluded(&r, 13.f));
 
     //occluded, second bounce, not cached
@@ -41,7 +45,7 @@ TEST(OcclusionTester,is_occluded)
     EXPECT_TRUE(tester.is_occluded(&r, 13.f));
 
     //not intersecting
-    r = Ray(Point3(14,0,0),Vec3(0,0,1));
+    r = Ray(Point3(14.f,0.f,0.f),Vec3(0.f,0.f,1.f));
     EXPECT_FALSE(tester.is_occluded(&r, 2.f));
 }
 

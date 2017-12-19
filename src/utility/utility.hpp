@@ -5,7 +5,7 @@
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
- *  \version 0.1
+ *  \version 0.2
  *  \date  26 Nov 2017
  *  \copyright GNU GPLv3
  */
@@ -16,12 +16,19 @@
 
 #include "settings.h" //ONE_PI
 #include "utility/console.hpp"
+#include "localization.h"
 #include <cstdio> //sprintf
 #include <climits>
 #include <cmath>
 #include <cfloat>
 #include <cstdlib> //EXIT_FAILURE
 #include <cstring> //strcpy
+
+///Maximum amount of error that can be found in a float comparison
+#define EPSILON 1E-5f
+
+///Maximum amount of writable data for the format_seconds function
+#define MAX_TIME_FORMAT_LENGTH 16
 
 /** \brief Convert from seconds to a better readable time format
  *
@@ -34,10 +41,7 @@
  *  \param[in] secs The number of seconds to format
  *  \param[out] out The string where the output will be written
  */
-void formatSeconds(unsigned int secs, char* out);
-
-///Maximum amount of writable data for the formatSeconds function
-#define MAX_TIME_FORMAT_LENGTH 16
+void format_seconds(unsigned int secs, char* out);
 
 /** \brief Swaps two float variables
  *
@@ -62,9 +66,9 @@ inline void swap(float *f1, float *f2)
  *
  *  \param[in] deg The value to convert
  *  \return The input value in radians
- *  \sa toDeg(const float rad)
+ *  \sa degrees(const float rad)
  */
-inline float toRad(const float deg)
+inline float radians(const float deg)
 {
     return (ONE_PI/180.f) * deg;
 }
@@ -76,9 +80,9 @@ inline float toRad(const float deg)
  *
  *  \param[in] rad The value to convert
  *  \return The input value in degrees
- *  \sa toRad(const float deg)
+ *  \sa radians(const float deg)
  */
-inline float toDeg(const float rad)
+inline float degrees(const float rad)
 {
     return (180.f/ONE_PI) * rad;
 }
@@ -201,7 +205,7 @@ inline float inverse_lerp(float value, float min, float max)
  */
 inline bool flt_equal(const float val1, const float val2)
 {
-    return std::fabs(val1-val2) <= 1E-5f;
+    return std::fabs(val1-val2) <= EPSILON;
 }
 
 /** \brief Determine the sign of the given number
@@ -255,14 +259,23 @@ inline bool equation2(const float a, const float b, const float c,
     float delta = b*b-4.0f*a*c;
     if(delta>=0)//TODO: even with an added epsilon this has some problems if = 0
     {
-        float q;
-        if(b<0)
-            q = -0.5f*(b-sqrtf(delta));
+        if(delta!=0)
+        {
+            float q;
+            if(b<0)
+                q = -0.5f*(b-sqrtf(delta));
+            else
+                q = -0.5f*(b+sqrtf(delta));
+            *sol1 = q/a;
+            *sol2 = c/q;
+            return true;
+        }
         else
-            q = -0.5f*(b+sqrtf(delta));
-        *sol1 = q/a;
-        *sol2 = c/q;
-        return true;
+        {
+            *sol1 = -b/(a*2);
+            *sol2 = *sol1;
+            return true;
+        }
     }
     else
         return false;

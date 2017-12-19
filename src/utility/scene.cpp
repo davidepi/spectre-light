@@ -111,33 +111,32 @@ unsigned int Scene::add_light(unsigned int shapeid, const Matrix4& transform,
     else
         return 0; //shape not found, nothing added
 
-    if(asset_array_index!=UINT_MAX) //add the light also to the lights array
+    //add the light also to the lights array.
+    //once here the asset_array_index will ALWAYS be initialized
+    if(Scene::lights_allocated == Scene::light_index)//array full
     {
-        if(Scene::lights_allocated == Scene::light_index)//array full
+        if(Scene::light_index != _MAX_LIGHTS_)
         {
-            if(Scene::light_index != _MAX_LIGHTS_)
-            {
-                AreaLight **tmp = Scene::lights;
-                Scene::lights_allocated = min(Scene::lights_allocated << 1,
-                                              _MAX_LIGHTS_);
-                Scene::lights = new AreaLight*[Scene::lights_allocated];
-                memcpy(Scene::lights,tmp,Scene::light_index*sizeof(AreaLight*));
-                delete[] tmp;
-            }
-            else
-            {
-                Console.warning(MESSAGE_MAXASSETNUMBER);
-                //remove reserved index
-                Scene::asset_index--;
-                return 0;
-            }
+            AreaLight **tmp = Scene::lights;
+            Scene::lights_allocated = min(Scene::lights_allocated << 1,
+                                          _MAX_LIGHTS_);
+            Scene::lights = new AreaLight*[Scene::lights_allocated];
+            memcpy(Scene::lights,tmp,Scene::light_index*sizeof(AreaLight*));
+            delete[] tmp;
         }
-        addme = new AreaLight(shapes[shapeid], transform,c);
-        Scene::assets[asset_array_index] = (Asset*)addme;
-        Scene::lights[Scene::light_index++] = addme;
-        k.addAsset(addme); //add to kdtree
-        retval = addme->get_id();
+        else
+        {
+            Console.warning(MESSAGE_MAXASSETNUMBER);
+            //remove reserved index
+            Scene::asset_index--;
+            return 0;
+        }
     }
+    addme = new AreaLight(shapes[shapeid], transform,c);
+    Scene::assets[asset_array_index] = (Asset*)addme;
+    Scene::lights[Scene::light_index++] = addme;
+    k.addAsset(addme); //add to kdtree
+    retval = addme->get_id();
 
     return retval;
 }

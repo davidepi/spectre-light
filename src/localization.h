@@ -90,6 +90,12 @@
 #define MESSAGE_COMPARE_INF "Comparing infinite values could lead to "\
 "undefined results"
 
+//max 15 char, otherwise change comments in the utility.hpp, format_seconds func
+#define MESSAGE_MORE_THAN_100_DAYS "more than 100d"
+
+//max 15 char, otherwise change comments in the utility.hpp, format_seconds func
+#define MESSAGE_LESS_THAN_1_SECOND "less than 1s"
+
 #endif
 
 
