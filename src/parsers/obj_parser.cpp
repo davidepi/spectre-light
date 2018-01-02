@@ -103,6 +103,7 @@ Mesh* parseObj(const char* path)
                 }
             }
         }
+        free(buf);
     }
     else
     {

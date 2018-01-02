@@ -17,9 +17,6 @@
 ///The number of bounces before discarding the ray
 #define DEFAULT_BOUNCES 5
 
-///If defined, instead of writing errors in the console, writes them in a struct
-//#define _TEST_
-
 ///The amount of floating point rounding error that can cause self-intersections
 #define SELF_INTERSECT_ERROR 1e-5f
 
