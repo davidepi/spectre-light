@@ -19,15 +19,15 @@ TEST(Utility,format_seconds)
 
     //max length for days, hours, mins and s
     format_seconds(8639999,out);
-    EXPECT_EQ(strcmp(out,"99d 23h 59m 59s"),0);
+    EXPECT_EQ(strcmp(out,"99d 23h 59m 59s "),0);
 
     //only some seconds
     format_seconds(41,out);
-    EXPECT_EQ(strcmp(out,"41s"),0);
+    EXPECT_EQ(strcmp(out,"41s "),0);
 
     //five minutes
     format_seconds(300, out);
-    EXPECT_EQ(strcmp(out,"5m"),0);
+    EXPECT_EQ(strcmp(out,"5m "),0);
 }
 
 TEST(Utility,swap)

@@ -29,6 +29,6 @@ void format_seconds(unsigned int secs, char* out)
         if(mins>0)
             sprintf(out, "%s%dm ",out,mins);
         if(s>0)
-            sprintf(out, "%s%ds",out,s);
+            sprintf(out, "%s%ds ",out,s);
     }
 }
