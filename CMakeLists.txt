@@ -25,6 +25,10 @@ file(GLOB spectre_core_sources
 file(GLOB spectre_test_sources
     tests/*.cpp
     )
+file(GLOB spectre_distribution_sources
+    tests/distributions/*.cpp
+    src/samplers/*filter*.cpp
+    )
 include_directories(src)
 find_package (Threads REQUIRED)
 
@@ -68,4 +72,6 @@ if(GTEST_FOUND)
     add_executable(runTests ${CMAKE_CURRENT_SOURCE_DIR}/tests/allTests.cxx ${spectre_core_sources} ${spectre_test_sources})
     target_link_libraries(runTests ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
     set_target_properties(runTests PROPERTIES COMPILE_FLAGS " -DTESTS -DDEBUG")
+
+    add_executable(distributionsPlots ${spectre_distribution_sources})
 endif(GTEST_FOUND)
