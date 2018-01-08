@@ -65,17 +65,10 @@ void generate_data(const char* out_path, const char* filename, int extent,
     f = fopen(full_path,"w");
     if(f!=NULL)
     {
-        //print header
-        fprintf(f,",");
-        for(float i=-extent;i<extent;i+=incr)
-            fprintf(f,"%f,",i);
-        fprintf(f,"\n");
-        //values
         for(float i=-extent;i<=extent;i+=incr)
         {
-            fprintf(f,"%f,",i);
             for(float j=-extent;j<=extent;j+=incr)
-                fprintf(f,"%f,",filter->weight(i,j));
+                fprintf(f,"%f,%f,%f\n",i,j,filter->weight(i,j));
             fprintf(f,"\n");
         }
         fflush(f);
@@ -83,29 +76,6 @@ void generate_data(const char* out_path, const char* filename, int extent,
     }
     else
         perror("Error: ");
-
-    //generate html
-    if(full_path[strlen(out_path)]=='/')
-        full_path[strlen(out_path)+1]='\0';
-    else
-        full_path[strlen(out_path)]='\0';
-    strcat(full_path,"dist_");
-    strcat(full_path,filename);
-    strcat(full_path,".html");
-    FILE* fp = fopen(full_path,"w");
-    if(fp!=NULL)
-    {
-        fprintf(fp,"<html><head><script src=\"https://cdn.plot.ly/plotly-lates"\
-                   "t.min.js\"></script></head><body><div id=\"plot_xy\" style"\
-                   "=\"width:100%%;height:100%%\"></div><script>Plotly.d3.csv("\
-                   "data_%s_xy.csv,function(err,rows){function unpack(rows,key"\
-                   "){return rows.map(function(row){return row[key];});}var z_"\
-                   "data=[];for(i=0;i<%d;i++)z_data.push(unpack(rows,i));var d"\
-                   "ata=[{z:z_data,type:'surface'}];var layout={title:'xz',aut"\
-                   "osize=false,width:500,height:500,margin:{l:65,r:50,b:65,t:"\
-                   "90}};Plotly.newPlot('plot_xy',data,layout);});",
-                   filename,(int)(extent*2/incr));
-    }
     free(full_path);
 }
 
@@ -114,7 +84,7 @@ int main(int argc, char* argv[])
     const float inc = 0.01f;
     if(argc!=2)
     {
-        fprintf(stderr,"Missing output path");
+        fprintf(stderr,"Missing output path\n");
         exit(EXIT_FAILURE);
     }
     Filter* box = new BoxFilter(BOX_FILTER_EXTENT,
