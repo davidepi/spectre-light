@@ -1,0 +1,12 @@
+set terminal pdfcairo
+set output 'primitives_distributions.pdf'
+set datafile separator ","
+set key off
+
+set title 'Sphere sampled points'
+set view equal xyz
+set xrange[-1:1]
+set yrange [-1:1]
+set zrange [-1:1]
+set ticslevel 0
+splot 'data_sphere.csv' pt 7 ps 0.1

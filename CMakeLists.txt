@@ -69,7 +69,7 @@ if(GTEST_FOUND)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
     endif(CMAKE_BUILD_TYPE STREQUAL "Coverage")
     include_directories(${GTEST_INCLUDE_DIRS})
-    add_executable(runTests ${CMAKE_CURRENT_SOURCE_DIR}/tests/allTests.cxx ${spectre_core_sources} ${spectre_test_sources})
+    add_executable(runTests EXCLUDE_FROM_ALL ${CMAKE_CURRENT_SOURCE_DIR}/tests/allTests.cxx ${spectre_core_sources} ${spectre_test_sources})
     target_link_libraries(runTests ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
     set_target_properties(runTests PROPERTIES COMPILE_FLAGS " -DTESTS -DDEBUG")
 endif(GTEST_FOUND)
@@ -81,9 +81,7 @@ if(GNUPLOT_FOUND)
         COMMAND filters_data ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${GNUPLOT_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/filters_gnuplot.txt
         COMMENT "Plotting filters distributions"
-        VERBATIM
-)
-
+        VERBATIM)
 add_custom_target(distributions 
-                  DEPENDS filters_distributions.pdf)
+    DEPENDS filters_distributions.pdf)
 endif(GNUPLOT_FOUND)

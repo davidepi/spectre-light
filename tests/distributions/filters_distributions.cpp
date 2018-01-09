@@ -103,9 +103,10 @@ int main(int argc, char* argv[])
     generate_data(argv[1],"mitchell",MITCHELL_FILTER_EXTENT,mitch,inc);
     generate_data(argv[1],"lanczos",LANCZOS_FILTER_EXTENT,sinc,inc);
 
-    //generate html
-    char* full_path = (char*)malloc(sizeof(char)*strlen(argv[1])+1+27);
-    strcpy(full_path,argv[1]);
-    strcat(full_path,"filters_distributions.html");
-       return 0;
+    delete box;
+    delete tent;
+    delete gauss;
+    delete mitch;
+    delete sinc;
+    return 0;
 }
