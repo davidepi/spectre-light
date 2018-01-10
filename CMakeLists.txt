@@ -25,9 +25,8 @@ file(GLOB spectre_core_sources
 file(GLOB spectre_test_sources
     tests/*.cpp
     )
-file(GLOB spectre_distribution_filters
+file(GLOB spectre_distributions_sources
     tests/distributions/*.cpp
-    src/samplers/*filter*.cpp
     )
 include_directories(src)
 find_package (Threads REQUIRED)
@@ -75,13 +74,18 @@ if(GTEST_FOUND)
 endif(GTEST_FOUND)
 find_package(Gnuplot)
 if(GNUPLOT_FOUND)
-    add_executable(filters_data EXCLUDE_FROM_ALL ${spectre_distribution_filters})
-    add_custom_command(OUTPUT filters_distributions.pdf
-        DEPENDS filters_data
-        COMMAND filters_data ${CMAKE_CURRENT_BINARY_DIR}
-        COMMAND ${GNUPLOT_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/filters_gnuplot.txt
+    add_executable(distributions_data EXCLUDE_FROM_ALL ${spectre_distributions_sources} ${spectre_core_sources} ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/distributions_main.cpp)
+    target_compile_definitions(distributions_data PRIVATE SUPPRESS_MOTD=1)
+    add_custom_command(OUTPUT filters_distributions.pdf primitives_distributions.pdf
+        DEPENDS distributions_data
+        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/data
+        COMMAND distributions_data ${CMAKE_CURRENT_BINARY_DIR}/data
         COMMENT "Plotting filters distributions"
+        COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/filters_gnuplot.txt
+        COMMENT "Plotting primitives distributions"
+        COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/primitives_gnuplot.txt
         VERBATIM)
 add_custom_target(distributions 
-    DEPENDS filters_distributions.pdf)
+    DEPENDS filters_distributions.pdf
+    DEPENDS primitives_distributions.pdf)
 endif(GNUPLOT_FOUND)

@@ -11,9 +11,9 @@ set autoscale x
 set yrange [0:1.2]
 set xtics 0.5
 set ytics 0,0.5,1
-plot 'data_box_x.csv' with lines
+plot path."data_box_x.csv" with lines
 set title 'Box Filter - y component'
-plot 'data_box_y.csv' with lines
+plot path."data_box_y.csv" with lines
 set title 'Box Filter - both components'
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
@@ -26,7 +26,7 @@ set xtics 0.5
 set ytics 0.5
 set ztics 0,0.5,1
 set zrange [0:1]
-splot 'data_box_xy.csv' with lines
+splot path."data_box_xy.csv" with lines
 
 #Tent
 set title 'Tent Filter - x component'
@@ -36,9 +36,9 @@ set autoscale x
 set yrange [0:1]
 set xtics 0.5
 set ytics 0,0.5,1
-plot 'data_tent_x.csv' with lines
+plot path."data_tent_x.csv" with lines
 set title 'Tent Filter - y component'
-plot 'data_tent_y.csv' with lines
+plot path."data_tent_y.csv" with lines
 set title 'Tent Filter - both components'
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
@@ -51,7 +51,7 @@ set xtics 0.5
 set ytics 0.5
 set ztics 0,0.5,1
 set zrange [0:1]
-splot 'data_tent_xy.csv' with lines
+splot path."data_tent_xy.csv" with lines
 
 #Gaussian
 set title 'Gaussian Filter - x component'
@@ -61,9 +61,9 @@ set autoscale x
 set yrange [0:1]
 set xtics 0.5
 set ytics 0,0.5,1
-plot 'data_gaussian_x.csv' with lines
+plot path."data_gaussian_x.csv" with lines
 set title 'Gaussian Filter - y component'
-plot 'data_gaussian_y.csv' with lines
+plot path."data_gaussian_y.csv" with lines
 set title 'Gaussian Filter - both components'
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
@@ -76,7 +76,7 @@ set xtics 0.5
 set ytics 0.5
 set ztics 0,0.5,1
 set zrange [0:1]
-splot 'data_gaussian_xy.csv' with lines
+splot path."data_gaussian_xy.csv" with lines
 
 #Mitchell-Netravali
 set title 'Mitchell-Netravali Filter - x component'
@@ -86,9 +86,9 @@ set autoscale x
 set yrange [-0.2:1]
 set xtics 0.5
 set ytics -0.2,0.2,1
-plot 'data_mitchell_x.csv' with lines
+plot path."data_mitchell_x.csv" with lines
 set title 'Mitchell-Netravali Filter - y component'
-plot 'data_mitchell_y.csv' with lines
+plot path."data_mitchell_y.csv" with lines
 set title 'Mitchell-Netravali Filter - both components'
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
@@ -101,7 +101,7 @@ set xtics 0.5
 set ytics 0.5
 set ztics -1,0.5,1
 set zrange [-0.2:1]
-splot 'data_mitchell_xy.csv' with lines
+splot path."data_mitchell_xy.csv" with lines
 
 #Lanczos-Sinc
 set title 'Lanczos-sinc Filter - x component'
@@ -111,9 +111,9 @@ set autoscale x
 set yrange [-0.2:1]
 set xtics 0.5
 set ytics -0.2,0.2,1
-plot 'data_lanczos_x.csv' with lines
+plot path."data_lanczos_x.csv" with lines
 set title 'Lanczos-sinc Filter - y component'
-plot 'data_lanczos_y.csv' with lines
+plot path."data_lanczos_y.csv" with lines
 set title 'Lanczos-Sinc Filter - both components'
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
@@ -126,4 +126,4 @@ set xtics 0.5
 set ytics 0.5
 set ztics -1,0.5,1
 set zrange [-0.2:1]
-splot 'data_lanczos_xy.csv' with lines
+splot path."data_lanczos_xy.csv" with lines

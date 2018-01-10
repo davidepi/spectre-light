@@ -3,13 +3,14 @@
 #include<random>
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
+#include "primitives/box.hpp"
 #define SAMPLES 1000
-//used to generate the filters data
 
-void generate_data(const char* out_path, const char* filename, Shape* sp)
+static void gen_data(const char* out_path, const char* filename, Shape* sp)
 {
     std::uniform_real_distribution<float> unif(0.f,1.f);
-    std::default_random_engine engine;
+    std::default_random_engine engine{static_cast<unsigned int>
+            (0x2b427b177f8333d1U)};
     //+9 for data_***.csv
     //+1 because path could be missing the trailing slash
     //+1 obviously for \0
@@ -47,15 +48,12 @@ void generate_data(const char* out_path, const char* filename, Shape* sp)
     free(full_path);
 }
 
-int main(int argc, char* argv[])
+void generate_primitives_data(const char* out_path)
 {
-    const float inc = 0.01f;
-    if(argc!=2)
-    {
-        fprintf(stderr,"Missing output path\n");
-        exit(EXIT_FAILURE);
-    }
     Shape* sphere = new Sphere;
-    generate_data(argv[1],"sphere",sphere);
-    return 0;
+    Shape* aabb = new Box;
+    gen_data(out_path,"sphere",sphere);
+    gen_data(out_path,"aabb",aabb);
+    delete sphere;
+    delete aabb;
 }

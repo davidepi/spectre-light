@@ -10,7 +10,7 @@
 
 //used to generate the filters data
 
-void generate_data(const char* out_path, const char* filename, int extent, 
+static void gen_data(const char* out_path, const char* filename, int extent, 
         Filter* filter, float incr)
 {
 
@@ -79,14 +79,9 @@ void generate_data(const char* out_path, const char* filename, int extent,
     free(full_path);
 }
 
-int main(int argc, char* argv[])
+void generate_filters_data(const char* out_path)
 {
     const float inc = 0.01f;
-    if(argc!=2)
-    {
-        fprintf(stderr,"Missing output path\n");
-        exit(EXIT_FAILURE);
-    }
     Filter* box = new BoxFilter(BOX_FILTER_EXTENT,
                                 BOX_FILTER_EXTENT);
     Filter* tent = new TentFilter(TENT_FILTER_EXTENT,
@@ -97,16 +92,14 @@ int main(int argc, char* argv[])
                                        MITCHELL_FILTER_EXTENT, .33f, .33f);
     Filter* sinc = new LanczosFilter(LANCZOS_FILTER_EXTENT,
                                      LANCZOS_FILTER_EXTENT, 3.f);
-    generate_data(argv[1],"box",BOX_FILTER_EXTENT,box,inc);
-    generate_data(argv[1],"tent",TENT_FILTER_EXTENT,tent,inc);
-    generate_data(argv[1],"gaussian",GAUSSIAN_FILTER_EXTENT,gauss,inc);
-    generate_data(argv[1],"mitchell",MITCHELL_FILTER_EXTENT,mitch,inc);
-    generate_data(argv[1],"lanczos",LANCZOS_FILTER_EXTENT,sinc,inc);
-
+    gen_data(out_path,"box",BOX_FILTER_EXTENT,box,inc);
+    gen_data(out_path,"tent",TENT_FILTER_EXTENT,tent,inc);
+    gen_data(out_path,"gaussian",GAUSSIAN_FILTER_EXTENT,gauss,inc);
+    gen_data(out_path,"mitchell",MITCHELL_FILTER_EXTENT,mitch,inc);
+    gen_data(out_path,"lanczos",LANCZOS_FILTER_EXTENT,sinc,inc);
     delete box;
     delete tent;
     delete gauss;
     delete mitch;
-    delete sinc;
-    return 0;
+    delete sinc; 
 }

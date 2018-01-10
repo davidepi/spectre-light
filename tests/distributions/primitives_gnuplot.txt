@@ -3,10 +3,9 @@ set output 'primitives_distributions.pdf'
 set datafile separator ","
 set key off
 
-set title 'Sphere sampled points'
+set title 'Sphere sampled 1000 points'
 set view equal xyz
-set xrange[-1:1]
-set yrange [-1:1]
-set zrange [-1:1]
 set ticslevel 0
-splot 'data_sphere.csv' pt 7 ps 0.1
+splot path."data_sphere.csv" pt 7 ps 0.1
+set title 'Box sampled 1000 points'
+splot path."data_aabb.csv" pt 7 ps 0.1

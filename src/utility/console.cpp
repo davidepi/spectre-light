@@ -41,6 +41,7 @@ Console::Console()
 
 void Console::motd()
 {
+#ifndef SUPPRESS_MOTD
     fprintf(stdout,"Spectre version %s\nReleased on %s, compiled on %s\n",
             SPECTRE_VERSION,SPECTRE_RELEASE,__DATE__);
     
@@ -48,6 +49,7 @@ void Console::motd()
     fprintf(stdout,"Using full-spectrum renderer\n");
 #else
     fprintf(stdout,"Using " SPRED "r" SPGRN "g" SPBLU "b" SPNRM " renderer\n");
+#endif
 #endif
 }
 
