@@ -6,7 +6,7 @@
  *  \brief     Interface for the camera
  *  \details   An abstract class representing a generic camera in the space
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      3 Jul 2017
  *  \copyright GNU GPLv3
  */
@@ -28,7 +28,7 @@
  *  in space. The positioning, referred as "camera to world space" is done
  *  with the LookAt matrix.
  *
- *  This class exposes a method called createRay, that must be overriden by
+ *  This class exposes a method called create_ray, that must be overriden by
  *  the different types of camera that will be implemented. This method will
  *  generate the light ray that reached a specific point in the image plane
  */
@@ -60,7 +60,7 @@ public:
      *  \param[in] sample The given sample
      *  \param[out] ray   The output ray
      */
-    virtual void createRay(Sample* sample, Ray* ray)const = 0;
+    virtual void create_ray(Sample* sample, Ray* ray)const = 0;
     
 protected:
         

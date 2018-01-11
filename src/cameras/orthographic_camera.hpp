@@ -6,7 +6,7 @@
  *  \brief     An orthographic camera
  *  \details   A camera used to generate orthographic images
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      3 Jul 2017
  *  \copyright GNU GPLv3
  */
@@ -56,7 +56,7 @@ public:
      *  \param[in] sample The given sample
      *  \param[out] ray   The output ray
      */
-    void createRay(Sample* sample, Ray* ray)const;
+    void create_ray(Sample* sample, Ray* ray)const;
     
 private:
     

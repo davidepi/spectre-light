@@ -6,7 +6,7 @@
  *  \brief     Random sampling implementation
  *  \details   Naive sampling of a 2D region
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      31 Jul 2017
  *  \copyright GNU GPLv3
  */

@@ -103,14 +103,14 @@ void Renderer::setBoxFilter()
 
     delete filter;
     filter = new BoxFilter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setTentFilter()
 {
     delete filter;
     filter = new TentFilter(TENT_FILTER_EXTENT,TENT_FILTER_EXTENT);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setGaussianFilter(float sigma)
@@ -118,7 +118,7 @@ void Renderer::setGaussianFilter(float sigma)
     delete filter;
     filter = new GaussianFilter(GAUSSIAN_FILTER_EXTENT,GAUSSIAN_FILTER_EXTENT,
                                 sigma);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setMitchellFilter(float b, float c)
@@ -126,7 +126,7 @@ void Renderer::setMitchellFilter(float b, float c)
     delete filter;
     filter = new MitchellFilter(MITCHELL_FILTER_EXTENT,MITCHELL_FILTER_EXTENT,
                                 b,c);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setLanczosSincFilter(float tau)
@@ -134,7 +134,7 @@ void Renderer::setLanczosSincFilter(float tau)
     delete filter;
     filter = new LanczosFilter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,
                                tau);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setRayTracer()
@@ -210,7 +210,7 @@ int Renderer::render(Scene* s)
     
     Console.log(MESSAGE_IMAGEO,NULL);
     //save the image
-    Renderer::film.saveImage();
+    Renderer::film.save_image();
     Console.log(MESSAGE_BYE,NULL);
 	
     return 0;
@@ -293,21 +293,21 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
         {
             for(int i=0;i<spp;i++)
             {
-                camera->createRay(&(samples[i]), &r);
+                camera->create_ray(&(samples[i]), &r);
                 if (scene->k.intersect(&r, &h))
                     radiance = mc_solver->radiance(scene, &h, &r, sam, &ot);
                 else
                     radiance = SPECTRUM_BLACK;
                 
                 ColorXYZ cx = radiance.toXYZ();
-                film->addPixel(&(samples[i]), cx, &ex);
+                film->add_pixel(&(samples[i]), cx, &ex);
             }
         }
-		film->deferredAddPixel(&ex);
+		film->add_pixel_deferred(&ex);
         delete sam;
     }
     delete[] samples;
-	film->forceAddPixel(&ex);
+	film->add_pixel_forced(&ex);
 }
 
 RendererProgressBar::RendererProgressBar(std::stack<Renderer_task> *jobs)

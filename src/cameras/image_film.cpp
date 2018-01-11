@@ -4,13 +4,13 @@
 #include "image_film.hpp"
 
 //check if extension is supported
-char check_extension(const char* fullpath)
+static char check_extension(const char* fullpath)
 {
     //dot included
     const char* extension = strrchr(fullpath,'.');
     int retval;
-    //null or pos less than 4 chr expected for an extension
-    if(extension == NULL || (extension-fullpath)<(int)strlen(fullpath)-4)
+    //pos less than 4 chr expected for an extension
+    if(strlen(extension)<4)
     {
         Console.warning(MESSAGE_MISSING_EXTENSION);
         retval = EXTENSION_NOT_SUPPORTED;
@@ -51,7 +51,7 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
     memset(ImageFilm::buffer, 0, sizeof(Pixel)*width*height);
     ImageFilm::filter = NULL;
     ImageFilm::filename = NULL;
-
+    
     //check if folder is writable
     const char* file = strrchr(fullpath,PATH_SEPARATOR);
     char* folder;
@@ -64,54 +64,41 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
     }
     else //current folder
     {
-        folder= (char*)malloc(sizeof(char)*2);
+        folder= (char*)malloc(sizeof(char)*3);
         folder[0] = '.';
-        folder[2] = '\n';
+        folder[1] = '/';
+        folder[2] = '\0';
     }
-
+    
 #ifdef WIN32
     if(_access(folder,2)==-1)
 #else
-    if(access(folder,W_OK)!=0)
+        if(access(folder,W_OK)!=0)
 #endif
-    {
-        char* err=(char*)malloc(sizeof(char)*(strlen(MESSAGE_W_DENIED)
-                                              +strlen(folder)+1));
-        sprintf(err,MESSAGE_W_DENIED,folder);
-        Console.critical(err);
-        free(err);
-    }
-
-    if(fullpath != NULL)
-    {
-        //check extension, add .ppm if not supported
-        ImageFilm::extension = check_extension(fullpath);
-        int path_len = (int)strlen(fullpath)+1;
-        path_len += ImageFilm::extension?0:4; //to add the .ppm at the end,
-                                         //if there was no extension
-        ImageFilm::filename = (char*)malloc(sizeof(char)*path_len);
-        memcpy(ImageFilm::filename,fullpath,sizeof(char)*path_len);
-        if(ImageFilm::extension==EXTENSION_NOT_SUPPORTED)
         {
-            path_len-=5; //point to the \0 of the string
-            filename[path_len] = '.';    //add the new extension
-            filename[path_len+1] = 'p';
-            filename[path_len+2] = 'p';
-            filename[path_len+3] = 'm';
-            filename[path_len+4] = '\0';
+            char* err=(char*)malloc(sizeof(char)*(strlen(MESSAGE_W_DENIED)
+                                                  +strlen(folder)+1));
+            sprintf(err,MESSAGE_W_DENIED,folder);
+            Console.critical(err);
+            free(err);
         }
-    }
-    else
+    
+    //check extension, add .ppm if not supported
+    ImageFilm::extension = check_extension(fullpath);
+    int path_len = (int)strlen(fullpath)+1;
+    //to add the .ppm at the end, if necessary
+    if(ImageFilm::extension==EXTENSION_NOT_SUPPORTED)
+        path_len+=4;
+    ImageFilm::filename = (char*)malloc(sizeof(char)*path_len);
+    memcpy(ImageFilm::filename,fullpath,sizeof(char)*path_len);
+    if(ImageFilm::extension==EXTENSION_NOT_SUPPORTED)
     {
-        ImageFilm::filename = (char*)malloc(sizeof(char)*8);
-        filename[0] = 'o';
-        filename[1] = 'u';
-        filename[2] = 't';
-        filename[3] = '.';
-        filename[4] = 'p';
-        filename[5] = 'p';
-        filename[6] = 'm';
-        filename[7] = '\0';
+        path_len-=5; //point to the \0 of the string
+        filename[path_len] = '.';    //add the new extension
+        filename[path_len+1] = 'p';
+        filename[path_len+2] = 'p';
+        filename[path_len+3] = 'm';
+        filename[path_len+4] = '\0';
     }
     free(folder);
 }
@@ -122,7 +109,7 @@ ImageFilm::~ImageFilm()
         free(ImageFilm::buffer);
 }
 
-void ImageFilm::addPixel(const Sample* sample, ColorXYZ color,
+void ImageFilm::add_pixel(const Sample* sample, ColorXYZ color,
                          ExecutorData* secure_area)
 {
     if(color.r<0)color.r=0;
@@ -171,7 +158,7 @@ void ImageFilm::addPixel(const Sample* sample, ColorXYZ color,
         }
 }
 
-void ImageFilm::deferredAddPixel(ExecutorData* secure_area)
+void ImageFilm::add_pixel_deferred(ExecutorData* secure_area)
 {
     //try to gain the lock
 	if(mtx.try_lock())
@@ -194,7 +181,7 @@ void ImageFilm::deferredAddPixel(ExecutorData* secure_area)
 	}
 }
 
-void ImageFilm::forceAddPixel(ExecutorData* secure_area)
+void ImageFilm::add_pixel_forced(ExecutorData* secure_area)
 {
 	Pixel* value;
 	TodoPixel pixel_toadd;
@@ -215,12 +202,12 @@ void ImageFilm::forceAddPixel(ExecutorData* secure_area)
 	mtx.unlock();
 }
 
-void ImageFilm::setFilter(Filter* f)
+void ImageFilm::set_filter(Filter* f)
 {
     ImageFilm::filter = f;
 }
 
-bool ImageFilm::saveImage()
+bool ImageFilm::save_image()
 {
     uint8_t* rgb_buffer=(uint8_t*)malloc(ImageFilm::width*ImageFilm::height*3);
     unsigned int i = 0;
