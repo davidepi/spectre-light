@@ -76,7 +76,7 @@ find_package(Gnuplot)
 if(GNUPLOT_FOUND)
     add_executable(distributions_data EXCLUDE_FROM_ALL ${spectre_distributions_sources} ${spectre_core_sources} ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/distributions_main.cpp)
     target_compile_definitions(distributions_data PRIVATE SUPPRESS_MOTD=1)
-    add_custom_command(OUTPUT filters_distributions.pdf primitives_distributions.pdf
+    add_custom_command(OUTPUT filters_distributions.pdf primitives_distributions.pdf samplers_distributions.pdf
         DEPENDS distributions_data
         COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/data
         COMMAND distributions_data ${CMAKE_CURRENT_BINARY_DIR}/data
@@ -84,6 +84,8 @@ if(GNUPLOT_FOUND)
         COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/filters_gnuplot.txt
         COMMENT "Plotting primitives distributions"
         COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/primitives_gnuplot.txt
+        COMMENT "Plotting samplers distributions"
+        COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/samplers_gnuplot.txt
         VERBATIM)
 add_custom_target(distributions 
     DEPENDS filters_distributions.pdf

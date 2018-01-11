@@ -77,7 +77,7 @@ public:
      *  \param[out] res An array containing the generated samples
      *  \return false if the whole area has been sampled, true otherwise
      */
-    virtual bool getSamples(Sample* res) = 0;
+    virtual bool get_samples(Sample* res) = 0;
 
     /** \brief Generate random numbers
      *
@@ -86,7 +86,7 @@ public:
      *  \param[out] container The array where the random numbers will be stored
      *  \param[in]  size The amount of numbers that will be generated
      */
-    void getRandomNumbers(float* container, int size);
+    void get_random_numbers(float* container, int size);
     
 protected:
 

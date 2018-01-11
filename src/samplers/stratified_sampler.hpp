@@ -60,7 +60,7 @@ public:
      *  \param[in,out] res The resulting array of samples
      *  \return false if the whole area has been sampled, true otherwise
      */
-    bool getSamples(Sample* res);
+    bool get_samples(Sample* res);
 
 private:
 

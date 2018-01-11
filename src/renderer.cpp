@@ -289,7 +289,7 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
 		ex.starty = todo.starty;
 		ex.endx = todo.endx;
 		ex.endy = todo.endy;
-        while(sam->getSamples(samples))
+        while(sam->get_samples(samples))
         {
             for(int i=0;i<spp;i++)
             {

@@ -31,7 +31,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
 
     //random samples
     float rand[4];
-    sam->getRandomNumbers(rand,4);
+    sam->get_random_numbers(rand,4);
 
     //russian roulette
     if(r->ricochet>3)

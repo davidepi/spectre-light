@@ -28,7 +28,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
     if(nlights>0)
     {
         float rand[6];
-        sam->getRandomNumbers(rand,6);
+        sam->get_random_numbers(rand,6);
         const Vec3 wo = -r->direction;
         Vec3 wi;
         //choose a light to sample
@@ -95,7 +95,7 @@ Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     Vec3 wi;
     float rand[3];
     float bsdfpdf;
-    sam->getRandomNumbers(rand,3);
+    sam->get_random_numbers(rand,3);
     const Bsdf* mat = hp->asset_h->get_material();
     BdfFlags sampled_val;
     BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
