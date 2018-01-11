@@ -2,6 +2,7 @@ set terminal pdfcairo
 set output 'filters_distributions.pdf'
 set datafile separator ","
 set key off
+set zeroaxis
 
 #Box
 set title 'Box Filter - x component'
@@ -94,13 +95,14 @@ set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
 set zlabel 'Weight'
 set autoscale xy
+set autoscale z
 set hidden3d
 set isosamples 60
 set ticslevel 0.2
 set xtics 0.5
 set ytics 0.5
 set ztics -1,0.5,1
-set zrange [-0.2:1]
+set zeroaxis
 splot path."data_mitchell_xy.csv" with lines
 
 #Lanczos-Sinc
@@ -119,11 +121,11 @@ set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
 set zlabel 'Weight'
 set autoscale xy
+set autoscale z
 set hidden3d
 set isosamples 60
 set ticslevel 0.2
 set xtics 0.5
 set ytics 0.5
 set ztics -1,0.5,1
-set zrange [-0.2:1]
 splot path."data_lanczos_xy.csv" with lines
