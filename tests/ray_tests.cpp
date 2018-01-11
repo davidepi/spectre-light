@@ -123,3 +123,4 @@ TEST(Ray,RayProperties_constructor)
     EXPECT_TRUE(rp.isZInvNeg);
 }
 
+

@@ -204,6 +204,8 @@ TEST(Filter,lanczos_filter)
     EXPECT_GT(f.weight(3.5f,0.f), 0.f); //then positive tails
     //fuck you again gtest, 1e-17 != 0 with expect_float_eq
     EXPECT_TRUE(flt_equal(f.weight(extent,0.f),0.f)); //finish at 0
+    EXPECT_EQ(f.weight(2.f,LANCZOS_FILTER_EXTENT+1.f),0.f); //out of bounds
+    EXPECT_EQ(f.weight(LANCZOS_FILTER_EXTENT+1.f,2.f),0.f); //out of bounds
 
     float mean = 0.f;
     float stddev= 0.f;
