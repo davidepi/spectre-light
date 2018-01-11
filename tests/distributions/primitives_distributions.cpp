@@ -4,6 +4,7 @@
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
 #include "primitives/box.hpp"
+#include "primitives/triangle.hpp"
 #include "primitives/mesh.hpp"
 #define SAMPLES 1000
 
@@ -57,6 +58,17 @@ void generate_primitives_data(const char* out_path)
 
     gen_data(out_path,"sphere",sphere);
     gen_data(out_path,"box",box);
+
+    //hardcoded triangle
+    Point3 a(-1.f,0.f,0.f);
+    Point3 b(1.f,0.f,0.f);
+    Point3 c(0.f,1.f,0.f);
+    Normal n(0.f,0.f,1.f);
+    Vertex va; va.p = a; va.n = n;
+    Vertex vb; vb.p = b; vb.n = n;
+    Vertex vc; vc.p = c; vc.n = n;
+    Shape* triangle = new Triangle(va,vb,vc);
+    gen_data(out_path,"triangle",triangle);
 
     //hardcoded icosahedron
     Point3 p01 = Point3(0.000000,-0.525731,0.850651);
