@@ -357,6 +357,7 @@ TEST(Normal,div_float)
     EXPECT_LE(res.z,-1.5/7.33+EPSILON);
 
     float zero = 0.f;
+    errors_count[CRITICAL_INDEX] = 0;
     v1/zero;
     EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
     errors_count[CRITICAL_INDEX] = 0;

@@ -299,7 +299,7 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
                 else
                     radiance = SPECTRUM_BLACK;
                 
-                ColorXYZ cx = radiance.toXYZ();
+                ColorXYZ cx = radiance.to_xyz();
                 film->add_pixel(&(samples[i]), cx, &ex);
             }
         }

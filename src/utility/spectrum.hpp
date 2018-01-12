@@ -5,7 +5,7 @@
  *  \file spectrum.hpp
  *  \brief Colours representations using wavelength spectrum
  *  \author Davide Pizzolotto
- *  \version 0.1
+ *  \version 0.2
  *  \date 9 Nov 2017
  *  \copyright GNU GPLv3
  */
@@ -51,10 +51,10 @@
 class Spectrum
 {
 public:
-    
+
     ///Default constructor, does nothing
-    Spectrum();
-    
+    Spectrum() = default;
+
     /** \brief Initialize the spectrum given the temperature
      *
      *  Consider this spectrum as an emission from a blackbody and initialize it
@@ -64,13 +64,13 @@ public:
      *  \param[in] temperature The temperature of the body, in Kelvin degrees
      */
     Spectrum(int temperature);
-    
+
     /** \brief Initialize the spectrum with a constant value
      *
      *  \param[in] val The value of the spectrum
      */
     Spectrum(float val);
-    
+
     /** \brief Initialize the spectrum with the given values
      *
      *  Initialize this class by filling it with the given values
@@ -78,7 +78,7 @@ public:
      *  \param[in] vals The values, sorted by nm, used for this spectrum
      */
     Spectrum(const float* vals);
-    
+
     /** \brief Initialize the spectrum with the given values
      *
      *  Initialize this class by filling it with the given values, passed as
@@ -87,7 +87,7 @@ public:
      *  \param[in] vals The values, sorted by nm, used for this spectrum
      */
     Spectrum(const std::initializer_list<float> vals);
-    
+
     /** \brief Attempt to convert an sRGB colour to a spectrum
      *
      *  Although an exact answer is impossible, this constructor tries to
@@ -99,13 +99,13 @@ public:
      *  \param[in] light true if the colour is a light source
      */
     Spectrum(ColorRGB c, bool light);
-    
+
     /** \brief Convert this spectrum to its XYZ representation
      *
      *  \return The XYZ representation of this spectrum
      */
-    ColorXYZ toXYZ()const;
-    
+    ColorXYZ to_xyz()const;
+
     /** \brief Calculate the luminous intensity of this spectrum
      *
      *  Calculate only the Y value of the XYZ color represented by this 
@@ -114,12 +114,12 @@ public:
      *  \return The luminous intensity of this spectrum
      */
     float luminance()const;
-    
+
     /** \brief Retun true if the spectrum is composed only by 0 values
      * 
      *  \return true if only 0 values compose this spectrum
      */
-    bool isBlack()const;
+    bool is_black()const;
 
     /** \brief Checks if this class contains NaNs or infinite values
      *
@@ -128,8 +128,8 @@ public:
      *  this method simply returns true
      *  \return true if there are not NaNs or infinite values, false otherwise
      */
-    bool isValid()const;
-    
+    bool is_valid()const;
+
     ///The addition operation between two spectra
     Spectrum operator+(const Spectrum& s)const;
     ///The addition operation between two spectra
@@ -162,7 +162,7 @@ public:
     Spectrum operator/(float v)const;
     ///The division operation between a value and a spectrum
     void operator/=(float v);
-    
+
 #ifdef SPECTRAL
     ///Wavelength samples
     float w[SPECTRUM_SAMPLES];

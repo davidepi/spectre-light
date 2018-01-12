@@ -44,11 +44,11 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         //multiple importance sampling, light first
         Spectrum directrad=light->radiance_i(rand[1],rand[2],&hp->point_h,&wi,
                                              &lightpdf,&light_distance);
-        if(lightpdf > 0 && !directrad.isBlack())
+        if(lightpdf > 0 && !directrad.is_black())
         {
             Spectrum bsdf_f = mat->value(&wo,hp,&wi,flags);
             Ray r2(hp->point_h,wi);
-            if(!bsdf_f.isBlack() && !ot->is_occluded(&r2,light_distance))
+            if(!bsdf_f.is_black() && !ot->is_occluded(&r2,light_distance))
             {
                 bsdfpdf = mat->pdf(&wo,hp,&wi,flags);
                 if(bsdfpdf>0)
@@ -64,7 +64,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         //NULL is guaranteed not be used since the call will never be specular
         Spectrum bsdf_f = mat->sample_value(rand[3],rand[4],rand[5],&wo,hp,
                                             &wi,&bsdfpdf,flags,&sampled_val);
-        if(bsdfpdf>0 && !bsdf_f.isBlack())
+        if(bsdfpdf>0 && !bsdf_f.is_black())
         {
             float w = 1.f; //weight
             //if((sampled_val&SPECULAR)==0) //if not specular -> 100% guaranteed
@@ -102,7 +102,7 @@ Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     Spectrum bsdf_f = mat->sample_value(rand[0], rand[1], rand[2], &wo, hp, &wi,
                        &bsdfpdf,sampleme,&sampled_val);
     
-    if(bsdfpdf==1.f && !bsdf_f.isBlack())
+    if(bsdfpdf==1.f && !bsdf_f.is_black())
     {
         float adot = absdot(wi, hp->normal_h);
         if(adot != 0)
