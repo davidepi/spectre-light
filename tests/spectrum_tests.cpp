@@ -135,4 +135,156 @@ TEST(Spectrum,is_valid)
     EXPECT_FALSE(sp2inf.is_valid());
 }
 
+TEST(Spectrum,sum)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    Spectrum invalid = sp;
+    invalid.w[0] = NAN;
+
+    //valid
+    Spectrum sp_res = sp+sp;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]+sp.w[0]);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]+sp.w[1]);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]+sp.w[2]);
+
+    //invalid
+    ASSERT_ANY_THROW(sp_res = sp+invalid);
+    ASSERT_ANY_THROW(sp_res = invalid+sp);
+}
+
+TEST(Spectrum,sum_this)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    Spectrum invalid = sp;
+    invalid.w[0] = NAN;
+
+    //valid
+    Spectrum sp_res = sp;
+    sp_res+=sp;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]+sp.w[0]);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]+sp.w[1]);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]+sp.w[2]);
+
+    //invalid
+    sp_res = sp;
+    ASSERT_ANY_THROW(sp_res+=invalid;);
+    ASSERT_ANY_THROW(invalid+=sp);
+}
+
+TEST(Spectrum,sub)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    Spectrum invalid = sp;
+    invalid.w[0] = NAN;
+
+    //valid
+    Spectrum sp_res = sp-sp;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]-sp.w[0]);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]-sp.w[1]);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]-sp.w[2]);
+
+    //invalid
+    ASSERT_ANY_THROW(sp_res = sp-invalid);
+    ASSERT_ANY_THROW(sp_res = invalid-sp);
+}
+
+TEST(Spectrum,sub_this)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    Spectrum invalid = sp;
+    invalid.w[0] = NAN;
+
+    //valid
+    Spectrum sp_res = sp;
+    sp_res-=sp;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]-sp.w[0]);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]-sp.w[1]);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]-sp.w[2]);
+
+    //invalid
+    sp_res = sp;
+    ASSERT_ANY_THROW(sp_res-=invalid;);
+    ASSERT_ANY_THROW(invalid-=sp);
+}
+
+TEST(Spectrum,mul)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    Spectrum invalid = sp;
+    invalid.w[0] = NAN;
+
+    //valid
+    Spectrum sp_res = sp*sp;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]*sp.w[0]);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]*sp.w[1]);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]*sp.w[2]);
+
+    //invalid
+    ASSERT_ANY_THROW(sp_res = sp*invalid);
+    ASSERT_ANY_THROW(sp_res = invalid*sp);
+}
+
+TEST(Spectrum,mul_this)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    Spectrum invalid = sp;
+    invalid.w[0] = NAN;
+
+    //valid
+    Spectrum sp_res = sp;
+    sp_res*=sp;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]*sp.w[0]);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]*sp.w[1]);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]*sp.w[2]);
+
+    //invalid
+    sp_res = sp;
+    ASSERT_ANY_THROW(sp_res*=invalid;);
+    ASSERT_ANY_THROW(invalid*=sp);
+}
+
+TEST(Spectrum,div)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    Spectrum invalid = sp;
+    invalid.w[0] = NAN;
+
+    //valid
+    Spectrum sp_res = sp/sp;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]/sp.w[0]);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]/sp.w[1]);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]/sp.w[2]);
+
+    //invalid
+    ASSERT_ANY_THROW(sp_res = sp/invalid);
+    ASSERT_ANY_THROW(sp_res = invalid/sp);
+}
+
+TEST(Spectrum,div_this)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    Spectrum invalid = sp;
+    invalid.w[0] = NAN;
+
+    //valid
+    Spectrum sp_res = sp;
+    sp_res/=sp;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]/sp.w[0]);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]/sp.w[1]);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]/sp.w[2]);
+
+    //invalid
+    sp_res = sp;
+    ASSERT_ANY_THROW(sp_res/=invalid;);
+    ASSERT_ANY_THROW(invalid/=sp);
+}
+
 

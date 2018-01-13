@@ -21,7 +21,7 @@
 #include <iostream> //std::wcout, std::cout
 
 ///Version of the software
-#define SPECTRE_VERSION "0.1.0"
+#define SPECTRE_VERSION "0.1.0 [NIGHTLY BUILD]"
 
 ///Release date of this version
 #define SPECTRE_RELEASE "Dec  3 2017"

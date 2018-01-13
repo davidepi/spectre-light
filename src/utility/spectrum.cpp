@@ -741,7 +741,7 @@ Spectrum Spectrum::operator+(const Spectrum& s)const
     retval.w[15] = Spectrum::w[15] + s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->is_valid())
+    if(!this->is_valid() || !s.is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -795,7 +795,7 @@ Spectrum Spectrum::operator-(const Spectrum& s)const
     retval.w[15] = Spectrum::w[15] - s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->is_valid())
+    if(!this->is_valid() || !s.is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -850,7 +850,7 @@ Spectrum Spectrum::operator*(const Spectrum& s)const
     retval.w[15] = Spectrum::w[15] * s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->is_valid())
+    if(!this->is_valid() || !s.is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -905,7 +905,7 @@ Spectrum Spectrum::operator/(const Spectrum& s)const
     retval.w[15] = Spectrum::w[15] / s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->is_valid())
+    if(!this->is_valid() || !s.is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
