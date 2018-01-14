@@ -135,7 +135,7 @@ TEST(Spectrum,is_valid)
     EXPECT_FALSE(sp2inf.is_valid());
 }
 
-TEST(Spectrum,sum)
+TEST(Spectrum,sum_spectrum)
 {
     ColorRGB input(0.5f,0.5f,0.5f);
     Spectrum sp(input,false);
@@ -153,7 +153,7 @@ TEST(Spectrum,sum)
     ASSERT_ANY_THROW(sp_res = invalid+sp);
 }
 
-TEST(Spectrum,sum_this)
+TEST(Spectrum,sum_this_spectrum)
 {
     ColorRGB input(0.5f,0.5f,0.5f);
     Spectrum sp(input,false);
@@ -173,7 +173,7 @@ TEST(Spectrum,sum_this)
     ASSERT_ANY_THROW(invalid+=sp);
 }
 
-TEST(Spectrum,sub)
+TEST(Spectrum,sub_spectrum)
 {
     ColorRGB input(0.5f,0.5f,0.5f);
     Spectrum sp(input,false);
@@ -191,7 +191,7 @@ TEST(Spectrum,sub)
     ASSERT_ANY_THROW(sp_res = invalid-sp);
 }
 
-TEST(Spectrum,sub_this)
+TEST(Spectrum,sub_this_spectrum)
 {
     ColorRGB input(0.5f,0.5f,0.5f);
     Spectrum sp(input,false);
@@ -211,7 +211,7 @@ TEST(Spectrum,sub_this)
     ASSERT_ANY_THROW(invalid-=sp);
 }
 
-TEST(Spectrum,mul)
+TEST(Spectrum,mul_spectrum)
 {
     ColorRGB input(0.5f,0.5f,0.5f);
     Spectrum sp(input,false);
@@ -229,7 +229,7 @@ TEST(Spectrum,mul)
     ASSERT_ANY_THROW(sp_res = invalid*sp);
 }
 
-TEST(Spectrum,mul_this)
+TEST(Spectrum,mul_this_spectrum)
 {
     ColorRGB input(0.5f,0.5f,0.5f);
     Spectrum sp(input,false);
@@ -249,7 +249,7 @@ TEST(Spectrum,mul_this)
     ASSERT_ANY_THROW(invalid*=sp);
 }
 
-TEST(Spectrum,div)
+TEST(Spectrum,div_spectrum)
 {
     ColorRGB input(0.5f,0.5f,0.5f);
     Spectrum sp(input,false);
@@ -267,7 +267,7 @@ TEST(Spectrum,div)
     ASSERT_ANY_THROW(sp_res = invalid/sp);
 }
 
-TEST(Spectrum,div_this)
+TEST(Spectrum,div_this_spectrum)
 {
     ColorRGB input(0.5f,0.5f,0.5f);
     Spectrum sp(input,false);
@@ -287,4 +287,155 @@ TEST(Spectrum,div_this)
     ASSERT_ANY_THROW(invalid/=sp);
 }
 
+TEST(Spectrum,sum_float)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    float invalid_float = NAN;
+
+    //valid
+    Spectrum sp_res = sp+0.1f;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]+0.1f);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]+0.1f);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]+0.1f);
+
+    //invalid
+    ASSERT_ANY_THROW(sp_res = sp+invalid_float);
+    sp.w[0] = NAN;
+    ASSERT_ANY_THROW(sp_res = sp+0.1f);
+}
+
+TEST(Spectrum,sum_this_float)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    float invalid_float = NAN;
+
+    //valid
+    Spectrum sp_res = sp;
+    sp_res+=0.1f;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]+0.1f);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]+0.1f);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]+0.1f);
+
+    //invalid
+    sp_res = sp;
+    ASSERT_ANY_THROW(sp_res+=invalid_float;);
+    sp.w[0] = NAN;
+    ASSERT_ANY_THROW(sp+=0.1f);
+}
+
+TEST(Spectrum,sub_float)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    float invalid_float = NAN;
+
+    //valid
+    Spectrum sp_res = sp-0.1f;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]-0.1f);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]-0.1f);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]-0.1f);
+
+    //invalid
+    ASSERT_ANY_THROW(sp_res = sp-invalid_float);
+    sp.w[0] = NAN;
+    ASSERT_ANY_THROW(sp_res = sp-0.1f);
+}
+
+TEST(Spectrum,sub_this_float)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    float invalid_float = NAN;
+
+    //valid
+    Spectrum sp_res = sp;
+    sp_res-=0.1f;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]-0.1f);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]-0.1f);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]-0.1f);
+
+    //invalid
+    sp_res = sp;
+    ASSERT_ANY_THROW(sp_res-=invalid_float;);
+    sp.w[0] = NAN;
+    ASSERT_ANY_THROW(sp-=0.1f);
+}
+
+TEST(Spectrum,mul_float)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    float invalid_float = NAN;
+
+    //valid
+    Spectrum sp_res = sp*0.1f;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]*0.1f);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]*0.1f);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]*0.1f);
+
+    //invalid
+    ASSERT_ANY_THROW(sp_res = sp*invalid_float);
+    sp.w[0] = NAN;
+    ASSERT_ANY_THROW(sp_res = sp*0.1f);
+}
+
+TEST(Spectrum,mul_this_float)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    float invalid_float = NAN;
+
+    //valid
+    Spectrum sp_res = sp;
+    sp_res*=0.1f;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]*0.1f);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]*0.1f);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]*0.1f);
+
+    //invalid
+    sp_res = sp;
+    ASSERT_ANY_THROW(sp_res*=invalid_float;);
+    sp.w[0] = NAN;
+    ASSERT_ANY_THROW(sp*=0.1f);
+}
+
+TEST(Spectrum,div_float)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    float invalid_float = NAN;
+
+    //valid
+    Spectrum sp_res = sp/0.1f;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]/0.1f);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]/0.1f);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]/0.1f);
+
+    //invalid
+    ASSERT_ANY_THROW(sp_res = sp/invalid_float);
+    sp.w[0] = NAN;
+    ASSERT_ANY_THROW(sp_res = sp/0.1f);
+}
+
+TEST(Spectrum,div_this_float)
+{
+    ColorRGB input(0.5f,0.5f,0.5f);
+    Spectrum sp(input,false);
+    float invalid_float = NAN;
+
+    //valid
+    Spectrum sp_res = sp;
+    sp_res/=0.1f;
+    EXPECT_EQ(sp_res.w[0],sp.w[0]/0.1f);
+    EXPECT_EQ(sp_res.w[1],sp.w[1]/0.1f);
+    EXPECT_EQ(sp_res.w[2],sp.w[2]/0.1f);
+
+    //invalid
+    sp_res = sp;
+    ASSERT_ANY_THROW(sp_res/=invalid_float;);
+    sp.w[0] = NAN;
+    ASSERT_ANY_THROW(sp/=0.1f);
+}
 
