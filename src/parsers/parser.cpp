@@ -221,7 +221,7 @@ static void parseMaterial(char* string)
         if(mat==NULL) //new material
         {
             mat = new Bsdf();
-            MtlLib.add(name,mat);
+            MtlLib.add_inherit(name,mat);
         }
         token = strtok_r(NULL," ",&stringpos); //retrieve material type
         if(strcmp(token,"diffuse")==0)

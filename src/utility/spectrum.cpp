@@ -601,7 +601,7 @@ ColorXYZ Spectrum::to_xyz()const
     x+=Spectrum::w[13]*X[13];
     x+=Spectrum::w[14]*X[14];
     x+=Spectrum::w[15]*X[15];
-    
+
     y+=Spectrum::w[0]*Y[0];
     y+=Spectrum::w[1]*Y[1];
     y+=Spectrum::w[2]*Y[2];
@@ -618,7 +618,7 @@ ColorXYZ Spectrum::to_xyz()const
     y+=Spectrum::w[13]*Y[13];
     y+=Spectrum::w[14]*Y[14];
     y+=Spectrum::w[15]*Y[15];
-    
+
     z+=Spectrum::w[0]*Z[0];
     z+=Spectrum::w[1]*Z[1];
     z+=Spectrum::w[2]*Z[2];
