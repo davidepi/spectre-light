@@ -6,7 +6,7 @@
 Reflection::Reflection(const Spectrum& specular)
     : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
 {
-    
+
 }
 
 Spectrum Reflection::value(const Vec3*, const Vec3*) const
@@ -109,3 +109,4 @@ Spectrum DielectricReflection::sample_value(const Vec3 *wo, Vec3 *wi,
     }
     return specular*eval;
 }
+

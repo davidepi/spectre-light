@@ -10,7 +10,7 @@ set isosamples 60
 
 set title "{/:Bold=15 Lambertian sampled 1156 wi directions}"
 set key on
-set arrow from graph 0.5,0.5,0 rto -1,0,0.5 as 3
+set arrow from graph 0.5,0.5,0 rto -0.89,0,0.44 as 3
 set xlabel 'x'
 set ylabel 'y'
 set zlabel 'z'
@@ -28,7 +28,7 @@ set view 60,30
 
 set title "{/:Bold=15 Oren-Nayar sampled 1156 wi directions}"
 set key on
-set arrow from graph 0.5,0.5,0 rto -1,0,0.5 as 3
+set arrow from graph 0.5,0.5,0 rto -0.89,0,0.44 as 3
 set xlabel 'x'
 set ylabel 'y'
 set zlabel 'z'
@@ -43,3 +43,49 @@ set ylabel 'random var 1'
 set zlabel 'density'
 splot path."data_oren_nayar_pdf.csv" with lines
 set view 60,30
+
+set title "{/:Bold=15 Specular Reflection (conductor) sampled 1156 wi directions}"
+set key on
+set arrow from graph 0.5,0.5,0 rto -0.89,0,0.44 as 3
+set xrange [-1:1]
+set yrange [-1:1]
+set zrange [0:1]
+set xlabel 'x'
+set ylabel 'y'
+set zlabel 'z'
+#1/0 will be ignored, it is used to insert the arrow in the key
+splot path."data_conductor_reflection_val.csv" pt 7 ps 0.1 t "sampled wi", 1/0 t "wo" ls 1
+unset arrow
+set title "{/:Bold=15 Specular Reflection (conductor) pdf}"
+set key off
+set view 60,120
+set xrange [0:1]
+set yrange [0:1]
+set xlabel 'random var 0'
+set ylabel 'random var 1'
+set zlabel 'density'
+splot path."data_conductor_reflection_pdf.csv" with lines
+set view 60,30
+
+set title "{/:Bold=15 Specular Reflection (dielectric) sampled 1156 wi directions}"
+set key on
+set arrow from graph 0.5,0.5,0 rto -0.89,0,0.44 as 3
+set xlabel 'x'
+set ylabel 'y'
+set zlabel 'z'
+set xrange [-1:1]
+set yrange [-1:1]
+#1/0 will be ignored, it is used to insert the arrow in the key
+splot path."data_dielectric_reflection_val.csv" pt 7 ps 0.1 t "sampled wi", 1/0 t "wo" ls 1
+unset arrow
+set title "{/:Bold=15 Specular Reflection (dielectric) pdf}"
+set xrange [0:1]
+set yrange [0:1]
+set key off
+set view 60,120
+set xlabel 'random var 0'
+set ylabel 'random var 1'
+set zlabel 'density'
+splot path."data_dielectric_reflection_pdf.csv" with lines
+set view 60,30
+

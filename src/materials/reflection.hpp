@@ -5,7 +5,7 @@
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      15 Sep 2017
  *  \copyright GNU GPLv3
  */
@@ -95,7 +95,7 @@ protected:
 class ConductorReflection : public Reflection
 {
 public:
-    
+
     /** \brief Default Constructor for metallic material
      *
      *  \param[in] specular The spectrum of light reflected back
@@ -105,7 +105,7 @@ public:
      */
     ConductorReflection(const Spectrum& specular, const Spectrum& refraction,
                         const Spectrum& absorption);
-    
+
     /** \brief Returns the value of the BRDF
      *
      *  Computes the incident vector, and the value of the BRDF for the pair
@@ -145,7 +145,7 @@ public:
      */
     DielectricReflection(const Spectrum& specular, const Spectrum& ior_i,
                          const Spectrum& ior_t);
-    
+
     /** \brief Returns the value of the BRDF
      *
      *  Computes the incident vector, and the value of the BRDF for the pair
@@ -168,3 +168,4 @@ private:
 };
 
 #endif
+

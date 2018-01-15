@@ -4,6 +4,10 @@
 
 #include "materials/lambertian.hpp"
 #include "materials/oren_nayar.hpp"
+#include "materials/reflection.hpp"
+#include "materials/metals.hpp"
+#include "utility/spectrum.hpp"
+
 #define EPSILON 1E-5f
 
 TEST(Materials,Lambertian_flags)
@@ -170,5 +174,120 @@ TEST(Materials,OrenNayar_pdf)
     const Vec3 wo2(-1.f,0.f,-0.5f);
     pdf = mat.pdf(&wo2,&wi);
     EXPECT_EQ(pdf, 0.f);
+}
+
+TEST(Materials,SpecularReflection_flags)
+{
+    Spectrum red(ColorRGB(1.f,0.f,0.f));
+    ConductorReflection cond(SPECTRUM_ONE,SILVER.n,SILVER.k);
+    DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
+    EXPECT_EQ(cond.get_flags(),(BRDF|SPECULAR));
+    EXPECT_FALSE(cond.is_type(BRDF));
+    EXPECT_FALSE(cond.is_type(DIFFUSE));
+    EXPECT_TRUE(cond.is_type(BdfFlags(BRDF|SPECULAR)));
+    EXPECT_FALSE(cond.is_type(BdfFlags(BRDF|GLOSSY)));
+    EXPECT_TRUE(cond.is_type(BdfFlags(BRDF|DIFFUSE|SPECULAR)));
+    EXPECT_FALSE(cond.is_type(BTDF));
+    EXPECT_FALSE(cond.is_type(GLOSSY));
+    EXPECT_FALSE(cond.is_type(SPECULAR));
+    EXPECT_EQ(diel.get_flags(),(BRDF|SPECULAR));
+    EXPECT_FALSE(diel.is_type(BRDF));
+    EXPECT_FALSE(diel.is_type(DIFFUSE));
+    EXPECT_TRUE(diel.is_type(BdfFlags(BRDF|SPECULAR)));
+    EXPECT_FALSE(diel.is_type(BdfFlags(BRDF|GLOSSY)));
+    EXPECT_TRUE(diel.is_type(BdfFlags(BRDF|DIFFUSE|SPECULAR)));
+    EXPECT_FALSE(diel.is_type(BTDF));
+    EXPECT_FALSE(diel.is_type(GLOSSY));
+    EXPECT_FALSE(diel.is_type(SPECULAR));
+}
+
+TEST(Materials,SpecularReflection_value)
+{
+    Spectrum red(ColorRGB(1.f,0.f,0.f));
+    ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
+    DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
+    const Vec3 wo(-1.f,0.f,.4f);
+    const Vec3 wi(1.f,0.f,.6f);
+    Spectrum res1 = cond.value(&wo, &wi);
+    Spectrum res2 = diel.value(&wo, &wi);
+    EXPECT_TRUE(res1.is_black());
+    EXPECT_TRUE(res2.is_black());
+}
+
+TEST(Materials,SpecularReflection_sample_value)
+{
+    Spectrum red(ColorRGB(1.f,0.f,0.f));
+    ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
+    DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
+
+    //outside, conductor
+    const Vec3 wo(-1.f,0.f,.4f);
+    Vec3 wi;
+    float pdf;
+    Spectrum res = cond.sample_value(&wo,&wi,0.5f,0.5f,&pdf);
+    EXPECT_EQ(wi.x,-wo.x);
+    EXPECT_EQ(wi.y,-wo.y);
+    EXPECT_EQ(wi.z,wo.z);
+    EXPECT_FLOAT_EQ(pdf,1.f);
+    //TODO: fix blue copper before 0.2.0
+//    EXPECT_EQ(res.w[0],0.116884954f);
+//    EXPECT_EQ(res.w[1],0.0602688268f);
+//    EXPECT_EQ(res.w[2],0.00547898421f);
+
+    //inside conductor
+    const Vec3 wo2(-1.f,0.f,-0.5f);
+    res = cond.sample_value(&wo2, &wi, 0.5f, 0.5f, &pdf);
+    EXPECT_EQ(wi.x,-wo2.x);
+    EXPECT_EQ(wi.y,-wo2.y);
+    EXPECT_EQ(wi.z,wo2.z);
+    EXPECT_EQ(sign(wo2.z),sign(wi.z));
+    EXPECT_FLOAT_EQ(pdf,1.f);
+
+    //outside dielectric
+    res = diel.sample_value(&wo,&wi,0.5f,0.5f,&pdf);
+    EXPECT_EQ(wi.x,-wo.x);
+    EXPECT_EQ(wi.y,-wo.y);
+    EXPECT_EQ(wi.z,wo.z);
+    EXPECT_EQ(wi.z,wo.z);
+    EXPECT_FLOAT_EQ(pdf,1.f);
+
+    //inside dielectric, tir
+    res = diel.sample_value(&wo2,&wi,0.5f,0.5f,&pdf);
+    EXPECT_EQ(wi.x,-wo2.x);
+    EXPECT_EQ(wi.y,-wo2.y);
+    EXPECT_EQ(wi.z,wo2.z);
+    EXPECT_EQ(sign(wo2.z),sign(wi.z));
+    EXPECT_FLOAT_EQ(pdf,1.f);
+
+    //inside dielectric, no tir
+    const Vec3 wo3(-1.f,0.f,-0.9f);
+    res = diel.sample_value(&wo3,&wi,0.5f,0.5f,&pdf);
+    EXPECT_EQ(wi.x,-wo3.x);
+    EXPECT_EQ(wi.y,-wo3.y);
+    EXPECT_EQ(wi.z,wo3.z);
+    EXPECT_EQ(sign(wo3.z),sign(wi.z));
+    EXPECT_FLOAT_EQ(pdf,1.f);
+}
+
+TEST(Materials,SpecularReflection_pdf)
+{
+    Spectrum red(ColorRGB(1.f,0.f,0.f));
+    ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
+    DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
+
+    //same hemisphere
+    const Vec3 wo(-1.f,0.f,.4f);
+    const Vec3 wi(1.f,0.f,.6f);
+    float pdf;
+    pdf = cond.pdf(&wo, &wi);
+    EXPECT_FLOAT_EQ(pdf,0.f);
+    pdf = diel.pdf(&wo, &wi);
+    EXPECT_FLOAT_EQ(pdf,0.f);
+
+    const Vec3 wo2(-1.f,0.f,-0.5f);
+    pdf = cond.pdf(&wo2,&wi);
+    EXPECT_EQ(pdf, 0.f);
+    pdf = diel.pdf(&wo, &wi);
+    EXPECT_FLOAT_EQ(pdf,0.f);
 }
 

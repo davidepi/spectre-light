@@ -3,6 +3,8 @@
 #include<random>
 #include "materials/lambertian.hpp"
 #include "materials/oren_nayar.hpp"
+#include "materials/reflection.hpp"
+#include "materials/metals.hpp"
 
 static void gen_data(const char* out_path, const char* filename, Bdf* mat)
 {
@@ -59,8 +61,14 @@ void generate_materials_data(const char* out_path)
 {
     Bdf* lamb = new Lambertian(ColorRGB(1.f,0.f,0.f));
     Bdf* on = new OrenNayar(ColorRGB(1.f,0.f,0.f),15.f);
+    Bdf* cond = new ConductorReflection(SPECTRUM_ONE,COPPER.n,COPPER.k);
+    Bdf* diel = new DielectricReflection(SPECTRUM_ONE,1.f,1.33f);
     gen_data(out_path,"lambertian",lamb);
     gen_data(out_path,"oren_nayar",on);
+    gen_data(out_path,"conductor_reflection",cond);
+    gen_data(out_path,"dielectric_reflection",diel);
     delete lamb;
     delete on;
+    delete cond;
+    delete diel;
 }
