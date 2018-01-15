@@ -5,7 +5,7 @@ set key off
 set zeroaxis
 
 #Box
-set title 'Box Filter - x component'
+set title "{/:Bold=15 Box Filter - x component}"
 set xlabel 'Distance from pixel centre'
 set ylabel 'Weight'
 set autoscale x
@@ -13,9 +13,9 @@ set yrange [0:1.2]
 set xtics 0.5
 set ytics 0,0.5,1
 plot path."data_box_x.csv" with lines
-set title 'Box Filter - y component'
+set title "{/:Bold=15 Box Filter - y component}"
 plot path."data_box_y.csv" with lines
-set title 'Box Filter - both components'
+set title "{/:Bold=15 Box Filter - both components}"
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
 set zlabel 'Weight'
@@ -30,7 +30,7 @@ set zrange [0:1]
 splot path."data_box_xy.csv" with lines
 
 #Tent
-set title 'Tent Filter - x component'
+set title "{/:Bold=15 Tent Filter - x component}"
 set xlabel 'Distance from pixel centre'
 set ylabel 'Weight'
 set autoscale x
@@ -38,9 +38,9 @@ set yrange [0:1]
 set xtics 0.5
 set ytics 0,0.5,1
 plot path."data_tent_x.csv" with lines
-set title 'Tent Filter - y component'
+set title "{/:Bold=15 Tent Filter - y component}"
 plot path."data_tent_y.csv" with lines
-set title 'Tent Filter - both components'
+set title "{/:Bold=15 Tent Filter - both components}"
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
 set zlabel 'Weight'
@@ -55,7 +55,7 @@ set zrange [0:1]
 splot path."data_tent_xy.csv" with lines
 
 #Gaussian
-set title 'Gaussian Filter - x component'
+set title "{/:Bold=15 Gaussian Filter - x component}"
 set xlabel 'Distance from pixel centre'
 set ylabel 'Weight'
 set autoscale x
@@ -63,9 +63,9 @@ set yrange [0:1]
 set xtics 0.5
 set ytics 0,0.5,1
 plot path."data_gaussian_x.csv" with lines
-set title 'Gaussian Filter - y component'
+set title "{/:Bold=15 Gaussian Filter - y component}"
 plot path."data_gaussian_y.csv" with lines
-set title 'Gaussian Filter - both components'
+set title "{/:Bold=15 Gaussian Filter - both components}"
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
 set zlabel 'Weight'
@@ -80,7 +80,7 @@ set zrange [0:1]
 splot path."data_gaussian_xy.csv" with lines
 
 #Mitchell-Netravali
-set title 'Mitchell-Netravali Filter - x component'
+set title "{/:Bold=15 Mitchell-Netravali Filter - x component}"
 set xlabel 'Distance from pixel centre'
 set ylabel 'Weight'
 set autoscale x
@@ -88,9 +88,9 @@ set yrange [-0.2:1]
 set xtics 0.5
 set ytics -0.2,0.2,1
 plot path."data_mitchell_x.csv" with lines
-set title 'Mitchell-Netravali Filter - y component'
+set title "{/:Bold=15 Mitchell-Netravali Filter - y component}"
 plot path."data_mitchell_y.csv" with lines
-set title 'Mitchell-Netravali Filter - both components'
+set title "{/:Bold=15 Mitchell-Netravali Filter - both components}"
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
 set zlabel 'Weight'
@@ -106,7 +106,7 @@ set zeroaxis
 splot path."data_mitchell_xy.csv" with lines
 
 #Lanczos-Sinc
-set title 'Lanczos-sinc Filter - x component'
+set title "{/:Bold=15 Lanczos-sinc Filter - x component}"
 set xlabel 'Distance from pixel centre'
 set ylabel 'Weight'
 set autoscale x
@@ -114,9 +114,9 @@ set yrange [-0.2:1]
 set xtics 0.5
 set ytics -0.2,0.2,1
 plot path."data_lanczos_x.csv" with lines
-set title 'Lanczos-sinc Filter - y component'
+set title "{/:Bold=15 Lanczos-sinc Filter - y component}"
 plot path."data_lanczos_y.csv" with lines
-set title 'Lanczos-Sinc Filter - both components'
+set title "{/:Bold=15 Lanczos-Sinc Filter - both components}"
 set xlabel 'Distance from centre - x'
 set ylabel 'Distance from centre - y'
 set zlabel 'Weight'

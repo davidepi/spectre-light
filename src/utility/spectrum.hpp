@@ -98,7 +98,7 @@ public:
      *  \param[in] c The RGB colour that will be converted
      *  \param[in] light true if the colour is a light source
      */
-    Spectrum(ColorRGB c, bool light);
+    Spectrum(ColorRGB c, bool light = false);
 
     /** \brief Convert this spectrum to its XYZ representation
      *
