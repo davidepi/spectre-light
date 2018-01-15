@@ -7,7 +7,7 @@ Bdf::Bdf(BdfFlags flags)
     Bdf::type = flags;
 }
 
-BdfFlags Bdf::getFlags() const
+BdfFlags Bdf::get_flags() const
 {
     return Bdf::type;
 }
@@ -67,7 +67,7 @@ Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
     Spectrum retval = SPECTRUM_BLACK;
     for(int i=0;i<count;i++)
     {
-        if(bdfs[i]->isType(val)) //add contribution only if matches refl/trans
+        if(bdfs[i]->is_type(val)) //add contribution only if matches refl/trans
             retval += bdfs[i]->value(&wo_shading_space,&wi_shading_space);
     }
     return retval;
@@ -80,7 +80,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     int matchcount = 0;
     Bdf* matching[_MAX_BDF_];
     for(int i=0;i<Bsdf::count;i++)
-        if (Bsdf::bdfs[i]->isType(matchme))
+        if (Bsdf::bdfs[i]->is_type(matchme))
             matching[matchcount++] = bdfs[i];
 
     if(matchcount==0)
@@ -106,7 +106,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->normal_h.y * tmpwi.z;
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
 
-    *val = matching[chosen]->getFlags();//val now is a subset of matchme
+    *val = matching[chosen]->get_flags();//val now is a subset of matchme
     if(wi->length()==0)
     {
         *pdf = 0.f;
@@ -125,9 +125,9 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
             *val = (BdfFlags)(*val & ~BRDF);
         for (int i = 0; i < count; i++)
         {
-            if (bdfs[i]->isType(*val))//add contribution only if matches
+            if (bdfs[i]->is_type(*val))//add contribution only if matches
                 retval += bdfs[i]->value(&wo_shading_space, &tmpwi);
-            if(bdfs[i]!=matching[chosen] && bdfs[i]->isType(matchme))
+            if(bdfs[i]!=matching[chosen] && bdfs[i]->is_type(matchme))
                 *pdf+= bdfs[i]->pdf(&wo_shading_space, &tmpwi);
         }
     }
@@ -147,7 +147,7 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
     int matching = 0;
     for (int i = 0; i < count; ++i)
     {
-        if(bdfs[i]->isType(m))
+        if(bdfs[i]->is_type(m))
         {
             matching++;
             pdf += bdfs[i]->pdf(&wo_shading_space, &wi_shading_space);

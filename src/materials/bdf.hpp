@@ -94,19 +94,24 @@ public:
      *
      *  \return The flags representing the type of Bdf
      */
-    BdfFlags getFlags()const;
+    BdfFlags get_flags()const;
 
     /** \brief Check if the Bdf is of the given type
      *
      *  Provided a type of Bdf as argument, this function returns true if the
-     *  Bdf is of the given type
+     *  Bdf is of the given type. It is not necessary that the Bdf
+     *  satisfies all the flags passe in input, but the input flags
+     *  must be a superset of the Bdf in order to return true
      *
      * \param[in] f The type of the Bdf
-     * \return true if the Bdf is of the given type
+     * \return true if the Bdf is a subset of the input type
      */
-    inline bool isType(BdfFlags f)
+    inline bool is_type(BdfFlags f)
     {
-        return (type & f) == type; //without `== type` would match subflags
+        //without `== type` would match subflags
+        //for example type=BRDF|SPECULAR f=SPECULAR would be true
+        //the wanted behaviour is the opposite.
+        return (type & f) == type;
     }
 
 private:

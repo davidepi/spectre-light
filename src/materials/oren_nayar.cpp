@@ -23,15 +23,17 @@ Spectrum OrenNayar::value(const Vec3 *wout, const Vec3 *wincident) const
 
     //cos(phiin - phiout) = cos(phiin)*cos(phiout)+sin(phiin)*sin(phiout)
     float maxcos = 0.0f;
-    if(sinthetain>1E-3f && sinthetaout>1E-3f) //cos(phiin - phiout) positive
+    if(sinthetain>0.f && sinthetaout>0.f) //cos(phiin - phiout) positive
     {
         float cosphiin, cosphiout, sinphiin, sinphiout;
-        cosphiin = sinthetain==0.f?1.f:clamp(wincident->x/sinthetain,-1.f,1.f);
-        cosphiout = sinthetaout==0.f?1.f:clamp(wout->x/sinthetaout,-1.f,1.f);
+        cosphiin = clamp(wincident->x/sinthetain,-1.f,1.f);
+        cosphiout = clamp(wout->x/sinthetaout,-1.f,1.f);
         sinphiin = max(0.f,sqrtf(1.f - cosphiin * cosphiin));
         sinphiout = max(0.f,sqrtf(1.f - cosphiout * cosphiout));
         maxcos = max(0.0f, cosphiin * cosphiout + sinphiin * sinphiout);
     }
+    else
+        return OrenNayar::diffuse*A;
 
     float sinalpha, tanbeta;
     if(abscosthetain>abscosthetaout)
@@ -48,3 +50,4 @@ Spectrum OrenNayar::value(const Vec3 *wout, const Vec3 *wincident) const
     //diffuse/pi * (A+B*max[0,cos(phiin-phiout)]*sinalpha*tanbeta)
     return OrenNayar::diffuse * (A+B*maxcos*sinalpha*tanbeta);
 }
+

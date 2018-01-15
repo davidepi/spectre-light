@@ -62,9 +62,9 @@ TEST(Spectrum,constructor_init_list)
                  0.94958431903872431f,
                  0.9395992587226637f});
     ColorRGB res = sp.to_xyz().to_sRGB();
-    EXPECT_GE(res.r, 1.f);
+    EXPECT_GE(res.r, .9f);
     EXPECT_LE(res.g, 0.f);
-    EXPECT_GE(res.b, 01.f);
+    EXPECT_GE(res.b, .9f);
 #endif
 }
 

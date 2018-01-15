@@ -2,6 +2,7 @@
 #include<cstdio>
 #include<random>
 #include "materials/lambertian.hpp"
+#include "materials/oren_nayar.hpp"
 
 static void gen_data(const char* out_path, const char* filename, Bdf* mat)
 {
@@ -57,6 +58,9 @@ static void gen_data(const char* out_path, const char* filename, Bdf* mat)
 void generate_materials_data(const char* out_path)
 {
     Bdf* lamb = new Lambertian(ColorRGB(1.f,0.f,0.f));
+    Bdf* on = new OrenNayar(ColorRGB(1.f,0.f,0.f),15.f);
     gen_data(out_path,"lambertian",lamb);
+    gen_data(out_path,"oren_nayar",on);
     delete lamb;
+    delete on;
 }
