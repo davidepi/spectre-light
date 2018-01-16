@@ -5,6 +5,7 @@
 #include "materials/lambertian.hpp"
 #include "materials/oren_nayar.hpp"
 #include "materials/reflection.hpp"
+#include "materials/refraction.hpp"
 #include "materials/metals.hpp"
 #include "utility/spectrum.hpp"
 
@@ -178,7 +179,6 @@ TEST(Materials,OrenNayar_pdf)
 
 TEST(Materials,SpecularReflection_flags)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
     ConductorReflection cond(SPECTRUM_ONE,SILVER.n,SILVER.k);
     DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
     EXPECT_EQ(cond.get_flags(),(BRDF|SPECULAR));
@@ -203,7 +203,6 @@ TEST(Materials,SpecularReflection_flags)
 
 TEST(Materials,SpecularReflection_value)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
     ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
     DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
     const Vec3 wo(-1.f,0.f,.4f);
@@ -216,7 +215,6 @@ TEST(Materials,SpecularReflection_value)
 
 TEST(Materials,SpecularReflection_sample_value)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
     ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
     DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
 
@@ -271,7 +269,6 @@ TEST(Materials,SpecularReflection_sample_value)
 
 TEST(Materials,SpecularReflection_pdf)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
     ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
     DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
 
@@ -289,5 +286,92 @@ TEST(Materials,SpecularReflection_pdf)
     EXPECT_EQ(pdf, 0.f);
     pdf = diel.pdf(&wo, &wi);
     EXPECT_FLOAT_EQ(pdf,0.f);
+}
+
+TEST(Materials,SpecularRefraction_flags)
+{
+    Refraction diel(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+    EXPECT_EQ(diel.get_flags(),(BTDF|SPECULAR));
+    EXPECT_FALSE(diel.is_type(BTDF));
+    EXPECT_FALSE(diel.is_type(DIFFUSE));
+    EXPECT_TRUE(diel.is_type(BdfFlags(BTDF|SPECULAR)));
+    EXPECT_FALSE(diel.is_type(BdfFlags(BTDF|GLOSSY)));
+    EXPECT_TRUE(diel.is_type(BdfFlags(BTDF|DIFFUSE|SPECULAR)));
+    EXPECT_FALSE(diel.is_type(BdfFlags(BRDF|SPECULAR)));
+    EXPECT_FALSE(diel.is_type(GLOSSY));
+    EXPECT_FALSE(diel.is_type(SPECULAR));
+}
+
+TEST(Materials,SpecularRefraction_value)
+{
+    Refraction diel(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+    const Vec3 wo(-1.f,0.f,.4f);
+    const Vec3 wi(1.f,0.f,.6f);
+    Spectrum res = diel.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+}
+
+TEST(Materials,SpecularRefraction_cauchy_sellmeier_equations)
+{
+    Spectrum c = cauchy(1.33f,0,0);
+    EXPECT_EQ(c.w[0], 1.33f);
+
+    Spectrum sm = sellmeier(1.03961212f,0.231792344f,1.01046945f,
+                            6.00069867E-3f,2.00179144E-2f,103.560653f);
+    EXPECT_EQ(sm.w[0], 1.5197562f);
+
+}
+
+TEST(Materials,SpecularRefraction_sample_value)
+{
+    Refraction diel(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+    const Vec3 wo(-1.f,0.f,.4f);
+    Vec3 wi;
+    float pdf;
+
+    //outside dielectric
+    Spectrum res = diel.sample_value(&wo,&wi,0.5f,0.5f,&pdf);
+    EXPECT_EQ(wi.x,0.751879692f);
+    EXPECT_EQ(wi.y,0.f);
+    EXPECT_EQ(wi.z,-0.724657595f);
+    EXPECT_EQ(res.w[0],0.704294562f);
+    EXPECT_EQ(res.w[1],0.704294562f);
+    EXPECT_EQ(res.w[2],0.704294562f);
+    EXPECT_NE(sign(wo.z), sign(wi.z));
+    EXPECT_EQ(pdf,1.f);
+
+    //inside dielectric, tir
+    const Vec3 wo2(-1.f,0.f,-.5f);
+    res = diel.sample_value(&wo2,&wi,0.5f,0.5f,&pdf);
+    EXPECT_TRUE(res.is_black());
+    EXPECT_EQ(pdf,0.f);
+
+    //inside dielectric, no tir
+    const Vec3 wo3(-1.f,0.f,-0.9f);
+    res = diel.sample_value(&wo3,&wi,0.5f,0.5f,&pdf);
+    EXPECT_EQ(wi.x,1.33000004f);
+    EXPECT_EQ(wi.y,0.f);
+    EXPECT_EQ(wi.z,0.814805984f);
+    EXPECT_EQ(res.w[0],2.12246299f);
+    EXPECT_EQ(res.w[1],2.12246299f);
+    EXPECT_EQ(res.w[2],2.12246299f);
+    EXPECT_NE(sign(wo3.z),sign(wi.z));
+    EXPECT_EQ(pdf,1.f);
+}
+
+TEST(Materials,SpecularRefraction_pdf)
+{
+    Refraction diel(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+
+    //same hemisphere
+    const Vec3 wo(-1.f,0.f,.4f);
+    const Vec3 wi(1.f,0.f,.6f);
+    float pdf;
+    pdf = diel.pdf(&wo, &wi);
+    EXPECT_EQ(pdf,0.f);
+
+    const Vec3 wo2(-1.f,0.f,-0.5f);
+    pdf = diel.pdf(&wo, &wi);
+    EXPECT_EQ(pdf,0.f);
 }
 

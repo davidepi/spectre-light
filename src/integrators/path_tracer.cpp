@@ -52,7 +52,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Spectrum f = mat->sample_value(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
                            BdfFlags(ALL), &matched);
     float adot = absdot(wi,hp->normal_h);
-    if(f.is_black() || pdf==0)
+    if(pdf==0 || f.is_black())
         return retval;
 
     //calculate new power, new ray and new intersection point
