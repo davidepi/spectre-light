@@ -22,9 +22,9 @@ float Reflection::pdf(const Vec3*, const Vec3*)const
 ConductorReflection::ConductorReflection(const Spectrum& specular,
                                          const Spectrum& refraction,
                                          const Spectrum& absorption)
-: Reflection(specular),ior(refraction)
+: Reflection(specular),ior(refraction),
+  fresnel((ior*ior)+(absorption*absorption))
 {
-    fresnel = (ior*ior)+(absorption*absorption);
 }
 
 DielectricReflection::DielectricReflection(const Spectrum& specular,

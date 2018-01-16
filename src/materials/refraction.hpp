@@ -84,7 +84,7 @@ public:
 private:
 
     //scale factor
-    Spectrum specular;
+    const Spectrum specular;
 
     float eta_i;
     float eta_t;

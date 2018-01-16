@@ -4,9 +4,9 @@
 #include "lambertian.hpp"
 
 Lambertian::Lambertian(const Spectrum& scattered_spectrum)
-:Bdf(BdfFlags(BRDF|DIFFUSE)),diffuse(scattered_spectrum)
+:Bdf(BdfFlags(BRDF|DIFFUSE)),diffuse(scattered_spectrum*INV_PI)
 {
-    Lambertian::diffuse*=INV_PI;
+    
 }
 
 Spectrum Lambertian::value(const Vec3*, const Vec3*)const

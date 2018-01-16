@@ -1,12 +1,12 @@
 //Created,  23 Sep 2017
-//Last Edit 22 Nov 2017
+//Last Edit 16 Jan 2018
 
 /**
  *  \file microfacet.hpp
  *  \brief Microfacet models
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 22 Nov 2017
+ *  \date 16 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -41,7 +41,8 @@ public:
      *  \param[in] fresnel The fresnel term (Dielectric or Conductor) of this
      *  material
      */
-    MicrofacetR(Spectrum& spe, MicrofacetDist* distribution, Fresnel* fresnel);
+    MicrofacetR(const Spectrum& spe, const MicrofacetDist* distribution,
+                const Fresnel* fresnel);
     
     ///Default destructor
     ~MicrofacetR();
@@ -93,13 +94,13 @@ public:
 private:
     
     //fresnel term
-    Fresnel* fresnel;
+    const Fresnel* fresnel;
     
     //microfacet distribution
-    MicrofacetDist* distribution;
+    const MicrofacetDist* distribution;
     
     //reflected spectrum
-    Spectrum specular;
+    const Spectrum specular;
 };
 
 /**
@@ -129,8 +130,8 @@ public:
      *  object
      *  \param[in] etat The index of refraction of the microfacets
      */
-    MicrofacetT(Spectrum& spectrum, MicrofacetDist* distribution,
-                Spectrum& etai, Spectrum& etat);
+    MicrofacetT(const Spectrum& spectrum, const MicrofacetDist* distribution,
+                const Spectrum& etai, const Spectrum& etat);
     
     ///Default destructor
     ~MicrofacetT();
@@ -180,13 +181,13 @@ public:
 private:
     
     //refracted spectrum
-    Spectrum specular;
+    const Spectrum specular;
     
     //fresnel term
-    Dielectric fresnel_diel;
+    const Dielectric fresnel_diel;
     
     //microfacet distribution
-    MicrofacetDist* distribution;
+    const MicrofacetDist* distribution;
     
     //ior incident
     float eta_i;

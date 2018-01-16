@@ -56,7 +56,7 @@ public:
 private:
 
     //Scattered portion of light
-    Spectrum diffuse;
+    const Spectrum diffuse;
 
     //Pre-computed A term
     float A;

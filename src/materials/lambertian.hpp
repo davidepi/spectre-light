@@ -55,7 +55,7 @@ public:
 private:
 
     //scattered portion of spectrum
-    Spectrum diffuse;
+    const Spectrum diffuse;
 };
 
 #endif

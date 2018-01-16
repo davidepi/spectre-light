@@ -6,6 +6,9 @@
 #include "materials/oren_nayar.hpp"
 #include "materials/reflection.hpp"
 #include "materials/refraction.hpp"
+#include "materials/microfacet.hpp"
+#include "materials/microfacet_distributions.hpp"
+#include "materials/fresnel_conditions.hpp"
 #include "materials/metals.hpp"
 #include "utility/spectrum.hpp"
 
@@ -373,5 +376,102 @@ TEST(Materials,SpecularRefraction_pdf)
     const Vec3 wo2(-1.f,0.f,-0.5f);
     pdf = diel.pdf(&wo, &wi);
     EXPECT_EQ(pdf,0.f);
+}
+
+TEST(Materials,MicrofacetR_flags)
+{
+    Dielectric fresnel(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    Blinn blinn(100.f);
+    MicrofacetR mat(SPECTRUM_ONE,&blinn,&fresnel);
+    EXPECT_EQ(mat.get_flags(),(BRDF|GLOSSY));
+    EXPECT_FALSE(mat.is_type(BTDF));
+    EXPECT_FALSE(mat.is_type(DIFFUSE));
+    EXPECT_TRUE(mat.is_type(BdfFlags(BRDF|GLOSSY)));
+    EXPECT_FALSE(mat.is_type(BdfFlags(BTDF|GLOSSY)));
+    EXPECT_TRUE(mat.is_type(BdfFlags(BRDF|DIFFUSE|GLOSSY)));
+    EXPECT_FALSE(mat.is_type(BdfFlags(BRDF|SPECULAR)));
+    EXPECT_FALSE(mat.is_type(GLOSSY));
+    EXPECT_FALSE(mat.is_type(SPECULAR));
+}
+
+TEST(Materials,MicrofacetR_value)
+{
+    Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    MicrofacetDist* blinn = new Blinn(100.f);
+    MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
+    Spectrum res;
+
+    //wo parallel to plane
+    Vec3 wo(-1.f,0.f,0.f);
+    Vec3 wi(-1.f,0.f,1.f);
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    //wo parallel to plane
+    wo.z = 1.f;
+    wi.z = 0.f;
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    //half vector zero length
+    wo = Vec3(-1.f,0.f,-1.f);
+    wi = Vec3(1.f,0.f,1.f);
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    wo.z = 1.f;
+    res = mat.value(&wo, &wi);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_FLOAT_EQ(res.w[0],0.0814097523f);
+    EXPECT_FLOAT_EQ(res.w[1],0.0814097523f);
+    EXPECT_FLOAT_EQ(res.w[2],0.0814097523f);
+}
+
+TEST(Materials,MicrofacetR_sample_value)
+{
+    Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    MicrofacetDist* blinn = new Blinn(100.f);
+    MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
+    Spectrum res;
+    float pdf;
+
+    //wi in the other hemisphere
+    Vec3 wo(0.6f,0.4f,0.06f);
+    Vec3 wi;
+    res = mat.sample_value(&wo, &wi, 0.5f, 0.5f, &pdf);
+    EXPECT_TRUE(res.is_black());
+
+    //correct value
+    wo = Vec3(0.f,0.f,1.f);
+    res = mat.sample_value(&wo, &wi, 0.5f, 0.5f, &pdf);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_FLOAT_EQ(res.w[0],0.0421385542f);
+    EXPECT_FLOAT_EQ(res.w[1],0.0421385542f);
+    EXPECT_FLOAT_EQ(res.w[2],0.0421385542f);
+}
+
+TEST(Materials,MicrofacetR_pdf)
+{
+    Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    MicrofacetDist* blinn = new Blinn(100.f);
+    MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
+    float pdf;
+
+    //different hemispheres
+    Vec3 wo(0.6f,0.4f,0.06f);
+    Vec3 wi(-0.825808227f,-0.552789986f,-0.111641996f);
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_EQ(pdf,0.f);
+
+    //wh zero length
+    wi = Vec3(-0.6f,-0.4f,-0.06f);
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_EQ(pdf,0.f);
+
+    //previous test pdf
+    wo = Vec3(0.f,0.f,1.f);
+    wi = Vec3(-0.231914222f,-0.0000000202745856f,0.972736239f);
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_FLOAT_EQ(pdf,2.057285f);
 }
 

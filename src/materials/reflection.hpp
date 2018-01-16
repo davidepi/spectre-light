@@ -82,7 +82,7 @@ public:
 protected:
 
     ///Scattered light
-    Spectrum specular;
+    const Spectrum specular;
 };
 
 /**
@@ -123,8 +123,8 @@ public:
     Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
                   float* pdf)const;
 private:
-    Spectrum fresnel;
-    Spectrum ior;
+    const Spectrum ior;
+    const Spectrum fresnel;
 };
 
 /**

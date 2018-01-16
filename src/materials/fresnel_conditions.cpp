@@ -81,12 +81,12 @@ Spectrum Dielectric::eval(float cosin)const
     }
 }
 
-float Dielectric::getEtaIncident()const
+float Dielectric::get_eta_incident()const
 {
     return Dielectric::eta_i;
 }
 
-float Dielectric::getEtaTransmitted()const
+float Dielectric::get_eta_transmitted()const
 {
     return Dielectric::eta_t;
 }

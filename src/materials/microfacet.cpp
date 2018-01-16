@@ -2,8 +2,9 @@
 //license: GNU GPLv3
 
 #include "microfacet.hpp"
-MicrofacetR::MicrofacetR(Spectrum& spectrum, MicrofacetDist* distribution,
-                         Fresnel* fresnel)
+MicrofacetR::MicrofacetR(const Spectrum& spectrum,
+                         const MicrofacetDist* distribution,
+                         const Fresnel* fresnel)
 : Bdf(BdfFlags(BRDF|GLOSSY)),specular(spectrum)
 {
     MicrofacetR::fresnel = fresnel;
@@ -44,10 +45,8 @@ Spectrum MicrofacetR::sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
         return SPECTRUM_BLACK;
     }
     //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
-    //to pdf wrt incident vector
+    //(returned by the function) to pdf wrt incident vector.
     *pdf = MicrofacetR::distribution->pdf(wo, &wh, wi)/(4.f*dot(*wo,wh));
-    if(pdf==0)
-        return SPECTRUM_BLACK;
     return MicrofacetR::value(wo, wi);
 }
 
@@ -68,13 +67,13 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
     
 }
 
-MicrofacetT::MicrofacetT(Spectrum& spe, MicrofacetDist* md,
-                         Spectrum& etai, Spectrum& etat)
+MicrofacetT::MicrofacetT(const Spectrum& spe, const MicrofacetDist* md,
+                         const Spectrum& etai, const Spectrum& etat)
 : Bdf(BdfFlags(BTDF|GLOSSY)), specular(spe), fresnel_diel(etai,etat)
 {
     MicrofacetT::distribution = md;
-    MicrofacetT::eta_i = fresnel_diel.getEtaIncident();
-    MicrofacetT::eta_t = fresnel_diel.getEtaTransmitted();
+    MicrofacetT::eta_i = fresnel_diel.get_eta_incident();
+    MicrofacetT::eta_t = fresnel_diel.get_eta_transmitted();
 }
 
 MicrofacetT::~MicrofacetT()

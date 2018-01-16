@@ -79,10 +79,10 @@ public:
 private:
 
     // ior
-    Spectrum refraction_index;
+    const Spectrum refraction_index;
 
     //absorbed spectrum
-    Spectrum absorption;
+    const Spectrum absorption;
 };
 
 
@@ -125,13 +125,13 @@ public:
      *
      *  \return the incident index of refraction
      */
-    float getEtaIncident()const;
+    float get_eta_incident()const;
     
     /** \brief Return the transmitted ior
      *
      *  \return the transmitted index of refraction
      */
-    float getEtaTransmitted()const;
+    float get_eta_transmitted()const;
 
 private:
 
