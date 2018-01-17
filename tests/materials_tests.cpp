@@ -380,9 +380,9 @@ TEST(Materials,SpecularRefraction_pdf)
 
 TEST(Materials,MicrofacetR_flags)
 {
-    Dielectric fresnel(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
-    Blinn blinn(100.f);
-    MicrofacetR mat(SPECTRUM_ONE,&blinn,&fresnel);
+    Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    MicrofacetDist* blinn = new Blinn(100.f);
+    MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
     EXPECT_EQ(mat.get_flags(),(BRDF|GLOSSY));
     EXPECT_FALSE(mat.is_type(BTDF));
     EXPECT_FALSE(mat.is_type(DIFFUSE));
@@ -401,13 +401,18 @@ TEST(Materials,MicrofacetR_value)
     MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
     Spectrum res;
 
-    //wo parallel to plane
-    Vec3 wo(-1.f,0.f,0.f);
+    //different hemispheres
+    Vec3 wo(-1.f,0.f,-1.f);
     Vec3 wi(-1.f,0.f,1.f);
     res = mat.value(&wo, &wi);
     EXPECT_TRUE(res.is_black());
 
     //wo parallel to plane
+    wo.z = 0.f;
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    //wi parallel to plane
     wo.z = 1.f;
     wi.z = 0.f;
     res = mat.value(&wo, &wi);
@@ -445,9 +450,13 @@ TEST(Materials,MicrofacetR_sample_value)
     wo = Vec3(0.f,0.f,1.f);
     res = mat.sample_value(&wo, &wi, 0.5f, 0.5f, &pdf);
     EXPECT_FALSE(res.is_black());
+    EXPECT_FLOAT_EQ(wi.x,-0.231914222f);
+    EXPECT_FLOAT_EQ(wi.y,-0.0000000202745856f);
+    EXPECT_FLOAT_EQ(wi.z,0.972736239f);
     EXPECT_FLOAT_EQ(res.w[0],0.0421385542f);
     EXPECT_FLOAT_EQ(res.w[1],0.0421385542f);
     EXPECT_FLOAT_EQ(res.w[2],0.0421385542f);
+    EXPECT_FLOAT_EQ(pdf,2.05727267f);
 }
 
 TEST(Materials,MicrofacetR_pdf)
@@ -473,5 +482,174 @@ TEST(Materials,MicrofacetR_pdf)
     wi = Vec3(-0.231914222f,-0.0000000202745856f,0.972736239f);
     pdf = mat.pdf(&wo, &wi);
     EXPECT_FLOAT_EQ(pdf,2.057285f);
+}
+
+TEST(Materials,MicrofacetT_flags)
+{
+    MicrofacetDist* beckmann = new Beckmann(0.3f);
+    MicrofacetT mat(SPECTRUM_ONE,beckmann,
+                    cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    EXPECT_EQ(mat.get_flags(),(BTDF|GLOSSY));
+    EXPECT_FALSE(mat.is_type(BRDF));
+    EXPECT_FALSE(mat.is_type(DIFFUSE));
+    EXPECT_TRUE(mat.is_type(BdfFlags(BTDF|GLOSSY)));
+    EXPECT_FALSE(mat.is_type(BdfFlags(BRDF|GLOSSY)));
+    EXPECT_TRUE(mat.is_type(BdfFlags(BTDF|DIFFUSE|GLOSSY)));
+    EXPECT_FALSE(mat.is_type(BdfFlags(BTDF|SPECULAR)));
+    EXPECT_FALSE(mat.is_type(GLOSSY));
+    EXPECT_FALSE(mat.is_type(SPECULAR));
+}
+
+TEST(Materials,MicrofacetT_value)
+{
+    MicrofacetDist* beckmann = new Beckmann(0.3f);
+    MicrofacetT mat(SPECTRUM_ONE,beckmann,
+                    cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    Spectrum res;
+
+    //same hemispheres
+    Vec3 wo(-1.f,0.f,1.f);
+    Vec3 wi(-1.f,0.f,1.f);
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    //wo parallel to plane
+    wo.z = 0.f;
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    //wi parallel to plane
+    wo.z = 1.f;
+    wi.z = 0.f;
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    //half vector zero length
+    wo = Vec3(-1.f,0.f,-1.f);
+    wi = Vec3(1.33f,0.f,1.33f);
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    //D*G = 0
+    wo = Vec3(0.6f,0.4f,0.06f);
+    wi.z = -1.f;
+    res = mat.value(&wo, &wi);
+    EXPECT_TRUE(res.is_black());
+
+    //wh negative
+    wo = Vec3(-1.f,0.f,1.f);
+    wi = Vec3(1.f,0.f,-0.06f);
+    res = mat.value(&wo,&wi);
+    EXPECT_FALSE(res.is_black());
+
+    //execution from outside
+    wo = Vec3(0.6f,0.4f,0.06f);
+    wi = Vec3(-0.321353912f,-0.351839572f,-0.879170417f);
+    res = mat.value(&wo,&wi);
+    EXPECT_FLOAT_EQ(res.w[0],0.109290525f);
+    EXPECT_FLOAT_EQ(res.w[1],0.109290525f);
+    EXPECT_FLOAT_EQ(res.w[2],0.109290525f);
+
+    //execution from inside
+    wo.z = -0.9f;
+    wi = Vec3(-0.659094095f,-0.404581398f,0.63396281f);
+    res = mat.value(&wo,&wi);
+    EXPECT_FLOAT_EQ(res.w[0],2.83526969f);
+    EXPECT_FLOAT_EQ(res.w[1],2.83526969f);
+    EXPECT_FLOAT_EQ(res.w[2],2.83526969f);
+}
+
+TEST(Materials,MicrofacetT_sample_value)
+{
+    MicrofacetDist* beckmann = new Beckmann(0.3f);
+    MicrofacetT mat(SPECTRUM_ONE,beckmann,
+                    cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    Spectrum res;
+    float pdf;
+    Vec3 wi;
+
+    //parallel to plane
+    pdf = 1.f;
+    Vec3 wo(-1.f,0.f,0.f);
+    res = mat.sample_value(&wo, &wi, 0.5f, 0.5f, &pdf);
+    EXPECT_EQ(pdf, 0.f);
+    EXPECT_TRUE(res.is_black());
+
+    //tir
+    pdf = 1.f;
+    wo = Vec3(0.6f,0.4f,-0.5f);
+    res = mat.sample_value(&wo, &wi, 0.6f, 0.4f, &pdf);
+    EXPECT_EQ(pdf, 0.f);
+    EXPECT_TRUE(res.is_black());
+
+    //correct from outside
+    pdf = 1.f;
+    wo = Vec3(0.6f,0.4f,0.06f);
+    res = mat.sample_value(&wo, &wi, 0.6f, 0.4f, &pdf);
+    EXPECT_FLOAT_EQ(wi.x,-0.353272766f);
+    EXPECT_FLOAT_EQ(wi.y,-0.478611469f);
+    EXPECT_FLOAT_EQ(wi.z,-0.803821742f);
+    EXPECT_FLOAT_EQ(res.w[0],0.483705133f);
+    EXPECT_FLOAT_EQ(res.w[1],0.483705133f);
+    EXPECT_FLOAT_EQ(res.w[2],0.483705133f);
+    EXPECT_FLOAT_EQ(pdf,0.00921900011f);
+    EXPECT_EQ(pdf,mat.pdf(&wo,&wi));
+
+    //correct from inside
+    pdf = 1.f;
+    wo = Vec3(0.6f,0.4f,-0.9f);
+    res = mat.sample_value(&wo, &wi, 0.6f, 0.4f, &pdf);
+    EXPECT_FLOAT_EQ(wi.x,-0.569826543f);
+    EXPECT_FLOAT_EQ(wi.y,-0.469438076f);
+    EXPECT_FLOAT_EQ(wi.z,0.67448175f);
+    EXPECT_FLOAT_EQ(res.w[0],0.46012482f);
+    EXPECT_FLOAT_EQ(res.w[1],0.46012482f);
+    EXPECT_FLOAT_EQ(res.w[2],0.46012482f);
+    EXPECT_FLOAT_EQ(pdf,8.02445888f);
+    EXPECT_EQ(pdf,mat.pdf(&wo,&wi));
+}
+
+TEST(Materials,MicrofacetT_pdf)
+{
+    MicrofacetDist* beckmann = new Beckmann(0.3f);
+    MicrofacetT mat(SPECTRUM_ONE,beckmann,
+                    cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    float pdf;
+
+    //same hemispheres
+    Vec3 wo(-1.f,0.f,1.f);
+    Vec3 wi(-1.f,0.f,1.f);
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_EQ(pdf,0.f);
+
+    //wo parallel to plane
+    wo.z = 0.f;
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_EQ(pdf,0.f);
+
+    //wi parallel to plane
+    wo.z = 1.f;
+    wi.z = 0.f;
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_EQ(pdf,0.f);
+
+    //half vector zero length
+    wo = Vec3(-1.f,0.f,-1.f);
+    wi = Vec3(1.33f,0.f,1.33f);
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_EQ(pdf,0.f);
+
+    pdf = 1.f;
+    wo = Vec3(0.6f,0.4f,0.06f);
+    wi = Vec3(-0.353272766f,-0.478611469f,-0.803821742f);
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_FLOAT_EQ(pdf,0.00921900011f);
+
+    //correct from inside
+    pdf = 1.f;
+    wo = Vec3(0.6f,0.4f,-0.9f);
+    wi = Vec3(-0.569826543f,-0.469438076f,0.67448175f);
+    pdf = mat.pdf(&wo, &wi);
+    EXPECT_FLOAT_EQ(pdf,8.02445888f);
 }
 

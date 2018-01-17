@@ -19,6 +19,8 @@ MicrofacetR::~MicrofacetR()
 
 Spectrum MicrofacetR::value(const Vec3* woS, const Vec3* wiS)const
 {
+    if(woS->z*wiS->z<0)//different hemispheres
+        return SPECTRUM_BLACK;
     float costwo = fabsf(woS->z); //cosThetaWo
     float costwi = fabsf(wiS->z); //cosThetaWi
     Vec3 wh = *woS+*wiS;
@@ -64,7 +66,6 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
     }
     else
         return 0.f;
-    
 }
 
 MicrofacetT::MicrofacetT(const Spectrum& spe, const MicrofacetDist* md,
@@ -110,9 +111,9 @@ Spectrum MicrofacetT::value(const Vec3* woS, const Vec3* wiS)const
     float dotwoh = dot(*woS,wh);
     float dotwih = dot(*wiS,wh);
     //abs are made at the end. Every value is always positive in the formula
-    float up= etao*etao*distribution->D(&wh)*distribution->G(woS,wiS,&wh)*
+    float up=etao*etao*distribution->D(&wh)*distribution->G(woS,wiS,&wh)*
               dotwoh*dotwih;
-    if(up==0) //avoid calculating fresnel term
+    if(flt_equal(up,0.f)) //avoid calculating fresnel term
     {
         return SPECTRUM_BLACK;
     }
@@ -146,7 +147,7 @@ Spectrum MicrofacetT::sample_value(const Vec3* woS, Vec3* wiS, float r0,
         etao = eta_t;
         etai = eta_i;
     }
-    
+
     //-woS because the vector is pointing outside
     *wiS = refract(-*woS, wh, etao/etai);
     if(wiS->x==0 && wiS->y==0 && wiS->z==0) //Total internal reflection
@@ -179,7 +180,7 @@ float MicrofacetT::pdf(const Vec3* woS, const Vec3* wiS)const
         etao = eta_t;
         etai = eta_i;
     }
-    Vec3 wh = -*wiS*etai-*woS*etao;
+    Vec3 wh = -*woS*etao-*wiS*etai;
     if(wh.x==0 && wh.y==0 && wh.z==0)
         return 0.f;
     wh.normalize();
@@ -189,3 +190,4 @@ float MicrofacetT::pdf(const Vec3* woS, const Vec3* wiS)const
     jacobian/=jacobian_denom*jacobian_denom;
     return MicrofacetT::distribution->pdf(woS, &wh, wiS)*jacobian;
 }
+
