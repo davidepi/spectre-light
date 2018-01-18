@@ -283,13 +283,17 @@ bool Vec3::refract(const Vec3 &interface, float eta)
     Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
-    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
-    if(cos2t<0.f)
+    const float sin2i = ::max(0.f,(1.f-cosi*cosi));
+    const float sin2t = sin2i*eta*eta;
+    if(sin2t>1.f) //bail out if tir
         return false;
     else
     {
-        Vec3::operator*=(eta);
-        Vec3::operator-=(interface*(cosi*eta+sqrtf(cos2t)));
+        Vec3 retval;
+        const float cos2t = 1.f - sin2t; //cos2t transmitted
+        const float cost = sqrtf(cos2t);
+        *this = -*this*eta;
+        Vec3::operator+=(interface*(cosi*eta-cost));
         return true;
     }
 }
@@ -300,13 +304,17 @@ bool Vec3::refract(const Normal &interface, float eta)
     Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
-    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
-    if(cos2t<0.f)
+    const float sin2i = ::max(0.f,(1.f-cosi*cosi));
+    const float sin2t = sin2i*eta*eta;
+    if(sin2t>1.f) //bail out if tir
         return false;
     else
     {
-        Vec3::operator*=(eta);
-        Vec3::operator-=((Vec3)(interface*(cosi*eta+sqrtf(cos2t))));
+        Vec3 retval;
+        const float cos2t = 1.f - sin2t; //cos2t transmitted
+        const float cost = sqrtf(cos2t);
+        *this = -*this*eta;
+        Vec3::operator+=((Vec3)(interface*(cosi*eta-cost)));
         return true;
     }
 }

@@ -822,8 +822,8 @@ TEST(Vec3,refract_vector)
 
     v = Vec3(0.3f,0.1f,0.8f);
     v.refract(n, eta);
-    EXPECT_TRUE(flt_equal(v.x,0.435));
-    EXPECT_TRUE(flt_equal(v.y,0.145));
+    EXPECT_TRUE(flt_equal(v.x,-0.435));
+    EXPECT_TRUE(flt_equal(v.y,-0.145));
     EXPECT_TRUE(flt_equal(v.z,-0.493051767f));
 
     n = Vec3(1,1,1);
@@ -845,8 +845,8 @@ TEST(Vec3,refract_normal)
 
     v = Vec3(0.3f,0.1f,0.8f);
     v.refract(n, eta);
-    EXPECT_TRUE(flt_equal(v.x,0.435));
-    EXPECT_TRUE(flt_equal(v.y,0.145));
+    EXPECT_TRUE(flt_equal(v.x,-0.435));
+    EXPECT_TRUE(flt_equal(v.y,-0.145));
     EXPECT_TRUE(flt_equal(v.z,-0.493051767f));
 
     n = Normal(1,1,1);
@@ -1199,8 +1199,8 @@ TEST(Vec3,inline_refract_vector)
 
     v = Vec3(0.3f,0.1f,0.8f);
     refracted = refract(v, n, eta);
-    EXPECT_TRUE(flt_equal(refracted.x,0.435));
-    EXPECT_TRUE(flt_equal(refracted.y,0.145));
+    EXPECT_TRUE(flt_equal(refracted.x,-0.435));
+    EXPECT_TRUE(flt_equal(refracted.y,-0.145));
     EXPECT_TRUE(flt_equal(refracted.z,-0.493051767f));
 
     n = Vec3(1,1,1);
@@ -1225,8 +1225,8 @@ TEST(Vec3,inline_refract_normal)
 
     v = Vec3(0.3f,0.1f,0.8f);
     refracted = refract(v, n, eta);
-    EXPECT_TRUE(flt_equal(refracted.x,0.435));
-    EXPECT_TRUE(flt_equal(refracted.y,0.145));
+    EXPECT_TRUE(flt_equal(refracted.x,-0.435));
+    EXPECT_TRUE(flt_equal(refracted.y,-0.145));
     EXPECT_TRUE(flt_equal(refracted.z,-0.493051767f));
 
     n = Normal(1,1,1);

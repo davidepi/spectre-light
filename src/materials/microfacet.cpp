@@ -57,15 +57,12 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
     if(woS->z*wiS->z < 0)
         return 0.f;
     Vec3 wh = *woS+*wiS;
-    if(wh.x!=0 || wh.y!=0 || wh.z != 0)
-    {
-        wh.normalize();
-        //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
-        //to pdf wrt incident vector
-        return MicrofacetR::distribution->pdf(woS, &wh, wiS)/(4.f*dot(*woS,wh));
-    }
-    else
-        return 0.f;
+//    if(wh.x==0 && wh.y==0 && wh.z == 0) //impossible
+//        return 0.f;
+    wh.normalize();
+    //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
+    //to pdf wrt incident vector
+    return MicrofacetR::distribution->pdf(woS, &wh, wiS)/(4.f*dot(*woS,wh));
 }
 
 MicrofacetT::MicrofacetT(const Spectrum& spe, const MicrofacetDist* md,
@@ -147,9 +144,7 @@ Spectrum MicrofacetT::sample_value(const Vec3* woS, Vec3* wiS, float r0,
         etao = eta_t;
         etai = eta_i;
     }
-
-    //-woS because the vector is pointing outside
-    *wiS = refract(-*woS, wh, etao/etai);
+    *wiS = refract(*woS, wh, etao/etai);
     if(wiS->x==0 && wiS->y==0 && wiS->z==0) //Total internal reflection
     {
         *pdf = 0;
@@ -161,6 +156,7 @@ Spectrum MicrofacetT::sample_value(const Vec3* woS, Vec3* wiS, float r0,
     jacobian/=jacobian_denom*jacobian_denom;
     wiS->normalize();
     *pdf = MicrofacetT::distribution->pdf(woS, &wh, wiS)*jacobian;
+//    *pdf = MicrofacetT::pdf(woS,wiS);
     return MicrofacetT::value(woS,wiS);
 }
 
