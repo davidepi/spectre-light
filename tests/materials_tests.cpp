@@ -644,7 +644,7 @@ TEST(Materials,MicrofacetT_pdf)
     wo.normalize();
     wi = Vec3(-0.473553061f,-0.524536133f,-0.707537591f);
     pdf = mat.pdf(&wo, &wi);
-    EXPECT_FLOAT_EQ(pdf,0.0126143619f);
+    EXPECT_FLOAT_EQ(pdf,0.012614323f);
 
     //correct from inside
     pdf = 1.f;
