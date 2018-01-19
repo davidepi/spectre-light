@@ -12,5 +12,6 @@ int main(int argc, char* argv[])
     generate_primitives_data(argv[1]);
     generate_samplers_data(argv[1]);
     generate_materials_data(argv[1]);
+    generate_microfacetdistributions_data(argv[1]);
     return 0;
 }
