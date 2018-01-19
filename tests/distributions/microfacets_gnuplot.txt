@@ -7,34 +7,60 @@ set hidden3d
 set isosamples 60
 set key off
 
-set title "{/:Bold=15 Blinn D (exponent = 50)}"
+set title "{/:Bold=15 Blinn D (exponent = 48)}"
 set xlabel 'cos θ'
 set ylabel 'value'
 plot path."data_blinn_d.csv" with lines
-set title "{/:Bold=15 Blinn G (exponent = 50)}"
+set title "{/:Bold=15 Blinn G (exponent = 48)}"
 set xlabel 'cos θ(wo)'
 set ylabel 'cos θ(wi)'
 set zlabel 'value'
 splot path."data_blinn_g.csv" with lines
+set title "{/:Bold=15 Blinn D (exponent = 48)}"
+set xlabel 'θ degrees'
+set ylabel 'value'
+plot path."data_blinn_d_nocos.csv" with lines
+set title "{/:Bold=15 Blinn G (exponent = 48)}"
+set xlabel 'θ degrees (wo)'
+set ylabel 'θ degrees (wi)'
+set zlabel 'value'
+splot path."data_blinn_g_nocos.csv" with lines
 
-set title "{/:Bold=15 Beckmann D (alpha = 0.3)}"
+set title "{/:Bold=15 Beckmann D (α = 0.2)}"
 set xlabel 'cos θ'
 set ylabel 'value'
 plot path."data_beckmann_d.csv" with lines
-set title "{/:Bold=15 Beckmann G (alpha = 0.3)}"
+set title "{/:Bold=15 Beckmann G (α = 0.2)}"
 set xlabel 'cos θ(wo)'
 set ylabel 'cos θ(wi)'
 set zlabel 'value'
 splot path."data_beckmann_g.csv" with lines
+set title "{/:Bold=15 Beckmann D (α = 0.2)}"
+set xlabel 'θ degrees'
+set ylabel 'value'
+plot path."data_beckmann_d_nocos.csv" with lines
+set title "{/:Bold=15 Beckmann G (α = 0.2)}"
+set xlabel 'θ degrees (wo)'
+set ylabel 'θ degrees (wi)'
+set zlabel 'value'
+splot path."data_beckmann_g_nocos.csv" with lines
 
-set title "{/:Bold=15 GGX isotropic D (alpha = 0.3)}"
+set title "{/:Bold=15 GGX isotropic D (α = 0.2)}"
 set xlabel 'cos θ'
 set ylabel 'value'
 plot path."data_ggxiso_d.csv" with lines
-set title "{/:Bold=15 GGX isotropic G (alpha = 0.3)}"
+set title "{/:Bold=15 GGX isotropic G (α = 0.2)}"
 set xlabel 'cos θ(wo)'
 set ylabel 'cos θ(wi)'
 set zlabel 'value'
 splot path."data_ggxiso_g.csv" with lines
-
+set title "{/:Bold=15 GGX isotropic D (α = 0.2)}"
+set xlabel 'θ degrees'
+set ylabel 'value'
+plot path."data_ggxiso_d_nocos.csv" with lines
+set title "{/:Bold=15 GGX isotropic G (α = 0.2)}"
+set xlabel 'θ degrees (wo)'
+set ylabel 'θ degrees (wi)'
+set zlabel 'value'
+splot path."data_ggxiso_g_nocos.csv" with lines
 
