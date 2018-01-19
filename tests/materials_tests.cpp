@@ -655,3 +655,40 @@ TEST(Materials,MicrofacetT_pdf)
     EXPECT_FLOAT_EQ(pdf,4.47991657f);
 }
 
+TEST(Materials,FresnelConditions_Conductor_eval)
+{
+    Conductor cond(COPPER.n,COPPER.k);
+    Spectrum res = cond.eval(0.5f);
+    EXPECT_FLOAT_EQ(res.w[0], 0.548298597f);
+    EXPECT_FLOAT_EQ(res.w[1], 0.688397527f);
+    EXPECT_FLOAT_EQ(res.w[2], 0.937712908f);
+}
+
+TEST(Materials,FresnelConditions_Dielectric_eval)
+{
+    Dielectric diel(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    Spectrum res;
+
+    //get_eta
+    EXPECT_FLOAT_EQ(diel.get_eta_incident(), 1.f);
+    EXPECT_FLOAT_EQ(diel.get_eta_transmitted(), 1.33f);
+
+    //outside
+    res = diel.eval(0.5f);
+    EXPECT_FLOAT_EQ(res.w[0], 0.0591256134f);
+    EXPECT_FLOAT_EQ(res.w[1], 0.0591256134f);
+    EXPECT_FLOAT_EQ(res.w[2], 0.0591256134f);
+
+    //inside no tir
+    res = diel.eval(-0.9f);
+    EXPECT_FLOAT_EQ(res.w[0], 0.0223328397f);
+    EXPECT_FLOAT_EQ(res.w[1], 0.0223328397f);
+    EXPECT_FLOAT_EQ(res.w[2], 0.0223328397f);
+
+    //inside tir
+    res = diel.eval(-0.4f);
+    EXPECT_EQ(res.w[0],1.f);
+    EXPECT_EQ(res.w[1],1.f);
+    EXPECT_EQ(res.w[2],1.f);
+}
+
