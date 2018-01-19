@@ -84,11 +84,11 @@ static void gen_data_nocos(const char* out_path, const char* filename,
     if(f!=NULL)
     {
         Vec3 wo(0.f,0.f,0.f);
-        for(int i=-40;i<=40;i++)
+        for(float i=-40;i<=40;i+=0.5f)
         {
             wo.z = cosf(radians(i));
             res = md->D(&wo);
-            fprintf(f,"%d,%f\n",i,res);
+            fprintf(f,"%f,%f\n",i,res);
         }
         fflush(f);
         fclose(f);

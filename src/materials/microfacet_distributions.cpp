@@ -3,14 +3,7 @@
 
 #include "microfacet_distributions.hpp"
 
-float MicrofacetDist::G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const
-{
-    const float cosh = fabsf(wh->z);
-    const float partial = 2*cosh/absdot(*wo,*wh);
-    return min(1.f,min(partial*fabsf(wo->z),partial*fabsf(wi->z)));
-}
-
-float MicrofacetDist::pdf(const Vec3*, const Vec3* wh, const Vec3*)const
+float MicrofacetDist::pdf(const Vec3*, const Vec3* wh)const
 {
     return this->D(wh)*fabsf(wh->z);
 }
@@ -27,7 +20,7 @@ float Blinn::D(const Vec3* h)const
     return (exponent+2)*INV_TWOPI*powf(fabsf(h->z),exponent);
 }
 
-float Blinn::G(const Vec3* wo, const Vec3* wi, const Vec3*)const
+float Blinn::G(const Vec3* wo, const Vec3* wi)const
 {
     return Blinn::G1(wo)*Blinn::G1(wi);
 }
@@ -61,7 +54,7 @@ void Blinn::sample_wh(const Vec3* wo,float r0,float r1,Vec3* wh)const
     if(wo->z*wh->z<0) *wh = -*wh;
 }
 
-float Blinn::pdf(const Vec3* wo, const Vec3* wh, const Vec3*)const
+float Blinn::pdf(const Vec3* wo, const Vec3* wh)const
 {
     float dotwoh = dot(*wo,*wh);
     if(dotwoh>0.f)
@@ -89,7 +82,7 @@ float Beckmann::D(const Vec3* h)const
     return exp/(ONE_PI*cost2*cost2*a2)*exp;
 }
 
-float Beckmann::G(const Vec3* wo, const Vec3* wi, const Vec3*)const
+float Beckmann::G(const Vec3* wo, const Vec3* wi)const
 {
     return Beckmann::G1(wo)*Beckmann::G1(wi);
 }
@@ -139,7 +132,7 @@ float GGXiso::D(const Vec3 *h)const
     return a2/(sqr_term*cos2t*cos2t*ONE_PI);
 }
 
-float GGXiso::G(const Vec3 *wo, const Vec3 *wi, const Vec3 *)const
+float GGXiso::G(const Vec3 *wo, const Vec3 *wi)const
 {
     return GGXiso::G1(wo)*GGXiso::G1(wi);
 }
@@ -211,7 +204,7 @@ static inline float lambdaGGXaniso(const Vec3* v,float ax, float ay)
     return (-1+sqrtf(1.f+(tan*tan*alpha*alpha)))*0.5f;
 }
 
-float GGXaniso::G(const Vec3* wo, const Vec3* wi, const Vec3*)const
+float GGXaniso::G(const Vec3* wo, const Vec3* wi)const
 {
     //this one is taken from pbrtv3
     return 1.f/(1+lambdaGGXaniso(wo,ax,ay)+lambdaGGXaniso(wi,ax,ay));

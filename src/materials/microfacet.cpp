@@ -29,7 +29,7 @@ Spectrum MicrofacetR::value(const Vec3* woS, const Vec3* wiS)const
         return SPECTRUM_BLACK;
     wh.normalize();
     float inv = 4.f*costwo*costwi;
-    return specular*distribution->D(&wh)*distribution->G(woS,wiS,&wh)*
+    return specular*distribution->D(&wh)*distribution->G(woS,wiS)*
            fresnel->eval(dot(*wiS,wh))/inv;
 }
 
@@ -48,7 +48,7 @@ Spectrum MicrofacetR::sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
     }
     //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
     //(returned by the function) to pdf wrt incident vector.
-    *pdf = MicrofacetR::distribution->pdf(wo, &wh, wi)/(4.f*dot(*wo,wh));
+    *pdf = MicrofacetR::distribution->pdf(wo, &wh)/(4.f*dot(*wo,wh));
     return MicrofacetR::value(wo, wi);
 }
 
@@ -62,7 +62,7 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
     wh.normalize();
     //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
     //to pdf wrt incident vector
-    return MicrofacetR::distribution->pdf(woS, &wh, wiS)/(4.f*dot(*woS,wh));
+    return MicrofacetR::distribution->pdf(woS, &wh)/(4.f*dot(*woS,wh));
 }
 
 MicrofacetT::MicrofacetT(const Spectrum& spe, const MicrofacetDist* md,
@@ -108,7 +108,7 @@ Spectrum MicrofacetT::value(const Vec3* woS, const Vec3* wiS)const
     float dotwoh = dot(*woS,wh);
     float dotwih = dot(*wiS,wh);
     //abs are made at the end. Every value is always positive in the formula
-    float up=etao*etao*distribution->D(&wh)*distribution->G(woS,wiS,&wh)*
+    float up=etao*etao*distribution->D(&wh)*distribution->G(woS,wiS)*
               dotwoh*dotwih;
     if(flt_equal(up,0.f)) //avoid calculating fresnel term
     {
@@ -155,7 +155,7 @@ Spectrum MicrofacetT::sample_value(const Vec3* woS, Vec3* wiS, float r0,
     const float jacobian_denom = (etai*dot(*wiS,wh)+etao*dotwoh);
     jacobian/=jacobian_denom*jacobian_denom;
     wiS->normalize();
-    *pdf = MicrofacetT::distribution->pdf(woS, &wh, wiS)*jacobian;
+    *pdf = MicrofacetT::distribution->pdf(woS, &wh)*jacobian;
 //    *pdf = MicrofacetT::pdf(woS,wiS);
     return MicrofacetT::value(woS,wiS);
 }
@@ -184,6 +184,6 @@ float MicrofacetT::pdf(const Vec3* woS, const Vec3* wiS)const
     float jacobian = etao*etao*fabsf(dotwoh);
     const float jacobian_denom = (etai*dot(*wiS,wh)+etao*dotwoh);
     jacobian/=jacobian_denom*jacobian_denom;
-    return MicrofacetT::distribution->pdf(woS, &wh, wiS)*jacobian;
+    return MicrofacetT::distribution->pdf(woS, &wh)*jacobian;
 }
 
