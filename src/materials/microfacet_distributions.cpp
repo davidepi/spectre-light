@@ -51,7 +51,8 @@ void Blinn::sample_wh(const Vec3* wo,float r0,float r1,Vec3* wh)const
     const float sint = sqrtf(max(0.f,1.f-cost*cost));
     const float phi = r1*TWO_PI;
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
-    if(wo->z*wh->z<0) *wh = -*wh;
+    if(wo->z*wh->z<0)
+        *wh = -*wh;
 }
 
 float Blinn::pdf(const Vec3* wo, const Vec3* wh)const
@@ -112,7 +113,8 @@ void Beckmann::sample_wh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
     const float sint = sqrtf(1.f-cost*cost);
     const float phi = TWO_PI*r1;
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
-    if(wo->z*wh->z<0) *wh = -*wh;
+    if(wo->z*wh->z<0)
+        *wh = -*wh;
 }
 
 GGXiso::GGXiso(float roughness)
@@ -154,7 +156,8 @@ void GGXiso::sample_wh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
     const float sint = sqrtf(max(0.f,1.f-cos2t));
     const float phi = TWO_PI*r1;
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
-    if(wo->z*wh->z<0)*wh = -*wh;
+    if(wo->z*wh->z<0)
+        *wh = -*wh;
 }
 
 GGXaniso::GGXaniso(float ax, float ay)
@@ -214,7 +217,8 @@ void GGXaniso::sample_wh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
 {
     //again, anisotropic equations are taken from pbrtv3
     float phi = atanf(ay/ax*tanf(TWO_PI*r1+.5f*ONE_PI));
-    if(r1 > .5f) phi += ONE_PI;
+    if(r1 > .5f)
+        phi += ONE_PI;
     const float sinphi = sinf(phi);
     const float cosphi = cosf(phi);
     const float ax2 = ax * ax;
@@ -224,5 +228,6 @@ void GGXaniso::sample_wh(const Vec3 *wo, float r0, float r1, Vec3 *wh)const
     const float cost = 1.f/sqrtf(1.f + tantheta2);
     const float sint = sqrtf(max(0.f,1.f-cost*cost));
     *wh = Vec3(sint*cosf(phi),sint*sinf(phi),cost);
-    if(wo->z*wh->z<0) *wh = -*wh;
+    if(wo->z*wh->z<0)
+        *wh = -*wh;
 }
