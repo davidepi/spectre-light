@@ -10,6 +10,9 @@
 #include "materials/microfacet_distributions.hpp"
 #include "materials/fresnel_conditions.hpp"
 #include "materials/metals.hpp"
+#include "primitives/asset.hpp"
+#include "primitives/shape.hpp"
+#include "primitives/sphere.hpp"
 #include "utility/spectrum.hpp"
 
 #define EPSILON 1E-5f
@@ -690,5 +693,72 @@ TEST(Materials,FresnelConditions_Dielectric_eval)
     EXPECT_EQ(res.w[0],1.f);
     EXPECT_EQ(res.w[1],1.f);
     EXPECT_EQ(res.w[2],1.f);
+}
+
+TEST(Materials,Bsdf_inherit_bdf)
+{
+    Bsdf material;
+    material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    for(int i=1;i<_MAX_BDF_;i++)
+        material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    Bdf* lambertian = new Lambertian(SPECTRUM_ONE);
+    errors_count[ERROR_INDEX] = 0;
+    material.inherit_bdf(lambertian);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    errors_count[ERROR_INDEX] = 0;
+    material.inherit_bdf(lambertian);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+}
+
+TEST(Materials,Bsdf_value)
+{
+    Bsdf material_r;
+    Bsdf material_t;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    material_t.inherit_bdf(new Refraction(SPECTRUM_ONE,cauchy(1.0,0.f),
+                                          cauchy(1.33f,0.f)));
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    //reflected ray
+    wi = Vec3(0.f,1.f,0.f);
+    wi.normalize();
+    a.set_material(&material_r);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material()->value(&r.direction,&hit,&wi,BdfFlags(BRDF|DIFFUSE));
+    EXPECT_FALSE(res.is_black());
+    EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
+    EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
+    EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
+
+    //reflected ray, non matching flags
+    a.set_material(&material_r);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material()->value(&r.direction,&hit,&wi,BdfFlags(DIFFUSE));
+    EXPECT_TRUE(res.is_black());
+
+    //transmitted ray
+    wi = Vec3(0.f,-1.f,0.f);
+    wi.normalize();
+    a.set_material(&material_t);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res=a.get_material()->value(&r.direction,&hit,&wi,BdfFlags(BTDF|SPECULAR));
+    EXPECT_TRUE(res.is_black());
+
+    //reflected ray, non matching flags
+    a.set_material(&material_t);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material()->value(&r.direction,&hit,&wi,BdfFlags(SPECULAR));
+    EXPECT_TRUE(res.is_black());
 }
 

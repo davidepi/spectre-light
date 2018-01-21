@@ -6,7 +6,7 @@
 MaterialLibrary::MaterialLibrary()
 {
     Bsdf* default_mat = new Bsdf();
-    default_mat->inheritBdf(new Lambertian(SPECTRUM_WHITE));
+    default_mat->inherit_bdf(new Lambertian(SPECTRUM_WHITE));
     lib.insert(std::make_pair("Default",default_mat));
 }
 

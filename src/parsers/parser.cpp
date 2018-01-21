@@ -698,7 +698,7 @@ static void parseMaterial(char* string)
         }
         else
             return;
-        mat->inheritBdf(addme);
+        mat->inherit_bdf(addme);
     }
     else
     {

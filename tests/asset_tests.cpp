@@ -79,7 +79,7 @@ TEST(Asset,intersect_AABB)
 TEST(Asset,material_setter_getter)
 {
     Bsdf material;
-    material.inheritBdf(new Lambertian(SPECTRUM_ONE));
+    material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
     Sphere s;
     Matrix4 m;
     m.set_translation(Vec3(-2,0,0));

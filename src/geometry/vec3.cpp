@@ -134,7 +134,12 @@ Vec3 Vec3::cross(const Vec3& target)const
 void Vec3::normalize()
 {
     float len;
-    len = sqrtf(Vec3::x * Vec3::x + Vec3::y * Vec3::y + Vec3::z * Vec3::z);
+    float len2;
+    len2 = Vec3::x * Vec3::x + Vec3::y * Vec3::y + Vec3::z * Vec3::z;
+    if(len2>1.f-1E-5f && len2<1.f+1E-5f)
+        return;
+    else
+        len = sqrtf(len2);
 #ifdef DEBUG
     if(len==0)
     {
@@ -458,15 +463,15 @@ Vec3 Vec3::operator-() const
 bool Vec3::operator==(const Vec3& v)const
 {
     return std::fabs(Vec3::x-v.x) <= FLT_EPSILON &&
-    std::fabs(Vec3::y-v.y) <= FLT_EPSILON &&
-    std::fabs(Vec3::z-v.z) <= FLT_EPSILON;
+           std::fabs(Vec3::y-v.y) <= FLT_EPSILON &&
+           std::fabs(Vec3::z-v.z) <= FLT_EPSILON;
 }
 
 bool Vec3::operator!=(const Vec3& v)const
 {
     return std::fabs(Vec3::x-v.x) > FLT_EPSILON ||
-    std::fabs(Vec3::y-v.y) > FLT_EPSILON ||
-    std::fabs(Vec3::z-v.z) > FLT_EPSILON;
+           std::fabs(Vec3::y-v.y) > FLT_EPSILON ||
+           std::fabs(Vec3::z-v.z) > FLT_EPSILON;
 }
 
 float& Vec3::operator[](int component)
@@ -601,9 +606,12 @@ float Normal::distanceTo(const Normal& target)const
 void Normal::normalize()
 {
     float len;
-    len = std::sqrt(Normal::x * Normal::x +
-                    Normal::y * Normal::y +
-                    Normal::z * Normal::z);
+    float len2;
+    len2=Normal::x * Normal::x + Normal::y * Normal::y + Normal::z * Normal::z;
+    if(len2>1.f-1E-5f && len2<1.f+1E-5f)
+        return;
+    else
+        len = sqrtf(len2);
 #ifdef DEBUG
     if(len==0)
     {

@@ -43,9 +43,9 @@ Bsdf::~Bsdf()
         delete Bsdf::bdfs[i];
 }
 
-void Bsdf::inheritBdf(Bdf* addme)
+void Bsdf::inherit_bdf(Bdf* addme)
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     if(count==_MAX_BDF_)
     {
         Console.severe("Cannot add more Bdfs");
@@ -65,6 +65,8 @@ Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
     else                                //transmitted ray
         val = (BdfFlags)(val & ~BRDF);
     Spectrum retval = SPECTRUM_BLACK;
+    wo_shading_space.normalize();
+    wi_shading_space.normalize();
     for(int i=0;i<count;i++)
     {
         if(bdfs[i]->is_type(val)) //add contribution only if matches refl/trans
@@ -113,7 +115,11 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
         return SPECTRUM_BLACK;
     }
     else
+    {
+        wo_shading_space.normalize();
+        tmpwi.normalize();
         wi->normalize();
+    }
     //if not specular, throw away retval and compute the value for the generated
     //pair of directions
     if((*val & SPECULAR)==0)
@@ -143,6 +149,8 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
         return 0.f;
     Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
+    wo_shading_space.normalize();
+    wi_shading_space.normalize();
     float pdf = 0.f;
     int matching = 0;
     for (int i = 0; i < count; ++i)
@@ -158,3 +166,4 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
     else
         return 0.f;
 }
+

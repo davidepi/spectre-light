@@ -135,6 +135,11 @@ TEST(Normal,normalize)
     vzero.normalize();
     EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
     errors_count[CRITICAL_INDEX] = 0;
+
+    //already normalized
+    EXPECT_TRUE(v1.is_normalized());
+    v1.normalize();
+    EXPECT_TRUE(v1.is_normalized());
 }
 
 TEST(Normal,toArray)
@@ -767,6 +772,11 @@ TEST(Normal,inline_normalize)
     normalize(vzero);
     EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
     errors_count[CRITICAL_INDEX] = 0;
+
+    //already normalized
+    EXPECT_TRUE(v1.is_normalized());
+    v2 = normalize(v1);
+    EXPECT_TRUE(v2.is_normalized());
 }
 
 TEST(Normal,inline_clamp)

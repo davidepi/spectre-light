@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 18 Jan 2018
+//Last Edit 21 Jan 2018
 
 /**
  *  \file vec3.hpp
@@ -8,7 +8,7 @@
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      18 Jan 2018
+ *  \date      21 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -859,7 +859,13 @@ inline Vec3  cross (const Vec3& source, const Vec3& target)
  */
 inline Vec3 normalize(const Vec3& v)
 {
-    float len = std::sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
+    float len;
+    float len2;
+    len2 = v.x * v.x + v.y * v.y + v.z * v.z;
+    if(len2>1.f-1E-5f && len2<1.f+1E-5f) //already normalized
+        return v;
+    else
+        len = sqrtf(len2);
 #ifdef DEBUG
     if(len==0)
     {
@@ -881,7 +887,13 @@ inline Vec3 normalize(const Vec3& v)
  */
 inline Normal normalize(const Normal& n)
 {
-    float len = std::sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
+    float len;
+    float len2;
+    len2 = n.x * n.x + n.y * n.y + n.z * n.z;
+    if(len2>1.f-1E-5f && len2<1.f+1E-5f) //already normalized
+        return n;
+    else
+        len = sqrtf(len2);
 #ifdef DEBUG
     if(len==0)
     {
