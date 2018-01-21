@@ -79,6 +79,10 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
                     const HitPoint* h, Vec3* wi, float* pdf,
                     BdfFlags matchme, BdfFlags* val)const
 {
+#ifdef DEBUG
+    if(!wo->is_normalized())
+        Console.warning(MESSAGE_BSDF_NONORMALIZED);
+#endif
     int matchcount = 0;
     Bdf* matching[_MAX_BDF_];
     for(int i=0;i<Bsdf::count;i++)
@@ -109,22 +113,15 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
 
     *val = matching[chosen]->get_flags();//val now is a subset of matchme
-    if(wi->length()==0)
-    {
-        *pdf = 0.f;
-        return SPECTRUM_BLACK;
-    }
-    else
-    {
-        wo_shading_space.normalize();
-        tmpwi.normalize();
-        wi->normalize();
-    }
+    wo_shading_space.normalize();
+    tmpwi.normalize();
+    wi->normalize();
     //if not specular, throw away retval and compute the value for the generated
     //pair of directions
     if((*val & SPECULAR)==0)
     {
         retval = SPECTRUM_BLACK;
+        *pdf = 0.f;
         if (wo->dot(h->normal_h) * wi->dot(h->normal_h) > 0)
             *val = (BdfFlags)(*val & ~BTDF);
         else
@@ -132,9 +129,10 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
         for (int i = 0; i < count; i++)
         {
             if (bdfs[i]->is_type(*val))//add contribution only if matches
+            {
                 retval += bdfs[i]->value(&wo_shading_space, &tmpwi);
-            if(bdfs[i]!=matching[chosen] && bdfs[i]->is_type(matchme))
                 *pdf+= bdfs[i]->pdf(&wo_shading_space, &tmpwi);
+            }
         }
     }
     if(matchcount>1)
@@ -161,9 +159,8 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
             pdf += bdfs[i]->pdf(&wo_shading_space, &wi_shading_space);
         }
     }
-    if(matching>0)
+    if(matching>1)
         return pdf/(float)matching;
     else
-        return 0.f;
+        return pdf;
 }
-

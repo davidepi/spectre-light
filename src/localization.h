@@ -36,6 +36,8 @@
 #define MESSAGE_REFRACT_NONORMALIZED "Refracting around a non normalized "\
                                      "interface"
 
+#define MESSAGE_BSDF_NONORMALIZED "View vector(wo) in bsdf is not normalized"
+
 #define MESSAGE_DIVISIONBY0 "Division by zero"
 
 #define MESSAGE_WORLD_AABB_NULL_MATRIX "Trying to generate a world-space AABB "\

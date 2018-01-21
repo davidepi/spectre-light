@@ -762,3 +762,144 @@ TEST(Materials,Bsdf_value)
     EXPECT_TRUE(res.is_black());
 }
 
+TEST(Materials,Bsdf_sample_value)
+{
+    BdfFlags out_flags;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    float pdf;
+    Spectrum res;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    Bsdf material_r;
+    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    //non normalized vector
+    errors_count[WARNING_INDEX] = 0;
+    Vec3 nonorm(1.f,1.f,1.f);
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &nonorm, &hit,
+                                  &wi, &pdf, BTDF, &out_flags);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    //brdf diffuse no match
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                                &pdf, BTDF, &out_flags);
+    EXPECT_TRUE(res.is_black());
+    EXPECT_EQ(pdf,0.f);
+    //brdf diffuse match
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                                &pdf, BdfFlags(BRDF|DIFFUSE), &out_flags);
+    EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
+    EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
+    EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
+    EXPECT_FLOAT_EQ(pdf,0.22507906f);
+    EXPECT_FLOAT_EQ(wi.x,-0.707106769f);
+    EXPECT_FLOAT_EQ(wi.y, 0.707106769);
+    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_EQ(out_flags,BdfFlags(BRDF|DIFFUSE));
+    EXPECT_TRUE(wi.is_normalized());
+
+    Bsdf mat_glass;
+    Spectrum ior_i = cauchy(1.f,0.f);
+    Spectrum ior_t = cauchy(1.33f,0.f);
+    mat_glass.inherit_bdf(new DielectricReflection(SPECTRUM_ONE,ior_i,ior_t));
+    mat_glass.inherit_bdf(new Refraction(SPECTRUM_ONE,ior_i,ior_t));
+    //multi material specular, choose first (reflection)
+    res = mat_glass.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                                  &pdf, ALL, &out_flags);
+    EXPECT_FLOAT_EQ(res.w[0],0.0200593174f);
+    EXPECT_FLOAT_EQ(res.w[1],0.0200593174f);
+    EXPECT_FLOAT_EQ(res.w[2],0.0200593174f);
+    EXPECT_FLOAT_EQ(pdf,0.5f);
+    EXPECT_FLOAT_EQ(wi.x,0.f);
+    EXPECT_FLOAT_EQ(wi.y,1.f);
+    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_EQ(out_flags,BdfFlags(BRDF|SPECULAR));
+    EXPECT_TRUE(wi.is_normalized());
+    //multi material specular, choose second (refraction)
+    res = mat_glass.sample_value(1.f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                                  &pdf, ALL, &out_flags);
+    EXPECT_FLOAT_EQ(res.w[0],1.73341715f);
+    EXPECT_FLOAT_EQ(res.w[1],1.73341715f);
+    EXPECT_FLOAT_EQ(res.w[2],1.73341715f);
+    EXPECT_FLOAT_EQ(pdf,0.5f);
+    EXPECT_FLOAT_EQ(wi.x,0.f);
+    EXPECT_FLOAT_EQ(wi.y,-1.f);
+    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_EQ(out_flags,BdfFlags(BTDF|SPECULAR));
+    EXPECT_TRUE(wi.is_normalized());
+
+    Bsdf mat_glossy;
+    MicrofacetDist* ggx1 = new GGXiso(0.2f);
+    MicrofacetDist* ggx2 = new GGXiso(0.2f);
+    mat_glossy.inherit_bdf(new MicrofacetR(SPECTRUM_ONE,ggx1,
+                           new Dielectric(ior_i,ior_t)));
+    mat_glossy.inherit_bdf(new MicrofacetT(SPECTRUM_ONE,ggx2,ior_i,ior_t));
+    //multi material glossy, choose first (reflection)
+    res = mat_glossy.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                                 &pdf, ALL, &out_flags);
+    EXPECT_FLOAT_EQ(res.w[0],0.0116626127f);
+    EXPECT_FLOAT_EQ(res.w[1],0.0116626127f);
+    EXPECT_FLOAT_EQ(res.w[2],0.0116626127f);
+    EXPECT_FLOAT_EQ(pdf,0.268972039f);
+    EXPECT_FLOAT_EQ(wi.x,0.384615242f);
+    EXPECT_FLOAT_EQ(wi.y,0.923076987f);
+    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_EQ(out_flags,BdfFlags(BRDF|GLOSSY));
+    EXPECT_TRUE(wi.is_normalized());
+    //multi material glossy, choose second (refraction)
+    res = mat_glossy.sample_value(1.f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                                 &pdf, ALL, &out_flags);
+    EXPECT_FLOAT_EQ(res.w[0],30.8263855f);
+    EXPECT_FLOAT_EQ(res.w[1],30.8263855f);
+    EXPECT_FLOAT_EQ(res.w[2],30.8263855f);
+    EXPECT_FLOAT_EQ(pdf,15.9433241f);
+    EXPECT_FLOAT_EQ(wi.x,0.0664419233f);
+    EXPECT_FLOAT_EQ(wi.y,-0.997790277f);
+    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_EQ(out_flags,BdfFlags(BTDF|GLOSSY));
+    EXPECT_TRUE(wi.is_normalized());
+}
+
+TEST(Materials,Bsdf_pdf)
+{
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    float pdf;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    Bsdf material;
+    //empty
+    wi = Vec3(0.f,1.f,0.f);
+    pdf = material.pdf(&(r.direction), &hit, &wi, ALL);
+    EXPECT_EQ(pdf, 0.f);
+
+    //non matching
+    material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    pdf = material.pdf(&(r.direction),&hit,&wi,SPECULAR);
+    EXPECT_EQ(pdf, 0.f);
+
+    //matching
+    pdf = material.pdf(&(r.direction), &hit, &wi, ALL);
+    EXPECT_FLOAT_EQ(pdf, 0.318309873f);
+
+    //multiple values
+    Bsdf material2;
+    float pdf2;
+    material2.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    material2.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    pdf2 = material2.pdf(&(r.direction), &hit, &wi, ALL);
+    EXPECT_FLOAT_EQ(pdf2, pdf);
+}
+
