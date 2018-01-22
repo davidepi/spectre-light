@@ -22,7 +22,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     //if first hit is light or specular, use its emission
     if((r->ricochet==0 || (last&SPECULAR))
        && hp->asset_h->is_light() && dot(hp->normal_h,wo)>0)
-        retval+=*power*((AreaLight *)hp->asset_h)->emissiveSpectrum();
+        retval+=*power*((AreaLight *)hp->asset_h)->emissive_spectrum();
 
     //calculate direct lighting at point
     const Bsdf* mat = hp->asset_h->get_material();

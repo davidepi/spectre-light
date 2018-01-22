@@ -21,46 +21,47 @@ AreaLight::~AreaLight()
     delete cd;
 }
 
-Spectrum AreaLight::emissiveSpectrum()const
+Spectrum AreaLight::emissive_spectrum()const
 {
     return AreaLight::c;
 }
 
-Spectrum AreaLight::radiance_e(float r0, float r1, Ray* out, float* pdf)const
+Spectrum AreaLight::sample_surface(float r0, float r1, float r2, float r3,
+                                   Ray* out, float* pdf)const
 {
     Normal n;
-
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
     AreaLight::model->sample_point(r0,r1,cd,&(out->origin),&n);
 
-    //generate random direction
-    float z = 1.f - 2.f * r0;
+    //generate random direction (uniform sphere sampling)
+    float z = 1.f - 2.f * r2;
     float r = sqrtf(max(0.f,1.f-z*z));
-    float phi = TWO_PI*r1;
+    float phi = TWO_PI*r3;
     float x = r*cosf(phi);
     float y = r*sinf(phi);
     out->direction = Vec3(x,y,z);
-
-    //objspace to world space
-    *out = AreaLight::objToWorld**out;
 
     //if the dir is pointing on the opposite direction of the normal, flip it
     //because there is no emission in that direction
     if(out->direction.dot(n) < 0.f)
         out->direction *= -1.f;
-
+    //position pdf * direction pdf.
+    //1/2pi instead of 1/4pi because the direction is flipped if wrong
+    //so in the end is an hemisphere sampling
     *pdf = AreaLight::invarea * INV_TWOPI;
+    //objspace to world space
+    *out = AreaLight::objToWorld**out;
     return AreaLight::c;
 }
 
-Spectrum AreaLight::radiance_i(float r0, float r1, const Point3 *current_pos,
-                            Vec3 *wi, float *pdf, float* distance) const
+Spectrum AreaLight::sample_visible_surface(float r0, float r1,const Point3 *pos,
+                                      Vec3 *wi, float *pdf,float* distance)const
 {
     Normal normal;
     Point3 light_point;
     Ray ray;
-    ray.origin = worldToObj**current_pos;
+    ray.origin = worldToObj**pos;
 
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
@@ -126,9 +127,9 @@ float AreaLight::pdf(const Point3* p, const Vec3* wi)const
     return pdf;
 }
 
-float AreaLight::pdf() const
+float AreaLight::pdf(const Ray* r)const
 {
-    return AreaLight::invarea;
+    return AreaLight::invarea * INV_TWOPI;
 }
 
 bool AreaLight::is_light()const

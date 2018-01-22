@@ -24,7 +24,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
     const AreaLight*const* lights = sc->get_lights();
     if(hp->asset_h->is_light())
         if(dot(hp->normal_h,-r->direction)>0)
-            L+=((AreaLight *) hp->asset_h)->emissiveSpectrum();
+            L+=((AreaLight *) hp->asset_h)->emissive_spectrum();
     if(nlights>0)
     {
         float rand[6];
@@ -42,7 +42,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         float light_distance;
 
         //multiple importance sampling, light first
-        Spectrum directrad=light->radiance_i(rand[1],rand[2],&hp->point_h,&wi,
+        Spectrum directrad=light->sample_visible_surface(rand[1],rand[2],&hp->point_h,&wi,
                                              &lightpdf,&light_distance);
         if(lightpdf > 0 && !directrad.is_black())
         {
@@ -80,7 +80,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                 if(h2.asset_h->get_id() == light->get_id())
                     if(dot(h2.normal_h,-r2.direction)>0)
                     {
-                        Spectrum rad = light->emissiveSpectrum();
+                        Spectrum rad = light->emissive_spectrum();
                         L += bsdf_f * rad * absdot(wi, hp->normal_h) * w / bsdfpdf;
                     }
         }
