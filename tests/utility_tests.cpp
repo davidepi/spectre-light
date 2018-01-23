@@ -185,9 +185,17 @@ TEST(Utility,equation2)
     res = equation2(-3.f, -24.f, -48.f, &sol1, &sol2);
     EXPECT_EQ(sol1, -4.f);
     EXPECT_EQ(sol2, -4.f);
+    EXPECT_TRUE(res);
 
     //0 sol
     res = equation2(1.f, -1.f, 2.f, &sol1, &sol2);
     EXPECT_FALSE(res);
+
+    //delta<0 but fp error (1e-4)
+    res = equation2(1.00000012f,-2.62480998f,1.72240686f,&sol1,&sol2);
+    EXPECT_FLOAT_EQ(sol1,1.31240487f);
+    EXPECT_FLOAT_EQ(sol2,1.31240487f);
+    EXPECT_TRUE(res);
+
 }
 

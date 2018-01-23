@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 22 Jan 2018
+//Last Edit 23 Jan 2018
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      22 Jan 2018
+ *  \date      23 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -40,7 +40,7 @@ public:
      *  \param[in] c The emitted light
      */
     AreaLight(const Shape* shape, const Matrix4& objToWorld, const Spectrum& c);
-    
+
     ///Default destructor
     virtual ~AreaLight();
 
@@ -123,18 +123,18 @@ public:
      *  \sa sample_visible_surface()
      */
     float pdf(const Point3* p, const Vec3* wi)const;
-    
+
 private:
-    
+
     //Emissive spectrum of the light
     Spectrum c;
-    
+
     //area of the light
     float area;
-    
+
     //inverse area of the light
     float invarea;
-    
+
     //contains the cumulative area for every face of the underlying shape
     float* cd;
 };

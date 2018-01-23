@@ -127,12 +127,12 @@ public:
     /** \brief Returns a random point on the surface of the shape
      *
      *  Useful for the light sources, this method returns a random point on the
-     *  surface of the shape
+     *  surface of the shape. The sampled point is in object space
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
      *  \param[in] densities The array of densities of the shape's faces
-     *  \param[out] p The computed point
+     *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
     virtual void sample_point(float r, float r1, const float* densities,
@@ -151,16 +151,16 @@ class Asset;
 ///Struct containing the data of the intersection between a Ray and a Shape
 struct HitPoint
 {
-    ///The hit point
+    ///The hit point in world space
     Point3 point_h;
 
-    ///The normal of the hit point
+    ///The normal of the hit point in world space
     Normal normal_h;
 
-    ///Right direction, perpendicular to the normal
+    ///Right direction, perpendicular to the normal, in world space
     Vec3 right;
 
-    ///Cross between normal and right
+    ///Cross between normal and right, in world space
     Vec3 cross;
 
     ///Hit asset

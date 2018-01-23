@@ -257,25 +257,22 @@ inline bool equation2(const float a, const float b, const float c,
                       float* sol1, float* sol2)
 {
     float delta = b*b-4.0f*a*c;
-    if(delta>=0)//TODO: even with an added epsilon this has some problems if = 0
+    if(delta<=0 && delta+1e-4>=0) //tanget but with float error
+    {                            //happens in area lights
+        *sol1 = -b/(a*2);
+        *sol2 = *sol1;
+        return true;
+    }
+    else if(delta>=0)
     {
-        if(delta!=0)
-        {
-            float q;
-            if(b<0)
-                q = -0.5f*(b-sqrtf(delta));
-            else
-                q = -0.5f*(b+sqrtf(delta));
-            *sol1 = q/a;
-            *sol2 = c/q;
-            return true;
-        }
+        float q;
+        if(b<0)
+            q = -0.5f*(b-sqrtf(delta));
         else
-        {
-            *sol1 = -b/(a*2);
-            *sol2 = *sol1;
-            return true;
-        }
+            q = -0.5f*(b+sqrtf(delta));
+        *sol1 = q/a;
+        *sol2 = c/q;
+        return true;
     }
     else
         return false;

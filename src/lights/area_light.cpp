@@ -3,16 +3,16 @@
 
 #include "area_light.hpp"
 
-AreaLight::AreaLight(const Shape* sp, const Matrix4& objToWorld, const Spectrum& c)
-: Asset(sp,objToWorld), c(c)
+AreaLight::AreaLight(const Shape* sp,const Matrix4& obj2World,const Spectrum& c)
+: Asset(sp,obj2World), c(c)
 {
     //calculate the surface of the world-space object
-    AreaLight::area = sp->surface(&objToWorld);
-    
+    AreaLight::area = sp->surface(&obj2World);
+
     //get the cumulative densities of the various faces of the light
     cd = (float*)malloc(sizeof(float)*sp->get_faces_number());
-    sp->get_densities_array(&objToWorld, cd);
-    
+    sp->get_densities_array(&obj2World, cd);
+
     AreaLight::invarea = 1.f/area;
 }
 
@@ -59,7 +59,7 @@ Spectrum AreaLight::sample_visible_surface(float r0, float r1,const Point3 *pos,
                                       Vec3 *wi, float *pdf,float* distance)const
 {
     Normal normal;
-    Point3 light_point;
+    Point3 light_point; //object space
     Ray ray;
     ray.origin = worldToObj**pos;
 
@@ -75,16 +75,20 @@ Spectrum AreaLight::sample_visible_surface(float r0, float r1,const Point3 *pos,
     HitPoint hit;
     *distance = FLT_MAX;
     //will always succeed
-    bool res=AreaLight::model->intersect(&ray,distance,&hit);
-    //TODO: erase this after all the intersections are tried
-    //just to be sure
-    if(!res)
-    {
-        *pdf = 0;
-        return SPECTRUM_BLACK;
-    }
+//    bool res=
+    AreaLight::model->intersect(&ray,distance,&hit);
+    //erase the next if after all the intersections are tried
+    //TODO: now this should never happen and has been commented. Tried
+    //blackbox testing for something like 1 hour, but maybe for newer
+    //shapes this could generate problems so it is left here as a reference
+//    if(!res)
+//    {
+//        bool res=AreaLight::model->intersect(&ray,distance,&hit);
+//        *pdf = 0;
+//        return SPECTRUM_BLACK;
+//    }
     light_point = ray.apply(*distance);
-    normal = hit.normal_h;
+    normal = hit.normal_h; //object space
     *wi = ray.direction;
     *pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
            (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
@@ -93,12 +97,13 @@ Spectrum AreaLight::sample_visible_surface(float r0, float r1,const Point3 *pos,
     if(std::isinf(*pdf))
     {
         *pdf = 0;
+        *distance = FLT_MAX;
         return SPECTRUM_BLACK;
     }
 
     //convert wi to world space
     Spectrum retval;
-    if(dot(normal,-(*wi))>0)
+    if(dot(normal,-(*wi))>0) //cos between ray and hit point normal > 0
         retval = AreaLight::c;
     else
         retval = SPECTRUM_BLACK;
@@ -115,7 +120,8 @@ float AreaLight::pdf(const Point3* p, const Vec3* wi)const
     ray.direction = AreaLight::worldToObj * *wi;
     HitPoint hit;
     float distance = FLT_MAX;
-    //will always succeed
+    //here success is not guaranteed, maybe the wi vector is random
+    //need to check if the intersection can happen
     bool res=AreaLight::model->intersect(&ray,&distance,&hit);
     if(!res)
         return 0;
@@ -127,7 +133,7 @@ float AreaLight::pdf(const Point3* p, const Vec3* wi)const
     return pdf;
 }
 
-float AreaLight::pdf(const Ray* r)const
+float AreaLight::pdf(const Ray*)const
 {
     return AreaLight::invarea * INV_TWOPI;
 }
