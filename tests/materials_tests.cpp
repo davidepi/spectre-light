@@ -800,7 +800,7 @@ TEST(Materials,Bsdf_sample_value)
     EXPECT_FLOAT_EQ(pdf,0.22507906f);
     EXPECT_FLOAT_EQ(wi.x,-0.707106769f);
     EXPECT_FLOAT_EQ(wi.y, 0.707106769);
-    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_TRUE(flt_equal(wi.z,0.f));
     EXPECT_EQ(out_flags,BdfFlags(BRDF|DIFFUSE));
     EXPECT_TRUE(wi.is_normalized());
 
@@ -818,7 +818,7 @@ TEST(Materials,Bsdf_sample_value)
     EXPECT_FLOAT_EQ(pdf,0.5f);
     EXPECT_FLOAT_EQ(wi.x,0.f);
     EXPECT_FLOAT_EQ(wi.y,1.f);
-    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_TRUE(flt_equal(wi.z,0.f));
     EXPECT_EQ(out_flags,BdfFlags(BRDF|SPECULAR));
     EXPECT_TRUE(wi.is_normalized());
     //multi material specular, choose second (refraction)
@@ -830,7 +830,7 @@ TEST(Materials,Bsdf_sample_value)
     EXPECT_FLOAT_EQ(pdf,0.5f);
     EXPECT_FLOAT_EQ(wi.x,0.f);
     EXPECT_FLOAT_EQ(wi.y,-1.f);
-    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_TRUE(flt_equal(wi.z,0.f));
     EXPECT_EQ(out_flags,BdfFlags(BTDF|SPECULAR));
     EXPECT_TRUE(wi.is_normalized());
 
@@ -849,7 +849,7 @@ TEST(Materials,Bsdf_sample_value)
     EXPECT_FLOAT_EQ(pdf,0.268972039f);
     EXPECT_FLOAT_EQ(wi.x,0.384615242f);
     EXPECT_FLOAT_EQ(wi.y,0.923076987f);
-    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_TRUE(flt_equal(wi.z,0.f));
     EXPECT_EQ(out_flags,BdfFlags(BRDF|GLOSSY));
     EXPECT_TRUE(wi.is_normalized());
     //multi material glossy, choose second (refraction)
@@ -861,7 +861,7 @@ TEST(Materials,Bsdf_sample_value)
     EXPECT_FLOAT_EQ(pdf,15.9433241f);
     EXPECT_FLOAT_EQ(wi.x,0.0664419233f);
     EXPECT_FLOAT_EQ(wi.y,-0.997790277f);
-    EXPECT_FLOAT_EQ(wi.z,0.f);
+    EXPECT_TRUE(flt_equal(wi.z,0.f));
     EXPECT_EQ(out_flags,BdfFlags(BTDF|GLOSSY));
     EXPECT_TRUE(wi.is_normalized());
 }

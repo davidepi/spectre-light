@@ -98,10 +98,10 @@ TEST(Lights,AreaLight_sample_visible_surface)
     EXPECT_FLOAT_EQ(res.w[0], 1.f);
     EXPECT_FLOAT_EQ(res.w[1], 1.f);
     EXPECT_FLOAT_EQ(res.w[2], 1.f);
-    EXPECT_FLOAT_EQ(wi.x,-0.224410f);
-    EXPECT_FLOAT_EQ(wi.y,-0.277287f);
+    EXPECT_FLOAT_EQ(wi.x,-0.22441007f);
+    EXPECT_FLOAT_EQ(wi.y,-0.27728724f);
     EXPECT_FLOAT_EQ(wi.z,0.934212f);
-    EXPECT_FLOAT_EQ(pdf, 0.805844962f);
+    EXPECT_FLOAT_EQ(pdf, 0.80584496f);
 }
 
 TEST(Lights,AreaLight_pdf_surface_visible)
@@ -118,7 +118,7 @@ TEST(Lights,AreaLight_pdf_surface_visible)
     pos = Point3(-0.560985684f,0.542458057f,-1.82760262f);
     wi = Vec3(-0.224410, -0.277287, 0.934212);
     pdf = light.pdf(&pos,&wi);
-    EXPECT_FLOAT_EQ(pdf,0.805844962f);
+    EXPECT_FLOAT_EQ(pdf, 0.8058424f);
 
     //totally random ray
     pos = Point3(-0.560985684f,0.542458057f,-1.82760262f);

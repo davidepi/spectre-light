@@ -154,13 +154,29 @@ TEST(Camera,Camera360_create_ray)
     Vec3 r2direction(0.628446341f,0.672623038f,0.390683413f);
     Vec3 r3direction(-0.967828512f,0.0713518411f,0.24128218f);
 
-    EXPECT_EQ(r0.origin,origin);
-    EXPECT_EQ(r1.origin,origin);
-    EXPECT_EQ(r2.origin,origin);
-    EXPECT_EQ(r3.origin,origin);
-    EXPECT_EQ(r0.direction,r0direction);
-    EXPECT_EQ(r1.direction,r1direction);
-    EXPECT_EQ(r2.direction,r2direction);
-    EXPECT_EQ(r3.direction,r3direction);
+    EXPECT_FLOAT_EQ(r0.origin.x,origin.x);
+    EXPECT_FLOAT_EQ(r0.origin.y,origin.y);
+    EXPECT_FLOAT_EQ(r0.origin.z,origin.z);
+    EXPECT_FLOAT_EQ(r1.origin.x,origin.x);
+    EXPECT_FLOAT_EQ(r1.origin.y,origin.y);
+    EXPECT_FLOAT_EQ(r1.origin.z,origin.z);
+    EXPECT_FLOAT_EQ(r2.origin.x,origin.x);
+    EXPECT_FLOAT_EQ(r2.origin.y,origin.y);
+    EXPECT_FLOAT_EQ(r2.origin.z,origin.z);
+    EXPECT_FLOAT_EQ(r3.origin.x,origin.x);
+    EXPECT_FLOAT_EQ(r3.origin.y,origin.y);
+    EXPECT_FLOAT_EQ(r3.origin.z,origin.z);
+    EXPECT_FLOAT_EQ(r0.direction.x,r0direction.x);
+    EXPECT_FLOAT_EQ(r0.direction.y,r0direction.y);
+    EXPECT_FLOAT_EQ(r0.direction.z,r0direction.z);
+    EXPECT_FLOAT_EQ(r1.direction.x,r1direction.x);
+    EXPECT_FLOAT_EQ(r1.direction.y,r1direction.y);
+    EXPECT_FLOAT_EQ(r1.direction.z,r1direction.z);
+    EXPECT_FLOAT_EQ(r2.direction.x,r2direction.x);
+    EXPECT_FLOAT_EQ(r2.direction.y,r2direction.y);
+    EXPECT_FLOAT_EQ(r2.direction.z,r2direction.z);
+    EXPECT_FLOAT_EQ(r3.direction.x,r3direction.x);
+    EXPECT_FLOAT_EQ(r3.direction.y,r3direction.y);
+    EXPECT_FLOAT_EQ(r3.direction.z,r3direction.z);
 }
 
