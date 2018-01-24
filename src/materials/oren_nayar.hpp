@@ -1,12 +1,12 @@
 //Created,   9 Jun 2017
-//Last Edit 20 Nov 2017
+//Last Edit 25 Jan 2018
 
 /**
  *  \file oren_nayar.hpp
  *  \brief     Oren-Nayar microfacet BRDF
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      1 Jul 2017
+ *  \version   0.2
+ *  \date      15 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -24,8 +24,8 @@
  *  \brief BRDF for a perfectly diffuse rough surface
  *
  *  The Oren-Nayar model is a BRDF that defines a diffuse surface.
- *  In constrast to the Lambertian model, this one is able to weight the 
- *  roughness of a surface. 
+ *  In constrast to the Lambertian model, this one is able to weight the
+ *  roughness of a surface.
  */
 class OrenNayar : public Bdf
 {
@@ -56,7 +56,7 @@ public:
 private:
 
     //Scattered portion of light
-    Spectrum diffuse;
+    const Spectrum diffuse;
 
     //Pre-computed A term
     float A;
@@ -67,3 +67,4 @@ private:
 
 
 #endif
+

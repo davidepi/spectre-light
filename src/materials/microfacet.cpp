@@ -2,8 +2,9 @@
 //license: GNU GPLv3
 
 #include "microfacet.hpp"
-MicrofacetR::MicrofacetR(Spectrum& spectrum, MicrofacetDist* distribution,
-                         Fresnel* fresnel)
+MicrofacetR::MicrofacetR(const Spectrum& spectrum,
+                         const MicrofacetDist* distribution,
+                         const Fresnel* fresnel)
 : Bdf(BdfFlags(BRDF|GLOSSY)),specular(spectrum)
 {
     MicrofacetR::fresnel = fresnel;
@@ -18,6 +19,8 @@ MicrofacetR::~MicrofacetR()
 
 Spectrum MicrofacetR::value(const Vec3* woS, const Vec3* wiS)const
 {
+    if(woS->z*wiS->z<0)//different hemispheres
+        return SPECTRUM_BLACK;
     float costwo = fabsf(woS->z); //cosThetaWo
     float costwi = fabsf(wiS->z); //cosThetaWi
     Vec3 wh = *woS+*wiS;
@@ -26,7 +29,7 @@ Spectrum MicrofacetR::value(const Vec3* woS, const Vec3* wiS)const
         return SPECTRUM_BLACK;
     wh.normalize();
     float inv = 4.f*costwo*costwi;
-    return specular*distribution->D(&wh)*distribution->G(woS,wiS,&wh)*
+    return specular*distribution->D(&wh)*distribution->G(woS,wiS)*
            fresnel->eval(dot(*wiS,wh))/inv;
 }
 
@@ -44,10 +47,8 @@ Spectrum MicrofacetR::sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
         return SPECTRUM_BLACK;
     }
     //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
-    //to pdf wrt incident vector
-    *pdf = MicrofacetR::distribution->pdf(wo, &wh, wi)/(4.f*dot(*wo,wh));
-    if(pdf==0)
-        return SPECTRUM_BLACK;
+    //(returned by the function) to pdf wrt incident vector.
+    *pdf = MicrofacetR::distribution->pdf(wo, &wh)/(4.f*dot(*wo,wh));
     return MicrofacetR::value(wo, wi);
 }
 
@@ -56,25 +57,21 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
     if(woS->z*wiS->z < 0)
         return 0.f;
     Vec3 wh = *woS+*wiS;
-    if(wh.x!=0 || wh.y!=0 || wh.z != 0)
-    {
-        wh.normalize();
-        //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
-        //to pdf wrt incident vector
-        return MicrofacetR::distribution->pdf(woS, &wh, wiS)/(4.f*dot(*woS,wh));
-    }
-    else
-        return 0.f;
-    
+//    if(wh.x==0 && wh.y==0 && wh.z == 0) //impossible
+//        return 0.f;
+    wh.normalize();
+    //4.f*dot(woS,wh); is the transformation from pdf wrt half vector
+    //to pdf wrt incident vector
+    return MicrofacetR::distribution->pdf(woS, &wh)/(4.f*dot(*woS,wh));
 }
 
-MicrofacetT::MicrofacetT(Spectrum& spe, MicrofacetDist* md,
-                         Spectrum& etai, Spectrum& etat)
+MicrofacetT::MicrofacetT(const Spectrum& spe, const MicrofacetDist* md,
+                         const Spectrum& etai, const Spectrum& etat)
 : Bdf(BdfFlags(BTDF|GLOSSY)), specular(spe), fresnel_diel(etai,etat)
 {
     MicrofacetT::distribution = md;
-    MicrofacetT::eta_i = fresnel_diel.getEtaIncident();
-    MicrofacetT::eta_t = fresnel_diel.getEtaTransmitted();
+    MicrofacetT::eta_i = fresnel_diel.get_eta_incident();
+    MicrofacetT::eta_t = fresnel_diel.get_eta_transmitted();
 }
 
 MicrofacetT::~MicrofacetT()
@@ -111,9 +108,9 @@ Spectrum MicrofacetT::value(const Vec3* woS, const Vec3* wiS)const
     float dotwoh = dot(*woS,wh);
     float dotwih = dot(*wiS,wh);
     //abs are made at the end. Every value is always positive in the formula
-    float up= etao*etao*distribution->D(&wh)*distribution->G(woS,wiS,&wh)*
+    float up=etao*etao*distribution->D(&wh)*distribution->G(woS,wiS)*
               dotwoh*dotwih;
-    if(up==0) //avoid calculating fresnel term
+    if(flt_equal(up,0.f)) //avoid calculating fresnel term
     {
         return SPECTRUM_BLACK;
     }
@@ -147,9 +144,7 @@ Spectrum MicrofacetT::sample_value(const Vec3* woS, Vec3* wiS, float r0,
         etao = eta_t;
         etai = eta_i;
     }
-    
-    //-woS because the vector is pointing outside
-    *wiS = refract(-*woS, wh, etao/etai);
+    *wiS = refract(*woS, wh, etao/etai);
     if(wiS->x==0 && wiS->y==0 && wiS->z==0) //Total internal reflection
     {
         *pdf = 0;
@@ -160,7 +155,8 @@ Spectrum MicrofacetT::sample_value(const Vec3* woS, Vec3* wiS, float r0,
     const float jacobian_denom = (etai*dot(*wiS,wh)+etao*dotwoh);
     jacobian/=jacobian_denom*jacobian_denom;
     wiS->normalize();
-    *pdf = MicrofacetT::distribution->pdf(woS, &wh, wiS)*jacobian;
+    *pdf = MicrofacetT::distribution->pdf(woS, &wh)*jacobian;
+//    *pdf = MicrofacetT::pdf(woS,wiS);
     return MicrofacetT::value(woS,wiS);
 }
 
@@ -180,7 +176,7 @@ float MicrofacetT::pdf(const Vec3* woS, const Vec3* wiS)const
         etao = eta_t;
         etai = eta_i;
     }
-    Vec3 wh = -*wiS*etai-*woS*etao;
+    Vec3 wh = -*woS*etao-*wiS*etai;
     if(wh.x==0 && wh.y==0 && wh.z==0)
         return 0.f;
     wh.normalize();
@@ -188,5 +184,6 @@ float MicrofacetT::pdf(const Vec3* woS, const Vec3* wiS)const
     float jacobian = etao*etao*fabsf(dotwoh);
     const float jacobian_denom = (etai*dot(*wiS,wh)+etao*dotwoh);
     jacobian/=jacobian_denom*jacobian_denom;
-    return MicrofacetT::distribution->pdf(woS, &wh, wiS)*jacobian;
+    return MicrofacetT::distribution->pdf(woS, &wh)*jacobian;
 }
+

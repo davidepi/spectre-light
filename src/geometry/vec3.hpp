@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 12 Nov 2017
+//Last Edit 21 Jan 2018
 
 /**
  *  \file vec3.hpp
@@ -7,8 +7,8 @@
  *             functions
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      7 Nov 2017
+ *  \version   0.2
+ *  \date      21 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -153,7 +153,7 @@ public:
      *
      * \warning The input length is not checked, a 0-length vector will result
      *  in a division by zero error
-     *  \sa isNormalized()
+     *  \sa is_normalized()
      */
     void normalize();
     
@@ -214,7 +214,7 @@ public:
      *          not
      *  \sa normalize()
      */
-    bool isNormalized()const;
+    bool is_normalized()const;
     
     /**  \brief Represent this vector with an array
      *
@@ -310,6 +310,10 @@ public:
      *  If the refracted vector does not exists due to Total Internal Reflection
      *  the class is not transformed and false is returned
      *
+     *  \warning Since this method will be used only in the Bdf class, source vector
+     *  is assumed to be pointing away from the interface, and so the resulting
+     *  transmitted vector
+     *
      *  \param[in] interface A Vec3 representing the interface normal
      *  \param[in] eta The index of refraction used for refracting the vector
      *  \return true if the vector was successfully refracted, false otherwise
@@ -324,6 +328,10 @@ public:
      *  transform this class in the refracted vector.
      *  If the refracted vector does not exists due to Total Internal Reflection
      *  the class is not transformed and false is returned
+     *
+     *  \warning Since this method will be used only in the Bdf class, source vector
+     *  is assumed to be pointing away from the interface, and so the resulting
+     *  transmitted vector
      *
      *  \param[in] interface A Vec3 representing the interface normal
      *  \param[in] eta The index of refraction used for refracting the vector
@@ -531,7 +539,7 @@ public:
      *  \note Despite the name, a Normal is not guaranteed to be normalized
      *  \warning The input length is not checked, a 0-length vector will result
      *  in a division by zero error
-     *  \sa isNormalized()
+     *  \sa is_normalized()
      */
     void normalize();
     
@@ -542,7 +550,7 @@ public:
      *  \note Despite the name, a Normal is not guaranteed to be normalized
      *  \sa normalize()
      */
-    bool isNormalized()const;
+    bool is_normalized()const;
     
     /**  \brief Represent this normal with an array
      *
@@ -604,25 +612,6 @@ public:
      *  \sa max(const Normal n)
      */
     void min(const Normal& n);
-    
-    /** \brief Checks whether this normal is oriented in the same direction of a
-     *          vector or not
-     *
-     *  \param reference The reference Vec3
-     *  \return A boolean value true if this normal and vector are oriented
-     *          alongside the same direction
-     *
-     *  \sa flipToMatchThis(const Vec3 reference)
-     */
-    bool faceForward(const Vec3& reference)const;
-    
-    /** \brief Flips this normal if it is not oriented in the same direction of
-     *         the input vector
-     *
-     *  \param reference The reference Vec3
-     *  \sa faceForward(const Vec3 reference)
-     */
-    void flipToMatch(const Vec3& reference);
     
     
     //------ Operators ---------------------------------------------------------
@@ -870,7 +859,13 @@ inline Vec3  cross (const Vec3& source, const Vec3& target)
  */
 inline Vec3 normalize(const Vec3& v)
 {
-    float len = std::sqrt(v.x*v.x+v.y*v.y+v.z*v.z);
+    float len;
+    float len2;
+    len2 = v.x * v.x + v.y * v.y + v.z * v.z;
+    if(len2>1.f-1E-5f && len2<1.f+1E-5f) //already normalized
+        return v;
+    else
+        len = sqrtf(len2);
 #ifdef DEBUG
     if(len==0)
     {
@@ -892,7 +887,13 @@ inline Vec3 normalize(const Vec3& v)
  */
 inline Normal normalize(const Normal& n)
 {
-    float len = std::sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
+    float len;
+    float len2;
+    len2 = n.x * n.x + n.y * n.y + n.z * n.z;
+    if(len2>1.f-1E-5f && len2<1.f+1E-5f) //already normalized
+        return n;
+    else
+        len = sqrtf(len2);
 #ifdef DEBUG
     if(len==0)
     {
@@ -904,37 +905,6 @@ inline Normal normalize(const Normal& n)
     return Normal(n.x * len,
                   n.y * len,
                   n.z * len);
-}
-
-/** \brief Checks whether a normal is oriented in the same direction of a
- *         vector or not
- *
- *  \param[in] target The Normal that has to be checked
- *  \param[in] reference The reference Vec3
- *  \return[in] A boolean value true if the input normal and vector are oriented
- *          alongside the same direction
- *
- *  \sa flipToMatch(const Normal target, const Vec3 reference)
- */
-inline bool faceForward(const Normal& target, const Vec3& reference)
-{
-    return dot(target,reference)>=0.f;
-}
-
-/** \brief Flips a normal if it is not oriented in the same direction of the
- *          input vector
- *  \param[in] target The Normal that has to be checked and potentially flipped
- *  \param[in] reference The reference Vec3
- *  \return The flipped normal
- *
- *  \sa faceForward(const Normal target, const Vec3 reference)
- */
-inline Normal flipToMatch(const Normal& target, const Vec3& reference)
-{
-    if(dot(target,reference)<0.f)
-        return -target;
-    else
-        return target;
 }
 
 /**  \brief Compute the distance between two vectors
@@ -1146,7 +1116,7 @@ inline Normal min(const Normal& n1, const Normal& n2)
 inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
+    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1168,7 +1138,7 @@ inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 inline Vec3 reflect(const Vec3& source, const Normal& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
+    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1184,6 +1154,10 @@ inline Vec3 reflect(const Vec3& source, const Normal& centre)
  *  If the refracted vector does not exists due to Total Internal Reflection
  *  (0,0,0) is returned
  *
+ *  \warning Since this method will be used only in the Bdf class, source vector
+ *  is assumed to be pointing away from the interface, and so the resulting
+ *  transmitted vector
+ *
  *  \param[in] source The Vec3 that will be transformed
  *  \param[in] interface A Vec3 representing the interface normal
  *  \param[in] eta The index of refraction used for refracting the vector
@@ -1194,17 +1168,20 @@ inline Vec3 reflect(const Vec3& source, const Normal& centre)
 inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = dot(source,interface); //cos incident
-    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
-    if(cos2t<0.f)
-        return Vec3(0,0,0);
+    const float sin2i = max(0.f,(1.f-cosi*cosi));
+    const float sin2t = sin2i*eta*eta;
+    if(sin2t>1.f) //bail out if tir
+        return Vec3(0.f,0.f,0.f);
     else
     {
         Vec3 retval;
-        retval = source*eta;
-        retval -= interface*(cosi*eta+sqrtf(cos2t));
+        const float cos2t = 1.f - sin2t; //cos2t transmitted
+        const float cost = sqrtf(cos2t);
+        retval = -source*eta;
+        retval += interface*(cosi*eta-cost);
         return retval;
     }
 }
@@ -1217,6 +1194,10 @@ inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
  *  If the refracted vector does not exists due to Total Internal Reflection
  *  (0,0,0) is returned
  *
+ *  \warning Since this method will be used only in the Bdf class, source vector
+ *  is assumed to be pointing away from the interface, and so the resulting
+ *  transmitted vector
+ *
  *  \param[in] source The Vec3 that will be transformed
  *  \param[in] interface A Vec3 representing the interface normal
  *  \param[in] eta The index of refraction used for refracting the vector
@@ -1227,17 +1208,20 @@ inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
 inline Vec3 refract(const Vec3& source, const Normal& interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = dot(source,interface); //cos incident
-    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
-    if(cos2t<0.f)
-        return Vec3(0,0,0);
+    const float sin2i = max(0.f,(1.f-cosi*cosi));
+    const float sin2t = sin2i*eta*eta;
+    if(sin2t>1.f) //bail out if tir
+        return Vec3(0.f,0.f,0.f);
     else
     {
         Vec3 retval;
-        retval = source*eta;
-        retval -= (Vec3)(interface*(cosi*eta+sqrtf(cos2t)));
+        const float cos2t = 1.f - sin2t; //cos2t transmitted
+        const float cost = sqrtf(cos2t);
+        retval = -source*eta;
+        retval += (Vec3)(interface*(cosi*eta-cost));
         return retval;
     }
 }

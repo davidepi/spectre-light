@@ -100,21 +100,36 @@ void Point3::operator-=(const Vec3&  v)
 //    return Point3(Point3::x * f, Point3::y * f, Point3::z * f);
 //}
 
-bool Point3::operator== (const Point3& p)const
+bool Point3::operator==(const Point3& p)const
 {
+#ifdef DEBUG
+    if(p.x == INFINITY || p.y == INFINITY || p.z == INFINITY ||
+       Point3::x == INFINITY || Point3::y == INFINITY || Point3::z == INFINITY)
+        Console.severe(MESSAGE_COMPARE_INF);
+#endif
     return std::fabs(Point3::x-p.x) <= FLT_EPSILON &&
            std::fabs(Point3::y-p.y) <= FLT_EPSILON &&
            std::fabs(Point3::z-p.z) <= FLT_EPSILON;
 }
 
-bool Point3::operator!= (const Point3& p)const
+bool Point3::operator!=(const Point3& p)const
 {
+#ifdef DEBUG
+    if(p.x == INFINITY || p.y == INFINITY || p.z == INFINITY ||
+       Point3::x == INFINITY || Point3::y == INFINITY || Point3::z == INFINITY)
+        Console.severe(MESSAGE_COMPARE_INF);
+#endif
     return std::fabs(Point3::x-p.x) > FLT_EPSILON ||
            std::fabs(Point3::y-p.y) > FLT_EPSILON ||
            std::fabs(Point3::z-p.z) > FLT_EPSILON;
 }
 
-float Point3::operator[] (int val)const
+float& Point3::operator[](int val)
+{
+    return *(&(Point3::x)+val);
+}
+
+float Point3::operator[](int val)const
 {
     return *(&(Point3::x)+val);
 }

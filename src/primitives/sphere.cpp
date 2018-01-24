@@ -3,7 +3,7 @@
 
 #include "sphere.hpp"
 
-AABB Sphere::computeAABB()const
+AABB Sphere::compute_AABB()const
 {
     const Point3 pmin(-1.f,-1.f,-1.f);
     const Point3 pmax(1.f, 1.f, 1.f);
@@ -13,7 +13,7 @@ AABB Sphere::computeAABB()const
     return AABB(&pmin, &pmax);
 }
 
-AABB Sphere::computeWorldAABB(const Matrix4* transform)const
+AABB Sphere::compute_AABB(const Matrix4* transform)const
 {
 #ifdef DEBUG
     if(transform==NULL)
@@ -22,15 +22,27 @@ AABB Sphere::computeWorldAABB(const Matrix4* transform)const
         return AABB();
     }
 #endif
-    const Point3 pmin = *transform * Point3(-1.f,-1.f,-1.f);
-    const Point3 pmax = *transform * Point3(1.f,1.f,1.f);
+    //rotation will broke if I don't transform every corner point of the AABB
+    //as an example, rotate a 2D box by 90 deg and keep only the diagonal
+    //vertices, then redraw the AABB given those vertices. Completely broken
+    const Point3 p0=*transform*Point3(-1,-1,-1);
+    const Point3 p1=*transform*Point3(1,-1,-1);
+    const Point3 p2=*transform*Point3(1,1,-1);
+    const Point3 p3=*transform*Point3(-1,1,-1);
+    const Point3 p4=*transform*Point3(-1,-1,1);
+    const Point3 p5=*transform*Point3(1,-1,1);
+    const Point3 p6=*transform*Point3(1,1,1);
+    const Point3 p7=*transform*Point3(-1,1,1);
     
-    return AABB(&pmin, &pmax);
+    const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
+    const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
+    
+    return AABB(&pmi,&pma);
 }
 
-bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
+bool Sphere::intersect(const Ray* r,float* distance, HitPoint* hit)const
 {
-#ifdef _LOW_LEVEL_CHECKS_
+#ifdef DEBUG
     Console.severe(*distance<SELF_INTERSECT_ERROR,"Intersection distance < 0");
 #endif
     const Vec3 tmp(r->origin.x,r->origin.y,r->origin.z);
@@ -55,15 +67,14 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* h)const
         }
         else
             *distance = sol1;
-        if(h!=NULL)
-        {
-            h->h = r->apply(*distance);
-            Vec3 normal(h->h.x, h->h.y, h->h.z);
-            h->n = Normal(normal);
-            if (h->h.x == 0 && h->h.y == 0)    //otherwise h->right would be a 0
-                h->h.x = SELF_INTERSECT_ERROR; //-length vector
-            h->right = Vec3(-TWO_PI * h->h.y, TWO_PI * h->h.x, 0);
+        hit->point_h = r->apply(*distance);
+        Vec3 normal(hit->point_h.x, hit->point_h.y, hit->point_h.z);
+        hit->normal_h = Normal(normal);
+        if(hit->point_h.x == 0 && hit->point_h.y == 0)//otherwise h->right
+        {                                             //would be a 0
+            hit->point_h.x = SELF_INTERSECT_ERROR; //-length vector
         }
+        hit->right = Vec3(-TWO_PI * hit->point_h.y,TWO_PI * hit->point_h.x,0);
         return true;
     }
     else
@@ -77,12 +88,12 @@ float Sphere::surface()const
 
 float Sphere::surface(const Matrix4* transform)const
 {
-    Vec3 scale = transform->getScale();
-    const float val = (scale.x+scale.y+scale.z)/3.f;
+    Vec3 scale = transform->get_scale();
+    const float val = scale.x;
     return FOUR_PI*val*val;
 }
 
-void Sphere::getRandomPoint(float r0, float r1, const float*, Point3* p,
+void Sphere::sample_point(float r0, float r1, const float*, Point3* p,
                             Normal* n)const
 {
     float z = 1.f - 2.f * r0;

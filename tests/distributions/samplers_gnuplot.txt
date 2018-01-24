@@ -1,0 +1,44 @@
+set terminal pdfcairo
+set output 'samplers_distributions.pdf'
+set datafile separator ","
+set key off
+unset xtics
+unset ytics
+set size square
+
+#RANDOM 
+set multiplot layout 2,2 columnsfirst title "{/:Bold=15 Random sampler}"
+set title '9 samples'
+plot path."data_random_9.csv" pt 7 ps 0.1
+set title '100 samples'
+plot path."data_random_100.csv" pt 7 ps 0.1
+set title '1024 samples'
+plot path."data_random_1024.csv" pt 7 ps 0.1
+set title '10000 samples'
+plot path."data_random_10000.csv" pt 7 ps 0.1
+unset multiplot
+
+#STRATIFIED NON-JITTERED
+set multiplot layout 2,2 columnsfirst title "{/:Bold=15 Stratified sampler}"
+set title '9 samples'
+plot path."data_stratified_9.csv" pt 7 ps 0.1
+set title '100 samples'
+plot path."data_stratified_100.csv" pt 7 ps 0.1
+set title '1024 samples'
+plot path."data_stratified_1024.csv" pt 7 ps 0.1
+set title '10000 samples'
+plot path."data_stratified_10000.csv" pt 7 ps 0.1
+unset multiplot
+
+#RANDOM 
+set title 'Stratified sampler jittered'
+set multiplot layout 2,2 columnsfirst title "{/:Bold=15 Stratified sampler (jittered)}"
+set title '9 samples'
+plot path."data_stratified_jittered_9.csv" pt 7 ps 0.1
+set title '100 samples'
+plot path."data_stratified_jittered_100.csv" pt 7 ps 0.1
+set title '1024 samples'
+plot path."data_stratified_jittered_1024.csv" pt 7 ps 0.1
+set title '10000 samples'
+plot path."data_stratified_jittered_10000.csv" pt 7 ps 0.1
+unset multiplot

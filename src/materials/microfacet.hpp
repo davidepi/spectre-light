@@ -1,12 +1,12 @@
 //Created,  23 Sep 2017
-//Last Edit 22 Nov 2017
+//Last Edit 19 Jan 2018
 
 /**
  *  \file microfacet.hpp
  *  \brief Microfacet models
  *  \author Davide Pizzolotto
- *  \version 0.1
- *  \date 22 Nov 2017
+ *  \version 0.2
+ *  \date 19 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -32,7 +32,7 @@
 class MicrofacetR : public Bdf
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  \param[in] spe The reflected spectrum
@@ -41,11 +41,12 @@ public:
      *  \param[in] fresnel The fresnel term (Dielectric or Conductor) of this
      *  material
      */
-    MicrofacetR(Spectrum& spe, MicrofacetDist* distribution, Fresnel* fresnel);
-    
+    MicrofacetR(const Spectrum& spe, const MicrofacetDist* distribution,
+                const Fresnel* fresnel);
+
     ///Default destructor
     ~MicrofacetR();
-    
+
     /** \brief Return the value of the Bdf
      *
      *  Computes the value of the Bdf in the point, defining how the light is
@@ -57,7 +58,7 @@ public:
      *  \return The value of the BRDF
      */
     Spectrum value(const Vec3* woS, const Vec3* wiS)const;
-    
+
     /** \brief Returns the value of the BRDF
      *
      *  Computes the reflected vector, and the value of the BRDF for the pair
@@ -75,7 +76,7 @@ public:
      */
     Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
                   float* pdf)const;
-    
+
     /** \brief Return the probability density function for this BRDF
      *
      *  Given a pair of vectors, return the pdf value for these directions. In
@@ -87,19 +88,17 @@ public:
      *  \return The pdf for this set of values
      */
     float pdf(const Vec3* woS, const Vec3* wiS)const;
-    
-    
-    
+
 private:
-    
+
     //fresnel term
-    Fresnel* fresnel;
-    
+    const Fresnel* fresnel;
+
     //microfacet distribution
-    MicrofacetDist* distribution;
-    
+    const MicrofacetDist* distribution;
+
     //reflected spectrum
-    Spectrum specular;
+    const Spectrum specular;
 };
 
 /**
@@ -119,7 +118,7 @@ private:
 class MicrofacetT : public Bdf
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  \param[in] spectrum The reflected spectrum
@@ -129,12 +128,12 @@ public:
      *  object
      *  \param[in] etat The index of refraction of the microfacets
      */
-    MicrofacetT(Spectrum& spectrum, MicrofacetDist* distribution,
-                Spectrum& etai, Spectrum& etat);
-    
+    MicrofacetT(const Spectrum& spectrum, const MicrofacetDist* distribution,
+                const Spectrum& etai, const Spectrum& etat);
+
     ///Default destructor
     ~MicrofacetT();
-    
+
     /** \brief Return the value of the Bdf
      *
      *  Computes the value of the Bdf in the point, defining how the light is
@@ -146,7 +145,7 @@ public:
      *  \return The value of the BTDF
      */
     Spectrum value(const Vec3* woS, const Vec3* wiS)const;
-    
+
     /** \brief Returns the value of the BTDF
      *
      *  Computes the transmitted vector, and the value of the BTDF for the pair
@@ -164,7 +163,7 @@ public:
      */
     Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
                   float* pdf)const;
-    
+
     /** \brief Return the probability density function for this BRDF
      *
      *  Given a pair of vectors, returns the pdf value for these directions. In
@@ -176,23 +175,24 @@ public:
      *  \return The pdf for this set of values
      */
     float pdf(const Vec3* woS, const Vec3* wiS)const;
-    
+
 private:
-    
+
     //refracted spectrum
-    Spectrum specular;
-    
+    const Spectrum specular;
+
     //fresnel term
-    Dielectric fresnel_diel;
-    
+    const Dielectric fresnel_diel;
+
     //microfacet distribution
-    MicrofacetDist* distribution;
-    
+    const MicrofacetDist* distribution;
+
     //ior incident
     float eta_i;
-    
+
     //ior transmitted
     float eta_t;
 };
 
 #endif
+

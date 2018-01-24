@@ -1,13 +1,13 @@
 //Created,   4 Aug 2017
-//Last Edit 26 Nov 2017
+//Last Edit 14 Dec 2017
 
 /**
  *  \file triangle.hpp
  *  \brief     Triangle primitive definition
  *  \details   All the methods to represent a triangle in the space
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      26 Nov 2017
+ *  \version   0.2
+ *  \date      14 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -95,7 +95,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB computeAABB()const;
+    AABB compute_AABB()const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -107,7 +107,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB computeWorldAABB(const Matrix4* transform)const;
+    AABB compute_AABB(const Matrix4* transform)const;
 
     /** \brief Returns the surface of the triangle
      *
@@ -144,7 +144,7 @@ public:
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+    void sample_point(float r0, float r1, const float* densities, Point3* p,
                         Normal* n)const;
 
     ///First vertex of the triangle

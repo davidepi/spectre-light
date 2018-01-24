@@ -36,6 +36,8 @@
 #define MESSAGE_REFRACT_NONORMALIZED "Refracting around a non normalized "\
                                      "interface"
 
+#define MESSAGE_BSDF_NONORMALIZED "View vector(wo) in bsdf is not normalized"
+
 #define MESSAGE_DIVISIONBY0 "Division by zero"
 
 #define MESSAGE_WORLD_AABB_NULL_MATRIX "Trying to generate a world-space AABB "\
@@ -86,6 +88,15 @@
 #define MESSAGE_BYE "Bye :)"
 
 #define MESSAGE_INPUT_FILE "Write input file path or q to exit"
+
+#define MESSAGE_COMPARE_INF "Comparing infinite values could lead to "\
+"undefined results"
+
+//max 15 char, otherwise change comments in the utility.hpp, format_seconds func
+#define MESSAGE_MORE_THAN_100_DAYS "more than 100d"
+
+//max 15 char, otherwise change comments in the utility.hpp, format_seconds func
+#define MESSAGE_LESS_THAN_1_SECOND "less than 1s"
 
 #endif
 

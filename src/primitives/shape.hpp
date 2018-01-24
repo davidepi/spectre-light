@@ -43,7 +43,7 @@ public:
     /** \brief Return the ID of this shape
      *  \return A unsigned int representing the ID of this shape
      */
-    unsigned int getID()const;
+    unsigned int get_id()const;
     
     /** \brief Intersection of a Ray and this shape
      *
@@ -71,7 +71,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    virtual AABB computeAABB()const = 0;
+    virtual AABB compute_AABB()const = 0;
     
     /** \brief Recalculate the AABB, in world space units
      *
@@ -84,7 +84,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    virtual AABB computeWorldAABB(const Matrix4* trans) const = 0;
+    virtual AABB compute_AABB(const Matrix4* trans)const = 0;
     
     /** \brief Return the surface of the shape
      *
@@ -113,29 +113,29 @@ public:
      *
      *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
      */
-    virtual int getNumberOfFaces()const;
+    virtual int get_faces_number()const;
     
     /** \brief Populate the cumulative densities array
      *
      *  For this specific class, nothing is done. Check subclasses
      *
-     *  \param[in] transform UNUSED
+     *  \param[in] transf UNUSED
      *  \param[out] array UNUSED
      */
-    virtual void getDensitiesArray(const Matrix4* transform,float* array)const;
+    virtual void get_densities_array(const Matrix4* transf,float* array)const;
 
     /** \brief Returns a random point on the surface of the shape
      *
      *  Useful for the light sources, this method returns a random point on the
-     *  surface of the shape
+     *  surface of the shape. The sampled point is in object space
      *
      *  \param[in] r A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
      *  \param[in] densities The array of densities of the shape's faces
-     *  \param[out] p The computed point
+     *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    virtual void getRandomPoint(float r, float r1, const float* densities,
+    virtual void sample_point(float r, float r1, const float* densities,
                                 Point3* p, Normal* n)const = 0;
     
     
@@ -151,20 +151,20 @@ class Asset;
 ///Struct containing the data of the intersection between a Ray and a Shape
 struct HitPoint
 {
-    ///The hit point
-    Point3 h;
+    ///The hit point in world space
+    Point3 point_h;
 
-    ///The normal of the hit point
-    Normal n;
+    ///The normal of the hit point in world space
+    Normal normal_h;
 
-    ///Right direction, perpendicular to the normal
+    ///Right direction, perpendicular to the normal, in world space
     Vec3 right;
 
-    ///Cross between normal and right
+    ///Cross between normal and right, in world space
     Vec3 cross;
 
     ///Hit asset
-    const Asset* hit;
+    const Asset* asset_h;
 };
 
 #endif

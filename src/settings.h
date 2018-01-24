@@ -17,20 +17,24 @@
 ///The number of bounces before discarding the ray
 #define DEFAULT_BOUNCES 5
 
-///If defined, instead of writing errors in the console, writes them in a struct
-//#define _TEST_
-
 ///The amount of floating point rounding error that can cause self-intersections
 #define SELF_INTERSECT_ERROR 1e-5f
 
 ///The amount of error to consider when comparing shadow ray distance
 #define OCCLUSION_INTERSECT_ERROR SELF_INTERSECT_ERROR
 
-///Defines the max number of assets
+///Defines the max number of assets in the scene
 #define _MAX_ASSETS_ 4096
 
+///Defines the max number of lights in the scene
+#define _MAX_LIGHTS_ 32
+
+#ifdef TESTS
+#define _MAX_TRIS_ 65 //low num because it is faster to check limit cases
+#else
 ///Defines the max number of triangles per mesh
 #define _MAX_TRIS_ 1000000u
+#endif
 
 ///The maximum number of functions (BRDF/BTDF) that a BSDF can contain
 #define _MAX_BDF_ 5

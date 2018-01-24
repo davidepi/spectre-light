@@ -1,12 +1,12 @@
 //Created,   7 Jul 2017
-//Last Edit 18 Aug 2017
+//Last Edit 14 Jan 2018
 
 /**
  *  \file material_library.hpp
  *  \brief MaterialLibrary class
  *  \author Davide Pizzolotto
- *  \version 0.1
- *  \date  18 Aug 2017
+ *  \version 0.2
+ *  \date  14 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -32,6 +32,8 @@
  *  surface
  *
  *  A define grants access to this singleton just by writing "MtlLib"
+ *
+ *  \warning This class is NOT thread-safe
  */
 class MaterialLibrary
 {
@@ -55,13 +57,13 @@ public:
      *  Inherit a material and add it to the library. The library will ensure
      *  its deallocation.
      *
-     *  \note It is not checked if the material is already inside the library
+     *  \warning Adding the same material with different names will cause a
+     *  double free error
      *
      *  \param[in] name The name of the material
      *  \param[in] material The material that will be added
      */
-    void add(const std::string& name, Bsdf* material);
-
+    void add_inherit(const std::string& name, Bsdf* material);
 
     /** \brief Retrieve a material from the library
      *
@@ -83,17 +85,33 @@ public:
      */
     Bsdf* edit(const std::string& name)const;
 
-
     /** \brief Remove and deallocate a material from the library
      *
      * \param[in] name The material that will be removed and deallocated
      */
-    void remove(const std::string& name);
+    void erase(const std::string& name);
+
+    /** \brief Erase and deallocate everything inside the material library
+     *
+     *  This method will clear and thus deallocate every material stored in the
+     *  library. It is the same as calling erase for every stored material
+     */
+    void clear();
+
+    /** \brief Check if the material library already contains a material
+     *
+     *  This method only checks if a material with the input name is already
+     *  inside the material library
+     *
+     *  \param[in] name The name of the material that will be checked
+     *  \return true if the material is already inside the library
+     */
+    bool contains(const std::string& name)const;
 
 private:
 
     MaterialLibrary();
-
+    ~MaterialLibrary();
     std::unordered_map<std::string,Bsdf*> lib;
 };
 

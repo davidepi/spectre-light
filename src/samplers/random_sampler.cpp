@@ -11,7 +11,7 @@ RandomSampler::RandomSampler(int startx, int endx, int starty, int endy,
     RandomSampler::nexty = starty;
 }
 
-bool RandomSampler::getSamples(Sample *res)
+bool RandomSampler::get_samples(Sample *res)
 {
     if(nexty==endy)
         return false;

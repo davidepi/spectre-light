@@ -5,7 +5,7 @@
  *  \file console.hpp
  *  \brief Console logging
  *  \author Davide Pizzolotto
- *  \version 0.1
+ *  \version 0.2
  *  \date  26 Nov 2017
  *  \copyright GNU GPLv3
  */
@@ -21,7 +21,7 @@
 #include <iostream> //std::wcout, std::cout
 
 ///Version of the software
-#define SPECTRE_VERSION "0.1.0"
+#define SPECTRE_VERSION "0.1.0 [NIGHTLY BUILD]"
 
 ///Release date of this version
 #define SPECTRE_RELEASE "Dec  3 2017"
@@ -237,10 +237,10 @@ public:
      * \param[in] eta The estimated remainint time in seconds
      * \sa progressBarDone()
      */
-    void progressBar(float done, float eta)const;
+    void progress_bar(float done, float eta)const;
 
     ///Print a completed progress bar
-    void progressBarDone()const;
+    void progress_bar_done()const;
 
 private:
     
@@ -253,5 +253,14 @@ private:
 
 ///Access the console just by writing "Console" instead of calling getInstance()
 #define Console Console::getInstance()
+
+#ifdef TESTS
+#define LOG_INDEX 0
+#define NOTICE_INDEX 1
+#define WARNING_INDEX 2
+#define ERROR_INDEX 3
+#define CRITICAL_INDEX 4
+extern int errors_count[5];
+#endif
 
 #endif

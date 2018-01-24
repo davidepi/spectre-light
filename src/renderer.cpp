@@ -103,14 +103,14 @@ void Renderer::setBoxFilter()
 
     delete filter;
     filter = new BoxFilter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setTentFilter()
 {
     delete filter;
     filter = new TentFilter(TENT_FILTER_EXTENT,TENT_FILTER_EXTENT);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setGaussianFilter(float sigma)
@@ -118,7 +118,7 @@ void Renderer::setGaussianFilter(float sigma)
     delete filter;
     filter = new GaussianFilter(GAUSSIAN_FILTER_EXTENT,GAUSSIAN_FILTER_EXTENT,
                                 sigma);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setMitchellFilter(float b, float c)
@@ -126,7 +126,7 @@ void Renderer::setMitchellFilter(float b, float c)
     delete filter;
     filter = new MitchellFilter(MITCHELL_FILTER_EXTENT,MITCHELL_FILTER_EXTENT,
                                 b,c);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setLanczosSincFilter(float tau)
@@ -134,7 +134,7 @@ void Renderer::setLanczosSincFilter(float tau)
     delete filter;
     filter = new LanczosFilter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,
                                tau);
-    film.setFilter(filter);
+    film.set_filter(filter);
 }
 
 void Renderer::setRayTracer()
@@ -204,13 +204,13 @@ int Renderer::render(Scene* s)
     //sizeof because MSVC cannot resolve strlen a compile time
     char endmsg[sizeof(MESSAGE_RENDERTIME)/sizeof(char)+MAX_TIME_FORMAT_LENGTH];
     char elapsed_formatted[16];
-    formatSeconds((int)duration_cast<seconds>(b-a).count(),elapsed_formatted);
+    format_seconds((int)duration_cast<seconds>(b-a).count(),elapsed_formatted);
     sprintf(endmsg, MESSAGE_RENDERTIME,elapsed_formatted);
     Console.log(endmsg,NULL);
     
     Console.log(MESSAGE_IMAGEO,NULL);
     //save the image
-    Renderer::film.saveImage();
+    Renderer::film.save_image();
     Console.log(MESSAGE_BYE,NULL);
 	
     return 0;
@@ -289,25 +289,25 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
 		ex.starty = todo.starty;
 		ex.endx = todo.endx;
 		ex.endy = todo.endy;
-        while(sam->getSamples(samples))
+        while(sam->get_samples(samples))
         {
             for(int i=0;i<spp;i++)
             {
-                camera->createRay(&(samples[i]), &r);
+                camera->create_ray(&(samples[i]), &r);
                 if (scene->k.intersect(&r, &h))
                     radiance = mc_solver->radiance(scene, &h, &r, sam, &ot);
                 else
                     radiance = SPECTRUM_BLACK;
                 
-                ColorXYZ cx = radiance.toXYZ();
-                film->addPixel(&(samples[i]), cx, &ex);
+                ColorXYZ cx = radiance.to_xyz();
+                film->add_pixel(&(samples[i]), cx, &ex);
             }
         }
-		film->deferredAddPixel(&ex);
+		film->add_pixel_deferred(&ex);
         delete sam;
     }
     delete[] samples;
-	film->forceAddPixel(&ex);
+	film->add_pixel_forced(&ex);
 }
 
 RendererProgressBar::RendererProgressBar(std::stack<Renderer_task> *jobs)
@@ -332,7 +332,7 @@ void RendererProgressBar::kill()
     
     //However this is fine, no point in setting a mutex every time just to
     //avoid a bad print
-    Console.progressBarDone();
+    Console.progress_bar_done();
 }
 
 void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
@@ -352,7 +352,7 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
                 remaining);
         //avoid garbage values... it is useless, but it runs once per second...
         if(eta>0)
-            Console.progressBar(done,eta);
+            Console.progress_bar(done,eta);
         std::this_thread::sleep_for
                 (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }

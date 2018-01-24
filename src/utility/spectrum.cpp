@@ -364,11 +364,6 @@ const Spectrum SPECTRUM_WHITE = SPECTRUM_ONE;
 
 #endif
 
-Spectrum::Spectrum()
-{
-
-}
-
 Spectrum::Spectrum(int t)
 {
     if(t==0) //black
@@ -426,18 +421,6 @@ Spectrum::Spectrum(int t)
     }
 }
 
-Spectrum::Spectrum(const float* vals)
-{
-#ifdef SPECTRAL
-    for(int i=0;i<SPECTRUM_SAMPLES;i++)
-        Spectrum::w[i] = vals[i];
-#else
-    Spectrum::w[0] = vals[0];
-    Spectrum::w[1] = vals[1];
-    Spectrum::w[2] = vals[2];
-#endif
-}
-
 Spectrum::Spectrum(const std::initializer_list<float> vals)
 {
     if(vals.size()!=16)
@@ -450,6 +433,7 @@ Spectrum::Spectrum(const std::initializer_list<float> vals)
     //not super precise... but whatever, this constructor is used where full
     //spectrum rendering is almost required so the result won't be precise
     //anyway (referring to Conductor reflection)
+    //TODO: maybe change it later but with lower priority
     for(float val:vals)
     {
         if(i<5)
@@ -588,14 +572,14 @@ Spectrum::Spectrum(ColorRGB c, bool l)
         w[i] = clamp(w[i],0.f,1.f);
 #else
     (void)l; //to avoid unused parameters warnings
-    ColorXYZ res = c.toXYZ();
+    ColorXYZ res = c.to_XYZ();
     Spectrum::w[0] = res.r;
     Spectrum::w[1] = res.g;
     Spectrum::w[2] = res.b;
 #endif
 }
 
-ColorXYZ Spectrum::toXYZ()const
+ColorXYZ Spectrum::to_xyz()const
 {
 #ifdef SPECTRAL
     float x = 0;
@@ -617,7 +601,7 @@ ColorXYZ Spectrum::toXYZ()const
     x+=Spectrum::w[13]*X[13];
     x+=Spectrum::w[14]*X[14];
     x+=Spectrum::w[15]*X[15];
-    
+
     y+=Spectrum::w[0]*Y[0];
     y+=Spectrum::w[1]*Y[1];
     y+=Spectrum::w[2]*Y[2];
@@ -634,7 +618,7 @@ ColorXYZ Spectrum::toXYZ()const
     y+=Spectrum::w[13]*Y[13];
     y+=Spectrum::w[14]*Y[14];
     y+=Spectrum::w[15]*Y[15];
-    
+
     z+=Spectrum::w[0]*Z[0];
     z+=Spectrum::w[1]*Z[1];
     z+=Spectrum::w[2]*Z[2];
@@ -686,7 +670,7 @@ float Spectrum::luminance()const
 #endif
 }
 
-bool Spectrum::isBlack()const
+bool Spectrum::is_black()const
 {
 #ifdef SPECTRAL
     for(int i=0;i<SPECTRUM_SAMPLES;i++)
@@ -698,7 +682,7 @@ bool Spectrum::isBlack()const
 #endif
 }
 
-bool Spectrum::isValid()const
+bool Spectrum::is_valid()const
 {
     bool retval = true;
     using std::isnan;
@@ -720,15 +704,6 @@ bool Spectrum::isValid()const
         Console.severe(MESSAGE_SPECTRUM_INF);
         retval = false;
     }
-
-//    if(w[ 0]<0 || w[ 1]<0 || w[ 2]<0 || w[ 3]<0 ||
-//       w[ 4]<0 || w[ 5]<0 || w[ 6]<0 || w[ 7]<0 ||
-//       w[ 8]<0 || w[ 9]<0 || w[10]<0 || w[11]<0 ||
-//       w[12]<0 || w[13]<0 || w[14]<0 || w[15]<0)
-//    {
-//        Console.severe(MESSAGE_SPECTRUM_NEG);
-//        retval = false;
-//    }
 #else
     if(isnan(w[0]) || isnan(w[1]) || isnan (w[2]))
     {
@@ -740,11 +715,6 @@ bool Spectrum::isValid()const
         Console.severe(MESSAGE_SPECTRUM_INF);
         retval = false;
     }
-//    if(w[0]<0 || w[1]<0 || w[2]<0)
-//    {
-//        Console.severe(MESSAGE_SPECTRUM_NEG);
-//        retval = false;
-//    }
 #endif
     return retval;
 }
@@ -771,7 +741,7 @@ Spectrum Spectrum::operator+(const Spectrum& s)const
     retval.w[15] = Spectrum::w[15] + s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid() || !s.is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -798,7 +768,7 @@ void Spectrum::operator+=(const Spectrum& s)
     Spectrum::w[15] += s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
 }
@@ -825,7 +795,7 @@ Spectrum Spectrum::operator-(const Spectrum& s)const
     retval.w[15] = Spectrum::w[15] - s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid() || !s.is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -853,7 +823,7 @@ void Spectrum::operator-=(const Spectrum& s)
     Spectrum::w[15] -= s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
 }
@@ -880,7 +850,7 @@ Spectrum Spectrum::operator*(const Spectrum& s)const
     retval.w[15] = Spectrum::w[15] * s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid() || !s.is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -908,7 +878,7 @@ void Spectrum::operator*=(const Spectrum& s)
     Spectrum::w[15] *= s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
 }
@@ -935,7 +905,7 @@ Spectrum Spectrum::operator/(const Spectrum& s)const
     retval.w[15] = Spectrum::w[15] / s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid() || !s.is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -962,7 +932,7 @@ void Spectrum::operator/=(const Spectrum& s)
     Spectrum::w[15] /= s.w[15];
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
 }
@@ -989,7 +959,7 @@ Spectrum Spectrum::operator+(float v)const
     retval.w[15] = Spectrum::w[15] + v;
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid() || isnan(v) || isinf(v))
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -1016,7 +986,7 @@ void Spectrum::operator+=(float v)
     Spectrum::w[15] += v;
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
 }
@@ -1043,7 +1013,7 @@ Spectrum Spectrum::operator-(float v)const
     retval.w[15] = Spectrum::w[15] - v;
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid() || isnan(v) || isinf(v))
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -1070,7 +1040,7 @@ void Spectrum::operator-=(float v)
     Spectrum::w[15] -= v;
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
 }
@@ -1097,7 +1067,7 @@ Spectrum Spectrum::operator*(float v)const
     retval.w[15] = Spectrum::w[15] * v;
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid() || isnan(v) || isinf(v))
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -1124,7 +1094,7 @@ void Spectrum::operator*=(float v)
     Spectrum::w[15] *= v;
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
 }
@@ -1151,7 +1121,7 @@ Spectrum Spectrum::operator/(float v)const
     retval.w[15] = Spectrum::w[15] / v;
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid() || isnan(v) || isinf(v))
         throw "Spectrum operator produced NaN values";
 #endif
     return retval;
@@ -1178,7 +1148,7 @@ void Spectrum::operator/=(float v)
     Spectrum::w[15] /= v;
 #endif
 #ifdef DEBUG
-    if(!this->isValid())
+    if(!this->is_valid())
         throw "Spectrum operator produced NaN values";
 #endif
 }

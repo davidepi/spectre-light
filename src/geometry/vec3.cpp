@@ -134,7 +134,12 @@ Vec3 Vec3::cross(const Vec3& target)const
 void Vec3::normalize()
 {
     float len;
-    len = sqrtf(Vec3::x * Vec3::x + Vec3::y * Vec3::y + Vec3::z * Vec3::z);
+    float len2;
+    len2 = Vec3::x * Vec3::x + Vec3::y * Vec3::y + Vec3::z * Vec3::z;
+    if(len2>1.f-1E-5f && len2<1.f+1E-5f)
+        return;
+    else
+        len = sqrtf(len2);
 #ifdef DEBUG
     if(len==0)
     {
@@ -148,7 +153,7 @@ void Vec3::normalize()
     Vec3::z *= len;
 }
 
-bool Vec3::isNormalized()const
+bool Vec3::is_normalized()const
 {
     //sqrt(1) = 1 so I don't need the expense of a Vec3::length()
     float len = Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z;
@@ -258,7 +263,7 @@ void Vec3::min(const Vec3& vector2)
 void Vec3::reflect(const Vec3& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.isNormalized(),MESSAGE_REFLECT_NONORMALIZED);
+    Console.warning(!centre.is_normalized(),MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
     Vec3::x -= ((2 * dot) * centre.x);
@@ -269,7 +274,7 @@ void Vec3::reflect(const Vec3& centre)
 void Vec3::reflect(const Normal& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
+    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
     Vec3::x -= ((2 * dot) * centre.x);
@@ -280,16 +285,20 @@ void Vec3::reflect(const Normal& centre)
 bool Vec3::refract(const Vec3 &interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
-    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
-    if(cos2t<0.f)
+    const float sin2i = ::max(0.f,(1.f-cosi*cosi));
+    const float sin2t = sin2i*eta*eta;
+    if(sin2t>1.f) //bail out if tir
         return false;
     else
     {
-        Vec3::operator*=(eta);
-        Vec3::operator-=(interface*(cosi*eta+sqrtf(cos2t)));
+        Vec3 retval;
+        const float cos2t = 1.f - sin2t; //cos2t transmitted
+        const float cost = sqrtf(cos2t);
+        *this = -*this*eta;
+        Vec3::operator+=(interface*(cosi*eta-cost));
         return true;
     }
 }
@@ -297,16 +306,20 @@ bool Vec3::refract(const Vec3 &interface, float eta)
 bool Vec3::refract(const Normal &interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.isNormalized(),MESSAGE_REFRACT_NONORMALIZED);
+    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
-    const float cos2t = 1.f - eta*eta*(1.f-cosi*cosi); //cos2t transmitted
-    if(cos2t<0.f)
+    const float sin2i = ::max(0.f,(1.f-cosi*cosi));
+    const float sin2t = sin2i*eta*eta;
+    if(sin2t>1.f) //bail out if tir
         return false;
     else
     {
-        Vec3::operator*=(eta);
-        Vec3::operator-=((Vec3)(interface*(cosi*eta+sqrtf(cos2t))));
+        Vec3 retval;
+        const float cos2t = 1.f - sin2t; //cos2t transmitted
+        const float cost = sqrtf(cos2t);
+        *this = -*this*eta;
+        Vec3::operator+=((Vec3)(interface*(cosi*eta-cost)));
         return true;
     }
 }
@@ -450,15 +463,15 @@ Vec3 Vec3::operator-() const
 bool Vec3::operator==(const Vec3& v)const
 {
     return std::fabs(Vec3::x-v.x) <= FLT_EPSILON &&
-    std::fabs(Vec3::y-v.y) <= FLT_EPSILON &&
-    std::fabs(Vec3::z-v.z) <= FLT_EPSILON;
+           std::fabs(Vec3::y-v.y) <= FLT_EPSILON &&
+           std::fabs(Vec3::z-v.z) <= FLT_EPSILON;
 }
 
 bool Vec3::operator!=(const Vec3& v)const
 {
     return std::fabs(Vec3::x-v.x) > FLT_EPSILON ||
-    std::fabs(Vec3::y-v.y) > FLT_EPSILON ||
-    std::fabs(Vec3::z-v.z) > FLT_EPSILON;
+           std::fabs(Vec3::y-v.y) > FLT_EPSILON ||
+           std::fabs(Vec3::z-v.z) > FLT_EPSILON;
 }
 
 float& Vec3::operator[](int component)
@@ -593,9 +606,12 @@ float Normal::distanceTo(const Normal& target)const
 void Normal::normalize()
 {
     float len;
-    len = std::sqrt(Normal::x * Normal::x +
-                    Normal::y * Normal::y +
-                    Normal::z * Normal::z);
+    float len2;
+    len2=Normal::x * Normal::x + Normal::y * Normal::y + Normal::z * Normal::z;
+    if(len2>1.f-1E-5f && len2<1.f+1E-5f)
+        return;
+    else
+        len = sqrtf(len2);
 #ifdef DEBUG
     if(len==0)
     {
@@ -609,7 +625,7 @@ void Normal::normalize()
     Normal::z *= len;
 }
 
-bool Normal::isNormalized()const
+bool Normal::is_normalized()const
 {
     float len = x*x+y*y+z*z;
     return len>1.f-1E-5f && len<1.f+1E-5f;
@@ -707,17 +723,6 @@ void Normal::min(const Normal& n)
     Normal::x = x;
     Normal::y = y;
     Normal::z = z;
-}
-
-bool Normal::faceForward(const Vec3& reference)const
-{
-    return Normal::dot(reference)>=0.0f;
-}
-
-void Normal::flipToMatch(const Vec3& reference)
-{
-    if(Normal::dot(reference)<0.0f)
-        (*this)=-(*this);
 }
 
 //------ Operators -------------------------------------------------------------

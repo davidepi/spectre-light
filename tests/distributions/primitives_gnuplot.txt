@@ -1,0 +1,21 @@
+set terminal pdfcairo
+set output 'primitives_distributions.pdf'
+set datafile separator ","
+set key off
+
+set title "{/:Bold=15 Sphere sampled 1000 points}"
+set view equal xyz
+set ticslevel 0
+splot path."data_sphere.csv" pt 7 ps 0.1
+set title "{/:Bold=15 Box sampled 1000 points}"
+splot path."data_box.csv" pt 7 ps 0.1
+set title "{/:Bold=15 Triangle sampled 1000 points}"
+set yrange [-1:1]
+set xrange [-1:1]
+set zrange [0:0.5]
+splot path."data_triangle.csv" pt 7 ps 0.1
+set title "{/:Bold=15 Mesh (icosahedron) sampled 1000 points}"
+set autoscale x
+set autoscale y
+set autoscale z
+splot path."data_mesh.csv" pt 7 ps 0.1

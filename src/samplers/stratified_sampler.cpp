@@ -14,7 +14,7 @@ StratifiedSampler::StratifiedSampler(int startx, int endx, int starty, int endy,
     StratifiedSampler::strata_y = StratifiedSampler::strata_x;
 }
 
-bool StratifiedSampler::getSamples(Sample *res)
+bool StratifiedSampler::get_samples(Sample *res)
 {
     if(nexty==endy)
         return false;

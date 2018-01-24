@@ -5,7 +5,7 @@
  *  \file lambertian.hpp
  *  \brief     Lambertian BRDF
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      1 Jul 2017
  *  \copyright GNU GPLv3
  */
@@ -55,7 +55,7 @@ public:
 private:
 
     //scattered portion of spectrum
-    Spectrum diffuse;
+    const Spectrum diffuse;
 };
 
 #endif

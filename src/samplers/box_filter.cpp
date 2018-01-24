@@ -3,7 +3,7 @@
 
 #include "box_filter.hpp"
 
-BoxFilter::BoxFilter(float x_r, float y_r) : Filter(x_r,y_r)
+BoxFilter::BoxFilter(float x_range, float y_range) : Filter(x_range,y_range)
 {
 
 }

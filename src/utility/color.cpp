@@ -24,7 +24,7 @@ Color::Color(float rgb)
     Color::b = rgb;
 }
 
-bool Color::isBlack()const
+bool Color::is_black()const
 {
     return Color::r==0 && Color::g==0 && Color::b==0;
 }
@@ -150,7 +150,7 @@ ColorXYZ::ColorXYZ(float x, float y, float z)
     ColorXYZ::b = z;
 }
 
-ColorRGB ColorXYZ::toStandardRGB()const
+ColorRGB ColorXYZ::to_sRGB()const
 {
     constexpr const double EXP = 1.0/2.4; //periodic :(
     float x = ColorXYZ::r;
@@ -177,7 +177,7 @@ ColorRGB ColorXYZ::toStandardRGB()const
     return ColorRGB((float)r,(float)g,(float)b);
 }
 
-ColorRGB ColorXYZ::toAdobeRGB()const
+ColorRGB ColorXYZ::to_AdobeRGB()const
 {
     constexpr const double EXP = 1/2.19921875;
     float x = ColorXYZ::r;
@@ -222,7 +222,7 @@ ColorRGB::ColorRGB(unsigned char r, unsigned char g, unsigned char b)
     ColorRGB::b = b*INV;
 }
 
-ColorXYZ ColorRGB::toXYZ()const
+ColorXYZ ColorRGB::to_XYZ()const
 {
     constexpr const float INV = 1.f/12.92f;
     float r;

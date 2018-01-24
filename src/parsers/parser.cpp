@@ -132,7 +132,7 @@ static void parseCamera(char* string, Settings* out)
         if(out->type_camera == PERSPECTIVE) //parse fov
         {
             token = strtok_r(NULL," ",&savestring);
-            out->camera_fov = toRad((float)atof(token));
+            out->camera_fov = radians((float)atof(token));
         }
     }
     else
@@ -221,7 +221,7 @@ static void parseMaterial(char* string)
         if(mat==NULL) //new material
         {
             mat = new Bsdf();
-            MtlLib.add(name,mat);
+            MtlLib.add_inherit(name,mat);
         }
         token = strtok_r(NULL," ",&stringpos); //retrieve material type
         if(strcmp(token,"diffuse")==0)
@@ -310,7 +310,7 @@ static void parseMaterial(char* string)
                         c = (float)atof(val);
                         val = strtok(NULL,"[], ");
                         d = (float)atof(val);
-                        etai = Spectrum(cauchyEq(bb,c,d));
+                        etai = Spectrum(cauchy(bb,c,d));
                     }
                     else
                     {
@@ -327,7 +327,7 @@ static void parseMaterial(char* string)
                         c2 = (float)atof(val);
                         val = strtok(NULL,"{}, ");
                         c3 = (float)atof(val);
-                        etai = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                        etai = Spectrum(sellmeier(b1,b2,b3,c1,c2,c3));
                     }
                     
                     token = strtok_r(NULL," ",&stringpos);
@@ -340,7 +340,7 @@ static void parseMaterial(char* string)
                         c = (float)atof(val);
                         val = strtok(NULL,"[], ");
                         d = (float)atof(val);
-                        etat = Spectrum(cauchyEq(bb,c,d));
+                        etat = Spectrum(cauchy(bb,c,d));
                     }
                     else
                     {
@@ -357,7 +357,7 @@ static void parseMaterial(char* string)
                         c2 = (float)atof(val);
                         val = strtok(NULL,"{}, ");
                         c3 = (float)atof(val);
-                        etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                        etat = Spectrum(sellmeier(b1,b2,b3,c1,c2,c3));
                     }
                     d = new Dielectric(etai,etat);
                 }
@@ -420,7 +420,7 @@ static void parseMaterial(char* string)
                     c = (float)atof(val);
                     val = strtok(NULL,"[], ");
                     d = (float)atof(val);
-                    etai = Spectrum(cauchyEq(bb,c,d));
+                    etai = Spectrum(cauchy(bb,c,d));
                 }
                 else
                 {
@@ -437,7 +437,7 @@ static void parseMaterial(char* string)
                     c2 = (float)atof(val);
                     val = strtok(NULL,"{}, ");
                     c3 = (float)atof(val);
-                    etai = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                    etai = Spectrum(sellmeier(b1,b2,b3,c1,c2,c3));
                 }
                 
                 token = strtok_r(NULL," ",&stringpos);
@@ -450,7 +450,7 @@ static void parseMaterial(char* string)
                     c = (float)atof(val);
                     val = strtok(NULL,"[], ");
                     d = (float)atof(val);
-                    etat = Spectrum(cauchyEq(bb,c,d));
+                    etat = Spectrum(cauchy(bb,c,d));
                 }
                 else
                 {
@@ -467,7 +467,7 @@ static void parseMaterial(char* string)
                     c2 = (float)atof(val);
                     val = strtok(NULL,"{}, ");
                     c3 = (float)atof(val);
-                    etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                    etat = Spectrum(sellmeier(b1,b2,b3,c1,c2,c3));
                 }
                 
                 //parse distribution
@@ -567,7 +567,7 @@ static void parseMaterial(char* string)
                     c = (float)atof(val);
                     val = strtok(NULL,"[], ");
                     d = (float)atof(val);
-                    etai = Spectrum(cauchyEq(bb,c,d));
+                    etai = Spectrum(cauchy(bb,c,d));
                 }
                 else
                 {
@@ -584,7 +584,7 @@ static void parseMaterial(char* string)
                     c2 = (float)atof(val);
                     val = strtok(NULL,"{}, ");
                     c3 = (float)atof(val);
-                    etai = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                    etai = Spectrum(sellmeier(b1,b2,b3,c1,c2,c3));
                 }
 
                 token = strtok_r(NULL," ",&stringpos);
@@ -597,7 +597,7 @@ static void parseMaterial(char* string)
                     c = (float)atof(val);
                     val = strtok(NULL,"[], ");
                     d = (float)atof(val);
-                    etat = Spectrum(cauchyEq(bb,c,d));
+                    etat = Spectrum(cauchy(bb,c,d));
                 }
                 else
                 {
@@ -614,7 +614,7 @@ static void parseMaterial(char* string)
                     c2 = (float)atof(val);
                     val = strtok(NULL,"{}, ");
                     c3 = (float)atof(val);
-                    etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                    etat = Spectrum(sellmeier(b1,b2,b3,c1,c2,c3));
                 }
 
                 addme = new DielectricReflection(Spectrum(reflected,false),
@@ -644,7 +644,7 @@ static void parseMaterial(char* string)
                 c = (float)atof(val);
                 val = strtok(NULL,"[], ");
                 d = (float)atof(val);
-                etai = Spectrum(cauchyEq(bb,c,d));
+                etai = Spectrum(cauchy(bb,c,d));
             }
             else
             {
@@ -661,7 +661,7 @@ static void parseMaterial(char* string)
                 c2 = (float)atof(val);
                 val = strtok(NULL,"{}, ");
                 c3 = (float)atof(val);
-                etai = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                etai = Spectrum(sellmeier(b1,b2,b3,c1,c2,c3));
             }
             
             token = strtok_r(NULL," ",&stringpos); //parse ior transmitted
@@ -674,7 +674,7 @@ static void parseMaterial(char* string)
                 c = (float)atof(val);
                 val = strtok(NULL,"[], ");
                 d = (float)atof(val);
-                etat = Spectrum(cauchyEq(bb,c,d));
+                etat = Spectrum(cauchy(bb,c,d));
             }
             else
             {
@@ -691,14 +691,14 @@ static void parseMaterial(char* string)
                 c2 = (float)atof(val);
                 val = strtok(NULL,"{}, ");
                 c3 = (float)atof(val);
-                etat = Spectrum(sellmeierEq(b1,b2,b3,c1,c2,c3));
+                etat = Spectrum(sellmeier(b1,b2,b3,c1,c2,c3));
             }
 
             addme = new Refraction(Spectrum(refracted,false),etai,etat);
         }
         else
             return;
-        mat->inheritBdf(addme);
+        mat->inherit_bdf(addme);
     }
     else
     {
@@ -731,7 +731,7 @@ static void parseShape(char* string, std::unordered_map<std::string,int>* map,
             mesh->finalize();
         }
         if(res!=NULL)
-            map->insert(std::make_pair(name,out->scene->inheritShape(res)));
+            map->insert(std::make_pair(name,out->scene->inherit_shape(res)));
     }
     else
     {
@@ -756,8 +756,8 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
         {
             char* val;
             float x,y,z;
-            Matrix4* m = new Matrix4();
-            m->setIdentity();
+            Matrix4 m;
+            m.set_identity();
             Matrix4 trans,rotx,roty,rotz,scale;
 
             //parse position
@@ -768,7 +768,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            trans.setTranslation(Vec3(x,y,z));
+            trans.set_translation(Vec3(x,y,z));
 
             token = strtok_r(NULL," ",&pos);//parse rotation
             val = strtok(token,"(), "); //parse x
@@ -777,9 +777,9 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            rotx.setRotateX(toRad(x));
-            roty.setRotateY(toRad(y));
-            rotz.setRotateZ(toRad(z));
+            rotx.set_rotate_x(radians(x));
+            roty.set_rotate_y(radians(y));
+            rotz.set_rotate_z(radians(z));
 
             token = strtok_r(NULL," ",&pos);//parse translation
             val = strtok(token,"(), "); //parse x
@@ -788,13 +788,13 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            scale.setScale(Vec3(x,y,z));
+            scale.set_scale(Vec3(x,y,z));
 
-            *m *= trans;
+            m *= trans;
             rotz *= roty;
             rotz *= rotx;
-            *m *= rotz;
-            *m *= scale;
+            m *= rotz;
+            m *= scale;
 
             //parse spectrum
             Spectrum emissive;
@@ -813,7 +813,7 @@ static void parseLight(char* string, std::unordered_map<std::string,int>* map,
             else //parse temperature, generate blackbody
                 emissive = Spectrum(atoi(token));
 
-            out->scene->addLight((unsigned int)got->second,m,emissive);
+            out->scene->add_light((unsigned int)got->second,m,emissive);
         }
         else
         {
@@ -855,8 +855,8 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
         {
             char* val;
             float x,y,z;
-            Matrix4* m = new Matrix4();
-            m->setIdentity();
+            Matrix4 m;
+            m.set_identity();
             Matrix4 trans,rotx,roty,rotz,scale;
 
             //parse position
@@ -867,7 +867,7 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            trans.setTranslation(Vec3(x,y,z));
+            trans.set_translation(Vec3(x,y,z));
 
             token = strtok_r(NULL," ",&pos);//parse rotation
             val = strtok(token,"(), "); //parse x
@@ -876,9 +876,9 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            rotx.setRotateX(toRad(x));
-            roty.setRotateY(toRad(y));
-            rotz.setRotateZ(toRad(z));
+            rotx.set_rotate_x(radians(x));
+            roty.set_rotate_y(radians(y));
+            rotz.set_rotate_z(radians(z));
 
             token = strtok_r(NULL," ",&pos);//parse translation
             val = strtok(token,"(), "); //parse x
@@ -887,15 +887,15 @@ static void parseWorld(char* string, std::unordered_map<std::string,int>* map,
             y = (float)atof(val);
             val = strtok(NULL,"(), "); //parse z
             z = (float)atof(val);
-            scale.setScale(Vec3(x,y,z));
+            scale.set_scale(Vec3(x,y,z));
 
-            *m *= trans;
+            m *= trans;
             rotz *= roty;
             rotz *= rotx;
-            *m *= rotz;
-            *m *= scale;
+            m *= rotz;
+            m *= scale;
 
-            out->scene->addAsset((unsigned int)got->second,m,mat);
+            out->scene->add_asset((unsigned int)got->second,m,mat);
         }
         else
         {

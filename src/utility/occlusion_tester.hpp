@@ -5,7 +5,7 @@
  *  \file occlusion_tester.hpp
  *  \brief Test if a Ray intersects with the expected Asset
  *  \author Davide Pizzolotto
- *  \version 0.1
+ *  \version 0.2
  *  \date  30 Jul 2017
  *  \copyright GNU GPLv3
  */
@@ -48,7 +48,7 @@ public:
      *  \param[in] expected_dist The expected distance of the light
      *  \return true if the first intersection is closer than the light distance
      */
-    bool isOccluded(const Ray* r, const float* expected_dist);
+    bool is_occluded(const Ray* r, float expected_dist);
 
 private:
 

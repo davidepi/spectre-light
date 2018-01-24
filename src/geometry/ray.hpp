@@ -1,13 +1,13 @@
 //Created,  25 Feb 2016
-//Last Edit 29 Jul 2017
+//Last Edit  9 Dec 2017
 
 /**
  *  \file ray.hpp
  *  \brief Ray class definition
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
- *  \version 0.1
- *  \date 29 Jul 2017
+ *  \version 0.2
+ *  \date 9 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -102,22 +102,38 @@ public:
 };
 
 /**
- *  \brief Structure used for multiple AABB checking
+ *  \brief Class used for multiple AABB checking
  *  
  *  The AABB intersection routine relies in several computations, which are not
  *  really time consuming on their own, but when performed on an enourmus amount
  *  of AABBs can lead to a noticeable performance hit. Since the result of these
  *  computations is needed only for AABB intersection testing and does not
  *  change for a given ray, instead of modifying the Ray class, is stored in
- *  this struct.
+ *  this class.
  */
-struct RayProperties
+class RayProperties
 {
-    ///The inverse of the \a x component of the ray
+public:
+    
+    /** \brief Constructor, given a ray
+     *
+     *  \param[in] v The ray for which this helper class must be created
+     */
+    RayProperties(const Ray& v)
+    {
+        RayProperties::inverseX = 1.f/v.direction.x;
+        RayProperties::inverseY = 1.f/v.direction.y;
+        RayProperties::inverseZ = 1.f/v.direction.z;
+        RayProperties::isXInvNeg = RayProperties::inverseX<0;
+        RayProperties::isYInvNeg = RayProperties::inverseY<0;
+        RayProperties::isZInvNeg = RayProperties::inverseZ<0;
+    }
+    
+    ///The inverse of the \a x component of the ray's direction
     float inverseX;
-    ///The inverse of the \a y component of the ray
+    ///The inverse of the \a y component of the ray's direction
     float inverseY;
-    ///The inverse of the \a z component of the ray
+    ///The inverse of the \a z component of the ray's direction
     float inverseZ;
     ///true if the sign of the inverse of the \a x component is negative
     bool isXInvNeg;

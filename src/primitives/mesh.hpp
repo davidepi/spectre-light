@@ -1,5 +1,5 @@
 //Created,   6 Aug 2017
-//Last Edit 26 Nov 2017
+//Last Edit 15 Dec 2017
 
 /**
  *  \file mesh.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle mesh in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date     26 Nov 2017
+ *  \date      15 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -34,7 +34,7 @@
  *  are grouped together in order to form a single shape.
  *
  *  In order to create a Mesh it is necessary to give the number of triangles
- *  as a parameter to the constructor. Then call the Mesh::addTriangle function
+ *  as a parameter to the constructor. Then call the Mesh::add_triangle function
  *  for every triangle and in the end the Mesh::finalize function
  */
 class Mesh : public Shape
@@ -58,10 +58,10 @@ public:
      *  \param[in] a The first vertex
      *  \param[in] b The second vertex
      *  \param[in] c The third vertex
-     *  \sa addTriangle(const Point3* a, const Point3* b, const Point3* c,
+     *  \sa add_triangle(const Point3* a, const Point3* b, const Point3* c,
      *               const Normal* n);
      */
-    void addTriangle(const Vertex* a, const Vertex* b, const Vertex* c);
+    void add_triangle(const Vertex* a, const Vertex* b, const Vertex* c);
 
     /** \brief Add a triangle to this Mesh
      *
@@ -72,10 +72,10 @@ public:
      *  \param[in] b The second vertex position in the space
      *  \param[in] c The third vertex position in the space
      *  \param[in] n The normal for the three vertices
-     *  \sa addTriangle(const Vertex* a, const Vertex* b, const Vertex* c);
+     *  \sa add_triangle(const Vertex* a, const Vertex* b, const Vertex* c);
      */
-    void addTriangle(const Point3* a, const Point3* b, const Point3* c,
-                     const Normal* n);
+    void add_triangle(const Point3& a, const Point3& b, const Point3& c,
+                     const Normal& n);
 
     /** \brief Finalize the mesh
      *
@@ -111,7 +111,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB computeAABB()const;
+    AABB compute_AABB()const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -124,7 +124,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB computeWorldAABB(const Matrix4* trans)const;
+    AABB compute_AABB(const Matrix4* trans)const;
 
     /** \brief Returns the surface of the mesh
      *
@@ -154,7 +154,7 @@ public:
      *
      *  \return The number of faces in a Mesh
      */
-    int getNumberOfFaces()const;
+    int get_faces_number()const;
     
     /** \brief Populate the array of cumulative densities
      *
@@ -167,7 +167,7 @@ public:
      *  \param[in] transform The object to world space matrix
      *  \param[out] array The array of cumulative densities
      */
-    void getDensitiesArray(const Matrix4* transform, float* array)const;
+    void get_densities_array(const Matrix4* transform, float* array)const;
 
     /** \brief Returns a random point on the surface of the mesh
      *
@@ -185,7 +185,7 @@ public:
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r, float r1, const float* densities, Point3* p,
+    void sample_point(float r, float r1, const float* densities, Point3* p,
                         Normal* n)const;
 
 private:

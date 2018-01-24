@@ -1,13 +1,13 @@
 //Created,   6 May 2017
-//Last Edit 26 Nov 2017
+//Last Edit 14 Dec 2017
 
 /**
  *  \file box.hpp
  *  \brief     Box primitive definition
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      26 Nov 2017
+ *  \version   0.2
+ *  \date      14 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -33,6 +33,8 @@
  *  always centered in (0,0,0) and the back top right point in (1,1,1).
  *  For this reason, a Box will be constructed as an axis aligned box, and then
  *  oriented with the transform matrix.
+ *
+ *  The pivot for the rotation of this box is in (0,0,0)
  */
 class Box : public Shape
 {
@@ -72,7 +74,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB computeAABB()const;
+    AABB compute_AABB()const;
     
     /** \brief Calculate the AABB in world space
      *
@@ -84,7 +86,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB computeWorldAABB(const Matrix4* transform)const;
+    AABB compute_AABB(const Matrix4* transform)const;
     
     /** \brief Return the number of face of the box
      *
@@ -94,7 +96,7 @@ public:
      *
      *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
      */
-    int getNumberOfFaces()const;
+    int get_faces_number()const;
     
     /** \brief Return the surface of the box
      *
@@ -126,7 +128,7 @@ public:
      *  \param[in] transform The object to world space matrix
      *  \param[out] array The array of cumulative densities
      */
-    void getDensitiesArray(const Matrix4* transform,float* array)const;
+    void get_densities_array(const Matrix4* transform,float* array)const;
     
     /** \brief Returns a random point on the surface of the box
      *
@@ -138,11 +140,11 @@ public:
      *  \param[in] r0 A random value in the interval (0.0,1.0)
      *  \param[in] r1 A random value in the interval (0.0,1.0)
      *  \param[in] densities An array of densities calculated with the
-     *  getDensitiesArray method
+     *  get_densities_array method
      *  \param[out] p The computed point in object space
      *  \param[out] n The normal of the computed point
      */
-    void getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+    void sample_point(float r0, float r1, const float* densities, Point3* p,
                         Normal* n)const;
 };
 

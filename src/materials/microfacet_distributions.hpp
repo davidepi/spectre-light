@@ -1,12 +1,12 @@
 //Created,  20 Sep 2017
-//Last Edit 21 Nov 2017
+//Last Edit 19 Jan 2018
 
 /**
  *  \file microfacet_distributions.hpp
  *  \brief Microfacet distributions
  *  \author Davide Pizzolotto
- *  \version 0.1
- *  \date  8 Nov 2017
+ *  \version 0.2
+ *  \date  19 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -55,18 +55,13 @@ public:
     /** \brief The geometric attenuation G
      *
      *  Calculates the value of the geometric attenuation term, accounting the
-     *  fact that some microfacets will not be visible. The geometric term is
-     *  calculated by means of the Cook-Torrance formulation. For some kind of
-     *  distribution the Smith's integral provides better results, for some
-     *  other there is no closed form solution, for this reason this method is
-     *  left here as a base, general implementation
+     *  fact that some microfacets will not be visible.
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wi The incident direction
-     *  \param[in] wh The halfway vector between wi and wo
      *  \return The value of the geometric attenuation term
      */
-    virtual float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
+    virtual float G(const Vec3* wo, const Vec3* wi)const = 0;
     
     /** \brief Find a random half vector
      *
@@ -84,15 +79,14 @@ public:
     
     /** \brief Find the pdf of two pairs of directions
      *
-     *  Given an outgoing direction, an incident direction, and the half vector
-     *  find the probability density function of chosing the incident direction
+     *  Given an outgoing direction, and the half vector finds the probability
+     *  density function of chosing the incident direction
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wh The half vector between wi and wo
-     *  \param[in] wi The incident direction
      *  \return The pdf
      */
-    virtual float pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const;
+    virtual float pdf(const Vec3* wo, const Vec3* wh)const;
 };
 
 /**
@@ -145,10 +139,9 @@ public:
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wi The incident direction
-     *  \param[in] wh The halfway vector between wi and wo
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
+    float G(const Vec3* wo, const Vec3* wi)const;
     
     /** \brief Find a random half vector
      *
@@ -165,15 +158,14 @@ public:
     
     /** \brief Find the pdf of two pairs of directions
      *
-     *  Given an outgoing direction, an incident direction, and the half vector
-     *  find the probability density function of chosing the incident direction
+     *  Given an outgoing direction and the half vector finds the probability
+     *  density function of chosing the incident direction
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wh The half vector between wi and wo
-     *  \param[in] wi The incident direction
      *  \return The pdf
      */
-    float pdf(const Vec3* wo, const Vec3* wh, const Vec3* wi)const;
+    float pdf(const Vec3* wo, const Vec3* wh)const;
     
 private:
     
@@ -226,10 +218,9 @@ public:
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wi The incident direction
-     *  \param[in] wh The halfway vector between wi and wo
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
+    float G(const Vec3* wo, const Vec3* wi)const;
     
     /** \brief Find a random half vector
      *
@@ -296,10 +287,9 @@ public:
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wi The incident direction
-     *  \param[in] wh The halfway vector between wi and wo
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
+    float G(const Vec3* wo, const Vec3* wi)const;
     
     /** \brief Find a random half vector
      *
@@ -360,10 +350,9 @@ public:
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wi The incident direction
-     *  \param[in] wh The halfway vector between wi and wo
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi, const Vec3* wh)const;
+    float G(const Vec3* wo, const Vec3* wi)const;
     
     /** \brief Find a random half vector
      *

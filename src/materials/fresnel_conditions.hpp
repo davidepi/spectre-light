@@ -5,7 +5,7 @@
  *  \file fresnel_conditions.hpp
  *  \brief Implementation of the fresnel equations
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      23 Sep 2017
  *  \copyright GNU GPLv3
  */
@@ -37,7 +37,7 @@ public:
      *  \return The amount of light reflected or transmitted
      */
     virtual Spectrum eval(float cosin)const = 0;
-    
+
     //No need for virtual destructor...
     ///Default destructor
     virtual ~Fresnel() = default;
@@ -79,10 +79,10 @@ public:
 private:
 
     // ior
-    Spectrum refraction_index;
+    const Spectrum refraction_index;
 
     //absorbed spectrum
-    Spectrum absorption;
+    const Spectrum absorption;
 };
 
 
@@ -120,18 +120,18 @@ public:
      *  \return The amount of light reflected, depending on the angle
      */
     Spectrum eval(float cosin)const;
-    
+
     /** \brief Return the incident ior
      *
      *  \return the incident index of refraction
      */
-    float getEtaIncident()const;
-    
+    float get_eta_incident()const;
+
     /** \brief Return the transmitted ior
      *
      *  \return the transmitted index of refraction
      */
-    float getEtaTransmitted()const;
+    float get_eta_transmitted()const;
 
 private:
 
@@ -143,3 +143,4 @@ private:
 };
 
 #endif
+

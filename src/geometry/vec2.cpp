@@ -78,7 +78,7 @@ void Vec2::normalize()
     Vec2::y *= inverse;
 }
 
-bool Vec2::isNormalized() const
+bool Vec2::is_normalized() const
 {
     float len = Vec2::length();
     return len>1-FLT_EPSILON && len<1+FLT_EPSILON;
@@ -165,16 +165,6 @@ void Vec2::min(const Vec2& vector2)
     
     Vec2::x = x;
     Vec2::y = y;
-}
-
-void Vec2::reflect(const Vec2& centre)
-{
-#ifdef DEBUG
-    Console.warning(!centre.isNormalized(), MESSAGE_REFLECT_NONORMALIZED);
-#endif
-    float dot = Vec2::dot(centre);
-    Vec2::x -= ((2 * dot) * centre.x);
-    Vec2::y -= ((2 * dot) * centre.y);
 }
 
 //------ Operators -------------------------------------------------------------

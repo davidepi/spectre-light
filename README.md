@@ -6,6 +6,7 @@
 [![](https://img.shields.io/github/release/davidepi/spectre-light.svg)](https://github.com/davidepi/spectre-light/releases)
 [![Build status](https://travis-ci.org/davidepi/spectre-light.svg?branch=master)](https://travis-ci.org/davidepi/spectre-light)
 [![Build status](https://ci.appveyor.com/api/projects/status/d4bx9kjo42nnpfy5/branch/master?svg=true)](https://ci.appveyor.com/project/darkstar13/spectre-light/branch/master)
+[![codecov](https://codecov.io/gh/davidepi/spectre-light/branch/unit_testing/graph/badge.svg)](https://codecov.io/gh/davidepi/spectre-light)
 [![](https://tokei.rs/b1/github/davidepi/spectre-light)](https://github.com/davidepi/spectre-light)
 
 *spectre-light* is a photorealistic unbiased physically-based renderer. It inherits its base

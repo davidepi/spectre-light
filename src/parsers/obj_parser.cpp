@@ -99,10 +99,11 @@ Mesh* parseObj(const char* path)
                         c.p = vertices.at(atoi(strtok(token,"/"))-1);
                         c.n = normals.at(atoi(strtok(NULL,"/"))-1);
                     }
-                    retval->addTriangle(&a,&b,&c);
+                    retval->add_triangle(&a,&b,&c);
                 }
             }
         }
+        free(buf);
     }
     else
     {

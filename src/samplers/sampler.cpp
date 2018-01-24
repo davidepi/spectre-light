@@ -12,7 +12,7 @@ Sampler::Sampler(int startx, int endx, int starty, int endy, int spp,
     Sampler::spp = spp;
 }
 
-void Sampler::getRandomNumbers(float* container, int size)
+void Sampler::get_random_numbers(float* container, int size)
 {
     for(int i=0;i<size;i++)
         container[i] = rng.getNumber();

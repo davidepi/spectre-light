@@ -6,7 +6,7 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "/Wall /DDEBUG")
     set(CMAKE_CXX_FLAGS_RELEASE "/O2 /GR- /GS- /GL /Gw /Gy /MT /LTCG /w /DNDEBUG")
 else()
-set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} "-O0 -pipe -g -Wall -Wextra -Wpedantic -Werror -Wdouble-promotion -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -pipe -fstack-protector -g -Wall -Wextra -Wpedantic -Werror -DDEBUG")
     set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -pipe -flto -march=native -mtune=native -funroll-loops -fno-stack-protector -DNDEBUG")
 endif()
 
@@ -22,6 +22,12 @@ file(GLOB spectre_core_sources
     src/integrators/*.cpp
     src/parsers/*.cpp
     src/materials/*.cpp)
+file(GLOB spectre_test_sources
+    tests/*.cpp
+    )
+file(GLOB spectre_distributions_sources
+    tests/distributions/*.cpp
+    )
 include_directories(src)
 find_package (Threads REQUIRED)
 
@@ -55,3 +61,40 @@ add_dependencies(spectre spectre-full)
 add_dependencies(spectre spectre-rgb)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
+
+find_package(GTest)
+if(GTEST_FOUND)
+    if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
+    endif(CMAKE_BUILD_TYPE STREQUAL "Coverage")
+    include_directories(${GTEST_INCLUDE_DIRS})
+    add_executable(runTests EXCLUDE_FROM_ALL ${CMAKE_CURRENT_SOURCE_DIR}/tests/allTests.cxx ${spectre_core_sources} ${spectre_test_sources})
+    target_link_libraries(runTests ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+    set_target_properties(runTests PROPERTIES COMPILE_FLAGS " -DTESTS -DDEBUG")
+endif(GTEST_FOUND)
+find_package(Gnuplot)
+if(GNUPLOT_FOUND)
+    add_executable(distributions_data EXCLUDE_FROM_ALL ${spectre_distributions_sources} ${spectre_core_sources} ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/distributions_main.cpp)
+    target_compile_definitions(distributions_data PRIVATE SUPPRESS_MOTD=1)
+    add_custom_command(OUTPUT filters_distributions.pdf primitives_distributions.pdf samplers_distributions.pdf materials_distributions.pdf microfacets_distributions.pdf
+        DEPENDS distributions_data
+        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/data
+        COMMAND distributions_data ${CMAKE_CURRENT_BINARY_DIR}/data
+        COMMENT "Plotting filters distributions"
+        COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/filters_gnuplot.txt
+        COMMENT "Plotting primitives distributions"
+        COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/primitives_gnuplot.txt
+        COMMENT "Plotting samplers distributions"
+        COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/samplers_gnuplot.txt
+        COMMENT "Plotting materials distributions"
+        COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/materials_gnuplot.txt
+        COMMENT "Plotting microfacets distributions"
+        COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/microfacets_gnuplot.txt
+        VERBATIM)
+add_custom_target(distributions 
+    DEPENDS filters_distributions.pdf
+    DEPENDS primitives_distributions.pdf
+    DEPENDS samplers_distributions.pdf
+    DEPENDS materials_distributions.pdf
+    DEPENDS microfacets_distributions.pdf)
+endif(GNUPLOT_FOUND)

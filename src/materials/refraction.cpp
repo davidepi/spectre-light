@@ -22,13 +22,13 @@ Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
 #endif
 }
 
-Spectrum Refraction::value(const Vec3*, const Vec3*) const
+Spectrum Refraction::value(const Vec3*, const Vec3*)const
 {
     return SPECTRUM_BLACK;
 }
 
 Spectrum Refraction::sample_value(const Vec3 *wo, Vec3 *wi, float, float,
-                                  float* pdf) const
+                                  float* pdf)const
 {
     float ei;
     float et;
@@ -57,7 +57,10 @@ Spectrum Refraction::sample_value(const Vec3 *wo, Vec3 *wi, float, float,
     float sintransmitted2 = eta*eta*sinincident2;
     //total internal reflection
     if(sintransmitted2>=1)
+    {
+        *pdf = 0.f;
         return SPECTRUM_BLACK;
+    }
 
     //transmitted angle
     float costhetat = sqrtf(1.f-sintransmitted2);
@@ -81,7 +84,7 @@ Spectrum Refraction::sample_value(const Vec3 *wo, Vec3 *wi, float, float,
 
     eval *= (ei*ei)/(et*et); //these should be calculated directly on spectrum
     eval/=fabsf(wi->z); //but they are wavelength independent so I put them here
-    
+
     //return BTDF
     Spectrum retval(eval);
     retval *= specular;
@@ -93,7 +96,7 @@ float Refraction::pdf(const Vec3*, const Vec3*)const
     return 0.f;
 }
 
-Spectrum cauchyEq(float B, float C, float D)
+Spectrum cauchy(float B, float C, float D)
 {
 #ifdef SPECTRAL
     Spectrum retval;
@@ -121,7 +124,7 @@ Spectrum cauchyEq(float B, float C, float D)
 
 }
 
-Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3)
+Spectrum sellmeier(float B1,float B2,float B3,float C1,float C2,float C3)
 {
 #ifdef SPECTRAL
     Spectrum retval;
@@ -132,16 +135,14 @@ Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3)
     float p1,p2,p3;
     for(int i=0;i<SPECTRUM_SAMPLES;i++)
     {
-        p1 = (B1*current_wavelength*current_wavelength) /
-             (current_wavelength*current_wavelength-C1);
-        p2 = (B2*current_wavelength*current_wavelength) /
-             (current_wavelength*current_wavelength-C2);
-        p3 = (B3*current_wavelength*current_wavelength) /
-             (current_wavelength*current_wavelength-C3);
+        float wavelength_squared = current_wavelength*current_wavelength;
+        p1 = (B1*wavelength_squared) / (wavelength_squared-C1);
+        p2 = (B2*wavelength_squared) / (wavelength_squared-C2);
+        p3 = (B3*wavelength_squared) / (wavelength_squared-C3);
 #ifdef SPECTRAL
-        retval.w[i] = 1 + p1 + p2 + p3;
+        retval.w[i] = sqrtf(1 + p1 + p2 + p3);
 #else
-        ior+= 1 + p1 + p2 + p3;
+        ior += sqrtf(1 + p1 + p2 + p3);
 #endif
         current_wavelength += SPECTRUM_INTERVAL*1E-3f;
     }
@@ -151,3 +152,4 @@ Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3)
     return Spectrum(ior*INV_SPECTRUM_SAMPLES);
 #endif
 }
+

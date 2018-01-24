@@ -5,7 +5,7 @@
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      27 Nov 2017
  *  \copyright GNU GPLv3
  */
@@ -27,7 +27,7 @@
  *  \param[in] height The height of the image
  *  \param[in] data An array of RGB values containing the pixel values
  */
-bool savePPM(const char* name, int width, int height, const uint8_t* data);
+bool save_ppm(const char* name, int width, int height, const uint8_t* data);
 
 /** \brief Save an image in the BMP format
  *
@@ -39,6 +39,6 @@ bool savePPM(const char* name, int width, int height, const uint8_t* data);
  *  \param[in] height The height of the image
  *  \param[in] data An array of RGB values containing the pixel values
  */
-bool saveBMP(const char* name, int width, int height, const uint8_t* data);
+bool save_bmp(const char* name, int width, int height, const uint8_t* data);
 
 #endif

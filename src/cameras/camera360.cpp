@@ -11,7 +11,7 @@ Camera360::Camera360(const Point3* pos,const Point3* target,
     Camera360::invY = 1.f/height;
 }
 
-void Camera360::createRay(Sample* sample, Ray* ray)const
+void Camera360::create_ray(Sample* sample, Ray* ray)const
 {
     float theta = (float)ONE_PI * sample->posy * Camera360::invY;
     float phi = TWO_PI * sample->posx * Camera360::invX;

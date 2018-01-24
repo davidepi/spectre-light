@@ -6,7 +6,7 @@
 Reflection::Reflection(const Spectrum& specular)
     : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
 {
-    
+
 }
 
 Spectrum Reflection::value(const Vec3*, const Vec3*) const
@@ -22,9 +22,9 @@ float Reflection::pdf(const Vec3*, const Vec3*)const
 ConductorReflection::ConductorReflection(const Spectrum& specular,
                                          const Spectrum& refraction,
                                          const Spectrum& absorption)
-: Reflection(specular),ior(refraction)
+: Reflection(specular),ior(refraction),
+  fresnel((ior*ior)+(absorption*absorption))
 {
-    fresnel = (ior*ior)+(absorption*absorption);
 }
 
 DielectricReflection::DielectricReflection(const Spectrum& specular,
@@ -109,3 +109,4 @@ Spectrum DielectricReflection::sample_value(const Vec3 *wo, Vec3 *wi,
     }
     return specular*eval;
 }
+

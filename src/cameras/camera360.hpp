@@ -6,7 +6,7 @@
  *  \brief     A 360 camera
  *  \details   Create a camera for generating 360 panorama images
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      19 Aug 2017
  *  \copyright GNU GPLv3
  */
@@ -55,7 +55,7 @@ public:
      *  \param[in] sample The given sample
      *  \param[out] ray   The output ray
      */
-    void createRay(Sample* sample, Ray* ray)const;
+    void create_ray(Sample* sample, Ray* ray)const;
 
 private:
 

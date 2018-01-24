@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 25 Nov 2017
+//Last Edit 12 Dec 2017
 
 /**
  *  \file matrix4.hpp
@@ -7,8 +7,8 @@
  *  \details   Definition and implementation of a 4 by 4 matrix and some inline
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      25 Nov 2017
+ *  \version   0.2
+ *  \date      12 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -122,16 +122,16 @@ public:
     /** \brief Set this matrix to a zero-matrix
      *
      *  Fill this matrix with 0 values
-     *  \sa setIdentity()
+     *  \sa set_identity()
      */
-    void setZero();
+    void set_zero();
     
     /** \brief Set this matrix to the identity matrix
      *
      *  Set this matrix to the identity matrix (unit matrix), filled with
      *  1 values in the diagonal and 0 values everywhere else
      */
-    void setIdentity();
+    void set_identity();
     
     /** \brief Set this matrix to a translation matrix
      *
@@ -142,7 +142,7 @@ public:
      *  \param[in] direction The vector representing the direction of the
      *             translation
      */
-    void setTranslation(Vec3 direction);
+    void set_translation(Vec3 direction);
     
     /** \brief Set this matrix to a scale matrix
      *
@@ -152,7 +152,7 @@ public:
      *  \param[in] value The float representing the magnitude of the
      *             scaling
      */
-    void setScale(float value);
+    void set_scale(float value);
     
     /** \brief Set this matrix to a scale matrix
      *
@@ -163,7 +163,7 @@ public:
      *  \param[in] value The vector representing the magnitude of the
      *             scaling for each component
      */
-    void setScale(Vec3 value);
+    void set_scale(Vec3 value);
     
     /** \brief Set this matrix to a rotation matrix
      *
@@ -173,10 +173,10 @@ public:
      *
      *  \param[in] value The angle of rotation in radians
      *
-     *  \sa setRotateY(float value)
-     *  \sa setRotateZ(float value)
+     *  \sa set_rotate_y(float value)
+     *  \sa set_rotate_z(float value)
      */
-    void setRotateX(float value);
+    void set_rotate_x(float value);
     
     /** \brief set this matrix to a rotation matrix
      *
@@ -186,10 +186,10 @@ public:
      *
      *  \param[in] value The angle of rotation in radians
      *
-     *  \sa setRotateX(float value)
-     *  \sa setRotateZ(float value)
+     *  \sa set_rotate_x(float value)
+     *  \sa set_rotate_z(float value)
      */
-    void setRotateY(float value);
+    void set_rotate_y(float value);
     
     /** \brief set this matrix to a rotation matrix
      *
@@ -199,25 +199,29 @@ public:
      *
      *  \param[in] value The angle of rotation in radians
      *
-     *  \sa setRotateX(float value)
-     *  \sa setRotateY(float value)
+     *  \sa set_rotate_x(float value)
+     *  \sa set_rotate_y(float value)
      */
-    void setRotateZ(float value);
+    void set_rotate_z(float value);
     
     /** \brief Set this matrix to an inverted LookAt matrix
      *
-     *  Set this matrix to a transformation LookAt matrix in a LeftHanded
-     *  system. This matrix is used to align the world with the camera (can be
-     *  seen as a result of placing the camera inside a scene).
+     *  Set this matrix to an inverse transformation LookAt matrix in a
+     *  left handed system. This matrix is used to align the world with the
+     *  camera (can be seen as a result of placing the camera inside a scene).
      *  This is done by transforming the camera space coordinates to world
-     *  space
+     *  space (camera to world transformation)
+     *
+     *  /note Recall that in the left handed system the front direction is Z,
+     *  and the up direction is Y instead of the usual Z-up Y-front
      *
      *  \param[in] pos The position of the camera
      *  \param[in] target The point the camera is looking at
      *  \param[in] up A vector representing the direction poiting upside the
      *  camera. With the camera parallel to the terrain, this will be (0,1,0)
      */
-    void setInvLookAtLH(const Point3& pos,const Point3& target,const Vec3& up);
+    void set_lookAt_inverse(const Point3& pos,const Point3& target,
+                            const Vec3& up);
     
     /**  \brief Returns a new matrix that is the transpose of the current matrix
      *
@@ -246,7 +250,7 @@ public:
      *
      *  \return A Vec3 representing the translation component of the matrix
      */
-    Vec3 getTranslation()const;
+    Vec3 get_translation()const;
     
     /** \brief Extract the scale component from the matrix
      *
@@ -255,7 +259,7 @@ public:
      *
      *  \return A Vec3 representing the scale component of the matrix
      */
-    Vec3 getScale()const;
+    Vec3 get_scale()const;
     
     
     //------ Operators ---------------------------------------------------------
@@ -266,16 +270,12 @@ public:
     Matrix4 operator-(const Matrix4&)const;
     ///The multiplication operation between two matrices
     Matrix4 operator*(const Matrix4&)const;
-    ///The division operation between two matrices
-    Matrix4 operator/(const Matrix4&)const;
     ///The addition operation between two matrices
     void operator+=(const Matrix4&);
     ///The subtraction operation between two matrices
     void operator-=(const Matrix4&);
     ///The multiplication operation between two matrices
     void operator*=(const Matrix4&);
-    ///The division operation between two matrices
-    void operator/=(const Matrix4&);
     ///Checks if two matrices are equal
     bool operator==(const Matrix4&)const;
     ///Checks if two matrices are different
@@ -304,7 +304,7 @@ public:
  *  \param[in] inverse The inverse of the transformation matrix used
  *  \return The transformed normal
 */
-Normal transformNormal(const Normal& n, const Matrix4* inverse);
+Normal transform_normal(const Normal& n, const Matrix4* inverse);
 
 /**  /brief Sum two matrices together
  *
@@ -329,111 +329,5 @@ void sub(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
  *  \param[out] output The resulting matrix
  */
 void mul(const Matrix4* input1, const Matrix4* input2, Matrix4* output);
-
-
-//XXXXXXXXXXXXXXXXXXXXXXXXXXX OLD AND UNTESTED XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-
-/** \brief Creates a View Space transform matrix with a Left Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] target A Vec3 containing the target point of the camera view
- *  \param[in] position A Vec3 containing the position of the camera
- *  \param[in] up A Vec3 containing the up vector for the camera,
- *                usually v(0,1,0)
- *  \param[out] output The resulting Matrix4
- */
-DEPRECATED
-void viewLeftHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
-
-/** \brief Creates a View Space transform matrix with a Right Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] target A Vec3 containing the target point of the camera view
- *  \param[in] position A Vec3 containing the position of the camera
- *  \param[in] up A Vec3 containing the up vector for the camera, usually
- *                v(0,1,0)
- *  \param[out] output The resulting Matrix4
- */
-DEPRECATED
-void viewRightHand(Vec3* target, Vec3* position, Vec3* up, Matrix4* output);
-
-/** \brief Creates a Perspective transform matrix with a Left Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] fov A float representing the field of view of the camera
- *  \param[in] aspectRatio A float representing the aspect ratio of the screen
- *  \param[in] nearPlane A float representing the z value of the near plane
- *  \param[in] farPlane A float representing the z value of the far plane
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void PerspectiveLeftHand(float fov, float aspectRatio, float nearPlane,
-                         float farPlane, Matrix4* output);
-
-/** \brief Creates a Perspective transform matrix with a Right Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] fovX A float representing the x-axis field of view of the camera
- *  \param[in] fovY A float representing the y-axis field of view of the camera
- *  \param[in] nearPlane A float representing the z value of the near plane
- *  \param[in] farPlane A float representing the z value of the far plane
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void PerspectiveRightHand(float fovX, float fovY, float nearPlane,
-                          float farPlane, Matrix4* output);
-
-/** \brief Creates an Orthographic transform matrix with a Right Hand coordinate
- *         system
- *
- *  \deprecated Unmantained
- *  \param[in] width A float representing the height of the screen
- *  \param[in] height A float representing the width of the screen
- *  \param[in] nearPlane A float representing the z value of the near plane
- *  \param[in] farPlane A float representing the z value of the far plane
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void OrthographicRightHand(float width, float height, float nearPlane,
-                           float farPlane, Matrix4* output);
-
-/** \brief Creates a Translation matrix
- *
- *  \deprecated Unmantained
- *  \param[in] source A Vec3 containing the translation value of the object
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void Translation(Vec3* source, Matrix4* output);
-
-/** \brief Creates a Rotation matrix
- *
- *  \deprecated Unmantained
- *  \param[in] yaw A float containing the yaw value of the rotation
- *                  (Z-rotation)
- *  \param[in] pitch A float containing the pitch value of the rotation
- *                  (Y-rotation)
- *  \param[in] roll A float containing the roll value of the rotation
- *                  (X-rotation)
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void YawPitchRollRotation(float yaw, float pitch, float roll, Matrix4* output);
-
-/** \brief Creates a Scaling matrix
- *
- *  \deprecated Unmantained
- *  \param[in] source A Vec3 containing the scaling value of the object
- *  \param[out] output The resulting matrix
- */
-DEPRECATED
-void Scale(Vec3* source, Matrix4* output);
-
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 #endif

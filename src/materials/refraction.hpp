@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 15 Sep 2017
+//Last Edit 16 Jan 2018
 
 /**
  *  \file refraction.hpp
  *  \brief Implementation of a BTDF
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      15 Sep 2017
+ *  \version   0.2
+ *  \date      16 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -84,7 +84,7 @@ public:
 private:
 
     //scale factor
-    Spectrum specular;
+    const Spectrum specular;
 
     float eta_i;
     float eta_t;
@@ -93,7 +93,7 @@ private:
 /** \brief Calculates the ior by using the Cauchy equation
  *
  *  This method uses the Cauchy equation to calculate a wavelenght-dependent
- *  index of refraction. The wavelenght is measured in micrometers, so the 
+ *  index of refraction. The wavelenght is measured in micrometers, so the
  *  parameters must comply with this.
  *
  *  \param[in] B The B paramter of the Cauchy Equation
@@ -101,7 +101,7 @@ private:
  *  \param[in] D The D paramter of the Cauchy Equation
  *  \return The wavelenght dependent ior
  */
-Spectrum cauchyEq(float B, float C, float D = 0);
+Spectrum cauchy(float B, float C, float D = 0);
 
 /** \brief Calculates the ior by using the Sellmeier equation
  *
@@ -117,6 +117,7 @@ Spectrum cauchyEq(float B, float C, float D = 0);
  *  \param[in] C3 The C3 paramter of the Sellmeier equation
  *  \return The wavelenght dependent ior
  */
-Spectrum sellmeierEq(float B1,float B2,float B3,float C1,float C2,float C3);
+Spectrum sellmeier(float B1,float B2,float B3,float C1,float C2,float C3);
 
 #endif
+

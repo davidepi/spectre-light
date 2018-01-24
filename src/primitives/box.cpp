@@ -3,14 +3,14 @@
 
 #include "box.hpp"
 
-AABB Box::computeAABB()const
+AABB Box::compute_AABB()const
 {
     const Point3 min(0,0,0);
     const Point3 max(1,1,1);
     return AABB(&min,&max);
 }
 
-AABB Box::computeWorldAABB(const Matrix4* transform)const
+AABB Box::compute_AABB(const Matrix4* transform)const
 {
 #ifdef DEBUG
     if(transform==NULL)
@@ -36,7 +36,7 @@ AABB Box::computeWorldAABB(const Matrix4* transform)const
     return AABB(pmi,pma);
 }
 
-int Box::getNumberOfFaces()const
+int Box::get_faces_number()const
 {
     return 6;
 }
@@ -48,13 +48,14 @@ float Box::surface()const
 
 float Box::surface(const Matrix4* transform)const
 {
-    Vec3 scale = transform->getScale();
+    Vec3 scale = transform->get_scale();
     float la = 2*(scale.x+scale.z)*scale.y;
     return la+2*scale.x*scale.z;
 }
 
 bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 {
+    bool inside = false;
     float mint;
     float maxt;
     char axis = 0; //used for normal identification
@@ -67,8 +68,6 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
         swap(&near,&far);
     mint = near;
     maxt = far;
-    if(mint>maxt)
-        return false;
     
     //y plane
     invr = 1.0f/r->direction.y;
@@ -103,27 +102,31 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     if(mint>SELF_INTERSECT_ERROR)
         tmpdistance = mint;
     else if(maxt>SELF_INTERSECT_ERROR)
+    {
+        inside = true;
         tmpdistance = maxt;
+    }
     else
         return false;
     if(tmpdistance>*distance)
         return false;
     else
         *distance = tmpdistance;
-    h->h = r->apply(*distance);
-    h->n = Normal();
-    h->n[axis] = 1;
-    h->n[axis]*=sign(h->h[axis]);
-    if(h->n.z!=0)
-        h->right = Vec3(h->n.z,0,0);
+    h->point_h = r->apply(*distance);
+    h->normal_h = Normal();
+    h->normal_h[axis] = -sign(r->direction[axis]);
+    if(inside)
+        h->normal_h[axis]*=-1;
+    if(h->normal_h.z!=0)
+        h->right = Vec3(h->normal_h.z,0,0);
     else
-        h->right = Vec3(-h->n.y,h->n.x,0);
+        h->right = Vec3(-h->normal_h.y,h->normal_h.x,0);
     return true;
 }
 
-void Box::getDensitiesArray(const Matrix4* transform, float* array)const
+void Box::get_densities_array(const Matrix4* transform, float* array)const
 {
-    Vec3 scale = transform->getScale();
+    Vec3 scale = transform->get_scale();
     array[0] = scale.x*scale.y;
     array[1] = array[0]*2;
     array[2] = array[1]+(scale.x*scale.z);
@@ -132,14 +135,14 @@ void Box::getDensitiesArray(const Matrix4* transform, float* array)const
     array[5] = array[4]+(scale.z*scale.y);
 }
 
-void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
                             Normal* n)const
 {
     //works like the Mesh::getRandomPoint
     //
     // useless drawing referring to the old implementation, but I like it :)
     //
-    //  front back   top  botm  left  right
+    //   top  botm  front back  left  right
     // |-----|-----|-----|-----|-----|-----|
     // |  y  |  y  |  z  |  z  |  y  |  y  |
     // |-----|-----|-----|-----|-----|-----|
@@ -158,42 +161,42 @@ void Box::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     float res = lerp(r0,0,densities[5]);
     if(res<densities[0])
     {
-        //front
+        //top
         p->x = inverse_lerp(res,0,densities[0]);
-        p->y = r1;
-        p->z = 0;
-        n->x = 0;
-        n->y = 0;
-        n->z = -1;
-    }
-    else if(res<densities[1])
-    {
-        //back
-        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
         p->y = r1;
         p->z = 1;
         n->x = 0;
         n->y = 0;
         n->z = 1;
     }
-    else if(res<densities[2])
-    {
-        //top
-        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
-        p->y = 1;
-        p->z = r1;
-        n->x = 0;
-        n->y = 1;
-        n->z = 0;
-    }
-    else if(res<densities[3])
+    else if(res<densities[1])
     {
         //bottom
-        p->x = inverse_lerp(res-densities[2],0,densities[3]-densities[2]);
+        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
+        p->y = r1;
+        p->z = 0;
+        n->x = 0;
+        n->y = 0;
+        n->z = -1;
+    }
+    else if(res<densities[2])
+    {
+        //front
+        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
         p->y = 0;
         p->z = r1;
         n->x = 0;
         n->y = -1;
+        n->z = 0;
+    }
+    else if(res<densities[3])
+    {
+        //back
+        p->x = inverse_lerp(res-densities[2],0,densities[3]-densities[2]);
+        p->y = 1;
+        p->z = r1;
+        n->x = 0;
+        n->y = 1;
         n->z = 0;
     }
     else if(res<densities[4])

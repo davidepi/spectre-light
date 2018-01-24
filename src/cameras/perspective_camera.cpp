@@ -55,12 +55,12 @@ PerspectiveCamera::PerspectiveCamera(const Point3* pos, const Point3* target,
     values[15] = 1.f;
     
     Matrix4 raster2screen(values);
-    raster2camera.setIdentity();
+    raster2camera.set_identity();
     raster2camera*= screen2camera;
     raster2camera *= raster2screen;
 }
 
-void PerspectiveCamera::createRay(Sample* sample, Ray* ray)const
+void PerspectiveCamera::create_ray(Sample* sample, Ray* ray)const
 {
     ray->origin = camera2world * Point3(0,0,0);
     Point3 dir = raster2camera * Point3(sample->posx,sample->posy,0);

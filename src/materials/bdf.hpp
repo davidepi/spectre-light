@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  11 Sep 2017
+//Last Edit  21 Jan 2018
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      11 Sep 2017
+ *  \date      21 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -94,19 +94,24 @@ public:
      *
      *  \return The flags representing the type of Bdf
      */
-    BdfFlags getFlags()const;
+    BdfFlags get_flags()const;
 
     /** \brief Check if the Bdf is of the given type
      *
      *  Provided a type of Bdf as argument, this function returns true if the
-     *  Bdf is of the given type
+     *  Bdf is of the given type. It is not necessary that the Bdf
+     *  satisfies all the flags passe in input, but the input flags
+     *  must be a superset of the Bdf in order to return true
      *
      * \param[in] f The type of the Bdf
-     * \return true if the Bdf is of the given type
+     * \return true if the Bdf is a subset of the input type
      */
-    inline bool isType(BdfFlags f)
+    inline bool is_type(BdfFlags f)
     {
-        return (type & f) == type; //without `== type` would match subflags
+        //without `== type` would match subflags
+        //for example type=BRDF|SPECULAR f=SPECULAR would be true
+        //the wanted behaviour is the opposite.
+        return (type & f) == type;
     }
 
 private:
@@ -143,7 +148,7 @@ public:
      *
      *  \param[in] addme The Bdf that will be added
      */
-    void inheritBdf(Bdf* addme);
+    void inherit_bdf(Bdf* addme);
 
     /** \brief Return the value of the BSDF
      *
@@ -151,6 +156,10 @@ public:
      *  reflected or transmitted. This function returns the ratio of reflected
      *  radiance to the incident irradiance on the surface. This value is
      *  determined by the BRDFs and BTDFs encompassed in the BSDF
+     *
+     *  \warning Since this method inherits the pointer and take care of its
+     *  deallocations, inheriting the same pointer twice will cause a double
+     *  free at destruction time
      *
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
@@ -207,3 +216,4 @@ private:
 };
 
 #endif
+

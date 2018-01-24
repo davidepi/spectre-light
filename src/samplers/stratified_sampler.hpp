@@ -6,7 +6,7 @@
  *  \brief     Stratified sampling implementation
  *  \details   Divide the region in equal subregions and sample each one
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      31 May 2017
  *  \copyright GNU GPLv3
  */
@@ -60,7 +60,7 @@ public:
      *  \param[in,out] res The resulting array of samples
      *  \return false if the whole area has been sampled, true otherwise
      */
-    bool getSamples(Sample* res);
+    bool get_samples(Sample* res);
 
 private:
 
@@ -76,7 +76,7 @@ private:
     //number of y subregion per pixel
     int strata_y;
 
-    //true if the sample is no centered in the subregion
+    //true if the sample is not centered in the subregion
     bool isRandomized;
 };
 

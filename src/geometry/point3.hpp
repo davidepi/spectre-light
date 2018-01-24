@@ -1,5 +1,5 @@
 //Created,  24 Feb 2016
-//Last Edit 15 May 2017
+//Last Edit  7 Dec 2017
 
 /**
  *  \file point3.hpp
@@ -8,8 +8,8 @@
  *  \details   Definition and implementation of a point in a three dimensional
  *             and its interaction with the Vec3 class
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      18 April 2017
+ *  \version   0.2
+ *  \date      7 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -138,6 +138,8 @@ public:
     bool operator!=  (const Point3&)const;
     ///Access a component of the point
     float operator[] (int)const;
+    ///Access a component of the point, non-const version
+    float& operator[](int);
     
     /* Useless operations.
      i.e.: Cannot offset a point by a point

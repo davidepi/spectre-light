@@ -17,26 +17,26 @@ Mesh::~Mesh()
    delete[] Mesh::tris;
 }
 
-void Mesh::addTriangle(const Point3 *a, const Point3 *b, const Point3 *c,
-                       const Normal *n)
+void Mesh::add_triangle(const Point3& a, const Point3& b, const Point3& c,
+                       const Normal& n)
 {
     Vertex v0;
     Vertex v1;
     Vertex v2;
-    v0.p = *a;
-    v0.n = *n;
-    v1.p = *b;
-    v1.n = *n;
-    v2.p = *c;
-    v2.n = *n;
-    Mesh::addTriangle(&v0,&v1,&v2);
+    v0.p = a;
+    v0.n = n;
+    v1.p = b;
+    v1.n = n;
+    v2.p = c;
+    v2.n = n;
+    Mesh::add_triangle(&v0,&v1,&v2);
 }
 
-void Mesh::addTriangle(const Vertex *a, const Vertex *b, const Vertex *c)
+void Mesh::add_triangle(const Vertex* a, const Vertex* b, const Vertex* c)
 {
     if(Mesh::count==_MAX_TRIS_) //max tris per primitive
     {
-        Console.warning(MESSAGE_MAXTRISNUMBER);
+        Console.severe(MESSAGE_MAXTRISNUMBER);
     }
     else
     {
@@ -73,7 +73,7 @@ void Mesh::finalize()
     //precompute the surface of the mesh and the aabb
     for(unsigned int i=0;i<count;i++)
     {
-        AABB tmp = Mesh::tris[i].computeAABB();
+        AABB tmp = Mesh::tris[i].compute_AABB();
         aabb.engulf(&tmp);
     }
 
@@ -85,12 +85,12 @@ bool Mesh::intersect(const Ray* r,float* distance, HitPoint* h)const
     return bvh.intersect(r,distance,h);
 }
 
-AABB Mesh::computeAABB()const
+AABB Mesh::compute_AABB()const
 {
     return Mesh::aabb;
 }
 
-AABB Mesh::computeWorldAABB(const Matrix4 *trans) const
+AABB Mesh::compute_AABB(const Matrix4 *trans) const
 {
 #ifdef DEBUG
     if(trans==NULL)
@@ -149,12 +149,12 @@ float Mesh::surface(const Matrix4 *transform)const
     return totalArea;
 }
 
-int Mesh::getNumberOfFaces()const
+int Mesh::get_faces_number()const
 {
     return Mesh::count;
 }
 
-void Mesh::getDensitiesArray(const Matrix4* transform,float* array)const
+void Mesh::get_densities_array(const Matrix4* transform,float* array)const
 {
     float sum = 0;
     for(unsigned int i=0;i<count;i++)
@@ -164,7 +164,7 @@ void Mesh::getDensitiesArray(const Matrix4* transform,float* array)const
     }
 }
 
-void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
+void Mesh::sample_point(float r0, float r1, const float* densities, Point3* p,
                           Normal* n)const
 {
     //flatten the random value between 0.0 and the total area
@@ -182,7 +182,7 @@ void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     if(extSample < densities[0])
     {
         sample01 = inverse_lerp(extSample,0,densities[0]);
-        tris[0].getRandomPoint(sample01, r1, NULL, p, n);
+        tris[0].sample_point(sample01, r1, NULL, p, n);
         return;
     }
     //last triangle of the array
@@ -190,7 +190,7 @@ void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     {
         sample01 = inverse_lerp(extSample-densities[end-1],0,
                                 densities[end]-densities[end-1]);
-        tris[end].getRandomPoint(sample01, r1, NULL, p, n);
+        tris[end].sample_point(sample01, r1, NULL, p, n);
         return;
     }
     
@@ -208,6 +208,7 @@ void Mesh::getRandomPoint(float r0, float r1, const float* densities, Point3* p,
     }
 
     //sample the triangle
-    sample01 = inverse_lerp(extSample, 0, densities[mid+1]-densities[mid]);
-    tris[mid].getRandomPoint(sample01, r1, NULL, p, n);
+    sample01 = inverse_lerp(extSample-densities[mid], 0,
+                            densities[mid+1]-densities[mid]);
+    tris[mid].sample_point(sample01, r1, NULL, p, n);
 }

@@ -1,13 +1,13 @@
 //Created,  25 Feb 2016
-//Last Edit 13 Aug 2017
+//Last Edit  8 Dec 2017
 
 /**
  *  \file aabb.hpp
  *  \brief     AABB class definition and its inline functions
  *  \details   An Axis Aligned Bounding Box, used to enclose some points
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      13 Aug 2017
+ *  \version   0.2
+ *  \date      8 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -130,13 +130,6 @@ public:
      */
     void engulf(const AABB& aabb);
     
-    /** \brief Check if two bounding boxes overlap
-     *
-     *  \param[in] aabb The bounding box used to perform the check
-     *  \return True if the two bounding boxes overlap, false otherwise
-     */
-    bool overlaps(const AABB* aabb)const;
-    
     /** \brief Check if a point is inside the bounding box
      *
      *  \param[in] p A pointer to the point that will be checked
@@ -170,7 +163,10 @@ public:
 
     /** \brief Calculate the centroid of this AABB
      *
-     *  Determine the centroid of this AABB
+     *  Determine the centroid of this AABB.
+     *
+     *  \warning If an AABB extends from -&infin; to &infin; will generate a
+     *  NaN as center for that component
      *
      *  \return The centroid of the AABB
      */
@@ -182,25 +178,39 @@ public:
      *  AABB, returning true or false if the intersection happened. If this is
      *  true, the variables \p p1 and \p p2 are set based on the result.
      *
-     *  \note Ray#minext and Ray#maxext are not considered in the AABB 
-     *  intersection
+     *  \note If the ray intersects the box but the origin is greater than the
+     *  maximum plane of the box the values p1 and p2 will be negative.
+     *  In this case the result will be true but the intersection is not in the
+     *  bounds of the ray
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
-     *  \param[out] p1 The distance of the first point of intersection
-     *  \param[out] p2 The distance of the second point of intersection
+     *  \param[out] p1 The distance of the first point of intersection. Negative
+     *  if the origin is inside the box
+     *  \param[out] p2 The distance of the second point of intersection.
+     *  Negative if the origin is greater than the AABB, but the direction would
+     *  intersect it
+     *  \return true if the ray intersects the AABB, even if the origin is
+     *   greater than the box
      */
     bool intersect(const Ray* r, float* p1, float* p2)const;
     
     /** \brief Faster Intersection of a Ray and this AABB
      *
-     *  This function has the same purposeqwe of 
+     *  This function has the same purpose of
      *  AABB::intersect(const Ray* r, float* p1, float* p2)const, however, when
      *  used on a large amount of AABBs, this one is more efficient
+     *
+     *  \note If the ray intersects the box but the origin is greater than the
+     *  maximum plane of the box the values p1 and p2 will be negative.
+     *  In this case the result will be true but the intersection is not in the
+     *  bounds of the ray
      *
      *  \param[in] r A pointer to the ray used to perform the intersection
      *  \param[in] rp A struct containing the inverse of the ray components
      *  \param[out] p1 The distance of the first point of intersection
      *  \param[out] p2 The distance of the second point of intersection
+     *  \return true if the ray intersects the AABB, even if the origin is
+     *   greater than the box
      */
     bool intersect(const Ray* r, const RayProperties* rp, float* p1, float* p2)
     const;
@@ -215,17 +225,17 @@ public:
     AABB operator+(const AABB& aabb)const;
     ///Computes the union of the two AABBs
     void operator+=(const AABB& aabb);
-    ///Determine which AABB has the lowest volume
+    ///Determine which AABB has the lowest surface
     bool operator<(const AABB& a)const;
-    ///Determine which AABB has the greatest volume
+    ///Determine which AABB has the greatest surface
     bool operator>(const AABB& a)const;
-    ///Determine if the AABB has lower or equal volume than the input one
+    ///Determine if the AABB has lower or equal surface than the input one
     bool operator<=(const AABB& b)const;
-    ///Determine if the AABB has higher or equal volume than the input one
+    ///Determine if the AABB has higher or equal surface than the input one
     bool operator>=(const AABB& b)const;
-    ///Determine if the two AABBs have the same volume
+    ///Determine if the two AABBs have the same surface
     bool operator==(const AABB& a)const;
-    ///Determine if the two AABBs have different volumes
+    ///Determine if the two AABBs have different surfaces
     bool operator!=(const AABB& b)const;
 
     //--------------------------------------------------------------------------
