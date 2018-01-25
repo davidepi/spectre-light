@@ -5,19 +5,19 @@
 AABB::AABB() :bounds{Point3(INFINITY, INFINITY, INFINITY),
                      Point3(-INFINITY, -INFINITY, -INFINITY)}
 {
-    
+
 }
 
 AABB::AABB(const Point3& p)
 : bounds{Point3(p.x, p.y, p.z), Point3(p.x, p.y, p.z)}
 {
-    
+
 }
 
 AABB::AABB(const Point3* min, const Point3* max)
 :bounds{Point3(min->x, min->y, min->z), Point3(max->x, max->y, max->z)}
 {
-    
+
 }
 
 AABB::AABB(const Point3& min, const Point3& max)
@@ -119,14 +119,14 @@ bool AABB::intersect(const Ray* r, float* p1, float* p2)const
         minyt = (bounds[1].y - r->origin.y) * invy;
         maxyt = (bounds[0].y - r->origin.y) * invy;
     }
-    
+
     if((minyt > maxxt)||(minxt > maxyt))
         return false;
     if(minyt > minxt)
         minxt = minyt;
     if(maxyt < maxxt)
         maxxt = maxyt;
-    
+
     if(r->direction.z >= 0)
     {
         minzt = (bounds[0].z - r->origin.z) * invz;
@@ -137,7 +137,7 @@ bool AABB::intersect(const Ray* r, float* p1, float* p2)const
         minzt = (bounds[1].z - r->origin.z) * invz;
         maxzt = (bounds[0].z - r->origin.z) * invz;
     }
-    
+
     if((minzt > maxxt)||(minxt > maxzt))
         return false;
     if(minzt > minxt)
@@ -153,22 +153,22 @@ bool AABB::intersect(const Ray* r, const RayProperties* p, float* p1, float* p2)
 const
 {
     float mint,maxt,minyt,maxyt;
-    
+
     mint = (bounds[p->isXInvNeg].x - r->origin.x) * p->inverseX;
     maxt = (bounds[1-p->isXInvNeg].x - r->origin.x) * p->inverseX;
     minyt = (bounds[p->isYInvNeg].y - r->origin.y) * p->inverseY;
     maxyt = (bounds[1-p->isYInvNeg].y - r->origin.y) * p->inverseY;
-    
+
     if(mint > maxyt || minyt > maxt)
         return false;
     if(minyt > mint)
         mint = minyt;
     if(maxyt < maxt)
         maxt = maxyt;
-    
+
     minyt = (bounds[p->isZInvNeg].z - r->origin.z) * p->inverseZ;
     maxyt = (bounds[1-p->isZInvNeg].z - r->origin.z) * p->inverseZ;
-    
+
     if(mint > maxyt || minyt > maxt)
         return false;
     if(minyt > mint)
@@ -194,7 +194,7 @@ AABB AABB::operator+(const AABB& aabb)const
 {
     Point3 minp = min(AABB::bounds[0],aabb.bounds[0]);
     Point3 maxp = max(AABB::bounds[1],aabb.bounds[1]);
-    
+
     return AABB(&minp,&maxp);
 }
 

@@ -37,12 +37,15 @@ public:
      *  camera, used to orientate/tilt it. Moreover this constructor requires
      *  also the width and height of the final image
      *
-     *  \param[in] position The position of the camera in the space
-     *  \param[in] target   The target of the camera in the space
-     *  \param[in] up       A normalized vector that represents the up direction
-     *  of the camera
-     *  \param[in] width    The width of the final image (resolution)
-     *  \param[in] height   The height of the final image (resolution)
+     *  Since a 360 camera does not have a target, the "target" parameter will
+     *  be used to determine the center of the generated image
+     *
+     *  \param[in] position The position of the camera in world space
+     *  \param[in] target The target of the camera in world space
+     *  \param[in] up A normalized vector that represents the up direction of
+     *  the camera
+     *  \param[in] width The width of the final image (resolution)
+     *  \param[in] height The height of the final image (resolution)
      */
     Camera360(const Point3* position, const Point3* target, const Vec3* up,
               int width, int height);
@@ -53,7 +56,7 @@ public:
      *  creates a ray in world space
      *
      *  \param[in] sample The given sample
-     *  \param[out] ray   The output ray
+     *  \param[out] ray The output ray
      */
     void create_ray(Sample* sample, Ray* ray)const;
 
@@ -65,6 +68,5 @@ private:
     //inverse height of the image
     float invY;
 };
-
 
 #endif

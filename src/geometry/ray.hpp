@@ -33,20 +33,20 @@ class Ray
 {
 private:
 public:
-    
+
     /** \brief origin
      *
      *  A \a Point representing the origin of the ray in the space
      */
     Point3 origin;
-    
+
     /** \brief direction
      *
      *  A \a Vec3 representing the direction (orientation) of the ray in the
      *  space
      */
     Vec3  direction;
-    
+
     /** \brief Maximum number of bounces for this ray
      *
      *  An unsigned char representing the maximum number of bounces for this
@@ -57,14 +57,14 @@ public:
      *  reaches a determined value, the ray must be destroyed.
      */
     unsigned char ricochet;
-    
-    
+
+
     /** \brief Default constructor
      *
      *  Construct a Ray with origin and direction in (0,0,0).
      */
     Ray();
-    
+
     /** \brief Constructor, given origin and direction
      *
      *  Construct a Ray given a Point3 representing the starting point and a
@@ -74,7 +74,7 @@ public:
      *  \param[in] direction a Vec3 representing the direction of the Ray
      */
     Ray(const Point3& origin, const Vec3& direction);
-    
+
     /** \brief Constructor, given some floats
      *
      *  Construct a Ray given three floats representing the starting point
@@ -88,8 +88,8 @@ public:
      *  \param[in] dz a float representing the z component of the direction
      */
     Ray(float ox, float oy, float oz, float dx, float dy, float dz);
-    
-    
+
+
     /** \brief Find a point along a ray
      *
      * Find a point at a particular position along a ray, at distance \a t from
@@ -114,7 +114,7 @@ public:
 class RayProperties
 {
 public:
-    
+
     /** \brief Constructor, given a ray
      *
      *  \param[in] v The ray for which this helper class must be created
@@ -128,7 +128,7 @@ public:
         RayProperties::isYInvNeg = RayProperties::inverseY<0;
         RayProperties::isZInvNeg = RayProperties::inverseZ<0;
     }
-    
+
     ///The inverse of the \a x component of the ray's direction
     float inverseX;
     ///The inverse of the \a y component of the ray's direction
@@ -142,4 +142,5 @@ public:
     ///true if the sign of the inverse of the \a z component is negative
     bool isZInvNeg;
 };
+
 #endif

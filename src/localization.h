@@ -31,6 +31,8 @@
 
 #define MESSAGE_NORMALIZE_ZERO "Trying to normalize a zero-length vector"
 
+#define MESSAGE_NORMALIZE_ZERO_NORMAL "Trying to normalize a zero-length normal"
+
 #define MESSAGE_REFLECT_NONORMALIZED "Reflecting around a non normalized centre"
 
 #define MESSAGE_REFRACT_NONORMALIZED "Refracting around a non normalized "\
@@ -99,7 +101,6 @@
 #define MESSAGE_LESS_THAN_1_SECOND "less than 1s"
 
 #endif
-
 
 /**
  *  \endcond

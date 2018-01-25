@@ -32,7 +32,7 @@
 class LanczosFilter : public Filter
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  \param[in] x_range The x extent of the filter
@@ -41,7 +41,7 @@ public:
      *  it to zero
      */
     LanczosFilter(float x_range, float y_range, float tau);
-    
+
     /** \brief Compute the weight of a given sample in the final average
      *
      *  This method is an implementation of the pure virtual function of the
@@ -56,15 +56,15 @@ public:
      * \return The weight of the sample in the final average for the pixel.
      */
     float weight(float offset_x, float offset_y)const;
-    
+
 private:
-    
+
     //precomputed inverse of the filter width
     float inverse_width;
-    
+
     //precomputed inverse of the filter height
     float inverse_height;
-    
+
     //number of cycles of the sinc function before clamping it
     float tau;
 };

@@ -52,7 +52,7 @@
 class KdTreeNode
 {
 public:
-    
+
     /** Constructor, internal node
      *
      *  Construct this node as an internal node, by giving split position,
@@ -73,7 +73,7 @@ public:
      *  maximum value is 536870911
      */
     KdTreeNode(float split, int axis, unsigned int other_child);
-    
+
     /** Constructor, leaf node
      *
      *  Construct this node as a leaf node, by giving the number of assets
@@ -90,10 +90,10 @@ public:
      *  thus its maximum value is 536870911
      */
     KdTreeNode(unsigned int asset_offset, unsigned int assets_number);
-    
+
     ///Default destructor
     ~KdTreeNode();
-    
+
     /** \brief Check if this node is a leaf
      *
      *  Returns true if this node is a leaf, false otherwise
@@ -101,7 +101,7 @@ public:
      *  \return true if this node is a leaf, false otherwise
      */
     bool isLeaf()const;
-    
+
     /** \brief Return the split axis of this node
      *
      *  If this node is an internal node, returns 0 if the split axis is the \a
@@ -114,7 +114,7 @@ public:
      *  undefined
      */
     char getAxis()const;
-    
+
     /** \brief Return the split value of this node
      *
      *  If this node is an internal node, returns a floating point representing
@@ -127,7 +127,7 @@ public:
      *  undefined
      */
     float getSplit()const;
-    
+
     /** \brief Return the pointer to the sibling of this node
      *
      *  If this node is an internal node, returns the offset of the Node array
@@ -139,7 +139,7 @@ public:
      *  undefined
      */
     unsigned int getOtherChildOffset()const;
-    
+
     /** \brief Return the number of assets referenced by the leaf
      *
      *  Return the number of assets that should be considered as
@@ -152,7 +152,7 @@ public:
      *  is undefined
      */
     unsigned int getAssetsNumber()const;
-    
+
     /** \brief Return the offset of the first asset referenced
      *
      *  Return an offset that, once added to the pointer referencing the
@@ -165,7 +165,7 @@ public:
      *  is undefined
      */
     unsigned int getAssetOffset()const;
-    
+
 private:
     //private members description in file kdtree.cpp
     union
@@ -187,13 +187,13 @@ private:
 class KdTree
 {
 public:
-    
+
     ///Default constructor
     KdTree();
-    
+
     ///Default destructor
     ~KdTree();
-    
+
     /** \brief Add an asset to this kd-tree
      *
      *  Add an asset to the ones managed by the kd-tree. The kd-tree stores and
@@ -203,14 +203,14 @@ public:
      *  \param[in] addme The asset that will be managed by this kd-tree
      */
     void addAsset(const Asset* addme);
-    
+
     /** \brief Build the kd-tree
      *
      *  Recursively construct the optimal kd-tree for the assets added with the
      *  KdTree::addAsset method
      */
     void buildTree();
-    
+
     /** \brief Find the closest intersection to a ray
      *
      *  Find the closest intersection of this ray, with the assets added through
@@ -224,34 +224,34 @@ public:
      *  \return true if there is an intersection, false otherwise
      */
     bool intersect(const Ray* r, HitPoint* hit)const;
-    
+
 private:
-    
+
     //recursive step for the build
     void build(void* node, char depth, void* split_candidates,
                Asset** assets_list, unsigned int assets_number, AABB area);
-    
+
     //flatten out the tree into an array
     void finalize(void* node);
-    
+
     //the aabb containing every asset of this kd-tree
     AABB scene_aabb;
-    
+
     //the list of assets managed by this kd-tree
     const Asset** assetsList;
-    
+
     //the number of assets managed and the index of the next insertion
     int assets_number;
-    
+
     //the allocated size of the assetsList array
     int assets_allocated;
-    
+
     //the list of nodes managed by this kd-tree
     KdTreeNode* nodesList;
-    
+
     //the number of nodes managed and the index of the next node inserted
     int nodes_index;
-    
+
     //the allocated size of the nodesList array
     int nodes_allocated;
 };

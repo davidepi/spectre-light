@@ -6,7 +6,7 @@
 
 #Output file, absolute or relative to the executable
 #supported .ppm and .bmp files
-out: /Users/davide/Desktop/test.ppm
+out: /home/user/Desktop/test.ppm
 
 #Resolution width height (width = 2x height suggested with panorama camera)
 #width MUST be a multiple of 32

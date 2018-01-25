@@ -29,7 +29,7 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data)
         uint8_t header[54];
         uint32_t* header32bit;
         uint16_t* header16bit;
-        
+
 #ifndef IS_BIG_ENDIAN
         //file header
         header[0] = 'B'; //magic numbers
@@ -38,7 +38,7 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data)
         header32bit[0] = image_size; //file size
         header32bit[1] = 0; //reserved
         header32bit[2] = 54; //data section offset
-        
+
         //image header
         header32bit[3] = 40; //image header size
         header32bit[4] = width; //image width
@@ -74,7 +74,7 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data)
         header32bit[4] = 0;
         header32bit[5] = 0;
 #endif
-        
+
         //color table : EMPTY since it is not indexed
         //pixel data already in data
         //write the header

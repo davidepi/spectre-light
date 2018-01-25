@@ -17,7 +17,7 @@
 class Metal
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  \param[in] ior A list of float containing the spectrum values
@@ -29,7 +29,7 @@ public:
      */
     Metal(const std::initializer_list<float> ior,
           const std::initializer_list<float> abs):n(ior),k(abs){};
-    
+
     ///The index of refraction of the metal
     const Spectrum n;
     ///The absorption coefficient of the metal
@@ -270,7 +270,7 @@ const Metal LEAD({
                      1.0961711406707764f,
                      1.1162480115890503f,
                      1.133713960647583f
-                     
+
                  },{
                      4.0195465087890625f,
                      4.250917911529541f,

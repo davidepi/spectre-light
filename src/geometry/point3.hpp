@@ -38,37 +38,37 @@
 class Point3
 {
 public:
-    
+
     /** \brief x coordinate
      *
      *  A single precision floating point representing the x coordinate of the
      *  point
      */
     float x;
-    
+
     /** \brief y coordinate
      *
      *  A single precision floating point representing the y coordinate of the
      *  point
      */
     float y;
-    
+
     /** \brief z coordinate
      *
      *  A single precision floating point representing the z coordinate of the
      *  point
      */
     float z;
-    
+
     /** \brief Default Constructor
      *  Construct a point in the Origin of the cartesian space, with
      *  coordinate (0,0,0)
      */
     Point3();
-    
+
     ///Default destructor
     ~Point3() = default;
-    
+
     /**  \brief Constructor, given equal coordinates
      *
      *  Construct a point in the space with the \p x coordinate equals to \p y
@@ -77,7 +77,7 @@ public:
      *  \param[in] xyz A float representing the x, y and z coordinates
      */
     Point3(float xyz);
-    
+
     /**
      *  /brief Constructor, given x, y and z
      *
@@ -88,7 +88,7 @@ public:
      *  \param[in] z The value of the z coordinate
      */
     Point3(float x, float y, float z);
-    
+
     /**  \brief Compute the distance to another point
      *
      *  Compute the euclidean distance between this point and another one
@@ -99,7 +99,7 @@ public:
      *             distance should be calculated
      */
     float distanceTo(const Point3& p)const;
-    
+
     /**  \brief Compute the maxium value between this point and another one
      *
      *  Substitute the maximum value in x, y and z by choosing between the value
@@ -109,7 +109,7 @@ public:
      *  \sa min(const Point3& p)
      */
     void max(const Point3& p);
-    
+
     /**  \brief Compute the minimum value between this point and another one
      *
      *  Substitute the minimum value in x, y and z by choosing between the value
@@ -119,9 +119,9 @@ public:
      *  \sa max(const Point3& p)
      */
     void min(const Point3& p);
-    
+
     //------ Operators ---------------------------------------------------------
-    
+
     ///Offsets the point along a direction
     Point3 operator+ (const Vec3&  v)const;
     ///Offsets the point along a direction
@@ -140,7 +140,7 @@ public:
     float operator[] (int)const;
     ///Access a component of the point, non-const version
     float& operator[](int);
-    
+
     /* Useless operations.
      i.e.: Cannot offset a point by a point
      But if I remove these, I will surely forgot why
@@ -149,9 +149,9 @@ public:
      //Point3 operator* (const float f)const;
      //void operator-=(const Point3&  p); <- super useless, point - point = vec
      */
-    
+
     //--------------------------------------------------------------------------
-    
+
 };
 
 
@@ -173,7 +173,7 @@ inline float distance(const Point3& p1, const Point3& p2)
     float x = p1.x - p2.x;
     float y = p1.y - p2.y;
     float z = p1.z - p2.z;
-    
+
     return std::sqrt((x * x) + (y * y) + (z*z));
 }
 

@@ -6,8 +6,8 @@
 [![](https://img.shields.io/github/release/davidepi/spectre-light.svg)](https://github.com/davidepi/spectre-light/releases)
 [![Build status](https://travis-ci.org/davidepi/spectre-light.svg?branch=master)](https://travis-ci.org/davidepi/spectre-light)
 [![Build status](https://ci.appveyor.com/api/projects/status/d4bx9kjo42nnpfy5/branch/master?svg=true)](https://ci.appveyor.com/project/darkstar13/spectre-light/branch/master)
-[![codecov](https://codecov.io/gh/davidepi/spectre-light/branch/unit_testing/graph/badge.svg)](https://codecov.io/gh/davidepi/spectre-light)
-[![](https://tokei.rs/b1/github/davidepi/spectre-light)](https://github.com/davidepi/spectre-light)
+[![codecov](https://codecov.io/gh/davidepi/spectre-light/branch/master/graph/badge.svg)](https://codecov.io/gh/davidepi/spectre-light)
+[![loc](https://tokei.rs/b1/github/davidepi/spectre-light)](https://github.com/davidepi/spectre-light)
 
 *spectre-light* is a photorealistic unbiased physically-based renderer. It inherits its base
 structure from the great [pbrt](http://pbrt.org "pbrt homepage") by M.Pharr, W. Jakob and G.
@@ -76,9 +76,9 @@ found in the [input_example.txt](./input_example.txt) file
 
 The output file can be a `.ppm` or a `.bmp` image. If the extension is omitted, the default will
 be the `.ppm`
- 
+
  ## Documentation
- 
+
  This project uses [Doxygen](http://doxygen.org) in order to generate the documentation.
  If you have doxygen installed, cmake will detect it and produce the target `doc`. After
  that the only thing left to do is to invoke the following command
@@ -86,7 +86,27 @@ be the `.ppm`
  make doc
  ```
  in order to generate the html documentation of the project
- 
+
+ ## Tests
+
+ Unit testing is done with [Google Test](https://github.com/google/googletest) and
+ thus it is required as additional dependency. In order to run the tests the following
+ commands have to be issued
+ ```
+ mkdir build_tests/
+ cd build_tests/
+ cmake -DCMAKE_BUILD_TYPE="Coverage" ..
+ make runTests
+ ```
+
+ Then, running the newly created executable `runTests` will run every test
+ in the suite.
+
+ If [gnuplot](http://www.gnuplot.info/) is also installed, the target `make distributions`
+ will generate some pdfs with the distributions of the various sampling routines.
+
+
+ Unfortunately, for now, tests work only on Linux and macOS
  ## License
  
  *spectre-light* is released under the terms of the GNU GPLv3 License. You may find the

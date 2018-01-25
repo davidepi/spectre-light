@@ -15,11 +15,11 @@ PerspectiveCamera::PerspectiveCamera(const Point3* pos, const Point3* target,
                         0, inv_aspect_ratio,  0,  0,
                         0, 0, f/(f-n), (-f*n)/(f-n),
                         0, 0,  1,  0};
-    
+
     Matrix4 camera2screen(values);
     Matrix4 screen2camera;
     camera2screen.inverse(&screen2camera);
-    
+
     float aspect_ratio = (float)width/(float)heigth;
     float bounds[4]; //screen-space bounds
     if(aspect_ratio > 1) //horizontal image
@@ -53,7 +53,7 @@ PerspectiveCamera::PerspectiveCamera(const Point3* pos, const Point3* target,
     values[13] = 0;
     values[14] = 0;
     values[15] = 1.f;
-    
+
     Matrix4 raster2screen(values);
     raster2camera.set_identity();
     raster2camera*= screen2camera;

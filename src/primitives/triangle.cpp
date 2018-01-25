@@ -31,7 +31,7 @@ AABB Triangle::compute_AABB(const Matrix4* transform)const
     const Point3 p0 = *transform*a.p;
     const Point3 p1 = *transform*b.p;
     const Point3 p2 = *transform*c.p;
-    
+
     Point3 pmin(min(min(p0,p1),p2));
     Point3 pmax(max(max(p0,p1),p2));
 
@@ -81,9 +81,11 @@ bool Triangle::intersect(const Ray *r, float *distance, HitPoint *h)const
     h->point_h=r->apply(dist); //compute hit point
 
     //compute normal in the point, given normals in the vertices
-    h->normal_h = a.n*w+b.n*u+c.n*v;//TODO: change this after uv mapping implementation
+    //TODO: change this after uv mapping implementation
+    h->normal_h = a.n*w+b.n*u+c.n*v;
 
-    //compute default shading vector TODO: change also this after uv map impl
+    //compute default shading vector
+    //TODO: change also this after uv map impl
     h->right.x = b.p.x-a.p.x;
     h->right.y = b.p.y-a.p.y;
     h->right.z = b.p.z-a.p.z;
@@ -101,11 +103,11 @@ void Triangle::sample_point(float r0, float r1, const float*, Point3* p,
     float u = 1.f-sq;
     float v = r1*sq;
     float w = 1.f-u-v;
-    
+
     p->x = u*a.p.x+v*b.p.x+w*c.p.x;
     p->y = u*a.p.y+v*b.p.y+w*c.p.y;
     p->z = u*a.p.z+v*b.p.z+w*c.p.z;
-    
+
     *n = Normal(cross(b.p-a.p,c.p-a.p));
     n->normalize();
 }

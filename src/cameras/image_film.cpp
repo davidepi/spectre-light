@@ -110,7 +110,7 @@ ImageFilm::~ImageFilm()
 }
 
 void ImageFilm::add_pixel(const Sample* sample, ColorXYZ color,
-                         ExecutorData* secure_area)
+                          ExecutorData* secure_area)
 {
     if(color.r<0)color.r=0;
     if(color.g<0)color.g=0;
@@ -132,74 +132,74 @@ void ImageFilm::add_pixel(const Sample* sample, ColorXYZ color,
     for(int y=update_y0;y<update_y1;y++)
         for(int x=update_x0;x<update_x1;x++)
         {
-			float weight = filter->weight(x-centre_x, y-centre_y);
-			if(x < secure_area->startx || x > secure_area->endx ||
+            float weight = filter->weight(x-centre_x, y-centre_y);
+            if(x < secure_area->startx || x > secure_area->endx ||
                y < secure_area->starty || y > secure_area->endy)
-			{
-				//critical section, other threads could interfere. deferred add
-				TodoPixel pixel_toadd;
-				pixel_toadd.x = x;
-				pixel_toadd.y = y;
-				pixel_toadd.cie_x = color.r*weight;
-				pixel_toadd.cie_y = color.g*weight;
-				pixel_toadd.cie_z = color.b*weight;
-				pixel_toadd.samples = weight;
-				secure_area->deferred.push(pixel_toadd);
-			}
-			else
-			{
+            {
+                //critical section, other threads could interfere. deferred add
+                TodoPixel pixel_toadd;
+                pixel_toadd.x = x;
+                pixel_toadd.y = y;
+                pixel_toadd.cie_x = color.r*weight;
+                pixel_toadd.cie_y = color.g*weight;
+                pixel_toadd.cie_z = color.b*weight;
+                pixel_toadd.samples = weight;
+                secure_area->deferred.push(pixel_toadd);
+            }
+            else
+            {
                 //no chance that other threads will write this pixel, insta add
-            	Pixel* val = buffer+(width*y+x);
-            	val->cie_x += color.r*weight;
-            	val->cie_y += color.g*weight;
-            	val->cie_z += color.b*weight;
-            	val->samples += weight;
-			}
+                Pixel* val = buffer+(width*y+x);
+                val->cie_x += color.r*weight;
+                val->cie_y += color.g*weight;
+                val->cie_z += color.b*weight;
+                val->samples += weight;
+            }
         }
 }
 
 void ImageFilm::add_pixel_deferred(ExecutorData* secure_area)
 {
     //try to gain the lock
-	if(mtx.try_lock())
-	{
-		Pixel* value;
-		TodoPixel pixel_toadd;
+    if(mtx.try_lock())
+    {
+        Pixel* value;
+        TodoPixel pixel_toadd;
         //until the pixel not in the secure area are finished
-		while(!secure_area->deferred.empty())
-		{
+        while(!secure_area->deferred.empty())
+        {
             //add the current pixel, since I have the lock
-			pixel_toadd = secure_area->deferred.top();
-			secure_area->deferred.pop();
-			value = buffer+(width*pixel_toadd.y+pixel_toadd.x);
-			value->cie_x += pixel_toadd.cie_x;
-			value->cie_y += pixel_toadd.cie_y;
-			value->cie_z += pixel_toadd.cie_z;
-			value->samples += pixel_toadd.samples;
-		}
-		mtx.unlock();
-	}
+            pixel_toadd = secure_area->deferred.top();
+            secure_area->deferred.pop();
+            value = buffer+(width*pixel_toadd.y+pixel_toadd.x);
+            value->cie_x += pixel_toadd.cie_x;
+            value->cie_y += pixel_toadd.cie_y;
+            value->cie_z += pixel_toadd.cie_z;
+            value->samples += pixel_toadd.samples;
+        }
+        mtx.unlock();
+    }
 }
 
 void ImageFilm::add_pixel_forced(ExecutorData* secure_area)
 {
-	Pixel* value;
-	TodoPixel pixel_toadd;
+    Pixel* value;
+    TodoPixel pixel_toadd;
     
     //last chance to add the pixel, now I need the lock at any cost
-	mtx.lock();
+    mtx.lock();
     //add every leftover
-	while(!secure_area->deferred.empty())
-	{
-		pixel_toadd = secure_area->deferred.top();
-		secure_area->deferred.pop();
-		value = buffer+(width*pixel_toadd.y+pixel_toadd.x);
-		value->cie_x += pixel_toadd.cie_x;
-		value->cie_y += pixel_toadd.cie_y;
-		value->cie_z += pixel_toadd.cie_z;
-		value->samples += pixel_toadd.samples;
-	}
-	mtx.unlock();
+    while(!secure_area->deferred.empty())
+    {
+        pixel_toadd = secure_area->deferred.top();
+        secure_area->deferred.pop();
+        value = buffer+(width*pixel_toadd.y+pixel_toadd.x);
+        value->cie_x += pixel_toadd.cie_x;
+        value->cie_y += pixel_toadd.cie_y;
+        value->cie_z += pixel_toadd.cie_z;
+        value->samples += pixel_toadd.samples;
+    }
+    mtx.unlock();
 }
 
 void ImageFilm::set_filter(Filter* f)

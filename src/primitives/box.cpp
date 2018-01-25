@@ -19,7 +19,7 @@ AABB Box::compute_AABB(const Matrix4* transform)const
         return AABB();
     }
 #endif
-    
+
     //transforming min and max is not enough for rotation, i.e. in 90 deg rot
     const Point3 p0=*transform*Point3(0,0,0);
     const Point3 p1=*transform*Point3(1,0,0);
@@ -29,10 +29,10 @@ AABB Box::compute_AABB(const Matrix4* transform)const
     const Point3 p5=*transform*Point3(1,0,1);
     const Point3 p6=*transform*Point3(1,1,1);
     const Point3 p7=*transform*Point3(0,1,1);
-    
+
     const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
     const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
-    
+
     return AABB(pmi,pma);
 }
 
@@ -59,7 +59,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     float mint;
     float maxt;
     char axis = 0; //used for normal identification
-    
+
     //x plane
     float invr = 1.0f/r->direction.x;
     float near = (-r->origin.x) * invr;
@@ -68,7 +68,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
         swap(&near,&far);
     mint = near;
     maxt = far;
-    
+
     //y plane
     invr = 1.0f/r->direction.y;
     near = (-r->origin.y) * invr;
@@ -83,7 +83,7 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     maxt = far<maxt?far:maxt;
     if(mint>maxt)
         return false;
-    
+
     //z plane
     invr = 1.0f/r->direction.z;
     near = (-r->origin.z) * invr;
@@ -156,7 +156,7 @@ void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
     // - use the other sample to sample the other dimension
     // - dimensions can be viewed on the previous schema. The first one is the
     //   one outside the square
-    
+
     //cd[5] contains the total surface in world space units
     float res = lerp(r0,0,densities[5]);
     if(res<densities[0])

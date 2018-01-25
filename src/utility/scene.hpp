@@ -70,7 +70,7 @@ public:
      *  \return The added shape id
      */
     unsigned int inherit_shape(Shape* addme);
-    
+
     /** \brief Return the number of shapes in the scene
      * \return The number of shapes in the scene
      */
@@ -86,7 +86,7 @@ public:
      */
     unsigned int add_asset(unsigned int shapeid, const Matrix4& transform,
                           const Bsdf* material = NULL);
-    
+
     /** \brief Return the number of assets in the scene
      * \return The number of assets in the scene
      */
@@ -137,6 +137,5 @@ private:
     unsigned int light_index;
 
 };
-
 
 #endif

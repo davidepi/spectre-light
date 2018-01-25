@@ -80,15 +80,11 @@ if(GNUPLOT_FOUND)
         DEPENDS distributions_data
         COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/data
         COMMAND distributions_data ${CMAKE_CURRENT_BINARY_DIR}/data
-        COMMENT "Plotting filters distributions"
+        COMMENT "Plotting distributions"
         COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/filters_gnuplot.txt
-        COMMENT "Plotting primitives distributions"
         COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/primitives_gnuplot.txt
-        COMMENT "Plotting samplers distributions"
         COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/samplers_gnuplot.txt
-        COMMENT "Plotting materials distributions"
         COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/materials_gnuplot.txt
-        COMMENT "Plotting microfacets distributions"
         COMMAND ${GNUPLOT_EXECUTABLE} -e "path='${CMAKE_CURRENT_BINARY_DIR}/data/'" ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/microfacets_gnuplot.txt
         VERBATIM)
 add_custom_target(distributions 

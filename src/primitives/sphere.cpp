@@ -7,7 +7,7 @@ AABB Sphere::compute_AABB()const
 {
     const Point3 pmin(-1.f,-1.f,-1.f);
     const Point3 pmax(1.f, 1.f, 1.f);
-    
+
     //who cares if pmin and pmax are stack-allocated, the AABB constructor is
     //going to copy them anyway
     return AABB(&pmin, &pmax);
@@ -33,10 +33,10 @@ AABB Sphere::compute_AABB(const Matrix4* transform)const
     const Point3 p5=*transform*Point3(1,-1,1);
     const Point3 p6=*transform*Point3(1,1,1);
     const Point3 p7=*transform*Point3(-1,1,1);
-    
+
     const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
     const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
-    
+
     return AABB(&pmi,&pma);
 }
 

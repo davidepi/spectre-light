@@ -113,7 +113,7 @@ float Vec3::distanceTo(const Vec3& target)const
     float x = target.x - Vec3::x;
     float y = target.y - Vec3::y;
     float z = target.z - Vec3::z;
-    
+
     return sqrtf((x * x) + (y * y) + (z*z));
 }
 
@@ -175,12 +175,12 @@ char* Vec3::toString()const
     snprintf(val1,sizeof(val1),"%f",(double)Vec3::x);
     snprintf(val2,sizeof(val2),"%f",(double)Vec3::y);
     snprintf(val3,sizeof(val3),"%f",(double)Vec3::z);
-    
+
     //( + ) + 2 commas + '/0' + "vec3" + 2 space
     int res_len = (int)(11 + strlen(val1) + strlen(val2) + strlen(val3));
     char* res = new char[res_len];
     snprintf(res,sizeof(res)*res_len,"vec3(%s, %s, %s)",val1,val2,val3);
-    
+
     return res;
 }
 
@@ -190,12 +190,12 @@ void Vec3::clamp(const Vec3& min, const Vec3& max)
         Vec3::x = min.x;
     else if(Vec3::x > max.x)
         Vec3::x = max.x;
-    
+
     if(Vec3::y < min.y)
         Vec3::y = min.y;
     else if(Vec3::y > max.y)
         Vec3::y = max.y;
-    
+
     if(Vec3::z < min.z)
         Vec3::z = min.z;
     else if(Vec3::z > max.z)
@@ -206,10 +206,10 @@ void Vec3::saturate()
 {
     if(Vec3::x < 0.0f) Vec3::x = 0.0f;
     else if(Vec3::x > 1.0f)Vec3::x = 1.0f;
-    
+
     if(Vec3::y < 0.0f) Vec3::y = 0.0f;
     else if(Vec3::y > 1.0f)Vec3::y = 1.0f;
-    
+
     if(Vec3::z < 0.0f) Vec3::z = 0.0f;
     else if(Vec3::z > 1.0f)Vec3::z = 1.0f;
 }
@@ -221,17 +221,17 @@ void Vec3::max(const Vec3& vector2)
         x = Vec3::x;
     else
         x = vector2.x;
-    
+
     if (Vec3::y > vector2.y)
         y = Vec3::y;
     else
         y = vector2.y;
-    
+
     if (Vec3::z > vector2.z)
         z = Vec3::z;
     else
         z = vector2.z;
-    
+
     Vec3::x = x;
     Vec3::y = y;
     Vec3::z = z;
@@ -244,17 +244,17 @@ void Vec3::min(const Vec3& vector2)
         x = Vec3::x;
     else
         x = vector2.x;
-    
+
     if (Vec3::y < vector2.y)
         y = Vec3::y;
     else
         y = vector2.y;
-    
+
     if (Vec3::z < vector2.z)
         z = Vec3::z;
     else
         z = vector2.z;
-    
+
     Vec3::x = x;
     Vec3::y = y;
     Vec3::z = z;
@@ -599,7 +599,7 @@ float Normal::distanceTo(const Normal& target)const
     float x = target.x - Normal::x;
     float y = target.y - Normal::y;
     float z = target.z - Normal::z;
-    
+
     return sqrtf((x * x) + (y * y) + (z*z));
 }
 
@@ -646,12 +646,12 @@ char* Normal::toString()const
     snprintf(val1,sizeof(val1),"%f",(double)Normal::x);
     snprintf(val2,sizeof(val2),"%f",(double)Normal::y);
     snprintf(val3,sizeof(val3),"%f",(double)Normal::z);
-    
+
     //( + ) + 2 comma + '/0' + "Normal" + 2 space
     int res_len = (int)(13 + strlen(val1) + strlen(val2) + strlen(val3));
     char* res = new char[res_len];
     snprintf(res,sizeof(res)*res_len,"Normal(%s, %s, %s)",val1,val2,val3);
-    
+
     return res;
 }
 
@@ -659,10 +659,10 @@ void Normal::clamp(const Vec3& min, const Vec3& max)
 {
     if(Normal::x < min.x) Normal::x = min.x;
     else if(Normal::x > max.x)Normal::x = max.x;
-    
+
     if(Normal::y < min.y) Normal::y = min.y;
     else if(Normal::y > max.y)Normal::y = max.y;
-    
+
     if(Normal::z < min.z) Normal::z = min.z;
     else if(Normal::z > max.z)Normal::z = max.z;
 }
@@ -671,10 +671,10 @@ void Normal::saturate()
 {
     if(Normal::x < 0.0f) Normal::x = 0.0f;
     else if(Normal::x > 1.0f)Normal::x = 1.0f;
-    
+
     if(Normal::y < 0.0f) Normal::y = 0.0f;
     else if(Normal::y > 1.0f)Normal::y = 1.0f;
-    
+
     if(Normal::z < 0.0f) Normal::z = 0.0f;
     else if(Normal::z > 1.0f)Normal::z = 1.0f;
 }
@@ -686,17 +686,17 @@ void Normal::max(const Normal& n)
         x = Normal::x;
     else
         x = n.x;
-    
+
     if (Normal::y > n.y)
         y = Normal::y;
     else
         y = n.y;
-    
+
     if (Normal::z > n.z)
         z = Normal::z;
     else
         z = n.z;
-    
+
     Normal::x = x;
     Normal::y = y;
     Normal::z = z;
@@ -709,17 +709,17 @@ void Normal::min(const Normal& n)
         x = Normal::x;
     else
         x = n.x;
-    
+
     if (Normal::y < n.y)
         y = Normal::y;
     else
         y = n.y;
-    
+
     if (Normal::z < n.z)
         z = Normal::z;
     else
         z = n.z;
-    
+
     Normal::x = x;
     Normal::y = y;
     Normal::z = z;

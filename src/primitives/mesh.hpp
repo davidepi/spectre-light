@@ -135,7 +135,7 @@ public:
      *  units
      */
     float surface()const;
-    
+
     /** \brief Return the surface of the mesh considering the scaling factor
      *
      *  This method computes the surface area of the mesh, useful if the mesh is
@@ -147,7 +147,7 @@ public:
      *  \return A float representing the area of the mesh in world-space units
      */
     float surface(const Matrix4* transform)const;
-    
+
     /** \brief Return the number of face of the mesh
      *
      *  This function returns the number of tris composing the mesh
@@ -155,7 +155,7 @@ public:
      *  \return The number of faces in a Mesh
      */
     int get_faces_number()const;
-    
+
     /** \brief Populate the array of cumulative densities
      *
      *  This function populates the densities array. For each triangle, ordered,
@@ -189,7 +189,7 @@ public:
                         Normal* n)const;
 
 private:
-    
+
     //array of triangles
     Triangle* tris;
 

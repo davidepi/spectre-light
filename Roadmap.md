@@ -18,8 +18,8 @@
 - [x] microfacet reflection and transmission (blinn, beckmann, ggx isotropic, ggx anisotropic)
 
 ### V0.2 ###
-- [ ] -> **unit testing** <-
-- [ ] extended image support (.jpg/.tiff support, metadata)
+- [x] unit testing
+- [ ] -> **extended image support (.jpg/.tiff support, metadata)** <-
 - [ ] lex/yacc parser (.3ds parsing, .mtl parsing, quad/ngon parsing)
 - [ ] diffuse texture mapping
 - [ ] bump/normal textures

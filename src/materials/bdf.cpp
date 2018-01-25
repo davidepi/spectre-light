@@ -13,7 +13,7 @@ BdfFlags Bdf::get_flags() const
 }
 
 Spectrum Bdf::sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                   float* pdf)const
+                           float* pdf)const
 {
     //sample x,y points on the hemisphere, shirley's method maybe's better
     float t = TWO_PI * r0;
@@ -56,28 +56,28 @@ void Bsdf::inherit_bdf(Bdf* addme)
 }
 
 Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
-                  BdfFlags val)const
+                     BdfFlags val)const
 {
-    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
-    Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
+    Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
     if(wi->dot(h->normal_h)*wo->dot(h->normal_h) > 0)//reflected ray
         val = (BdfFlags)(val & ~BTDF);
     else                                //transmitted ray
         val = (BdfFlags)(val & ~BRDF);
     Spectrum retval = SPECTRUM_BLACK;
-    wo_shading_space.normalize();
-    wi_shading_space.normalize();
+    wo_shading.normalize();
+    wi_shading.normalize();
     for(int i=0;i<count;i++)
     {
         if(bdfs[i]->is_type(val)) //add contribution only if matches refl/trans
-            retval += bdfs[i]->value(&wo_shading_space,&wi_shading_space);
+            retval += bdfs[i]->value(&wo_shading,&wi_shading);
     }
     return retval;
 }
 
 Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
-                    const HitPoint* h, Vec3* wi, float* pdf,
-                    BdfFlags matchme, BdfFlags* val)const
+                            const HitPoint* h, Vec3* wi, float* pdf,
+                            BdfFlags matchme, BdfFlags* val)const
 {
 #ifdef DEBUG
     if(!wo->is_normalized())
@@ -88,7 +88,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     for(int i=0;i<Bsdf::count;i++)
         if (Bsdf::bdfs[i]->is_type(matchme))
             matching[matchcount++] = bdfs[i];
-
+    
     if(matchcount==0)
     {
         *pdf = 0.f;
@@ -97,23 +97,23 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     int chosen = (int)(r0 * matchcount);
     if(chosen == matchcount) //out of array
         chosen--;
-
+    
     //transform to shading space
-    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     Vec3 tmpwi;
-
+    
     //I don't care about the result, but I need to generate the &wi vector
     //TODO: gained efficiency by creating an ad-hoc method?
     Spectrum retval;
-    retval=matching[chosen]->sample_value(&wo_shading_space, &tmpwi,r1,r2,pdf);
-
+    retval=matching[chosen]->sample_value(&wo_shading, &tmpwi,r1,r2,pdf);
+    
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->normal_h.x * tmpwi.z;
     wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->normal_h.y * tmpwi.z;
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
-
+    
     *val = matching[chosen]->get_flags();//val now is a subset of matchme
-    wo_shading_space.normalize();
+    wo_shading.normalize();
     tmpwi.normalize();
     wi->normalize();
     //if not specular, throw away retval and compute the value for the generated
@@ -130,8 +130,8 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
         {
             if (bdfs[i]->is_type(*val))//add contribution only if matches
             {
-                retval += bdfs[i]->value(&wo_shading_space, &tmpwi);
-                *pdf+= bdfs[i]->pdf(&wo_shading_space, &tmpwi);
+                retval += bdfs[i]->value(&wo_shading, &tmpwi);
+                *pdf+= bdfs[i]->pdf(&wo_shading, &tmpwi);
             }
         }
     }
@@ -145,10 +145,10 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
 {
     if(Bsdf::count == 0)
         return 0.f;
-    Vec3 wo_shading_space(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
-    Vec3 wi_shading_space(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
-    wo_shading_space.normalize();
-    wi_shading_space.normalize();
+    Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
+    wo_shading.normalize();
+    wi_shading.normalize();
     float pdf = 0.f;
     int matching = 0;
     for (int i = 0; i < count; ++i)
@@ -156,7 +156,7 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
         if(bdfs[i]->is_type(m))
         {
             matching++;
-            pdf += bdfs[i]->pdf(&wo_shading_space, &wi_shading_space);
+            pdf += bdfs[i]->pdf(&wo_shading, &wi_shading);
         }
     }
     if(matching>1)

@@ -39,14 +39,14 @@
 class Box : public Shape
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  Construct an Axis Aligned Box with the bottom left corner in (0,0,0)
      *  and the top right corner in (1,1,1)
      */
     Box() = default;
-    
+
     /** \brief Intersection of a Ray and this box
      *
      *  This method tries to intersect a ray passed as a parameter with the
@@ -65,7 +65,7 @@ public:
      *  intersection point
      */
     bool intersect(const Ray* r,float* distance, HitPoint* hp)const;
-    
+
     /** \brief Recalculate the AABB
      *
      *  This method return an AABB that can fit well on this box. Since the box
@@ -75,7 +75,7 @@ public:
      *  \return an AABB representing the calculated bounding box
      */
     AABB compute_AABB()const;
-    
+
     /** \brief Calculate the AABB in world space
      *
      *  This method return an AABB that can fit well on the world space box,
@@ -87,7 +87,7 @@ public:
      *  \return an AABB representing the world space bounding box
      */
     AABB compute_AABB(const Matrix4* transform)const;
-    
+
     /** \brief Return the number of face of the box
      *
      *  Useful only for Mesh objects, this function returns the number of tris
@@ -97,7 +97,7 @@ public:
      *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
      */
     int get_faces_number()const;
-    
+
     /** \brief Return the surface of the box
      *
      *  This method should compute the surface area of the box, useful
@@ -106,7 +106,7 @@ public:
      *  \return A float representing the area of the box in objects-space units
      */
     float surface()const;
-    
+
     /** \brief Return the surface of the box accounting for the scaling factor
      *
      *  This method should compute the surface area of the box, useful
@@ -116,7 +116,7 @@ public:
      *  \return A float representing the area of the box in world-space units
      */
     float surface(const Matrix4* transform)const;
-    
+
     /** \brief Populate the array of cumulative densities
      *
      *  This function populates the densities array. Every cell represent a
@@ -129,7 +129,7 @@ public:
      *  \param[out] array The array of cumulative densities
      */
     void get_densities_array(const Matrix4* transform,float* array)const;
-    
+
     /** \brief Returns a random point on the surface of the box
      *
      *  Useful for the light sources, this method returns a random point on the

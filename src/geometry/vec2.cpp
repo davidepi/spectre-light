@@ -96,12 +96,12 @@ char* Vec2::toString()const
     char val2[CHAR_ARRAY_SIZE_PER_FLOAT];
     snprintf(val1,sizeof(val1),"%f",(double)Vec2::x);
     snprintf(val2,sizeof(val2),"%f",(double)Vec2::y);
-    
+
     //aperta tonda + chiusa tonda + virgola + '/0' + scritta "vec2" + spazio
     int res_len = (int)(9 + strlen(val1) + strlen(val2));
     char* res = new char[res_len];
     snprintf(res,sizeof(res)*res_len,"vec2(%s, %s)",val1,val2);
-    
+
     return res;
 }
 
@@ -109,7 +109,7 @@ void Vec2::clamp(const Vec2& min, const Vec2& max)
 {
     if (Vec2::x < min.x) Vec2::x = min.x;
     else if (Vec2::x > max.x) Vec2::x = max.x;
-    
+
     if (Vec2::y < min.y) Vec2::y = min.y;
     else if (Vec2::y > max.y) Vec2::y = max.y;
 }
@@ -126,7 +126,7 @@ float Vec2::distanceTo(const Vec2& target)const
 {
     float x = target.x - Vec2::x;
     float y = target.y - Vec2::y;
-    
+
     return std::sqrt((x * x) + (y * y));
 }
 
@@ -146,7 +146,7 @@ void Vec2::max(const Vec2& vector2)
         y = Vec2::y;
     else
         y = vector2.y;
-    
+
     Vec2::x = x;
     Vec2::y = y;
 }
@@ -162,7 +162,7 @@ void Vec2::min(const Vec2& vector2)
         y = Vec2::y;
     else
         y = vector2.y;
-    
+
     Vec2::x = x;
     Vec2::y = y;
 }

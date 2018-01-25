@@ -32,18 +32,18 @@ Renderer::Renderer(int width, int height, int spp, const char* out,
         Renderer::width = width;
         Renderer::height = height;
     }
-
+    
     if(thread_number<1)
         Renderer::numthreads = (int)std::thread::hardware_concurrency();
     else
         Renderer::numthreads = thread_number;
     numthreads = numthreads > 0 ? numthreads : 1;
-
+    
     //print number of rendering threads
     char threads[256];
     sprintf(threads,MESSAGE_NUMTHREADS,numthreads);
     Console.log(threads,threads);
-
+    
     Renderer::spp = spp;
     Renderer::camera = NULL;
     Renderer::filter = NULL;
@@ -100,7 +100,7 @@ void Renderer::setStratifiedSampler()
 
 void Renderer::setBoxFilter()
 {
-
+    
     delete filter;
     filter = new BoxFilter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
     film.set_filter(filter);
@@ -156,20 +156,20 @@ int Renderer::render(Scene* s)
     
     //used just for seed generation, WELLrng will be the actual prng
     srand((unsigned int)time(NULL));
-
+    
     //build the kd-tree, or rebuild it, just to be sure
     s->k.buildTree();
-
+    
     //checks if the settings are ok
-    if (Renderer::camera == NULL)
+    if(Renderer::camera == NULL)
         Console.critical(MESSAGE_MISSING_CAMERA);
-    if (Renderer::filter == NULL)
+    if(Renderer::filter == NULL)
         Console.critical(MESSAGE_MISSING_FILTER);
-    if (Renderer::mc_solver == NULL)
+    if(Renderer::mc_solver == NULL)
         Console.critical(MESSAGE_MISSING_INTEGRATOR);
     if(Renderer::sampler_t == -1)
         Console.critical(MESSAGE_MISSING_SAMPLER);
-
+    
     //add part of the image as renderer_tasks
     Renderer_task task;
     for(int y=0;y<height;y+=SPLIT_SIZE)
@@ -177,7 +177,7 @@ int Renderer::render(Scene* s)
         task.starty = y;
         task.endy = y+SPLIT_SIZE<height?y+SPLIT_SIZE:height;
         for(int x=0;x<width;x+=SPLIT_SIZE)
-		{
+        {
             task.startx = x;
             task.endx = x+SPLIT_SIZE;
             jobs.push(task);
@@ -189,9 +189,9 @@ int Renderer::render(Scene* s)
     for(int i=0;i<Renderer::numthreads;i++)
     {
         Renderer::workers[i]=std::thread(executor,camera,&film,&jobs_mtx,spp,
-                                        sampler_t,&jobs,s,Renderer::mc_solver);
+                                         sampler_t,&jobs,s,Renderer::mc_solver);
     }
-
+    
     //wait for them to finish
     for(int i=0;i<Renderer::numthreads;i++)
     {
@@ -212,7 +212,7 @@ int Renderer::render(Scene* s)
     //save the image
     Renderer::film.save_image();
     Console.log(MESSAGE_BYE,NULL);
-	
+    
     return 0;
 }
 
@@ -248,7 +248,7 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
     Sampler* sam;
     Sample* samples = new Sample[spp];
     Ray r;
-	ExecutorData ex;
+    ExecutorData ex;
     Spectrum radiance;
     HitPoint h;
     OcclusionTester ot(scene);
@@ -269,9 +269,9 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
             lock->unlock();
         }
         
-	for(int i=0;i<WELL_R;i++) //alterate the seed
-	    WELLseed[i]++; //Predictable, but it is only a seed
-
+        for(int i=0;i<WELL_R;i++) //alterate the seed
+            WELLseed[i]++; //Predictable, but it is only a seed
+        
         switch(sampler_type)
         {
             case SPECTRE_USE_RANDOM_SAMPLER:
@@ -281,14 +281,14 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
             case SPECTRE_USE_STRATIFIED_SAMPLER:
             default:
                 sam = new StratifiedSampler(todo.startx, todo.endx, todo.starty,
-                                      todo.endy, spp, WELLseed,
-                                      JITTERED_SAMPLER);
+                                            todo.endy, spp, WELLseed,
+                                            JITTERED_SAMPLER);
                 break;
         }
-		ex.startx = todo.startx;
-		ex.starty = todo.starty;
-		ex.endx = todo.endx;
-		ex.endy = todo.endy;
+        ex.startx = todo.startx;
+        ex.starty = todo.starty;
+        ex.endx = todo.endx;
+        ex.endy = todo.endy;
         while(sam->get_samples(samples))
         {
             for(int i=0;i<spp;i++)
@@ -303,11 +303,11 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
                 film->add_pixel(&(samples[i]), cx, &ex);
             }
         }
-		film->add_pixel_deferred(&ex);
+        film->add_pixel_deferred(&ex);
         delete sam;
     }
     delete[] samples;
-	film->add_pixel_forced(&ex);
+    film->add_pixel_forced(&ex);
 }
 
 RendererProgressBar::RendererProgressBar(std::stack<Renderer_task> *jobs)
@@ -349,11 +349,11 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
         current_time = time(NULL); //eta, I cannot block n threads for an eta
         done = (float)(jobs_no-remaining)/(float)jobs_no;
         eta = (time_t)((float)(current_time-start_time)/(jobs_no-remaining)*
-                remaining);
+                       remaining);
         //avoid garbage values... it is useless, but it runs once per second...
         if(eta>0)
             Console.progress_bar(done,eta);
         std::this_thread::sleep_for
-                (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
+        (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }
 }

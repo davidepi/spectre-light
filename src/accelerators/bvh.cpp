@@ -34,7 +34,6 @@ namespace bvhhelpers
 
     };
 
-
     class BvhBuildNode
     {
     public:

@@ -35,7 +35,7 @@ float Point3::distanceTo(const Point3& p)const
     float x = p.x - Point3::x;
     float y = p.y - Point3::y;
     float z = p.z - Point3::z;
-    
+
     return std::sqrt((x * x) + (y * y) + (z*z));
 }
 

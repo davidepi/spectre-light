@@ -118,7 +118,7 @@ public:
      *  units
      */
     float surface()const;
-    
+
     /** \brief Return the surface of the triangle considering the scaling factor
      *
      *  This method should compute the surface area of the triangle, useful

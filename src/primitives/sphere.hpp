@@ -35,13 +35,13 @@
 class Sphere : public Shape
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  Construct a sphere centered in (0,0,0) with radius 1
      */
     Sphere() = default;
-    
+
     /** \brief Intersection of a Ray and this sphere
      *
      *  This method tries to intersect a ray passed as a parameter with the
@@ -60,7 +60,7 @@ public:
      *  intersection point
      */
     bool intersect(const Ray* r,float* distance, HitPoint* h)const;
-    
+
     /** \brief Calculate the AABB
      *
      *  This method returns an AABB that can fit well on this sphere.
@@ -68,7 +68,7 @@ public:
      *  \return an AABB representing the calculated bounding box
      */
     AABB compute_AABB()const;
-    
+
     /** \brief Calculate the AABB in world space
      *
      *  This method returns an AABB that can fit well on the world space sphere,
@@ -80,7 +80,7 @@ public:
      *  \return an AABB representing the world space bounding box
      */
     AABB compute_AABB(const Matrix4* transform)const;
-    
+
     /** \brief Return the surface of the sphere
      *
      *  This method computes the surface area of the sphere, useful
@@ -90,7 +90,7 @@ public:
      *  units
      */
     float surface()const;
-    
+
     /** \brief Return the surface of the sphere considering the scaling factor
      *
      *  This method computes the surface area of the sphere, useful if the

@@ -40,35 +40,35 @@ class Normal;
 class Vec3
 {
 public:
-    
+
     /** \brief x component
      *
      * A single precision floating point representing the x component
      * of the vector
      */
     float x;
-    
+
     /** \brief y component
      *
      * A single precision floating point representing the y component
      * of the vector
      */
     float y;
-    
+
     /** \brief z component
      *
      * A single precision floating point representing the z component
      * of the vector
      */
     float z;
-    
+
     /**  \brief Default Constructor
      *
      *  Construct a vector of three elements with x = 0, y = 0 and z = 0
      */
     Vec3();
-    
-    
+
+
     /**  \brief Constructor, given x,y and z
      *
      *  Construct a vector of three elements given x, y and z values
@@ -77,7 +77,7 @@ public:
      *  \param[in] z A float representing the z component of the vector
      */
     Vec3(float x,float y,float z);
-    
+
     /**  \brief Constructor, given equal components
      *
      *  Construct a vector of three elements with the same given value
@@ -85,7 +85,7 @@ public:
      *  \param[in] xyz A float representing the x, y and z components
      */
     Vec3(float xyz);
-    
+
     /** \brief Constructor, given a Vec2 and the z value
      *
      *  Construct a vector of three elements given in input a vector of two
@@ -95,7 +95,7 @@ public:
      *  \param[in] z A float representing the z component of the vector
      */
     Vec3(Vec2 xy,float z);
-    
+
     /**  \brief Constructor, given an array
      *
      *  Construct a vector of three elements given an input array
@@ -106,7 +106,7 @@ public:
      *           length is correct
      */
     Vec3(const float* xyz);
-    
+
     /**  \brief Constructor, given a Normal
      *
      *  Construct a vector given a Normal. The value of the new Vec3 are
@@ -119,24 +119,24 @@ public:
      *        explicit
      */
     explicit Vec3(Normal n);
-    
+
     ///Default destructor
     ~Vec3() = default;
-    
+
     /** \brief Return the length of the vector
      *
      * \return A float representing the length of this vector
      * \sa lengthSquared()
      */
     float length()const;
-    
+
     /** \brief Return the squared length of the vector
      *
      * \return A float representing the squared length of this vector
      * \sa length()
      */
     float lengthSquared()const;
-    
+
     /**  \brief Compute the distance from another vector
      *
      *  Compute the euclidean distance between this vector and another one
@@ -148,7 +148,7 @@ public:
      *  \return A float representing the distance from the \p target vector
      */
     float distanceTo(const Vec3& target)const;
-    
+
     /** \brief Normalize this vector
      *
      * \warning The input length is not checked, a 0-length vector will result
@@ -156,7 +156,7 @@ public:
      *  \sa is_normalized()
      */
     void normalize();
-    
+
     /**  \brief Compute the dot product
      *
      *  Compute the dot product of this vector and another one. The dot product
@@ -168,7 +168,7 @@ public:
      *  \sa dot(const Normal* target)const
      */
     float dot(const Vec3& target)const;
-    
+
     /**  \brief Compute the dot product
      *
      *  Compute the dot product of this vector and a normal. The dot product
@@ -181,7 +181,7 @@ public:
      *  \sa dot(const Vec3* target)const
      */
     float dot(const Normal& target)const;
-    
+
     /**  \brief Compute the cross product
      *
      *  Compute the cross product of this vector and another one. The cross
@@ -194,7 +194,7 @@ public:
      *  \sa dot(const Vec3* target)const
      */
     void cross(const Vec3& target, Vec3* output)const;
-    
+
     /**  \brief Compute the cross product
      *
      *  Compute the cross product of this vector and another one. The cross
@@ -207,7 +207,7 @@ public:
      *  \sa dot(const Vec3* target)const
      */
     Vec3 cross(const Vec3& target)const;
-    
+
     /**  \brief Check if the current vector is normalized
      *
      *  \return A boolean value indicating whether the vector is normalized or
@@ -215,7 +215,7 @@ public:
      *  \sa normalize()
      */
     bool is_normalized()const;
-    
+
     /**  \brief Represent this vector with an array
      *
      *  Copy the components of this vector in an array of floats
@@ -226,7 +226,7 @@ public:
      *  \sa toString()
      */
     void toArray(float* values)const;
-    
+
     /**  \brief Represent this vector with a C-string
      *
      *  Allocate in the heap a C-string and write the components of the vector
@@ -238,7 +238,7 @@ public:
      *  \sa toArray()
      */
     char* toString()const;
-    
+
     /**  \brief Clamp this vector by restricting it between two boundaries
      *
      *  Restrict the value of the vector in an interval defined by \p min as the
@@ -249,13 +249,13 @@ public:
      *  \sa saturate()
      */
     void clamp(const Vec3& min, const Vec3& max);
-    
+
     /**  \brief Clamp this vector in the interval [0-1]
      *
      *  \sa clamp(const Vec3 min, const Vec3 max)
      */
     void saturate();
-    
+
     /**  \brief Compute the maximum value between this vector and another one
      *
      *  Substitute the maximum value in x, y and z by choosing between the value
@@ -266,7 +266,7 @@ public:
      *  \sa min(const Vec3 vector2)
      */
     void max(const Vec3& vector2);
-    
+
     /**  \brief Compute the minimum value between this vector and another one
      *
      *  Substitute the minimum value in x, y and z by choosing between the value
@@ -277,7 +277,7 @@ public:
      *  \sa max(const Vec3 vector2)
      */
     void min(const Vec3& vector2);
-    
+
     /**  \brief Flip the vector according to a pivot
      *
      *  Given a vector as a centre of reflection transform this class in the
@@ -289,7 +289,7 @@ public:
      *  \sa refract(const Vec3 centre)
      */
     void reflect(const Vec3& centre);
-    
+
     /**  \brief Flip the vector according to a pivot
      *
      *  Given a vector as a centre of reflection transform this class in the
@@ -301,7 +301,7 @@ public:
      *  \sa refract(const Normal centre)
      */
     void reflect(const Normal& centre);
-    
+
     /**  \brief Generate the refracted vector
      *
      *  Given a vector that will be treated as a Normal, refract and transform
@@ -310,9 +310,9 @@ public:
      *  If the refracted vector does not exists due to Total Internal Reflection
      *  the class is not transformed and false is returned
      *
-     *  \warning Since this method will be used only in the Bdf class, source vector
-     *  is assumed to be pointing away from the interface, and so the resulting
-     *  transmitted vector
+     *  \warning Since this method will be used only in the Bdf class, source
+     *  vector is assumed to be pointing away from the interface, and so the
+     *  resulting transmitted vector
      *
      *  \param[in] interface A Vec3 representing the interface normal
      *  \param[in] eta The index of refraction used for refracting the vector
@@ -321,7 +321,7 @@ public:
      *  \sa reflect(const Vec3 centre)
      */
     bool refract(const Vec3& interface, float eta);
-    
+
     /**  \brief Generate the refracted vector
      *
      *  Given a Normal representing the interface of a material, refract and
@@ -329,9 +329,9 @@ public:
      *  If the refracted vector does not exists due to Total Internal Reflection
      *  the class is not transformed and false is returned
      *
-     *  \warning Since this method will be used only in the Bdf class, source vector
-     *  is assumed to be pointing away from the interface, and so the resulting
-     *  transmitted vector
+     *  \warning Since this method will be used only in the Bdf class, source
+     *  vector is assumed to be pointing away from the interface, and so the
+     *  resulting transmitted vector
      *
      *  \param[in] interface A Vec3 representing the interface normal
      *  \param[in] eta The index of refraction used for refracting the vector
@@ -340,9 +340,9 @@ public:
      *  \sa reflect(const Normal centre)
      */
     bool refract(const Normal& interface, float eta);
-    
+
     //------ Operators ---------------------------------------------------------
-    
+
     ///The addition operation between two vectors
     Vec3 operator+(const Vec3&)const;
     ///The addition operation between a vector and a float
@@ -387,9 +387,9 @@ public:
     float& operator[](int);
     ///Return the nth component, const version
     float operator[](int)const;
-    
+
     //--------------------------------------------------------------------------
-    
+
 };
 
 /**
@@ -405,34 +405,34 @@ public:
 class Normal
 {
 public:
-    
+
     /** \brief X component
      *
      * A single precision floating point representing the x component
      * of the normal
      */
     float x;
-    
+
     /** \brief Y component
      *
      * A single precision floating point representing the y component
      * of the normal
      */
     float y;
-    
+
     /** \brief Z component
      *
      * A single precision floating point representing the z component
      * of the normal
      */
     float z;
-    
+
     /**  \brief Default Constructor
      *
      *  Construct a normal of three elements with x = 0, y = 0 and z = 0
      */
     Normal();
-    
+
     /**  \brief Constructor, given x,y and z
      *
      *  Construct a normal of three elements given x, y and z values
@@ -442,7 +442,7 @@ public:
      *  \param[in] z A float representing the z component of the normal
      */
     Normal(float x,float y,float z);
-    
+
     /**  \brief Constructor, given equal components
      *
      *  Construct a normal of three elements with the same given value
@@ -450,7 +450,7 @@ public:
      *  \param[in] xyz A float representing the x, y and z components
      */
     Normal(float xyz);
-    
+
     /** \brief Constructor, given a Vec2 and the z value
      *
      *  Construct a normal of three elements given in input a vector of two
@@ -460,7 +460,7 @@ public:
      *  \param[in] z A float representing the z component of the normal
      */
     Normal(Vec2 xy,float z);
-    
+
     /**  \brief Constructor, given an array
      *
      *  Construct a normal of three elements given an input array
@@ -471,7 +471,7 @@ public:
      *           length is correct
      */
     Normal(const float* xyz);
-    
+
     /**  \brief Constructor, given a Vec3
      *
      *  Construct a normal given a vector. The value of the new normal are
@@ -484,10 +484,10 @@ public:
      *        explicit
      */
     explicit Normal(const Vec3 v);
-    
+
     ///Default destructor
     ~Normal() = default;
-    
+
     /**  \brief Compute the dot product of this normal and another one.
      *
      *  The dot product is defined as the cosine of the angle between two
@@ -498,7 +498,7 @@ public:
      *  \sa dot(const Vec3* target)const
      */
     float dot(const Normal& target)const;
-    
+
     /**  \brief Compute the dot product of this normal and a vector
      *
      *  The dot product is defined as the cosine of the angle between two
@@ -509,21 +509,21 @@ public:
      *  \sa dot(const Normal* target)const
      */
     float dot(const Vec3& target)const;
-    
+
     /** \brief Returns the length of the normal
      *
      * \return A float representing the length of this normal
      * \sa lengthSquared()
      */
     float length() const;
-    
+
     /** \brief Returns the squared length of the normal
      *
      * \return A float representing the squared length of this normal
      * \sa length()
      */
     float lengthSquared()const;
-    
+
     /**  \brief Compute the distance to another normal
      *  Compute the euclidean distance between this normal and another one
      *  passed as input, corresponding to the length of the segment connecting
@@ -534,7 +534,7 @@ public:
      *  \return A float representing the distance from the \p target normal
      */
     float distanceTo(const Normal& target)const;
-    
+
     /** \brief Normalize this normal
      *  \note Despite the name, a Normal is not guaranteed to be normalized
      *  \warning The input length is not checked, a 0-length vector will result
@@ -542,7 +542,7 @@ public:
      *  \sa is_normalized()
      */
     void normalize();
-    
+
     /**  \brief Check if the current normal is normalized
      *
      *  \return A boolean value indicating whether the normal is normalized or
@@ -551,7 +551,7 @@ public:
      *  \sa normalize()
      */
     bool is_normalized()const;
-    
+
     /**  \brief Represent this normal with an array
      *
      *  Copy the components of this normal in an array of float, heap allocated
@@ -562,7 +562,7 @@ public:
      *  \sa toString()
      */
     void toArray(float* values) const;
-    
+
     /**  \brief Represent this normal with a C-string
      *
      *  Allocate in the heap a C-string and write the components of the normal
@@ -574,7 +574,7 @@ public:
      *  \sa toArray()
      */
     char* toString() const;
-    
+
     /**  \brief Clamp this normal by restricting it between two boundaries
      *
      *  Restrict the value of the normal in an interval defined by \p min as the
@@ -585,12 +585,12 @@ public:
      *  \sa saturate()
      */
     void clamp(const Vec3& min, const Vec3& max);
-    
+
     /**  \brief Clamp this normal in the interval [0-1]
      *   \sa clamp(const Vec3* min, const Vec3* max)
      */
     void saturate();
-    
+
     /**  \brief Compute the maximum value between this normal and another one
      *
      *  Substitute the maximum value in x, y and z by choosing between the value
@@ -601,7 +601,7 @@ public:
      *  \sa min(const Normal n)
      */
     void max(const Normal& n);
-    
+
     /**  \brief Compute the minimum value between this normal and another one
      *
      *  Substitute the minimum value in x, y and z by choosing between the value
@@ -612,10 +612,10 @@ public:
      *  \sa max(const Normal n)
      */
     void min(const Normal& n);
-    
-    
+
+
     //------ Operators ---------------------------------------------------------
-    
+
     ///The addition operation between two normals
     Normal operator+(const Normal&)const;
     ///The addition operation between a normal and a float
@@ -869,7 +869,7 @@ inline Vec3 normalize(const Vec3& v)
 #ifdef DEBUG
     if(len==0)
     {
-        Console.critical("Trying to normalize a zero-length vector");
+        Console.critical(MESSAGE_NORMALIZE_ZERO);
         return Vec3();
     }
 #endif
@@ -897,7 +897,7 @@ inline Normal normalize(const Normal& n)
 #ifdef DEBUG
     if(len==0)
     {
-        Console.critical("Trying to normalize a zero-length normal");
+        Console.critical(MESSAGE_NORMALIZE_ZERO_NORMAL);
         return Normal();
     }
 #endif
@@ -923,7 +923,7 @@ inline float distance(const Vec3& vec1, const Vec3& vec2)
     float x = vec2.x - vec1.x;
     float y = vec2.y - vec1.y;
     float z = vec2.z - vec1.z;
-    
+
     return std::sqrt((x * x) + (y * y) + (z*z));
 }
 
@@ -943,7 +943,7 @@ inline float distance(const Normal& n1, const Normal& n2)
     float x = n2.x - n1.x;
     float y = n2.y - n1.y;
     float z = n2.z - n1.z;
-    
+
     return std::sqrt((x * x) + (y * y) + (z*z));
 }
 

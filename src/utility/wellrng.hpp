@@ -29,7 +29,7 @@
 class WELLrng
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  Initialize the prng engine with the given seed
@@ -37,10 +37,10 @@ public:
      *  \param[in] seed 128 bytes representing the seed of this prng
      */
     WELLrng(const unsigned int seed[WELL_R]);
-    
+
     ///Default destructor
     ~WELLrng() = default;
-    
+
     /** \brief Generate a random float number
      *
      *  Generate a random number in the range [0.0,1.0] following an uniform
@@ -49,7 +49,7 @@ public:
      *  \return The generated number
      */
     float getNumber();
-    
+
 private:
     unsigned int state_i;
     unsigned int state[WELL_R];

@@ -4,7 +4,7 @@
 #include "ray_tracer.hpp"
 
 Spectrum RayTracer::radiance(const Scene *sc, const HitPoint *hp, const Ray *r,
-                          Sampler *sam, OcclusionTester *ot) const
+                             Sampler *sam, OcclusionTester *ot) const
 {
     Spectrum direct = direct_l(sc,hp,r,sam,ot)*sc->lights_size();
     //specular reflection
@@ -40,11 +40,12 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         BdfFlags flags((BdfFlags)(ALL&~SPECULAR));
         BdfFlags sampled_val;
         float light_distance;
-
+        
         //multiple importance sampling, light first
-        Spectrum directrad=light->sample_visible_surface(rand[1],rand[2],&hp->point_h,&wi,
-                                             &lightpdf,&light_distance);
-        if(lightpdf > 0 && !directrad.is_black())
+        Spectrum direct_l;
+        direct_l=light->sample_visible_surface(rand[1],rand[2],&hp->point_h,&wi,
+                                                    &lightpdf,&light_distance);
+        if(lightpdf > 0 && !direct_l.is_black())
         {
             Spectrum bsdf_f = mat->value(&wo,hp,&wi,flags);
             Ray r2(hp->point_h,wi);
@@ -55,11 +56,11 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                 {
                     float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
                                                         bsdfpdf*bsdfpdf);
-                    L+=bsdf_f*directrad*absdot(wi,hp->normal_h)*weight/lightpdf;
+                    L+=bsdf_f*direct_l*absdot(wi,hp->normal_h)*weight/lightpdf;
                 }
             }
         }
-
+        
         //mip bsdf sampling
         //NULL is guaranteed not be used since the call will never be specular
         Spectrum bsdf_f = mat->sample_value(rand[3],rand[4],rand[5],&wo,hp,
@@ -69,10 +70,10 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
             float w = 1.f; //weight
             //if((sampled_val&SPECULAR)==0) //if not specular -> 100% guaranteed
             //{
-                lightpdf = light->pdf(&hp->point_h, &wi);
-                if(lightpdf == 0)
-                    return L; //no contribution from bsdf sampling
-                w = (bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf+lightpdf*lightpdf);
+            lightpdf = light->pdf(&hp->point_h, &wi);
+            if(lightpdf == 0)
+                return L; //no contribution from bsdf sampling
+            w = (bsdfpdf*bsdfpdf)/(bsdfpdf*bsdfpdf+lightpdf*lightpdf);
             //}
             Ray r2(hp->point_h,wi);
             HitPoint h2;
@@ -81,7 +82,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                     if(dot(h2.normal_h,-r2.direction)>0)
                     {
                         Spectrum rad = light->emissive_spectrum();
-                        L += bsdf_f * rad * absdot(wi, hp->normal_h) * w / bsdfpdf;
+                        L += bsdf_f*rad*absdot(wi, hp->normal_h)*w/bsdfpdf;
                     }
         }
     }
@@ -89,7 +90,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
 }
 
 Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
-             OcclusionTester* ot, BdfFlags ref,const LightIntegrator* i)
+                OcclusionTester* ot, BdfFlags ref,const LightIntegrator* i)
 {
     Vec3 wo = normalize(-r->direction);
     Vec3 wi;
@@ -100,7 +101,7 @@ Spectrum spec_l(const Scene* s, const HitPoint* hp, const Ray* r, Sampler* sam,
     BdfFlags sampled_val;
     BdfFlags sampleme = BdfFlags((ref&(BRDF|BTDF))|SPECULAR);
     Spectrum bsdf_f = mat->sample_value(rand[0], rand[1], rand[2], &wo, hp, &wi,
-                       &bsdfpdf,sampleme,&sampled_val);
+                                        &bsdfpdf,sampleme,&sampled_val);
     
     if(bsdfpdf==1.f && !bsdf_f.is_black())
     {

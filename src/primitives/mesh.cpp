@@ -123,7 +123,7 @@ AABB Mesh::compute_AABB(const Matrix4 *trans) const
     const Point3 p7 = *trans*Point3(Mesh::aabb.bounds[0].x,
                                     Mesh::aabb.bounds[1].y,
                                     Mesh::aabb.bounds[1].z);
-    
+
     const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
     const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
     return AABB(min(pmi,pma), max(pmi,pma));
@@ -169,14 +169,14 @@ void Mesh::sample_point(float r0, float r1, const float* densities, Point3* p,
 {
     //flatten the random value between 0.0 and the total area
     float extSample = lerp(r0, 0.0f, densities[count-1]);
-    
+
     //divide et impera search
     int start = 0;
     int end = count-1;
     int mid;
     //the sample in the interval [0,1]. After processing the lerp step
     float sample01;
-    
+
     //limit cases, they generate infinite loops
     //first triangle of the array
     if(extSample < densities[0])
@@ -193,7 +193,7 @@ void Mesh::sample_point(float r0, float r1, const float* densities, Point3* p,
         tris[end].sample_point(sample01, r1, NULL, p, n);
         return;
     }
-    
+
     //find the sampled triangle by using cumulative areas (cdf)
     while(true)
     {

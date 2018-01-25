@@ -36,29 +36,29 @@ class Vec2
 {
 private:
 public:
-    
+
     /** \brief x component
      *
      * A single precision floating point representing the x component
      * of the vector
      */
     float x;
-    
+
     /** \brief y component
      *
      * A single precision floating point representing the y component
      * of the vector
      */
     float y;
-    
-    
+
+
     /**
      *  \brief Default Constructor
      *
      *  Construct a vector of two elements with x = 0 e y = 0
      */
     Vec2();
-    
+
     /**
      *  \brief Constructor, given x and y
      *
@@ -68,7 +68,7 @@ public:
      *  \param[in] y A float representing the y component of the vector
      */
     Vec2(float x, float y);
-    
+
     /**
      *  \brief Constructor, given equal components
      *  Construct a vector of two elements with the same given value
@@ -76,7 +76,7 @@ public:
      *  \param[in] xy A float representing the x and y components
      */
     Vec2(float xy);
-    
+
     /**
      *  \brief Constructor, given an array
      *
@@ -87,10 +87,10 @@ public:
      *  \warning It is not checked if \p xy is a valid pointer
      */
     Vec2(const float* xy);
-    
+
     ///Default destructor
     ~Vec2() = default;
-    
+
     /**
      * \brief Returns the length of the vector
      *
@@ -98,7 +98,7 @@ public:
      * \sa lengthSquared()
      */
     float length()const;
-    
+
     /**
      * \brief Returns the squared length of the vector
      *
@@ -106,14 +106,14 @@ public:
      * \sa length()
      */
     float lengthSquared()const;
-    
+
     /** \brief Normalize this vector
      *
      * \warning The input length is not checked, a 0-length vector will result
      *  in a division by zero
      */
     void normalize();
-    
+
     /**  \brief Check if the current vector is normalized
      *
      *  \return A boolean value indicating whether the vector is normalized or
@@ -121,7 +121,7 @@ public:
      *  \sa normalize()
      */
     bool is_normalized()const;
-    
+
     /**
      *  \brief Represent this vector with an array
      *
@@ -133,7 +133,7 @@ public:
      *  \sa toString()
      */
     void toArray(float* values)const;
-    
+
     /**
      *  \brief Represent this vector with a C-string
      *
@@ -146,7 +146,7 @@ public:
      *  \sa toArray()
      */
     char* toString()const;
-    
+
     /**
      *  \brief Clamp this vector by restricting it between two boundaries
      *
@@ -158,13 +158,13 @@ public:
      *  \sa saturate()
      */
     void clamp(const Vec2& min, const Vec2& max);
-    
+
     /**
      *  \brief Clamp this vector in the interval [0-1]
      *  \sa clamp(const Vec2* min, const Vec2* max)
      */
     void saturate();
-    
+
     /**
      *  \brief Compute the distance from another vector
      *
@@ -175,7 +175,7 @@ public:
      *  \return A float representing the distance from the \p target vector
      */
     float distanceTo(const Vec2& target)const;
-    
+
     /**
      *  \brief Compute the dot product
      *
@@ -186,7 +186,7 @@ public:
      *  \return A float representing the dot product
      */
     float dot(const Vec2& target)const;
-    
+
     /**
      *  \brief Compute the max value between two vectors
      *
@@ -197,7 +197,7 @@ public:
      *  \sa min(const Vec2 vector2)
      */
     void max(const Vec2& vector2);
-    
+
     /**
      *  \brief Compute the min value between two vectors
      *
@@ -208,9 +208,9 @@ public:
      *  \sa max(const Vec2 vector2)
      */
     void min(const Vec2& vector2);
-    
+
     //------ Operators ---------------------------------------------------------
-    
+
     ///The addition operation between two vectors
     Vec2 operator+(const Vec2&)const;
     ///The addition operation between a vector and a float
@@ -251,9 +251,9 @@ public:
     bool operator==(const Vec2&)const;
     ///Check if two vector are different
     bool operator!=(const Vec2&)const;
-    
+
     //--------------------------------------------------------------------------
-    
+
 };
 
 
@@ -363,7 +363,7 @@ inline float distance(const Vec2 source, const Vec2 target)
 {
     float x = target.x - source.x;
     float y = target.y - source.y;
-    
+
     return std::sqrt((x * x) + (y * y));
 }
 
@@ -405,7 +405,7 @@ inline Vec2 max(const Vec2 vector1, const Vec2 vector2)
         y = vector1.y;
     else
         y = vector2.y;
-    
+
     return Vec2(x,y);
 }
 
@@ -431,7 +431,7 @@ inline Vec2 min (const Vec2 vector1, const Vec2 vector2)
         y = vector1.y;
     else
         y = vector2.y;
-    
+
     return Vec2(x,y);
 }
 

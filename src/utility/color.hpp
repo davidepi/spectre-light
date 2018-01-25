@@ -67,13 +67,13 @@ public:
      *  \return true if every component is zero
      */
     bool is_black()const;
-    
+
     ///Red or x component
     float r;
-    
+
     ///Green or y component
     float g;
-    
+
     ///Blue or z component
     float b;
 
@@ -163,7 +163,7 @@ public:
      *  \sa ColorRGB(float,float,float)
      */
     ColorRGB(unsigned char r, unsigned char g, unsigned char b);
-   
+
     /** \brief Convert this RGB to the XYZ representation
      *
      *  Convert the color representation from RGB (sRGB color space assumed)
@@ -206,14 +206,14 @@ public:
      *  \param[in] z The value of the Z component
      */
     ColorXYZ(float x, float y, float z);
-    
+
     /** \brief Convert this XYZ to the sRGB representation
      *
      *  Convert the color representation from CIE 1931 XYZ to sRGB, assuming
      *  a D65 Illuminant as white
      */
     ColorRGB to_sRGB()const;
-    
+
     /** \brief Convert this XYZ to the Adobe RGB representation
      *
      *  Convert the color representation from CIE 1931 XYZ to Adobe RGB, 

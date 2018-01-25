@@ -31,7 +31,7 @@
 class Asset
 {
 public:
-    
+
     /** \brief Construct an asset, given the underlying shape
      *
      *  \param[in] sp A pointer to the Shape wrapped in this class
@@ -39,16 +39,16 @@ public:
      *  the shape
      */
     Asset(const Shape* sp, const Matrix4& transform);
-    
+
     ///Default destructor
     virtual ~Asset() = default;
-    
+
     /** \brief Return the ID of this asset
      *
      *  \return A unsigned int representing the ID of this asset
      */
     unsigned int get_id()const;
-    
+
     /** \brief Intersection of a Ray and this asset
      *
      *  Calls the intersection routine on the underlying shape.
@@ -60,7 +60,7 @@ public:
      *  intersection point
      */
     bool intersect(const Ray* r,float* distance, HitPoint* h)const;
-    
+
     /** \brief Intersection of a Ray and the bounding box of the asset
      *
      *  Calls the intersection routine on the bounding box of this shape
@@ -73,7 +73,7 @@ public:
      */
     bool intersect_AABB(const Ray* r, const RayProperties* rp,
                        float* entry_point, float* exit_point)const;
-    
+
     /** \brief Return a pointer to the AABB
      *
      *  Return a constant pointer to the axis aligned bounding box surrounding
@@ -106,7 +106,7 @@ public:
      *  \return true if the asset is a light
      */
     virtual bool is_light()const;
-    
+
 protected:
 
     ///Underlying model

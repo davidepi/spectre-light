@@ -5,7 +5,7 @@
 
 TentFilter::TentFilter(float x_range, float y_range) : Filter(x_range, y_range)
 {
-    
+
 }
 
 float TentFilter::weight(float offset_x, float offset_y)const

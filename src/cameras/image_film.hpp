@@ -38,16 +38,16 @@
 ///Used to store the weigthed average for every pixel
 struct Pixel
 {
-    
+
     ///The CIE X value, from 0.0 to 1.0
     float cie_x;
-    
+
     ///The CIE Y value, from 0.0 to 1.0
     float cie_y;
-    
+
     ///The CIE Z value, from 0.0 to 1.0
     float cie_z;
-    
+
     /**
      *  The weight of the various samples added. The final values of r,g and b
      *  have to be divided by this number
@@ -58,42 +58,42 @@ struct Pixel
 ///Like the Pixel struct, but with the added x and y position on the image plane
 struct TodoPixel
 {
-	///The CIE X value, from 0.0 to 1.0
-	float cie_x;
+    ///The CIE X value, from 0.0 to 1.0
+    float cie_x;
 
-	///The CIE Y value, from 0.0 to 1.0
-	float cie_y;
+    ///The CIE Y value, from 0.0 to 1.0
+    float cie_y;
 
-	///The CIE Z vale, from 0.0 to 1.0
-	float cie_z;
+    ///The CIE Z vale, from 0.0 to 1.0
+    float cie_z;
 
-	///The weight of the various samples added
-	float samples;
+    ///The weight of the various samples added
+    float samples;
 
-	///The x position of the pixel on the image plane
-	int x;
+    ///The x position of the pixel on the image plane
+    int x;
 
-	///The y position of the pixel on the image plane
-	int y;
+    ///The y position of the pixel on the image plane
+    int y;
 };
 
 ///The thread's personal rendered area and where to put the critical pixels
 struct ExecutorData
 {
-	///The starting x point of the sub-image
-	int startx;
+    ///The starting x point of the sub-image
+    int startx;
 
-	///The ending x point of the sub-image
-	int endx;
+    ///The ending x point of the sub-image
+    int endx;
 
-	///The starting y point of the sub-image
-	int starty;
+    ///The starting y point of the sub-image
+    int starty;
 
-	///The ending y point of the sub-image
-	int endy;
+    ///The ending y point of the sub-image
+    int endy;
 
-	///If the pixel is in a critical area it will be put here
-	std::stack<TodoPixel> deferred;
+    ///If the pixel is in a critical area it will be put here
+    std::stack<TodoPixel> deferred;
 };
 
 /**
@@ -110,7 +110,7 @@ struct ExecutorData
 class ImageFilm
 {
 public:
-    
+
     /** \brief Construct an empty image
      *
      *  Cosntruct an empty image with the given width, height and filename.
@@ -121,13 +121,13 @@ public:
      *  \param[in] filename The name of the output image
      */
     ImageFilm(int width, int height, const char* filename);
-    
+
     ///Default destructor
     ~ImageFilm();
-    
+
     /** \brief Add a sample to this image
      *
-     *  After rendering the image for every Sample there will be a resulting 
+     *  After rendering the image for every Sample there will be a resulting
      *  Color.
      *  However, Sample and Color are part of a continuous function, whereas the
      *  pixel are discrete. This method maps these continuous values to the
@@ -135,51 +135,51 @@ public:
      *  weighted way. The weight is defined by the filter.
      *
      *  If the pixel to be updated is in a critical area, outside of the
-	 *	ExecutorData bounds, the pixel is put in the ExecutorData stack for
-	 *	deferred processing
-	 *
+     *  ExecutorData bounds, the pixel is put in the ExecutorData stack for
+     *  deferred processing
+     *
      *  \warning By default filter is unset, remember to set it with
      *  ImageOutput::set_filter
      *
      *  \param[in] sample The sampled point
      *  \param[in] color The color value of the sampled point
-	 *	\param[in,out] area A struct containing the rendered sub-image
+     *  \param[in,out] area A struct containing the rendered sub-image
      *  coordinates and where to put the pixel values that cannot be updated.
      *  For these values a mutex will be used.
-	 *	\sa deferred_add_pixel(const ExecutorData* ex);
-	 *	\sa add_pixel_forced(const ExecutorData* ex);
+     *  \sa deferred_add_pixel(const ExecutorData* ex);
+     *  \sa add_pixel_forced(const ExecutorData* ex);
      */
     void add_pixel(const Sample* sample, ColorXYZ color, ExecutorData* area);
 
 
-	/** \brief Attempts the addition of pixels in critical areas
-	 *	
-	 *	When using the add_pixel method, every pixel that could be influenced by
-	 *	samples of other rendering threads is saved on the ExecutorData struct.
-	 *	This method tries the addition of these values in a thread safe way.
-	 * 	If the mutex is already locked nothing is done, in the other case the
-	 *	ExecutorData stack is emptied
-	 *
-	 *	\param[in] area The struct containing all the pixel values that will be
-	 *	updated
-	 *	\sa add_pixel(const Sample* sample, const Color* c, ExecutorData* ex);
-	 *	\sa add_pixel_forced(ExecutorData* ex);
-	 */
-	void add_pixel_deferred(ExecutorData* area);
+    /** \brief Attempts the addition of pixels in critical areas
+     *
+     *  When using the add_pixel method, every pixel that could be influenced by
+     *  samples of other rendering threads is saved on the ExecutorData struct.
+     *  This method tries the addition of these values in a thread safe way.
+     *  If the mutex is already locked nothing is done, in the other case the
+     *  ExecutorData stack is emptied
+     *
+     *  \param[in] area The struct containing all the pixel values that will be
+     *  updated
+     *  \sa add_pixel(const Sample* sample, const Color* c, ExecutorData* ex);
+     *  \sa add_pixel_forced(ExecutorData* ex);
+     */
+    void add_pixel_deferred(ExecutorData* area);
 
-	/** \brief Force the addition of pixels in critical areas
-	 *	
-	 *	When using the add_pixel method, every pixel that could be influenced by
-	 *	samples of other rendering threads is saved on the ExecutorData struct.
-	 *	This method force the addition of these values in a thread safe way.
-	 *
-	 *	\param[in] data The struct containing all the pixel values that will be
-	 *	updated
-	 *	\sa add_pixel(const Sample* sample, const Color* c, ExecutorData* ex);
-	 *	\sa add_pixel_deferred(const ExecutorData* ex);
-	 */
-	void add_pixel_forced(ExecutorData* data);
-    
+    /** \brief Force the addition of pixels in critical areas
+     *
+     *  When using the add_pixel method, every pixel that could be influenced by
+     *  samples of other rendering threads is saved on the ExecutorData struct.
+     *  This method force the addition of these values in a thread safe way.
+     *
+     *  \param[in] data The struct containing all the pixel values that will be
+     *  updated
+     *  \sa add_pixel(const Sample* sample, const Color* c, ExecutorData* ex);
+     *  \sa add_pixel_deferred(const ExecutorData* ex);
+     */
+    void add_pixel_forced(ExecutorData* data);
+
     /** \brief Set a Filter for this image
      *
      *  Sets the Filter that will be used to filter the various samples and
@@ -188,7 +188,7 @@ public:
      *  \param[in] filter A pointer to the filter that will be used
      */
     void set_filter(Filter* filter);
-    
+
     /** \brief Store the image on the disk
      *
      *  After adding every sample, by calling this method the resulting image
@@ -198,27 +198,27 @@ public:
      *  \return true if the image has been stored, false otherwise
      */
     bool save_image();
-    
+
 private:
-    
+
     //width of the image
     const int width;
-    
+
     //height of the image
     const int height;
-    
+
     //filter
     Filter* filter;
-    
+
     //the buffer of the image
     Pixel* buffer;
-    
+
     //filename of the image
     char* filename;
-    
+
     //extesion of the file, using the defines at the beginning of this .hpp
     char extension;
-    
+
     //mutex for concurrent write
     std::mutex mtx;
 };

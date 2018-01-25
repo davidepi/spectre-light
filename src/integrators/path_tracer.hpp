@@ -67,5 +67,4 @@ private:
                    OcclusionTester *ot)const;
 };
 
-
 #endif

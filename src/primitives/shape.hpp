@@ -33,18 +33,18 @@ struct HitPoint;
 class Shape
 {
 public:
-    
+
     ///Default constructor
     Shape();
-    
+
     ///Default destructor
     virtual ~Shape() = default;
-    
+
     /** \brief Return the ID of this shape
      *  \return A unsigned int representing the ID of this shape
      */
     unsigned int get_id()const;
-    
+
     /** \brief Intersection of a Ray and this shape
      *
      *  In its implementations, this method should try to intersect a ray passed
@@ -63,7 +63,7 @@ public:
      *  \param[out] h Details on the hit point on the surface
      */
     virtual bool intersect(const Ray* r,float* distance, HitPoint* h)const=0;
-    
+
     /** \brief Recalculate the AABB
      *
      *  In its implementations, this method should return an AABB that can fit
@@ -72,7 +72,7 @@ public:
      *  \return an AABB representing the calculated bounding box
      */
     virtual AABB compute_AABB()const = 0;
-    
+
     /** \brief Recalculate the AABB, in world space units
      *
      *  In its implementations, this method should return an AABB that can fit
@@ -85,7 +85,7 @@ public:
      *  \return an AABB representing the world space bounding box
      */
     virtual AABB compute_AABB(const Matrix4* trans)const = 0;
-    
+
     /** \brief Return the surface of the shape
      *
      *  In its implementations, this method should compute the surface area of
@@ -94,7 +94,7 @@ public:
      *  \return A float representing the area of the shape in object-space units
      */
     virtual float surface()const = 0;
-    
+
     /** \brief Return the surface of the shape after the transformation
      *
      *  In its implementations, this method should compute the surface area of
@@ -104,7 +104,7 @@ public:
      *  considering also the scaling factor of the transform matrix
      */
     virtual float surface(const Matrix4* transform)const = 0;
-    
+
     /** \brief Return the number of face of the shape
      *
      *  Useful only for Mesh objects, this function returns the number of tris
@@ -114,7 +114,7 @@ public:
      *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
      */
     virtual int get_faces_number()const;
-    
+
     /** \brief Populate the cumulative densities array
      *
      *  For this specific class, nothing is done. Check subclasses
@@ -137,8 +137,8 @@ public:
      */
     virtual void sample_point(float r, float r1, const float* densities,
                                 Point3* p, Normal* n)const = 0;
-    
-    
+
+
 private:
     //id of the shape
     const unsigned int id;

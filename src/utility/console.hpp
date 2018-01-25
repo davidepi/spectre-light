@@ -21,10 +21,10 @@
 #include <iostream> //std::wcout, std::cout
 
 ///Version of the software
-#define SPECTRE_VERSION "0.1.0 [NIGHTLY BUILD]"
+#define SPECTRE_VERSION "0.1.1"
 
 ///Release date of this version
-#define SPECTRE_RELEASE "Dec  3 2017"
+#define SPECTRE_RELEASE "Jan 25 2018"
 
 /**
  * \class Console Console.hpp "utility/console.hpp"
@@ -38,20 +38,20 @@
 class Console
 {
 public:
-    
+
     ///Get an instance of the console
     static Console& getInstance()
     {
         static Console instance;
         return instance;
     }
-    
+
     ///Avoid a copy of the object
     Console(Console const&) = delete;
-    
+
     ///Avoid a copy of the object
     void operator=(Console const&) = delete;
-    
+
     /** \brief Log a message
      *
      *  Log a message in the console
@@ -70,7 +70,7 @@ public:
      *  \sa critical(const char* message)
      */
     void log(const char* message, const char* verbose);
-    
+
     /** \brief Log a message
      *
      *  Log a message in the console with a severity of "Notice"
@@ -86,7 +86,7 @@ public:
      *  \sa critical(const char* message)
      */
     void notice(const char* message);
-    
+
     /** \brief Log a message
      *
      *  Log a message in the console with a severity of "Warning"
@@ -102,7 +102,7 @@ public:
      *  \sa critical(const char* message)
      */
     void warning(const char* message);
-    
+
     /** \brief Log a message
      *
      *  Log a message in the console with a severity of "Error"
@@ -118,7 +118,7 @@ public:
      *  \sa critical(const char* message)
      */
     void severe(const char* message);
-    
+
     /** \brief Log a message and kill the program
      *
      *  Log a message in the console with a severity of "Critical", then quit
@@ -135,7 +135,7 @@ public:
      *  \sa severe(const char* message)
      */
     void critical(const char* message);
-    
+
     /** \brief Log a message, after evaluating a condition
      *
      *  Evaluate a condition, and if it is true, log a message in the console
@@ -155,7 +155,7 @@ public:
      *  \sa critical(bool condition, const char* message)
      */
     void log(bool condition, const char* message, const char* verbose);
-    
+
     /** \brief Log a message, after evaluating a condition
      *
      *  Evaluate a condition, and if it is true, log a message in the console
@@ -173,7 +173,7 @@ public:
      *  \sa critical(bool condition, const char* message)
      */
     void notice(bool condition, const char* message);
-    
+
     /** \brief Log a message, after evaluating a condition
      *
      *  Evaluate a condition, and if it is true, log a message in the console
@@ -191,7 +191,7 @@ public:
      *  \sa critical(bool condition, const char* message)
      */
     void warning (bool condition, const char* message);
-    
+
     /** \brief Log a message, after evaluating a condition
      *
      *  Evaluate a condition, and if it is true, log a message in the console
@@ -209,7 +209,7 @@ public:
      *  \sa critical(bool condition, const char* message)
      */
     void severe  (bool condition, const char* message);
-    
+
     /** \brief Log a message, after evaluating a condition, then kill the 
      *  program
      *
@@ -243,10 +243,10 @@ public:
     void progress_bar_done()const;
 
 private:
-    
+
     //constructor
     Console();
-    
+
     //the first message printed to the console
     void motd();
 };

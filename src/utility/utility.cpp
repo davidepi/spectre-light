@@ -20,7 +20,7 @@ void format_seconds(unsigned int secs, char* out)
         mins%=60;
         int days = hours/24;
         hours%=24;
-        
+
         //not the most efficient sol, but this is used once in the whole program
         if(days>0)
             sprintf(out,"%dd ",days);
