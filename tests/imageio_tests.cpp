@@ -30,6 +30,37 @@ TEST(ImageIO,save_ppm)
     EXPECT_FALSE(res);
 }
 
+TEST(ImageIO,size_ppm)
+{
+    int width;
+    int height;
+    size_ppm("nonexistent.ppm", &width, &height);
+    EXPECT_EQ(width, IMAGE_NOT_READABLE);
+    EXPECT_EQ(height, IMAGE_NOT_READABLE);
+    width = 0;
+    height = 0;
+    size_ppm(TEST_ASSETS "wrong_magic1.ppm", &width, &height);
+    EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
+    EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
+    width = 0;
+    height = 0;
+    size_ppm(TEST_ASSETS "wrong_magic2.ppm", &width, &height);
+    EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
+    EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
+    width = 0;
+    height = 0;
+    size_ppm(TEST_ASSETS "multiple_spaces.ppm", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    width = 0;
+    height = 0;
+    size_ppm(TEST_ASSETS "binary.ppm", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    width = 0;
+    height = 0;
+}
+
 TEST(ImageIO,save_bmp)
 {
     char file_stat[64];

@@ -20,6 +20,31 @@ bool save_ppm(const char* name, int width, int height, const uint8_t* array)
     }
 }
 
+void dimensions_ppm(const char* name, int* width, int* height)
+{
+    FILE* fin = fopen(name,"rb");
+    if(fin!=NULL)
+    {
+        char magic[2];
+        fscanf(fin,"%c%c",magic+0,magic+1);
+        if(magic[0]=='P' && (magic[1]=='3' || magic[1]=='6'))
+        {
+            fscanf(fin,"%d%d",width,height);
+        }
+        else
+        {
+            *width = IMAGE_WRONG_MAGIC;
+            *height = IMAGE_WRONG_MAGIC;
+        }
+        fclose(fin);
+    }
+    else
+    {
+        *width = IMAGE_NOT_READABLE;
+        *height = IMAGE_NOT_READABLE;
+    }
+}
+
 bool save_bmp(const char* name, int width, int height, const uint8_t* data)
 {
     FILE* fout = fopen(name,"wb");
