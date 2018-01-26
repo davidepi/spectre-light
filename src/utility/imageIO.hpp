@@ -14,6 +14,8 @@
 #ifndef __IMAGEIO_HPP__
 #define __IMAGEIO_HPP__
 
+///Image read succesfully
+#define IMAGE_OK 0
 ///Error code used when the image is not found or not readable
 #define IMAGE_NOT_READABLE -1
 ///Error code used when the image extension does not match the magic number
@@ -37,7 +39,7 @@ bool save_ppm(const char* name, int width, int height, const uint8_t* data);
 
 /** \brief Determine width and height of an image in the PPM format
  *
- *  This method opens a saved image in the PPM format, either binary of ASCII,
+ *  This method opens a saved image in the PPM format, either binary or ASCII,
  *  and saves its width and height in the two pointers passed as input. If the
  *  image is not readable or not a PPM file, the width and height are set to the
  *  corresponding error code.
@@ -45,10 +47,30 @@ bool save_ppm(const char* name, int width, int height, const uint8_t* data);
  *  file
  *
  *  \param[in] name The path of the image
- *  \param[out] width The width of the image
- *  \param[out] height The height of the image
+ *  \param[out] width The width of the image, error code if something went wrong
+ *  \param[out] height The height of the image, error code if something went
+ *  wrong
  */
 void dimensions_ppm(const char* name, int* width, int* height);
+
+/** \brief Read an image in the PPM format
+ *
+ *  This method reads an image in the PPM format, either binary or ASCII, and
+ *  saves the value of the pixels in the data array. The data array is an array
+ *  of length width*height*3 and stores values as floats in the range [0.0, 1.0]
+ *  The components are stored in the order R,G,B and no alpha channel is
+ *  supported due to the PPM specification. If the binary PPM file has a color
+ *  depth higher than 24 bits per pixel, the values are assumed to be in Big
+ *  Endian orded (Most significant byte first). Upon completition the function
+ *  returns IMAGE_OK if the read succeded, or a proper error code. The list of
+ *  error codes can be found at the beginning of the imageIO.hpp file
+ *
+ *  \param[in] name The path of the image
+ *  \param[out] data An array of size width*height*3 that will hold the values of
+ *  the image
+ *  \return IMAGE_OK if everything was ok, otherwise a proper error code
+ */
+int read_ppm(const char* name, float* data);
 
 /** \brief Save an image in the BMP format
  *

@@ -130,10 +130,3 @@ TEST(Scene,get_lights)
         EXPECT_TRUE(lights[i]->is_light());
 }
 
-TEST(Scene,swap_endianness)
-{
-    unsigned int a = 1518819910U;
-    unsigned int res = swap_endianness(a);
-    EXPECT_EQ(res,1180338010U);
-}
-

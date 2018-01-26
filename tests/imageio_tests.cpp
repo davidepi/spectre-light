@@ -30,35 +30,123 @@ TEST(ImageIO,save_ppm)
     EXPECT_FALSE(res);
 }
 
-TEST(ImageIO,size_ppm)
+TEST(ImageIO,dimensions_ppm)
 {
     int width;
     int height;
-    size_ppm("nonexistent.ppm", &width, &height);
+    //non existent
+    dimensions_ppm("nonexistent.ppm", &width, &height);
     EXPECT_EQ(width, IMAGE_NOT_READABLE);
     EXPECT_EQ(height, IMAGE_NOT_READABLE);
     width = 0;
     height = 0;
-    size_ppm(TEST_ASSETS "wrong_magic1.ppm", &width, &height);
+    //first letter of the magic number is wrong
+    dimensions_ppm(TEST_ASSETS "wrong_magic1.ppm", &width, &height);
     EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
     EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
     width = 0;
     height = 0;
-    size_ppm(TEST_ASSETS "wrong_magic2.ppm", &width, &height);
+    //second letter of the magic number is wrong
+    dimensions_ppm(TEST_ASSETS "wrong_magic2.ppm", &width, &height);
     EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
     EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
     width = 0;
     height = 0;
-    size_ppm(TEST_ASSETS "multiple_spaces.ppm", &width, &height);
+    //multiple spaces in the image
+    dimensions_ppm(TEST_ASSETS "multiple_spaces.ppm", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     width = 0;
     height = 0;
-    size_ppm(TEST_ASSETS "binary.ppm", &width, &height);
+    //binary image
+    dimensions_ppm(TEST_ASSETS "binary.ppm", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     width = 0;
     height = 0;
+}
+
+TEST(ImageIO,read_ppm)
+{
+    int res;
+    //+1 is used later to check stack overflows
+    float data[4*3+1];
+    //non existent
+    res = read_ppm("nonexistent.ppm", data);
+    EXPECT_EQ(res, IMAGE_NOT_READABLE);
+    //first letter of the magic number is wrong
+    res = read_ppm(TEST_ASSETS "wrong_magic1.ppm", data);
+    EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
+    //second letter of the magic number is wrong
+    res = read_ppm(TEST_ASSETS "wrong_magic2.ppm", data);
+    EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
+    //read image with normal depth (ASCII)
+    res = read_ppm(TEST_ASSETS "multiple_spaces.ppm", data);
+    EXPECT_FLOAT_EQ(data[0], 1.f);
+    EXPECT_FLOAT_EQ(data[1], 1.f);
+    EXPECT_FLOAT_EQ(data[2], 1.f);
+    EXPECT_FLOAT_EQ(data[3], 0.f);
+    EXPECT_FLOAT_EQ(data[4], 0.f);
+    EXPECT_FLOAT_EQ(data[5], 0.f);
+    EXPECT_FLOAT_EQ(data[6], 0.f);
+    EXPECT_FLOAT_EQ(data[7], 0.f);
+    EXPECT_FLOAT_EQ(data[8], 0.f);
+    EXPECT_FLOAT_EQ(data[9], 1.f);
+    EXPECT_FLOAT_EQ(data[10], 1.f);
+    EXPECT_FLOAT_EQ(data[11], 1.f);
+    EXPECT_EQ(res,IMAGE_OK);
+    bzero(data,12);
+    //read image with high depth (ASCII)
+    res = read_ppm(TEST_ASSETS "p3_high_depth.ppm", data);
+    EXPECT_FLOAT_EQ(data[0], 1.f);
+    EXPECT_FLOAT_EQ(data[1], 1.f);
+    EXPECT_FLOAT_EQ(data[2], 1.f);
+    EXPECT_FLOAT_EQ(data[3], 0.f);
+    EXPECT_FLOAT_EQ(data[4], 0.f);
+    EXPECT_FLOAT_EQ(data[5], 0.f);
+    EXPECT_FLOAT_EQ(data[6], 0.f);
+    EXPECT_FLOAT_EQ(data[7], 0.f);
+    EXPECT_FLOAT_EQ(data[8], 0.f);
+    EXPECT_FLOAT_EQ(data[9], 1.f);
+    EXPECT_FLOAT_EQ(data[10], 1.f);
+    EXPECT_FLOAT_EQ(data[11], 1.f);
+    EXPECT_EQ(res,IMAGE_OK);
+    bzero(data,12);
+    //read image with normal depth (binary) no stack_overflow
+    res = read_ppm(TEST_ASSETS "binary.ppm", data);
+    EXPECT_FLOAT_EQ(data[0], 1.f);
+    EXPECT_FLOAT_EQ(data[1], 1.f);
+    EXPECT_FLOAT_EQ(data[2], 1.f);
+    EXPECT_FLOAT_EQ(data[3], 0.f);
+    EXPECT_FLOAT_EQ(data[4], 0.f);
+    EXPECT_FLOAT_EQ(data[5], 0.f);
+    EXPECT_FLOAT_EQ(data[6], 0.f);
+    EXPECT_FLOAT_EQ(data[7], 0.f);
+    EXPECT_FLOAT_EQ(data[8], 0.f);
+    EXPECT_FLOAT_EQ(data[9], 1.f);
+    EXPECT_FLOAT_EQ(data[10], 1.f);
+    EXPECT_FLOAT_EQ(data[11], 1.f);
+    EXPECT_EQ(res,IMAGE_OK);
+    bzero(data,12);
+    //read image that claims to be 2x2 but contains a lot more
+    //bytes
+    data[4*3] = (float)0x2B; //random val, check that this is unchanged
+    res = read_ppm(TEST_ASSETS "binary_stackoverflow.ppm", data);
+    EXPECT_FLOAT_EQ(data[0], 1.f);
+    EXPECT_FLOAT_EQ(data[1], 1.f);
+    EXPECT_FLOAT_EQ(data[2], 1.f);
+    EXPECT_FLOAT_EQ(data[3], 0.f);
+    EXPECT_FLOAT_EQ(data[4], 0.f);
+    EXPECT_FLOAT_EQ(data[5], 0.f);
+    EXPECT_FLOAT_EQ(data[6], 0.f);
+    EXPECT_FLOAT_EQ(data[7], 0.f);
+    EXPECT_FLOAT_EQ(data[8], 0.f);
+    EXPECT_FLOAT_EQ(data[9], 1.f);
+    EXPECT_FLOAT_EQ(data[10], 1.f);
+    EXPECT_FLOAT_EQ(data[11], 1.f);
+    EXPECT_FLOAT_EQ(data[12], (float)0x2B);
+    EXPECT_EQ(res,IMAGE_OK);
+    bzero(data,12);
 }
 
 TEST(ImageIO,save_bmp)

@@ -291,6 +291,18 @@ inline uint32_t swap_endianness(uint32_t num)
           ((num & 0x00FF0000) >>  8) | ((num & 0xFF000000) >> 24);
 }
 
+/** \brief Swap endianness (16-bit)
+ *
+ *  Convert a big endian number to a little endian one and vice-versa
+ *
+ *  \param[in] num The number that will be converted
+ *  \return The same number but in another endianness
+ */
+inline uint16_t swap_endianness(uint16_t num)
+{
+    return ((num & 0x00FF) << 8) | ((num & 0xFF00) >> 8);
+}
+
 //define some structures useful to check if the program fired any kind of errors
 #ifdef _TEST_
 #define LOG_INDEX 0

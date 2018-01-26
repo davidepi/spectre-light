@@ -196,6 +196,19 @@ TEST(Utility,equation2)
     EXPECT_FLOAT_EQ(sol1,1.31240487f);
     EXPECT_FLOAT_EQ(sol2,1.31240487f);
     EXPECT_TRUE(res);
+}
 
+TEST(Utility,swap_endianness_32_bit)
+{
+    uint32_t a = 1518819910U;
+    uint32_t res = swap_endianness(a);
+    EXPECT_EQ(res,1180338010U);
+}
+
+TEST(Utility,swap_endianness_16_bit)
+{
+    uint16_t a = 41515U;
+    uint16_t res = swap_endianness(a);
+    EXPECT_EQ(res,11170U);
 }
 

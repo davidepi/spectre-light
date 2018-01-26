@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "imageIO.hpp"
+#define READ_BUFFER 4096
 
 bool save_ppm(const char* name, int width, int height, const uint8_t* array)
 {
@@ -43,6 +44,80 @@ void dimensions_ppm(const char* name, int* width, int* height)
         *width = IMAGE_NOT_READABLE;
         *height = IMAGE_NOT_READABLE;
     }
+}
+
+int read_ppm(const char* name, float* data)
+{
+    FILE* fin = fopen(name,"rb");
+    int retval;
+    if(fin!=NULL)
+    {
+        char magic[2];
+        fscanf(fin,"%c%c",magic+0,magic+1);
+        //check magic number to determine if ASCII or binary
+        if(magic[0]=='P')
+        {
+            int width;
+            int height;
+            uint16_t depth_short;
+            fscanf(fin,"%d%d%hd",&width,&height,&depth_short);
+            //not my fucking problem if the depth is > 65536
+            //the specification states that the aforementioned value is the max
+            float depth = (float)depth_short;
+            if(magic[1]=='3') //ASCII
+            {
+                char val[6];
+                uint16_t num_val;
+                for(int i=0;i<width*height*3;i++)
+                {
+                    fscanf(fin,"%5s",val);
+                    sscanf(val,"%hd",&num_val);
+                    data[i]=num_val/depth;
+                }
+                retval = IMAGE_OK;
+            }
+            else if(magic[1]=='6') //Binary
+            {
+                //skip 1 space, after the depth
+                //by specification this will ALWAYS be ONE space or newline
+                //so no \n\r or other windows shits
+                fseek(fin,1,SEEK_CUR);
+                if(depth_short<=255)//1 byte per component
+                {
+                    uint8_t values[READ_BUFFER];
+                    int i=0;
+                    size_t read;
+                    //read a pixel block of READ_BUFFER size
+                    while((read = fread(values,1,READ_BUFFER,fin))>0)
+                    {
+                        //read more byte than expected from the image dimensions
+                        if(i+read>=width*height*3)
+                        {
+                            //set the read as the maximum size - written bytes
+                            //-1 because arrays are 0 based
+                            read = width*height*3-1-i;
+                        }
+                        //everything is normal
+                        for(int j=0;j<read;j++)
+                            data[i++] = values[j]/255.f;
+                    }
+                    retval = IMAGE_OK;
+                }
+                else//2 bytes per component, high depth
+                {
+                    retval = IMAGE_OK;
+                }
+            }
+            else
+                retval = IMAGE_WRONG_MAGIC;
+        }
+        else
+            retval = IMAGE_WRONG_MAGIC;
+        fclose(fin);
+    }
+    else
+        retval = IMAGE_NOT_READABLE;
+    return retval;
 }
 
 bool save_bmp(const char* name, int width, int height, const uint8_t* data)
