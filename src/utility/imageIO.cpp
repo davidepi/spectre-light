@@ -57,10 +57,10 @@ int read_ppm(const char* name, float* data)
         //check magic number to determine if ASCII or binary
         if(magic[0]=='P')
         {
-            int width;
-            int height;
+            unsigned int width;
+            unsigned int height;
             uint16_t depth_short;
-            fscanf(fin,"%d%d%hd",&width,&height,&depth_short);
+            fscanf(fin,"%d%d%hu",&width,&height,&depth_short);
             //not my fucking problem if the depth is > 65536
             //the specification states that the aforementioned value is the max
             float depth = (float)depth_short;
@@ -68,10 +68,10 @@ int read_ppm(const char* name, float* data)
             {
                 char val[6];
                 uint16_t num_val;
-                for(int i=0;i<width*height*3;i++)
+                for(unsigned int i=0;i<width*height*3U;i++)
                 {
                     fscanf(fin,"%5s",val);
-                    sscanf(val,"%hd",&num_val);
+                    sscanf(val,"%hu",&num_val);
                     data[i]=num_val/depth;
                 }
                 retval = IMAGE_OK;
@@ -85,26 +85,51 @@ int read_ppm(const char* name, float* data)
                 if(depth_short<=255)//1 byte per component
                 {
                     uint8_t values[READ_BUFFER];
-                    int i=0;
+                    unsigned int i=0;
                     size_t read;
                     //read a pixel block of READ_BUFFER size
                     while((read = fread(values,1,READ_BUFFER,fin))>0)
                     {
                         //read more byte than expected from the image dimensions
-                        if(i+read>=width*height*3)
+                        if(i+read>=width*height*3U)
                         {
                             //set the read as the maximum size - written bytes
                             //-1 because arrays are 0 based
-                            read = width*height*3-1-i;
+                            read = width*height*3U-1U-i;
                         }
                         //everything is normal
-                        for(int j=0;j<read;j++)
-                            data[i++] = values[j]/255.f;
+                        for(unsigned int j=0;j<read;j++)
+                            data[i++] = values[j]/depth;
                     }
                     retval = IMAGE_OK;
                 }
                 else//2 bytes per component, high depth
                 {
+                    uint16_t values[READ_BUFFER];
+                    unsigned int i=0;
+                    size_t read;
+                    //read a pixel block of READ_BUFFER size
+                    while((read = fread(values,2,READ_BUFFER,fin))>0)
+                    {
+                        //read is written as size_t*count, but I want only count
+                        read/=2;
+                        //read more byte than expected from the image dimensions
+                        if(i+read>=width*height*3U)
+                        {
+                            //set the read as the maximum size - written bytes
+                            //-1 because arrays are 0 based
+                            read = width*height*3U-1U-i;
+                        }
+                        //everything is normal
+                        for(unsigned int j=0;j<read;j++)
+                        {
+#ifdef IS_BIG_ENDIAN
+                            data[i++] = values[j]/depth;
+#else
+                            data[i++] = swap_endianness(values[j])/depth;
+#endif
+                        }
+                    }
                     retval = IMAGE_OK;
                 }
             }

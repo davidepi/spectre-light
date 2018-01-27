@@ -1,12 +1,12 @@
 //Created,  27 Nov 2017
-//Last Edit 26 Jan 2018
+//Last Edit 27 Jan 2018
 
 /**
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      26 Jan 2018
+ *  \date      27 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -65,9 +65,11 @@ void dimensions_ppm(const char* name, int* width, int* height);
  *  returns IMAGE_OK if the read succeded, or a proper error code. The list of
  *  error codes can be found at the beginning of the imageIO.hpp file
  *
+ *  \note Binary PPM are considerably faster to read than ASCII PPM
+ *
  *  \param[in] name The path of the image
- *  \param[out] data An array of size width*height*3 that will hold the values of
- *  the image
+ *  \param[out] data An array of size width*height*3 that will hold the values
+ *  of the image
  *  \return IMAGE_OK if everything was ok, otherwise a proper error code
  */
 int read_ppm(const char* name, float* data);

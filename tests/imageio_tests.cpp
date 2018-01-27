@@ -144,7 +144,40 @@ TEST(ImageIO,read_ppm)
     EXPECT_FLOAT_EQ(data[9], 1.f);
     EXPECT_FLOAT_EQ(data[10], 1.f);
     EXPECT_FLOAT_EQ(data[11], 1.f);
-    EXPECT_FLOAT_EQ(data[12], (float)0x2B);
+    EXPECT_FLOAT_EQ(data[12], (float)0x2B); //assert no stack overflow
+    EXPECT_EQ(res,IMAGE_OK);
+    bzero(data,12);
+    //read image with high depth (binary) no stack_overflow
+    res = read_ppm(TEST_ASSETS "p6_high_depth.ppm", data);
+    EXPECT_FLOAT_EQ(data[0], 1.f);
+    EXPECT_FLOAT_EQ(data[1], 1.f);
+    EXPECT_FLOAT_EQ(data[2], 1.f);
+    EXPECT_FLOAT_EQ(data[3], 0.f);
+    EXPECT_FLOAT_EQ(data[4], 0.f);
+    EXPECT_FLOAT_EQ(data[5], 0.f);
+    EXPECT_FLOAT_EQ(data[6], 0.f);
+    EXPECT_FLOAT_EQ(data[7], 0.f);
+    EXPECT_FLOAT_EQ(data[8], 0.f);
+    EXPECT_FLOAT_EQ(data[9], 1.f);
+    EXPECT_FLOAT_EQ(data[10], 1.f);
+    EXPECT_FLOAT_EQ(data[11], 1.f);
+    EXPECT_EQ(res,IMAGE_OK);
+    bzero(data,12);
+    //read image with high depth (binary), stack_overflow
+    res = read_ppm(TEST_ASSETS "p6_high_depth_stack_overflow.ppm", data);
+    EXPECT_FLOAT_EQ(data[0], 1.f);
+    EXPECT_FLOAT_EQ(data[1], 1.f);
+    EXPECT_FLOAT_EQ(data[2], 1.f);
+    EXPECT_FLOAT_EQ(data[3], 0.f);
+    EXPECT_FLOAT_EQ(data[4], 0.f);
+    EXPECT_FLOAT_EQ(data[5], 0.f);
+    EXPECT_FLOAT_EQ(data[6], 0.f);
+    EXPECT_FLOAT_EQ(data[7], 0.f);
+    EXPECT_FLOAT_EQ(data[8], 0.f);
+    EXPECT_FLOAT_EQ(data[9], 1.f);
+    EXPECT_FLOAT_EQ(data[10], 1.f);
+    EXPECT_FLOAT_EQ(data[11], 1.f);
+    EXPECT_FLOAT_EQ(data[12], (float)0x2B); //assert no stack overflow
     EXPECT_EQ(res,IMAGE_OK);
     bzero(data,12);
 }
