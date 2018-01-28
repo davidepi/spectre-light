@@ -205,3 +205,39 @@ TEST(ImageIO,save_bmp)
     EXPECT_FALSE(res);
 }
 
+TEST(ImageIO,dimensions_bmp)
+{
+    int width;
+    int height;
+    //non existent
+    dimensions_bmp("nonexistent.bmp", &width, &height);
+    EXPECT_EQ(width, IMAGE_NOT_READABLE);
+    EXPECT_EQ(height, IMAGE_NOT_READABLE);
+    width = 0;
+    height = 0;
+    //first letter of the magic number is wrong
+    dimensions_bmp(TEST_ASSETS "wrong_magic1.bmp", &width, &height);
+    EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
+    EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
+    width = 0;
+    height = 0;
+    //second letter of the magic number is wrong
+    dimensions_bmp(TEST_ASSETS "wrong_magic2.bmp", &width, &height);
+    EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
+    EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
+    width = 0;
+    height = 0;
+    //normal image
+    dimensions_bmp(TEST_ASSETS "correct.bmp", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    width = 0;
+    height = 0;
+    //flipped (negative) rows
+    dimensions_bmp(TEST_ASSETS "flipped.bmp", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    width = 0;
+    height = 0;
+}
+

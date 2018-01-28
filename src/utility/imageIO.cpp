@@ -60,7 +60,7 @@ int read_ppm(const char* name, float* data)
             unsigned int width;
             unsigned int height;
             uint16_t depth_short;
-            fscanf(fin,"%d%d%hu",&width,&height,&depth_short);
+            fscanf(fin,"%u%u%hu",&width,&height,&depth_short);
             //not my fucking problem if the depth is > 65536
             //the specification states that the aforementioned value is the max
             float depth = (float)depth_short;
@@ -225,5 +225,39 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data)
     {
         Console.critical(MESSAGE_W_DENIED_RC);
         return false;
+    }
+}
+
+void dimensions_bmp(const char* name, int* width, int* height)
+{
+    FILE* fin = fopen(name,"rb");
+    if(fin!=NULL)
+    {
+        uint8_t header[26];
+        uint32_t* header32bit = (uint32_t*)(header+2);
+        fread(header,1,26,fin);
+        if(header[0]=='B' && header[1]=='M')
+        {
+#ifdef IS_BIG_ENDIAN
+            *width = swap_endianness(header32bit[4]);
+            *height = swap_endianness(header32bit[5]);
+#else
+            *width = header32bit[4];
+            *height = header32bit[5];
+#endif
+            if(*height<0)
+                *height*=-1;
+        }
+        else
+        {
+            *width = IMAGE_WRONG_MAGIC;
+            *height = IMAGE_WRONG_MAGIC;
+        }
+        fclose(fin);
+    }
+    else
+    {
+        *width = IMAGE_NOT_READABLE;
+        *height = IMAGE_NOT_READABLE;
     }
 }

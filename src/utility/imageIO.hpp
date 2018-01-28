@@ -1,12 +1,12 @@
 //Created,  27 Nov 2017
-//Last Edit 27 Jan 2018
+//Last Edit 28 Jan 2018
 
 /**
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      27 Jan 2018
+ *  \date      28 Jan 2018
  *  \copyright GNU GPLv3
  */
 
@@ -85,5 +85,23 @@ int read_ppm(const char* name, float* data);
  *  \param[in] data An array of RGB values containing the pixel values
  */
 bool save_bmp(const char* name, int width, int height, const uint8_t* data);
+
+/** \brief Determine width and height of an image in the BMP format
+ *
+ *  This method opens a saved image in the BMP format Version 3, and saves its
+ *  width and height in the two pointers passed as input. If the image is not
+ *  readable or not a BMP file, the width and height are set to the
+ *  corresponding error code.
+ *  The list of error codes can be found at the beginning of the imageIO.hpp
+ *  file.
+ *  A bmp file can store the height as a negative number in some cases. However,
+ *  the returned value will always be positive.
+ *
+ *  \param[in] name The path of the image
+ *  \param[out] width The width of the image, error code if something went wrong
+ *  \param[out] height The height of the image, error code if something went
+ *  wrong
+ */
+void dimensions_bmp(const char* name, int* width, int* height);
 
 #endif
