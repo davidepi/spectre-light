@@ -2,7 +2,8 @@
 //license: GNU GPLv3
 
 #include "imageIO.hpp"
-#define READ_BUFFER 4096
+//must be divisible by 3 (otherwise read bmp will discard some pixels)
+#define READ_BUFFER 4098
 
 bool save_ppm(const char* name, int width, int height, const uint8_t* array)
 {
@@ -238,15 +239,23 @@ void dimensions_bmp(const char* name, int* width, int* height)
         fread(header,1,26,fin);
         if(header[0]=='B' && header[1]=='M')
         {
+            if(header[14] == 40)
+            {
 #ifdef IS_BIG_ENDIAN
-            *width = swap_endianness(header32bit[4]);
-            *height = swap_endianness(header32bit[5]);
+                *width = swap_endianness(header32bit[4]);
+                *height = swap_endianness(header32bit[5]);
 #else
-            *width = header32bit[4];
-            *height = header32bit[5];
+                *width = header32bit[4];
+                *height = header32bit[5];
 #endif
-            if(*height<0)
-                *height*=-1;
+                if(*height<0)
+                    *height*=-1;
+            }
+            else //OS/2
+            {
+                *width = IMAGE_NOT_SUPPORTED;
+                *height = IMAGE_NOT_SUPPORTED;
+            }
         }
         else
         {
@@ -260,4 +269,91 @@ void dimensions_bmp(const char* name, int* width, int* height)
         *width = IMAGE_NOT_READABLE;
         *height = IMAGE_NOT_READABLE;
     }
+}
+
+int read_bmp(const char* name, float* data)
+{
+    constexpr const float denom = 1.f/255U;
+    int retval = IMAGE_NOT_SUPPORTED;
+    FILE* fin = fopen(name,"rb");
+    if(fin!=NULL)
+    {
+        uint8_t header[54];
+        uint32_t* header32bit = (uint32_t*)(header+2);
+        fread(header,1,54,fin);
+        if(header[0]=='B' && header[1]=='M')
+        {
+            //OS/2 or not 24 bit depth (this check works in msb and lsb order)
+            if(header[14] != 40 || header[28]!=24)
+                retval = IMAGE_NOT_SUPPORTED;
+            else
+            {
+#ifdef IS_BIG_ENDIAN
+                int width = swap_endianness(header32bit[4]);
+                int height = swap_endianness(header32bit[5]);
+#else
+                int width = header32bit[4];
+                int height = header32bit[5];
+#endif
+                uint8_t values[READ_BUFFER];
+                size_t read;
+                if(height<0) //flipped
+                {
+                    height*=-1;
+                    unsigned int i = 0;
+                    unsigned int j = 0;
+                    while((read = fread(values,1,READ_BUFFER,fin))>0)
+                    {
+                        while(j<read && i<width*height*3)
+                        {
+#ifdef IS_BIG_ENDIAN
+                            data[i++] = values[j++]*denom;
+                            data[i++] = values[j++]*denom;
+                            data[i++] = values[j++]*denom;
+#else
+                            data[i++] = values[j+2]*denom;
+                            data[i++] = values[j+1]*denom;
+                            data[i++] = values[j]*denom;
+                            j+=3;
+#endif
+                        }
+                    }
+                }
+                else //not flipped
+                {
+                    unsigned int i = width*height*3-1;
+                    unsigned int j = 0;
+                    while((read = fread(values,1,READ_BUFFER,fin))>0)
+                    {
+                        i-=width*3;
+                        while(j<read && i>0 && i<width*height*3)
+                        {
+#ifdef IS_BIG_ENDIAN
+                            data[i++] = values[j++]*denom;
+                            data[i++] = values[j++]*denom;
+                            data[i++] = values[j++]*denom;
+#else
+                            data[i++] = values[j+2]*denom;
+                            data[i++] = values[j+1]*denom;
+                            data[i++] = values[j]*denom;
+                            j+=3;
+#endif
+                        }
+                        i-=width*3;
+                    }
+                }
+                retval = IMAGE_OK;
+            }
+        }
+        else
+        {
+            retval = IMAGE_WRONG_MAGIC;
+        }
+        fclose(fin);
+    }
+    else
+    {
+        retval = IMAGE_NOT_READABLE;
+    }
+    return retval;
 }

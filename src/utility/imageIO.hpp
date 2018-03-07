@@ -20,6 +20,8 @@
 #define IMAGE_NOT_READABLE -1
 ///Error code used when the image extension does not match the magic number
 #define IMAGE_WRONG_MAGIC -2
+///Error code returned when reading OS/2 style images
+#define IMAGE_NOT_SUPPORTED -3
 
 #include "console.hpp"
 #include "utility.hpp"
@@ -95,7 +97,8 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data);
  *  The list of error codes can be found at the beginning of the imageIO.hpp
  *  file.
  *  A bmp file can store the height as a negative number in some cases. However,
- *  the returned value will always be positive.
+ *  the returned value will always be positive. Images saved in the OS/2 style
+ *  are not compatible
  *
  *  \param[in] name The path of the image
  *  \param[out] width The width of the image, error code if something went wrong
@@ -103,5 +106,5 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data);
  *  wrong
  */
 void dimensions_bmp(const char* name, int* width, int* height);
-
+int read_bmp(const char* name, float* data);
 #endif
