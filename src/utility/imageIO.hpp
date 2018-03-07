@@ -106,5 +106,24 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data);
  *  wrong
  */
 void dimensions_bmp(const char* name, int* width, int* height);
+
+/** \brief Read an image in the BMP format (24-bit Windows only)
+ *
+ *  This method reads an image in the BMP format Version 3, and saves the value
+ *  of the pixels in the data array. The data array is an array of length
+ *  width*height*3 and stores values as floats in the range [0.0, 1.0].
+ *  The components are stored in the order R,G,B and no alpha channel is
+ *  supported, hence no 32 bit BMP support is provided.
+ *  OS/2 style header and indexed images are also not supported, this being only
+ *  a basic reader.
+ *  Upon completition the function returns IMAGE_OK if the read succeded, or a
+ *  proper error code. The list of error codes can be found at the beginning of
+ *  the imageIO.hpp file
+ *
+ *  \param[in] name The path of the image
+ *  \param[out] data An array of size width*height*3 that will hold the values
+ *  of the image
+ *  \return IMAGE_OK if everything was ok, otherwise a proper error code
+ */
 int read_bmp(const char* name, float* data);
 #endif

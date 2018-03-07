@@ -273,7 +273,7 @@ inline bool equation2(const float a, const float b, const float c,
                       float* sol1, float* sol2)
 {
     float delta = b*b-4.0f*a*c;
-    if(delta<=0 && delta+1e-4>=0) //tanget but with float error
+    if(delta<=0 && delta+1e-4f>=0) //tanget but with float error
     {                            //happens in area lights
         *sol1 = -b/(a*2);
         *sol2 = *sol1;

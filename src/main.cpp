@@ -4,9 +4,15 @@
 #include "utility/console.hpp"
 #include "parsers/parser.hpp"
 #include "renderer.hpp"
+#ifdef IMAGEMAGICK
+#include <Magick++.h>
+#endif
 
 int main(int argc, char* argv[])
 {
+#ifdef IMAGEMAGICK
+    Magick::InitializeMagick(IMAGEMAGICK);
+#endif
     Parser parser;
     Settings settings;
     if(argc < 2)
