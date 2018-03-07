@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstdio>
 #include<random>
+#include<cstring>
 #include "samplers/sampler.hpp"
 #include "samplers/stratified_sampler.hpp"
 #include "samplers/random_sampler.hpp"
