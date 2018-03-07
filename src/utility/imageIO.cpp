@@ -95,8 +95,7 @@ int read_ppm(const char* name, float* data)
                         if(i+read>=width*height*3U)
                         {
                             //set the read as the maximum size - written bytes
-                            //-1 because arrays are 0 based
-                            read = width*height*3U-1U-i;
+                            read = width*height*3U-i;
                         }
                         //everything is normal
                         for(unsigned int j=0;j<read;j++)
@@ -118,8 +117,7 @@ int read_ppm(const char* name, float* data)
                         if(i+read>=width*height*3U)
                         {
                             //set the read as the maximum size - written bytes
-                            //-1 because arrays are 0 based
-                            read = width*height*3U-1U-i;
+                            read = width*height*3U-i;
                         }
                         //everything is normal
                         for(unsigned int j=0;j<read;j++)

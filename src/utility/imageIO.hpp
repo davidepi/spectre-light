@@ -1,12 +1,12 @@
 //Created,  27 Nov 2017
-//Last Edit 28 Jan 2018
+//Last Edit  7 Mar 2018
 
 /**
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      28 Jan 2018
+ *  \date      7 Mar 2018
  *  \copyright GNU GPLv3
  */
 

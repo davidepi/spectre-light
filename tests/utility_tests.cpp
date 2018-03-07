@@ -30,12 +30,23 @@ TEST(Utility,format_seconds)
     EXPECT_EQ(strcmp(out,"5m "),0);
 }
 
-TEST(Utility,swap)
+TEST(Utility,swap_float)
 {
     float f1_original = 0.5f;
     float f2_original = -0.5f;
     float f1 = f1_original;
     float f2 = f2_original;
+    swap(&f1,&f2);
+    EXPECT_EQ(f1, f2_original);
+    EXPECT_EQ(f2, f1_original);
+}
+
+TEST(Utility,swap_uint8)
+{
+    uint8_t f1_original = 5;
+    uint8_t f2_original = -5;
+    uint8_t f1 = f1_original;
+    uint8_t f2 = f2_original;
     swap(&f1,&f2);
     EXPECT_EQ(f1, f2_original);
     EXPECT_EQ(f2, f1_original);
