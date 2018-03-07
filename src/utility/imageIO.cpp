@@ -206,19 +206,18 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data)
         //write the header
         fwrite(header, sizeof(uint8_t), (size_t)(54), fout);
         //write the data
-#ifndef IS_BIG_ENDIAN
-        char pixel[3];
-        int i = 0;
-        while(i<width*height*3)
+        unsigned int padding = (width*3)%4;
+        size_t buf_len = width*3+padding;
+        uint8_t* values = (uint8_t*)malloc(sizeof(uint8_t)*buf_len);
+        for(int y=0;y<height;y++)
         {
-            pixel[2] = data[i++];
-            pixel[1] = data[i++];
-            pixel[0] = data[i++];
-            fwrite(pixel,sizeof(uint8_t),(size_t)3,fout);
+            memcpy(values, data+(width*3*y), buf_len-padding);
+            //put the pixels in little endian order
+            for(int x = 0;x<width*3;x+=3)
+                swap(values+x, values+x+2);
+            fwrite(values, sizeof(uint8_t), buf_len, fout);
         }
-#else
-        fwrite(data, sizeof(uint8_t), (size_t)(width*height*3), fout);
-#endif
+        free(values);
         fclose(fout);
         return true;
     }

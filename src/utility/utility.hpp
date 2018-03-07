@@ -59,6 +59,22 @@ inline void swap(float *f1, float *f2)
     *f2 = tmp;
 }
 
+/** \brief Swaps two 8-bit variables
+ *
+ *  Given two pointers to 8-bit integer variables, after calling this function
+ *  their values will be swapped.
+ *
+ *  \param[in,out] u1 A pointer to the first value
+ *  \param[in,out] u2 A pointer to the second value
+ */
+inline void swap(uint8_t *u1, uint8_t *u2)
+{
+    uint8_t tmp;
+    tmp = *u1;
+    *u1 = *u2;
+    *u2 = tmp;
+}
+
 /** \brief Convert degrees to radians
  *
  *  Convert a value representing an angle measured in sexagesimal arc degrees to
