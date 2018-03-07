@@ -295,7 +295,6 @@ int read_bmp(const char* name, float* data)
                 uint8_t* values;
                 unsigned int padding = (width*3)%4;
                 size_t buf_len;
-                size_t read;
                 unsigned int i = 0;
                 if(height<0) //flipped
                 {
@@ -307,7 +306,7 @@ int read_bmp(const char* name, float* data)
                     values = (uint8_t*)malloc(sizeof(uint8_t)*buf_len);
                     for(int y=0;y<height;y++)
                     {
-                        read = fread(values,sizeof(uint8_t),buf_len,fin);
+                        fread(values,sizeof(uint8_t),buf_len,fin);
                         for(int x=0;x<width*3;x+=3)
                         {
 #ifdef IS_BIG_ENDIAN
@@ -330,7 +329,7 @@ int read_bmp(const char* name, float* data)
                     for(int y=height-1;y>=0;y--)
                     {
                         i = width*3*y;
-                        read = fread(values,sizeof(uint8_t),buf_len,fin);
+                        fread(values,sizeof(uint8_t),buf_len,fin);
                         for(int x=0;x<width*3;x+=3)
                         {
 #ifdef IS_BIG_ENDIAN
