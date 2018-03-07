@@ -233,12 +233,12 @@ void dimensions_bmp(const char* name, int* width, int* height)
     FILE* fin = fopen(name,"rb");
     if(fin!=NULL)
     {
-        uint8_t header[26];
+        uint8_t header[29];
         uint32_t* header32bit = (uint32_t*)(header+2);
-        fread(header,1,26,fin);
+        fread(header,1,29,fin);
         if(header[0]=='B' && header[1]=='M')
         {
-            if(header[14] == 40)
+            if(header[14] == 40 && header[28]==24)
             {
 #ifdef IS_BIG_ENDIAN
                 *width = swap_endianness(header32bit[4]);
@@ -272,7 +272,7 @@ void dimensions_bmp(const char* name, int* width, int* height)
 
 int read_bmp(const char* name, float* data)
 {
-    constexpr const float denom = 1.f/255U;
+    constexpr const float inv_depth = 1.f/255U;
     int retval = IMAGE_NOT_SUPPORTED;
     FILE* fin = fopen(name,"rb");
     if(fin!=NULL)
@@ -294,52 +294,59 @@ int read_bmp(const char* name, float* data)
                 int width = header32bit[4];
                 int height = header32bit[5];
 #endif
-                uint8_t values[READ_BUFFER];
+                uint8_t* values;
+                unsigned int padding = (width*3)%4;
+                size_t buf_len;
                 size_t read;
+                unsigned int i = 0;
                 if(height<0) //flipped
                 {
                     height*=-1;
-                    unsigned int i = 0;
-                    unsigned int j = 0;
-                    while((read = fread(values,1,READ_BUFFER,fin))>0)
+                    buf_len = width*3+padding;
+                    //heap allocated based on the data retrieved from dimensions
+                    //so no stack-overflow risk, only the data declared is read
+                    //(in constrast, .ppm are read until fread returns 0)
+                    values = (uint8_t*)malloc(sizeof(uint8_t)*buf_len);
+                    for(int y=0;y<height;y++)
                     {
-                        while(j<read && i<width*height*3)
+                        read = fread(values,sizeof(uint8_t),buf_len,fin);
+                        for(int x=0;x<width*3;x+=3)
                         {
 #ifdef IS_BIG_ENDIAN
-                            data[i++] = values[j++]*denom;
-                            data[i++] = values[j++]*denom;
-                            data[i++] = values[j++]*denom;
+                            data[i++] = values[x+0]*inv_depth;
+                            data[i++] = values[x+1]*inv_depth;
+                            data[i++] = values[x+2]*inv_depth;
 #else
-                            data[i++] = values[j+2]*denom;
-                            data[i++] = values[j+1]*denom;
-                            data[i++] = values[j]*denom;
-                            j+=3;
+                            data[i++] = values[x+2]*inv_depth;
+                            data[i++] = values[x+1]*inv_depth;
+                            data[i++] = values[x+0]*inv_depth;
 #endif
                         }
                     }
+                    free(values);
                 }
                 else //not flipped
                 {
-                    unsigned int i = width*height*3-1;
-                    unsigned int j = 0;
-                    while((read = fread(values,1,READ_BUFFER,fin))>0)
+                    buf_len = width*3+padding;
+                    values = (uint8_t*)malloc(sizeof(uint8_t)*buf_len);
+                    for(int y=height-1;y>=0;y--)
                     {
-                        i-=width*3;
-                        while(j<read && i>0 && i<width*height*3)
+                        i = width*3*y;
+                        read = fread(values,sizeof(uint8_t),buf_len,fin);
+                        for(int x=0;x<width*3;x+=3)
                         {
 #ifdef IS_BIG_ENDIAN
-                            data[i++] = values[j++]*denom;
-                            data[i++] = values[j++]*denom;
-                            data[i++] = values[j++]*denom;
+                            data[i++] = values[x+0]*inv_depth;
+                            data[i++] = values[x+1]*inv_depth;
+                            data[i++] = values[x+2]*inv_depth;
 #else
-                            data[i++] = values[j+2]*denom;
-                            data[i++] = values[j+1]*denom;
-                            data[i++] = values[j]*denom;
-                            j+=3;
+                            data[i++] = values[x+2]*inv_depth;
+                            data[i++] = values[x+1]*inv_depth;
+                            data[i++] = values[x+0]*inv_depth;
 #endif
                         }
-                        i-=width*3;
                     }
+                    free(values);
                 }
                 retval = IMAGE_OK;
             }
