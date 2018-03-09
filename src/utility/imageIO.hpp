@@ -145,4 +145,22 @@ int read_bmp(const char* name, float* data);
  *  0-255
  */
 bool save_RGB(const char* name, int width, int height, const uint8_t* data);
+
+/** \brief Determine width, height and opacity of an image in a generic format
+ *
+ *  This method uses the ImageMagick API to determin the width and height of
+ *  an image. These values are saved in the area located by the width and height
+ *  pointers passed as input. If the image is not readable or ImageMagick is not
+ *  supported, the width and height are set to the corresponding error code.
+ *  The list of error codes can be found at the beginning of the imageIO.hpp
+ *  file. The functions returns a value indicating wether an alpha channel is
+ *  present or not.
+ *
+ *  \param[in] name The path of the image
+ *  \param[out] width The width of the image, error code if something went wrong
+ *  \param[out] height The height of the image, error code if something went
+ *  wrong
+ *  \return True if the image has an alpha channel
+ */
+bool dimensions_RGB(const char* name, int* width, int* height);
 #endif

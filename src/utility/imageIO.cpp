@@ -381,3 +381,27 @@ bool save_RGB(const char* name, int width, int height, const uint8_t* data)
     return false;
 #endif
 }
+
+bool dimensions_RGB(const char* name, int* width, int* height)
+{
+#ifdef IMAGEMAGICK
+    Magick::Image img;
+    try
+    {
+        img.read(name);
+        *width = img.baseColumns();
+        *height = img.baseRows();
+        return img.imageInfo()->channel & Magick::OpacityChannel;
+    }
+    catch(Magick::Exception)
+    {
+        *width = IMAGE_NOT_READABLE;
+        *height = IMAGE_NOT_READABLE;
+        return false;
+    }
+#else
+    *width = IMAGE_NOT_SUPPORTED;
+    *height = IMAGE_NOT_SUPPORTED;
+    return false;
+#endif
+}
