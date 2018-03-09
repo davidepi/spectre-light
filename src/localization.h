@@ -94,6 +94,8 @@
 #define MESSAGE_COMPARE_INF "Comparing infinite values could lead to "\
 "undefined results"
 
+#define MESSAGE_IM_OUT "ImageMagick not found, output will be in NetPBM format"
+
 //max 15 char, otherwise change comments in the utility.hpp, format_seconds func
 #define MESSAGE_MORE_THAN_100_DAYS "more than 100d"
 

@@ -360,3 +360,24 @@ int read_bmp(const char* name, float* data)
     }
     return retval;
 }
+
+bool save_RGB(const char* name, int width, int height, const uint8_t* data)
+{
+#ifdef IMAGEMAGICK
+    const char* extension = strrchr(name,'.');
+    Magick::Blob blob;
+    //can't use updateNoCopy because Blob::~Blob() deallocates the memory
+    blob.update(data, width*height*3);
+    Magick::Image img(blob,Magick::Geometry(width,height),8,"RGB");
+    try
+    {
+        img.magick(extension+1);
+        img.quality(100);
+        img.write(name);
+    }
+    catch(Magick::Exception e){return false;}
+    return true;
+#else
+    return false;
+#endif
+}

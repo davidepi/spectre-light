@@ -22,21 +22,28 @@ static char check_extension(const char* fullpath)
             case 'p':
             {
                 if(strcmp(".ppm",extension)==0)
+                {
                     retval = EXTENSION_PPM;
-                else
-                    retval = EXTENSION_NOT_SUPPORTED;
-                break;
+                    break;
+                }
             }
             case 'b':
             {
                 if(strcmp(".bmp",extension)==0)
+                {
                     retval = EXTENSION_BMP;
-                else
-                    retval = EXTENSION_NOT_SUPPORTED;
-                break;
+                    break;
+                }
             }
             default:
-                retval = EXTENSION_NOT_SUPPORTED;
+            {
+#ifdef IMAGEMAGICK
+                retval = EXTENSION_NON_NATIVE;
+#else
+                Console.warning(MESSAGE_IM_OUT);
+                retval = EXTENSION_PPM;
+#endif
+            }
         }
     }
     return retval;
@@ -236,16 +243,15 @@ bool ImageFilm::save_image()
             retval=save_bmp(filename, width, height, rgb_buffer);
             break;
         }
+        case EXTENSION_NON_NATIVE:
+        {
+            retval=save_RGB(filename, width, height, rgb_buffer);
+            break;
+        }
         case EXTENSION_PPM:
-        {
-            retval=save_ppm(filename, width, height, rgb_buffer);
-            break;
-        }
+        case EXTENSION_NOT_SUPPORTED:
         default:
-        {
             retval=save_ppm(filename, width, height, rgb_buffer);
-            break;
-        }
     }
     free(rgb_buffer);
     return retval;

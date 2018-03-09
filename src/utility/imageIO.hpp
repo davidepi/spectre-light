@@ -1,12 +1,12 @@
 //Created,  27 Nov 2017
-//Last Edit  7 Mar 2018
+//Last Edit  9 Mar 2018
 
 /**
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      7 Mar 2018
+ *  \date      9 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -27,6 +27,10 @@
 #include "utility.hpp"
 #include <cstdio>
 #include <cstdlib>
+#ifdef IMAGEMAGICK
+#include <cstring>
+#include <Magick++.h>
+#endif
 
 /** \brief Save an image in the PPM format
  *
@@ -126,4 +130,19 @@ void dimensions_bmp(const char* name, int* width, int* height);
  *  \return IMAGE_OK if everything was ok, otherwise a proper error code
  */
 int read_bmp(const char* name, float* data);
+
+/** \brief Save an RGB image
+ *
+ *  Save an image using the ImageMagick API. The output is detected using the
+ *  filename extension. The quality is set to be the highest possible given the
+ *  requested output format. The image depth is 8 bit per pixel and no alpha
+ *  channel is supported.
+ *
+ *  \param[in] name The name of the output file
+ *  \param[in] width The width of the image
+ *  \param[in] height The height of the image
+ *  \param[in] data An array of RGB values containing the pixel values in range
+ *  0-255
+ */
+bool save_RGB(const char* name, int width, int height, const uint8_t* data);
 #endif

@@ -106,6 +106,11 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     //TODO: gained efficiency by creating an ad-hoc method?
     Spectrum retval;
     retval=matching[chosen]->sample_value(&wo_shading, &tmpwi,r1,r2,pdf);
+    if(tmpwi.length()==0) //total internal reflection
+    {
+        *pdf = 0.f;
+        return SPECTRUM_BLACK;
+    }
     
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->normal_h.x * tmpwi.z;

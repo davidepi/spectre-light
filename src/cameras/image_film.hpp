@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit 11 Jan 2018
+//Last Edit  9 Mar 2018
 
 /**
  *  \file image_output.hpp
  *  \brief     Buffer storing and saving an image
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      11 Jan 2018
+ *  \date      9 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 #define EXTENSION_NOT_SUPPORTED -1
 #define EXTENSION_PPM 0
 #define EXTENSION_BMP 1
+#define EXTENSION_NON_NATIVE 2
 
 #include "samplers/filter.hpp"
 #include "samplers/sampler.hpp"
