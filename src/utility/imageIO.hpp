@@ -1,12 +1,12 @@
 //Created,  27 Nov 2017
-//Last Edit  9 Mar 2018
+//Last Edit 10 Mar 2018
 
 /**
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      9 Mar 2018
+ *  \date      10 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -148,7 +148,7 @@ bool save_RGB(const char* name, int width, int height, const uint8_t* data);
 
 /** \brief Determine width, height and opacity of an image in a generic format
  *
- *  This method uses the ImageMagick API to determin the width and height of
+ *  This method uses the ImageMagick API to determine the width and height of
  *  an image. These values are saved in the area located by the width and height
  *  pointers passed as input. If the image is not readable or ImageMagick is not
  *  supported, the width and height are set to the corresponding error code.
@@ -163,4 +163,23 @@ bool save_RGB(const char* name, int width, int height, const uint8_t* data);
  *  \return True if the image has an alpha channel
  */
 bool dimensions_RGB(const char* name, int* width, int* height);
+
+/** \brief Read an image in a generic format
+ *
+ *  This method uses the ImageMagick API to read an image in a generic format
+ *  and save the value of the pixels in the data array. The data array is
+ *  a float array of length width*height*3 and stores values as floats in the
+ *  range [0.0, 1.0]. The components are stored in the order R,G,B. If the
+ *  image contains an alpha channel, this is written in the alpha array of
+ *  length width*height. Only one alpha channel is supported and the extent of
+ *  these values are in the range [0, 255].
+ *
+ *  \param[in] name The path of the image
+ *  \param[out] data An array of size width*height*3 that will hold the values
+ *  of the image
+ *  \param[out] alpha An array of size width*height that will hold the values
+ *  of the alpha channel
+ *  \return IMAGE_OK if everything was ok, otherwise a proper error code
+ */
+int read_RGB(const char* name, float* data, uint8_t* alpha);
 #endif

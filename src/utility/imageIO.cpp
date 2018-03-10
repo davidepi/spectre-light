@@ -375,9 +375,17 @@ bool save_RGB(const char* name, int width, int height, const uint8_t* data)
         img.quality(100);
         img.write(name);
     }
-    catch(Magick::Exception e){return false;}
+    catch(Magick::Exception e)
+    {
+        Console.severe(e.what());
+        return false;
+    }
     return true;
 #else
+    UNUSED(name);
+    UNUSED(width);
+    UNUSED(height);
+    UNUSED(data);
     return false;
 #endif
 }
@@ -388,20 +396,82 @@ bool dimensions_RGB(const char* name, int* width, int* height)
     Magick::Image img;
     try
     {
+        //suppress some warings like
+        //Incompatible type for "RichTIFFIPTC"; tag ignored.
+        //`TIFFFetchNormalTag' @ warning/tiff.c/TIFFWarnings/905
+        //which are accounted as errors otherwise
+        img.quiet(true);
         img.read(name);
         *width = img.baseColumns();
         *height = img.baseRows();
-        return img.imageInfo()->channel & Magick::OpacityChannel;
+        return img.channels()>3;
     }
-    catch(Magick::Exception)
+    catch(Magick::Exception e)
     {
+        Console.severe(e.what());
         *width = IMAGE_NOT_READABLE;
         *height = IMAGE_NOT_READABLE;
         return false;
     }
 #else
+    UNUSED(name);
     *width = IMAGE_NOT_SUPPORTED;
     *height = IMAGE_NOT_SUPPORTED;
     return false;
+#endif
+}
+
+int read_RGB(const char* name, float* data, uint8_t* alpha)
+{
+#ifdef IMAGEMAGICK
+    constexpr const float inv_depth = 1.f/QuantumRange;
+    constexpr const float inv_alpha_depth = 255.f/QuantumRange;
+    Magick::Image img;
+    try
+    {
+        //suppress warning that would trigger the exception
+        img.quiet(true);
+        img.read(name);
+    }
+    catch(Magick::Exception e)
+    {
+        Console.severe(e.what());
+        return false;
+    }
+    const unsigned int width = img.columns();
+    const unsigned int height = img.rows();
+    const unsigned char channels = img.channels();
+    const Magick::Quantum* pixdata = img.getConstPixels(0, 0, width, height);
+    unsigned int data_index = 0;
+    unsigned int alpha_index = 0;
+    if(channels == 3)
+        for(int i=0;i<width*height*3;i+=3)
+        {
+            data[data_index++] = pixdata[i]*inv_depth;
+            data[data_index++] = pixdata[i+1]*inv_depth;
+            data[data_index++] = pixdata[i+2]*inv_depth;
+        }
+    else if(channels==4)
+        for(int i=0;i<width*height*4;i+=4)
+        {
+            data[data_index++] = pixdata[i]*inv_depth;
+            data[data_index++] = pixdata[i+1]*inv_depth;
+            data[data_index++] = pixdata[i+2]*inv_depth;
+            alpha[alpha_index++] = (uint8_t)(pixdata[i+3]*inv_alpha_depth);
+        }
+    else
+    {
+        char* error_msg = (char*)malloc(strlen(name)+strlen(MESSAGE_IM_CHANN));
+        sprintf(error_msg, MESSAGE_IM_CHANN,name);
+        Console.severe(error_msg);
+        free(error_msg);
+        return IMAGE_NOT_SUPPORTED;
+    }
+    return IMAGE_OK;
+#else
+    UNUSED(name);
+    UNUSED(data);
+    UNUSED(alpha);
+    return IMAGE_NOT_SUPPORTED;
 #endif
 }

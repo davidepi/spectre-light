@@ -58,6 +58,8 @@
 #define PATH_SEPARATOR '/'
 #endif
 
+#define UNUSED(X) (void)X
+
 #endif
 
 /**

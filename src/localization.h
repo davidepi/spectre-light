@@ -96,6 +96,11 @@
 
 #define MESSAGE_IM_OUT "ImageMagick not found, output will be in NetPBM format"
 
+#define MESSAGE_IM_CHANN "Unsupported number of channels in file %s"
+
+#define MESSAGE_IM_NOFLOAT "Quantum type of ImageMagick is not a float. "\
+"Read images will probably have wrong values"
+
 //max 15 char, otherwise change comments in the utility.hpp, format_seconds func
 #define MESSAGE_MORE_THAN_100_DAYS "more than 100d"
 
