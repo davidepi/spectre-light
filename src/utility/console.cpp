@@ -5,7 +5,7 @@
 
 #ifdef TESTS
 int errors_count[5] = {0,0,0,0,0};
-#ifndef UNUSED(x)
+#ifndef UNUSED
 #define UNUSED(x) (void)x;
 #endif
 #endif

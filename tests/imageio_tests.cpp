@@ -304,3 +304,75 @@ TEST(ImageIO,read_bmp)
     EXPECT_EQ(res, IMAGE_OK);
 }
 
+TEST(ImageIO,save_rgb)
+{
+    char file_stat[64];
+    bool res;
+    FILE* fp;
+    uint8_t image_sample[17*10*3];
+    for(int i=0;i<17*10*3;i+=3)
+        image_sample[i] = i/3;
+
+    //save jpg
+    res = save_RGB("test.jpg",16,10,image_sample);
+    ASSERT_TRUE(res);
+    //check if saved image is actually a .ppm
+    fp = popen("file -b --mime test.jpg","r");
+    fgets(file_stat, 64, fp);
+    pclose(fp);
+    EXPECT_EQ(strcmp(file_stat,
+                          "image/jpeg; charset=binary\n"),0);
+    unlink("test.jpg");
+
+    //save tiff
+    res = save_RGB("test.tiff",16,10,image_sample);
+    ASSERT_TRUE(res);
+    //check if saved image is actually a .ppm
+    fp = popen("file -b --mime test.tiff","r");
+    fgets(file_stat, 64, fp);
+    pclose(fp);
+    EXPECT_EQ(strcmp(file_stat,
+                          "image/tiff; charset=binary\n"),0);
+    unlink("test.tiff");
+
+    //save targa
+    res = save_RGB("test.tga",16,10,image_sample);
+    ASSERT_TRUE(res);
+    //check if saved image is actually a .ppm
+    fp = popen("file -b --mime test.tga","r");
+    fgets(file_stat, 64, fp);
+    pclose(fp);
+    EXPECT_EQ(strcmp(file_stat,
+                          "image/x-tgaimage/x-tga; charset=binary\n"),0);
+    unlink("test.tga");
+
+    //save png
+    res = save_RGB("test.png",16,10,image_sample);
+    ASSERT_TRUE(res);
+    //check if saved image is actually a .ppm
+    fp = popen("file -b --mime test.png","r");
+    fgets(file_stat, 64, fp);
+    pclose(fp);
+    EXPECT_EQ(strcmp(file_stat,
+                          "image/png; charset=binary\n"),0);
+    unlink("test.png");
+
+    //save dds
+    res = save_RGB("test.dds",16,10,image_sample);
+    ASSERT_TRUE(res);
+    //check if saved image is actually a .ppm
+    fp = popen("file -b --mime test.dds","r");
+    fgets(file_stat, 64, fp);
+    pclose(fp);
+    EXPECT_EQ(strcmp(file_stat,
+                          "application/octet-stream; charset=binary\n"),0);
+    unlink("test.dds");
+
+    //non existent folder
+    errors_count[ERROR_INDEX] = 0;
+    res = save_RGB("/root/nonexistent/test.jpg",16,10,image_sample);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    EXPECT_FALSE(res);
+}
+

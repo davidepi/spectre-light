@@ -438,21 +438,21 @@ int read_RGB(const char* name, float* data, uint8_t* alpha)
         Console.severe(e.what());
         return false;
     }
-    const unsigned int width = img.columns();
-    const unsigned int height = img.rows();
+    const size_t width = img.columns();
+    const size_t height = img.rows();
     const unsigned char channels = img.channels();
     const Magick::Quantum* pixdata = img.getConstPixels(0, 0, width, height);
     unsigned int data_index = 0;
     unsigned int alpha_index = 0;
     if(channels == 3)
-        for(int i=0;i<width*height*3;i+=3)
+        for(unsigned int i=0;i<(unsigned int)width*height*3;i+=3)
         {
             data[data_index++] = pixdata[i]*inv_depth;
             data[data_index++] = pixdata[i+1]*inv_depth;
             data[data_index++] = pixdata[i+2]*inv_depth;
         }
     else if(channels==4)
-        for(int i=0;i<width*height*4;i+=4)
+        for(unsigned int i=0;i<(unsigned int)width*height*4;i+=4)
         {
             data[data_index++] = pixdata[i]*inv_depth;
             data[data_index++] = pixdata[i+1]*inv_depth;
