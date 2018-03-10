@@ -402,8 +402,8 @@ bool dimensions_RGB(const char* name, int* width, int* height)
         //which are accounted as errors otherwise
         img.quiet(true);
         img.read(name);
-        *width = img.baseColumns();
-        *height = img.baseRows();
+        *width = (int)img.baseColumns();
+        *height = (int)img.baseRows();
         return img.channels()>3;
     }
     catch(Magick::Exception e)

@@ -306,6 +306,7 @@ TEST(ImageIO,read_bmp)
 
 TEST(ImageIO,save_rgb)
 {
+#ifdef IMAGEMAGICK
     char file_stat[64];
     bool res;
     FILE* fp;
@@ -374,5 +375,66 @@ TEST(ImageIO,save_rgb)
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
     EXPECT_FALSE(res);
+#else
+    res = save_RGB("test.jpg",16,10,image_sample);
+    EXPECT_FALSE(res);
+#endif
+}
+
+TEST(ImageIO,dimensions_rgb)
+{
+    int width;
+    int height;
+    bool res;
+#ifdef IMAGEMAGICK
+
+    //non existent
+    res = dimensions_RGB("nonexistent.bmp", &width, &height);
+    EXPECT_EQ(width, IMAGE_NOT_READABLE);
+    EXPECT_EQ(height, IMAGE_NOT_READABLE);
+    EXPECT_EQ(res, false);
+    width = 0;
+    height = 0;
+    //jpg
+    res = dimensions_RGB(TEST_ASSETS "generic.jpg", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 3);
+    EXPECT_EQ(res, false);
+    width = 0;
+    height = 0;
+    //png
+    res = dimensions_RGB(TEST_ASSETS "generic.png", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 3);
+    EXPECT_EQ(res, false);
+    width = 0;
+    height = 0;
+    //tiff
+    res = dimensions_RGB(TEST_ASSETS "generic.tiff", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 3);
+    EXPECT_EQ(res, false);
+    width = 0;
+    height = 0;
+    //targa
+    res = dimensions_RGB(TEST_ASSETS "generic.tga", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 3);
+    EXPECT_EQ(res, false);
+    width = 0;
+    height = 0;
+    //alpha channel
+    res = dimensions_RGB(TEST_ASSETS "generic_alpha.tiff", &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    EXPECT_EQ(res, true);
+    width = 0;
+    height = 0;
+#else
+    res = dimensions_RGB("test.jpg",&width,&height);
+    EXPECT_EQ(width, IMAGE_NOT_SUPPORTED);
+    EXPECT_EQ(height, IMAGE_NOT_SUPPORTED);
+    EXPECT_FALSE(res);
+#endif
 }
 
