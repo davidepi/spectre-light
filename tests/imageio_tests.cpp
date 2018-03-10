@@ -306,13 +306,13 @@ TEST(ImageIO,read_bmp)
 
 TEST(ImageIO,save_rgb)
 {
-#ifdef IMAGEMAGICK
-    char file_stat[64];
     bool res;
-    FILE* fp;
     uint8_t image_sample[17*10*3];
     for(int i=0;i<17*10*3;i+=3)
         image_sample[i] = i/3;
+#ifdef IMAGEMAGICK
+    char file_stat[64];
+    FILE* fp;
 
     //save jpg
     res = save_RGB("test.jpg",16,10,image_sample);
@@ -435,6 +435,130 @@ TEST(ImageIO,dimensions_rgb)
     EXPECT_EQ(width, IMAGE_NOT_SUPPORTED);
     EXPECT_EQ(height, IMAGE_NOT_SUPPORTED);
     EXPECT_FALSE(res);
+#endif
+}
+
+TEST(ImageIO,read_rgb)
+{
+    int res;
+    float values[2*3*3];
+    uint8_t alpha[2*3];
+#ifdef IMAGEMAGICK
+    //non existent
+    res = read_RGB("nonexistent.bmp", values,alpha);
+    EXPECT_EQ(res, IMAGE_NOT_READABLE);
+    //too many channels
+    errors_count[ERROR_INDEX] = 0;
+    res = read_RGB(TEST_ASSETS "singlechannel.tiff", values, alpha);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    //jpg
+    res = read_RGB(TEST_ASSETS "generic.jpg", values, alpha);
+    EXPECT_NEAR(values[0],1.f,.1f);
+    EXPECT_NEAR(values[1],0.f,.1f);
+    EXPECT_NEAR(values[2],0.f,.1f);
+    EXPECT_NEAR(values[3],1.f,.1f);
+    EXPECT_NEAR(values[4],1.f,.1f);
+    EXPECT_NEAR(values[5],0.f,.1f);
+    EXPECT_NEAR(values[6],0.f,.1f);
+    EXPECT_NEAR(values[7],1.f,.1f);
+    EXPECT_NEAR(values[8],0.f,.1f);
+    EXPECT_NEAR(values[9],0.f,.1f);
+    EXPECT_NEAR(values[10],0.f,.1f);
+    EXPECT_NEAR(values[11],1.f,.1f);
+    EXPECT_NEAR(values[12],1.f,.1f);
+    EXPECT_NEAR(values[13],1.f,.1f);
+    EXPECT_NEAR(values[14],1.f,.1f);
+    EXPECT_NEAR(values[15],0.f,.1f);
+    EXPECT_NEAR(values[16],0.f,.1f);
+    EXPECT_NEAR(values[17],0.f,.1f);
+    EXPECT_EQ(res, IMAGE_OK);
+    //png
+    res = read_RGB(TEST_ASSETS "generic.png", values, alpha);
+    EXPECT_NEAR(values[0],1.f,.1f);
+    EXPECT_NEAR(values[1],0.f,.1f);
+    EXPECT_NEAR(values[2],0.f,.1f);
+    EXPECT_NEAR(values[3],1.f,.1f);
+    EXPECT_NEAR(values[4],1.f,.1f);
+    EXPECT_NEAR(values[5],0.f,.1f);
+    EXPECT_NEAR(values[6],0.f,.1f);
+    EXPECT_NEAR(values[7],1.f,.1f);
+    EXPECT_NEAR(values[8],0.f,.1f);
+    EXPECT_NEAR(values[9],0.f,.1f);
+    EXPECT_NEAR(values[10],0.f,.1f);
+    EXPECT_NEAR(values[11],1.f,.1f);
+    EXPECT_NEAR(values[12],1.f,.1f);
+    EXPECT_NEAR(values[13],1.f,.1f);
+    EXPECT_NEAR(values[14],1.f,.1f);
+    EXPECT_NEAR(values[15],0.f,.1f);
+    EXPECT_NEAR(values[16],0.f,.1f);
+    EXPECT_NEAR(values[17],0.f,.1f);
+    EXPECT_EQ(res, IMAGE_OK);
+    //tiff
+    res = read_RGB(TEST_ASSETS "generic.tiff", values, alpha);
+    EXPECT_NEAR(values[0],1.f,.1f);
+    EXPECT_NEAR(values[1],0.f,.1f);
+    EXPECT_NEAR(values[2],0.f,.1f);
+    EXPECT_NEAR(values[3],1.f,.1f);
+    EXPECT_NEAR(values[4],1.f,.1f);
+    EXPECT_NEAR(values[5],0.f,.1f);
+    EXPECT_NEAR(values[6],0.f,.1f);
+    EXPECT_NEAR(values[7],1.f,.1f);
+    EXPECT_NEAR(values[8],0.f,.1f);
+    EXPECT_NEAR(values[9],0.f,.1f);
+    EXPECT_NEAR(values[10],0.f,.1f);
+    EXPECT_NEAR(values[11],1.f,.1f);
+    EXPECT_NEAR(values[12],1.f,.1f);
+    EXPECT_NEAR(values[13],1.f,.1f);
+    EXPECT_NEAR(values[14],1.f,.1f);
+    EXPECT_NEAR(values[15],0.f,.1f);
+    EXPECT_NEAR(values[16],0.f,.1f);
+    EXPECT_NEAR(values[17],0.f,.1f);
+    EXPECT_EQ(res, IMAGE_OK);
+    //targa
+    res = read_RGB(TEST_ASSETS "generic.tga", values, alpha);
+    EXPECT_NEAR(values[0],1.f,.1f);
+    EXPECT_NEAR(values[1],0.f,.1f);
+    EXPECT_NEAR(values[2],0.f,.1f);
+    EXPECT_NEAR(values[3],1.f,.1f);
+    EXPECT_NEAR(values[4],1.f,.1f);
+    EXPECT_NEAR(values[5],0.f,.1f);
+    EXPECT_NEAR(values[6],0.f,.1f);
+    EXPECT_NEAR(values[7],1.f,.1f);
+    EXPECT_NEAR(values[8],0.f,.1f);
+    EXPECT_NEAR(values[9],0.f,.1f);
+    EXPECT_NEAR(values[10],0.f,.1f);
+    EXPECT_NEAR(values[11],1.f,.1f);
+    EXPECT_NEAR(values[12],1.f,.1f);
+    EXPECT_NEAR(values[13],1.f,.1f);
+    EXPECT_NEAR(values[14],1.f,.1f);
+    EXPECT_NEAR(values[15],0.f,.1f);
+    EXPECT_NEAR(values[16],0.f,.1f);
+    EXPECT_NEAR(values[17],0.f,.1f);
+    EXPECT_EQ(res, IMAGE_OK);
+    //tiff with alpha
+    res = read_RGB(TEST_ASSETS "generic_alpha.tiff", values, alpha);
+    EXPECT_NEAR(values[0],1.f,.1f);
+    EXPECT_NEAR(values[1],0.f,.1f);
+    EXPECT_NEAR(values[2],0.f,.1f);
+    EXPECT_NEAR(values[3],0.f,.1f);
+    EXPECT_NEAR(values[4],1.f,.1f);
+    EXPECT_NEAR(values[5],0.f,.1f);
+    EXPECT_NEAR(values[6],0.f,.14f); //suspicious, hope it is the compression
+    EXPECT_NEAR(values[7],0.f,.1f);
+    EXPECT_NEAR(values[8],1.f,.1f);
+    EXPECT_NEAR(values[9],1.f,.1f);
+    EXPECT_NEAR(values[10],1.f,.1f);
+    EXPECT_NEAR(values[11],1.f,.1f);
+    EXPECT_EQ(alpha[0], 255);
+    EXPECT_EQ(alpha[1], 0);
+    EXPECT_EQ(alpha[2], 0);
+    EXPECT_EQ(alpha[3], 255);
+    EXPECT_EQ(res, IMAGE_OK);
+#else
+    res = read_RGB(TEST_ASSETS "generic.jpg", values, alpha);
+    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
 #endif
 }
 

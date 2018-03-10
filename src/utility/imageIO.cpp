@@ -436,7 +436,7 @@ int read_RGB(const char* name, float* data, uint8_t* alpha)
     catch(Magick::Exception e)
     {
         Console.severe(e.what());
-        return false;
+        return IMAGE_NOT_READABLE;
     }
     const size_t width = img.columns();
     const size_t height = img.rows();
