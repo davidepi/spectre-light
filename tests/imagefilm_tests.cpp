@@ -40,7 +40,10 @@ TEST(ImageFilm,constructor)
     unlink("./.ppm");
 
     //almost similar extensions
+    errors_count[WARNING_INDEX] = 0;
     ImageFilm img5(2,2,"out.pph");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(img5.save_image());
     EXPECT_EQ(access("out.pph.ppm",F_OK),0);
     unlink("out.pph.ppm");
@@ -52,7 +55,10 @@ TEST(ImageFilm,constructor)
     unlink("out.bmp");
 
     //bmp similar extension
+    errors_count[WARNING_INDEX] = 0;
     ImageFilm img7(2,2,"out.bmm");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(img7.save_image());
     EXPECT_EQ(access("out.bmm.ppm",F_OK),0);
     unlink("out.bmm.ppm");

@@ -94,6 +94,9 @@
 #define MESSAGE_COMPARE_INF "Comparing infinite values could lead to "\
 "undefined results"
 
+#define MESSAGE_IM_UNSUPPORTED "Output file format is not supported, the "\
+"result will be a NetPBM image"
+
 #define MESSAGE_IM_OUT "ImageMagick not found, output will be in NetPBM format"
 
 #define MESSAGE_IM_CHANN "Unsupported number of channels in file %s"

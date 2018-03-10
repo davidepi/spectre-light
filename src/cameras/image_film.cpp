@@ -38,10 +38,24 @@ static char check_extension(const char* fullpath)
             default:
             {
 #ifdef IMAGEMAGICK
-                retval = EXTENSION_NON_NATIVE;
+                try
+                {
+                    Magick::CoderInfo info(extension+1);
+                    if(info.isWritable())
+                        retval = EXTENSION_NON_NATIVE;
+                    else
+                        //a fake message but... it is used to explain what
+                        //happens now, instead of what genereted the issue
+                        throw new Magick::Exception(MESSAGE_IM_UNSUPPORTED);
+                }
+                catch(Magick::Exception e)
+                {
+                    Console.warning(MESSAGE_IM_UNSUPPORTED);
+                    retval = EXTENSION_NOT_SUPPORTED;
+                }
 #else
                 Console.warning(MESSAGE_IM_OUT);
-                retval = EXTENSION_PPM;
+                retval = EXTENSION_NOT_SUPPORTED;
 #endif
             }
         }
@@ -88,6 +102,7 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
             sprintf(err,MESSAGE_W_DENIED,folder);
             Console.critical(err);
             free(err);
+            return; //bail out during tests
         }
     
     //check extension, add .ppm if not supported
