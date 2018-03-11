@@ -1,8 +1,8 @@
-//author: Davide Pizzolotto
-//license: GNU GPLv3
+// author:Davide Pizzolotto
+// license:GNU GPLv3
 
 #include "imageIO.hpp"
-//must be divisible by 3 (otherwise read bmp will discard some pixels)
+// must be divisible by 3(otherwise read bmp will discard some pixels)
 #define READ_BUFFER 4098
 
 bool save_ppm(const char* name, int width, int height, const uint8_t* array)

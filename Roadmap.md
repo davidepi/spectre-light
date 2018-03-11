@@ -13,14 +13,12 @@
 - [x] triangled meshes
 - [x] bvh aac accelerator
 - [x] spectrum (rgb and spectral rendering, blackbody radiation)
-- [ ] ~dispersion~ **POSTPONED**
-- [ ] ~bidirectional path tracer~ **POSTPONED**
 - [x] microfacet reflection and transmission (blinn, beckmann, ggx isotropic, ggx anisotropic)
 
 ### V0.2 ###
 - [x] unit testing
-- [ ] -> **extended image support (.jpg/.tiff support, metadata)** <-
-- [ ] lex/yacc parser (.3ds parsing, .mtl parsing, quad/ngon parsing)
+- [x] extended image support (.jpg/.tiff support)
+- [ ] -> **lex/yacc parser (.3ds parsing, .mtl parsing, quad/ngon parsing)** <-
 - [ ] diffuse texture mapping
 - [ ] bump/normal textures
 - [ ] environment (sky) system

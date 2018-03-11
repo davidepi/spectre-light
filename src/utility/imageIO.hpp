@@ -173,8 +173,8 @@ bool dimensions_RGB(const char* name, int* width, int* height);
  *  image contains an alpha channel, this is written in the alpha array of
  *  length width*height. Only one alpha channel is supported and the extent of
  *  these values are in the range [0, 255]; multiple alpha channels will exhibit
- *  undefined behaviour. Images with less than three channels are also not
- *  supported.
+ *  undefined behaviour. Images with less than three channels or in CYMK format
+ *  are also not supported.
  *
  *  \param[in] name The path of the image
  *  \param[out] data An array of size width*height*3 that will hold the values

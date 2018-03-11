@@ -29,6 +29,14 @@ if you are running a Linux distribution, as well as in `brew` if you are running
 Furthermore, you can download the Windows or macOS installer of cmake from the official
 site
 
+### Dependencies
+
+Although no dependency is strictly required, with the exception of [cmake](https://cmake.org "cmake homepage"),
+having the Magick++ library is stronly suggested (API version 7.0 or newer). The Magick++ lib is part of the
+[ImageMagick](https://www.imagemagick.org/script/index.php) suite and can be easily installed
+in any OS. WIthout Magick++, *spectre-light* is limited to read and write only NetPBM and
+Windows Bitmap V3.0 files.
+
 ### Building
 
 Building *spectre-light* works exactly like any other cmake project.
