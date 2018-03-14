@@ -33,7 +33,7 @@ public:
     Texture() = default;
     
     ///Default destructor
-    virtual ~Texture() = 0;
+    virtual ~Texture() = default;
     
     /** \brief Maps an (u,v) coordinate to a texture value
      *

@@ -26,7 +26,7 @@
  *  passed at construction time. Although this seems an unnecessary wrapping, it
  *  it used to set a sort of default implementation of the texture class.
  */
-class UniformTexture
+class UniformTexture : public Texture
 {
 public:
     
