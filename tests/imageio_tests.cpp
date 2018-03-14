@@ -448,11 +448,13 @@ TEST(ImageIO,read_rgb)
     res = read_RGB("nonexistent.bmp", values,alpha);
     EXPECT_EQ(res, IMAGE_NOT_READABLE);
     //too many channels
+#ifndef IMAGEMAGICK6
     errors_count[ERROR_INDEX] = 0;
     res = read_RGB(TEST_ASSETS "singlechannel.tiff", values, alpha);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
     EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+#endif
     //jpg
     res = read_RGB(TEST_ASSETS "generic.jpg", values, alpha);
     EXPECT_NEAR(values[0],1.f,.1f);

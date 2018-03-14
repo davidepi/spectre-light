@@ -37,12 +37,14 @@ public:
     
     /** \brief Maps an (u,v) coordinate to a texture value
      *
-     *  Given the coordinate \p u and \p v of a point, this method finds the
-     *  Spectrum value associated with the coordinate by looking at the
+     *  Given the coordinates \p u and \p v of a point, this method finds the
+     *  Spectrum value associated with these coordinates by looking at the
      *  underlying image
      *
      *  \param[in] u The x value of the mapped point in image space
      *  \param[in] v The y value of the mapped point in image space
+     *  \return The Spectrum value of the mesh with this texture applied at the
+     *  coordinates (u,v)
      */
     virtual Spectrum map(float u,float v)const = 0;
 };
