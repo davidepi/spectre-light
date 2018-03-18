@@ -67,4 +67,3 @@ bool MaterialLibrary::contains(const std::string &name)const
     else
         return false;
 }
-

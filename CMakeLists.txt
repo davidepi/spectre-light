@@ -21,6 +21,7 @@ file(GLOB spectre_core_sources
     src/cameras/*.cpp
     src/integrators/*.cpp
     src/parsers/*.cpp
+    src/textures/*.cpp
     src/materials/*.cpp)
 file(GLOB spectre_test_sources
     tests/*.cpp
