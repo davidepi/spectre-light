@@ -1,13 +1,13 @@
 //Created,   16 Jun 2017
-//Last Edit  21 Jan 2018
+//Last Edit  18 Mar 2018
 
 /**
  *  \file bdf.hpp
  *  \brief     Contains Bdf and Bsdf classes
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      21 Jan 2018
+ *  \version   0.2
+ *  \date      18 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -16,9 +16,14 @@
 #define __BDF_HPP__
 
 #include "primitives/shape.hpp"
+#include "materials/lambertian.hpp"
 #include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
 #include "utility/console.hpp"
+#include "textures/texture.hpp"
+#include "textures/texture_library.hpp"
+#include <cstring> //error msg
+#include <cstdlib> //malloc error msg
 
 ///Type of Bdf
 enum BdfFlags {BRDF = 0x1, BTDF = 0x2, DIFFUSE = 0x4, SPECULAR = 0x8,
@@ -138,13 +143,17 @@ public:
     Bsdf();
 
     ///Default destructor
-    ~Bsdf();
+    virtual ~Bsdf();
 
     /** \brief Add the Bdf to the Bsdf
      *
      *  Inherit the ownership of the given Bdf and adds it to this Bsdf.
      *  This means that the value of the Bdf will be taken in consideration when
      *  evaluating the Bsdf
+     *
+     *  \warning Since this method inherits the pointer and take care of its
+     *  deallocations, inheriting the same pointer twice will cause a double
+     *  free at destruction time
      *
      *  \param[in] addme The Bdf that will be added
      */
@@ -157,18 +166,14 @@ public:
      *  radiance to the incident irradiance on the surface. This value is
      *  determined by the BRDFs and BTDFs encompassed in the BSDF
      *
-     *  \warning Since this method inherits the pointer and take care of its
-     *  deallocations, inheriting the same pointer twice will cause a double
-     *  free at destruction time
-     *
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wiW The incident direction, in world space
      *  \param[in] matchme The types of bdfs to consider when computing radiance
      *  \return The value of the BSDF
      */
-    Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                BdfFlags matchme)const;
+    virtual Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+                           BdfFlags matchme)const;
 
     /** \brief Return the value of the BSDF
      *
@@ -188,10 +193,9 @@ public:
      *  \param[out] matched The bdfs matched with the sampling
      *  \return A sampled value of the BSDF
      */
-    Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
-                          const HitPoint* h, Vec3* wiW, float* pdf,
-                          BdfFlags matchme, BdfFlags* matched)
-    const;
+    virtual Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
+                                  const HitPoint* h, Vec3* wiW, float* pdf,
+                                  BdfFlags matchme, BdfFlags* matched)const;
 
     /** \brief Return the probability density function for this bsdf
      *
@@ -203,8 +207,8 @@ public:
      *  \param[in] matchme The types of bdfs to consider when computing the pdf
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
-              BdfFlags matchme)const;
+    virtual float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
+                      BdfFlags matchme)const;
 
 private:
 
@@ -213,6 +217,107 @@ private:
 
     //Bdfs
     Bdf* bdfs[_MAX_BDF_];
+};
+
+/**
+ *  \class SingleBRDF bdf.hpp "materials/bdf.hpp"
+ *  \brief Wrapper for a single BRDF
+ *
+ *  The SingleBRDF class is a simplified version of the BSDF one. It encloses a
+ *  single Bdf class exhibiting only reflectivity, and it is used to simplify
+ *  the computation of matte surfaces. Note that it is not possible to add a
+ *  single BTDF.
+ */
+class SingleBRDF : public Bsdf
+{
+public:
+    
+    ///Default constructor
+    SingleBRDF();
+    
+    ///Default destructor
+    virtual ~SingleBRDF();
+    
+    /** \brief Add the BRDF to this Bsdf
+     *
+     *  Inherit the ownership of the given BRDF and adds it to this Bsdf.
+     *  If a BTDF is passed as input, a white lambertian surface will be added
+     *  instead, since BTDF are not supported by this class. To used BTDFs one
+     *  should use the generic Bsdf class
+     *
+     *  \warning Since this method inherits the pointer and take care of its
+     *  deallocations, inheriting the same pointer twice will cause a double
+     *  free at destruction time
+     *
+     *  \param[in] addme The Bdf that will be added
+     */
+    void inherit_brdf(Bdf* addme);
+    
+    /** Add a texture to this BRDF
+     *
+     *  Given the name, this method search in the texture library and adds the
+     *  corresponding texture to this BRDF, as a diffuse component. If the
+     *  texture is not to be found, an uniform white texture will be added
+     *
+     *  \param[in] name The name of the texture that will be added
+     */
+    void add_diffuse_texture(const char* name);
+    
+    /** \brief Return the value of the BSDF
+     *
+     *  Computes the value of the enclosed BRDF in the point, defining how the
+     *  light is reflected.
+     *
+     *  \param[in] woW The outgoing direction, in world space
+     *  \param[in] h  The properties of the hit point
+     *  \param[in] wiW The incident direction, in world space
+     *  \param[in] matchme The types of bdfs to consider when computing radiance
+     *  \return The value of the BSDF
+     */
+    Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+                   BdfFlags matchme)const;
+    
+    /** \brief Return the value of the BRDF
+     *
+     *  Similar to the value method, this one sample a single direction and
+     *  returns the light reflected in that direction. The random incident ray
+     *  is updated in the \p wi member
+     *
+     *  \param[in] r0 A random float in the interval (0.0,1.0)
+     *  \param[in] r1 A random float in the interval (0.0,1.0)
+     *  \param[in] r2 A random float in the interval (0.0,1.0)
+     *  \param[in] woW The outgoing direction, in world space
+     *  \param[in] h  The properties of the hit point
+     *  \param[out] wiW The incident direction, in world space
+     *  \param[out] pdf The probability density function of the chosen point
+     *  over the bdf hemisphere
+     *  \param[in] matchme The types of bdfs to consider when computing radiance
+     *  \param[out] matched The brdf matched with the sampling
+     *  \return A sampled value of the BSDF
+     */
+    Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
+                          const HitPoint* h, Vec3* wiW, float* pdf,
+                          BdfFlags matchme, BdfFlags* matched)const;
+    
+    /** \brief Return the probability density function for this BRDF
+     *
+     *  Given a pair of vectors, return the pdf value for these directions.
+     *
+     *  \param[in] woW The outgoing direction, in world space
+     *  \param[in] h  The properties of the hit point
+     *  \param[in] wiW The incident direction, in world space
+     *  \param[in] matchme The types of bdfs to consider when computing the pdf
+     *  \return The pdf for this set of values
+     */
+    virtual float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
+                      BdfFlags matchme)const;
+private:
+    
+    //The enclosed BRDF
+    Bdf* reflection;
+    
+    //Texture for the diffuse component
+    const Texture* diffuse;
 };
 
 #endif

@@ -110,6 +110,11 @@
 //max 15 char, otherwise change comments in the utility.hpp, format_seconds func
 #define MESSAGE_LESS_THAN_1_SECOND "less than 1s"
 
+#define MESSAGE_SINGLE_BRDF_WRONG "Added a BTDF where a BRDF was expected in "\
+"class SingleBRDF"
+
+#define MESSAGE_TEXTURE_NOT_FOUND "Texture %s not found in library"
+
 #endif
 
 /**

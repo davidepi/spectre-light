@@ -165,6 +165,12 @@ struct HitPoint
 
     ///Hit asset
     const Asset* asset_h;
+    
+    ///Mapping coordinate u of the point, used for texture mapping
+    float u;
+    
+    ///Mapping coordinate v of the point, used for texture mapping
+    float v;
 };
 
 #endif

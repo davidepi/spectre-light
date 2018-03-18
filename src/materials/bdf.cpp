@@ -100,6 +100,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     
     //transform to shading space
     Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    wo_shading.normalize();
     Vec3 tmpwi;
     
     //I don't care about the result, but I need to generate the &wi vector
@@ -111,6 +112,8 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
         *pdf = 0.f;
         return SPECTRUM_BLACK;
     }
+    else
+        tmpwi.normalize();
     
     //transform incident ray to world space
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->normal_h.x * tmpwi.z;
@@ -118,8 +121,6 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
     
     *val = matching[chosen]->get_flags();//val now is a subset of matchme
-    wo_shading.normalize();
-    tmpwi.normalize();
     wi->normalize();
     //if not specular, throw away retval and compute the value for the generated
     //pair of directions
@@ -166,6 +167,94 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
     }
     if(matching>1)
         return pdf/(float)matching;
+    else
+        return pdf;
+}
+
+SingleBRDF::SingleBRDF()
+{
+    //used as a fallback if the inherit_bdf passes in an illegal value.
+    //not the best course of action, but these methods will be called at startup
+    //time
+    SingleBRDF::reflection = (Bdf*)new Lambertian(SPECTRUM_WHITE);
+}
+
+SingleBRDF::~SingleBRDF()
+{
+    delete SingleBRDF::reflection;
+}
+
+void SingleBRDF::inherit_brdf(Bdf* addme)
+{
+    if(addme->is_type(BdfFlags(BRDF|SPECULAR|GLOSSY)))
+    {
+        delete SingleBRDF::reflection;
+        SingleBRDF::reflection = addme;
+    }
+    else
+        Console.warning(MESSAGE_SINGLE_BRDF_WRONG);
+}
+
+void SingleBRDF::add_diffuse_texture(const char *name)
+{
+    SingleBRDF::diffuse = TexLib.get(name);
+    if(SingleBRDF::diffuse==NULL)
+    {
+        char* errormsg = (char*)malloc(sizeof(char)*strlen(name)+1+
+                                       strlen(MESSAGE_TEXTURE_NOT_FOUND));
+        sprintf(errormsg, MESSAGE_TEXTURE_NOT_FOUND, name);
+        Console.warning(errormsg);
+    }
+}
+
+Spectrum SingleBRDF::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
+                           BdfFlags val)const
+{
+    Spectrum retval = SPECTRUM_BLACK;
+    if(wi->dot(h->normal_h)*wo->dot(h->normal_h) > 0)//reflected ray
+        val = (BdfFlags)(val & ~BTDF);
+    else                                //transmitted ray
+        return retval;
+    Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
+    wo_shading.normalize();
+    wi_shading.normalize();
+    if(reflection->is_type(val))
+    {
+        retval = reflection->value(&wo_shading,&wi_shading);
+        retval *= diffuse->map(h->u, h->v);
+    }
+    return retval;
+}
+
+Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
+                                  const HitPoint* h, Vec3* wi, float* pdf,
+                                  BdfFlags matchme, BdfFlags* val)const
+{
+    Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    wo_shading.normalize();
+    Vec3 tmpwi;
+    Spectrum retval;
+    retval=reflection->sample_value(&wo_shading, &tmpwi,r1,r2,pdf);
+    tmpwi.normalize();
+    wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->normal_h.x * tmpwi.z;
+    wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->normal_h.y * tmpwi.z;
+    wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
+    *val = reflection->get_flags();
+    wi->normalize();
+    return retval*diffuse->map(h->u, h->v);
+}
+
+float SingleBRDF::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
+                      BdfFlags m)const
+{
+    Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
+    Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
+    wo_shading.normalize();
+    wi_shading.normalize();
+    float pdf = 0.f;
+    if(reflection->is_type(m))
+        pdf = reflection->pdf(&wo_shading, &wi_shading);
     else
         return pdf;
 }
