@@ -3,12 +3,12 @@
 
 #include "bdf.hpp"
 #include "materials/lambertian.hpp"
-Bdf::Bdf(BdfFlags flags)
+Bdf::Bdf(char flags)
 {
     Bdf::type = flags;
 }
 
-BdfFlags Bdf::get_flags() const
+char Bdf::get_flags()const
 {
     return Bdf::type;
 }
@@ -57,20 +57,22 @@ void Bsdf::inherit_bdf(Bdf* addme)
 }
 
 Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
-                     BdfFlags val)const
+                     bool matchSpec)const
 {
+    char flags = matchSpec?FLAG_SPEC:0;
     Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
     if(wi->dot(h->normal_h)*wo->dot(h->normal_h) > 0)//reflected ray
-        val = (BdfFlags)(val & ~BTDF);
+        flags |= FLAG_BRDF;
     else                                //transmitted ray
-        val = (BdfFlags)(val & ~BRDF);
+        flags |= FLAG_BTDF;
     Spectrum retval = SPECTRUM_BLACK;
     wo_shading.normalize();
     wi_shading.normalize();
     for(int i=0;i<count;i++)
     {
-        if(bdfs[i]->is_type(val)) //add contribution only if matches refl/trans
+        //add contribution only if matches refl/trans
+        if(bdfs[i]->matches(flags))
             retval += bdfs[i]->value(&wo_shading,&wi_shading);
     }
     return retval;
@@ -78,23 +80,30 @@ Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
 
 Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
                             const HitPoint* h, Vec3* wi, float* pdf,
-                            BdfFlags matchme, BdfFlags* val)const
+                            bool matchSpec, bool* matchedSpec)const
 {
-#ifdef DEBUG
-    if(!wo->is_normalized())
-        Console.warning(MESSAGE_BSDF_NONORMALIZED);
-#endif
+    //this could be skipped with an ad-hoc method but... it will loop 2-3 times
+    //at max...
     int matchcount = 0;
     Bdf* matching[_MAX_BDF_];
-    for(int i=0;i<Bsdf::count;i++)
-        if (Bsdf::bdfs[i]->is_type(matchme))
-            matching[matchcount++] = bdfs[i];
-    
-    if(matchcount==0)
+    if(!matchSpec)
     {
-        *pdf = 0.f;
-        return SPECTRUM_BLACK;//otherwise it will access invalid array positions
+        for(int i=0;i<Bsdf::count;i++)
+            if (!(Bsdf::bdfs[i]->is_specular()))
+                matching[matchcount++] = bdfs[i];
+        if(matchcount==0)
+        {
+            //otherwise it will access invalid array positions
+            *pdf=0.f;
+            return SPECTRUM_BLACK;
+        }
     }
+    else
+    {
+        for(int i=0;i<Bsdf::count;i++)
+                matching[matchcount++] = bdfs[i];
+    }
+    
     int chosen = (int)(r0 * matchcount);
     if(chosen == matchcount) //out of array
         chosen--;
@@ -121,37 +130,42 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->normal_h.y * tmpwi.z;
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
     
-    *val = matching[chosen]->get_flags();//val now is a subset of matchme
     wi->normalize();
     //if not specular, throw away retval and compute the value for the generated
     //pair of directions
-    if((*val & SPECULAR)==0)
+    if(!matching[chosen]->is_specular())
     {
+        *matchedSpec = false;
+        char flags;
         retval = SPECTRUM_BLACK;
         *pdf = 0.f;
         if (wo->dot(h->normal_h) * wi->dot(h->normal_h) > 0)
-            *val = (BdfFlags)(*val & ~BTDF);
+            flags = FLAG_BRDF;
         else
-            *val = (BdfFlags)(*val & ~BRDF);
+            flags = ~FLAG_BTDF;
         for (int i = 0; i < count; i++)
         {
-            if (bdfs[i]->is_type(*val))//add contribution only if matches
+            if (bdfs[i]->matches(flags))//add contribution only if matches
             {
                 retval += bdfs[i]->value(&wo_shading, &tmpwi);
                 *pdf+= bdfs[i]->pdf(&wo_shading, &tmpwi);
             }
         }
     }
-    if(matchcount>1)
-        *pdf/=matchcount;
+    else
+    {
+        *matchedSpec = true;
+    }
+    *pdf/=(float)matchcount;
     return retval;
 }
 
 float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
-                BdfFlags m)const
+                bool matchSpec)const
 {
     if(Bsdf::count == 0)
         return 0.f;
+    char flags = matchSpec?FLAG_BRDF|FLAG_BTDF|FLAG_SPEC:FLAG_BRDF|FLAG_BTDF;
     Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
     wo_shading.normalize();
@@ -160,16 +174,13 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
     int matching = 0;
     for (int i = 0; i < count; ++i)
     {
-        if(bdfs[i]->is_type(m))
+        if(bdfs[i]->matches(flags))
         {
             matching++;
             pdf += bdfs[i]->pdf(&wo_shading, &wi_shading);
         }
     }
-    if(matching>1)
-        return pdf/(float)matching;
-    else
-        return pdf;
+    return pdf/(float)matching;
 }
 
 SingleBRDF::SingleBRDF()
@@ -189,7 +200,7 @@ SingleBRDF::~SingleBRDF()
 
 void SingleBRDF::inherit_bdf(Bdf* addme)
 {
-    if(addme->get_flags()&BRDF)
+    if(addme->is_BRDF())
     {
         delete SingleBRDF::reflection;
         SingleBRDF::reflection = addme;
@@ -218,18 +229,19 @@ void SingleBRDF::add_diffuse_texture(const char *name)
 }
 
 Spectrum SingleBRDF::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
-                           BdfFlags val)const
+                           bool matchSpec)const
 {
+    char flags = matchSpec?FLAG_SPEC:0;
     Spectrum retval = SPECTRUM_BLACK;
     if(wi->dot(h->normal_h)*wo->dot(h->normal_h) > 0)//reflected ray
-        val = (BdfFlags)(val & ~BTDF);
+        flags |= FLAG_BRDF;
     else                                //transmitted ray
         return retval;
     Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
     wo_shading.normalize();
     wi_shading.normalize();
-    if(reflection->is_type(val))
+    if(reflection->matches(flags))
     {
         retval = reflection->value(&wo_shading,&wi_shading);
         retval *= diffuse->map(h->u, h->v);
@@ -239,15 +251,19 @@ Spectrum SingleBRDF::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
 
 Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
                                   const HitPoint* h, Vec3* wi, float* pdf,
-                                  BdfFlags matchme, BdfFlags* val)const
+                                  bool matchSpec, bool* matchedSpec)const
 {
-#ifdef DEBUG
-    if(!wo->is_normalized())
-        Console.warning(MESSAGE_BSDF_NONORMALIZED);
-#endif
-    //TODO: a flag refactoring is NECESSARY
-    if((matchme&BRDF)==0)
-        return SPECTRUM_BLACK;
+    if(reflection->is_specular())
+    {
+        *matchedSpec = true;
+        if(!matchSpec)
+        {
+            *pdf = 0.f;
+            return SPECTRUM_BLACK;
+        }
+    }
+    else
+        *matchedSpec = false;
     Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     wo_shading.normalize();
     Vec3 tmpwi;
@@ -257,20 +273,20 @@ Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->normal_h.x * tmpwi.z;
     wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->normal_h.y * tmpwi.z;
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
-    *val = reflection->get_flags();
     wi->normalize();
     return retval*diffuse->map(h->u, h->v);
 }
 
 float SingleBRDF::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
-                      BdfFlags m)const
+                      bool matchSpec)const
 {
+    if(!matchSpec && reflection->is_specular())
+        return 0.f;
     Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
     wo_shading.normalize();
     wi_shading.normalize();
     float pdf = 0.f;
-    if(reflection->is_type(m))
-        pdf = reflection->pdf(&wo_shading, &wi_shading);
+    pdf = reflection->pdf(&wo_shading, &wi_shading);
     return pdf;
 }

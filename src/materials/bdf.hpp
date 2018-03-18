@@ -24,9 +24,9 @@
 #include <cstring> //error msg
 #include <cstdlib> //malloc error msg
 
-///Type of Bdf
-enum BdfFlags {BRDF = 0x1, BTDF = 0x2, DIFFUSE = 0x4, SPECULAR = 0x8,
-                GLOSSY = 0x10, ALL = BRDF | BTDF | DIFFUSE | SPECULAR | GLOSSY};
+#define FLAG_BRDF 0x1
+#define FLAG_BTDF 0x2
+#define FLAG_SPEC 0x4
 
 /**
  *  \class Bdf bdf.hpp "materials/bdf.hpp"
@@ -45,7 +45,7 @@ public:
      *  \param[in] flags The flags of the Bdf, used to distinguish between BRDF
      *  or BTDF
      */
-    Bdf(BdfFlags flags);
+    Bdf(char flags);
 
     ///Default destructor
     virtual ~Bdf() = default;
@@ -93,35 +93,41 @@ public:
      *  \return The pdf for this set of values
      */
     virtual float pdf(const Vec3* woS, const Vec3* wiS)const;
+    
+    ///Return true if the flags of this Bdf are a subset of the input ones
+    inline bool matches(char flags)const
+    {
+        return (type & flags) == type;
+    }
+    
+    ///Return true if the Bdf is a BRDF
+    inline bool is_BRDF()const
+    {
+        return type & FLAG_BRDF;
+    }
+    
+    ///Return true if the Bdf is a BTDF
+    inline bool is_BTDF()const
+    {
+        return type & FLAG_BTDF;
+    }
+    
+    ///Return true if the Bdf is specular
+    inline bool is_specular()const
+    {
+        return type & FLAG_SPEC;
+    }
 
     /** \brief Returns the flags associated with this Bdf
      *
      *  \return The flags representing the type of Bdf
      */
-    BdfFlags get_flags()const;
-
-    /** \brief Check if the Bdf is of the given type
-     *
-     *  Provided a type of Bdf as argument, this function returns true if the
-     *  Bdf is of the given type. It is not necessary that the Bdf
-     *  satisfies all the flags passe in input, but the input flags
-     *  must be a superset of the Bdf in order to return true
-     *
-     * \param[in] f The type of the Bdf
-     * \return true if the Bdf is a subset of the input type
-     */
-    inline bool is_type(BdfFlags f)
-    {
-        //without `== type` would match subflags
-        //for example type=BRDF|SPECULAR f=SPECULAR would be true
-        //the wanted behaviour is the opposite.
-        return (type & f) == type;
-    }
+    char get_flags()const;
 
 private:
 
     //the type of the bdf
-    BdfFlags type;
+    char type;
 };
 
 
@@ -168,11 +174,11 @@ public:
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wiW The incident direction, in world space
-     *  \param[in] matchme The types of bdfs to consider when computing radiance
+     *  \param[in] matchSpec True if specular Bdfs should be considered
      *  \return The value of the BSDF
      */
     virtual Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                           BdfFlags matchme)const;
+                           bool matchSpec)const;
 
     /** \brief Return the value of the BSDF
      *
@@ -188,13 +194,13 @@ public:
      *  \param[out] wiW The incident direction, in world space
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
-     *  \param[in] matchme The types of bdfs to consider when computing radiance
-     *  \param[out] matched The bdfs matched with the sampling
+     *  \param[in] matchSpec True if the method should match specular Bdfs
+     *  \param[out] matchedSpec True if the method matched a specular Bdf
      *  \return A sampled value of the BSDF
      */
     virtual Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
                                   const HitPoint* h, Vec3* wiW, float* pdf,
-                                  BdfFlags matchme, BdfFlags* matched)const;
+                                  bool matchSpec, bool* matchedSpec)const;
 
     /** \brief Return the probability density function for this bsdf
      *
@@ -203,11 +209,11 @@ public:
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wiW The incident direction, in world space
-     *  \param[in] matchme The types of bdfs to consider when computing the pdf
+     *  \param[in] matchSpec True if the method should match specular Bdfs
      *  \return The pdf for this set of values
      */
     virtual float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
-                      BdfFlags matchme)const;
+                      bool matchSpec)const;
 
 private:
 
@@ -270,11 +276,11 @@ public:
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wiW The incident direction, in world space
-     *  \param[in] matchme The types of bdfs to consider when computing radiance
+     *  \param[in] matchSpec True if the method should consider specular BRDFs
      *  \return The value of the BSDF
      */
     Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                   BdfFlags matchme)const;
+                   bool matchSpec)const;
     
     /** \brief Return the value of the BRDF
      *
@@ -290,13 +296,13 @@ public:
      *  \param[out] wiW The incident direction, in world space
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
-     *  \param[in] matchme The types of bdfs to consider when computing radiance
-     *  \param[out] matched The brdf matched with the sampling
+     *  \param[in] matchSpec True if the method should consider specular BRDFs
+     *  \param[out] matchedSpec True if the method considered specular BRDFs
      *  \return A sampled value of the BSDF
      */
     Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
                           const HitPoint* h, Vec3* wiW, float* pdf,
-                          BdfFlags matchme, BdfFlags* matched)const;
+                          bool matchSpec, bool* matchedSpec)const;
     
     /** \brief Return the probability density function for this BRDF
      *
@@ -305,11 +311,11 @@ public:
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wiW The incident direction, in world space
-     *  \param[in] matchme The types of bdfs to consider when computing the pdf
+     *  \param[in] matchSpec True if the method should consider specular BRDFs
      *  \return The pdf for this set of values
      */
     virtual float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
-                      BdfFlags matchme)const;
+                      bool matchSpec)const;
 private:
     
     //The enclosed BRDF

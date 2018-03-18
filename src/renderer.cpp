@@ -137,12 +137,6 @@ void Renderer::setLanczosSincFilter(float tau)
     film.set_filter(filter);
 }
 
-void Renderer::setRayTracer()
-{
-    delete mc_solver;
-    mc_solver = new RayTracer();
-}
-
 void Renderer::setPathTracer()
 {
     delete mc_solver;

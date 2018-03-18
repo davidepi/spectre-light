@@ -4,7 +4,7 @@
 #include "reflection.hpp"
 
 Reflection::Reflection(const Spectrum& specular)
-    : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
+    : Bdf(FLAG_BRDF|FLAG_SPEC),specular(specular)
 {
 
 }

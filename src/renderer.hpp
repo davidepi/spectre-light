@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 22 Nov 2017
+//Last Edit 18 Mar 2018
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      22 Nov 2017
+ *  \date      18 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -208,14 +208,6 @@ public:
      *  \param[in] tau The tau value for the sinc filter
      */
     void setLanczosSincFilter(float tau);
-
-    /** \brief Solve the light transport equation using the ray-tracer
-     *
-     *  Set the ray tracer as the integrator used for solving the light
-     *  transport equation. This integrator accounts only for direct lighting
-     *  and thus does not compute global illumination
-     */
-    void setRayTracer();
 
     /** \brief Solve the light transport equation using the path-tracer
      *

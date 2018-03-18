@@ -95,11 +95,6 @@ int main(int argc, char* argv[])
     }
     switch(settings.type_integrator)
     {
-        case DIRECT_LIGHT:
-        {
-            renderer.setRayTracer();
-            break;
-        }
         case PATH_TRACE:
         {
             renderer.setPathTracer();

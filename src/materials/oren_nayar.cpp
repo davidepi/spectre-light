@@ -4,7 +4,7 @@
 #include "oren_nayar.hpp"
 
 OrenNayar::OrenNayar(const Spectrum& diffuse, float sigma)
-:Bdf(BdfFlags(BRDF|DIFFUSE)),diffuse(diffuse*INV_PI)
+:Bdf(FLAG_BRDF),diffuse(diffuse*INV_PI)
 {
     float sigma2 = sigma*sigma;
     OrenNayar::A = 1.f - (sigma2/(2*(sigma2+0.33f)));

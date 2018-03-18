@@ -5,7 +5,7 @@
 MicrofacetR::MicrofacetR(const Spectrum& spectrum,
                          const MicrofacetDist* distribution,
                          const Fresnel* fresnel)
-: Bdf(BdfFlags(BRDF|GLOSSY)),specular(spectrum)
+: Bdf(FLAG_BRDF),specular(spectrum)
 {
     MicrofacetR::fresnel = fresnel;
     MicrofacetR::distribution = distribution;
@@ -67,7 +67,7 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
 
 MicrofacetT::MicrofacetT(const Spectrum& spe, const MicrofacetDist* md,
                          const Spectrum& etai, const Spectrum& etat)
-: Bdf(BdfFlags(BTDF|GLOSSY)), specular(spe), fresnel_diel(etai,etat)
+: Bdf(FLAG_BTDF), specular(spe), fresnel_diel(etai,etat)
 {
     MicrofacetT::distribution = md;
     MicrofacetT::eta_i = fresnel_diel.get_eta_incident();

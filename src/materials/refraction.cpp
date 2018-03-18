@@ -4,7 +4,7 @@
 #include "refraction.hpp"
 Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
                        const Spectrum& etat)
-: Bdf(BdfFlags(BTDF|SPECULAR)),specular(s)
+: Bdf(FLAG_BTDF|FLAG_SPEC),specular(s)
 {
 #ifdef SPECTRAL
     Refraction::eta_i = 0;
