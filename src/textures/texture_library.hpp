@@ -15,6 +15,7 @@
 #define __TEXTURE_LIBRARY_HPP__
 
 #include "textures/texture.hpp"
+#include "textures/uniform.hpp"
 #include <unordered_map>
 #include <string>
 
@@ -96,7 +97,7 @@ public:
     
 private:
     
-    TextureLibrary() = default;
+    TextureLibrary();
     ~TextureLibrary();
     std::unordered_map<std::string,Texture*> lib;
 };

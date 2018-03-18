@@ -3,6 +3,12 @@
 
 #include "texture_library.hpp"
 
+TextureLibrary::TextureLibrary()
+{
+    Texture* default_tex = new UniformTexture(SPECTRUM_ONE);
+    lib.insert(std::make_pair("Default",default_tex));
+}
+
 TextureLibrary::~TextureLibrary()
 {
     TextureLibrary::clear();

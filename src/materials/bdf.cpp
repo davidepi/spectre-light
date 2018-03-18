@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "bdf.hpp"
+#include "materials/lambertian.hpp"
 Bdf::Bdf(BdfFlags flags)
 {
     Bdf::type = flags;
@@ -177,6 +178,8 @@ SingleBRDF::SingleBRDF()
     //not the best course of action, but these methods will be called at startup
     //time
     SingleBRDF::reflection = (Bdf*)new Lambertian(SPECTRUM_WHITE);
+    //to avoid SEGFAULT, default texture is completely white
+    SingleBRDF::diffuse = TexLib.get("Default");
 }
 
 SingleBRDF::~SingleBRDF()
@@ -184,15 +187,21 @@ SingleBRDF::~SingleBRDF()
     delete SingleBRDF::reflection;
 }
 
-void SingleBRDF::inherit_brdf(Bdf* addme)
+void SingleBRDF::inherit_bdf(Bdf* addme)
 {
-    if(addme->is_type(BdfFlags(BRDF|SPECULAR|GLOSSY)))
+    if(addme->get_flags()&BRDF)
     {
         delete SingleBRDF::reflection;
         SingleBRDF::reflection = addme;
     }
     else
+    {
         Console.warning(MESSAGE_SINGLE_BRDF_WRONG);
+        //this is deleted ANYWAY to prevent leaks.
+        //the fact is that once passed to this function, addme is managed by
+        //this class. This class refuses to add it, so it is instadeleted
+        delete addme;
+    }
 }
 
 void SingleBRDF::add_diffuse_texture(const char *name)
@@ -204,6 +213,7 @@ void SingleBRDF::add_diffuse_texture(const char *name)
                                        strlen(MESSAGE_TEXTURE_NOT_FOUND));
         sprintf(errormsg, MESSAGE_TEXTURE_NOT_FOUND, name);
         Console.warning(errormsg);
+        free(errormsg);
     }
 }
 
@@ -231,6 +241,13 @@ Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
                                   const HitPoint* h, Vec3* wi, float* pdf,
                                   BdfFlags matchme, BdfFlags* val)const
 {
+#ifdef DEBUG
+    if(!wo->is_normalized())
+        Console.warning(MESSAGE_BSDF_NONORMALIZED);
+#endif
+    //TODO: a flag refactoring is NECESSARY
+    if((matchme&BRDF)==0)
+        return SPECTRUM_BLACK;
     Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     wo_shading.normalize();
     Vec3 tmpwi;
@@ -255,6 +272,5 @@ float SingleBRDF::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
     float pdf = 0.f;
     if(reflection->is_type(m))
         pdf = reflection->pdf(&wo_shading, &wi_shading);
-    else
-        return pdf;
+    return pdf;
 }

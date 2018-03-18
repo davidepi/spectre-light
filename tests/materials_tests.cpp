@@ -13,6 +13,7 @@
 #include "primitives/asset.hpp"
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
+#include "textures/uniform.hpp"
 #include "utility/spectrum.hpp"
 
 #define EPSILON 1E-5f
@@ -901,5 +902,143 @@ TEST(Materials,Bsdf_pdf)
     material2.inherit_bdf(new Lambertian(SPECTRUM_ONE));
     pdf2 = material2.pdf(&(r.direction), &hit, &wi, ALL);
     EXPECT_FLOAT_EQ(pdf2, pdf);
+}
+
+TEST(Materials,SingleBRDF_inherit_bdf)
+{
+    //add single reflective material
+    SingleBRDF material;
+    errors_count[WARNING_INDEX] = 0;
+    material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    //fail to add transmittive material
+    errors_count[WARNING_INDEX] = 0;
+    material.inherit_bdf(new Refraction(SPECTRUM_ONE,cauchy(1.0,0.f),
+                                        cauchy(1.33f,0.f)));
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+}
+
+TEST(Materials,SingleBRDF_add_diffuse_texture)
+{
+    SingleBRDF material;
+    //existing
+    errors_count[WARNING_INDEX] = 0;
+    material.add_diffuse_texture("Default");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    //non-existing
+    material.add_diffuse_texture("Non existing texture");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+}
+
+TEST(Materials,SingleBRDF_value)
+{
+    SingleBRDF material_r;
+    Bsdf material_t;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    material_t.inherit_bdf(new Refraction(SPECTRUM_ONE,cauchy(1.0,0.f),
+                                          cauchy(1.33f,0.f)));
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    //reflected ray
+    wi = Vec3(0.f,1.f,0.f);
+    wi.normalize();
+    a.set_material(&material_r);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material()->value(&r.direction,&hit,&wi,BdfFlags(BRDF|DIFFUSE));
+    EXPECT_FALSE(res.is_black());
+    EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
+    EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
+    EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
+
+    //reflected ray, non matching flags
+    a.set_material(&material_r);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material()->value(&r.direction,&hit,&wi,BdfFlags(DIFFUSE));
+    EXPECT_TRUE(res.is_black());
+
+    //transmitted ray
+    wi = Vec3(0.f,-1.f,0.f);
+    wi.normalize();
+    a.set_material(&material_t);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res=a.get_material()->value(&r.direction,&hit,&wi,BdfFlags(BTDF|SPECULAR));
+    EXPECT_TRUE(res.is_black());
+}
+
+TEST(Materials,SingleBRDF_sample_value)
+{
+    BdfFlags out_flags;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    float pdf;
+    Spectrum res;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    SingleBRDF material_r;
+    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    //non normalized vector
+    errors_count[WARNING_INDEX] = 0;
+    Vec3 nonorm(1.f,1.f,1.f);
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &nonorm, &hit,
+                                  &wi, &pdf, BTDF, &out_flags);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    //brdf diffuse no match
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                                  &pdf, BTDF, &out_flags);
+    EXPECT_TRUE(res.is_black());
+    //brdf diffuse match
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                                  &pdf, BdfFlags(BRDF|DIFFUSE), &out_flags);
+    EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
+    EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
+    EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
+    EXPECT_FLOAT_EQ(pdf,0.22507906f);
+    EXPECT_FLOAT_EQ(wi.x,-0.707106769f);
+    EXPECT_FLOAT_EQ(wi.y, 0.707106769);
+    EXPECT_TRUE(flt_equal(wi.z,0.f));
+    EXPECT_EQ(out_flags,BdfFlags(BRDF|DIFFUSE));
+    EXPECT_TRUE(wi.is_normalized());
+}
+
+TEST(Materials,SingleBRDF_pdf)
+{
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    float pdf;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    SingleBRDF material;
+
+    //non matching
+    material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    pdf = material.pdf(&(r.direction),&hit,&wi,SPECULAR);
+    EXPECT_EQ(pdf, 0.f);
+
+    //matching
+    pdf = material.pdf(&(r.direction), &hit, &wi, ALL);
+    EXPECT_FLOAT_EQ(pdf, 0.318309873f);
 }
 

@@ -16,7 +16,6 @@
 #define __BDF_HPP__
 
 #include "primitives/shape.hpp"
-#include "materials/lambertian.hpp"
 #include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
 #include "utility/console.hpp"
@@ -157,7 +156,7 @@ public:
      *
      *  \param[in] addme The Bdf that will be added
      */
-    void inherit_bdf(Bdf* addme);
+    virtual void inherit_bdf(Bdf* addme);
 
     /** \brief Return the value of the BSDF
      *
@@ -251,7 +250,7 @@ public:
      *
      *  \param[in] addme The Bdf that will be added
      */
-    void inherit_brdf(Bdf* addme);
+    void inherit_bdf(Bdf* addme);
     
     /** Add a texture to this BRDF
      *
