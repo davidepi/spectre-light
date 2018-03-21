@@ -25,6 +25,9 @@
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
 #include "utility/imageIO.hpp"
+#ifdef IMAGEMAGICK
+#include <Magick++.h>
+#endif
 #include <cstring>
 #include <cmath>
 #include <mutex>
