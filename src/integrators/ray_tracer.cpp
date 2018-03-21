@@ -16,7 +16,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
     {
         float rand[6];
         sam->get_random_numbers(rand,6);
-        const Vec3 wo = -r->direction;
+        const Vec3 wo = normalize(-r->direction);
         Vec3 wi;
         //choose a light to sample
         int sampledlight = min((int)(rand[0]*nlights),nlights-1);

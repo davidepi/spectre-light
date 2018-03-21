@@ -114,7 +114,6 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     Vec3 tmpwi;
     
     //I don't care about the result, but I need to generate the &wi vector
-    //TODO: gained efficiency by creating an ad-hoc method?
     Spectrum retval;
     retval=matching[chosen]->sample_value(&wo_shading, &tmpwi,r1,r2,pdf);
     if(tmpwi.length()==0) //total internal reflection
@@ -142,7 +141,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
         if (wo->dot(h->normal_h) * wi->dot(h->normal_h) > 0)
             flags = FLAG_BRDF;
         else
-            flags = ~FLAG_BTDF;
+            flags = FLAG_BTDF;
         for (int i = 0; i < count; i++)
         {
             if (bdfs[i]->matches(flags))//add contribution only if matches
@@ -156,6 +155,8 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     {
         *matchedSpec = true;
     }
+    if(matchcount==0)
+        throw "ouch";
     *pdf/=(float)matchcount;
     return retval;
 }
@@ -172,7 +173,7 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
     wi_shading.normalize();
     float pdf = 0.f;
     int matching = 0;
-    for (int i = 0; i < count; ++i)
+    for(int i = 0; i < count; ++i)
     {
         if(bdfs[i]->matches(flags))
         {
@@ -180,7 +181,7 @@ float Bsdf::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
             pdf += bdfs[i]->pdf(&wo_shading, &wi_shading);
         }
     }
-    return pdf/(float)matching;
+    return matching>1?pdf/(float)matching:pdf; //prevent division by 0
 }
 
 SingleBRDF::SingleBRDF()

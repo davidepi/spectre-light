@@ -50,10 +50,9 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     bool matchedSpec;
     Spectrum f = mat->sample_value(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
                                    true, &matchedSpec);
-    float adot = absdot(wi,hp->normal_h);
     if(pdf==0 || f.is_black())
         return retval;
-    
+    float adot = absdot(wi,hp->normal_h);
     //calculate new power, new ray and new intersection point
     *power *= f*adot/pdf*rrprob;
     Ray r2(hp->point_h,wi);
