@@ -1,9 +1,9 @@
+%option yylineno
 %{
 #include <stdlib.h> //for atof and atoi. They are deprecated because of lack of
                     //error handling, but lex ensures no errors
 #include <string.h>
 #include "obj_parser.tab.h"
-#define YY_DECL int yylex()
 %}
 %%
 f                  { return FACE;}
