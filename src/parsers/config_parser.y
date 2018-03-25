@@ -48,6 +48,10 @@
 %token CAMERA_ORTHOGRAPHIC "`orthographic` keyword"
 %token CAMERA_PERSPECTIVE "`perspective` keyword"
 %token CAMERA_PANORAMA "`panorama` keyword"
+%token POSITION "`position` keyword"
+%token TARGET "`target` keyword"
+%token UP "`up` keyword"
+%token FOV "`fov` keyword"
 %token SAMPLER_RAND "`random` keyword"
 %token SAMPLER_STRAT "`stratified` keyword"
 %token FILTER_BOX "`box` keyword"
@@ -75,11 +79,12 @@ file: file stmt
 
 stmt:
 OUTPUT COLON STRING { config.output = $3; }
-| RESOLUTION COLON OPEN_CU resolution_type CLOSE_CU {}
-| FILTER COLON OPEN_CU filter_type CLOSE_CU {}
+| RESOLUTION COLON OPEN_CU resolution_type CLOSE_CU
+| FILTER COLON OPEN_CU filter_type CLOSE_CU
 | SAMPLER  COLON sampler_type {config.type_sampler = $3;}
 | SPP COLON INT {config.spp=$3;}
 | INTEGRATOR COLON integrator_type {config.type_integrator = $3;}
+| CAMERA COLON OPEN_CU camera_type CLOSE_CU
 ;
 
 resolution_type: resolution_type resolution_stmt | ;
@@ -105,6 +110,24 @@ sampler_type:
 SAMPLER_RAND {config.type_sampler = RANDOM_SAMPLER;}
 | SAMPLER_STRAT {config.type_sampler = STRATIFIED_SAMPLER;}
 ;
+
+camera_type: camera_type camera_stmt|;
+camera_stmt:
+TYPE COLON CAMERA_ORTHOGRAPHIC {config.type_camera = ORTHOGRAPHIC_CAMERA;}
+| TYPE COLON CAMERA_PERSPECTIVE {config.type_camera = PERSPECTIVE_CAMERA;}
+| TYPE COLON CAMERA_PANORAMA {config.type_camera = PANORAMA_CAMERA;}
+| POSITION COLON vector {config.camera_position[0]=$3.x;
+                         config.camera_position[1]=$3.y;
+                         config.camera_position[2]=$3.z;}
+| TARGET COLON vector {config.camera_target[0]=$3.x;
+                       config.camera_target[1]=$3.y;
+                       config.camera_target[2]=$3.z;}
+| UP COLON vector {config.camera_up[0]=$3.x;
+                   config.camera_up[1]=$3.y;
+                   config.camera_up[2]=$3.z;}
+| FOV COLON FLOAT {config.camera_fov = $3;}
+;
+
 
 vector:
 OPEN_SQ number COMMA number COMMA number CLOSE_SQ

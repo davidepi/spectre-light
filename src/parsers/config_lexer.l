@@ -40,6 +40,10 @@ camera {return CAMERA;}
 perspective { return CAMERA_PERSPECTIVE; }
 panorama {return CAMERA_PANORAMA;}
 orthographic { return CAMERA_ORTHOGRAPHIC; }
+position {return POSITION;}
+target {return TARGET;}
+up { return UP;}
+fov { return FOV; }
 [0-9]+             { yylval.ival = atoi(yytext); return INT;}
 [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)? { yylval.fvec.x = atof(yytext); return FLOAT;}
 \".*\" { yylval.sval = strdup(yytext); return STRING; }
