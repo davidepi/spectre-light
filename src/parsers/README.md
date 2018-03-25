@@ -36,12 +36,12 @@ The possible keys are the following:
 Key | Type | Usage
 ---|---|---
 out| quoted string | The file that will be written when rendering the current scene
-resolution | object | The resolution of the final rendered image
-filter | object | The filter used to process the final image after gathering each sample value
+resolution | [object](#resolution) | The resolution of the final rendered image
+filter | [object](#filter) | The filter used to process the final image after gathering each sample value
 spp | int | The number of samples per pixel. The default value is 121
 integrator | enum | The type of integrator used to solve the rendering equation. The only possible value is `pt` for path trace
 sampler | enum | The type of sampler used to gather samples. Possible values are `random` for a pure random sampler or `stratified` for a sampler that subdivides a region in strata and picks a random sample for each strata. The latter is the default and suggested value
-camera | object | A description of the camera used to render the current scene
+camera | [object](#camera) | A description of the camera used to render the current scene
 
 ### Objects
 These are the various keys that can be used for objects described in the previous section. These objects must be enclosed in curly braces

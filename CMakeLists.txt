@@ -57,10 +57,6 @@ target_compile_definitions (spectre-full PRIVATE SPECTRAL=1)
 add_executable(spectre-rgb src/main.cpp ${spectre_core_sources})
 target_link_libraries (spectre-rgb ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(spectre src/application_starter.cpp)
-add_dependencies(spectre spectre-full)
-add_dependencies(spectre spectre-rgb)
-
 find_package(ImageMagick COMPONENTS Magick++)
 if(ImageMagick_Magick++_FOUND)
   set_property(SOURCE src/main.cpp APPEND_STRING PROPERTY COMPILE_FLAGS " -DIMAGEMAGICK=\\\"${ImageMagick_Magick++_INCLUDE_DIRS}\\\"")

@@ -68,22 +68,24 @@ studio. Be sure to use a Release configuration for 64 bit
 
 ### Running
 
-After building *spectre-light* you can run it with the following command on Linux/macOS
+After building *spectre-light* you can run it with the following command
 ```
-spectre input.txt
+spectre-rgb input.txt
 ```
 or with
 ```
-spectre-full.exe input.txt
+spectre-full input.txt
 ```
-on Windows
 
-`input.txt` is an ASCII file containing the description of the scene that will be
-rendered and where the output file will be saved. More information about the input file can be
-found in the [input_example.txt](./input_example.txt) file
+`input.txt` is an ASCII file containing the description of the scene that will be rendered
 
-The output file can be a `.ppm` or a `.bmp` image. If the extension is omitted, the default will
-be the `.ppm`
+## Input
+
+The input file format is explained [here](./src/parsers/README.md).
+
+*spectre-light* support `.obj` and `.fbx` for scene and models, `.mtl` for
+materials, `.ppm` and `.bmp` for textures. As already said, if Magick++ is
+available, additional image format such as `.jpg`, `.tiff`, `.tga`, `.dds` and `.png` are available
 
  ## Documentation
 
