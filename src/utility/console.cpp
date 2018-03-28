@@ -69,43 +69,64 @@ void Console::log(const char* m, const char* v)
 #endif
 }
 
-void Console::notice(const char* s)
+void Console::notice(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stdout,"[" NOTICE "] %s\n",s);
+    fprintf(stdout,"[" NOTICE "]");
+    va_list args;
+    va_start(args,format);
+    vfprintf(stdout, format, args);
+    va_end(args);
+    fprintf(stdout,"\n");
 #else
-    UNUSED(s);
+    UNUSED(format);
     errors_count[NOTICE_INDEX]++;
 #endif
 }
 
-void Console::warning(const char* s)
+void Console::warning(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" WARNING "] %s\n",s);
+    fprintf(stderr,"[" WARNING "]");
+    va_list args;
+    va_start(args,format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fprintf(stderr,"\n");
 #else
-    UNUSED(s);
+    UNUSED(format);
     errors_count[WARNING_INDEX]++;
 #endif
 }
 
-void Console::severe(const char* s)
+void Console::severe(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" ERROR "] %s\n",s);
+    fprintf(stderr,"[" ERROR "]");
+    va_list args;
+    va_start(args,format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fprintf(stderr,"\n");
 #else
-    UNUSED(s);
+    UNUSED(format);
     errors_count[ERROR_INDEX]++;
 #endif
 }
 
-void Console::critical(const char* s)
+void Console::critical(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" CRITICAL "] %s\n",s);
+    fprintf(stderr,"[" CRITICAL "]");
+    va_list args;
+    va_start(args,format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fprintf(stderr,"\n");
+    fflush(stderr);
     exit(EXIT_FAILURE);
 #else
-    UNUSED(s);
+    UNUSED(format);
     errors_count[CRITICAL_INDEX]++;
 #endif
 }
@@ -172,6 +193,7 @@ void Console::critical(bool b, const char* s)
     {
 #ifndef TESTS
         fprintf(stderr,"[" CRITICAL "] %s\n",s);
+        fflush(stderr);
         exit(EXIT_FAILURE);
 #else
         UNUSED(s);

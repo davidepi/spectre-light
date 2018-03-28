@@ -1,12 +1,12 @@
 //Created,  22 Mar 2017
-//Last Edit 26 Nov 2017
+//Last Edit 28 Mar 2018
 
 /**
  *  \file console.hpp
  *  \brief Console logging
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  26 Nov 2017
+ *  \date  28 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -59,7 +59,7 @@ public:
      *  \param[in] message The message to be logged
      *  \param[in] verbose The message to be logged if the program is launched
      *  in verbose mode. If this parameter is NULL the normal message will be
-     *  logged.
+     *  logged. Format strings are NOT supported
      *
      *  \note The newline character is not needed
      *
@@ -70,71 +70,74 @@ public:
      *  \sa critical(const char* message)
      */
     void log(const char* message, const char* verbose);
-
+    
     /** \brief Log a message
      *
-     *  Log a message in the console with a severity of "Notice"
+     *  Log a message in the console with a severity of "Notice". Format strings
+     *  are supported
      *
-     *  \param[in] message The message to be logged
+     *  \param[in] format The message to be logged
      *
      *  \note The newline character is not needed
      *
      *  \sa notice(bool condition, const char* message)
      *  \sa log (const char* message, const char* verbose)
-     *  \sa warning (const char* message)
-     *  \sa severe  (const char* message)
-     *  \sa critical(const char* message)
+     *  \sa warning (const char* message, ...)
+     *  \sa severe  (const char* message, ...)
+     *  \sa critical(const char* message, ...)
      */
-    void notice(const char* message);
-
+    void notice(const char* format, ...);
+    
     /** \brief Log a message
      *
-     *  Log a message in the console with a severity of "Warning"
+     *  Log a message in the console with a severity of "Warning". Format
+     *  strings are supported
      *
-     *  \param[in] message The message to be logged
+     *  \param[in] format The message to be logged
      *
      *  \note The newline character is not needed
      *
      *  \sa warning(bool condition, const char* message)
      *  \sa log (const char* message, const char* verbose)
-     *  \sa notice (const char* message)
-     *  \sa severe  (const char* message)
-     *  \sa critical(const char* message)
+     *  \sa notice (const char* message, ...)
+     *  \sa severe  (const char* message, ...)
+     *  \sa critical(const char* message, ...)
      */
-    void warning(const char* message);
-
+    void warning(const char* format, ...);
+    
     /** \brief Log a message
      *
-     *  Log a message in the console with a severity of "Error"
+     *  Log a message in the console with a severity of "Error". Format strings
+     *  are supported
      *
-     *  \param[in] message The message to be logged
+     *  \param[in] format The message to be logged
      *
      *  \note The newline character is not needed
      *
      *  \sa severe(bool condition, const char* message)
      *  \sa log (const char* message, const char* verbose)
-     *  \sa notice (const char* message)
-     *  \sa warning  (const char* message)
-     *  \sa critical(const char* message)
+     *  \sa notice (const char* message, ...)
+     *  \sa warning  (const char* message, ...)
+     *  \sa critical(const char* message, ...)
      */
-    void severe(const char* message);
-
+    void severe(const char* format, ...);
+    
     /** \brief Log a message and kill the program
      *
      *  Log a message in the console with a severity of "Critical", then quit
-     *  the program with an exit(EXIT_FAILURE)
+     *  the program with an exit(EXIT_FAILURE). Format strings are supported
      *
-     *  \param[in] message The message to be logged
+     *  \param[in] format The message to be logged
      *
      *  \note The newline character is not needed
      *
      *  \sa critical(bool condition, const char* message)
      *  \sa log (const char* message, const char* verbose)
-     *  \sa notice (const char* message)
-     *  \sa warning  (const char* message)
-     *  \sa severe(const char* message)
+     *  \sa notice (const char* message, ...)
+     *  \sa warning  (const char* message, ...)
+     *  \sa severe(const char* message, ...)
      */
-    void critical(const char* message);
+    void critical(const char* format, ...);
 
     /** \brief Log a message, after evaluating a condition
      *
@@ -144,7 +147,7 @@ public:
      *  \param[in] message The message to be logged
      *  \param[in] verbose The message to be logged if the program is launched
      *  in verbose mode. If this parameter is NULL the normal message will be
-     *  logged.
+     *  logged. Format strings are NOT supported
      *
      *  \note The newline character is not needed
      *
@@ -159,7 +162,7 @@ public:
     /** \brief Log a message, after evaluating a condition
      *
      *  Evaluate a condition, and if it is true, log a message in the console
-     *  with a severity of "Notice"
+     *  with a severity of "Notice". Format strings are NOT supported
      *
      *  \param[in] condition The condition to be evaluated
      *  \param[in] message The message to be logged
@@ -177,7 +180,7 @@ public:
     /** \brief Log a message, after evaluating a condition
      *
      *  Evaluate a condition, and if it is true, log a message in the console
-     *  with a severity of "Warning"
+     *  with a severity of "Warning". Format strings are NOT supported
      *
      *  \param[in] condition The condition to be evaluated
      *  \param[in] message The message to be logged
@@ -195,7 +198,7 @@ public:
     /** \brief Log a message, after evaluating a condition
      *
      *  Evaluate a condition, and if it is true, log a message in the console
-     *  with a severity of "Error"
+     *  with a severity of "Error". Format strings are NOT supported
      *
      *  \param[in] condition The condition to be evaluated
      *  \param[in] message The message to be logged
@@ -215,7 +218,8 @@ public:
      *
      *  Evaluate a condition, and if it is true, log a message in the console
      *  with a severity of "Critical". If the condition is true, this function
-     *  quits the program with an exit(EXIT_FAILURE)
+     *  quits the program with an exit(EXIT_FAILURE). Format strings are NOT
+     *  supported
      *
      *  \param[in] condition The condition to be evaluated
      *  \param[in] message The message to be logged
