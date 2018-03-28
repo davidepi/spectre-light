@@ -44,6 +44,14 @@ position {return POSITION;}
 target {return TARGET;}
 up { return UP;}
 fov { return FOV; }
+shape { return SHAPE;}
+world { return WORLD;}
+light { return LIGHT;}
+name { return NAME;}
+rotation { return ROTATION; }
+scale { return SCALE; }
+temperature { return TEMPERATURE; }
+material { return MATERIAL; }
 [0-9]+             { yylval.ival = atoi(yytext); return INT;}
 [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)? { yylval.fvec.x = atof(yytext); return FLOAT;}
 \".*\" { yylval.sval = strdup(yytext); return STRING; }

@@ -61,6 +61,16 @@
 %token FILTER_LANC "`lanczos` keyword"
 %token VAL_0 "`value0` keyword"
 %token VAL_1 "`value1` keyword"
+%token SHAPE "`shape` keyword"
+%token WORLD "`world` keyword"
+%token LIGHT "`light` keyword"
+%token TEMPERATURE "`temperature` keyword"
+%token NAME "`name` keyword"
+%token ROTATION "`rotation` keyword"
+%token SCALE "`scale` keyword"
+%token COLOR "`color` keyword"
+%token MATERIAL "`material` keyword"
+
 %token INTEGRATOR_PATH_TRACE "`pt` keyword"
 %token <ival> INT "integer value"
 %token <fvec.x> FLOAT "floating point value"
@@ -85,6 +95,9 @@ OUTPUT COLON STRING { config.output = $3; }
 | SPP COLON INT {config.spp=$3;}
 | INTEGRATOR COLON integrator_type {config.type_integrator = $3;}
 | CAMERA COLON OPEN_CU camera_type CLOSE_CU
+| SHAPE COLON STRING {/*invoke obj parser */}
+| WORLD COLON OPEN_CU world_type CLOSE_CU
+| LIGHT COLON OPEN_CU light_type CLOSE_CU
 ;
 
 resolution_type: resolution_type resolution_stmt | ;
@@ -127,6 +140,19 @@ TYPE COLON CAMERA_ORTHOGRAPHIC {config.type_camera = ORTHOGRAPHIC_CAMERA;}
                    config.camera_up[2]=$3.z;}
 | FOV COLON FLOAT {config.camera_fov = $3;}
 ;
+
+world_type: world_name world_rec;
+world_rec: world_rec world_stmt|world_rec MATERIAL COLON STRING|;
+world_name: NAME COLON STRING;
+world_stmt:
+POSITION COLON vector
+| ROTATION COLON vector
+| SCALE COLON vector
+;
+
+light_type: world_name light_rec;
+light_rec: light_rec world_stmt|light_rec light_stmt|;
+light_stmt: TEMPERATURE COLON INT | COLOR COLON vector;
 
 
 vector:
