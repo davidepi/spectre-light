@@ -62,6 +62,14 @@ TEST(Consolet,notice_boolean)
     errors_count[NOTICE_INDEX] = 0;
 }
 
+TEST(Consolet,notice_vargs)
+{
+    errors_count[NOTICE_INDEX] = 0;
+    Console.notice("test #%d %s",1,"ok");
+    EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
+    errors_count[NOTICE_INDEX] = 0;
+}
+
 TEST(Consolet,warning)
 {
     errors_count[WARNING_INDEX] = 0;
@@ -80,6 +88,14 @@ TEST(Consolet,warning_boolean)
     errors_count[WARNING_INDEX] = 0;
     Console.warning(false,"test");
     EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    errors_count[WARNING_INDEX] = 0;
+}
+
+TEST(Consolet,warning_vargs)
+{
+    errors_count[WARNING_INDEX] = 0;
+    Console.warning("test #%d %s",1,"ok");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
 }
 
@@ -104,6 +120,14 @@ TEST(Consolet,severe_boolean)
     errors_count[ERROR_INDEX] = 0;
 }
 
+TEST(Consolet,severe_vargs)
+{
+    errors_count[ERROR_INDEX] = 0;
+    Console.severe("test #%d %s",1,"ok");
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+}
+
 TEST(Consolet,critical)
 {
     errors_count[CRITICAL_INDEX] = 0;
@@ -122,6 +146,14 @@ TEST(Consolet,critical_boolean)
     errors_count[CRITICAL_INDEX] = 0;
     Console.critical(false,"test");
     EXPECT_EQ(errors_count[CRITICAL_INDEX], 0);
+    errors_count[CRITICAL_INDEX] = 0;
+}
+
+TEST(Consolet,critical_vargs)
+{
+    errors_count[CRITICAL_INDEX] = 0;
+    Console.critical("test #%d %s",1,"ok");
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
     errors_count[CRITICAL_INDEX] = 0;
 }
 

@@ -62,13 +62,29 @@ public:
 
     /** \brief Constructor, given the vertices.
      *
-     *  Construct a triangle in object space with the given vertices
+     *  Construct a triangle in object space with the given vertices.
+     *  The material of this triangle is set as Default material
      *
      *  \param[in] v0 The first vertex of the triangle
      *  \param[in] v1 The second vertex of the triangle
      *  \param[in] v2 The third vertex of the triangle
      */
     Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2);
+    
+    /** \brief Constructor, given the vertices and the material.
+     *
+     *  Construct a triangle in object space with the given vertices and
+     *  material
+     *
+     *  \param[in] v0 The first vertex of the triangle
+     *  \param[in] v1 The second vertex of the triangle
+     *  \param[in] v2 The third vertex of the triangle
+     *  \param[in] material_index The index of the material used by this
+     *  Triangle, referencing the material array of the containing Mesh. More
+     *  info can be found in the Mesh::set_bsdf method
+     */
+    Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2,
+             unsigned char material_index);
 
     /** \brief Intersection of a Ray and this triangle
      *
@@ -155,6 +171,9 @@ public:
 
     ///Third vertex of the triangle
     Vertex c;
+    
+    ///Index of the corresponding material in the materials array of the Mesh
+    unsigned char material_index;
 };
 
 #endif

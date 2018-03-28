@@ -3,18 +3,24 @@
 
 #include "mesh.hpp"
 
-Mesh::Mesh(unsigned int size)
+Mesh::Mesh(unsigned int size, unsigned char mat_size)
 {
     Mesh::count=0; //number of triangles added
     Mesh::alloc=size; //number of triangles allocated
 
     //can't use malloc, vtable pointer would be uninitialized
     Mesh::tris = new Triangle[size];
+    Mesh::materials = new const Bsdf*[mat_size];
+    //ensure at least the default material
+    if(mat_size<1)
+        mat_size=1;
+    Mesh::materials[0] = MtlLib.get("Default");
 }
 
 Mesh::~Mesh()
 {
-   delete[] Mesh::tris;
+    delete[] Mesh::tris;
+    delete[] Mesh::materials;
 }
 
 void Mesh::add_triangle(const Point3& a, const Point3& b, const Point3& c,
@@ -211,4 +217,9 @@ void Mesh::sample_point(float r0, float r1, const float* densities, Point3* p,
     sample01 = inverse_lerp(extSample-densities[mid], 0,
                             densities[mid+1]-densities[mid]);
     tris[mid].sample_point(sample01, r1, NULL, p, n);
+}
+
+void Mesh::set_bsdf(unsigned char index, const Bsdf* material)
+{
+    Mesh::materials[index] = material;
 }

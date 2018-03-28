@@ -59,7 +59,7 @@ Mesh* parseObj(const char* path)
         if(tris>0)
         {
             fseek(fin, 0, SEEK_SET); //reposition to beginning
-            retval = new Mesh(tris);
+            retval = new Mesh(tris,1);
             Vertex a,b,c;
             char* token;
             char* pos;

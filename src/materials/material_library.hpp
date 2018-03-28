@@ -28,8 +28,8 @@
  *  the various shape at creation time. The library must be unique and
  *  accessible everywhere.
  *
- *  The library contains a default material that represents a white matte
- *  surface
+ *  The library contains a default material called "Default" that represents a
+ *  white matte surface
  *
  *  A define grants access to this singleton just by writing "MtlLib"
  *
