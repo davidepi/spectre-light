@@ -60,13 +60,13 @@ enum | A keyword used as an enum. The keywords change from object to object, so 
 The possible keys are the following:
 
 Key | Type | Usage | Default value
----|---|---
+---|---|---|---
 out| quoted string | The file that will be written when rendering the current scene | out.ppm
 resolution | [object](#resolution) | The resolution of the final rendered image | [Check object description](#resolution)
 filter | [object](#filter) | The filter used to process the final image after gathering each sample value | [Check object description](#filter)
-spp | int | The number of samples per pixel. The default value is 121
+spp | int | The number of samples per pixel | 121
 integrator | enum | The type of integrator used to solve the rendering equation. The only possible value is `pt` for path trace | pt
-sampler | enum | The type of sampler used to gather samples. Possible values are `random` for a pure random sampler or `stratified` for a sampler that subdivides a region in strata and picks a random sample for each strata. The latter is the suggested value | `stratified`
+sampler | enum | The type of sampler used to gather samples. Possible values are `random` for a pure random sampler or `stratified` for a sampler that subdivides a region in strata and picks a random sample for each strata. The latter is the suggested value | stratified
 camera | [object](#camera) | A description of the camera used to render the current scene | [Check object description](#camera)
 shape | quoted string | A path to an obj file containing mesh descriptions. The actual mesh/es are not used in the scene until positioned with the `world` keyword | Not mandatory, if not defined the list of shapes will be empty
 light | [object](#light) | Description of a light positioned into the scene | Not mandatory, if not defined the scene will be black (no lights)
@@ -78,50 +78,50 @@ These are the various keys that can be used for objects described in the previou
 #### Resolution
 Keys for Resolution objects
 
-Key | Type | Usage
----|---|---
-width | int | The width of the rendered image
-height | int | The height of the rendered image
+Key | Type | Usage | Default value
+---|---|---|---
+width | int | The width of the rendered image | 800
+height | int | The height of the rendered image | 600
 
 #### Camera
 Keys for Camera objects
 
 Key | Type | Usage | Default value
----|---|---
-type | enum | Defines the type of camera. The values can be `perspective`, `orthographic` or `panorama` | `perspective`
-position | 3 values float array | The position of the camera | `[0,0,0]`
-target | 3 values float array | The target of the camera |  `[0,0,1]`
-up | 3 values float array | A vector representing the upward direction seen from the camera | `[0,1,0]`
+---|---|---|---
+type | enum | Defines the type of camera. The values can be `perspective`, `orthographic` or `panorama` | perspective
+position | 3 values float array | The position of the camera | [0,0,0]
+target | 3 values float array | The target of the camera |  [0,0,1]
+up | 3 values float array | A vector representing the upward direction seen from the camera | [0,1,0]
 fov | float | Used only by perspective cameras, the field of view in degrees | 55.0
 
 #### Filter
 Keys for Filter objects
 
 Key | Type | Usage | Default value
----|---|---
-type | enum | Defines the type of filter. The values can be `box`, `tent`, `gaussian`, `mitchell` and `lanczos` |  `mitchell`
-value0 | float | The parameter for the filters. Unused in box and tent filter, this value is the σ (falloff) value of the gaussian filter, the B parameter of the Mitchell-Netravali and the 𝜏 parameter of the Lanczos-Sinc filter | Gaussian: 2, Mitchell-Netravali: 0.33,    Lanczos-Sinc:3
+---|---|---|---
+type | enum | Defines the type of filter. The values can be `box`, `tent`, `gaussian`, `mitchell` and `lanczos` |  mitchell
+value0 | float | The parameter for the filters. Unused in box and tent filter, this value is the σ (falloff) value of the gaussian filter, the B parameter of the Mitchell-Netravali and the 𝜏 parameter of the Lanczos-Sinc filter | Gaussian: 2, Mitchell-Netravali: 0.33,    Lanczos-Sinc: 3
 value1 | float | Used only in the Mitchell-Netravali filter as the C parameter | 0.33
 
 #### Light
 Keys for Light objects
 
 Key | Type | Usage | Default value
----|---|---
-name | quoted string | The name of the light model. This is the name of a mesh previously parsed with the `shape` keyword | This value is mandatory
+---|---|---|---
+name | quoted string | The name of the light model. This is the name of a mesh previously parsed with the `shape` keyword | No default value, syntax error if not user supplied
 temperature | int | The temperature in kelvin of the light. This value will set the light color based on its temperature and thus should not be used in conjunction with the `color` keyword | This value is mutually exclusive with the `color` one. The latter is the one used as default
-color | 3 values float array | The spectrum emitted by this light. The spectrum is represented as a 3 values RGB number where `[0,0,0]` is full black and `[1,1,1]` is full white |  `[1,1,1]`
-position | 3 values float array | The position of the light in the scene | `[0,0,0]`
-rotation | 3 values float array | The rotation of the light in the scene, in degrees | `[0,0,0]`
+color | 3 values float array | The spectrum emitted by this light. The spectrum is represented as a 3 values RGB number where `[0,0,0]` is full black and `[1,1,1]` is full white |  [1,1,1]
+position | 3 values float array | The position of the light in the scene | [0,0,0]
+rotation | 3 values float array | The rotation of the light in the scene, in degrees | [0,0,0]
 scale | 3 values float array or single float value | The scaling applied to the light in the scene. The single float value applies uniform scaling to every dimension | 1.0
 
 #### World
 Keys for World objects
 
 Key | Type | Usage | Default value
----|---|---
-name | quoted string | The name of the model previously parsed with the `shape` keyword. This value is mandatory.
-material | quoted string | The name of the material that will be applied to the model
-position | 3 values float array | The position of the model in the scene | `[0,0,0]`
-rotation | 3 values float array | The rotation of the model in the scene, in degrees | `[0,0,0]`
+---|---|---|---
+name | quoted string | The name of the model previously parsed with the `shape` keyword | No default value, syntax error if not user supplied
+material | quoted string | The name of the material that will be applied to the model | "Default" material
+position | 3 values float array | The position of the model in the scene | [0,0,0]
+rotation | 3 values float array | The rotation of the model in the scene, in degrees | [0,0,0]
 scale | 3 values float array or single float value | The scaling applied to the model in the scene. The single float value applies uniform scaling to every dimension | 1.0
