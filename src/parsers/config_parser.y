@@ -2,10 +2,11 @@
 /* Last Edit 25 Mar 2018 */
 
 %{
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdlib.h>
-    #include "config_bridge.h"
+    #include <cstdio>
+    #include <cstring>
+    #include <cstdlib>
+    #include "utility/console.hpp"
+    #include "parsers/config_bridge.h"
     
     int yylex();
     int yyparse();
@@ -98,6 +99,7 @@ OUTPUT COLON STRING { config.output = $3; }
 | SHAPE COLON STRING {/*invoke obj parser */}
 | WORLD COLON OPEN_CU world_type CLOSE_CU
 | LIGHT COLON OPEN_CU light_type CLOSE_CU
+| COMMA /*do nothing*/
 ;
 
 resolution_type: resolution_type resolution_stmt | ;
@@ -187,6 +189,5 @@ int main(int argc, char* argv[])
 
 void yyerror(const char *s) {
     fflush(stdout);
-    fprintf(stderr,"Error: %s\n",s);
-    exit(EXIT_FAILURE);
+    Console.critical(s);
 }

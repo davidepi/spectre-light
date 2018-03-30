@@ -1,28 +1,31 @@
 /* Created,  23 Mar 2018 */
 /* Last Edit 24 Mar 2018 */
+//https://www.gnu.org/software/bison/manual/html_node/Calc_002b_002b-Parser.html
 
-%{
-    #include <cstdio>
-    #include <cstdlib>
-    #include <vector>
-    #include <geometry/vec3.hpp>
-    #include <utility/console.hpp>
-    
-    std::vector<Vec3> vertices;
-%}
-%error-verbose
-%define api.prefix {obj}
-//type that could be returned by flex
-%union
+%skeleton "lalr1.cc"
+%require "3.0.4"
+%defines
+%define parser_class_name {ObjParser}
+%define api.value.type variant
+%code requires
 {
-    int ival;
-    float fval;
-    char *sval;
+    #include <string>
+    class ObjDriver;
+}
+%param{ ObjDriver& driver }
+%initial-action
+{
+    @$.begin.filename = @$.end.filename = &driver.file;
+};
+%define parse.trace
+%define parse.error verbose
+%code
+{
+    #include "obj_driver.hpp"
 }
 %start file
-%token <ival> INT "integer value"
-%token <fval> FLOAT "floating point value"
-%token <sval> STRING "string"
+%define api.token.prefix {OBJ_}
+%token END 0 "end of file"
 %token FACE "face declaration"
 %token NORMAL "normal declaration"
 %token TEXTURE "texture declaration"
@@ -31,25 +34,27 @@
 %token MTLFILE "material .mtl file path"
 %token USEMTL "material name"
 %token SEPARATOR " / separator"
-%token ENDOFFILE "end of file"
+%token <int> INT "integer value"
+%token <float> FLOAT "floating point value"
+%token <std::string> STRING "string"
 
-%type <fval> float_num
+%type <float> float_num
 
 %%
 
-file:
-file stmt
-| ENDOFFILE
+file
+: file stmt
+| stmt
 ;
 
 stmt:
 FACE face_point face_point face_point
-| TEXTURE float_num float_num {printf("Texture: %f %f\n",$2,$3);}
-| VERTEX float_num float_num float_num {vertices.push_back(Vec3($2,$3,$4));}
-| NORMAL float_num float_num float_num {printf("Normal: %f %f %f\n",$2,$3,$4);}
-| USEMTL STRING         {fprintf(stdout,"Use material %s\n",$2);}
-| MTLFILE STRING        {fprintf(stdout,"Parse material %s\n",$2);}
-| OBJNAME STRING        {fprintf(stdout,"Object name %s\n",$2);}
+| TEXTURE float_num float_num
+| VERTEX float_num float_num float_num
+| NORMAL float_num float_num float_num
+| USEMTL STRING  { std::cout<< $2 << std::endl; }
+| MTLFILE STRING { std::cout<< $2 << std::endl; }
+| OBJNAME STRING { std::cout<< $2 << std::endl; }
 ;
 
 float_num:
@@ -66,7 +71,12 @@ INT
 
 %%
 
-void objFlexLexer::error(const char *s) {
-    Console.critical(s);
-    exit(EXIT_FAILURE);
+void yy::ObjParser::error (const location_type& l, const std::string& m)
+{
+    driver.error(l,m);
+}
+
+void yy::ObjParser::error (const std::string& m)
+{
+    driver.error(m);
 }

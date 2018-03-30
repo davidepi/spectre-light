@@ -21,7 +21,6 @@
 #include "materials/metals.hpp"
 #include "materials/refraction.hpp"
 #include "materials/reflection.hpp"
-#include "parsers/obj_parser.hpp"
 #include "utility/scene.hpp"
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
