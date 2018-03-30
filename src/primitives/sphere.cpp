@@ -75,6 +75,7 @@ bool Sphere::intersect(const Ray* r,float* distance, HitPoint* hit)const
             hit->point_h.x = SELF_INTERSECT_ERROR; //-length vector
         }
         hit->right = Vec3(-TWO_PI * hit->point_h.y,TWO_PI * hit->point_h.x,0);
+        hit->index = 1;
         return true;
     }
     else

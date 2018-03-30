@@ -24,7 +24,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
         retval+=*power*((AreaLight *)hp->asset_h)->emissive_spectrum();
     
     //calculate direct lighting at point
-    const Bsdf* mat = hp->asset_h->get_material();
+    const Bsdf* mat = hp->asset_h->get_material(hp->index);
     Spectrum direct = direct_l(sc,hp,r,sam,ot);
     retval+=*power*direct;
     

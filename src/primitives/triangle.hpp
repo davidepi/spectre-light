@@ -171,9 +171,6 @@ public:
 
     ///Third vertex of the triangle
     Vertex c;
-    
-    ///Index of the corresponding material in the materials array of the Mesh
-    unsigned char material_index;
 };
 
 #endif

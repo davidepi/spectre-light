@@ -64,9 +64,9 @@ unsigned int Scene::add_asset(unsigned int shapeid, const Matrix4& transformMat,
                 return 0;
             }
         }
-        Asset* addme = new Asset(shapes[shapeid], transformMat);
+        Asset* addme = new Asset(shapes[shapeid], transformMat, 1);
         if(material!=NULL)
-            addme->set_material(material);
+            addme->set_material(material,1);
         Scene::assets[Scene::asset_index++] = addme;
         k.addAsset(addme); //add to kdtree
         return addme->get_id();

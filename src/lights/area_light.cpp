@@ -4,15 +4,13 @@
 #include "area_light.hpp"
 
 AreaLight::AreaLight(const Shape* sp,const Matrix4& obj2World,const Spectrum& c)
-: Asset(sp,obj2World), c(c)
+: Asset(sp,obj2World,0), c(c)
 {
     //calculate the surface of the world-space object
     AreaLight::area = sp->surface(&obj2World);
-
     //get the cumulative densities of the various faces of the light
     cd = (float*)malloc(sizeof(float)*sp->get_faces_number());
     sp->get_densities_array(&obj2World, cd);
-
     AreaLight::invarea = 1.f/area;
 }
 

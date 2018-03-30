@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 23 Jan 2018
+//Last Edit 30 Mar 2018
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      23 Jan 2018
+ *  \date      30 Mar 2018
  *  \copyright GNU GPLv3
  */
 

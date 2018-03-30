@@ -21,7 +21,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         //choose a light to sample
         int sampledlight = min((int)(rand[0]*nlights),nlights-1);
         const AreaLight* light = lights[sampledlight];
-        const Bsdf* mat = hp->asset_h->get_material();
+        const Bsdf* mat = hp->asset_h->get_material(hp->index);
         float lightpdf;
         float bsdfpdf;
         bool matchedSpec;

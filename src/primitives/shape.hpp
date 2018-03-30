@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 26 Nov 2017
+//Last Edit 30 Mar 2018
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherits
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      26 Nov 2017
+ *  \date      30 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -165,6 +165,9 @@ struct HitPoint
 
     ///Hit asset
     const Asset* asset_h;
+    
+    ///index of the hit triangle (1 if the asset is not a mesh)
+    unsigned int index;
     
     ///Mapping coordinate u of the point, used for texture mapping
     float u;

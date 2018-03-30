@@ -1,5 +1,5 @@
 //Created,   6 Aug 2017
-//Last Edit 28 Mar 2018
+//Last Edit 30 Mar 2018
 
 /**
  *  \file mesh.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle mesh in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      28 Mar 2018
+ *  \date      30 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -190,49 +190,11 @@ public:
      */
     void sample_point(float r, float r1, const float* densities, Point3* p,
                         Normal* n)const;
-    
-    /** \brief Add a material to the set of materials used in this Mesh
-     *
-     *  More than the usage of this function it is important to understand the
-     *  reason of it.
-     *  - Storing the material name for every triangle inside the Mesh and then
-     *    perform a lookup in the hash map at each intersection would be too
-     *    much computationally and memory expensive
-     *  - Storing directly a pointer to the material inside each triangle would
-     *    be too much computationally expensive (8KB every 1K triangles in
-     *    64-bit systems)
-     *
-     *  These problems are solved by keeping every material used in the Mesh
-     *  into an array. Every triangle stores an unsigned char that acts as an
-     *  offset of this array to find the corresponding material. With this
-     *  method 1KB of data is used every 1K triangles + the actual size of the
-     *  pointers (from 16 byte for a single material mesh up to 2K for mesh with
-     *  255 materials)
-     *
-     *  This method is used to set the material at the ith index to be
-     *  referenced by the triangles contained into the mesh. The 0th material
-     *  should be the Default material since every Triangle without a material
-     *  is assigned the index 0.
-     *
-     *  \warning This method does not allocate a bigger array if the index is
-     *  outside the referenced area. The parser should take care of not writing
-     *  outside the array bounds
-     *
-     *  \param[in] index The index at which the material is assigned. Index 0
-     *  represents the default material
-     *  \param[in] material A pointer to the material assigned to the given
-     *  index
-     */
-    void set_bsdf(unsigned char index, const Bsdf* material);
 
 private:
 
     //array of triangles
     Triangle* tris;
-    
-    //materials used in the Mesh (since storing a pointer for
-    //each face would be way too memory expensive)
-    const Bsdf** materials;
 
     //precomputed AABB
     AABB aabb;

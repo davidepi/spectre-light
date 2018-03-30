@@ -4,13 +4,15 @@
 #include "asset.hpp"
 unsigned static int _asset_ID_pool = 1;
 
-Asset::Asset(const Shape* sp, const Matrix4& transform)
+Asset::Asset(const Shape* sp, const Matrix4& transform, unsigned char mat_no)
         :objToWorld(transform),id(_asset_ID_pool++),
          aabb(sp->compute_AABB(&transform))
 
 {
     Asset::model = sp;
-    Asset::material = MtlLib.get("Default");
+    Asset::
+    Asset::materials = (const Bsdf**)malloc(sizeof(Bsdf*)*(mat_no+1));
+    Asset::material_index = (unsigned char*)malloc(sp->get_faces_number());
     Asset::objToWorld.inverse(&(Asset::worldToObj));
 }
 
@@ -51,17 +53,17 @@ const AABB* Asset::get_AABB()const
     return &(Asset::aabb);
 }
 
-void Asset::set_material(const Bsdf *material)
-{
-    Asset::material = material;
-}
-
-const Bsdf* Asset::get_material() const
-{
-    return Asset::material;
-}
-
 bool Asset::is_light() const
 {
     return false;
+}
+
+void Asset::set_material(const Bsdf* material, unsigned char index)
+{
+    Asset::materials[index] = material;
+}
+
+const Bsdf* Asset::get_material(unsigned int index)const
+{
+    return Asset::materials[index];
 }

@@ -418,8 +418,12 @@ bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h)const
             {
                 for(int i=0;i<node->len;i++)
                 {
-                    if(Bvh::tris[node->offset+i].intersect(r,distance,h))
+                    unsigned int tmp_index = node->offset+i;
+                    if(Bvh::tris[tmp_index].intersect(r,distance,h))
+                    {
+                        h->index = tmp_index;
                         found = true;
+                    }
                 }
                 if (jobs_stack_top > 0)
                     node = jobs[--jobs_stack_top];

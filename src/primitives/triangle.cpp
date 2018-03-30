@@ -6,14 +6,7 @@
 Triangle::Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)
         :a(v0), b(v1), c(v2)
 {
-    Triangle::material_index = 0;
-}
-
-Triangle::Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2,
-                   unsigned char material_index)
-:a(v0), b(v1), c(v2)
-{
-    Triangle::material_index = material_index;
+    
 }
 
 AABB Triangle::compute_AABB()const
