@@ -52,6 +52,22 @@ rotation { return ROTATION; }
 scale { return SCALE; }
 temperature { return TEMPERATURE; }
 material { return MATERIAL; }
+texture { return TEXTURE; }
+src {return SRC; }
+matte { return MATTE; }
+glossy { return GLOSSY; }
+metal { return METAL; }
+glass { return GLASS; }
+ior { return IOR; }
+roughness { return ROUGHNESS; }
+anisotropy { return ANISOTROPY; }
+distribution { return DISTRIBUTION; }
+diffuse { return DIFFUSE; }
+specular { return SPECULAR; }
+blinn { return BLINN; }
+beckmann { return BECKMANN; }
+ggx { return GGX; }
+
 [0-9]+             { yylval.ival = atoi(yytext); return INT;}
 [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)? { yylval.fvec.x = atof(yytext); return FLOAT;}
 \".*\" { yylval.sval = strdup(yytext); return STRING; }

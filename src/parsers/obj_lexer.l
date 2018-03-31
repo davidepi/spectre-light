@@ -16,6 +16,7 @@ static yy::location loc;
 %option nounput
 %option noinput
 %option noyywrap
+%option c++
 int [0-9]+
 float [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?
 string [a-zA-Z_][^ \t\n\r]*
@@ -31,8 +32,8 @@ string [a-zA-Z_][^ \t\n\r]*
 f                  { return yy::ObjParser::make_FACE(loc);}
 vn                 { return yy::ObjParser::make_NORMAL(loc); }
 vt                 { return yy::ObjParser::make_TEXTURE(loc); }
-vp\s[^\n\r]*[\n\r] { loc.lines(yyleng);loc.step(); }
-l\s[^\n\r]*[\n\r]  { loc.lines(yyleng);loc.step(); }
+vp\s[^\n\r]*[\n\r] { loc.lines();loc.step(); }
+l\s[^\n\r]*[\n\r]  { loc.lines();loc.step(); }
 g                  { return yy::ObjParser::make_OBJNAME(loc); }
 v                  { return yy::ObjParser::make_VERTEX(loc); }
 o                  { return yy::ObjParser::make_OBJNAME(loc); }
@@ -45,7 +46,7 @@ usemtl             { return yy::ObjParser::make_USEMTL(loc); }
 {string}           { return yy::ObjParser::make_STRING(yytext,loc);}
 \/                 { return yy::ObjParser::make_SEPARATOR(loc); }
 [ \t\r]            { loc.step(); }
-\n                 { loc.lines(yyleng);loc.step(); }
+\n                 { loc.lines();loc.step(); }
 .                  { loc.step(); }
 <<EOF>>            { return yy::ObjParser::make_END(loc); }
 %%
