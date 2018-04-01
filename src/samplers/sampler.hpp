@@ -16,6 +16,9 @@
 #ifndef __SAMPLER_HPP__
 #define __SAMPLER_HPP__
 
+#define SPECTRE_RANDOM_SAMPLER 0
+#define SPECTRE_STRATIFIED_SAMPLER 1
+
 #include "utility/wellrng.hpp"
 
 /**
