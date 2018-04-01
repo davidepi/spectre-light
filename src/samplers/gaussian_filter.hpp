@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 20 May 2017
+//Last Edit  2 Apr 2018
 
 /**
  *  \file gaussian_filter.hpp
@@ -7,7 +7,7 @@
  *  \details   A filter that approximate a gaussian function
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      20 May 2017
+ *  \date      2 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -18,6 +18,11 @@
 #include <cmath>
 #include "samplers/filter.hpp"
 #include "utility/utility.hpp"
+
+///Number of pixel affected by the gaussian filter on the x axis
+#define EXTENT_GAUSSIAN_FILTER_X 2
+///Number of pixel affected by the gaussian filter on the y axis
+#define EXTENT_GAUSSIAN_FILTER_Y 2
 
 /**
  *  \class GaussianFilter gaussian_filter.hpp "samplers/gaussian_filter.hpp"
@@ -34,12 +39,10 @@ public:
 
     /** \brief Default constructor
      *
-     * \param[in] x_range The x extent of the filter
-     * \param[in] y_range The y extent of the filter
      * \param[in] falloff The rate of the falloff. Smaller values gives slower
      * falloff
      */
-    GaussianFilter(float x_range, float y_range, float falloff);
+    GaussianFilter(float falloff);
 
     /** \brief Compute the weight of a given sample in the final average
      *

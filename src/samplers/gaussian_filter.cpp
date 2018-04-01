@@ -3,11 +3,12 @@
 
 #include "gaussian_filter.hpp"
 
-GaussianFilter::GaussianFilter(float x_range, float y_range, float falloff)
-        : Filter(x_range,y_range)
+GaussianFilter::GaussianFilter(float falloff)
 {
-    GaussianFilter::precomputed_exp_x = expf(-falloff*x_range*x_range);
-    GaussianFilter::precomputed_exp_y = expf(-falloff*y_range*y_range);
+    GaussianFilter::precomputed_exp_x =
+    expf(-falloff*EXTENT_GAUSSIAN_FILTER_X*EXTENT_GAUSSIAN_FILTER_X);
+    GaussianFilter::precomputed_exp_y =
+    expf(-falloff*EXTENT_GAUSSIAN_FILTER_Y*EXTENT_GAUSSIAN_FILTER_Y);
     GaussianFilter::alpha = falloff;
 }
 

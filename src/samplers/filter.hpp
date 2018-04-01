@@ -1,13 +1,13 @@
 //Created,  19 May 2017
-//Last Edit 20 May 2017
+//Last Edit  2 Apr 2018
 
 /**
  *  \file filter.hpp
  *  \brief     Filter abstract class definition
  *  \details   The superclass for every filter
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      20 May 2017
+ *  \version   0.2
+ *  \date      2 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -28,12 +28,7 @@ class Filter
 {
 public:
 
-    /** Default constructor
-     *
-     * \param[in] x_range The x extent of the filter
-     * \param[in] y_range The y extent of the filter
-     */
-    Filter(float x_range, float y_range);
+    Filter() = default;
 
     ///Default destructor
     virtual ~Filter() = default;
@@ -48,12 +43,6 @@ public:
      * \return The weight of the sample in the final average for the pixel
      */
     virtual float weight(float offset_x, float offset_y)const = 0;
-    
-    ///x extent of the filter
-    const float x_range;
-    
-    ///y extent of the filter
-    const float y_range;
 };
 
 #endif

@@ -1,12 +1,12 @@
 //Created,  24 Apr 2017
-//Last Edit 10 Sep 2017
+//Last Edit  2 Apr 2018
 
 /**
  *  \file settings.h
  *  \brief User defined global definitions
  *  \author Davide Pizzolotto
  *  \version 0.1
- *  \date 18 Sep 2017
+ *  \date 2 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -47,21 +47,6 @@
 
 ///The number of seconds elapsed between each update of the progress bar
 #define PROGRESS_BAR_UPDATE_SECONDS 1
-
-///Default extension for the box filter
-#define BOX_FILTER_EXTENT 1
-
-///Default extension for the tent filter
-#define TENT_FILTER_EXTENT 2
-
-///Default extension for the gaussian filter
-#define GAUSSIAN_FILTER_EXTENT 2
-
-///Default extension for the mitchell filter
-#define MITCHELL_FILTER_EXTENT 2
-
-///Default extension for the sinc filter
-#define LANCZOS_FILTER_EXTENT 4
 
 ///Only for debug
 //#define FORCED_SEED 0

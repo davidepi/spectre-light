@@ -3,17 +3,14 @@
 
 #include "lanczos_filter.hpp"
 
-LanczosFilter::LanczosFilter(float x_r, float y_r, float tau)
-: Filter(x_r,y_r)
+LanczosFilter::LanczosFilter(float tau)
 {
-    LanczosFilter::inverse_width = 1.0f/x_r;
-    LanczosFilter::inverse_height = 1.0f/y_r;
     LanczosFilter::tau = tau;
 }
 
 float LanczosFilter::weight(float offset_x, float offset_y)const
 {
-    float resx = fabsf(offset_x * LanczosFilter::inverse_width);
+    float resx = fabsf(offset_x * (1.f/EXTENT_LANCZOS_FILTER_X));
     float sinc;
     float lanczos;
     if(resx < 1E-5f)
@@ -27,7 +24,7 @@ float LanczosFilter::weight(float offset_x, float offset_y)const
         lanczos = sinf(resx) / resx;
         resx = sinc * lanczos;
     }
-    float resy = fabsf(offset_y * LanczosFilter::inverse_height);
+    float resy = fabsf(offset_y * (1.f/EXTENT_LANCZOS_FILTER_Y));
     if (resy < 1E-5f)
         resy = 1.f;
     else if(resy > 1.f)

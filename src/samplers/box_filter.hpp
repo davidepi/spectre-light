@@ -30,12 +30,8 @@ class BoxFilter : public Filter
 {
 public:
 
-    /** Default constructor
-     *
-     * \param[in] x_range The x extent of the filter
-     * \param[in] y_range The y extent of the filter
-     */
-    BoxFilter(float x_range, float y_range);
+    ///Default constructor
+    BoxFilter() = default;
 
     /** \brief Compute the weight of a given sample in the final average
      *

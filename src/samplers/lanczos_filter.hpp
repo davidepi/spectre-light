@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 28 Aug 2017
+//Last Edit  2 Apr 2018
 
 /**
  *  \file lanczos_filter.hpp
@@ -7,7 +7,7 @@
  *  \details   A filter based on the sinc function
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      28 Aug 2017
+ *  \date      2 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -18,6 +18,11 @@
 #include <cmath>
 #include "samplers/filter.hpp"
 #include "settings.h" //ONE_PI
+
+///Number of pixel affected by the lanczos filter on the x axis
+#define EXTENT_LANCZOS_FILTER_X 4
+///Number of pixel affected by the lanczos filter on the y axis
+#define EXTENT_LANCZOS_FILTER_Y 4
 
 /**
  *  \class LanczosFilter lanczos_filter.hpp "samplers/lanczos_filter.hpp"
@@ -35,12 +40,10 @@ public:
 
     /** \brief Default constructor
      *
-     *  \param[in] x_range The x extent of the filter
-     *  \param[in] y_range The y extent of the filter
      *  \param[in] tau The number of cycles of the sinc function before clamping
      *  it to zero
      */
-    LanczosFilter(float x_range, float y_range, float tau);
+    LanczosFilter(float tau);
 
     /** \brief Compute the weight of a given sample in the final average
      *
@@ -58,12 +61,6 @@ public:
     float weight(float offset_x, float offset_y)const;
 
 private:
-
-    //precomputed inverse of the filter width
-    float inverse_width;
-
-    //precomputed inverse of the filter height
-    float inverse_height;
 
     //number of cycles of the sinc function before clamping it
     float tau;

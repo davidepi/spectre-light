@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 20 May 2017
+//Last Edit  2 Apr 2018
 
 /**
  *  \file tent_filter.hpp
@@ -7,7 +7,7 @@
  *  \details   A slightly better filter than the box one
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      20 May 2017
+ *  \date      2 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,11 @@
 
 #include "samplers/filter.hpp"
 #include "utility/utility.hpp"
+
+///Number of pixel affected by the tent filter on the x axis
+#define EXTENT_TENT_FILTER_X 2
+///Number of pixel affected by the tent filter on the y axis
+#define EXTENT_TENT_FILTER_Y 2
 
 /**
  *  \class TentFilter tent_filter.hpp "samplers/tent_filter.hpp"
@@ -31,12 +36,8 @@ class TentFilter : public Filter
 {
 public:
 
-    /** \brief Default constructor
-     *
-     * \param[in] x_range The x extent of the filter
-     * \param[in] y_range The y extent of the filter
-     */
-    TentFilter(float x_range,float y_range);
+    ///Default constructor
+    TentFilter() = default;
 
     /** \brief Compute the weight of a given sample in the final average
      *

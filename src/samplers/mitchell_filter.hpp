@@ -1,5 +1,5 @@
 //Created,  20 May 2017
-//Last Edit  4 Jun 2017
+//Last Edit  2 Apr 2018
 
 /**
  *  \file mitchell_filter.hpp
@@ -7,13 +7,18 @@
  *  \details   A filter that approximate a gaussian function, with less blur
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      4 Jun 2017
+ *  \date      2 Apr 2018
  *  \copyright GNU GPLv3
  */
 
 
 #ifndef __MITCHELL_FILTER_HPP__
 #define __MITCHELL_FILTER_HPP__
+
+///Number of pixel affected by the mitchell filter on the x axis
+#define EXTENT_MITCHELL_FILTER_X 2
+///Number of pixel affected by the mitchell filter on the y axis
+#define EXTENT_MITCHELL_FILTER_Y 2
 
 #include <cmath>
 #include "samplers/filter.hpp"
@@ -44,12 +49,10 @@ public:
      *  this two parameters. For example with B = 0 and C = 0.5 the filter is
      *  like a Catmull-Rom, and with B = 1 and C = 0 the filter is a B-spline.
      *
-     *  \param[in] x_range The x extent of the filter
-     *  \param[in] y_range The y extent of the filter
      *  \param[in] b B value of the filter, check detailed description
      *  \param[in] c C value of the filter, check detailed description
      */
-    MitchellFilter(float x_range, float y_range, float b, float c);
+    MitchellFilter(float b, float c);
 
     /** \brief Compute the weight of a given sample in the final average
      *
@@ -66,12 +69,6 @@ public:
     float weight(float offset_x, float offset_y)const;
 
 private:
-
-    //inverse of the width of the filter
-    float inv_width;
-
-    //inverse of the height of the filter
-    float inv_height;
 
     //b value of the filter. See constructor documentation
     float b;

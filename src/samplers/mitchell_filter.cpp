@@ -3,11 +3,8 @@
 
 #include "mitchell_filter.hpp"
 
-MitchellFilter::MitchellFilter(float x_range, float y_range, float b, float c)
-: Filter(x_range,y_range)
+MitchellFilter::MitchellFilter(float b, float c)
 {
-    MitchellFilter::inv_width = 1.0f/x_range;
-    MitchellFilter::inv_height = 1.0f/y_range;
     MitchellFilter::b = b;
     MitchellFilter::c = c;
 }
@@ -15,8 +12,8 @@ MitchellFilter::MitchellFilter(float x_range, float y_range, float b, float c)
 float MitchellFilter::weight(float offset_x, float offset_y)const
 {
     constexpr const float DENOMINATOR = 1.f/6.f;
-    const float x = fabsf(offset_x * inv_width * 2.0f);
-    const float y = fabsf(offset_y * inv_height * 2.0f);
+    const float x = fabsf(offset_x * (1.f/EXTENT_MITCHELL_FILTER_X) * 2.0f);
+    const float y = fabsf(offset_y * (1.f/EXTENT_MITCHELL_FILTER_Y) * 2.0f);
     float resx;
     float resy;
     if(x>1.0f)
