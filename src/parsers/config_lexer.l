@@ -7,8 +7,8 @@
 #include <climits>
 #include <cerrno>
 #include <string>
-#include "config_parser.tab.hh"
-#include "config_driver.hpp"
+#include "parsers/config_parser.tab.hh"
+#include "parsers/config_driver.hpp"
 #undef yywrap
 #define yywrap() 1
 static yy::location loc;

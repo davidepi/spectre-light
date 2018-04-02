@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit  1 Apr 2018
+//Last Edit  2 Apr 2018
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      1 Apr 2018
+ *  \date      2 Apr 2018
  *  \copyright GNU GPLv3
  */
 

@@ -141,10 +141,10 @@ void ImageFilm::add_pixel(const Sample* sample, ColorXYZ color,
     //calculate the affected pixels
     float centre_x = sample->posx-0.5f;
     float centre_y = sample->posy-0.5f;
-    int update_x0 = (int)ceilf(centre_x-filter->x_range);
-    int update_y0 = (int)ceilf(centre_y-filter->y_range);
-    int update_x1 = (int)floorf(centre_x+filter->x_range);
-    int update_y1 = (int)floorf(centre_y+filter->y_range);
+    int update_x0 = (int)ceilf(centre_x-filter->range_x);
+    int update_y0 = (int)ceilf(centre_y-filter->range_y);
+    int update_x1 = (int)floorf(centre_x+filter->range_x);
+    int update_y1 = (int)floorf(centre_y+filter->range_y);
     update_x0 = max(update_x0,0);
     update_y0 = max(update_y0,0);
     update_x1 = min(update_x1,width);

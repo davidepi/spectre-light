@@ -20,6 +20,11 @@
 #include "geometry/matrix4.hpp"
 #include "geometry/ray.hpp"
 
+//used by the config_driver.hpp since the camera is constructed at the end
+#define SPECTRE_CAMERA_ORTHOGRAPHIC 0
+#define SPECTRE_CAMERA_PERSPECTIVE 1
+#define SPECTRE_CAMERA_PANORAMA 2
+
 /**
  * \class Camera camera.hpp "cameras/camera.hpp"
  * \brief An interface for a generic camera

@@ -20,9 +20,11 @@ file(GLOB spectre_core_sources
     src/utility/*.cpp
     src/cameras/*.cpp
     src/integrators/*.cpp
-    src/parsers/*.cpp
     src/textures/*.cpp
-    src/materials/*.cpp)
+    src/materials/*.cpp
+    src/parsers/config_parser.tab.cc
+    src/parsers/lex.yy.cc
+    src/parsers/config_driver.cpp)
 file(GLOB spectre_test_sources
     tests/*.cpp
     )

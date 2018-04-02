@@ -4,6 +4,7 @@
 #include "mitchell_filter.hpp"
 
 MitchellFilter::MitchellFilter(float b, float c)
+:Filter(EXTENT_MITCHELL_FILTER_X,EXTENT_MITCHELL_FILTER_Y)
 {
     MitchellFilter::b = b;
     MitchellFilter::c = c;

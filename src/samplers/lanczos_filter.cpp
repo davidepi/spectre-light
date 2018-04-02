@@ -4,6 +4,7 @@
 #include "lanczos_filter.hpp"
 
 LanczosFilter::LanczosFilter(float tau)
+:Filter(EXTENT_LANCZOS_FILTER_X,EXTENT_LANCZOS_FILTER_Y)
 {
     LanczosFilter::tau = tau;
 }

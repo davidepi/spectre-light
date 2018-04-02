@@ -4,6 +4,7 @@
 #include "gaussian_filter.hpp"
 
 GaussianFilter::GaussianFilter(float falloff)
+:Filter(EXTENT_GAUSSIAN_FILTER_X,EXTENT_GAUSSIAN_FILTER_Y)
 {
     GaussianFilter::precomputed_exp_x =
     expf(-falloff*EXTENT_GAUSSIAN_FILTER_X*EXTENT_GAUSSIAN_FILTER_X);

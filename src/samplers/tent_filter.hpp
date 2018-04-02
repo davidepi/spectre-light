@@ -37,7 +37,7 @@ class TentFilter : public Filter
 public:
 
     ///Default constructor
-    TentFilter() = default;
+    TentFilter();
 
     /** \brief Compute the weight of a given sample in the final average
      *

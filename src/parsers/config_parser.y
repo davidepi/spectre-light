@@ -11,6 +11,7 @@
 %code requires
 {
     #include <string>
+    #include "geometry/vec3.hpp"
     class ConfigDriver;
 }
 %param{ ConfigDriver& driver }
@@ -21,8 +22,8 @@
 %define parse.trace
 %define parse.error verbose
 %code
-{
-    #include "config_driver.hpp"
+{ 
+    #include "parsers/config_driver.hpp"
 }
 
 %define api.token.prefix {CONFIG_}
@@ -92,7 +93,7 @@
 %token <std::string> STRING "quoted string"
 
 %type <float> number
-%type <float> vector
+%type <Vec3> vector
 
 %%
 
@@ -101,21 +102,16 @@
 file
 : file stmt
 | stmt
-| INVALID /*no problem with invalid chars between stmts */
-/* TODO: NONONO IT IS A BIG PROBLEM!
-   as soon as an invalid statement is matched the object is broken
-   everythin after the object is parsed as invalid character instead of the object continuation which is not noice.
- These should be catched at flex level */
 ;
 
 stmt
-: OUTPUT COLON STRING
+: OUTPUT COLON STRING {driver.output = $3;}
 | RESOLUTION COLON OPEN_CU resolution_obj CLOSE_CU
 | FILTER COLON OPEN_CU filter_obj CLOSE_CU
-| SAMPLER  COLON RANDOM
-| SAMPLER COLON STRATIFIED
-| SPP COLON INT
-| INTEGRATOR COLON PATH_TRACE
+| SAMPLER  COLON RANDOM {driver.sampler_type = SPECTRE_RANDOM_SAMPLER;}
+| SAMPLER COLON STRATIFIED {driver.sampler_type = SPECTRE_STRATIFIED_SAMPLER;}
+| SPP COLON INT        {driver.spp = $3;}
+| INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU
 | SHAPE COLON STRING
 | WORLD COLON OPEN_CU world_obj CLOSE_CU
@@ -123,14 +119,12 @@ stmt
 | TEXTURE COLON STRING
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU
-| INVALID /*no problem with invalid chars between stmts */
-          /* TODO: NONONO IT IS A FUCKING BIG PROBLEM!!!! */
 ;
 
 resolution_obj: resolution_obj resolution_stmt | resolution_stmt;
 resolution_stmt
-: WIDTH COLON INT
-| HEIGHT COLON INT
+: WIDTH COLON INT {driver.resolution[0] = $3;}
+| HEIGHT COLON INT {driver.resolution[1] = $3;}
 ;
 
 filter_obj: filter_obj filter_stmt | filter_stmt;
@@ -197,7 +191,7 @@ material_stmt
 
 vector:
 OPEN_SQ number COMMA number COMMA number CLOSE_SQ
-{ $$ = $2;}
+{ $$ = Vec3($2,$4,$6);}
 ;
 
 number

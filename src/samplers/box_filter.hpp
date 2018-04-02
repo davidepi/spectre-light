@@ -1,5 +1,5 @@
 //Created,  19 May 2017
-//Last Edit 20 May 2017
+//Last Edit  2 Apr 2018
 
 /**
  *  \file box_filter.hpp
@@ -7,7 +7,7 @@
  *  \details   The easiest, fastest and worst filter possible
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      20 May 2017
+ *  \date      2 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,11 @@
 #define __BOX_FILTER_HPP__
 
 #include "samplers/filter.hpp"
+
+///Number of pixel affected by the box filter on the x axis
+#define EXTENT_BOX_FILTER_X 1
+///Number of pixel affected by the box filter on the y axis
+#define EXTENT_BOX_FILTER_Y 1
 
 /**
  *  \class BoxFilter box_filter.hpp "samplers/box_filter.hpp"
@@ -31,7 +36,7 @@ class BoxFilter : public Filter
 public:
 
     ///Default constructor
-    BoxFilter() = default;
+    BoxFilter();
 
     /** \brief Compute the weight of a given sample in the final average
      *
