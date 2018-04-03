@@ -18,6 +18,9 @@
 #include "samplers/sampler.hpp"
 #include <cmath>
 
+///Value used by the parser to know the sampler type is `random`
+#define SPECTRE_SAMPLER_RANDOM 0
+
 /**
  * \class RandomSampler random_sampler.hpp
  * \brief Sampler based on naive uniform sampling

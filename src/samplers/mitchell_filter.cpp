@@ -3,6 +3,11 @@
 
 #include "mitchell_filter.hpp"
 
+///Number of pixels affected by the mitchell filter on the x axis
+#define EXTENT_MITCHELL_FILTER_X 2
+///Number of pixels affected by the mitchell filter on the y axis
+#define EXTENT_MITCHELL_FILTER_Y 2
+
 MitchellFilter::MitchellFilter(float b, float c)
 :Filter(EXTENT_MITCHELL_FILTER_X,EXTENT_MITCHELL_FILTER_Y)
 {

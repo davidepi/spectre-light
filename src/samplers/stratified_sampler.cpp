@@ -9,7 +9,7 @@ StratifiedSampler::StratifiedSampler(int startx, int endx, int starty, int endy,
 {
     StratifiedSampler::nextx = startx;
     StratifiedSampler::nexty = starty;
-    StratifiedSampler::isRandomized = rand;
+    StratifiedSampler::randomized = rand;
     StratifiedSampler::strata_x = (int) sqrtf(spp);
     StratifiedSampler::strata_y = StratifiedSampler::strata_x;
 }
@@ -24,8 +24,8 @@ bool StratifiedSampler::get_samples(Sample *res)
     {
         for(int x=0;x<strata_x;x++)
         {
-            float randomization_x = isRandomized?rng.getNumber():0.5f;
-            float randomization_y = isRandomized?rng.getNumber():0.5f;
+            float randomization_x = randomized?rng.getNumber():0.5f;
+            float randomization_y = randomized?rng.getNumber():0.5f;
             res->posx = (nextx)+((x+randomization_x)*dx);
             res->posy = (nexty)+((y+randomization_y)*dy);
             res++;

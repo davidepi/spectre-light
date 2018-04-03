@@ -18,10 +18,8 @@
 #include "samplers/filter.hpp"
 #include "utility/utility.hpp"
 
-///Number of pixel affected by the tent filter on the x axis
-#define EXTENT_TENT_FILTER_X 2
-///Number of pixel affected by the tent filter on the y axis
-#define EXTENT_TENT_FILTER_Y 2
+///Value used by the parser to know the filter type is `tent`
+#define SPECTRE_FILTER_TENT 1
 
 /**
  *  \class TentFilter tent_filter.hpp "samplers/tent_filter.hpp"

@@ -19,10 +19,8 @@
 #include "samplers/filter.hpp"
 #include "utility/utility.hpp"
 
-///Number of pixel affected by the gaussian filter on the x axis
-#define EXTENT_GAUSSIAN_FILTER_X 2
-///Number of pixel affected by the gaussian filter on the y axis
-#define EXTENT_GAUSSIAN_FILTER_Y 2
+///Value used by the parser to know the filter type is `gaussian`
+#define SPECTRE_FILTER_GAUSS 2
 
 /**
  *  \class GaussianFilter gaussian_filter.hpp "samplers/gaussian_filter.hpp"

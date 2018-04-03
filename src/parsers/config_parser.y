@@ -107,12 +107,12 @@ file
 stmt
 : OUTPUT COLON STRING {driver.output = $3;}
 | RESOLUTION COLON OPEN_CU resolution_obj CLOSE_CU
-| FILTER COLON OPEN_CU filter_obj CLOSE_CU
-| SAMPLER  COLON RANDOM {driver.sampler_type = SPECTRE_RANDOM_SAMPLER;}
-| SAMPLER COLON STRATIFIED {driver.sampler_type = SPECTRE_STRATIFIED_SAMPLER;}
+| FILTER COLON OPEN_CU filter_obj CLOSE_CU {driver.build_filter();}
+| SAMPLER  COLON RANDOM {driver.sampler_type = SPECTRE_SAMPLER_RANDOM;}
+| SAMPLER COLON STRATIFIED {driver.sampler_type = SPECTRE_SAMPLER_STRATIFIED;}
 | SPP COLON INT        {driver.spp = $3;}
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
-| CAMERA COLON OPEN_CU camera_obj CLOSE_CU
+| CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
 | SHAPE COLON STRING
 | WORLD COLON OPEN_CU world_obj CLOSE_CU
 | LIGHT COLON OPEN_CU light_obj CLOSE_CU
@@ -129,24 +129,24 @@ resolution_stmt
 
 filter_obj: filter_obj filter_stmt | filter_stmt;
 filter_stmt
-: TYPE COLON BOX
-| TYPE COLON TENT
-| TYPE COLON GAUSS
-| TYPE COLON MITCHELL
-| TYPE COLON LANCZOS
-| VAL_0 COLON number
-| VAL_1 COLON number
+: TYPE COLON BOX {driver.filter_type = SPECTRE_FILTER_BOX;}
+| TYPE COLON TENT {driver.filter_type = SPECTRE_FILTER_TENT;}
+| TYPE COLON GAUSS {driver.filter_type = SPECTRE_FILTER_GAUSS;}
+| TYPE COLON MITCHELL {driver.filter_type = SPECTRE_FILTER_MITCHELL;}
+| TYPE COLON LANCZOS {driver.filter_type = SPECTRE_FILTER_LANCZOS;}
+| VAL_0 COLON number {driver.value0 = $3;}
+| VAL_1 COLON number {driver.value1 = $3;}
 ;
 
 camera_obj: camera_obj camera_stmt | camera_stmt;
 camera_stmt
-: TYPE COLON ORTHOGRAPHIC
-| TYPE COLON PERSPECTIVE
-| TYPE COLON PANORAMA
-| POSITION COLON vector
-| TARGET COLON vector
-| UP COLON vector
-| FOV COLON FLOAT
+: TYPE COLON ORTHOGRAPHIC {driver.camera_type = SPECTRE_CAMERA_ORTHOGRAPHIC;}
+| TYPE COLON PERSPECTIVE {driver.camera_type = SPECTRE_CAMERA_PERSPECTIVE;}
+| TYPE COLON PANORAMA {driver.camera_type = SPECTRE_CAMERA_PANORAMA;}
+| POSITION COLON vector {driver.camera_pos = Point3($3.x,$3.y,$3.z);}
+| TARGET COLON vector {driver.camera_tar = Point3($3.x,$3.y,$3.z);}
+| UP COLON vector {driver.camera_up = $3;}
+| FOV COLON FLOAT {driver.fov = $3;}
 ;
 
 world_obj: world_name world_rec;
@@ -193,6 +193,7 @@ vector:
 OPEN_SQ number COMMA number COMMA number CLOSE_SQ
 { $$ = Vec3($2,$4,$6);}
 ;
+
 
 number
 : FLOAT {$$ = $1;}

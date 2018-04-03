@@ -3,6 +3,11 @@
 
 #include "lanczos_filter.hpp"
 
+///Number of pixels affected by the lanczos filter on the x axis
+#define EXTENT_LANCZOS_FILTER_X 4
+///Number of pixels affected by the lanczos filter on the y axis
+#define EXTENT_LANCZOS_FILTER_Y 4
+
 LanczosFilter::LanczosFilter(float tau)
 :Filter(EXTENT_LANCZOS_FILTER_X,EXTENT_LANCZOS_FILTER_Y)
 {

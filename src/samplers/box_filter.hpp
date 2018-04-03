@@ -17,10 +17,8 @@
 
 #include "samplers/filter.hpp"
 
-///Number of pixel affected by the box filter on the x axis
-#define EXTENT_BOX_FILTER_X 1
-///Number of pixel affected by the box filter on the y axis
-#define EXTENT_BOX_FILTER_Y 1
+///Value used by the parser to know the filter type is `box`
+#define SPECTRE_FILTER_BOX 0
 
 /**
  *  \class BoxFilter box_filter.hpp "samplers/box_filter.hpp"

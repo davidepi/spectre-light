@@ -21,6 +21,9 @@
 #include "geometry/ray.hpp"
 #include "samplers/sampler.hpp"
 
+///Value used by the parser to know the camera type is `perspective`
+#define SPECTRE_CAMERA_PERSPECTIVE 1
+
 /**
  *  \class PerspectiveCamera
  *  \brief A camera generating a perspective projection

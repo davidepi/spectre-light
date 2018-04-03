@@ -18,6 +18,9 @@
 #include <cmath>
 #include "samplers/sampler.hpp"
 
+///Value used by the parser to know the sampler type is `stratified`
+#define SPECTRE_SAMPLER_STRATIFIED 1
+
 /**
  * \class StratifiedSampler stratified_sampler.hpp
  * \brief Sampler based on subregion sampling
@@ -77,7 +80,7 @@ private:
     int strata_y;
 
     //true if the sample is not centered in the subregion
-    bool isRandomized;
+    bool randomized;
 };
 
 #endif

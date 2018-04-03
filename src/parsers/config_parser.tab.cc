@@ -576,62 +576,158 @@ namespace yy {
 #line 577 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
+  case 6:
+#line 110 "config_parser.y" // lalr1.cc:859
+    {driver.build_filter();}
+#line 583 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
   case 7:
 #line 111 "config_parser.y" // lalr1.cc:859
-    {driver.sampler_type = SPECTRE_RANDOM_SAMPLER;}
-#line 583 "config_parser.tab.cc" // lalr1.cc:859
+    {driver.sampler_type = SPECTRE_SAMPLER_RANDOM;}
+#line 589 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 8:
 #line 112 "config_parser.y" // lalr1.cc:859
-    {driver.sampler_type = SPECTRE_STRATIFIED_SAMPLER;}
-#line 589 "config_parser.tab.cc" // lalr1.cc:859
+    {driver.sampler_type = SPECTRE_SAMPLER_STRATIFIED;}
+#line 595 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 9:
 #line 113 "config_parser.y" // lalr1.cc:859
     {driver.spp = yystack_[0].value.as< int > ();}
-#line 595 "config_parser.tab.cc" // lalr1.cc:859
+#line 601 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 10:
 #line 114 "config_parser.y" // lalr1.cc:859
     {/* path_trace is the only available and dflt */}
-#line 601 "config_parser.tab.cc" // lalr1.cc:859
+#line 607 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 11:
+#line 115 "config_parser.y" // lalr1.cc:859
+    {/* camera depends on resolution */}
+#line 613 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 20:
 #line 126 "config_parser.y" // lalr1.cc:859
     {driver.resolution[0] = yystack_[0].value.as< int > ();}
-#line 607 "config_parser.tab.cc" // lalr1.cc:859
+#line 619 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 21:
 #line 127 "config_parser.y" // lalr1.cc:859
     {driver.resolution[1] = yystack_[0].value.as< int > ();}
-#line 613 "config_parser.tab.cc" // lalr1.cc:859
+#line 625 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 24:
+#line 132 "config_parser.y" // lalr1.cc:859
+    {driver.filter_type = SPECTRE_FILTER_BOX;}
+#line 631 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 25:
+#line 133 "config_parser.y" // lalr1.cc:859
+    {driver.filter_type = SPECTRE_FILTER_TENT;}
+#line 637 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 26:
+#line 134 "config_parser.y" // lalr1.cc:859
+    {driver.filter_type = SPECTRE_FILTER_GAUSS;}
+#line 643 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 27:
+#line 135 "config_parser.y" // lalr1.cc:859
+    {driver.filter_type = SPECTRE_FILTER_MITCHELL;}
+#line 649 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 28:
+#line 136 "config_parser.y" // lalr1.cc:859
+    {driver.filter_type = SPECTRE_FILTER_LANCZOS;}
+#line 655 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 29:
+#line 137 "config_parser.y" // lalr1.cc:859
+    {driver.value0 = yystack_[0].value.as< float > ();}
+#line 661 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 30:
+#line 138 "config_parser.y" // lalr1.cc:859
+    {driver.value1 = yystack_[0].value.as< float > ();}
+#line 667 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 33:
+#line 143 "config_parser.y" // lalr1.cc:859
+    {driver.camera_type = SPECTRE_CAMERA_ORTHOGRAPHIC;}
+#line 673 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 34:
+#line 144 "config_parser.y" // lalr1.cc:859
+    {driver.camera_type = SPECTRE_CAMERA_PERSPECTIVE;}
+#line 679 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 35:
+#line 145 "config_parser.y" // lalr1.cc:859
+    {driver.camera_type = SPECTRE_CAMERA_PANORAMA;}
+#line 685 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 36:
+#line 146 "config_parser.y" // lalr1.cc:859
+    {driver.camera_pos = Point3(yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z);}
+#line 691 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 37:
+#line 147 "config_parser.y" // lalr1.cc:859
+    {driver.camera_tar = Point3(yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z);}
+#line 697 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 38:
+#line 148 "config_parser.y" // lalr1.cc:859
+    {driver.camera_up = yystack_[0].value.as< Vec3 > ();}
+#line 703 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 39:
+#line 149 "config_parser.y" // lalr1.cc:859
+    {driver.fov = yystack_[0].value.as< float > ();}
+#line 709 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 76:
 #line 194 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< Vec3 > () = Vec3(yystack_[5].value.as< float > (),yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
-#line 619 "config_parser.tab.cc" // lalr1.cc:859
+#line 715 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 77:
-#line 198 "config_parser.y" // lalr1.cc:859
+#line 199 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< float > () = yystack_[0].value.as< float > ();}
-#line 625 "config_parser.tab.cc" // lalr1.cc:859
+#line 721 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 78:
-#line 199 "config_parser.y" // lalr1.cc:859
+#line 200 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< float > () = (float)yystack_[0].value.as< int > ();}
-#line 631 "config_parser.tab.cc" // lalr1.cc:859
+#line 727 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 635 "config_parser.tab.cc" // lalr1.cc:859
+#line 731 "config_parser.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -1110,7 +1206,7 @@ namespace yy {
      152,   153,   153,   153,   154,   156,   157,   158,   159,   162,
      163,   163,   163,   164,   164,   167,   168,   169,   172,   172,
      174,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   193,   198,   199
+     184,   185,   186,   187,   188,   189,   193,   199,   200
   };
 
   // Print the state stack on the debug stream.
@@ -1145,8 +1241,8 @@ namespace yy {
 
 
 } // yy
-#line 1149 "config_parser.tab.cc" // lalr1.cc:1167
-#line 202 "config_parser.y" // lalr1.cc:1168
+#line 1245 "config_parser.tab.cc" // lalr1.cc:1167
+#line 203 "config_parser.y" // lalr1.cc:1168
 
 
 void yy::ConfigParser::error (const location_type& l, const std::string& m)

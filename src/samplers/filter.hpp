@@ -15,6 +15,7 @@
 #ifndef __FILTER_HPP__
 #define __FILTER_HPP__
 
+
 /**
  *  \class Filter filter.hpp "samplers/filter.hpp"
  *  \brief An abstract class used as a template for every filter

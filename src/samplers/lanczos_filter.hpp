@@ -19,10 +19,8 @@
 #include "samplers/filter.hpp"
 #include "settings.h" //ONE_PI
 
-///Number of pixel affected by the lanczos filter on the x axis
-#define EXTENT_LANCZOS_FILTER_X 4
-///Number of pixel affected by the lanczos filter on the y axis
-#define EXTENT_LANCZOS_FILTER_Y 4
+///Value used by the parser to know the filter type is `lanczos`
+#define SPECTRE_FILTER_LANCZOS 4
 
 /**
  *  \class LanczosFilter lanczos_filter.hpp "samplers/lanczos_filter.hpp"

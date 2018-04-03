@@ -3,6 +3,11 @@
 
 #include "gaussian_filter.hpp"
 
+///Number of pixels affected by the gaussian filter on the x axis
+#define EXTENT_GAUSSIAN_FILTER_X 2
+///Number of pixels affected by the gaussian filter on the y axis
+#define EXTENT_GAUSSIAN_FILTER_Y 2
+
 GaussianFilter::GaussianFilter(float falloff)
 :Filter(EXTENT_GAUSSIAN_FILTER_X,EXTENT_GAUSSIAN_FILTER_Y)
 {

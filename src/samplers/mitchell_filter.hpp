@@ -15,10 +15,8 @@
 #ifndef __MITCHELL_FILTER_HPP__
 #define __MITCHELL_FILTER_HPP__
 
-///Number of pixel affected by the mitchell filter on the x axis
-#define EXTENT_MITCHELL_FILTER_X 2
-///Number of pixel affected by the mitchell filter on the y axis
-#define EXTENT_MITCHELL_FILTER_Y 2
+///Value used by the parser to know the filter type is `mitchell`
+#define SPECTRE_FILTER_MITCHELL 3
 
 #include <cmath>
 #include "samplers/filter.hpp"
