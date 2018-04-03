@@ -46,9 +46,8 @@ public:
     /** \brief Default constructor
      *
      *  \param[in] size The number of triangles of the mesh
-     *  \param[in] mat_size The number of materials of the mesh. Immutable
      */
-    Mesh(unsigned int size, unsigned char mat_size);
+    Mesh(unsigned int size);
 
     ///Default destructor
     ~Mesh();

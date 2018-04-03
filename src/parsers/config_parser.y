@@ -1,5 +1,5 @@
 /* Created,  24 Mar 2018 */
-/* Last Edit 25 Mar 2018 */
+/* Last Edit  3 Apr 2018 */
 
 %skeleton "lalr1.cc"
 %require "3.0.4"
@@ -88,11 +88,13 @@
 %token SRC "`src` keyword"
 %token PATH_TRACE "`pt` keyword"
 
+%token <unsigned int> UINT "positive integer value"
 %token <int> INT "integer value"
 %token <float> FLOAT "floating point value"
 %token <std::string> STRING "quoted string"
 
 %type <float> number
+%type <int> integer
 %type <Vec3> vector
 
 %%
@@ -110,7 +112,7 @@ stmt
 | FILTER COLON OPEN_CU filter_obj CLOSE_CU {driver.build_filter();}
 | SAMPLER  COLON RANDOM {driver.sampler_type = SPECTRE_SAMPLER_RANDOM;}
 | SAMPLER COLON STRATIFIED {driver.sampler_type = SPECTRE_SAMPLER_STRATIFIED;}
-| SPP COLON INT        {driver.spp = $3;}
+| SPP COLON UINT        {driver.spp = $3;}
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
 | SHAPE COLON STRING
@@ -123,8 +125,8 @@ stmt
 
 resolution_obj: resolution_obj resolution_stmt | resolution_stmt;
 resolution_stmt
-: WIDTH COLON INT {driver.resolution[0] = $3;}
-| HEIGHT COLON INT {driver.resolution[1] = $3;}
+: WIDTH COLON UINT {driver.width = $3;}
+| HEIGHT COLON UINT {driver.height = $3;}
 ;
 
 filter_obj: filter_obj filter_stmt | filter_stmt;
@@ -161,7 +163,7 @@ world_stmt
 
 light_obj: world_name light_rec;
 light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt;
-light_stmt: TEMPERATURE COLON INT | COLOR COLON vector;
+light_stmt: TEMPERATURE COLON UINT | COLOR COLON vector;
 
 texture_obj
 : SRC COLON STRING
@@ -197,7 +199,12 @@ OPEN_SQ number COMMA number COMMA number CLOSE_SQ
 
 number
 : FLOAT {$$ = $1;}
-| INT {$$ = (float)$1;}
+| integer {$$ = (float)$1;}
+;
+
+integer
+: UINT { $$ = $1;}
+| INT  { $$ = $1;}
 ;
 
 %%

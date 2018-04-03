@@ -83,9 +83,9 @@ spectre-full input.txt
 
 The input file format is explained [here](./src/parsers/README.md).
 
-*spectre-light* support `.obj` and `.fbx` for scene and models, `.mtl` for
-materials, `.ppm` and `.bmp` for textures. As already said, if Magick++ is
-available, additional image format such as `.jpg`, `.tiff`, `.tga`, `.dds` and `.png` are available
+*spectre-light* support `.obj` files for scene and models,  `.ppm` and `.bmp` for textures. As already said, if Magick++ is
+available, additional image formats such as `.jpg`, `.tiff`, `.tga`, `.dds` and `.png` are available.
+`.mtl` is not available as an obj companion file for materials due to its tremendous binding with the Phong illumination model. Check the section *Missing .mtl* of the aforementioned input readme for more informations .
 
  ## Documentation
 

@@ -3,7 +3,7 @@
 
 #include "mesh.hpp"
 
-Mesh::Mesh(unsigned int size, unsigned char mat_size)
+Mesh::Mesh(unsigned int size)
 {
     Mesh::count=0; //number of triangles added
     Mesh::alloc=size; //number of triangles allocated

@@ -298,10 +298,14 @@ namespace yy {
       char dummy2[sizeof(float)];
 
       // "integer value"
+      // integer
       char dummy3[sizeof(int)];
 
       // "quoted string"
       char dummy4[sizeof(std::string)];
+
+      // "positive integer value"
+      char dummy5[sizeof(unsigned int)];
 };
 
     /// Symbol semantic values.
@@ -384,9 +388,10 @@ namespace yy {
         CONFIG_SPECULAR = 314,
         CONFIG_SRC = 315,
         CONFIG_PATH_TRACE = 316,
-        CONFIG_INT = 317,
-        CONFIG_FLOAT = 318,
-        CONFIG_STRING = 319
+        CONFIG_UINT = 317,
+        CONFIG_INT = 318,
+        CONFIG_FLOAT = 319,
+        CONFIG_STRING = 320
       };
     };
 
@@ -431,6 +436,8 @@ namespace yy {
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const unsigned int v, const location_type& l);
 
 
       /// Constructor for symbols with semantic value.
@@ -741,6 +748,10 @@ namespace yy {
 
     static inline
     symbol_type
+    make_UINT (const unsigned int& v, const location_type& l);
+
+    static inline
+    symbol_type
     make_INT (const int& v, const location_type& l);
 
     static inline
@@ -956,12 +967,12 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 230,     ///< Last index in yytable_.
-      yynnts_ = 21,  ///< Number of nonterminal symbols.
+      yylast_ = 213,     ///< Last index in yytable_.
+      yynnts_ = 22,  ///< Number of nonterminal symbols.
       yyfinal_ = 27, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 65  ///< Number of tokens.
+      yyntokens_ = 66  ///< Number of tokens.
     };
 
 
@@ -1009,9 +1020,10 @@ namespace yy {
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,    58,    59,    60,    61,    62,    63,    64
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65
     };
-    const unsigned int user_token_number_max_ = 319;
+    const unsigned int user_token_number_max_ = 320;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1044,21 +1056,26 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 84: // vector
+      case 85: // vector
         value.copy< Vec3 > (other.value);
         break;
 
-      case 63: // "floating point value"
-      case 85: // number
+      case 64: // "floating point value"
+      case 86: // number
         value.copy< float > (other.value);
         break;
 
-      case 62: // "integer value"
+      case 63: // "integer value"
+      case 87: // integer
         value.copy< int > (other.value);
         break;
 
-      case 64: // "quoted string"
+      case 65: // "quoted string"
         value.copy< std::string > (other.value);
+        break;
+
+      case 62: // "positive integer value"
+        value.copy< unsigned int > (other.value);
         break;
 
       default:
@@ -1078,21 +1095,26 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 84: // vector
+      case 85: // vector
         value.copy< Vec3 > (v);
         break;
 
-      case 63: // "floating point value"
-      case 85: // number
+      case 64: // "floating point value"
+      case 86: // number
         value.copy< float > (v);
         break;
 
-      case 62: // "integer value"
+      case 63: // "integer value"
+      case 87: // integer
         value.copy< int > (v);
         break;
 
-      case 64: // "quoted string"
+      case 65: // "quoted string"
         value.copy< std::string > (v);
+        break;
+
+      case 62: // "positive integer value"
+        value.copy< unsigned int > (v);
         break;
 
       default:
@@ -1138,6 +1160,13 @@ namespace yy {
     , location (l)
   {}
 
+  template <typename Base>
+  ConfigParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const unsigned int v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
 
   template <typename Base>
   inline
@@ -1164,21 +1193,26 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 84: // vector
+      case 85: // vector
         value.template destroy< Vec3 > ();
         break;
 
-      case 63: // "floating point value"
-      case 85: // number
+      case 64: // "floating point value"
+      case 86: // number
         value.template destroy< float > ();
         break;
 
-      case 62: // "integer value"
+      case 63: // "integer value"
+      case 87: // integer
         value.template destroy< int > ();
         break;
 
-      case 64: // "quoted string"
+      case 65: // "quoted string"
         value.template destroy< std::string > ();
+        break;
+
+      case 62: // "positive integer value"
+        value.template destroy< unsigned int > ();
         break;
 
       default:
@@ -1204,21 +1238,26 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 84: // vector
+      case 85: // vector
         value.move< Vec3 > (s.value);
         break;
 
-      case 63: // "floating point value"
-      case 85: // number
+      case 64: // "floating point value"
+      case 86: // number
         value.move< float > (s.value);
         break;
 
-      case 62: // "integer value"
+      case 63: // "integer value"
+      case 87: // integer
         value.move< int > (s.value);
         break;
 
-      case 64: // "quoted string"
+      case 65: // "quoted string"
         value.move< std::string > (s.value);
+        break;
+
+      case 62: // "positive integer value"
+        value.move< unsigned int > (s.value);
         break;
 
       default:
@@ -1282,7 +1321,7 @@ namespace yy {
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
      305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
-     315,   316,   317,   318,   319
+     315,   316,   317,   318,   319,   320
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
@@ -1648,6 +1687,12 @@ namespace yy {
   }
 
   ConfigParser::symbol_type
+  ConfigParser::make_UINT (const unsigned int& v, const location_type& l)
+  {
+    return symbol_type (token::CONFIG_UINT, v, l);
+  }
+
+  ConfigParser::symbol_type
   ConfigParser::make_INT (const int& v, const location_type& l)
   {
     return symbol_type (token::CONFIG_INT, v, l);
@@ -1668,7 +1713,7 @@ namespace yy {
 
 
 } // yy
-#line 1672 "config_parser.tab.hh" // lalr1.cc:392
+#line 1717 "config_parser.tab.hh" // lalr1.cc:392
 
 
 

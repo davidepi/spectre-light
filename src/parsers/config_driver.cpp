@@ -6,8 +6,8 @@ ConfigDriver::ConfigDriver()
 :camera_pos(0,0,0), camera_tar(0,0,1), camera_up(0,1,0)
 {
     output = "out.ppm";
-    resolution[0] = 800;
-    resolution[1] = 600;
+    width = 800;
+    height = 600;
     spp = 121;
     sampler_type = SPECTRE_SAMPLER_STRATIFIED;
     camera_type = SPECTRE_CAMERA_PERSPECTIVE;
@@ -18,14 +18,53 @@ ConfigDriver::ConfigDriver()
     integrator = new PathTracer();
 }
 
-int ConfigDriver::parse(const std::string& f, Renderer*)
+int ConfigDriver::parse(const std::string& f, Renderer* r)
 {
     file = f;
     scan_begin();
     yy::ConfigParser parser(*this);
     parser.parse();
     scan_end();
+    check_resolution();
+    check_spp();
+#ifdef DEBUG //single threaded
+    r = new Renderer(width,height,spp,output.c_str(),1);
+#else //maximum threads
+    r = new Renderer(width,height,spp,output.c_str());
+#endif
+    r->set_sampler(sampler_type);
+    r->inherit_camera(camera);
+    r->inherit_filter(filter);
+    r->inherit_integrator(integrator);
     return 1;
+}
+
+void ConfigDriver::check_resolution()
+{
+    float rem = width%SPLIT_SIZE;
+    if(rem!=0)
+    {
+        float aspect_ratio = (float)width/(float)height;
+        width+=SPLIT_SIZE-rem;
+        height+=(int)((SPLIT_SIZE-rem)/aspect_ratio);
+        if(height%2!=0)
+            height++;
+        Console.notice(MESSAGE_RESOLUTION_CHANGED,SPLIT_SIZE,width,height);
+    }
+}
+
+void ConfigDriver::check_spp()
+{
+    if(sampler_type==SPECTRE_SAMPLER_STRATIFIED)
+    {
+        float root = sqrtf(spp);
+        if((int)root*(int)root!=spp)
+        {
+            spp = static_cast<int>(static_cast<float>(root+.5f));
+            spp*=spp;
+            Console.notice(MESSAGE_SPP_CHANGED,spp);
+        }
+    }
 }
 
 void ConfigDriver::error(const yy::location&, const std::string& m)
@@ -72,15 +111,15 @@ void ConfigDriver::build_camera()
     {
         case SPECTRE_CAMERA_ORTHOGRAPHIC:
             camera = new OrthographicCamera(&camera_pos,&camera_tar,&camera_up,
-                                            resolution[0],resolution[1]);
+                                            width,height);
             break;
         case SPECTRE_CAMERA_PERSPECTIVE:
             camera = new PerspectiveCamera(&camera_pos,&camera_tar,&camera_up,
-                                           resolution[0],resolution[1],fov);
+                                           width,height,fov);
             break;
         case SPECTRE_CAMERA_PANORAMA:
             camera = new Camera360(&camera_pos,&camera_tar,&camera_up,
-                                           resolution[0], resolution[1]);
+                                   width,height);
             break;
         default:
             /* default is unreachable */

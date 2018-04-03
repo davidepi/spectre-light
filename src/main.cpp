@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "utility/console.hpp"
+#include "parsers/config_driver.hpp"
 #include "renderer.hpp"
 #ifdef IMAGEMAGICK
 #include <Magick++.h>
@@ -16,15 +17,12 @@ int main(int argc, char* argv[])
     if(!is_fp.value)
         Console.severe(MESSAGE_IM_NOFLOAT);
 #endif
+    Renderer* renderer;
+    ConfigDriver parser;
     if(argc < 2)
         Console.critical("Input should be in the form: executable input_file");
-//    else
-//        parser.parse(argv[1],&settings);
-#ifndef DEBUG
-    Renderer renderer(800, 600, 121,"out.ppm",0);
-#else
-    Renderer renderer(800, 600, 121,"out.ppm",1);
-#endif
-
-    return renderer.render(new Scene());
+    else
+        parser.parse(argv[1],renderer);
+//    return renderer->render(new Scene());
+    return 0;
 }

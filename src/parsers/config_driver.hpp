@@ -5,6 +5,7 @@
 
 #include <string>
 #include "utility/console.hpp"
+#include "utility/utility.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
 #include "cameras/orthographic_camera.hpp"
@@ -29,13 +30,14 @@ public:
     ConfigDriver();
     virtual ~ConfigDriver() = default;
     
-    void scan_begin();
-    void scan_end();
     int parse(const std::string& f, Renderer*);
     std::string file;
     std::string output;
-    int resolution[2];
+    int width;
+    int height;
+    void check_resolution();
     int spp;
+    void check_spp();
     //camera stored values
     Camera* camera;
     Point3 camera_pos;
@@ -56,6 +58,10 @@ public:
     
     void error(const yy::location& l, const std::string& m);
     void error(const std::string& m);
+    
+private:
+    void scan_begin();
+    void scan_end();
 };
 
 #endif

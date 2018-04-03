@@ -105,7 +105,7 @@ Keys for Filter objects
 Key | Type | Usage | Default value
 ---|---|---|---
 type | enum | Defines the type of filter. The values can be `box`, `tent`, `gaussian`, `mitchell` and `lanczos` |  mitchell
-value0 | float | The parameter for the filters. Unused in box and tent filter, this value is the σ (falloff) value of the gaussian filter, the B parameter of the Mitchell-Netravali and the 𝜏 parameter of the Lanczos-Sinc filter | Gaussian: 2, Mitchell-Netravali: 0.33,    Lanczos-Sinc: 3
+value0 | float | The parameter for the filters. Unused in box and tent filter, this value is the σ (falloff) value of the gaussian filter (a value of 2 is suggested), the B parameter of the Mitchell-Netravali and the 𝜏 parameter of the Lanczos-Sinc filter (a value of 3 is suggested) | 0.33
 value1 | float | Used only in the Mitchell-Netravali filter as the C parameter | 0.33
 
 #### Light
@@ -168,3 +168,8 @@ Hg | Mercury
 Pb | Lead
 Pt | Platinum
 
+## Missing .mtl
+
+As already stated in the [README](../../README.md), this renderer supports `.obj` files but not their companion `.mtl`. The reason of this discrepancy is the tight bound that `.mtl` specification has with the Phong illumination model that greatly limits the expressiveness of a physically based material system.
+
+In order to overcome this limitation, the `newmtl` keyword is ignored while parsing. However, the `usemtl` is still used and the name of the material is searched in the Material Library that contains the materials defined in the main input file.

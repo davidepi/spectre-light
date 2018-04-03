@@ -1,5 +1,5 @@
 /* Created   24 Mar 2018 */
-/* Last Edit 31 Mar 2018 */
+/* Last Edit  3 Apr 2018 */
 
 %{
 #include <cstdlib> //for atof and atoi. They are deprecated because of lack of
@@ -17,7 +17,8 @@ static yy::location loc;
 %option noinput
 %option noyywrap
 %option debug
-int [0-9]+
+uint \+?[0-9]+
+int -[0-9]+
 float [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?
 string '.*.'|\".*\"
 %{
@@ -88,12 +89,13 @@ specular { return yy::ConfigParser::make_SPECULAR(loc); }
 blinn { return yy::ConfigParser::make_BLINN(loc); }
 beckmann { return yy::ConfigParser::make_BECKMANN(loc); }
 ggx { return yy::ConfigParser::make_GGX(loc); }
+{uint}    { return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
 {int}    { return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 {float} { return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
 {string} { return yy::ConfigParser::make_STRING(yytext,loc); }
 [ \t\r]            {loc.step();}
 [\n]               {loc.lines(yyleng);loc.step();}
-.                  {yy::ConfigParser::make_INVALID(loc);}
+.                  {/* return error */}
 <<EOF>>            { return yy::ConfigParser::make_END(loc); }
 
 %%

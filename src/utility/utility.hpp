@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit 26 Nov 2017
+//Last Edit  3 Apr 2018
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  26 Nov 2017
+ *  \date  3 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -235,6 +235,23 @@ inline bool flt_equal(const float val1, const float val2)
 inline int sign(float a)
 {
     return (a>=0)?1:-1;
+}
+
+/** \brief Round up to the nearest multiple
+ *
+ *  Return the nearest multiple of the input value. Only unsigned integers.
+ *
+ *  \warning it is not checked neither if the multiple is 0 (division by zero)
+ *  nor if the function causes an overflow
+ *
+ *  \param[in] num The input value
+ *  \param[in] multiple The multiple that will be searched
+ *  \return The nearest multiple
+ */
+inline unsigned int nearest_uint(unsigned int num, unsigned int multiple)
+{
+    int res = num+multiple/2;
+    return res-res%multiple;
 }
 
 /** \brief Solve a linear equation

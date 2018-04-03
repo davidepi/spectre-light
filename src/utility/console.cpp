@@ -72,7 +72,7 @@ void Console::log(const char* m, const char* v)
 void Console::notice(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stdout,"[" NOTICE "]");
+    fprintf(stdout,"[" NOTICE "] ");
     va_list args;
     va_start(args,format);
     vfprintf(stdout, format, args);
@@ -87,7 +87,7 @@ void Console::notice(const char* format, ...)
 void Console::warning(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" WARNING "]");
+    fprintf(stderr,"[" WARNING "] ");
     va_list args;
     va_start(args,format);
     vfprintf(stderr, format, args);
@@ -102,7 +102,7 @@ void Console::warning(const char* format, ...)
 void Console::severe(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" ERROR "]");
+    fprintf(stderr,"[" ERROR "] ");
     va_list args;
     va_start(args,format);
     vfprintf(stderr, format, args);
@@ -117,7 +117,7 @@ void Console::severe(const char* format, ...)
 void Console::critical(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" CRITICAL "]");
+    fprintf(stderr,"[" CRITICAL "] ");
     va_list args;
     va_start(args,format);
     vfprintf(stderr, format, args);

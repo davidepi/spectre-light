@@ -57,8 +57,11 @@
 
 #define MESSAGE_WIDTH_MULTIPLE "Width must be a multiple of %d"
 
-#define MESSAGE_CHANGED_SPP "Samples per pixel should be a perfect square."\
-                            " Using %d samples"
+#define MESSAGE_RESOLUTION_CHANGED "Rendered image width should be a multiple "\
+"of %d for performance reasons. Resolution has been adjusted to %dx%d"
+
+#define MESSAGE_SPP_CHANGED "While using a Stratified Sampler, samples per " \
+"pixel should be a perfect square. Using %d samples"
 
 #define MESSAGE_NUMTHREADS "Using %d rendering threads"
 
