@@ -2,8 +2,8 @@
 //Last Edit  2 Apr 2018
 
 /**
- *  \file tent_filter.hpp
- *  \brief     TentFilter class definition
+ *  \file filter_tent.hpp
+ *  \brief     FilterTent class definition
  *  \details   A slightly better filter than the box one
  *  \author    Davide Pizzolotto
  *  \version   0.1
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __TENT_FILTER_HPP__
-#define __TENT_FILTER_HPP__
+#ifndef __FILTER_TENT_HPP__
+#define __FILTER_TENT_HPP__
 
 #include "samplers/filter.hpp"
 #include "utility/utility.hpp"
@@ -22,7 +22,7 @@
 #define SPECTRE_FILTER_TENT 1
 
 /**
- *  \class TentFilter tent_filter.hpp "samplers/tent_filter.hpp"
+ *  \class FilterTent filter_tent.hpp "samplers/filter_tent.hpp"
  *  \brief Implement a filter with linear falloff
  *
  *  The tent filter is a slightly improvement over the box filter. The samples
@@ -30,12 +30,12 @@
  *  have a weight of 0.0 towards the final average. In between them, every
  *  other sample is calculated as a linear falloff from the centre.
  */
-class TentFilter : public Filter
+class FilterTent : public Filter
 {
 public:
 
     ///Default constructor
-    TentFilter();
+    FilterTent();
 
     /** \brief Compute the weight of a given sample in the final average
      *

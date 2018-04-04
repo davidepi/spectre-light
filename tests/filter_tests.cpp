@@ -3,18 +3,18 @@
 
 
 #include "samplers/filter.hpp"
-#include "samplers/box_filter.hpp"
-#include "samplers/tent_filter.hpp"
-#include "samplers/gaussian_filter.hpp"
-#include "samplers/mitchell_filter.hpp"
-#include "samplers/lanczos_filter.hpp"
+#include "samplers/filter_box.hpp"
+#include "samplers/filter_tent.hpp"
+#include "samplers/filter_gaussian.hpp"
+#include "samplers/filter_mitchell.hpp"
+#include "samplers/filter_lanczos.hpp"
 #include "utility/utility.hpp"
 #define PRECISION 0.001f
 
 TEST(Filter,box_filter)
 {
-    const float extent = BOX_FILTER_EXTENT;
-    BoxFilter f(extent,extent);
+    const float extent = 1;
+    FilterBox f;
     EXPECT_EQ(f.weight(1.f, 1.f), 1.f);
 
     float mean = 0.f;
@@ -60,8 +60,8 @@ TEST(Filter,box_filter)
 
 TEST(Filter,tent_filter)
 {
-    const float extent = TENT_FILTER_EXTENT;
-    TentFilter f(extent,extent);
+    const float extent = 2;
+    FilterTent f;
     EXPECT_EQ(f.weight(0.f, 0.f), 1.f);
     EXPECT_EQ(f.weight(0.f,extent/2), 1/2.f);
     EXPECT_EQ(f.weight(extent/2,0.f), 1/2.f);
@@ -105,8 +105,8 @@ TEST(Filter,tent_filter)
 
 TEST(Filter,gaussian_filter)
 {
-    const float extent = GAUSSIAN_FILTER_EXTENT;
-    GaussianFilter f(extent,extent,2.f);
+    const float extent = 2;
+    FilterGaussian f(2.f);
     EXPECT_GT(f.weight(0.f,0.f), 0.999f);
     EXPECT_LT(f.weight(0.f,0.f), 1.f);
     EXPECT_NE(f.weight(0.5f,0.5f),0.5f); // assert non linearity
@@ -149,8 +149,8 @@ TEST(Filter,gaussian_filter)
 
 TEST(Filter,mitchell_filter)
 {
-    const float extent = MITCHELL_FILTER_EXTENT;
-    MitchellFilter f(extent,extent,0.33f,0.33f);
+    const float extent = 2;
+    FilterMitchell f(0.33f,0.33f);
     EXPECT_GT(f.weight(0.f,0.f), 0.75f);
     EXPECT_LT(f.weight(0.f,0.f), 1.f);
     EXPECT_NE(f.weight(0.5f,0.f),0.5f); // assert non linearity
@@ -195,8 +195,8 @@ TEST(Filter,mitchell_filter)
 
 TEST(Filter,lanczos_filter)
 {
-    const float extent = LANCZOS_FILTER_EXTENT;
-    LanczosFilter f(extent,extent,3.f);
+    const float extent = 4;
+    FilterLanczos f(3.f);
     EXPECT_GT(f.weight(0.f,0.f), 0.999f);
     EXPECT_LT(f.weight(0.f,0.f), 1.001f);
     EXPECT_NE(f.weight(0.5f,0.f),0.5f); // assert non linearity
@@ -204,8 +204,8 @@ TEST(Filter,lanczos_filter)
     EXPECT_GT(f.weight(3.5f,0.f), 0.f); //then positive tails
     //fuck you again gtest, 1e-17 != 0 with expect_float_eq
     EXPECT_TRUE(flt_equal(f.weight(extent,0.f),0.f)); //finish at 0
-    EXPECT_EQ(f.weight(2.f,LANCZOS_FILTER_EXTENT+1.f),0.f); //out of bounds
-    EXPECT_EQ(f.weight(LANCZOS_FILTER_EXTENT+1.f,2.f),0.f); //out of bounds
+    EXPECT_EQ(f.weight(2.f,4+1.f),0.f); //out of bounds
+    EXPECT_EQ(f.weight(4+1.f,2.f),0.f); //out of bounds
 
     float mean = 0.f;
     float stddev= 0.f;

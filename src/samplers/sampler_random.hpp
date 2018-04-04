@@ -2,7 +2,7 @@
 //Last Edit 31 Jul 2017
 
 /**
- *  \file random_sampler.hpp
+ *  \file sampler_random.hpp
  *  \brief     Random sampling implementation
  *  \details   Naive sampling of a 2D region
  *  \author    Davide Pizzolotto
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __RANDOM_SAMPLER_HPP__
-#define __RANDOM_SAMPLER_HPP__
+#ifndef __SAMPLER_RANDOM_HPP__
+#define __SAMPLER_RANDOM_HPP__
 
 #include "samplers/sampler.hpp"
 #include <cmath>
@@ -22,16 +22,16 @@
 #define SPECTRE_SAMPLER_RANDOM 0
 
 /**
- * \class RandomSampler random_sampler.hpp
+ * \class SamplerRandom sampler_random.hpp
  * \brief Sampler based on naive uniform sampling
  *
  *  This class generates random samples in a region. It is a naive
  *  implementation that uses just a random offset, so it yields terrible
- *  results. Other classes such as the StratifiedSampler can give better
+ *  results. Other classes such as the SamplerStratified can give better
  *  samples in the same amount of time, however, this class is kept here just
  *  for comparison
  */
-class RandomSampler : public Sampler
+class SamplerRandom : public Sampler
 {
 public:
 
@@ -47,7 +47,7 @@ public:
      * \param[in] spp The number of samples per pixel
      * \param[in] seed The seed of the prng (128 bytes array)
      */
-    RandomSampler(int startx, int endx, int starty, int endy, int spp,
+    SamplerRandom(int startx, int endx, int starty, int endy, int spp,
                       const unsigned int* seed);
 
     /** Return the samples

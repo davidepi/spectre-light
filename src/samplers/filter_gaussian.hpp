@@ -2,8 +2,8 @@
 //Last Edit  2 Apr 2018
 
 /**
- *  \file gaussian_filter.hpp
- *  \brief     GaussianFilter class definition
+ *  \file filter_gaussian.hpp
+ *  \brief     FilterGaussian class definition
  *  \details   A filter that approximate a gaussian function
  *  \author    Davide Pizzolotto
  *  \version   0.1
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __GAUSSIAN_FILTER_HPP__
-#define __GAUSSIAN_FILTER_HPP__
+#ifndef __FILTER_GAUSSIAN_HPP__
+#define __FILTER_GAUSSIAN_HPP__
 
 #include <cmath>
 #include "samplers/filter.hpp"
@@ -23,7 +23,7 @@
 #define SPECTRE_FILTER_GAUSS 2
 
 /**
- *  \class GaussianFilter gaussian_filter.hpp "samplers/gaussian_filter.hpp"
+ *  \class FilterGaussian filter_gaussian.hpp "samplers/filter_gaussian.hpp"
  *  \brief Implement a filter with gaussian falloff
  *
  *  The gaussian filter is similar to the tent filter, but instead of falling
@@ -31,7 +31,7 @@
  *  tent filter the center has a value of 1.0 and the limit has a value of
  *  0.0
  */
-class GaussianFilter : public Filter
+class FilterGaussian : public Filter
 {
 public:
 
@@ -40,7 +40,7 @@ public:
      * \param[in] falloff The rate of the falloff. Smaller values gives slower
      * falloff
      */
-    GaussianFilter(float falloff);
+    FilterGaussian(float falloff);
 
     /** \brief Compute the weight of a given sample in the final average
      *

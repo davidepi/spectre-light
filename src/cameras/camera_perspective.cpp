@@ -1,9 +1,9 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
-#include "perspective_camera.hpp"
+#include "camera_perspective.hpp"
 
-PerspectiveCamera::PerspectiveCamera(const Point3* pos, const Point3* target,
+CameraPerspective::CameraPerspective(const Point3* pos, const Point3* target,
                                      const Vec3* up, int width, int heigth,
                                      float fov)
 : Camera(pos,target,up,width,heigth)
@@ -60,7 +60,7 @@ PerspectiveCamera::PerspectiveCamera(const Point3* pos, const Point3* target,
     raster2camera *= raster2screen;
 }
 
-void PerspectiveCamera::create_ray(Sample* sample, Ray* ray)const
+void CameraPerspective::create_ray(Sample* sample, Ray* ray)const
 {
     ray->origin = camera2world * Point3(0,0,0);
     Point3 dir = raster2camera * Point3(sample->posx,sample->posy,0);

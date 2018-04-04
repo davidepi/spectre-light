@@ -1,20 +1,20 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
-#include "stratified_sampler.hpp"
+#include "sampler_stratified.hpp"
 
-StratifiedSampler::StratifiedSampler(int startx, int endx, int starty, int endy,
+SamplerStratified::SamplerStratified(int startx, int endx, int starty, int endy,
                                      int spp,const unsigned int* seed,bool rand)
 : Sampler(startx,endx,starty,endy,spp,seed)
 {
-    StratifiedSampler::nextx = startx;
-    StratifiedSampler::nexty = starty;
-    StratifiedSampler::randomized = rand;
-    StratifiedSampler::strata_x = (int) sqrtf(spp);
-    StratifiedSampler::strata_y = StratifiedSampler::strata_x;
+    SamplerStratified::nextx = startx;
+    SamplerStratified::nexty = starty;
+    SamplerStratified::randomized = rand;
+    SamplerStratified::strata_x = (int) sqrtf(spp);
+    SamplerStratified::strata_y = SamplerStratified::strata_x;
 }
 
-bool StratifiedSampler::get_samples(Sample *res)
+bool SamplerStratified::get_samples(Sample *res)
 {
     if(nexty==endy)
         return false;

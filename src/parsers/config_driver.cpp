@@ -12,7 +12,7 @@ ConfigDriver::ConfigDriver()
     sampler_type = SPECTRE_SAMPLER_STRATIFIED;
     camera_type = SPECTRE_CAMERA_PERSPECTIVE;
     fov = 55.f;
-    filter = new MitchellFilter(0.33f,0.33f);
+    filter = new FilterMitchell(0.33f,0.33f);
     value0 = 0.33f;
     value1 = 0.33f;
     integrator = new PathTracer();
@@ -113,19 +113,19 @@ void ConfigDriver::build_filter()
     switch(filter_type)
     {
         case SPECTRE_FILTER_BOX:
-            filter = new BoxFilter();
+            filter = new FilterBox();
             break;
         case SPECTRE_FILTER_TENT:
-            filter = new TentFilter();
+            filter = new FilterTent();
             break;
         case SPECTRE_FILTER_GAUSS:
-            filter = new GaussianFilter(value0);
+            filter = new FilterGaussian(value0);
             break;
         case SPECTRE_FILTER_MITCHELL:
-            filter = new MitchellFilter(value0,value1);
+            filter = new FilterMitchell(value0,value1);
             break;
         case SPECTRE_FILTER_LANCZOS:
-            filter = new LanczosFilter(value0);
+            filter = new FilterLanczos(value0);
             break;
         default:
             /* default is unreachable */
@@ -140,11 +140,11 @@ void ConfigDriver::build_camera()
     switch(camera_type)
     {
         case SPECTRE_CAMERA_ORTHOGRAPHIC:
-            camera = new OrthographicCamera(&camera_pos,&camera_tar,&camera_up,
+            camera = new CameraOrthographic(&camera_pos,&camera_tar,&camera_up,
                                             width,height);
             break;
         case SPECTRE_CAMERA_PERSPECTIVE:
-            camera = new PerspectiveCamera(&camera_pos,&camera_tar,&camera_up,
+            camera = new CameraPerspective(&camera_pos,&camera_tar,&camera_up,
                                            width,height,fov);
             break;
         case SPECTRE_CAMERA_PANORAMA:

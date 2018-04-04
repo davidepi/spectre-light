@@ -3,10 +3,10 @@
 
 
 #include "cameras/camera.hpp"
-#include "cameras/perspective_camera.hpp"
-#include "cameras/orthographic_camera.hpp"
+#include "cameras/camera_perspective.hpp"
+#include "cameras/camera_orthographic.hpp"
 #include "cameras/camera360.hpp"
-#include "samplers/stratified_sampler.hpp"
+#include "samplers/sampler_stratified.hpp"
 
 TEST(Camera,Orthographic_create_ray)
 {
@@ -14,7 +14,7 @@ TEST(Camera,Orthographic_create_ray)
     unsigned int seed[32];
     for(int i=0;i<32;i++)
         seed[i] = i;
-    StratifiedSampler sam(0,2,0,2,4,seed,true);
+    SamplerStratified sam(0,2,0,2,4,seed,true);
 
     //create camera
     Point3 pos(0.f,0.f,-10.f);
@@ -22,7 +22,7 @@ TEST(Camera,Orthographic_create_ray)
     Vec3 up(0.f,1.f,0.f);
 
     //square image
-    OrthographicCamera camera(&pos,&target,&up,2,2);
+    CameraOrthographic camera(&pos,&target,&up,2,2);
     Sample samples[4];
     sam.get_samples(samples);
     Ray r0,r1,r2,r3;
@@ -47,7 +47,7 @@ TEST(Camera,Orthographic_create_ray)
     EXPECT_EQ(r3.direction,direction);
 
     //horizontal image
-    camera = OrthographicCamera(&pos,&target,&up,2,1);
+    camera = CameraOrthographic(&pos,&target,&up,2,1);
     camera.create_ray(samples,&r0);
     camera.create_ray(samples+1,&r1);
     camera.create_ray(samples+2,&r2);
@@ -73,7 +73,7 @@ TEST(Camera,Perspective_create_ray)
     unsigned int seed[32];
     for(int i=0;i<32;i++)
         seed[i] = i;
-    StratifiedSampler sam(0,2,0,2,4,seed,true);
+    SamplerStratified sam(0,2,0,2,4,seed,true);
 
     //create camera
     Point3 pos(0.f,0.f,-10.f);
@@ -81,7 +81,7 @@ TEST(Camera,Perspective_create_ray)
     Vec3 up(0.f,1.f,0.f);
 
     //square image
-    PerspectiveCamera camera(&pos,&target,&up,2,2,radians(60));
+    CameraPerspective camera(&pos,&target,&up,2,2,radians(60));
     Sample samples[4];
     sam.get_samples(samples);
     Ray r0,r1,r2,r3;
@@ -106,7 +106,7 @@ TEST(Camera,Perspective_create_ray)
     EXPECT_EQ(r3.direction,r3direction);
 
     //horizontal image
-    camera = PerspectiveCamera(&pos,&target,&up,2,1,radians(60));
+    camera = CameraPerspective(&pos,&target,&up,2,1,radians(60));
     camera.create_ray(samples,&r0);
     camera.create_ray(samples+1,&r1);
     camera.create_ray(samples+2,&r2);
@@ -132,7 +132,7 @@ TEST(Camera,Camera360_create_ray)
     unsigned int seed[32];
     for(int i=0;i<32;i++)
         seed[i] = i;
-    StratifiedSampler sam(0,2,0,2,4,seed,true);
+    SamplerStratified sam(0,2,0,2,4,seed,true);
 
     //create camera
     Point3 pos(0.f,0.f,-10.f);

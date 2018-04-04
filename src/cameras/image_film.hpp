@@ -2,7 +2,7 @@
 //Last Edit  4 Apr 2018
 
 /**
- *  \file image_output.hpp
+ *  \file image_film.hpp
  *  \brief     Buffer storing and saving an image
  *  \author    Davide Pizzolotto
  *  \version   0.2

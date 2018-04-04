@@ -12,7 +12,7 @@ TEST(Asset,constructor_get_id)
     Sphere s;
     Matrix4 m;
     m.set_identity();
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     EXPECT_EQ(a.get_id(),1);
 }
 
@@ -21,7 +21,7 @@ TEST(Asset,intersect)
     Sphere s;
     Matrix4 m;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -36,7 +36,7 @@ TEST(Asset,intersect)
     EXPECT_FALSE(a.intersect(&r, &distance, &hit));
 
     m.set_identity();
-    Asset a2(&s,m);
+    Asset a2(&s,m,1);
     EXPECT_FALSE(a2.intersect(&r,&distance,&hit));
 }
 
@@ -45,7 +45,7 @@ TEST(Asset,get_AABB)
     Sphere s;
     Matrix4 m;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     const AABB* box = a.get_AABB();
     EXPECT_EQ(box->bounds[0].x, -3);
     EXPECT_EQ(box->bounds[0].y, -1);
@@ -60,7 +60,7 @@ TEST(Asset,intersect_AABB)
     Sphere s;
     Matrix4 m;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
 
     Ray success_ray,fail_ray;
     success_ray = Ray(Point3(-2,-10,0),Vec3(0,1,0));
@@ -83,10 +83,10 @@ TEST(Asset,material_setter_getter)
     Sphere s;
     Matrix4 m;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
 
-    a.set_material(&material);
-    EXPECT_EQ(a.get_material(), &material);
+    a.set_material(&material,1);
+    EXPECT_EQ(a.get_material(1), &material);
 }
 
 TEST(Asset,is_light)
@@ -94,7 +94,7 @@ TEST(Asset,is_light)
     Sphere s;
     Matrix4 m;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     EXPECT_FALSE(a.is_light());
 }
 

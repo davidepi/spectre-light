@@ -2,7 +2,7 @@
 //Last Edit 31 May 2017
 
 /**
- *  \file stratified_sampler.hpp
+ *  \file sampler_stratified.hpp
  *  \brief     Stratified sampling implementation
  *  \details   Divide the region in equal subregions and sample each one
  *  \author    Davide Pizzolotto
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __STRATIFIED_SAMPLER_HPP__
-#define __STRATIFIED_SAMPLER_HPP__
+#ifndef __SAMPLER_STRATIFIED_HPP__
+#define __SAMPLER_STRATIFIED_HPP__
 
 #include <cmath>
 #include "samplers/sampler.hpp"
@@ -22,7 +22,7 @@
 #define SPECTRE_SAMPLER_STRATIFIED 1
 
 /**
- * \class StratifiedSampler stratified_sampler.hpp
+ * \class SamplerStratified sampler_stratified.hpp
  * \brief Sampler based on subregion sampling
  *
  *  In order to avoid uneven distribution of samples, but still preserve
@@ -32,7 +32,7 @@
  *  considerably the probability of oversampling some part of the region
  *  and undersampling others.
  */
-class StratifiedSampler : public Sampler
+class SamplerStratified : public Sampler
 {
 public:
 
@@ -50,7 +50,7 @@ public:
      * \param[in] random if the samples for each subregion are picked at random
      * or in the centre
      */
-    StratifiedSampler(int startx, int endx, int starty, int endy, int spp,
+    SamplerStratified(int startx, int endx, int starty, int endy, int spp,
                               const unsigned int* seed, bool random);
 
     /** Return the samples

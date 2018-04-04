@@ -168,6 +168,14 @@ TEST(Utility,sign)
     EXPECT_EQ(sign(zero),1);
 }
 
+TEST(Utility,nearest_uint)
+{
+    EXPECT_EQ(nearest_uint(800, 32),800);
+    EXPECT_EQ(nearest_uint(799, 32),800);
+    EXPECT_EQ(nearest_uint(801, 32),800);
+    EXPECT_EQ(nearest_uint(0, 32),0);
+}
+
 TEST(Utility,equation1)
 {
     EXPECT_EQ(equation1(2.f, 1.f), -0.5f);

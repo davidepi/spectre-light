@@ -201,12 +201,12 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
         switch(sampler_type)
         {
             case SPECTRE_SAMPLER_RANDOM:
-                sam = new RandomSampler(todo.startx, todo.endx, todo.starty,
+                sam = new SamplerRandom(todo.startx, todo.endx, todo.starty,
                                         todo.endy, spp, WELLseed);
                 break;
             case SPECTRE_SAMPLER_STRATIFIED:
             default:
-                sam = new StratifiedSampler(todo.startx, todo.endx, todo.starty,
+                sam = new SamplerStratified(todo.startx, todo.endx, todo.starty,
                                             todo.endy, spp, WELLseed,
                                             JITTERED_SAMPLER);
                 break;

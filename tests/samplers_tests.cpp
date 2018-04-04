@@ -3,15 +3,15 @@
 
 
 #include "samplers/sampler.hpp"
-#include "samplers/stratified_sampler.hpp"
-#include "samplers/random_sampler.hpp"
+#include "samplers/sampler_stratified.hpp"
+#include "samplers/sampler_random.hpp"
 
 TEST(Sampler,get_random_numbers)
 {
     unsigned int seed[32];
     for(int i=0;i<32;i++)
         seed[i]=i;
-    StratifiedSampler sam(0,1,0,1,10,seed,true);
+    SamplerStratified sam(0,1,0,1,10,seed,true);
     float values[1000];
     sam.get_random_numbers(values, 1000);
     for(int i=0;i<1000;i++)
@@ -26,7 +26,7 @@ TEST(Sampler,Stratified_get_samples)
     unsigned int seed[32];
     for(int i=0;i<32;i++)
         seed[i]=i;
-    StratifiedSampler sam(0,2,0,2,100,seed,true);
+    SamplerStratified sam(0,2,0,2,100,seed,true);
     Sample samples[100];
     bool res;
 
@@ -43,7 +43,7 @@ TEST(Sampler,Stratified_get_samples)
     EXPECT_FALSE(res);
 
     //non jittered
-    StratifiedSampler sam2(0,2,0,2,100,seed,false);
+    SamplerStratified sam2(0,2,0,2,100,seed,false);
     res = sam2.get_samples(samples);
     EXPECT_TRUE(res);
     res = sam2.get_samples(samples);
@@ -61,7 +61,7 @@ TEST(Sampler,Random_get_samples)
     unsigned int seed[32];
     for(int i=0;i<32;i++)
         seed[i]=i;
-    RandomSampler sam(0,2,0,2,100,seed);
+    SamplerRandom sam(0,2,0,2,100,seed);
     Sample samples[100];
     bool res;
 

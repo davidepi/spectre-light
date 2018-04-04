@@ -1,25 +1,25 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
-#include "mitchell_filter.hpp"
+#include "filter_mitchell.hpp"
 
 ///Number of pixels affected by the mitchell filter on the x axis
-#define EXTENT_MITCHELL_FILTER_X 2
+#define EXTENT_FILTER_MITCHELL_X 2
 ///Number of pixels affected by the mitchell filter on the y axis
-#define EXTENT_MITCHELL_FILTER_Y 2
+#define EXTENT_FILTER_MITCHELL_Y 2
 
-MitchellFilter::MitchellFilter(float b, float c)
-:Filter(EXTENT_MITCHELL_FILTER_X,EXTENT_MITCHELL_FILTER_Y)
+FilterMitchell::FilterMitchell(float b, float c)
+:Filter(EXTENT_FILTER_MITCHELL_X,EXTENT_FILTER_MITCHELL_Y)
 {
-    MitchellFilter::b = b;
-    MitchellFilter::c = c;
+    FilterMitchell::b = b;
+    FilterMitchell::c = c;
 }
 
-float MitchellFilter::weight(float offset_x, float offset_y)const
+float FilterMitchell::weight(float offset_x, float offset_y)const
 {
     constexpr const float DENOMINATOR = 1.f/6.f;
-    const float x = fabsf(offset_x * (1.f/EXTENT_MITCHELL_FILTER_X) * 2.0f);
-    const float y = fabsf(offset_y * (1.f/EXTENT_MITCHELL_FILTER_Y) * 2.0f);
+    const float x = fabsf(offset_x * (1.f/EXTENT_FILTER_MITCHELL_X) * 2.0f);
+    const float y = fabsf(offset_y * (1.f/EXTENT_FILTER_MITCHELL_Y) * 2.0f);
     float resx;
     float resy;
     if(x>1.0f)

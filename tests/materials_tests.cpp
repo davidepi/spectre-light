@@ -716,7 +716,7 @@ TEST(Materials,Bsdf_value)
     Vec3 wi;
     Spectrum res;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -727,40 +727,40 @@ TEST(Materials,Bsdf_value)
     //reflected ray spec ok
     wi = Vec3(0.f,1.f,0.f);
     wi.normalize();
-    a.set_material(&material_r);
+    a.set_material(&material_r,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
     EXPECT_FALSE(res.is_black());
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
 
     //reflected ray spec not ok
-    a.set_material(&material_r);
+    a.set_material(&material_r,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
 
     //specular ray not allowed
-    a.set_material(&metal);
+    a.set_material(&metal,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_TRUE(res.is_black());
 
     //specular ray allowed (however value will always return false for specular)
-    a.set_material(&metal);
+    a.set_material(&metal,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
     EXPECT_TRUE(res.is_black());
 
     //multi material, pick only non specular
     metal.inherit_bdf(new Lambertian(SPECTRUM_ONE));
-    a.set_material(&metal);
+    a.set_material(&metal,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
@@ -775,7 +775,7 @@ TEST(Materials,Bsdf_sample_value)
     float pdf;
     Spectrum res;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -899,7 +899,7 @@ TEST(Materials,Bsdf_pdf)
     Vec3 wi;
     float pdf;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -968,7 +968,7 @@ TEST(Materials,SingleBRDF_value)
     Vec3 wi;
     Spectrum res;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -979,9 +979,9 @@ TEST(Materials,SingleBRDF_value)
     //matching brdf no-spec
     wi = Vec3(0.f,1.f,0.f);
     wi.normalize();
-    a.set_material(&material_r);
+    a.set_material(&material_r,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
@@ -990,26 +990,26 @@ TEST(Materials,SingleBRDF_value)
     //matching brdf yes-spec
     wi = Vec3(0.f,1.f,0.f);
     wi.normalize();
-    a.set_material(&material_r);
+    a.set_material(&material_r,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
     EXPECT_FALSE(res.is_black());
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
 
     //non matching spec
-    a.set_material(&metal);
+    a.set_material(&metal,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_TRUE(res.is_black());
 
     //matching spec.. but value does not allow me to return > 0 for specular
     wi = Vec3(0.f,1.f,0.f);
     wi.normalize();
-    a.set_material(&metal);
+    a.set_material(&metal,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material()->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
     EXPECT_TRUE(res.is_black());
 }
 
@@ -1022,7 +1022,7 @@ TEST(Materials,SingleBRDF_sample_value)
     float pdf;
     Spectrum res;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -1032,7 +1032,7 @@ TEST(Materials,SingleBRDF_sample_value)
     SingleBRDF metal;
     material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
     metal.inherit_bdf(new ConductorReflection(SPECTRUM_ONE,GOLD.n,GOLD.k));
-    a.set_material((Bsdf*)&metal);
+    a.set_material((Bsdf*)&metal,1);
     //brdf specular no match
     res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                                   &pdf, false, &matched_spec);
@@ -1085,7 +1085,7 @@ TEST(Materials,SingleBRDF_pdf)
     Vec3 wi;
     float pdf;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m);
+    Asset a(&s,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;

@@ -2,11 +2,11 @@
 #include<cstdio>
 #include "settings.h"
 #include "samplers/filter.hpp"
-#include "samplers/box_filter.hpp"
-#include "samplers/tent_filter.hpp"
-#include "samplers/gaussian_filter.hpp"
-#include "samplers/mitchell_filter.hpp"
-#include "samplers/lanczos_filter.hpp"
+#include "samplers/filter_box.hpp"
+#include "samplers/filter_tent.hpp"
+#include "samplers/filter_gaussian.hpp"
+#include "samplers/filter_mitchell.hpp"
+#include "samplers/filter_lanczos.hpp"
 
 //used to generate the filters data
 
@@ -82,11 +82,11 @@ static void gen_data(const char* out_path, const char* filename, int extent,
 void generate_filters_data(const char* out_path)
 {
     const float inc = 0.01f;
-    Filter* box = new BoxFilter();
-    Filter* tent = new TentFilter();
-    Filter* gauss = new GaussianFilter(2.f);
-    Filter* mitch = new MitchellFilter(.33f,.33f);
-    Filter* sinc = new LanczosFilter(3.f);
+    Filter* box = new FilterBox();
+    Filter* tent = new FilterTent();
+    Filter* gauss = new FilterGaussian(2.f);
+    Filter* mitch = new FilterMitchell(.33f,.33f);
+    Filter* sinc = new FilterLanczos(3.f);
     gen_data(out_path,"box",1,box,inc);
     gen_data(out_path,"tent",2,tent,inc);
     gen_data(out_path,"gaussian",2,gauss,inc);

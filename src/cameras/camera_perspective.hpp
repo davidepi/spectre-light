@@ -2,7 +2,7 @@
 //Last Edit  3 Jul 2017
 
 /**
- *  \file perspective_camera.hpp
+ *  \file camera_perspective.hpp
  *  \brief     A perspective camera
  *  \details   A camera for generating perspective images
  *  \author    Davide Pizzolotto
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __PERSPECTIVE_CAMERA_HPP__
-#define __PERSPECTIVE_CAMERA_HPP__
+#ifndef __CAMERA_PERSPECTIVE_HPP__
+#define __CAMERA_PERSPECTIVE_HPP__
 
 #include "cameras/camera.hpp"
 #include "geometry/point3.hpp"
@@ -25,7 +25,7 @@
 #define SPECTRE_CAMERA_PERSPECTIVE 1
 
 /**
- *  \class PerspectiveCamera
+ *  \class CameraPerspective
  *  \brief A camera generating a perspective projection
  *
  *  This class represents a camera which produces images exhibiting perspective
@@ -35,7 +35,7 @@
  *  The near plane and far plane of the viewing frustum used by this camera
  *  are set to 0.0 and 1000.0 respectively
  */
-class PerspectiveCamera : public Camera
+class CameraPerspective : public Camera
 {
 public:
 
@@ -49,7 +49,7 @@ public:
      *  \param[in] height The height of the final image (resolution)
      *  \param[in] fov The angle of view in radians
      */
-    PerspectiveCamera(const Point3* position, const Point3* target,
+    CameraPerspective(const Point3* position, const Point3* target,
                        const Vec3* up, int width, int height, float fov);
 
     /** \brief Create a ray from a sample

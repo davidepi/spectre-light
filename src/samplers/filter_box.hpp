@@ -2,8 +2,8 @@
 //Last Edit  2 Apr 2018
 
 /**
- *  \file box_filter.hpp
- *  \brief     BoxFilter class definition
+ *  \file filter_box.hpp
+ *  \brief     FilterBox class definition
  *  \details   The easiest, fastest and worst filter possible
  *  \author    Davide Pizzolotto
  *  \version   0.1
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __BOX_FILTER_HPP__
-#define __BOX_FILTER_HPP__
+#ifndef __FILTER_BOX_HPP__
+#define __FILTER_BOX_HPP__
 
 #include "samplers/filter.hpp"
 
@@ -21,7 +21,7 @@
 #define SPECTRE_FILTER_BOX 0
 
 /**
- *  \class BoxFilter box_filter.hpp "samplers/box_filter.hpp"
+ *  \class FilterBox filter_box.hpp "samplers/filter_box.hpp"
  *  \brief Implement the simplest filter
  *
  *  The box filter is the most simple filter, where every sampled valued has the
@@ -29,12 +29,12 @@
  *  fastest and easiest to implement, however, it does not grant the best
  *  results
  */
-class BoxFilter : public Filter
+class FilterBox : public Filter
 {
 public:
 
     ///Default constructor
-    BoxFilter();
+    FilterBox();
 
     /** \brief Compute the weight of a given sample in the final average
      *

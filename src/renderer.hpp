@@ -22,8 +22,8 @@
 #include "utility/scene.hpp"
 #include "cameras/camera.hpp"
 #include "samplers/sampler.hpp"
-#include "samplers/random_sampler.hpp"
-#include "samplers/stratified_sampler.hpp"
+#include "samplers/sampler_random.hpp"
+#include "samplers/sampler_stratified.hpp"
 #include "integrators/light_integrator.hpp"
 #include "settings.h"
 #include <thread> //std::thread

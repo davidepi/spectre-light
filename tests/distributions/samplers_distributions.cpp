@@ -3,8 +3,8 @@
 #include<random>
 #include<cstring>
 #include "samplers/sampler.hpp"
-#include "samplers/stratified_sampler.hpp"
-#include "samplers/random_sampler.hpp"
+#include "samplers/sampler_random.hpp"
+#include "samplers/sampler_stratified.hpp"
 
 static void gen_data(const char* out_path, const char* filename, Sampler* sam,
         int spp)
@@ -43,18 +43,18 @@ void generate_samplers_data(const char* out_path)
     unsigned int seed[32];
     for(int i=0;i<32;i++)
         seed[i] = i;
-    Sampler* strat9jitt = new StratifiedSampler(0,1,0,1,9,seed,true);
-    Sampler* strat100jitt = new StratifiedSampler(0,1,0,1,100,seed,true);
-    Sampler* strat1024jitt = new StratifiedSampler(0,1,0,1,1024,seed,true);
-    Sampler* strat10000jitt = new StratifiedSampler(0,1,0,1,10000,seed,true);
-    Sampler* strat9 = new StratifiedSampler(0,1,0,1,9,seed,false);
-    Sampler* strat100 = new StratifiedSampler(0,1,0,1,100,seed,false);
-    Sampler* strat1024 = new StratifiedSampler(0,1,0,1,1024,seed,false);
-    Sampler* strat10000 = new StratifiedSampler(0,1,0,1,10000,seed,false);
-    Sampler* rand9 = new RandomSampler(0,1,0,1,9,seed);
-    Sampler* rand100 = new RandomSampler(0,1,0,1,100,seed);
-    Sampler* rand1024 = new RandomSampler(0,1,0,1,1024,seed);
-    Sampler* rand10000 = new RandomSampler(0,1,0,1,10000,seed);
+    Sampler* strat9jitt = new SamplerStratified(0,1,0,1,9,seed,true);
+    Sampler* strat100jitt = new SamplerStratified(0,1,0,1,100,seed,true);
+    Sampler* strat1024jitt = new SamplerStratified(0,1,0,1,1024,seed,true);
+    Sampler* strat10000jitt = new SamplerStratified(0,1,0,1,10000,seed,true);
+    Sampler* strat9 = new SamplerStratified(0,1,0,1,9,seed,false);
+    Sampler* strat100 = new SamplerStratified(0,1,0,1,100,seed,false);
+    Sampler* strat1024 = new SamplerStratified(0,1,0,1,1024,seed,false);
+    Sampler* strat10000 = new SamplerStratified(0,1,0,1,10000,seed,false);
+    Sampler* rand9 = new SamplerRandom(0,1,0,1,9,seed);
+    Sampler* rand100 = new SamplerRandom(0,1,0,1,100,seed);
+    Sampler* rand1024 = new SamplerRandom(0,1,0,1,1024,seed);
+    Sampler* rand10000 = new SamplerRandom(0,1,0,1,10000,seed);
     gen_data(out_path,"stratified_jittered_9",strat9jitt,9);
     gen_data(out_path,"stratified_jittered_100",strat100jitt,100);
     gen_data(out_path,"stratified_jittered_1024",strat1024jitt,1024);

@@ -8,7 +8,7 @@
 
 TEST(Mesh,add_triangle_points)
 {
-    Mesh m(1,1);
+    Mesh m(1);
     Point3 p0 = Point3(-1,0,0);
     Point3 p1 = Point3(1,0,0);
     Point3 p2 = Point3(0.5,1,0);
@@ -63,7 +63,7 @@ TEST(Mesh,add_triangle_vertices)
     bool res;
 
     //realloc
-    Mesh m3(1,1);
+    Mesh m3(1);
     m3.add_triangle(&v0, &v1, &v2);
     m3.add_triangle(&v3, &v4, &v5);
     m3.finalize();
@@ -81,7 +81,7 @@ TEST(Mesh,add_triangle_vertices)
     EXPECT_TRUE(res);
 
     //no need to realloc
-    Mesh m2(1,1);
+    Mesh m2(1);
     m2.add_triangle(&v0, &v1, &v2);
     m2.finalize();
     r = Ray(Point3(0,-10,1),Vec3(0,1,0));
@@ -94,7 +94,7 @@ TEST(Mesh,add_triangle_vertices)
     EXPECT_TRUE(res);
 
     //enourmous amount of triangles with realloc, assert no crash
-    Mesh m(1,1);
+    Mesh m(1);
     for(int i=0;i<_MAX_TRIS_;i++)
         m.add_triangle(&v0, &v1, &v2);
     errors_count[ERROR_INDEX] = 0;
@@ -127,7 +127,7 @@ TEST(Mesh,resize)
 
     //can't be succesfully tested since the Triangle* array is private
     //just checking that reallocating the array does not break the triangles
-    Mesh m(10,1);
+    Mesh m(10);
     m.add_triangle(&v0, &v1, &v2);
     m.add_triangle(&v3, &v4, &v5);
     m.finalize(); //this should reallocate the Triangle* array
@@ -171,7 +171,7 @@ TEST(Mesh,AABB_object_space)
     v3.n = Normal(0,0,-1);
     v4.n = Normal(0,0,-1);
     v5.n = Normal(0,0,-1);
-    Mesh m(2,1);
+    Mesh m(2);
     m.add_triangle(&v0, &v1, &v2);
     m.add_triangle(&v3, &v4, &v5);
     m.finalize();
@@ -205,7 +205,7 @@ TEST(Mesh,AABB_world_space)
     v3.n = Normal(0,0,-1);
     v4.n = Normal(0,0,-1);
     v5.n = Normal(0,0,-1);
-    Mesh m(2,1);
+    Mesh m(2);
     m.add_triangle(&v0, &v1, &v2);
     m.add_triangle(&v3, &v4, &v5);
     m.finalize();
@@ -275,7 +275,7 @@ TEST(Mesh,surface_object)
     v5.n = Normal(0,0,-1);
     Triangle t1(v0,v1,v2);
     Triangle t2(v3,v4,v5);
-    Mesh m(2,1);
+    Mesh m(2);
     m.add_triangle(&v0, &v1, &v2);
     m.add_triangle(&v3, &v4, &v5);
     m.finalize();
@@ -305,7 +305,7 @@ TEST(Mesh,surface_world)
     v5.n = Normal(0,0,-1);
     Triangle t1(v0,v1,v2);
     Triangle t2(v3,v4,v5);
-    Mesh m(2,1);
+    Mesh m(2);
     m.add_triangle(&v0, &v1, &v2);
     m.add_triangle(&v3, &v4, &v5);
     m.finalize();
@@ -337,7 +337,7 @@ TEST(Mesh,get_faces_number)
     v0.n = Normal(0,0,1);
     v1.n = Normal(0,0,1);
     v2.n = Normal(0,0,1);
-    Mesh m(_MAX_TRIS_,1);
+    Mesh m(_MAX_TRIS_);
     EXPECT_EQ(m.get_faces_number(), 0);
     for(int i=0;i<_MAX_TRIS_;i++)
     {
@@ -358,7 +358,7 @@ TEST(Mesh,get_densities_array)
     v0.n = Normal(0,0,1);
     v1.n = Normal(0,0,1);
     v2.n = Normal(0,0,1);
-    Mesh m(6,1);
+    Mesh m(6);
     m.add_triangle(&v1, &v2, &v0);
     m.add_triangle(&v1, &v2, &v0);
     m.add_triangle(&v1, &v2, &v0);
@@ -400,7 +400,7 @@ TEST(Mesh,sample_point)
     v0.n = Normal(0,0,1);
     v1.n = Normal(0,0,1);
     v2.n = Normal(0,0,1);
-    Mesh m(9,1);
+    Mesh m(9);
     m.add_triangle(&v1, &v2, &v0);
     m.add_triangle(&v1, &v2, &v0);
     m.add_triangle(&v1, &v2, &v0);
@@ -441,15 +441,5 @@ TEST(Mesh,sample_point)
     distance = FLT_MAX;
     res = m.intersect(&r,&distance,&hit);
     EXPECT_TRUE(res);
-}
-
-TEST(Mesh,set_bsdf)
-{
-    //no way to check the result of this.
-    //Actual testing is done when testing intersections
-    Mesh m(1,10);
-    m.set_bsdf(1, MtlLib.get("Default"));
-    m.set_bsdf(2, MtlLib.get("Default"));
-    m.set_bsdf(3, MtlLib.get("Default"));
 }
 

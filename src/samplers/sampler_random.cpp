@@ -1,17 +1,17 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
-#include "random_sampler.hpp"
+#include "sampler_random.hpp"
 
-RandomSampler::RandomSampler(int startx, int endx, int starty, int endy,
+SamplerRandom::SamplerRandom(int startx, int endx, int starty, int endy,
                                      int spp, const unsigned int* seed)
         : Sampler(startx,endx,starty,endy,spp,seed)
 {
-    RandomSampler::nextx = startx;
-    RandomSampler::nexty = starty;
+    SamplerRandom::nextx = startx;
+    SamplerRandom::nexty = starty;
 }
 
-bool RandomSampler::get_samples(Sample *res)
+bool SamplerRandom::get_samples(Sample *res)
 {
     if(nexty==endy)
         return false;

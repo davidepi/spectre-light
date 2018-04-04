@@ -2,7 +2,7 @@
 //Last Edit  3 Jul 2017
 
 /**
- *  \file orthographic_camera.hpp
+ *  \file camera_orthographic.hpp
  *  \brief     An orthographic camera
  *  \details   A camera used to generate orthographic images
  *  \author    Davide Pizzolotto
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __ORTHOGRAPHIC_CAMERA_HPP__
-#define __ORTHOGRAPHIC_CAMERA_HPP__
+#ifndef __CAMERA_ORTHOGRAPHIC_HPP__
+#define __CAMERA_ORTHOGRAPHIC_HPP__
 
 #include "cameras/camera.hpp"
 #include "geometry/point3.hpp"
@@ -25,7 +25,7 @@
 #define SPECTRE_CAMERA_ORTHOGRAPHIC 0
 
 /**
- *  \class OrthographicCamera
+ *  \class CameraOrthographic
  *  \brief A camera generating an orthographic projection
  *
  *  This class represents a camera which produces images exhibiting orthographic
@@ -35,7 +35,7 @@
  *  The near plane and far plane of the viewing frustum used by this camera
  *  are set to 0.0 and 1.0 respectively
  */
-class OrthographicCamera : public Camera
+class CameraOrthographic : public Camera
 {
 public:
 
@@ -48,7 +48,7 @@ public:
      *  \param[in] width The width of the final image (resolution)
      *  \param[in] height The height of the final image (resolution)
      */
-    OrthographicCamera(const Point3* position, const Point3* target,
+    CameraOrthographic(const Point3* position, const Point3* target,
                        const Vec3* up, int width, int height);
 
     /** \brief Create a ray from a sample

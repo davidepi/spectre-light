@@ -2,8 +2,8 @@
 //Last Edit  2 Apr 2018
 
 /**
- *  \file mitchell_filter.hpp
- *  \brief     MitchellFilter class definition
+ *  \file filter_mitchell.hpp
+ *  \brief     FilterMitchell class definition
  *  \details   A filter that approximate a gaussian function, with less blur
  *  \author    Davide Pizzolotto
  *  \version   0.1
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __MITCHELL_FILTER_HPP__
-#define __MITCHELL_FILTER_HPP__
+#ifndef __FILTER_MITCHELL_HPP__
+#define __FILTER_MITCHELL_HPP__
 
 ///Value used by the parser to know the filter type is `mitchell`
 #define SPECTRE_FILTER_MITCHELL 3
@@ -22,7 +22,7 @@
 #include "samplers/filter.hpp"
 
 /**
- *  \class MitchellFilter mitchell_filter.hpp "samplers/mitchell_filter.hpp"
+ *  \class FilterMitchell filter_mitchell.hpp "samplers/filter_mitchell.hpp"
  *  \brief Improvement over the gaussian filter
  *
  *  The Mitchell-Netravali filter is similar to the Gaussian filter, but gives
@@ -34,7 +34,7 @@
  *  This filter can approximate several other filters such as bicubic or
  *  Catmull-Rom, check the constructor for further information
  */
-class MitchellFilter : public Filter
+class FilterMitchell : public Filter
 {
 public:
 
@@ -50,7 +50,7 @@ public:
      *  \param[in] b B value of the filter, check detailed description
      *  \param[in] c C value of the filter, check detailed description
      */
-    MitchellFilter(float b, float c);
+    FilterMitchell(float b, float c);
 
     /** \brief Compute the weight of a given sample in the final average
      *

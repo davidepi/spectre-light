@@ -3,8 +3,8 @@
 
 
 #include "cameras/image_film.hpp"
-#include "samplers/box_filter.hpp"
-#include "samplers/lanczos_filter.hpp"
+#include "samplers/filter_box.hpp"
+#include "samplers/filter_lanczos.hpp"
 #include <unistd.h>
 TEST(ImageFilm,constructor)
 {
@@ -16,7 +16,7 @@ TEST(ImageFilm,constructor)
 
     //another folder, writable, extension not ok
     ImageFilm img2(2,2,"./file.ok");
-    BoxFilter filter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
+    FilterBox filter;
     img2.set_filter(&filter);
     EXPECT_TRUE(img2.save_image());
     EXPECT_EQ(access("./file.ok.ppm",F_OK),0);
@@ -67,7 +67,7 @@ TEST(ImageFilm,constructor)
 TEST(ImageFilm,add_pixel)
 {
     ImageFilm img(800,600,"out.ppm");
-    LanczosFilter filter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,3);
+    FilterLanczos filter(3);
     img.set_filter(&filter);
     ExecutorData secure_area;
     secure_area.startx = 32;
@@ -152,7 +152,7 @@ TEST(ImageFilm,add_pixel_deferred)
 {
     //TODO: maybe add real threads
     ImageFilm img(800,600,"out.ppm");
-    LanczosFilter filter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,3);
+    FilterLanczos filter(3);
     img.set_filter(&filter);
     ExecutorData secure_area;
     secure_area.startx = 32;
@@ -176,7 +176,7 @@ TEST(ImageFilm,add_pixel_forced)
 {
     //TODO: maybe add real threads
     ImageFilm img(800,600,"out.ppm");
-    LanczosFilter filter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,3);
+    FilterLanczos filter(3);
     img.set_filter(&filter);
     ExecutorData secure_area;
     secure_area.startx = 32;

@@ -1,9 +1,9 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
-#include "orthographic_camera.hpp"
+#include "camera_orthographic.hpp"
 
-OrthographicCamera::OrthographicCamera(const Point3* pos,const Point3* target,
+CameraOrthographic::CameraOrthographic(const Point3* pos,const Point3* target,
                                        const Vec3* up, int width, int height)
 : Camera(pos,target,up,width,height)
 {
@@ -60,7 +60,7 @@ OrthographicCamera::OrthographicCamera(const Point3* pos,const Point3* target,
     raster2world *= raster2screen;
 }
 
-void OrthographicCamera::create_ray(Sample* sample, Ray* ray)const
+void CameraOrthographic::create_ray(Sample* sample, Ray* ray)const
 {
     ray->origin = raster2world * Point3(sample->posx,sample->posy,0);
     ray->direction = camera2world * Vec3(0,0,1);

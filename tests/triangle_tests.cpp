@@ -255,17 +255,3 @@ TEST(Triangle,inherited_methods)
     t.get_densities_array(NULL, NULL);
 }
 
-TEST(Triangle,material_index)
-{
-    Vertex v0;
-    Vertex v1;
-    Vertex v2;
-    v0.p = Point3(-1,0,0);
-    v1.p = Point3(1,0,0);
-    v2.p = Point3(0.5,1,0);
-    Triangle t(v0,v1,v2);
-    EXPECT_EQ(t.material_index, 0);
-    Triangle t1(v0,v1,v2,254);
-    EXPECT_EQ(t1.material_index, 254);
-}
-

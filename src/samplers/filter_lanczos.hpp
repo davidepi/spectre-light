@@ -2,8 +2,8 @@
 //Last Edit  2 Apr 2018
 
 /**
- *  \file lanczos_filter.hpp
- *  \brief     LanczosFilter class definition
+ *  \file filter_lanczos.hpp
+ *  \brief     FilterLanczos class definition
  *  \details   A filter based on the sinc function
  *  \author    Davide Pizzolotto
  *  \version   0.1
@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __LANCZOS_FILTER_HPP__
-#define __LANCZOS_FILTER_HPP__
+#ifndef __FILTER_LANCZOS_HPP__
+#define __FILTER_LANCZOS_HPP__
 
 #include <cmath>
 #include "samplers/filter.hpp"
@@ -23,7 +23,7 @@
 #define SPECTRE_FILTER_LANCZOS 4
 
 /**
- *  \class LanczosFilter lanczos_filter.hpp "samplers/lanczos_filter.hpp"
+ *  \class FilterLanczos filter_lanczos.hpp "samplers/filter_lanczos.hpp"
  *  \brief Implement a filter based on the sinc function
  *
  *  This filter is based on the sinc function. Since the behaviour of the sinc
@@ -32,7 +32,7 @@
  *  For this reason, the sample contribution has a value of 1.0 on the center
  *  of the filter, and 0.0 on the edges
  */
-class LanczosFilter : public Filter
+class FilterLanczos : public Filter
 {
 public:
 
@@ -41,7 +41,7 @@ public:
      *  \param[in] tau The number of cycles of the sinc function before clamping
      *  it to zero
      */
-    LanczosFilter(float tau);
+    FilterLanczos(float tau);
 
     /** \brief Compute the weight of a given sample in the final average
      *
