@@ -67,9 +67,32 @@ void ConfigDriver::check_spp()
     }
 }
 
-void ConfigDriver::error(const yy::location&, const std::string& m)
+void ConfigDriver::error(const yy::location& l, const std::string& m)
 {
-    Console.critical(m.c_str());
+#define GRN "\x1B[32m"
+#define NRM "\x1B[0m"
+#define BLD "\x1B[1m"
+    
+    unsigned int end_col = 0 < l.end.column ? l.end.column - 1 : 0;
+    //underline wrong token
+    if(l.begin.column<l.end.column && l.begin.line==l.end.line)
+    {
+        char buf[128];
+        char under[128];
+        get_line(buf,128,end_col);
+        for(unsigned int i=0;i<l.begin.column-1;i++)
+            under[i] = ' ';
+        for(unsigned int i=l.begin.column-1;i<end_col;i++)
+            under[i] = '~';
+        under[end_col] = 0;
+        Console.critical("%s:%d.%d: " BLD "%s" NRM "\n%s\n%" GRN "%s" NRM,
+                         file.c_str(),l.end.line,end_col,m.c_str(),buf,under);
+    }
+    else //just print the error
+    {
+        Console.critical("%s:%d.%d: " BLD "%s" NRM,
+                         file.c_str(),l.end.line,end_col,m.c_str());
+    }
 }
 
 void ConfigDriver::error(const std::string& m)

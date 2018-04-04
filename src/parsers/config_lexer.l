@@ -7,22 +7,25 @@
 #include <climits>
 #include <cerrno>
 #include <string>
+#include <cstring>
 #include "parsers/config_parser.tab.hh"
 #include "parsers/config_driver.hpp"
 #undef yywrap
 #define yywrap() 1
 static yy::location loc;
+long int current_pos;
+long int last_line_pos;
 %}
 %option nounput
 %option noinput
 %option noyywrap
-%option debug
 uint \+?[0-9]+
 int -[0-9]+
 float [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?
 string '.*.'|\".*\"
 %{
     #define YY_USER_ACTION loc.columns(yyleng);
+    #define UPDATE_POS current_pos+=strlen(yytext)
 %}
 
 %%
@@ -30,84 +33,104 @@ string '.*.'|\".*\"
 %{
     loc.step();
 %}
-#[^\n]*[\n\r]      /* skip */ ;
-: { return yy::ConfigParser::make_COLON(loc); }
-\[ { return yy::ConfigParser::make_OPEN_SQ(loc); }
-\] { return yy::ConfigParser::make_CLOSE_SQ(loc); }
-\{ { return yy::ConfigParser::make_OPEN_CU(loc); }
-\} { return yy::ConfigParser::make_CLOSE_CU(loc); }
-, { return yy::ConfigParser::make_COMMA(loc); }
-out { return yy::ConfigParser::make_OUTPUT(loc); }
-integrator { return yy::ConfigParser::make_INTEGRATOR(loc); }
-pt         { return yy::ConfigParser::make_PATH_TRACE(loc); }
-resolution { return yy::ConfigParser::make_RESOLUTION(loc); }
-spp {return yy::ConfigParser::make_SPP(loc); }
-width { return yy::ConfigParser::make_WIDTH(loc); }
-height { return yy::ConfigParser::make_HEIGHT(loc); }
-value0 { return yy::ConfigParser::make_VAL_0(loc); }
-value1 { return yy::ConfigParser::make_VAL_1(loc); }
-sampler { return yy::ConfigParser::make_SAMPLER(loc); }
-random { return yy::ConfigParser::make_RANDOM(loc); }
-stratified { return yy::ConfigParser::make_STRATIFIED(loc); }
-filter { return yy::ConfigParser::make_FILTER(loc); }
-type { return yy::ConfigParser::make_TYPE(loc); }
-box { return yy::ConfigParser::make_BOX(loc); }
-tent { return yy::ConfigParser::make_TENT(loc); }
-triangle { return yy::ConfigParser::make_TENT(loc); }
-gauss { return yy::ConfigParser::make_GAUSS(loc); }
-gaussian { return yy::ConfigParser::make_GAUSS(loc); }
-mitchell { return yy::ConfigParser::make_MITCHELL(loc); }
-lanczos { return yy::ConfigParser::make_LANCZOS(loc); }
-camera {return yy::ConfigParser::make_CAMERA(loc); }
-perspective { return yy::ConfigParser::make_PERSPECTIVE(loc); }
-panorama {return yy::ConfigParser::make_PANORAMA(loc); }
-orthographic { return yy::ConfigParser::make_ORTHOGRAPHIC(loc); }
-position {return yy::ConfigParser::make_POSITION(loc); }
-target {return yy::ConfigParser::make_TARGET(loc); }
-up { return yy::ConfigParser::make_UP(loc); }
-fov { return yy::ConfigParser::make_FOV(loc); }
-shape { return yy::ConfigParser::make_SHAPE(loc); }
-world { return yy::ConfigParser::make_WORLD(loc); }
-light { return yy::ConfigParser::make_LIGHT(loc); }
-name { return yy::ConfigParser::make_NAME(loc); }
-rotation { return yy::ConfigParser::make_ROTATION(loc); }
-scale { return yy::ConfigParser::make_SCALE(loc); }
-temperature { return yy::ConfigParser::make_TEMPERATURE(loc); }
-material { return yy::ConfigParser::make_MATERIAL(loc); }
-texture { return yy::ConfigParser::make_TEXTURE(loc); }
-src {return yy::ConfigParser::make_SRC(loc); }
-matte { return yy::ConfigParser::make_MATTE(loc); }
-glossy { return yy::ConfigParser::make_GLOSSY(loc); }
-metal { return yy::ConfigParser::make_METAL(loc); }
-glass { return yy::ConfigParser::make_GLASS(loc); }
-ior { return yy::ConfigParser::make_IOR(loc); }
-roughness { return yy::ConfigParser::make_ROUGHNESS(loc); }
-anisotropy { return yy::ConfigParser::make_ANISOTROPY(loc); }
-distribution { return yy::ConfigParser::make_DISTRIBUTION(loc); }
-diffuse { return yy::ConfigParser::make_DIFFUSE(loc); }
-specular { return yy::ConfigParser::make_SPECULAR(loc); }
-blinn { return yy::ConfigParser::make_BLINN(loc); }
-beckmann { return yy::ConfigParser::make_BECKMANN(loc); }
-ggx { return yy::ConfigParser::make_GGX(loc); }
-{uint}    { return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
-{int}    { return yy::ConfigParser::make_INT(atoi(yytext),loc); }
-{float} { return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
-{string} { return yy::ConfigParser::make_STRING(yytext,loc); }
-[ \t\r]            {loc.step();}
-[\n]               {loc.lines(yyleng);loc.step();}
-.                  {/* return error */}
-<<EOF>>            { return yy::ConfigParser::make_END(loc); }
+: { UPDATE_POS; return yy::ConfigParser::make_COLON(loc); }
+\[ { UPDATE_POS; return yy::ConfigParser::make_OPEN_SQ(loc); }
+\] { UPDATE_POS; return yy::ConfigParser::make_CLOSE_SQ(loc); }
+\{ { UPDATE_POS; return yy::ConfigParser::make_OPEN_CU(loc); }
+\} { UPDATE_POS; return yy::ConfigParser::make_CLOSE_CU(loc); }
+, { UPDATE_POS; return yy::ConfigParser::make_COMMA(loc); }
+out { UPDATE_POS; return yy::ConfigParser::make_OUTPUT(loc); }
+integrator { UPDATE_POS; return yy::ConfigParser::make_INTEGRATOR(loc); }
+pt         { UPDATE_POS; return yy::ConfigParser::make_PATH_TRACE(loc); }
+resolution { UPDATE_POS; return yy::ConfigParser::make_RESOLUTION(loc); }
+spp {UPDATE_POS; return yy::ConfigParser::make_SPP(loc); }
+width { UPDATE_POS; return yy::ConfigParser::make_WIDTH(loc); }
+height { UPDATE_POS; return yy::ConfigParser::make_HEIGHT(loc); }
+value0 { UPDATE_POS; return yy::ConfigParser::make_VAL_0(loc); }
+value1 { UPDATE_POS; return yy::ConfigParser::make_VAL_1(loc); }
+sampler { UPDATE_POS; return yy::ConfigParser::make_SAMPLER(loc); }
+random { UPDATE_POS; return yy::ConfigParser::make_RANDOM(loc); }
+stratified { UPDATE_POS; return yy::ConfigParser::make_STRATIFIED(loc); }
+filter { UPDATE_POS; return yy::ConfigParser::make_FILTER(loc); }
+type { UPDATE_POS; return yy::ConfigParser::make_TYPE(loc); }
+box { UPDATE_POS; return yy::ConfigParser::make_BOX(loc); }
+tent { UPDATE_POS; return yy::ConfigParser::make_TENT(loc); }
+triangle { UPDATE_POS; return yy::ConfigParser::make_TENT(loc); }
+gauss { UPDATE_POS; return yy::ConfigParser::make_GAUSS(loc); }
+gaussian { UPDATE_POS; return yy::ConfigParser::make_GAUSS(loc); }
+mitchell { UPDATE_POS; return yy::ConfigParser::make_MITCHELL(loc); }
+lanczos { UPDATE_POS; return yy::ConfigParser::make_LANCZOS(loc); }
+camera {UPDATE_POS; return yy::ConfigParser::make_CAMERA(loc); }
+perspective { UPDATE_POS; return yy::ConfigParser::make_PERSPECTIVE(loc); }
+panorama {UPDATE_POS; return yy::ConfigParser::make_PANORAMA(loc); }
+orthographic { UPDATE_POS; return yy::ConfigParser::make_ORTHOGRAPHIC(loc); }
+position {UPDATE_POS; return yy::ConfigParser::make_POSITION(loc); }
+target {UPDATE_POS; return yy::ConfigParser::make_TARGET(loc); }
+up { UPDATE_POS; return yy::ConfigParser::make_UP(loc); }
+fov { UPDATE_POS; return yy::ConfigParser::make_FOV(loc); }
+shape { UPDATE_POS; return yy::ConfigParser::make_SHAPE(loc); }
+world { UPDATE_POS; return yy::ConfigParser::make_WORLD(loc); }
+light { UPDATE_POS; return yy::ConfigParser::make_LIGHT(loc); }
+name { UPDATE_POS; return yy::ConfigParser::make_NAME(loc); }
+rotation { UPDATE_POS; return yy::ConfigParser::make_ROTATION(loc); }
+scale { UPDATE_POS; return yy::ConfigParser::make_SCALE(loc); }
+temperature { UPDATE_POS; return yy::ConfigParser::make_TEMPERATURE(loc); }
+material { UPDATE_POS; return yy::ConfigParser::make_MATERIAL(loc); }
+texture { UPDATE_POS; return yy::ConfigParser::make_TEXTURE(loc); }
+src {UPDATE_POS; return yy::ConfigParser::make_SRC(loc); }
+matte { UPDATE_POS; return yy::ConfigParser::make_MATTE(loc); }
+glossy { UPDATE_POS; return yy::ConfigParser::make_GLOSSY(loc); }
+metal { UPDATE_POS; return yy::ConfigParser::make_METAL(loc); }
+glass { UPDATE_POS; return yy::ConfigParser::make_GLASS(loc); }
+ior { UPDATE_POS; return yy::ConfigParser::make_IOR(loc); }
+roughness { UPDATE_POS; return yy::ConfigParser::make_ROUGHNESS(loc); }
+anisotropy { UPDATE_POS; return yy::ConfigParser::make_ANISOTROPY(loc); }
+distribution { UPDATE_POS; return yy::ConfigParser::make_DISTRIBUTION(loc); }
+diffuse { UPDATE_POS; return yy::ConfigParser::make_DIFFUSE(loc); }
+specular { UPDATE_POS; return yy::ConfigParser::make_SPECULAR(loc); }
+blinn { UPDATE_POS; return yy::ConfigParser::make_BLINN(loc); }
+beckmann { UPDATE_POS; return yy::ConfigParser::make_BECKMANN(loc); }
+ggx { UPDATE_POS; return yy::ConfigParser::make_GGX(loc); }
+{uint}    { UPDATE_POS; return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
+{int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
+{float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
+{string} { UPDATE_POS; return yy::ConfigParser::make_STRING(yytext,loc); }
+[ \t\r]            {UPDATE_POS; loc.step();}
+[\n]               {UPDATE_POS; loc.lines(yyleng);loc.step(); last_line_pos=current_pos; }
+.                  {/* UPDATE_POS; return error */}
+<<EOF>>            { UPDATE_POS; return yy::ConfigParser::make_END(loc); }
 
 %%
 
 void ConfigDriver::scan_begin()
 {
+    errno = 0;
+    current_pos = 0;
+    last_line_pos = 0;
     yyin = fopen(file.c_str(), "r");
     if(!yyin)
-    /* error handling */;
+        Console.critical(MESSAGE_INPUT_ERROR,file.c_str(),strerror(errno));
 }
 
 void ConfigDriver::scan_end()
 {
     fclose(yyin);
+}
+
+void ConfigDriver::get_line(char* buf,int len, int col)
+{
+    if(current_pos-last_line_pos<len-1) //entire line can fit in buffer
+    {
+        fseek(yyin,last_line_pos,SEEK_SET);
+        fread(buf,sizeof(char),len,yyin);
+        int i = 0;
+        while(i<len)
+        {
+            if(buf[i]=='\n' || buf[i]=='\r')
+                buf[i] = 0;
+            if(buf[i]==0)
+                break;
+            i++;
+        }
+    }
 }

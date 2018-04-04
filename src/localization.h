@@ -118,6 +118,8 @@
 
 #define MESSAGE_TEXTURE_NOT_FOUND "Texture %s not found in library"
 
+#define MESSAGE_INPUT_ERROR "Unable to open file %s: %s"
+
 #endif
 
 /**
