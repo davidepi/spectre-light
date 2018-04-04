@@ -4,7 +4,7 @@ The file format expected by *spectre-light* is similar in fashion to a JSON file
 with the following differences:
 
 - Keys are reserved keywords and thus cannot be neither user-defined nor quoted
-- Commas can not be inserted between each `key:value` pair
+- A comma is not required between each `key:value` pair, a whitespace is sufficient
 - The toplevel object can not be enclosed in curly braces
 
 Here is an example of the file structure
@@ -14,10 +14,7 @@ resolution: {
     width: 1280
     height: 1024
 }
-filter: {
-    type: lanczos
-    value0: 3.5
-}
+filter:{type: lanczos, value0: 3.5}
 spp: 36
 integrator: pt
 sampler: stratified
@@ -43,6 +40,7 @@ world: {
 }
 
 texture: "folder/containing/textures"
+texture:{name:'Wall',src:"folder/wall.tga"}
 
 ```
 ## Primitives

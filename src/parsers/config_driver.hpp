@@ -18,6 +18,7 @@
 #include "samplers/lanczos_filter.hpp"
 #include "integrators/path_tracer.hpp"
 #include "parsers/config_parser.tab.hh"
+#include "textures/texture_library.hpp"
 #include "renderer.hpp"
 
 #define YY_DECL \
@@ -38,7 +39,8 @@ public:
     void check_resolution();
     int spp;
     void check_spp();
-    //camera stored values
+    
+    //camera
     Camera* camera;
     Point3 camera_pos;
     Point3 camera_tar;
@@ -46,15 +48,23 @@ public:
     float fov;
     char camera_type;
     void build_camera();
-    //sampler type
+    
+    //sampler
     char sampler_type;
+    
     //filter stored values
     Filter* filter;
     char filter_type;
     float value0;
     float value1;
     void build_filter();
+    
+    //integrator
     LightIntegrator* integrator;
+    
+    //texture
+    std::string tex_name;
+    void load_texture(std::string& src);
     
     void error(const yy::location& l, const std::string& m);
     void error(const std::string& m);

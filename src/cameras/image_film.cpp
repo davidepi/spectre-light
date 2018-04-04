@@ -3,66 +3,6 @@
 
 #include "image_film.hpp"
 
-//check if extension is supported
-static char check_extension(const char* fullpath)
-{
-    //dot included
-    const char* extension = strrchr(fullpath,'.');
-    int retval;
-    //pos less than 4 chr expected for an extension
-    if(strlen(extension)<4)
-    {
-        Console.warning(MESSAGE_MISSING_EXTENSION);
-        retval = EXTENSION_NOT_SUPPORTED;
-    }
-    else
-    {
-        switch(extension[1])
-        {
-            case 'p':
-            {
-                if(strcmp(".ppm",extension)==0)
-                {
-                    retval = EXTENSION_PPM;
-                    break;
-                }
-            }
-            case 'b':
-            {
-                if(strcmp(".bmp",extension)==0)
-                {
-                    retval = EXTENSION_BMP;
-                    break;
-                }
-            }
-            default:
-            {
-#ifdef IMAGEMAGICK
-                try
-                {
-                    Magick::CoderInfo info(extension+1);
-                    if(info.isWritable())
-                        retval = EXTENSION_NON_NATIVE;
-                    else
-                        //a fake message but... it is used to explain what
-                        //happens now, instead of what genereted the issue
-                        throw new Magick::Exception(MESSAGE_IM_UNSUPPORTED);
-                }
-                catch(Magick::Exception e)
-                {
-                    Console.warning(MESSAGE_IM_UNSUPPORTED);
-                    retval = EXTENSION_NOT_SUPPORTED;
-                }
-#else
-                Console.warning(MESSAGE_IM_OUT);
-                retval = EXTENSION_NOT_SUPPORTED;
-#endif
-            }
-        }
-    }
-    return retval;
-}
-
 ImageFilm::ImageFilm(int width, int height, const char* fullpath)
 :width(width), height(height)
 {
@@ -106,14 +46,14 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
         }
     
     //check extension, add .ppm if not supported
-    ImageFilm::extension = check_extension(fullpath);
+    ImageFilm::extension = image_supported(fullpath);
     int path_len = (int)strlen(fullpath)+1;
     //to add the .ppm at the end, if necessary
-    if(ImageFilm::extension==EXTENSION_NOT_SUPPORTED)
+    if(ImageFilm::extension<0)
         path_len+=4;
     ImageFilm::filename = (char*)malloc(sizeof(char)*path_len);
     memcpy(ImageFilm::filename,fullpath,sizeof(char)*path_len);
-    if(ImageFilm::extension==EXTENSION_NOT_SUPPORTED)
+    if(ImageFilm::extension<0)
     {
         path_len-=5; //point to the \0 of the string
         filename[path_len] = '.';    //add the new extension
@@ -121,6 +61,7 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
         filename[path_len+2] = 'p';
         filename[path_len+3] = 'm';
         filename[path_len+4] = '\0';
+        ImageFilm::extension = IMAGE_PPM;
     }
     free(folder);
 }
@@ -253,18 +194,17 @@ bool ImageFilm::save_image()
     bool retval;
     switch(ImageFilm::extension)
     {
-        case EXTENSION_BMP:
+        case IMAGE_BMP:
         {
             retval=save_bmp(filename, width, height, rgb_buffer);
             break;
         }
-        case EXTENSION_NON_NATIVE:
+        case IMAGE_RGB:
         {
             retval=save_RGB(filename, width, height, rgb_buffer);
             break;
         }
-        case EXTENSION_PPM:
-        case EXTENSION_NOT_SUPPORTED:
+        case IMAGE_PPM:
         default:
             retval=save_ppm(filename, width, height, rgb_buffer);
     }

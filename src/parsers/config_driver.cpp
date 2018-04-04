@@ -16,6 +16,7 @@ ConfigDriver::ConfigDriver()
     value0 = 0.33f;
     value1 = 0.33f;
     integrator = new PathTracer();
+    tex_name = "";
 }
 
 int ConfigDriver::parse(const std::string& f, Renderer* r)
@@ -155,4 +156,10 @@ void ConfigDriver::build_camera()
             fprintf(stderr,"Unknown camera type. This is unknown also to the"
                     "Parser so check config_parser.y first\n");
     }
+}
+
+void ConfigDriver::load_texture(std::string& src)
+{
+    printf("%s - %s\n",tex_name.c_str(),src.c_str());
+    tex_name = ""; //reset name for next texture
 }

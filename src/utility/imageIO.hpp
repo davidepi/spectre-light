@@ -1,12 +1,12 @@
 //Created,  27 Nov 2017
-//Last Edit 10 Mar 2018
+//Last Edit  4 Apr 2018
 
 /**
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      10 Mar 2018
+ *  \date      4 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,12 @@
 
 ///Image read succesfully
 #define IMAGE_OK 0
+///The image type is .ppm
+#define IMAGE_PPM 1
+///The image type is .bmp
+#define IMAGE_BMP 2
+///The image will be written/saved with ImageMagick
+#define IMAGE_RGB 3
 ///Error code used when the image is not found or not readable
 #define IMAGE_NOT_READABLE -1
 ///Error code used when the image extension does not match the magic number
@@ -30,7 +36,11 @@
 #ifdef IMAGEMAGICK
 #include <cstring>
 #include <Magick++.h>
+#include <type_traits> //std::is_floating_point
 #endif
+
+///Initialized ImageMagick routines
+void ImageIO_init();
 
 /** \brief Save an image in the PPM format
  *
@@ -184,4 +194,19 @@ bool dimensions_RGB(const char* name, int* width, int* height);
  *  \return IMAGE_OK if everything was ok, otherwise a proper error code
  */
 int read_RGB(const char* name, float* data, uint8_t* alpha);
+
+/** \brief Checks if an image is supported
+ *
+ *  Since image support is defined at compile time depending on ImageMagick,
+ *  this method is used to know throughout the code if a file on possibly
+ *  another machine is compatible (r/w). Usually if the file is an image and
+ *  ImageMagick was installed at compile time, this function will return a
+ *  positive number indicating the type of image. The various types can be found
+ *  as defines at the beginning of this file
+ *
+ *  \param[in] The path to the image
+ *  \retun A positive number if the image is supported, a negative one otherwise
+ */
+int image_supported(const char* fullpath);
+
 #endif

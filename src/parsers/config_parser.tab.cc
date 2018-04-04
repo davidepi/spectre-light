@@ -723,38 +723,62 @@ namespace yy {
 #line 724 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 85:
-#line 207 "config_parser.y" // lalr1.cc:859
-    { yylhs.value.as< Vec3 > () = Vec3(yystack_[5].value.as< float > (),yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
+  case 60:
+#line 174 "config_parser.y" // lalr1.cc:859
+    {driver.load_texture(yystack_[1].value.as< std::string > ());}
 #line 730 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 86:
-#line 212 "config_parser.y" // lalr1.cc:859
-    {yylhs.value.as< float > () = yystack_[0].value.as< float > ();}
+  case 61:
+#line 175 "config_parser.y" // lalr1.cc:859
+    {driver.load_texture(yystack_[0].value.as< std::string > ());}
 #line 736 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 62:
+#line 176 "config_parser.y" // lalr1.cc:859
+    {driver.load_texture(yystack_[0].value.as< std::string > ());}
+#line 742 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 65:
+#line 181 "config_parser.y" // lalr1.cc:859
+    {driver.tex_name = yystack_[0].value.as< std::string > ();}
+#line 748 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 86:
+#line 208 "config_parser.y" // lalr1.cc:859
+    { yylhs.value.as< Vec3 > () = Vec3(yystack_[5].value.as< float > (),yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
+#line 754 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 87:
 #line 213 "config_parser.y" // lalr1.cc:859
-    {yylhs.value.as< float > () = (float)yystack_[0].value.as< int > ();}
-#line 742 "config_parser.tab.cc" // lalr1.cc:859
+    {yylhs.value.as< float > () = yystack_[0].value.as< float > ();}
+#line 760 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 88:
-#line 217 "config_parser.y" // lalr1.cc:859
-    { yylhs.value.as< int > () = yystack_[0].value.as< unsigned int > ();}
-#line 748 "config_parser.tab.cc" // lalr1.cc:859
+#line 214 "config_parser.y" // lalr1.cc:859
+    {yylhs.value.as< float > () = (float)yystack_[0].value.as< int > ();}
+#line 766 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 89:
 #line 218 "config_parser.y" // lalr1.cc:859
+    { yylhs.value.as< int > () = yystack_[0].value.as< unsigned int > ();}
+#line 772 "config_parser.tab.cc" // lalr1.cc:859
+    break;
+
+  case 90:
+#line 219 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< int > () = yystack_[0].value.as< int > ();}
-#line 754 "config_parser.tab.cc" // lalr1.cc:859
+#line 778 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 758 "config_parser.tab.cc" // lalr1.cc:859
+#line 782 "config_parser.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -1047,20 +1071,20 @@ namespace yy {
        4,    10,     0,     7,     8,     9,     0,     0,    12,     0,
        0,     0,     0,    15,    23,     0,     0,     0,    20,    33,
        0,     0,     0,     0,    25,    43,     0,     0,     0,     0,
-       0,     0,    35,     0,     0,     0,     0,     0,    84,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,    67,
-      65,     0,     0,     0,     0,    63,     0,     0,     5,    19,
+       0,     0,    35,     0,     0,     0,     0,     0,    85,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    68,
+      66,     0,     0,     0,     0,    64,     0,     0,     5,    19,
        0,     0,     0,     6,    24,     0,     0,     0,     0,     0,
       11,    34,     0,    13,    53,     0,     0,     0,    44,    47,
        0,     0,    54,    57,    14,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    17,    66,     0,     0,    16,     0,
-      62,    21,    22,    26,    27,    28,    29,    30,    88,    89,
-      86,    31,    87,    32,    36,    37,    38,     0,    39,    40,
+       0,     0,     0,     0,    17,    67,     0,     0,    16,     0,
+      63,    21,    22,    26,    27,    28,    29,    30,    89,    90,
+      87,    31,    88,    32,    36,    37,    38,     0,    39,    40,
       41,    42,    48,     0,     0,     0,     0,    45,     0,     0,
-      55,    56,    72,    70,    69,    71,    68,    76,    81,    80,
-      78,    77,    79,    74,    73,    75,    83,    82,    64,     0,
+      55,    56,    73,    71,    70,    72,    69,    77,    82,    81,
+      79,    78,    80,    75,    74,    76,    84,    83,    65,    62,
        0,     0,    49,    50,    52,    51,     0,    58,    59,    60,
-      61,     0,    46,     0,     0,     0,    85
+      61,     0,    46,     0,     0,     0,    86
   };
 
   const short int
@@ -1171,9 +1195,10 @@ namespace yy {
       72,    72,    72,    72,    73,    73,    74,    74,    74,    74,
       74,    74,    74,    74,    75,    76,    76,    76,    77,    78,
       78,    78,    78,    78,    79,    80,    80,    80,    81,    81,
-      82,    82,    83,    83,    84,    84,    85,    85,    86,    86,
+      82,    82,    82,    83,    83,    84,    84,    85,    85,    86,
       86,    86,    86,    86,    86,    86,    86,    86,    86,    86,
-      86,    86,    86,    86,    86,    87,    88,    88,    89,    89
+      86,    86,    86,    86,    86,    86,    87,    88,    88,    89,
+      89
   };
 
   const unsigned char
@@ -1185,9 +1210,10 @@ namespace yy {
        3,     3,     3,     1,     2,     1,     3,     3,     3,     3,
        3,     3,     3,     1,     2,     2,     4,     1,     3,     3,
        3,     3,     3,     1,     2,     2,     2,     1,     3,     3,
-       4,     4,     2,     1,     3,     1,     2,     1,     3,     3,
+       4,     4,     3,     2,     1,     3,     1,     2,     1,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     3,     1,     7,     1,     1,     1,     1
+       3,     3,     3,     3,     3,     1,     7,     1,     1,     1,
+       1
   };
 
 
@@ -1238,9 +1264,10 @@ namespace yy {
      140,   141,   142,   143,   146,   146,   148,   149,   150,   151,
      152,   153,   154,   155,   158,   159,   159,   159,   160,   162,
      163,   164,   165,   166,   169,   170,   170,   170,   171,   171,
-     174,   175,   178,   178,   180,   181,   184,   184,   186,   187,
+     174,   175,   176,   179,   179,   181,   182,   185,   185,   187,
      188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
-     198,   199,   200,   201,   202,   206,   212,   213,   217,   218
+     198,   199,   200,   201,   202,   203,   207,   213,   214,   218,
+     219
   };
 
   // Print the state stack on the debug stream.
@@ -1275,8 +1302,8 @@ namespace yy {
 
 
 } // yy
-#line 1279 "config_parser.tab.cc" // lalr1.cc:1167
-#line 221 "config_parser.y" // lalr1.cc:1168
+#line 1306 "config_parser.tab.cc" // lalr1.cc:1167
+#line 222 "config_parser.y" // lalr1.cc:1168
 
 
 void yy::ConfigParser::error (const location_type& l, const std::string& m)

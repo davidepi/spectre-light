@@ -170,14 +170,15 @@ light_obj: world_name light_rec;
 light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt;
 light_stmt: TEMPERATURE COLON UINT | COLOR COLON vector;
 
-texture_obj
-: SRC COLON STRING texture_rec
-| texture_rec SRC COLON STRING
+texture_obj /* name is already known at this point */
+: SRC COLON STRING texture_rec {driver.load_texture($3);}
+| texture_rec SRC COLON STRING {driver.load_texture($4);}
+| SRC COLON STRING {driver.load_texture($3);} //no comma nor name
 ;
 
 texture_rec:texture_rec texture_stmt|texture_stmt;
 texture_stmt
-: NAME COLON STRING
+: NAME COLON STRING {driver.tex_name = $3;}
 | COMMA
 ;
 

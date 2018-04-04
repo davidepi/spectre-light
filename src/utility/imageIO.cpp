@@ -5,6 +5,16 @@
 // must be divisible by 3(otherwise read bmp will discard some pixels)
 #define READ_BUFFER 4098
 
+void ImageIO_init()
+{
+#ifdef IMAGEMAGICK
+    Magick::InitializeMagick(IMAGEMAGICK);
+    std::is_floating_point<Magick::Quantum> is_fp;
+    if(!is_fp.value)
+        Console.severe(MESSAGE_IM_NOFLOAT);
+#endif
+}
+
 bool save_ppm(const char* name, int width, int height, const uint8_t* array)
 {
     FILE* fout = fopen(name,"wb");
@@ -475,3 +485,46 @@ int read_RGB(const char* name, float* data, uint8_t* alpha)
     return IMAGE_NOT_SUPPORTED;
 #endif
 }
+
+int image_supported(const char* fullpath)
+{
+    const char* extension = strrchr(fullpath,'.');
+    int retval;
+    //pos less than 4 chr expected for an extension
+    if(strlen(extension)<4)
+    {
+        return false; //missing extension, avoid checking magic numbers
+    }
+    else
+    {
+        switch(extension[1])
+        {
+            case 'p':
+                if(strcmp(".ppm",extension)==0)
+                    return IMAGE_PPM;
+            case 'b':
+                if(strcmp(".bmp",extension)==0)
+                    return IMAGE_BMP;
+            default:
+            {
+#ifdef IMAGEMAGICK
+                try
+                {
+                    Magick::CoderInfo info(extension+1);
+                    if(info.isWritable() && info.isReadable())
+                        return IMAGE_RGB;
+                    else
+                        return IMAGE_NOT_SUPPORTED;
+                }
+                catch(Magick::Exception e)
+                {
+                    //probably not an image
+                    return IMAGE_NOT_SUPPORTED;
+                }
+#endif
+                return IMAGE_NOT_SUPPORTED;
+            }
+        }
+    }
+}
+
