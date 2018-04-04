@@ -33,6 +33,7 @@ int ConfigDriver::parse(const std::string& f, Renderer* r)
     r = new Renderer(width,height,spp,output.c_str());
 #endif
     r->set_sampler(sampler_type);
+    build_camera();
     r->inherit_camera(camera);
     r->inherit_filter(filter);
     r->inherit_integrator(integrator);
@@ -69,22 +70,27 @@ void ConfigDriver::check_spp()
 
 void ConfigDriver::error(const yy::location& l, const std::string& m)
 {
+    //tested againts: token len > buffer len
+    //line len > buf len
+    //token at beginning and line len > buf len
+    //token at end and line len > buf len
 #define GRN "\x1B[32m"
 #define NRM "\x1B[0m"
 #define BLD "\x1B[1m"
-    
+#define BUFFER 128
     unsigned int end_col = 0 < l.end.column ? l.end.column - 1 : 0;
     //underline wrong token
-    if(l.begin.column<l.end.column && l.begin.line==l.end.line)
+    if(l.begin.column<l.end.column && l.begin.line==l.end.line &&
+       l.end.column-l.begin.column<=BUFFER-5) //prev. segfault if token len >buf
     {
         char buf[128];
         char under[128];
-        get_line(buf,128,end_col);
-        for(unsigned int i=0;i<l.begin.column-1;i++)
+        int offset = get_line(buf,128,end_col);
+        for(unsigned int i=0;i<l.begin.column-1-offset;i++)
             under[i] = ' ';
-        for(unsigned int i=l.begin.column-1;i<end_col;i++)
+        for(unsigned int i=l.begin.column-1-offset;i<end_col-offset;i++)
             under[i] = '~';
-        under[end_col] = 0;
+        under[end_col-offset] = 0;
         Console.critical("%s:%d.%d: " BLD "%s" NRM "\n%s\n%" GRN "%s" NRM,
                          file.c_str(),l.end.line,end_col,m.c_str(),buf,under);
     }

@@ -62,7 +62,7 @@ public:
 private:
     void scan_begin();
     void scan_end();
-    void get_line(char* buf, int len, int col);
+    int get_line(char* buf, int len, int col);
 };
 
 #endif

@@ -55,7 +55,7 @@ int | An integer number, negative or non-negative | -2147483647
 float | A floating point number | 1.5   .5  1e18    .1E-3  E10
 quoted string | A string delimited by a pair of " or '. Escaping is not supported | "Hello world"   'Hello world'
 float[n] | An array of n floats delimited by [ ] | [1.5,0.5,0]
-object | An object containing `key:values` pair delimited by { }. The possible keys are described in the [Keywords]() section | {type:perspective, fov:55.0}
+object | An object containing `key:values` pair delimited by { }. The possible keys are described in the [Keywords](#keywords) section | {type:perspective, fov:55.0}
 enum | A keyword used as an enum. The keywords change from object to object, so for a complete list refer to the object description where the enum is required | perspective  lanczos
 
 ## Key(word)s

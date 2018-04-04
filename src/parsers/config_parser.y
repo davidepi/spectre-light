@@ -121,12 +121,14 @@ stmt
 | TEXTURE COLON STRING
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU
+| COMMA
 ;
 
 resolution_obj: resolution_obj resolution_stmt | resolution_stmt;
 resolution_stmt
 : WIDTH COLON UINT {driver.width = $3;}
 | HEIGHT COLON UINT {driver.height = $3;}
+| COMMA
 ;
 
 filter_obj: filter_obj filter_stmt | filter_stmt;
@@ -138,6 +140,7 @@ filter_stmt
 | TYPE COLON LANCZOS {driver.filter_type = SPECTRE_FILTER_LANCZOS;}
 | VAL_0 COLON number {driver.value0 = $3;}
 | VAL_1 COLON number {driver.value1 = $3;}
+| COMMA
 ;
 
 camera_obj: camera_obj camera_stmt | camera_stmt;
@@ -149,6 +152,7 @@ camera_stmt
 | TARGET COLON vector {driver.camera_tar = Point3($3.x,$3.y,$3.z);}
 | UP COLON vector {driver.camera_up = $3;}
 | FOV COLON FLOAT {driver.fov = $3;}
+| COMMA
 ;
 
 world_obj: world_name world_rec;
@@ -159,6 +163,7 @@ world_stmt
 | ROTATION COLON vector
 | SCALE COLON vector
 | SCALE COLON FLOAT
+| COMMA
 ;
 
 light_obj: world_name light_rec;
@@ -166,9 +171,14 @@ light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt;
 light_stmt: TEMPERATURE COLON UINT | COLOR COLON vector;
 
 texture_obj
-: SRC COLON STRING
-| NAME COLON STRING SRC COLON STRING
-| SRC COLON STRING NAME COLON STRING
+: SRC COLON STRING texture_rec
+| texture_rec SRC COLON STRING
+;
+
+texture_rec:texture_rec texture_stmt|texture_stmt;
+texture_stmt
+: NAME COLON STRING
+| COMMA
 ;
 
 material_obj: material_obj material_stmt | material_stmt;
@@ -189,6 +199,7 @@ material_stmt
 | DIFFUSE COLON STRING
 | SPECULAR COLON vector
 | SPECULAR COLON STRING
+| COMMA
 ;
 
 vector:

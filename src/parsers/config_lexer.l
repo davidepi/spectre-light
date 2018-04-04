@@ -22,7 +22,7 @@ long int last_line_pos;
 uint \+?[0-9]+
 int -[0-9]+
 float [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?
-string '.*.'|\".*\"
+string (\"(\\.|[^\\"])*\")|('(\\.|[^'])*')
 %{
     #define YY_USER_ACTION loc.columns(yyleng);
     #define UPDATE_POS current_pos+=strlen(yytext)
@@ -117,20 +117,41 @@ void ConfigDriver::scan_end()
     fclose(yyin);
 }
 
-void ConfigDriver::get_line(char* buf,int len, int col)
+int ConfigDriver::get_line(char* buf,int len, int col)
 {
-    if(current_pos-last_line_pos<len-1) //entire line can fit in buffer
+    int line_offset = 0;
+    //entire line can't fit in buffer
+    //-4 because if the line is too long the last 3 chars are set to ... and
+    //I don't want to show the underline ~~~~ in these characters
+    if(current_pos-last_line_pos>=len-4)
     {
-        fseek(yyin,last_line_pos,SEEK_SET);
-        fread(buf,sizeof(char),len,yyin);
-        int i = 0;
-        while(i<len)
-        {
-            if(buf[i]=='\n' || buf[i]=='\r')
-                buf[i] = 0;
-            if(buf[i]==0)
-                break;
-            i++;
-        }
+        line_offset = last_line_pos;
+        last_line_pos = current_pos - len/2;
+        line_offset = last_line_pos-line_offset;
     }
+    fseek(yyin,last_line_pos,SEEK_SET);
+    fread(buf,sizeof(char),len,yyin);
+    int i = 0;
+    while(i<len)
+    {
+        if(buf[i]=='\n' || buf[i]=='\r')
+            buf[i] = 0;
+        if(buf[i]==0)
+            break;
+        i++;
+    }
+    if(i==len)
+    {
+        buf[len-4] = '.';
+        buf[len-3] = '.';
+        buf[len-2] = '.';
+        buf[len-1] = 0;
+    }
+    if(line_offset!=0)
+    {
+        buf[0] = '.';
+        buf[1] = '.';
+        buf[2] = '.';
+    }
+    return line_offset;
 }

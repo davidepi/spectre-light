@@ -82,21 +82,16 @@ static void gen_data(const char* out_path, const char* filename, int extent,
 void generate_filters_data(const char* out_path)
 {
     const float inc = 0.01f;
-    Filter* box = new BoxFilter(BOX_FILTER_EXTENT,
-                                BOX_FILTER_EXTENT);
-    Filter* tent = new TentFilter(TENT_FILTER_EXTENT,
-                                  TENT_FILTER_EXTENT);
-    Filter* gauss = new GaussianFilter(GAUSSIAN_FILTER_EXTENT,
-                                       GAUSSIAN_FILTER_EXTENT, 2.f);
-    Filter* mitch = new MitchellFilter(MITCHELL_FILTER_EXTENT,
-                                       MITCHELL_FILTER_EXTENT, .33f, .33f);
-    Filter* sinc = new LanczosFilter(LANCZOS_FILTER_EXTENT,
-                                     LANCZOS_FILTER_EXTENT, 3.f);
-    gen_data(out_path,"box",BOX_FILTER_EXTENT,box,inc);
-    gen_data(out_path,"tent",TENT_FILTER_EXTENT,tent,inc);
-    gen_data(out_path,"gaussian",GAUSSIAN_FILTER_EXTENT,gauss,inc);
-    gen_data(out_path,"mitchell",MITCHELL_FILTER_EXTENT,mitch,inc);
-    gen_data(out_path,"lanczos",LANCZOS_FILTER_EXTENT,sinc,inc);
+    Filter* box = new BoxFilter();
+    Filter* tent = new TentFilter();
+    Filter* gauss = new GaussianFilter(2.f);
+    Filter* mitch = new MitchellFilter(.33f,.33f);
+    Filter* sinc = new LanczosFilter(3.f);
+    gen_data(out_path,"box",1,box,inc);
+    gen_data(out_path,"tent",2,tent,inc);
+    gen_data(out_path,"gaussian",2,gauss,inc);
+    gen_data(out_path,"mitchell",2,mitch,inc);
+    gen_data(out_path,"lanczos",4,sinc,inc);
     delete box;
     delete tent;
     delete gauss;

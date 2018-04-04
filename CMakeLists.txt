@@ -93,6 +93,9 @@ find_package(Gnuplot)
 if(GNUPLOT_FOUND)
     add_executable(distributions_data EXCLUDE_FROM_ALL ${spectre_distributions_sources} ${spectre_core_sources} ${CMAKE_CURRENT_SOURCE_DIR}/tests/distributions/distributions_main.cpp)
     target_compile_definitions(distributions_data PRIVATE SUPPRESS_MOTD=1)
+if(ImageMagick_Magick++_FOUND)
+  target_link_libraries(distributions_data ${ImageMagick_Magick++_LIBRARY})
+endif(ImageMagick_Magick++_FOUND)
     add_custom_command(OUTPUT filters_distributions.pdf primitives_distributions.pdf samplers_distributions.pdf materials_distributions.pdf microfacets_distributions.pdf
         DEPENDS distributions_data
         COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/data

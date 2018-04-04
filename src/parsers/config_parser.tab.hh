@@ -967,9 +967,9 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 213,     ///< Last index in yytable_.
-      yynnts_ = 22,  ///< Number of nonterminal symbols.
-      yyfinal_ = 27, ///< Termination state number.
+      yylast_ = 234,     ///< Last index in yytable_.
+      yynnts_ = 24,  ///< Number of nonterminal symbols.
+      yyfinal_ = 28, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
       yyntokens_ = 66  ///< Number of tokens.
@@ -1056,17 +1056,17 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 85: // vector
+      case 87: // vector
         value.copy< Vec3 > (other.value);
         break;
 
       case 64: // "floating point value"
-      case 86: // number
+      case 88: // number
         value.copy< float > (other.value);
         break;
 
       case 63: // "integer value"
-      case 87: // integer
+      case 89: // integer
         value.copy< int > (other.value);
         break;
 
@@ -1095,17 +1095,17 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 85: // vector
+      case 87: // vector
         value.copy< Vec3 > (v);
         break;
 
       case 64: // "floating point value"
-      case 86: // number
+      case 88: // number
         value.copy< float > (v);
         break;
 
       case 63: // "integer value"
-      case 87: // integer
+      case 89: // integer
         value.copy< int > (v);
         break;
 
@@ -1193,17 +1193,17 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 85: // vector
+      case 87: // vector
         value.template destroy< Vec3 > ();
         break;
 
       case 64: // "floating point value"
-      case 86: // number
+      case 88: // number
         value.template destroy< float > ();
         break;
 
       case 63: // "integer value"
-      case 87: // integer
+      case 89: // integer
         value.template destroy< int > ();
         break;
 
@@ -1238,17 +1238,17 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 85: // vector
+      case 87: // vector
         value.move< Vec3 > (s.value);
         break;
 
       case 64: // "floating point value"
-      case 86: // number
+      case 88: // number
         value.move< float > (s.value);
         break;
 
       case 63: // "integer value"
-      case 87: // integer
+      case 89: // integer
         value.move< int > (s.value);
         break;
 
