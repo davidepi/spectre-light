@@ -1,31 +1,56 @@
 #include "file.hpp"
-
+const char File::PATH_SEPARATOR = '/';
 File::File(const char* path)
 {
-    File::filename = (const char*)malloc(sizeof(char)*strlen(path));
-    File::extension = strrchr(filename, '.');
+    size_t pathlen = strlen(path);
+    File::fullpath = (char*)malloc(sizeof(char)*pathlen+1);
+    strcpy(fullpath,path);
+    //path is a directory with the separator at the end
+    if(fullpath[pathlen-1]==File::PATH_SEPARATOR)
+        fullpath[--pathlen]=0; //decrease len and remove last char
+    File::file = strrchr(fullpath, File::PATH_SEPARATOR);
+    //relative path
+    if(file==NULL)
+        file = fullpath;
+    else
+        file+=1;
+    File::ext = strrchr(file, '.');
     //set "" as extension instead of NULL if not found
-    if(extension==NULL)
-        extension = filename+strlen(filename)-1;
-    strcpy(filename,path);
+    if(ext==NULL)
+        ext = fullpath+pathlen;
+    else
+        ext+=1;
+    //hidden file with no extension
+    if(ext==file+1)
+        ext = fullpath+pathlen;
 }
 
 File::~File()
 {
-    free(File::filename);
+    free(File::fullpath);
+}
+
+const char* File::extension()const
+{
+    return File::ext;
+}
+
+const char* File::filename()const
+{
+    return File::file;
 }
 
 bool File::exists()const
 {
-    return access(filename, F_OK);
+    return access(fullpath, F_OK)==0;
 }
 
-bool File::can_read()const
+bool File::readable()const
 {
-    return access(filename, R_OK);
+    return access(fullpath, R_OK)==0;
 }
 
-bool File::can_write()const
+bool File::writable()const
 {
-    return access(filename, W_OK);
+    return access(fullpath, W_OK)==0;
 }

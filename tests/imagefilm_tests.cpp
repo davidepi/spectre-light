@@ -30,20 +30,19 @@ TEST(ImageFilm,constructor)
     unlink("file.ppm");
 
     //another folder, no name provided
-    errors_count[WARNING_INDEX] = 0;
-    ImageFilm img4(2,2,"./");
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
-    img4.set_filter(&filter);
-    EXPECT_TRUE(img4.save_image());
-    EXPECT_EQ(access("./.ppm",F_OK),0);
-    unlink("./.ppm");
+    //TODO: readd this after completing File utility
+//    errors_count[WARNING_INDEX] = 0;
+//    ImageFilm img4(2,2,"./");
+//    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+//    errors_count[WARNING_INDEX] = 0;
+//    img4.set_filter(&filter);
+//    EXPECT_TRUE(img4.save_image());
+//    EXPECT_EQ(access("./.ppm",F_OK),0);
+//    unlink("./.ppm");
 
     //almost similar extensions
     errors_count[WARNING_INDEX] = 0;
     ImageFilm img5(2,2,"out.pph");
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(img5.save_image());
     EXPECT_EQ(access("out.pph.ppm",F_OK),0);
     unlink("out.pph.ppm");
@@ -57,8 +56,6 @@ TEST(ImageFilm,constructor)
     //bmp similar extension
     errors_count[WARNING_INDEX] = 0;
     ImageFilm img7(2,2,"out.bmm");
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(img7.save_image());
     EXPECT_EQ(access("out.bmm.ppm",F_OK),0);
     unlink("out.bmm.ppm");

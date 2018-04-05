@@ -14,8 +14,9 @@
 #ifndef __FILE_HPP__
 #define __FILE_HPP__
 
-#include <cstring>
-#include <unistd.h>
+#include <cstring> //strcpy
+#include <cstdlib> //malloc free
+#include <unistd.h> //access
 
 /**
  * \class File file.hpp "utility/file.hpp"
@@ -52,21 +53,50 @@ public:
      *
      *  \return true if the file is readable, false otherwise
      */
-    bool can_read()const;
+    bool readable()const;
     
     /** \brief Checks wheter a file or a folder is writable or not
      *
      *  Returns true if the file is writable, false otherwise or if some folder
-     *  component the path denies search permissions
+     *  component the path denies search permissions.
+     *
+     *  /note Note that if the file does not exists this function returns false.
+     *  One should perform the same check on the directory where the file should
+     *  be writed
      *
      *  \return true if the file is writable, false otherwise
      */
-    bool can_write()const;
+    bool writable()const;
+    
+    /** \brief Returns the extension of this file
+     *
+     *  Return a c string representing the extension of this file.
+     *  If the File is a directory or has no extension, an empty
+     *  string is returned
+     *
+     *  \return The extension of the file or an empty string if the
+     *  file has no extension
+     */
+    const char* extension()const;
+    
+    /** \brief Returns the name of the file or the directory
+     *
+     *  Since the constructor of this class can accept an absolute path to
+     *  a file or directory, this method returns just the name of the file or
+     *  directory itself
+     *
+     *  \return The name of the file itself in the path passed to constructor
+     */
+    const char* filename()const;
+    
+    ///The path separator for the current OS
+    static const char PATH_SEPARATOR;
     
 private:
     
-    char* filename;
-    const char* extension;
+    char* fullpath;
+    const char* ext;
+    const char* file;
 };
 
 
