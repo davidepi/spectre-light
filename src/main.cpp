@@ -15,5 +15,5 @@ int main(int argc, char* argv[])
     else
         parser.parse(argv[1],renderer);
 //    return renderer->render(new Scene());
-    Console.critical("Rendering disabled, checkout master branch")
+    Console.critical("Rendering disabled, checkout master branch");
 }

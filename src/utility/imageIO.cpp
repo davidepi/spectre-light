@@ -491,9 +491,9 @@ int image_supported(const char* fullpath)
     const char* extension = strrchr(fullpath,'.');
     int retval;
     //pos less than 4 chr expected for an extension
-    if(strlen(extension)<4)
+    if(extension==NULL || strlen(extension)<4)
     {
-        return false; //missing extension, avoid checking magic numbers
+        return IMAGE_NOT_SUPPORTED; //missing extension, avoid checking magic numbers
     }
     else
     {
