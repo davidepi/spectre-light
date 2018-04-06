@@ -17,6 +17,7 @@
 #include <cstring> //strcpy
 #include <cstdlib> //malloc free
 #include <unistd.h> //access
+#include <sys/stat.h> //ISDIR
 
 /**
  * \class File file.hpp "utility/file.hpp"
@@ -33,6 +34,9 @@ public:
      *  existent or non-existent
      */
     File(const char* path);
+    
+    ///Copy constructor
+    File(const File& old_obj);
     
     ///Default destructor
     ~File();
@@ -89,14 +93,50 @@ public:
      */
     const char* filename()const;
     
+    /** \brief Returns whether the provided path is absolute or relativ
+     *
+     *  Returns true if the path is absolute, false otherwise
+     *
+     *  \return true if the path is absolute, false otherwise
+     */
+    bool is_absolute()const;
+    
+    /** \brief Returns whether the provided file is a folder
+     *
+     *  Returns true if the provided file is a folder, false otherwise.
+     *  Note that this function is not complementar to File::is_file()
+     *
+     *  \return true if the provided file exists and is a directory
+     */
+    bool is_folder()const;
+    
+    /** \brief Returns whether the provided file is a regular file
+     *
+     *  Returns true if the provided file is a regular file, false otherwise
+     *  Symlinks are not considered as regular files, so this function is not
+     *  complementar to File::is_folder()
+     *
+     *  \return true if the provided file exists and is a regular file
+     */
+    bool is_file()const;
+    
     ///The path separator for the current OS
     static const char PATH_SEPARATOR;
+    ///The current directory where the code is being executed
+    static const char* CURRENT_DIR;
+    ///The lenghtof the current folder absolute path name. For realpath buffer
+    static const size_t CURRENT_DIR_LEN;
     
 private:
     
-    char* fullpath;
+    char* absolute;
+    const char* relative;
     const char* ext;
     const char* file;
+    //if the stat() called by the constructor succeded
+    bool statres;
+    //information about the fullpath
+    struct stat fileinfo;
 };
 
 
