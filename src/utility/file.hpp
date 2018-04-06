@@ -1,12 +1,12 @@
 //Created,   4 Apr 2018
-//Last Edit  5 Apr 2018
+//Last Edit  6 Apr 2018
 
 /**
  *  \file file.hpp
  *  \brief Utilities involving the filesystem
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  5 Apr 2018
+ *  \date  6 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -23,6 +23,13 @@
  * \class File file.hpp "utility/file.hpp"
  * \brief Performs operations over a file or directory
  *
+ *  This class contains a set of tools to handle directories and files. Upon
+ *  creation, the relative path to a file, whether existent or not, will be
+ *  resolved as absolute path. The relative path will be lost in the process
+ *  and only the absolute one is kept.
+ *
+ *  Methods provided by this class are focused on retrieval, listing and
+ *  creation of directories
  */
 class File
 {
@@ -93,14 +100,6 @@ public:
      */
     const char* filename()const;
     
-    /** \brief Returns whether the provided path is absolute or relativ
-     *
-     *  Returns true if the path is absolute, false otherwise
-     *
-     *  \return true if the path is absolute, false otherwise
-     */
-    bool is_absolute()const;
-    
     /** \brief Returns whether the provided file is a folder
      *
      *  Returns true if the provided file is a folder, false otherwise.
@@ -130,7 +129,6 @@ public:
 private:
     
     char* absolute;
-    const char* relative;
     const char* ext;
     const char* file;
     //if the stat() called by the constructor succeded
