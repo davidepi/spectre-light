@@ -1,11 +1,12 @@
 #include "file.hpp"
 const char File::PATH_SEPARATOR = '/';
+const char* File::PATH_SEPARATOR_STRING = "/";
 const char* File::CURRENT_DIR = realpath(".", NULL);
 const size_t File::CURRENT_DIR_LEN = strlen(File::CURRENT_DIR);
 
 File::File(const char* path)
 {
-    size_t pathlen = strlen(path);
+    int pathlen = (int)strlen(path);
     if(path[0]==File::PATH_SEPARATOR) //absolute, simply copy this path
     {
         absolute = (char*)malloc(sizeof(char)*(pathlen+1));
@@ -152,4 +153,91 @@ bool File::is_folder()const
 bool File::is_file()const
 {
     return statres && S_ISREG(fileinfo.st_mode);
+}
+
+File& File::operator=(const File &old)
+{
+    File::absolute = (char*)malloc(sizeof(char)*(strlen(old.absolute)+1));
+    strcpy(absolute,old.absolute);
+    //recalculate offsets(since I cannot blindly copy pointers of other classes)
+    File::ext = File::ext+abs(old.absolute-old.ext);
+    File::file = File::file+abs(old.absolute-old.file);
+    File::statres = old.statres;
+    File::fileinfo = old.fileinfo;
+    return *this;
+}
+
+File File::get_parent()const
+{
+    File retval(*this);
+    if(retval.file[0]!='/') //not root
+    {
+        int i = -1;
+        retval.ext=retval.file-1;
+        //retval.file[i-1] but file is ro so I need this trick
+        retval.absolute[abs(retval.absolute-retval.file+(i-1))]=0;
+        while(retval.file[i]!=File::PATH_SEPARATOR)
+            i--;
+        retval.file+=i+1;
+    }
+    return retval;
+}
+
+bool File::mkdir()
+{
+    bool retval = ::mkdir(absolute,S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH)==0;
+    //refresh info about this folder
+    File::statres = stat(absolute, &(File::fileinfo))==0;
+    return retval;
+}
+
+bool File::mkdirs()
+{
+    int index = 1;
+    bool res = File::mkdir(); //attempt a quick execution
+    if(!res)
+    {
+        int len = (unsigned int)strlen(absolute);
+        while(index<len)
+        {
+            while(index!=File::PATH_SEPARATOR && index<len) //reach separator
+                index++;
+            absolute[index]=0;
+            if(access(absolute, F_OK)!=0) //folder does not exist
+                res = File::mkdir();
+            absolute[index]=File::PATH_SEPARATOR;
+            index++;
+            if(!res)
+                return false;
+        }
+    }
+    //no need to refresh informations since is done by the mkdir() function
+    return true;
+}
+
+void File::ls(std::vector<File>* retval)const
+{
+    DIR* current_dir;
+    unsigned int len = (unsigned int)strlen(absolute);
+    unsigned int allocated = len+255;
+    struct dirent* element;
+    if(is_folder() && (current_dir = opendir(absolute))!=NULL)
+    {
+        char* element_name = (char*)malloc(sizeof(char)*allocated);
+        while((element = readdir(current_dir))!=NULL)
+        {
+            if((len+1+1+strlen(element->d_name))>=allocated)
+            {
+                free(element_name);
+                allocated = len+1+1+(unsigned int)strlen(element->d_name);
+                element_name = (char*)malloc(sizeof(char)*allocated);
+            }
+            strcpy(element_name, absolute);
+            strcat(element_name,File::PATH_SEPARATOR_STRING);
+            strcat(element_name,element->d_name);
+            retval->emplace_back(element_name);
+        }
+        free(element_name);
+        closedir(current_dir);
+    }
 }
