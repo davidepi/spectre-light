@@ -107,6 +107,12 @@ public:
      */
     const char* filename()const;
     
+    /** \brief Returns the absolute path for this file
+     *
+     *  /return The absolute path for this file or directory
+     */
+    const char* absolute_path()const;
+    
     /** \brief Returns whether the provided file is a folder
      *
      *  Returns true if the provided file is a folder, false otherwise.

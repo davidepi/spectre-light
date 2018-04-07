@@ -10,15 +10,23 @@ File::File(const char* path)
     if(path[0]==File::PATH_SEPARATOR) //absolute, simply copy this path
     {
         absolute = (char*)malloc(sizeof(char)*(pathlen+1));
-        int i=-1;
+        int relative_index=0;
+        int absolute_index=0;
         //copy everything inside the buffer but skip duplicated separators
-        while(path[++i]!=0)
+        while(path[relative_index]!=0)
         {
-            if(path[i]==File::PATH_SEPARATOR && path[i+1]==File::PATH_SEPARATOR)
+            if(path[relative_index]==File::PATH_SEPARATOR && path[relative_index+1]==File::PATH_SEPARATOR)
+            {
+                relative_index++;
                 continue;
+            }
             else
-                absolute[i] = path[i];
+                absolute[absolute_index++] = path[relative_index++];
         }
+        //remove last trailing char, if exists
+        if(absolute[absolute_index-1]==File::PATH_SEPARATOR)
+            absolute_index--;
+        absolute[absolute_index] = 0;
     }
     else //resolve the relative path
     {
@@ -31,22 +39,23 @@ File::File(const char* path)
             //resolve ../file
             if(path[1]=='.' && path[2]==File::PATH_SEPARATOR)
             {
-                relative_index = 3;
+                relative_index = 2;
                 //backtrack to previous / in the absolute path
                 //(guaranteed to exists since file is absolute)
-                while(absolute[absolute_index]!=File::PATH_SEPARATOR &&
-                      absolute_index>0)
-                    absolute_index--;
+                //position right on / ready to be substituted
+                while(absolute_index-->0 &&
+                      absolute[absolute_index]!=File::PATH_SEPARATOR);
             }
             else if(path[1]==File::PATH_SEPARATOR) //resolve ./file
-                relative_index=2;
+                relative_index=1;
         }
-        absolute[absolute_index++]=File::PATH_SEPARATOR;
+        if(path[relative_index]!=File::PATH_SEPARATOR)
+            absolute[absolute_index++]=File::PATH_SEPARATOR;
         /*
          *  at this point
          *  -> relative path does not start with . (checked in this if)
-         *  -> relative path does not starts with /
-         *  -> absolute path ends with /
+         *  -> relative starts with / or a filename
+         *  -> absolute path ends with / if relative does not starts with /
          */
         while(relative_index<pathlen)
         {
@@ -65,9 +74,12 @@ File::File(const char* path)
                             path[relative_index+3]==File::PATH_SEPARATOR)
                     {
                         relative_index+=3;
+                        //avoid out of bounds if too many ../../../
+                        if(absolute_index==0)
+                            continue;
                         absolute_index-=2;
-                        while(absolute[absolute_index--]!=PATH_SEPARATOR &&
-                              absolute_index>0);
+                        while(absolute_index-->0 &&
+                              absolute[absolute_index]!=PATH_SEPARATOR);
                         continue;
                     }
                 }
@@ -80,28 +92,25 @@ File::File(const char* path)
             }
             absolute[absolute_index++] = path[relative_index++];
         }
+        //remove last trailing char, if exists
+        if(absolute[absolute_index-1]==File::PATH_SEPARATOR)
+            absolute_index--;
         absolute[absolute_index]=0;
     }
     
     File::statres = stat(absolute, &(File::fileinfo))==0;
-    //path is a directory with the separator at the end
-    if(absolute[pathlen-1]==File::PATH_SEPARATOR)
-        absolute[--pathlen]=0; //decrease len and remove last char
+    //guaranteed to exists at least the toplevel /
     File::file = strrchr(absolute, File::PATH_SEPARATOR);
-    //relative path
-    if(file==NULL)
-        file = absolute;
-    else
-        file+=1;
+    File::file++;
     File::ext = strrchr(file, '.');
     //set "" as extension instead of NULL if not found
     if(ext==NULL)
-        ext = absolute+pathlen;
+        ext = absolute+strlen(absolute);
     else
         ext+=1;
-    //hidden file with no extension
+    //hidden file w/o extension (separate case because on windows does not hold)
     if(ext==file+1)
-        ext = absolute+pathlen;
+        ext = absolute+strlen(absolute);
 }
 
 File::File(const File& old_obj)
@@ -128,6 +137,11 @@ const char* File::extension()const
 const char* File::filename()const
 {
     return File::file;
+}
+
+const char* File::absolute_path()const
+{
+    return File::absolute;
 }
 
 bool File::exists()const
