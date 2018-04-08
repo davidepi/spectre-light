@@ -23,8 +23,8 @@ File::File(const char* path)
             else
                 absolute[absolute_index++] = path[relative_index++];
         }
-        //remove last trailing char, if exists
-        if(absolute[absolute_index-1]==File::PATH_SEPARATOR)
+        //remove last trailing char, if exists and not the root trailing
+        if(absolute[absolute_index-1]==File::PATH_SEPARATOR && absolute_index>1)
             absolute_index--;
         absolute[absolute_index] = 0;
     }
@@ -64,14 +64,16 @@ File::File(const char* path)
                 if(path[relative_index+1]=='.')
                 {
                     //handle /./
-                    if(path[relative_index+2]==File::PATH_SEPARATOR)
+                    if(path[relative_index+2]==File::PATH_SEPARATOR ||
+                       path[relative_index+2]==0)
                     {
                         relative_index+=2;
                         continue;
                     }
                     //handle /../
                     else if(path[relative_index+2]=='.' &&
-                            path[relative_index+3]==File::PATH_SEPARATOR)
+                            (path[relative_index+3]==File::PATH_SEPARATOR ||
+                             path[relative_index+3]==0))
                     {
                         relative_index+=3;
                         //avoid out of bounds if too many ../../../
@@ -92,16 +94,17 @@ File::File(const char* path)
             }
             absolute[absolute_index++] = path[relative_index++];
         }
-        //remove last trailing char, if exists
-        if(absolute[absolute_index-1]==File::PATH_SEPARATOR)
+        //remove last trailing char, if exists and not root trailing
+        if(absolute[absolute_index-1]==File::PATH_SEPARATOR && absolute_index>1)
             absolute_index--;
         absolute[absolute_index]=0;
     }
-    
     File::statres = stat(absolute, &(File::fileinfo))==0;
     //guaranteed to exists at least the toplevel /
     File::file = strrchr(absolute, File::PATH_SEPARATOR);
-    File::file++;
+    //not /
+    if(*(file+1)!=0)
+        File::file++;
     File::ext = strrchr(file, '.');
     //set "" as extension instead of NULL if not found
     if(ext==NULL)
@@ -118,8 +121,8 @@ File::File(const File& old_obj)
     File::absolute = (char*)malloc(sizeof(char)*(strlen(old_obj.absolute)+1));
     strcpy(absolute,old_obj.absolute);
     //recalculate offsets(since I cannot blindly copy pointers of other classes)
-    File::ext = File::ext+abs(old_obj.absolute-old_obj.ext);
-    File::file = File::file+abs(old_obj.absolute-old_obj.file);
+    File::ext = File::absolute+(old_obj.ext-old_obj.absolute);
+    File::file = File::absolute+(old_obj.file-old_obj.absolute);
     File::statres = old_obj.statres;
     File::fileinfo = old_obj.fileinfo;
 }
@@ -174,8 +177,8 @@ File& File::operator=(const File &old)
     File::absolute = (char*)malloc(sizeof(char)*(strlen(old.absolute)+1));
     strcpy(absolute,old.absolute);
     //recalculate offsets(since I cannot blindly copy pointers of other classes)
-    File::ext = File::ext+abs(old.absolute-old.ext);
-    File::file = File::file+abs(old.absolute-old.file);
+    File::ext = File::absolute+(old.ext-old.absolute);
+    File::file = File::absolute+(old.file-old.absolute);
     File::statres = old.statres;
     File::fileinfo = old.fileinfo;
     return *this;
@@ -187,12 +190,29 @@ File File::get_parent()const
     if(retval.file[0]!='/') //not root
     {
         int i = -1;
-        retval.ext=retval.file-1;
-        //retval.file[i-1] but file is ro so I need this trick
-        retval.absolute[abs(retval.absolute-retval.file+(i-1))]=0;
-        while(retval.file[i]!=File::PATH_SEPARATOR)
-            i--;
-        retval.file+=i+1;
+        //starts from -1 up to - max_decrement
+        int max_decrement = (int)(absolute-file);
+        //root folder is the parent
+        if(max_decrement==-1)
+        {
+            retval.absolute[1]=0;
+            retval.file = retval.absolute;
+            retval.ext = retval.absolute+1;
+        }
+        //replace the / right before the filename with 0
+        else
+        {
+            retval.absolute[(retval.file-retval.absolute)-1]=0;
+            //update the extension to be "" -> point to the newly inserted 0
+            retval.ext=retval.file-1;
+            //go back with the file pointer until the last /
+            while(i-->max_decrement && file[i]!=File::PATH_SEPARATOR);
+            //if not root, point to the filename
+            if(i!=max_decrement)
+                retval.file+=i+1;
+            else
+                /* do nothing, already catched in the max_decrement==-1 */;
+        }
     }
     return retval;
 }
@@ -209,24 +229,31 @@ bool File::mkdirs()
 {
     int index = 1;
     bool res = File::mkdir(); //attempt a quick execution
+    bool created = false;
     if(!res)
     {
+        res = true;
         int len = (unsigned int)strlen(absolute);
         while(index<len)
         {
-            while(index!=File::PATH_SEPARATOR && index<len) //reach separator
-                index++;
+            //reach separator
+            while(index++<len && absolute[index]!=File::PATH_SEPARATOR);
             absolute[index]=0;
             if(access(absolute, F_OK)!=0) //folder does not exist
+            {
                 res = File::mkdir();
+                created = true;
+            }
+            //resume searching
             absolute[index]=File::PATH_SEPARATOR;
-            index++;
             if(!res)
                 return false;
         }
     }
+    else
+        created = true;
     //no need to refresh informations since is done by the mkdir() function
-    return true;
+    return created;
 }
 
 void File::ls(std::vector<File>* retval)const
@@ -237,19 +264,26 @@ void File::ls(std::vector<File>* retval)const
     struct dirent* element;
     if(is_folder() && (current_dir = opendir(absolute))!=NULL)
     {
+        //temp buffer
         char* element_name = (char*)malloc(sizeof(char)*allocated);
         while((element = readdir(current_dir))!=NULL)
         {
+            //name too long, reallocate the temp buffer
             if((len+1+1+strlen(element->d_name))>=allocated)
             {
                 free(element_name);
                 allocated = len+1+1+(unsigned int)strlen(element->d_name);
                 element_name = (char*)malloc(sizeof(char)*allocated);
             }
-            strcpy(element_name, absolute);
-            strcat(element_name,File::PATH_SEPARATOR_STRING);
-            strcat(element_name,element->d_name);
-            retval->emplace_back(element_name);
+            //avoid listing . and ..
+            if(strcmp(element->d_name,"." )!=0 &&
+               strcmp(element->d_name,"..")!=0 )
+            {
+                strcpy(element_name, absolute);
+                strcat(element_name,File::PATH_SEPARATOR_STRING);
+                strcat(element_name,element->d_name);
+                retval->emplace_back(element_name);
+            }
         }
         free(element_name);
         closedir(current_dir);

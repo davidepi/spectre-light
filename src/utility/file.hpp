@@ -1,12 +1,12 @@
 //Created,   4 Apr 2018
-//Last Edit  7 Apr 2018
+//Last Edit  8 Apr 2018
 
 /**
  *  \file file.hpp
  *  \brief Utilities involving the filesystem
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  7 Apr 2018
+ *  \date  8 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -109,6 +109,10 @@ public:
     
     /** \brief Returns the absolute path for this file
      *
+     *  Note that if the provided path is / in a *nix system, the filename will
+     *  be considered / as well. On the other hand, if the provided path is
+     *  /file, the filename will be considered `file`
+     *
      *  /return The absolute path for this file or directory
      */
     const char* absolute_path()const;
@@ -171,7 +175,7 @@ public:
     /** \brief List directory contents
      *
      *  Returns a vector containing File classes where every class is contained
-     *  in the current directory
+     *  in the current directory. This method does not list . and ..
      *
      *  \param[out] retval The vector containing the list of file of the current
      *  directory
