@@ -206,6 +206,15 @@ TEST(File,get_parent)
     EXPECT_EQ(strcmp(f7.absolute_path(),"/"),0);
 }
 
+TEST(File,assignment_operator)
+{
+    File f1("folder/../file.jpg");
+    File f2 = f1;
+    EXPECT_EQ(strcmp(f1.filename(),f2.filename()),0);
+    EXPECT_EQ(strcmp(f1.extension(),f2.extension()),0);
+    EXPECT_EQ(strcmp(f1.absolute_path(),f2.absolute_path()),0);
+}
+
 TEST(File,mkdir)
 {
     bool res;

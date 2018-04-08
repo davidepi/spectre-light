@@ -1116,7 +1116,8 @@ inline Normal min(const Normal& n1, const Normal& n2)
 inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
+    if(!centre.is_normalized())
+        Console.warning(MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1138,7 +1139,8 @@ inline Vec3 reflect(const Vec3& source, const Vec3& centre)
 inline Vec3 reflect(const Vec3& source, const Normal& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
+    if(!centre.is_normalized())
+        Console.warning(MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = source.dot(centre);
     return Vec3(source.x - ((2 * dot) * centre.x),
@@ -1168,7 +1170,8 @@ inline Vec3 reflect(const Vec3& source, const Normal& centre)
 inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
+    if(!interface.is_normalized())
+        Console.warning(MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = dot(source,interface); //cos incident
     const float sin2i = max(0.f,(1.f-cosi*cosi));
@@ -1208,7 +1211,8 @@ inline Vec3 refract(const Vec3& source, const Vec3& interface, float eta)
 inline Vec3 refract(const Vec3& source, const Normal& interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
+    if(!interface.is_normalized())
+        Console.warning(MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = dot(source,interface); //cos incident
     const float sin2i = max(0.f,(1.f-cosi*cosi));

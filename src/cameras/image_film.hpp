@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit  4 Apr 2018
+//Last Edit  8 Apr 2018
 
 /**
  *  \file image_film.hpp
  *  \brief     Buffer storing and saving an image
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      4 Apr 2018
+ *  \date      8 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,7 @@
 
 #include "samplers/filter.hpp"
 #include "samplers/sampler.hpp"
+#include "utility/file.hpp"
 #include "utility/color.hpp"
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
@@ -209,10 +210,10 @@ private:
     //the buffer of the image
     Pixel* buffer;
 
-    //filename of the image
-    char* filename;
-
-    //extesion of the file, using the defines at the beginning of this .hpp
+    //output image
+    File output;
+    
+    //int used to know which function of ImageIO should be called
     char extension;
 
     //mutex for concurrent write

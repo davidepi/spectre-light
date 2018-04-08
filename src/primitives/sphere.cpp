@@ -43,7 +43,8 @@ AABB Sphere::compute_AABB(const Matrix4* transform)const
 bool Sphere::intersect(const Ray* r,float* distance, HitPoint* hit)const
 {
 #ifdef DEBUG
-    Console.severe(*distance<SELF_INTERSECT_ERROR,"Intersection distance < 0");
+   if(*distance<SELF_INTERSECT_ERROR)
+       Console.severe("Intersection distance < 0");
 #endif
     const Vec3 tmp(r->origin.x,r->origin.y,r->origin.z);
     float a = r->direction.dot(r->direction);

@@ -4,66 +4,44 @@
 #include "image_film.hpp"
 
 ImageFilm::ImageFilm(int width, int height, const char* fullpath)
-:width(width), height(height)
+:width(width), height(height), output(fullpath)
 {
+    ImageFilm::filter = NULL;
     //allocate image
     ImageFilm::buffer = (Pixel*)malloc(sizeof(Pixel)*width*height);
     //set as zero, I need to have number of samples = 0 for every pixel
     memset(ImageFilm::buffer, 0, sizeof(Pixel)*width*height);
-    ImageFilm::filter = NULL;
-    ImageFilm::filename = NULL;
-    
-    //check if folder is writable
-    const char* file = strrchr(fullpath,PATH_SEPARATOR);
-    char* folder;
-    if(file!=NULL) //the path references another folder
+    if(output.exists() && output.is_folder())
     {
-        int last_separator=(int)(file-fullpath)+1;
-        folder = (char*) malloc(sizeof(char)*(last_separator+1));
-        memcpy(folder, fullpath, sizeof(char)*last_separator);
-        folder[last_separator] = '\0';
+        Console.critical(MESSAGE_OUTPUT_ISFOLDER);
+        return; // <- bail out in tests since critical msg does not kill program
     }
-    else //current folder
+    File parent_folder = output.get_parent();
+    if(parent_folder.writable())
     {
-        folder= (char*)malloc(sizeof(char)*3);
-        folder[0] = '.';
-        folder[1] = '/';
-        folder[2] = '\0';
-    }
-    
-#ifdef WIN32
-    if(_access(folder,2)==-1)
-#else
-        if(access(folder,W_OK)!=0)
-#endif
+        //check extension, add .ppm if not supported
+        ImageFilm::extension = image_supported(output.extension());
+        int path_len = (int)strlen(fullpath)+1;
+        //to add the .ppm at the end, if necessary
+        if(ImageFilm::extension<0)
         {
-            char* err=(char*)malloc(sizeof(char)*(strlen(MESSAGE_W_DENIED)
-                                                  +strlen(folder)+1));
-            sprintf(err,MESSAGE_W_DENIED,folder);
-            Console.critical(err);
-            free(err);
-            return; //bail out during tests
+            char* tmp_buf = (char*)malloc(sizeof(char)*path_len+1);
+            strcpy(tmp_buf,fullpath);
+            strcat(tmp_buf,".ppm");
+            output = File(tmp_buf);
+            Console.warning(MESSAGE_IM_OUT,output.absolute_path());
+            ImageFilm::extension = IMAGE_PPM;
+            free(tmp_buf);
+            //check again the folder, since the extension changed it
+            if(output.exists() && output.is_folder())
+            {
+                Console.critical((const char*)MESSAGE_W_DENIED,parent_folder.absolute_path());
+                return; //bail out during tests
+            }
         }
-    
-    //check extension, add .ppm if not supported
-    ImageFilm::extension = image_supported(fullpath);
-    int path_len = (int)strlen(fullpath)+1;
-    //to add the .ppm at the end, if necessary
-    if(ImageFilm::extension<0)
-        path_len+=4;
-    ImageFilm::filename = (char*)malloc(sizeof(char)*path_len);
-    memcpy(ImageFilm::filename,fullpath,sizeof(char)*path_len);
-    if(ImageFilm::extension<0)
-    {
-        path_len-=5; //point to the \0 of the string
-        filename[path_len] = '.';    //add the new extension
-        filename[path_len+1] = 'p';
-        filename[path_len+2] = 'p';
-        filename[path_len+3] = 'm';
-        filename[path_len+4] = '\0';
-        ImageFilm::extension = IMAGE_PPM;
     }
-    free(folder);
+    else
+        Console.critical(MESSAGE_W_DENIED,parent_folder.absolute_path());
 }
 
 ImageFilm::~ImageFilm()
@@ -196,17 +174,17 @@ bool ImageFilm::save_image()
     {
         case IMAGE_BMP:
         {
-            retval=save_bmp(filename, width, height, rgb_buffer);
+            retval=save_bmp(output.absolute_path(), width, height, rgb_buffer);
             break;
         }
         case IMAGE_RGB:
         {
-            retval=save_RGB(filename, width, height, rgb_buffer);
+            retval=save_RGB(output.absolute_path(), width, height, rgb_buffer);
             break;
         }
         case IMAGE_PPM:
         default:
-            retval=save_ppm(filename, width, height, rgb_buffer);
+            retval=save_ppm(output.absolute_path(), width, height, rgb_buffer);
     }
     free(rgb_buffer);
     return retval;

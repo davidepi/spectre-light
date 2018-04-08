@@ -14,8 +14,10 @@ Vec3::Vec3()
 Vec3::Vec3(float xyz)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(xyz), MESSAGE_NAN("Vec3"));
-    Console.severe(std::isinf(xyz), MESSAGE_INFINITY("Vec3"));
+    if(std::isnan(xyz))
+        Console.severe(MESSAGE_NAN("Vec3"));
+    if(std::isinf(xyz))
+        Console.severe(MESSAGE_INFINITY("Vec3"));
 #endif
     Vec3::x = xyz;
     Vec3::y = xyz;
@@ -25,10 +27,10 @@ Vec3::Vec3(float xyz)
 Vec3::Vec3(float x,float y,float z)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(x) || std::isnan(y) || std::isnan(z),
-                   MESSAGE_NAN("Vec3"));
-    Console.severe(std::isinf(x) || std::isinf(y) || std::isinf(z),
-                   MESSAGE_INFINITY("Vec3"));
+    if(std::isnan(x) || std::isnan(y) || std::isnan(z))
+        Console.severe(MESSAGE_NAN("Vec3"));
+    if(std::isinf(x) || std::isinf(y) || std::isinf(z))
+        Console.severe(MESSAGE_INFINITY("Vec3"));
 #endif
     Vec3::x = x;
     Vec3::y = y;
@@ -38,10 +40,10 @@ Vec3::Vec3(float x,float y,float z)
 Vec3::Vec3(Vec2 xy,float z)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z),
-                   MESSAGE_NAN("Vec3"));
-    Console.severe(std::isinf(xy.x) || std::isinf(xy.y) || std::isinf(z),
-                   MESSAGE_INFINITY("Vec3"));
+    if(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z))
+        Console.severe(MESSAGE_NAN("Vec3"));
+    if(std::isinf(xy.x) || std::isinf(xy.y) || std::isinf(z))
+        Console.severe(MESSAGE_INFINITY("Vec3"));
 #endif
     Vec3::x = xy.x;
     Vec3::y = xy.y;
@@ -53,12 +55,10 @@ Vec3::Vec3(const float* xyz)
 #ifdef DEBUG
     if(xyz!=NULL)
     {
-        Console.severe(std::isnan(xyz[0]) || std::isnan(xyz[1])
-                       || std::isnan(xyz[2]),
-                       MESSAGE_NAN("Vec3"));
-        Console.severe(std::isinf(xyz[0]) || std::isinf(xyz[1])
-                       || std::isinf(xyz[2]),
-                       MESSAGE_INFINITY("Vec3"));
+        if(std::isnan(xyz[0]) || std::isnan(xyz[1]) || std::isnan(xyz[2]))
+            Console.severe(MESSAGE_NAN("Vec3"));
+        if(std::isinf(xyz[0]) || std::isinf(xyz[1]) || std::isinf(xyz[2]))
+            Console.severe(MESSAGE_INFINITY("Vec3"));
 #endif
         Vec3::x = xyz[0];
         Vec3::y = xyz[1];
@@ -78,10 +78,10 @@ Vec3::Vec3(const float* xyz)
 Vec3::Vec3(Normal n)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(n.x) || std::isnan(n.y) || std::isnan(n.z),
-                   MESSAGE_NAN("Vec3"));
-    Console.severe(std::isinf(n.x) || std::isinf(n.y) || std::isinf(n.z),
-                   MESSAGE_INFINITY("Vec3"));
+    if(std::isnan(n.x) || std::isnan(n.y) || std::isnan(n.z))
+        Console.severe(MESSAGE_NAN("Vec3"));
+    if(std::isinf(n.x) || std::isinf(n.y) || std::isinf(n.z))
+        Console.severe(MESSAGE_INFINITY("Vec3"));
 #endif
     Vec3::x = n.x;
     Vec3::y = n.y;
@@ -263,7 +263,8 @@ void Vec3::min(const Vec3& vector2)
 void Vec3::reflect(const Vec3& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.is_normalized(),MESSAGE_REFLECT_NONORMALIZED);
+    if(!centre.is_normalized())
+        Console.warning(MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
     Vec3::x -= ((2 * dot) * centre.x);
@@ -274,7 +275,8 @@ void Vec3::reflect(const Vec3& centre)
 void Vec3::reflect(const Normal& centre)
 {
 #ifdef DEBUG
-    Console.warning(!centre.is_normalized(), MESSAGE_REFLECT_NONORMALIZED);
+    if(!centre.is_normalized())
+        Console.warning(MESSAGE_REFLECT_NONORMALIZED);
 #endif
     float dot = Vec3::dot(centre);
     Vec3::x -= ((2 * dot) * centre.x);
@@ -285,7 +287,8 @@ void Vec3::reflect(const Normal& centre)
 bool Vec3::refract(const Vec3 &interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
+    if(!interface.is_normalized())
+        Console.warning(MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
     const float sin2i = ::max(0.f,(1.f-cosi*cosi));
@@ -306,7 +309,8 @@ bool Vec3::refract(const Vec3 &interface, float eta)
 bool Vec3::refract(const Normal &interface, float eta)
 {
 #ifdef DEBUG
-    Console.warning(!interface.is_normalized(),MESSAGE_REFRACT_NONORMALIZED);
+    if(!interface.is_normalized())
+        Console.warning(MESSAGE_REFRACT_NONORMALIZED);
 #endif
     const float cosi = Vec3::dot(interface); //cos incident
     const float sin2i = ::max(0.f,(1.f-cosi*cosi));
@@ -496,8 +500,10 @@ Normal::Normal()
 Normal::Normal(float xyz)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(xyz), MESSAGE_NAN("Normal"));
-    Console.severe(std::isinf(xyz), MESSAGE_INFINITY("Normal"));
+    if(std::isnan(xyz))
+        Console.severe(MESSAGE_NAN("Normal"));
+    if(std::isinf(xyz))
+        Console.severe(MESSAGE_INFINITY("Normal"));
 #endif
     Normal::x = xyz;
     Normal::y = xyz;
@@ -507,10 +513,10 @@ Normal::Normal(float xyz)
 Normal::Normal(float x,float y,float z)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(x) || std::isnan(y) || std::isnan(z),
-                   MESSAGE_NAN("Normal"));
-    Console.severe(std::isinf(x) || std::isinf(y) || std::isinf(z),
-                   MESSAGE_INFINITY("Normal"));
+    if(std::isnan(x) || std::isnan(y) || std::isnan(z))
+        Console.severe(MESSAGE_NAN("Normal"));
+    if(std::isinf(x) || std::isinf(y) || std::isinf(z))
+        Console.severe(MESSAGE_INFINITY("Normal"));
 #endif
     Normal::x = x;
     Normal::y = y;
@@ -520,10 +526,10 @@ Normal::Normal(float x,float y,float z)
 Normal::Normal(Vec2 xy,float z)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z),
-                   MESSAGE_NAN("Normal"));
-    Console.severe(std::isinf(xy.x) || std::isinf(xy.y) || std::isinf(z),
-                   MESSAGE_INFINITY("Normal"));
+    if(std::isnan(xy.x) || std::isnan(xy.y) || std::isnan(z))
+        Console.severe(MESSAGE_NAN("Normal"));
+    if(std::isinf(xy.x) || std::isinf(xy.y) || std::isinf(z))
+        Console.severe(MESSAGE_INFINITY("Normal"));
 #endif
     Normal::x = xy.x;
     Normal::y = xy.y;
@@ -535,12 +541,9 @@ Normal::Normal(const float* xyz)
 #ifdef DEBUG
     if(xyz != NULL)
     {
-        Console.severe(std::isnan(xyz[0]) || std::isnan(xyz[1]) ||
-                       std::isnan(xyz[2]),
-                       MESSAGE_NAN("Normal"));
-        Console.severe(std::isinf(xyz[0]) || std::isinf(xyz[1]) ||
-                       std::isinf(xyz[2]),
-                       MESSAGE_INFINITY("Normal"));
+        if(std::isnan(xyz[0]) || std::isnan(xyz[1]) || std::isnan(xyz[2]))
+            Console.severe(MESSAGE_NAN("Normal"));
+        if(std::isinf(xyz[0]) || std::isinf(xyz[1]) || std::isinf(xyz[2]))  Console.severe(MESSAGE_INFINITY("Normal"));
 #endif
         Normal::x = xyz[0];
         Normal::y = xyz[1];
@@ -560,10 +563,10 @@ Normal::Normal(const float* xyz)
 Normal::Normal(const Vec3 v)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(v.x) || std::isnan(v.y) || std::isnan(v.z),
-                   MESSAGE_NAN("Normal"));
-    Console.severe(std::isinf(v.x) || std::isinf(v.y) || std::isinf(v.z),
-                   MESSAGE_INFINITY("Normal"));
+    if(std::isnan(v.x) || std::isnan(v.y) || std::isnan(v.z))
+        Console.severe(MESSAGE_NAN("Normal"));
+    if(std::isinf(v.x) || std::isinf(v.y) || std::isinf(v.z))
+        Console.severe(MESSAGE_INFINITY("Normal"));
 #endif
     Normal::x = v.x;
     Normal::y = v.y;

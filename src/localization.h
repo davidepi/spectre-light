@@ -65,6 +65,8 @@
 
 #define MESSAGE_NUMTHREADS "Using %d rendering threads"
 
+#define MESSAGE_OUTPUT_ISFOLDER "Output file %s exists and is a folder"
+
 #define MESSAGE_W_DENIED "The folder \"%s\" is not writable or does not exists"
 
 #define MESSAGE_W_DENIED_RC "The output file was writable at startup, but now "\
@@ -100,7 +102,7 @@
 #define MESSAGE_IM_UNSUPPORTED "Output file format is not supported, the "\
 "result will be a NetPBM image"
 
-#define MESSAGE_IM_OUT "ImageMagick not found, output will be in NetPBM format"
+#define MESSAGE_IM_OUT "ImageMagick not found, output will be in NetPBM format. The image will be saved as %s"
 
 #define MESSAGE_IM_CHANN "Unsupported number of channels in file %s"
 

@@ -1,4 +1,8 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "file.hpp"
+
 const char File::PATH_SEPARATOR = '/';
 const char* File::PATH_SEPARATOR_STRING = "/";
 const char* File::CURRENT_DIR = realpath(".", NULL);
@@ -210,7 +214,7 @@ File File::get_parent()const
             //if not root, point to the filename
             if(i!=max_decrement)
                 retval.file+=i+1;
-            else
+            //else
                 /* do nothing, already catched in the max_decrement==-1 */;
         }
     }

@@ -486,31 +486,29 @@ int read_RGB(const char* name, float* data, uint8_t* alpha)
 #endif
 }
 
-int image_supported(const char* fullpath)
+char image_supported(const char* extension)
 {
-    const char* extension = strrchr(fullpath,'.');
-    int retval;
     //pos less than 4 chr expected for an extension
-    if(extension==NULL || strlen(extension)<4)
+    if(extension==NULL || strcmp(extension,"")==0)
     {
         return IMAGE_NOT_SUPPORTED; //missing extension, avoid checking magic numbers
     }
     else
     {
-        switch(extension[1])
+        switch(extension[0])
         {
             case 'p':
-                if(strcmp(".ppm",extension)==0)
+                if(strcmp("ppm",extension)==0)
                     return IMAGE_PPM;
             case 'b':
-                if(strcmp(".bmp",extension)==0)
+                if(strcmp("bmp",extension)==0)
                     return IMAGE_BMP;
             default:
             {
 #ifdef IMAGEMAGICK
                 try
                 {
-                    Magick::CoderInfo info(extension+1);
+                    Magick::CoderInfo info(extension);
                     if(info.isWritable() && info.isReadable())
                         return IMAGE_RGB;
                     else

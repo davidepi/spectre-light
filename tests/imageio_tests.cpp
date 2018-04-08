@@ -564,3 +564,33 @@ TEST(ImageIO,read_rgb)
 #endif
 }
 
+TEST(ImageIO,image_supported)
+{
+    char res;
+    //null pointer
+    res = image_supported(NULL);
+    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    //empty extension
+    res = image_supported("");
+    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    //ppm
+    res = image_supported("ppm");
+    EXPECT_EQ(res, IMAGE_PPM);
+    //not ppm but letter p
+    res = image_supported("png");
+    EXPECT_EQ(res, IMAGE_RGB);
+    //bmp
+    res = image_supported("bmp");
+    EXPECT_EQ(res, IMAGE_BMP);
+    //not bmp but letter b
+    //bmp
+    res = image_supported("blob");
+    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    //jpg
+    res = image_supported("jpg");
+    EXPECT_EQ(res, IMAGE_RGB);
+    //totally random extension
+    res = image_supported("ok");
+    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+}
+

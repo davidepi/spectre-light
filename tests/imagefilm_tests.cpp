@@ -15,7 +15,10 @@ TEST(ImageFilm,constructor)
     errors_count[CRITICAL_INDEX] = 0;
 
     //another folder, writable, extension not ok
+    errors_count[WARNING_INDEX] = 0;
     ImageFilm img2(2,2,"./file.ok");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
     FilterBox filter;
     img2.set_filter(&filter);
     EXPECT_TRUE(img2.save_image());
@@ -30,35 +33,60 @@ TEST(ImageFilm,constructor)
     unlink("file.ppm");
 
     //another folder, no name provided
-    //TODO: readd this after completing File utility
-//    errors_count[WARNING_INDEX] = 0;
-//    ImageFilm img4(2,2,"./");
-//    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-//    errors_count[WARNING_INDEX] = 0;
-//    img4.set_filter(&filter);
-//    EXPECT_TRUE(img4.save_image());
-//    EXPECT_EQ(access("./.ppm",F_OK),0);
-//    unlink("./.ppm");
+    errors_count[CRITICAL_INDEX] = 0;
+    ImageFilm img4(2,2,"./");
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
+
+    //after adding automatic extension, a folder is referenced
+    File folder("folder.ppm");
+    bool res = folder.mkdir();
+    EXPECT_TRUE(res);
+    errors_count[CRITICAL_INDEX] = 0;
+    ImageFilm img5(2,2,"folder");
+    EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
+    errors_count[CRITICAL_INDEX] = 0;
+    rmdir(folder.absolute_path());
 
     //almost similar extensions
     errors_count[WARNING_INDEX] = 0;
-    ImageFilm img5(2,2,"out.pph");
-    EXPECT_TRUE(img5.save_image());
+    ImageFilm img6(2,2,"out.pph");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(img6.save_image());
     EXPECT_EQ(access("out.pph.ppm",F_OK),0);
     unlink("out.pph.ppm");
 
     //bmp extension
-    ImageFilm img6(2,2,"out.bmp");
-    EXPECT_TRUE(img6.save_image());
+    ImageFilm img7(2,2,"out.bmp");
+    EXPECT_TRUE(img7.save_image());
     EXPECT_EQ(access("out.bmp",F_OK),0);
     unlink("out.bmp");
 
     //bmp similar extension
     errors_count[WARNING_INDEX] = 0;
-    ImageFilm img7(2,2,"out.bmm");
-    EXPECT_TRUE(img7.save_image());
+    ImageFilm img8(2,2,"out.bmm");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(img8.save_image());
     EXPECT_EQ(access("out.bmm.ppm",F_OK),0);
     unlink("out.bmm.ppm");
+
+    //jpg correctly saved
+#ifdef IMAGEMAGICK
+    ImageFilm img9(2,2,"out.jpg");
+    EXPECT_TRUE(img9.save_image());
+    EXPECT_EQ(access("out.jpg",F_OK),0);
+    unlink("out.jpg");
+#else
+    errors_count[WARNING_INDEX] = 0;
+    ImageFilm img9(2,2,"out.jpg");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(img9.save_image());
+    EXPECT_EQ(access("out.jpg.ppm",F_OK),0);
+    unlink("out.jpg.ppm");
+#endif
 }
 
 TEST(ImageFilm,add_pixel)

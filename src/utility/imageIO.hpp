@@ -204,9 +204,9 @@ int read_RGB(const char* name, float* data, uint8_t* alpha);
  *  positive number indicating the type of image. The various types can be found
  *  as defines at the beginning of this file
  *
- *  \param[in] The path to the image
+ *  \param[in] extension The extension of the image
  *  \retun A positive number if the image is supported, a negative one otherwise
  */
-int image_supported(const char* fullpath);
+char image_supported(const char* extension);
 
 #endif

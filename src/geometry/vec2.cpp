@@ -13,8 +13,10 @@ Vec2::Vec2()
 Vec2::Vec2(float xy)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(xy), MESSAGE_NAN("Vec2"));
-    Console.severe(std::isinf(xy), MESSAGE_INFINITY("Vec2"));
+    if(std::isnan(xy))
+        Console.severe(MESSAGE_NAN("Vec2"));
+    if(std::isinf(xy))
+        Console.severe(MESSAGE_INFINITY("Vec2"));
 #endif
     Vec2::x = xy;
     Vec2::y = xy;
@@ -23,8 +25,10 @@ Vec2::Vec2(float xy)
 Vec2::Vec2(float x, float y)
 {
 #ifdef DEBUG
-    Console.severe(std::isnan(x) || std::isnan(y), MESSAGE_NAN("Vec2"));
-    Console.severe(std::isinf(x) || std::isinf(y), MESSAGE_INFINITY("Vec2"));
+    if(std::isnan(x) || std::isnan(y))
+        Console.severe(MESSAGE_NAN("Vec2"));
+    if(std::isinf(x) || std::isinf(y))
+        Console.severe(MESSAGE_INFINITY("Vec2"));
 #endif
     Vec2::x = x;
     Vec2::y = y;
@@ -35,10 +39,10 @@ Vec2::Vec2(const float* xy)
 #ifdef DEBUG
     if(xy != NULL)
     {
-        Console.severe(std::isnan(xy[0]) || std::isnan(xy[1]),
-                       MESSAGE_NAN("Vec2"));
-        Console.severe(std::isinf(xy[0]) || std::isinf(xy[1]),
-                       MESSAGE_INFINITY("Vec2"));
+        if(std::isnan(xy[0]) || std::isnan(xy[1]))
+            Console.severe(MESSAGE_NAN("Vec2"));
+        if(std::isinf(xy[0]) || std::isinf(xy[1]))
+            Console.severe(MESSAGE_INFINITY("Vec2"));
 #endif
         Vec2::x = xy[0];
         Vec2::y = xy[1];
