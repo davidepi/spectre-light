@@ -52,12 +52,6 @@
 #define DEPRECATED __attribute__((deprecated))
 #endif
 
-#ifdef WIN32
-#define PATH_SEPARATOR '\\'
-#else
-#define PATH_SEPARATOR '/'
-#endif
-
 #define UNUSED(X) (void)X
 
 #endif

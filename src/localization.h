@@ -122,6 +122,8 @@
 
 #define MESSAGE_INPUT_ERROR "Unable to open file %s: %s"
 
+#define MESSAGE_TEXTURE_ERROR "Unable to load texture file %s"
+
 #endif
 
 /**

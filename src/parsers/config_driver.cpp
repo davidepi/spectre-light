@@ -158,8 +158,52 @@ void ConfigDriver::build_camera()
     }
 }
 
-void ConfigDriver::load_texture(std::string& src)
+static void load_texture_rec(File& src)
 {
-    printf("%s - %s\n",tex_name.c_str(),src.c_str());
-    tex_name = ""; //reset name for next texture
+    if(src.exists() && src.readable())
+    {
+        if(src.is_folder()) //recursive call if folder
+        {
+            std::vector<File> res;
+            current_file.ls(&res);
+            for(int i=0;i<res.size();i++)
+                load_texture_rec(res.at(i));
+        }
+        else
+        {
+            if(image_supported(src.extension())>=0) //check extension
+            {
+                printf("load texture %s\n",src.filename());
+                //TODO: placeholder because the texture class is not ready
+                //TOOD: check texture not already loaded
+                Texture* addme = new UniformTexture(SPECTRUM_WHITE);
+                TexLib.add_inherit(tex_name, addme);
+            }
+            else
+                /* silently skip unsupported texture */;
+        }
+    }
+}
+
+void ConfigDriver::load_texture_folder(std::string& src)
+{
+    File current_file(src.c_str());
+    load_texture_rec(current_file);
+}
+
+void ConfigDriver::load_texture_single(std::string& src)
+{
+    File current_file(src.c_str());
+    if(src.exists() && src.readable() && !src.is_folder() &&
+       image_supported(src.extension())>=0))
+    {
+        printf("load texture %s\n",src.filename());
+        //TODO: placeholder because the texture class is not ready
+        //TOOD: check texture not already loaded
+        Texture* addme = new UniformTexture(SPECTRUM_WHITE);
+        TexLib.add_inherit(tex_name, addme);
+        tex_name = ""; //reset name for next texture
+    }
+    else
+        Console.warning(MESSAGE_TEXTURE_ERROR,current_file.absolute_path());
 }

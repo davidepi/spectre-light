@@ -6,6 +6,8 @@
 #include <string>
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
+#include "utility/file.hpp"
+#include "utility/imageIO.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
 #include "cameras/camera_orthographic.hpp"
@@ -64,7 +66,8 @@ public:
     
     //texture
     std::string tex_name;
-    void load_texture(std::string& src);
+    void load_texture_single(std::string& src);
+    void load_texture_folder(std::string& src);
     
     void error(const yy::location& l, const std::string& m);
     void error(const std::string& m);

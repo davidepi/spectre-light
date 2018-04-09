@@ -81,7 +81,7 @@ File::File(const char* path)
                     {
                         relative_index+=3;
                         //avoid out of bounds if too many ../../../
-                        if(absolute_index==0)
+                        if(absolute_index<=1)
                             continue;
                         absolute_index-=2;
                         while(absolute_index-->0 &&

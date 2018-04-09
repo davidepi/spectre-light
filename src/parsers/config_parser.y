@@ -107,7 +107,7 @@ file
 ;
 
 stmt
-: OUTPUT COLON STRING {driver.output = $3;}
+: OUTPUT COLON STRING {driver.output = $3.substr(1,$3.size()-1);}
 | RESOLUTION COLON OPEN_CU resolution_obj CLOSE_CU
 | FILTER COLON OPEN_CU filter_obj CLOSE_CU {driver.build_filter();}
 | SAMPLER  COLON RANDOM {driver.sampler_type = SPECTRE_SAMPLER_RANDOM;}
@@ -118,7 +118,7 @@ stmt
 | SHAPE COLON STRING
 | WORLD COLON OPEN_CU world_obj CLOSE_CU
 | LIGHT COLON OPEN_CU light_obj CLOSE_CU
-| TEXTURE COLON STRING
+| TEXTURE COLON STRING {driver.load_texture_folder($3);}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU
 | COMMA
@@ -171,9 +171,9 @@ light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt;
 light_stmt: TEMPERATURE COLON UINT | COLOR COLON vector;
 
 texture_obj /* name is already known at this point */
-: SRC COLON STRING texture_rec {driver.load_texture($3);}
-| texture_rec SRC COLON STRING {driver.load_texture($4);}
-| SRC COLON STRING {driver.load_texture($3);} //no comma nor name
+: SRC COLON STRING texture_rec {driver.load_texture_single($3);}
+| texture_rec SRC COLON STRING {driver.load_texture_single($4);}
+| SRC COLON STRING {driver.load_texture_single($3);} //no comma nor name
 ;
 
 texture_rec:texture_rec texture_stmt|texture_stmt;
