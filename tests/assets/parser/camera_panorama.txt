@@ -1,0 +1,1 @@
+camera:{type:panorama,position:[6,5,4],target:[3,2,1],up:[0,0,1]}

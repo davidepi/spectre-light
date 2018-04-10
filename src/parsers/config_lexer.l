@@ -96,8 +96,8 @@ ggx { UPDATE_POS; return yy::ConfigParser::make_GGX(loc); }
 {float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
 {string} { UPDATE_POS; return yy::ConfigParser::make_STRING(yytext,loc); }
 [ \t\r]            {UPDATE_POS; loc.step();}
-[\n]               {UPDATE_POS; loc.lines(yyleng);loc.step(); last_line_pos=current_pos; }
-.                  {/* UPDATE_POS; return error */}
+[\n]     {UPDATE_POS; loc.lines(yyleng);loc.step(); last_line_pos=current_pos; }
+.        {UPDATE_POS; driver.unknown_char(loc,yytext[0]);}
 <<EOF>>            { UPDATE_POS; return yy::ConfigParser::make_END(loc); }
 
 %%

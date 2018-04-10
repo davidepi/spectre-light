@@ -151,7 +151,7 @@ camera_stmt
 | POSITION COLON vector {driver.camera_pos = Point3($3.x,$3.y,$3.z);}
 | TARGET COLON vector {driver.camera_tar = Point3($3.x,$3.y,$3.z);}
 | UP COLON vector {driver.camera_up = $3;}
-| FOV COLON FLOAT {driver.fov = $3;}
+| FOV COLON number {driver.fov = $3;}
 | COMMA
 ;
 

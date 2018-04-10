@@ -122,3 +122,104 @@ TEST(Parser,spp)
     delete r4;
 }
 
+TEST(Parser,filter)
+{
+    //unset
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt");
+    EXPECT_EQ(driver0.value0, 0.33f);
+    EXPECT_EQ(driver0.value1, 0.33f);
+    delete r0;
+    //box
+    ConfigDriver driver1;
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/filter_box.txt");
+    EXPECT_EQ(driver1.filter_type, SPECTRE_FILTER_BOX);
+    delete r1;
+    //tent
+    ConfigDriver driver2;
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/filter_tent.txt");
+    EXPECT_EQ(driver2.filter_type, SPECTRE_FILTER_TENT);
+    delete r2;
+    //gaussian
+    ConfigDriver driver3;
+    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/filter_gaussian_set.txt");
+    EXPECT_EQ(driver3.filter_type, SPECTRE_FILTER_GAUSS);
+    EXPECT_EQ(driver3.value0, 2.5f);
+    delete r3;
+    //mitchell
+    ConfigDriver driver4;
+    Renderer* r4 = driver4.parse(TEST_ASSETS "parser/filter_mitchell_set.txt");
+    EXPECT_EQ(driver4.filter_type, SPECTRE_FILTER_MITCHELL);
+    EXPECT_EQ(driver4.value0, 3.f);
+    EXPECT_EQ(driver4.value1, 0.f);
+    delete r4;
+    //lanczos
+    ConfigDriver driver5;
+    Renderer* r5 = driver5.parse(TEST_ASSETS "parser/filter_lanczos_set.txt");
+    EXPECT_EQ(driver5.filter_type, SPECTRE_FILTER_LANCZOS);
+    EXPECT_EQ(driver5.value0, 2.f);
+    delete r5;
+}
+
+TEST(Parser,camera)
+{
+    //unset
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt");
+    EXPECT_EQ(driver0.camera_pos.x,0);
+    EXPECT_EQ(driver0.camera_pos.y,0);
+    EXPECT_EQ(driver0.camera_pos.z,0);
+    EXPECT_EQ(driver0.camera_tar.x,0);
+    EXPECT_EQ(driver0.camera_tar.y,0);
+    EXPECT_EQ(driver0.camera_tar.z,1);
+    EXPECT_EQ(driver0.camera_up.x,0);
+    EXPECT_EQ(driver0.camera_up.y,1);
+    EXPECT_EQ(driver0.camera_up.z,0);
+    EXPECT_EQ(driver0.camera_type, SPECTRE_CAMERA_PERSPECTIVE);
+    EXPECT_EQ(driver0.fov,55.f);
+    delete r0;
+    //orthographic
+    ConfigDriver driver1;
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/camera_orthographic.txt");
+    EXPECT_EQ(driver1.camera_pos.x,1);
+    EXPECT_EQ(driver1.camera_pos.y,0);
+    EXPECT_EQ(driver1.camera_pos.z,0);
+    EXPECT_EQ(driver1.camera_tar.x,0);
+    EXPECT_EQ(driver1.camera_tar.y,0);
+    EXPECT_EQ(driver1.camera_tar.z,-1);
+    EXPECT_EQ(driver1.camera_up.x,-1);
+    EXPECT_EQ(driver1.camera_up.y,0);
+    EXPECT_EQ(driver1.camera_up.z,0);
+    EXPECT_EQ(driver1.camera_type, SPECTRE_CAMERA_ORTHOGRAPHIC);
+    delete r1;
+    //perspective
+    ConfigDriver driver2;
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/camera_perspective.txt");
+    EXPECT_EQ(driver2.camera_pos.x,1);
+    EXPECT_EQ(driver2.camera_pos.y,2);
+    EXPECT_EQ(driver2.camera_pos.z,3);
+    EXPECT_EQ(driver2.camera_tar.x,4);
+    EXPECT_EQ(driver2.camera_tar.y,5);
+    EXPECT_EQ(driver2.camera_tar.z,6);
+    EXPECT_EQ(driver2.camera_up.x,0);
+    EXPECT_EQ(driver2.camera_up.y,0);
+    EXPECT_EQ(driver2.camera_up.z,1);
+    EXPECT_EQ(driver2.camera_type, SPECTRE_CAMERA_PERSPECTIVE);
+    EXPECT_EQ(driver2.fov, 90);
+    delete r2;
+    //panorama
+    ConfigDriver driver3;
+    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/camera_panorama.txt");
+    EXPECT_EQ(driver3.camera_pos.x,6);
+    EXPECT_EQ(driver3.camera_pos.y,5);
+    EXPECT_EQ(driver3.camera_pos.z,4);
+    EXPECT_EQ(driver3.camera_tar.x,3);
+    EXPECT_EQ(driver3.camera_tar.y,2);
+    EXPECT_EQ(driver3.camera_tar.z,1);
+    EXPECT_EQ(driver3.camera_up.x,0);
+    EXPECT_EQ(driver3.camera_up.y,0);
+    EXPECT_EQ(driver3.camera_up.z,1);
+    EXPECT_EQ(driver3.camera_type, SPECTRE_CAMERA_PANORAMA);
+    delete r3;
+}
+

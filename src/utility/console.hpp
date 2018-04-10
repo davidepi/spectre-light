@@ -19,9 +19,10 @@
 #include <cstdlib> //exit
 #include <string> //std::wstring, std::string
 #include <iostream> //std::wcout, std::cout
+#include <cstdarg> //va_start, va_end
 
 ///Version of the software
-#define SPECTRE_VERSION "0.1.1"
+#define SPECTRE_VERSION "0.1.1 (dev)"
 
 ///Release date of this version
 #define SPECTRE_RELEASE "Jan 25 2018"

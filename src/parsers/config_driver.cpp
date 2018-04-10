@@ -104,9 +104,13 @@ void ConfigDriver::error(const yy::location& l, const std::string& m)
     }
 }
 
-void ConfigDriver::error(const std::string& m)
+void ConfigDriver::unknown_char(const yy::location& l, char c)
 {
-    Console.critical(m.c_str());
+    //MESSAGE_SYNTAX_ERROR constains a %c that is substituted by a sinlge char
+    //gaining 1 space for the \0. Hence the missing +1 in the array alloc.
+    char errormsg[sizeof(MESSAGE_SYNTAX_ERROR)]; //constexpr strlen()
+    sprintf(errormsg,MESSAGE_SYNTAX_ERROR,c);
+    error(l,std::string(errormsg));
 }
 
 void ConfigDriver::build_filter()

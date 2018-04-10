@@ -70,7 +70,7 @@ public:
     void load_texture_folder(std::string& src);
     
     void error(const yy::location& l, const std::string& m);
-    void error(const std::string& m);
+    void unknown_char(const yy::location& l, char c);
     
 private:
     void scan_begin();

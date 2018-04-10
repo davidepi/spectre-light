@@ -124,6 +124,8 @@
 
 #define MESSAGE_TEXTURE_ERROR "Unable to load texture file %s"
 
+#define MESSAGE_SYNTAX_ERROR "Syntax error: Unexpected character %c"
+
 #endif
 
 /**

@@ -1259,7 +1259,7 @@ YY_RULE_SETUP
 case 65:
 YY_RULE_SETUP
 #line 100 "config_lexer.l"
-{/* UPDATE_POS; return error */}
+{UPDATE_POS; driver.unknown_char(loc,yytext[0]);}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 101 "config_lexer.l"

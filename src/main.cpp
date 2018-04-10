@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     if(argc < 2)
         Console.critical("Input should be in the form: executable input_file");
     else
-        parser.parse(argv[1],renderer);
+        renderer = parser.parse(argv[1]);
 //    return renderer->render(new Scene());
     Console.critical("Rendering disabled, checkout master branch");
 }
