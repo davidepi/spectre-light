@@ -1,12 +1,12 @@
 //Created,   4 Apr 2018
-//Last Edit  8 Apr 2018
+//Last Edit 10 Apr 2018
 
 /**
  *  \file file.hpp
  *  \brief Utilities involving the filesystem
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  8 Apr 2018
+ *  \date  10 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -193,10 +193,6 @@ public:
     static const char PATH_SEPARATOR;
     ///The path separator for the current OS, string version
     static const char* PATH_SEPARATOR_STRING;
-    ///The current directory where the code is being executed
-    static const char* CURRENT_DIR;
-    ///The lenghtof the current folder absolute path name. For realpath buffer
-    static const size_t CURRENT_DIR_LEN;
     
 private:
     

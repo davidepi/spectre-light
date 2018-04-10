@@ -3,4 +3,12 @@ texture: {
   src: "correct.bmp"
 }
 
+texture: {
+  src: "../leave_me_here_for_testing.bmp"
+}
+
+texture: {name:"Red",color:[257,-1,-1]}
+texture: {name:"Grey" color:[128,128,128]}
+texture: {color:[0,255,0]}
+
 texture: "../assets"

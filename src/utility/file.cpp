@@ -5,13 +5,6 @@
 
 const char File::PATH_SEPARATOR = '/';
 const char* File::PATH_SEPARATOR_STRING = "/";
-#ifdef TESTS
-const char* File::CURRENT_DIR = TEST_ASSETS;
-const size_t File::CURRENT_DIR_LEN = strlen(TEST_ASSETS);
-#else
-const char* File::CURRENT_DIR = realpath(".", NULL);
-const size_t File::CURRENT_DIR_LEN = strlen(File::CURRENT_DIR);
-#endif
 
 File::File(const char* path)
 {
@@ -39,6 +32,8 @@ File::File(const char* path)
     }
     else //resolve the relative path
     {
+        const char* CURRENT_DIR = realpath(".", NULL);
+        const size_t CURRENT_DIR_LEN = strlen(CURRENT_DIR);
         absolute = (char*)malloc(sizeof(char)*(CURRENT_DIR_LEN+1+pathlen+1));
         strcpy(absolute, CURRENT_DIR);
         int absolute_index = (int)CURRENT_DIR_LEN;
@@ -107,6 +102,7 @@ File::File(const char* path)
         if(absolute[absolute_index-1]==File::PATH_SEPARATOR && absolute_index>1)
             absolute_index--;
         absolute[absolute_index]=0;
+        free((void*)CURRENT_DIR);
     }
     File::statres = stat(absolute, &(File::fileinfo))==0;
     //guaranteed to exists at least the toplevel /

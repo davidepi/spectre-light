@@ -135,7 +135,8 @@ Keys for Texture objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the texture as it will appear in the Texture Library | filename without extension
-src | quoted string | The path to the texture on the disk that will be stored in the Texture Library. To load everything inside a folder do not use this object but directly the `texture:"folder"` at toplevel | Syntax error
+src | quoted string | The path to the texture on the disk that will be stored in the Texture Library. To load everything inside a folder do not use this object but directly the `texture:"folder"` at toplevel. This value is mutually exclusive with `color` | Syntax error
+color | float[3] | The RGB color of the uniform texture, in range [0-255]. This value is mutually exclusive with l `src` | Syntax error
 
 #### Material
 Keys for Material objects

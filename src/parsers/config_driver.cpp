@@ -88,7 +88,7 @@ void ConfigDriver::error(const yy::location& l, const std::string& m)
     {
         char buf[128];
         char under[128];
-        int offset = get_line(buf,128,end_col);
+        int offset = get_line(buf,128);
         for(unsigned int i=0;i<l.begin.column-1-offset;i++)
             under[i] = ' ';
         for(unsigned int i=l.begin.column-1-offset;i<end_col-offset;i++)
@@ -173,7 +173,7 @@ static void load_texture_rec(File& src)
         {
             std::vector<File> res;
             src.ls(&res);
-            for(int i=0;i<res.size();i++)
+            for(int i=0;i<(int)res.size();i++)
                 load_texture_rec(res.at(i));
         }
         else
@@ -198,6 +198,20 @@ void ConfigDriver::load_texture_folder()
     load_texture_rec(current_file);
 }
 
+void ConfigDriver::load_texture_uniform()
+{
+    if(!tex_name.empty())
+    {
+        tex_color.clamp(Vec3(0,0,0), Vec3(255,255,255));
+        ColorRGB rgb((unsigned char)tex_color.x,
+                     (unsigned char)tex_color.y,
+                     (unsigned char)tex_color.z);
+        Spectrum color(rgb,false);
+        TexLib.add_inherit(tex_name, new UniformTexture(color));
+        tex_name.clear();
+    }
+}
+
 void ConfigDriver::load_texture_single()
 {
     File cur_file(tex_src.c_str());
@@ -206,9 +220,11 @@ void ConfigDriver::load_texture_single()
     {
         //TODO: placeholder because the texture class is not ready
         //TOOD: check texture not already loaded
+        if(tex_name.empty())
+            tex_name = cur_file.filename();
         Texture* addme = new UniformTexture(SPECTRUM_WHITE);
         TexLib.add_inherit(tex_name, addme);
-        tex_name = ""; //reset name for next texture
+        tex_name.clear(); //reset name for next texture
     }
     else
         Console.warning(MESSAGE_TEXTURE_ERROR,cur_file.absolute_path());

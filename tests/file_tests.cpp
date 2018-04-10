@@ -7,9 +7,10 @@
 
 TEST(File,absolute_path)
 {
-    char* path = (char*)malloc(sizeof(char)*(File::CURRENT_DIR_LEN+64+1));
+    const char* cur_dir = realpath(".",NULL);
+    char* path = (char*)malloc(sizeof(char)*(strlen(cur_dir)+64+1));
     //normal file appended
-    strcpy(path, File::CURRENT_DIR);
+    strcpy(path, cur_dir);
     strcat(path,"/file.jpg");
     File f0("file.jpg");
     EXPECT_EQ(strcmp(f0.absolute_path(),path), 0);
@@ -29,7 +30,7 @@ TEST(File,absolute_path)
     File f5("../../../../../../../../../../../file.jpg");
     EXPECT_EQ(strcmp(f5.absolute_path(),"/file.jpg"), 0);
     //double slash used
-    strcpy(path, File::CURRENT_DIR);
+    strcpy(path, cur_dir);
     strcat(path,"/folder/file.jpg");
     File f6("folder//file.jpg");
     EXPECT_EQ(strcmp(f6.absolute_path(),path), 0);
@@ -49,11 +50,12 @@ TEST(File,absolute_path)
     EXPECT_EQ(strcmp(f10.absolute_path(),"/"),0);
     //ending with /.
     File f11("./.");
-    EXPECT_EQ(strcmp(f11.absolute_path(),File::CURRENT_DIR),0);
+    EXPECT_EQ(strcmp(f11.absolute_path(),cur_dir),0);
     //ending with /..
     File f12("folder/..");
-    EXPECT_EQ(strcmp(f12.absolute_path(),File::CURRENT_DIR),0);
+    EXPECT_EQ(strcmp(f12.absolute_path(),cur_dir),0);
     free(path);
+    free((void*)cur_dir);
 }
 
 TEST(File,extension)
@@ -114,7 +116,7 @@ TEST(File,exists)
     File f0("nonexistent.jpg");
     EXPECT_FALSE(f0.exists());
     //existent
-    File f1(TEST_ASSETS "/wrong_magic1.ppm");
+    File f1(TEST_ASSETS "wrong_magic1.ppm");
     EXPECT_TRUE(f1.exists());
 }
 
@@ -124,7 +126,7 @@ TEST(File,readable)
     File f0("nonexistent.jpg");
     EXPECT_FALSE(f0.readable());
     //readable
-    File f1(TEST_ASSETS "/wrong_magic1.ppm");
+    File f1(TEST_ASSETS "wrong_magic1.ppm");
     EXPECT_TRUE(f1.readable());
 }
 
@@ -153,7 +155,7 @@ TEST(File,is_folder)
     File f1("non existent");
     EXPECT_FALSE(f1.is_folder());
     //existent but not folder
-    File f2(TEST_ASSETS "/wrong_magic1.ppm");
+    File f2(TEST_ASSETS "wrong_magic1.ppm");
     EXPECT_FALSE(f2.is_folder());
     //existent and folder
     File f3(TEST_ASSETS);
@@ -166,7 +168,7 @@ TEST(File,is_file)
     File f1("non existent");
     EXPECT_FALSE(f1.is_file());
     //existent but not file
-    File f2(TEST_ASSETS "/wrong_magic1.ppm");
+    File f2(TEST_ASSETS "wrong_magic1.ppm");
     EXPECT_TRUE(f2.is_file());
     //existent and file
     File f3(TEST_ASSETS);
@@ -185,7 +187,7 @@ TEST(File,copy_assignment)
 TEST(File,get_parent)
 {
     File f1(TEST_ASSETS);
-    File f2(TEST_ASSETS "/folder");
+    File f2(TEST_ASSETS "folder");
     File f3 = f2.get_parent();
     EXPECT_EQ(strcmp(f3.extension(),f1.extension()),0);
     EXPECT_EQ(strcmp(f3.filename(),f1.filename()),0);
@@ -224,7 +226,7 @@ TEST(File,mkdir)
     res = f1.mkdir();
     EXPECT_FALSE(res);
     //create new folder
-    const char* foldername = TEST_ASSETS "/folder";
+    const char* foldername = TEST_ASSETS "folder";
     File f2(foldername);
     EXPECT_FALSE(f2.exists());
     res = f2.mkdir();
@@ -248,19 +250,19 @@ TEST(File,mkdirs)
     EXPECT_FALSE(res);
 
     //quick execution
-    File f3(TEST_ASSETS "/testfolder1");
+    File f3(TEST_ASSETS "testfolder1");
     res = f3.mkdirs();
     EXPECT_TRUE(res);
-    rmdir(TEST_ASSETS "/testfolder1");
+    EXPECT_EQ(rmdir(TEST_ASSETS "testfolder1"),0);
 
     //multiple creations
-    File f4(TEST_ASSETS "/testfolder1/testfolder2");
+    File f4(TEST_ASSETS "testfolder1/testfolder2");
     res = f4.mkdir();
     EXPECT_FALSE(res);
     res = f4.mkdirs();
     EXPECT_TRUE(res);
-    rmdir(TEST_ASSETS "/testfolder1/testfolder2");
-    rmdir(TEST_ASSETS "/testfolder1");
+    EXPECT_EQ(rmdir(TEST_ASSETS "testfolder1/testfolder2"),0);
+    EXPECT_EQ(rmdir(TEST_ASSETS "testfolder1"),0);
 }
 
 TEST(File,ls)

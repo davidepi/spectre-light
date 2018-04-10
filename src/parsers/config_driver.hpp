@@ -67,8 +67,10 @@ public:
     //texture
     std::string tex_name;
     std::string tex_src;
+    Vec3 tex_color;
     void load_texture_single();
     void load_texture_folder();
+    void load_texture_uniform();
     
     void error(const yy::location& l, const std::string& m);
     void unknown_char(const yy::location& l, char c);
@@ -76,7 +78,7 @@ public:
 private:
     void scan_begin();
     void scan_end();
-    int get_line(char* buf, int len, int col);
+    int get_line(char* buf, int len);
 };
 
 #endif

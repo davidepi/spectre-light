@@ -1,0 +1,5 @@
+texture:
+{
+  name: "I do not exist"
+  src: "nonexistent.bmp"
+}

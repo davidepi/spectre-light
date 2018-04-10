@@ -174,6 +174,9 @@ texture_obj /* name is already known at this point */
 : SRC COLON STRING texture_rec {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_single();}
 | texture_rec SRC COLON STRING {driver.tex_src=$4.substr(1,$4.size()-2);driver.load_texture_single();}
 | SRC COLON STRING {driver.tex_src = $3.substr(1,$3.size()-2);driver.load_texture_single();} //no comma nor name
+| COLOR COLON vector texture_rec {driver.tex_color=$3;driver.load_texture_uniform();}
+| texture_rec COLOR COLON vector {driver.tex_color=$4;driver.load_texture_uniform();}
+| COLOR COLON vector {driver.tex_color=$3;driver.load_texture_uniform();}
 ;
 
 texture_rec:texture_rec texture_stmt|texture_stmt;
@@ -207,7 +210,6 @@ vector:
 OPEN_SQ number COMMA number COMMA number CLOSE_SQ
 { $$ = Vec3($2,$4,$6);}
 ;
-
 
 number
 : FLOAT {$$ = $1;}

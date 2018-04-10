@@ -23,7 +23,7 @@ TEST(ImageIO,save_ppm)
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
                           "image/x-portable-pixmap; charset=binary\n"),0);
-    unlink("test.ppm");
+    EXPECT_EQ(unlink("test.ppm"),0);
 
     //non existent folder
     res = save_ppm("/root/nonexistent/test.ppm",16,10,image_sample);
@@ -41,25 +41,25 @@ TEST(ImageIO,dimensions_ppm)
     width = 0;
     height = 0;
     //first letter of the magic number is wrong
-    dimensions_ppm(TEST_ASSETS "/wrong_magic1.ppm", &width, &height);
+    dimensions_ppm(TEST_ASSETS "wrong_magic1.ppm", &width, &height);
     EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
     EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
     width = 0;
     height = 0;
     //second letter of the magic number is wrong
-    dimensions_ppm(TEST_ASSETS "/wrong_magic2.ppm", &width, &height);
+    dimensions_ppm(TEST_ASSETS "wrong_magic2.ppm", &width, &height);
     EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
     EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
     width = 0;
     height = 0;
     //multiple spaces in the image
-    dimensions_ppm(TEST_ASSETS "/multiple_spaces.ppm", &width, &height);
+    dimensions_ppm(TEST_ASSETS "multiple_spaces.ppm", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     width = 0;
     height = 0;
     //binary image
-    dimensions_ppm(TEST_ASSETS "/binary.ppm", &width, &height);
+    dimensions_ppm(TEST_ASSETS "binary.ppm", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     width = 0;
@@ -75,13 +75,13 @@ TEST(ImageIO,read_ppm)
     res = read_ppm("nonexistent.ppm", data);
     EXPECT_EQ(res, IMAGE_NOT_READABLE);
     //first letter of the magic number is wrong
-    res = read_ppm(TEST_ASSETS "/wrong_magic1.ppm", data);
+    res = read_ppm(TEST_ASSETS "wrong_magic1.ppm", data);
     EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
     //second letter of the magic number is wrong
-    res = read_ppm(TEST_ASSETS "/wrong_magic2.ppm", data);
+    res = read_ppm(TEST_ASSETS "wrong_magic2.ppm", data);
     EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
     //read image with normal depth (ASCII)
-    res = read_ppm(TEST_ASSETS "/multiple_spaces.ppm", data);
+    res = read_ppm(TEST_ASSETS "multiple_spaces.ppm", data);
     EXPECT_FLOAT_EQ(data[0], 1.f);
     EXPECT_FLOAT_EQ(data[1], 0.f);
     EXPECT_FLOAT_EQ(data[2], 0.f);
@@ -97,7 +97,7 @@ TEST(ImageIO,read_ppm)
     EXPECT_EQ(res,IMAGE_OK);
     bzero(data,12);
     //read image with high depth (ASCII)
-    res = read_ppm(TEST_ASSETS "/p3_high_depth.ppm", data);
+    res = read_ppm(TEST_ASSETS "p3_high_depth.ppm", data);
     EXPECT_FLOAT_EQ(data[0], 1.f);
     EXPECT_FLOAT_EQ(data[1], 1.f);
     EXPECT_FLOAT_EQ(data[2], 1.f);
@@ -113,7 +113,7 @@ TEST(ImageIO,read_ppm)
     EXPECT_EQ(res,IMAGE_OK);
     bzero(data,12);
     //read image with normal depth (binary) no stack_overflow
-    res = read_ppm(TEST_ASSETS "/binary.ppm", data);
+    res = read_ppm(TEST_ASSETS "binary.ppm", data);
     EXPECT_FLOAT_EQ(data[0], 1.f);
     EXPECT_FLOAT_EQ(data[1], 0.f);
     EXPECT_FLOAT_EQ(data[2], 0.f);
@@ -131,7 +131,7 @@ TEST(ImageIO,read_ppm)
     //read image that claims to be 2x2 but contains a lot more
     //bytes
     data[4*3] = (float)0x2B; //random val, check that this is unchanged
-    res = read_ppm(TEST_ASSETS "/binary_stackoverflow.ppm", data);
+    res = read_ppm(TEST_ASSETS "binary_stackoverflow.ppm", data);
     EXPECT_FLOAT_EQ(data[0], 1.f);
     EXPECT_FLOAT_EQ(data[1], 1.f);
     EXPECT_FLOAT_EQ(data[2], 1.f);
@@ -148,7 +148,7 @@ TEST(ImageIO,read_ppm)
     EXPECT_EQ(res,IMAGE_OK);
     bzero(data,12);
     //read image with high depth (binary) no stack_overflow
-    res = read_ppm(TEST_ASSETS "/p6_high_depth.ppm", data);
+    res = read_ppm(TEST_ASSETS "p6_high_depth.ppm", data);
     EXPECT_FLOAT_EQ(data[0], 1.f);
     EXPECT_FLOAT_EQ(data[1], 1.f);
     EXPECT_FLOAT_EQ(data[2], 1.f);
@@ -164,7 +164,7 @@ TEST(ImageIO,read_ppm)
     EXPECT_EQ(res,IMAGE_OK);
     bzero(data,12);
     //read image with high depth (binary), stack_overflow
-    res = read_ppm(TEST_ASSETS "/p6_high_depth_stack_overflow.ppm", data);
+    res = read_ppm(TEST_ASSETS "p6_high_depth_stack_overflow.ppm", data);
     EXPECT_FLOAT_EQ(data[0], 1.f);
     EXPECT_FLOAT_EQ(data[1], 1.f);
     EXPECT_FLOAT_EQ(data[2], 1.f);
@@ -198,7 +198,7 @@ TEST(ImageIO,save_bmp)
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
                           "image/x-ms-bmp; charset=binary\n"),0);
-    unlink("test.bmp");
+    EXPECT_EQ(unlink("test.bmp"),0);
 
     //non existent folder
     res = save_bmp("/root/nonexistent/test.bmp",16,10,image_sample);
@@ -216,37 +216,37 @@ TEST(ImageIO,dimensions_bmp)
     width = 0;
     height = 0;
     //first letter of the magic number is wrong
-    dimensions_bmp(TEST_ASSETS "/wrong_magic1.bmp", &width, &height);
+    dimensions_bmp(TEST_ASSETS "wrong_magic1.bmp", &width, &height);
     EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
     EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
     width = 0;
     height = 0;
     //second letter of the magic number is wrong
-    dimensions_bmp(TEST_ASSETS "/wrong_magic2.bmp", &width, &height);
+    dimensions_bmp(TEST_ASSETS "wrong_magic2.bmp", &width, &height);
     EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
     EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
     width = 0;
     height = 0;
     //32bit
-    dimensions_bmp(TEST_ASSETS "/32bit.bmp", &width, &height);
+    dimensions_bmp(TEST_ASSETS "32bit.bmp", &width, &height);
     EXPECT_EQ(width, IMAGE_NOT_SUPPORTED);
     EXPECT_EQ(height, IMAGE_NOT_SUPPORTED);
     width = 0;
     height = 0;
     //os2
-    dimensions_bmp(TEST_ASSETS "/os2.bmp", &width, &height);
+    dimensions_bmp(TEST_ASSETS "os2.bmp", &width, &height);
     EXPECT_EQ(width, IMAGE_NOT_SUPPORTED);
     EXPECT_EQ(height, IMAGE_NOT_SUPPORTED);
     width = 0;
     height = 0;
     //normal image
-    dimensions_bmp(TEST_ASSETS "/correct.bmp", &width, &height);
+    dimensions_bmp(TEST_ASSETS "correct.bmp", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     width = 0;
     height = 0;
     //flipped (negative) rows
-    dimensions_bmp(TEST_ASSETS "/flipped.bmp", &width, &height);
+    dimensions_bmp(TEST_ASSETS "flipped.bmp", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     width = 0;
@@ -261,19 +261,19 @@ TEST(ImageIO,read_bmp)
     res = read_bmp("nonexistent.bmp", values);
     EXPECT_EQ(res, IMAGE_NOT_READABLE);
     //first letter of the magic number is wrong
-    res = read_bmp(TEST_ASSETS "/wrong_magic1.bmp", values);
+    res = read_bmp(TEST_ASSETS "wrong_magic1.bmp", values);
     EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
     //second letter of the magic number is wrong
-    res = read_bmp(TEST_ASSETS "/wrong_magic2.bmp", values);
+    res = read_bmp(TEST_ASSETS "wrong_magic2.bmp", values);
     EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
     //os2
-    res = read_bmp(TEST_ASSETS "/os2.bmp", values);
+    res = read_bmp(TEST_ASSETS "os2.bmp", values);
     EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
     //32bit
-    res = read_bmp(TEST_ASSETS "/32bit.bmp", values);
+    res = read_bmp(TEST_ASSETS "32bit.bmp", values);
     EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
     //normal image
-    res = read_bmp(TEST_ASSETS "/correct.bmp", values);
+    res = read_bmp(TEST_ASSETS "correct.bmp", values);
     EXPECT_FLOAT_EQ(values[0], 1.f);
     EXPECT_FLOAT_EQ(values[1], 0.f);
     EXPECT_FLOAT_EQ(values[2], 0.f);
@@ -288,7 +288,7 @@ TEST(ImageIO,read_bmp)
     EXPECT_FLOAT_EQ(values[11], 0.f);
     EXPECT_EQ(res, IMAGE_OK);
     //flipped (negative) rows
-    res = read_bmp(TEST_ASSETS "/flipped.bmp", values);
+    res = read_bmp(TEST_ASSETS "flipped.bmp", values);
     EXPECT_FLOAT_EQ(values[0], 1.f);
     EXPECT_FLOAT_EQ(values[1], 0.f);
     EXPECT_FLOAT_EQ(values[2], 0.f);
@@ -323,7 +323,7 @@ TEST(ImageIO,save_rgb)
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
                           "image/jpeg; charset=binary\n"),0);
-    unlink("test.jpg");
+    EXPECT_EQ(unlink("test.jpg"),0);
 
     //save tiff
     res = save_RGB("test.tiff",16,10,image_sample);
@@ -334,7 +334,7 @@ TEST(ImageIO,save_rgb)
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
                           "image/tiff; charset=binary\n"),0);
-    unlink(TEST_ASSETS "/test.tiff");
+    EXPECT_EQ(unlink("test.tiff"),0);
 
     //save targa
     res = save_RGB("test.tga",16,10,image_sample);
@@ -345,7 +345,7 @@ TEST(ImageIO,save_rgb)
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
                           "image/x-tgaimage/x-tga; charset=binary\n"),0);
-    unlink("test.tga");
+    EXPECT_EQ(unlink("test.tga"),0);
 
     //save png
     res = save_RGB("test.png",16,10,image_sample);
@@ -356,7 +356,7 @@ TEST(ImageIO,save_rgb)
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
                           "image/png; charset=binary\n"),0);
-    unlink("test.png");
+    EXPECT_EQ(unlink("test.png"),0);
 
     //save dds
     res = save_RGB("test.dds",16,10,image_sample);
@@ -367,7 +367,7 @@ TEST(ImageIO,save_rgb)
     pclose(fp);
     EXPECT_EQ(strcmp(file_stat,
                           "application/octet-stream; charset=binary\n"),0);
-    unlink("test.dds");
+    EXPECT_EQ(unlink("test.dds"),0);
 
     //non existent folder
     errors_count[ERROR_INDEX] = 0;
@@ -378,7 +378,7 @@ TEST(ImageIO,save_rgb)
 #else
     res = save_RGB("test.jpg",16,10,image_sample);
     EXPECT_FALSE(res);
-    unlink("test.jpg");
+    EXPECT_EQ(unlink("test.jpg"),0);
 #endif
 }
 
@@ -397,35 +397,35 @@ TEST(ImageIO,dimensions_rgb)
     width = 0;
     height = 0;
     //jpg
-    res = dimensions_RGB(TEST_ASSETS "/generic.jpg", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "generic.jpg", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //png
-    res = dimensions_RGB(TEST_ASSETS "/generic.png", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "generic.png", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //tiff
-    res = dimensions_RGB(TEST_ASSETS "/generic.tiff", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "generic.tiff", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //targa
-    res = dimensions_RGB(TEST_ASSETS "/generic.tga", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "generic.tga", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //alpha channel
-    res = dimensions_RGB(TEST_ASSETS "/generic_alpha.tiff", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "generic_alpha.tiff", &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     EXPECT_EQ(res, true);
@@ -451,13 +451,13 @@ TEST(ImageIO,read_rgb)
     //too many channels
 #ifndef IMAGEMAGICK6
     errors_count[ERROR_INDEX] = 0;
-    res = read_RGB(TEST_ASSETS "/singlechannel.tiff", values, alpha);
+    res = read_RGB(TEST_ASSETS "singlechannel.tiff", values, alpha);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
     EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
 #endif
     //jpg
-    res = read_RGB(TEST_ASSETS "/generic.jpg", values, alpha);
+    res = read_RGB(TEST_ASSETS "generic.jpg", values, alpha);
     EXPECT_NEAR(values[0],1.f,.1f);
     EXPECT_NEAR(values[1],0.f,.1f);
     EXPECT_NEAR(values[2],0.f,.1f);
@@ -478,7 +478,7 @@ TEST(ImageIO,read_rgb)
     EXPECT_NEAR(values[17],0.f,.1f);
     EXPECT_EQ(res, IMAGE_OK);
     //png
-    res = read_RGB(TEST_ASSETS "/generic.png", values, alpha);
+    res = read_RGB(TEST_ASSETS "generic.png", values, alpha);
     EXPECT_NEAR(values[0],1.f,.1f);
     EXPECT_NEAR(values[1],0.f,.1f);
     EXPECT_NEAR(values[2],0.f,.1f);
@@ -499,7 +499,7 @@ TEST(ImageIO,read_rgb)
     EXPECT_NEAR(values[17],0.f,.1f);
     EXPECT_EQ(res, IMAGE_OK);
     //tiff
-    res = read_RGB(TEST_ASSETS "/generic.tiff", values, alpha);
+    res = read_RGB(TEST_ASSETS "generic.tiff", values, alpha);
     EXPECT_NEAR(values[0],1.f,.1f);
     EXPECT_NEAR(values[1],0.f,.1f);
     EXPECT_NEAR(values[2],0.f,.1f);
@@ -520,7 +520,7 @@ TEST(ImageIO,read_rgb)
     EXPECT_NEAR(values[17],0.f,.1f);
     EXPECT_EQ(res, IMAGE_OK);
     //targa
-    res = read_RGB(TEST_ASSETS "/generic.tga", values, alpha);
+    res = read_RGB(TEST_ASSETS "generic.tga", values, alpha);
     EXPECT_NEAR(values[0],1.f,.1f);
     EXPECT_NEAR(values[1],0.f,.1f);
     EXPECT_NEAR(values[2],0.f,.1f);
@@ -541,7 +541,7 @@ TEST(ImageIO,read_rgb)
     EXPECT_NEAR(values[17],0.f,.1f);
     EXPECT_EQ(res, IMAGE_OK);
     //tiff with alpha
-    res = read_RGB(TEST_ASSETS "/generic_alpha.tiff", values, alpha);
+    res = read_RGB(TEST_ASSETS "generic_alpha.tiff", values, alpha);
     EXPECT_NEAR(values[0],1.f,.1f);
     EXPECT_NEAR(values[1],0.f,.1f);
     EXPECT_NEAR(values[2],0.f,.1f);
@@ -560,7 +560,7 @@ TEST(ImageIO,read_rgb)
     EXPECT_EQ(alpha[3], 255);
     EXPECT_EQ(res, IMAGE_OK);
 #else
-    res = read_RGB(TEST_ASSETS "/generic.jpg", values, alpha);
+    res = read_RGB(TEST_ASSETS "generic.jpg", values, alpha);
     EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
 #endif
 }
