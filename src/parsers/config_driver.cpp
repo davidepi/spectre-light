@@ -192,19 +192,18 @@ static void load_texture_rec(File& src)
     }
 }
 
-void ConfigDriver::load_texture_folder(std::string& src)
+void ConfigDriver::load_texture_folder()
 {
-    File current_file(src.c_str());
+    File current_file(tex_src.c_str());
     load_texture_rec(current_file);
 }
 
-void ConfigDriver::load_texture_single(std::string& src)
+void ConfigDriver::load_texture_single()
 {
-    File cur_file(src.c_str());
+    File cur_file(tex_src.c_str());
     if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
        image_supported(cur_file.extension())>=0)
     {
-        printf("load texture %s\n",src.c_str());
         //TODO: placeholder because the texture class is not ready
         //TOOD: check texture not already loaded
         Texture* addme = new UniformTexture(SPECTRUM_WHITE);

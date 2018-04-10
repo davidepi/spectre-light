@@ -5,8 +5,13 @@
 
 const char File::PATH_SEPARATOR = '/';
 const char* File::PATH_SEPARATOR_STRING = "/";
+#ifdef TESTS
+const char* File::CURRENT_DIR = TEST_ASSETS;
+const size_t File::CURRENT_DIR_LEN = strlen(TEST_ASSETS);
+#else
 const char* File::CURRENT_DIR = realpath(".", NULL);
 const size_t File::CURRENT_DIR_LEN = strlen(File::CURRENT_DIR);
+#endif
 
 File::File(const char* path)
 {

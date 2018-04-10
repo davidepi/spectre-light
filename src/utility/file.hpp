@@ -35,6 +35,10 @@
  *  If the file is actually a directory, it is kept always without the ending
  *  path separator
  *
+ *  /note Relative paths are resolved from the working directory when the
+ *  application was started. Changing the directory later will result in
+ *  incorrectly generated paths
+ *
  *  Methods provided by this class are focused on retrieval, listing and
  *  creation of directories
  */

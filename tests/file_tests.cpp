@@ -114,7 +114,7 @@ TEST(File,exists)
     File f0("nonexistent.jpg");
     EXPECT_FALSE(f0.exists());
     //existent
-    File f1(TEST_ASSETS "wrong_magic1.ppm");
+    File f1(TEST_ASSETS "/wrong_magic1.ppm");
     EXPECT_TRUE(f1.exists());
 }
 
@@ -124,7 +124,7 @@ TEST(File,readable)
     File f0("nonexistent.jpg");
     EXPECT_FALSE(f0.readable());
     //readable
-    File f1(TEST_ASSETS "wrong_magic1.ppm");
+    File f1(TEST_ASSETS "/wrong_magic1.ppm");
     EXPECT_TRUE(f1.readable());
 }
 
@@ -153,7 +153,7 @@ TEST(File,is_folder)
     File f1("non existent");
     EXPECT_FALSE(f1.is_folder());
     //existent but not folder
-    File f2(TEST_ASSETS "wrong_magic1.ppm");
+    File f2(TEST_ASSETS "/wrong_magic1.ppm");
     EXPECT_FALSE(f2.is_folder());
     //existent and folder
     File f3(TEST_ASSETS);
@@ -166,7 +166,7 @@ TEST(File,is_file)
     File f1("non existent");
     EXPECT_FALSE(f1.is_file());
     //existent but not file
-    File f2(TEST_ASSETS "wrong_magic1.ppm");
+    File f2(TEST_ASSETS "/wrong_magic1.ppm");
     EXPECT_TRUE(f2.is_file());
     //existent and file
     File f3(TEST_ASSETS);
@@ -185,7 +185,7 @@ TEST(File,copy_assignment)
 TEST(File,get_parent)
 {
     File f1(TEST_ASSETS);
-    File f2(TEST_ASSETS "folder");
+    File f2(TEST_ASSETS "/folder");
     File f3 = f2.get_parent();
     EXPECT_EQ(strcmp(f3.extension(),f1.extension()),0);
     EXPECT_EQ(strcmp(f3.filename(),f1.filename()),0);
@@ -224,7 +224,7 @@ TEST(File,mkdir)
     res = f1.mkdir();
     EXPECT_FALSE(res);
     //create new folder
-    const char* foldername = TEST_ASSETS "folder";
+    const char* foldername = TEST_ASSETS "/folder";
     File f2(foldername);
     EXPECT_FALSE(f2.exists());
     res = f2.mkdir();
@@ -248,19 +248,19 @@ TEST(File,mkdirs)
     EXPECT_FALSE(res);
 
     //quick execution
-    File f3(TEST_ASSETS "testfolder1");
+    File f3(TEST_ASSETS "/testfolder1");
     res = f3.mkdirs();
     EXPECT_TRUE(res);
-    rmdir(TEST_ASSETS "testfolder1");
+    rmdir(TEST_ASSETS "/testfolder1");
 
     //multiple creations
-    File f4(TEST_ASSETS "testfolder1/testfolder2");
+    File f4(TEST_ASSETS "/testfolder1/testfolder2");
     res = f4.mkdir();
     EXPECT_FALSE(res);
     res = f4.mkdirs();
     EXPECT_TRUE(res);
-    rmdir(TEST_ASSETS "testfolder1/testfolder2");
-    rmdir(TEST_ASSETS "testfolder1");
+    rmdir(TEST_ASSETS "/testfolder1/testfolder2");
+    rmdir(TEST_ASSETS "/testfolder1");
 }
 
 TEST(File,ls)
@@ -274,7 +274,7 @@ TEST(File,ls)
 
     File f2(TEST_ASSETS);
     f2.ls(&res);
-    EXPECT_EQ(res.size(), 21);
+    EXPECT_EQ(res.size(), 22);
 }
 
 

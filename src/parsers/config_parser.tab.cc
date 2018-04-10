@@ -629,7 +629,7 @@ namespace yy {
 
   case 15:
 #line 121 "config_parser.y" // lalr1.cc:859
-    {driver.load_texture_folder(yystack_[0].value.as< std::string > ());}
+    {driver.tex_src=yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);driver.load_texture_folder();}
 #line 634 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
@@ -731,25 +731,25 @@ namespace yy {
 
   case 60:
 #line 174 "config_parser.y" // lalr1.cc:859
-    {driver.load_texture_single(yystack_[1].value.as< std::string > ());}
+    {driver.tex_src=yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);driver.load_texture_single();}
 #line 736 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 61:
 #line 175 "config_parser.y" // lalr1.cc:859
-    {driver.load_texture_single(yystack_[0].value.as< std::string > ());}
+    {driver.tex_src=yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);driver.load_texture_single();}
 #line 742 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 62:
 #line 176 "config_parser.y" // lalr1.cc:859
-    {driver.load_texture_single(yystack_[0].value.as< std::string > ());}
+    {driver.tex_src = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);driver.load_texture_single();}
 #line 748 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 65:
 #line 181 "config_parser.y" // lalr1.cc:859
-    {driver.tex_name = yystack_[0].value.as< std::string > ();}
+    {driver.tex_name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
 #line 754 "config_parser.tab.cc" // lalr1.cc:859
     break;
 

@@ -66,8 +66,9 @@ public:
     
     //texture
     std::string tex_name;
-    void load_texture_single(std::string& src);
-    void load_texture_folder(std::string& src);
+    std::string tex_src;
+    void load_texture_single();
+    void load_texture_folder();
     
     void error(const yy::location& l, const std::string& m);
     void unknown_char(const yy::location& l, char c);

@@ -118,7 +118,7 @@ stmt
 | SHAPE COLON STRING
 | WORLD COLON OPEN_CU world_obj CLOSE_CU
 | LIGHT COLON OPEN_CU light_obj CLOSE_CU
-| TEXTURE COLON STRING {driver.load_texture_folder($3);}
+| TEXTURE COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_folder();}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU
 | COMMA
@@ -171,14 +171,14 @@ light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt;
 light_stmt: TEMPERATURE COLON UINT | COLOR COLON vector;
 
 texture_obj /* name is already known at this point */
-: SRC COLON STRING texture_rec {driver.load_texture_single($3);}
-| texture_rec SRC COLON STRING {driver.load_texture_single($4);}
-| SRC COLON STRING {driver.load_texture_single($3);} //no comma nor name
+: SRC COLON STRING texture_rec {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_single();}
+| texture_rec SRC COLON STRING {driver.tex_src=$4.substr(1,$4.size()-2);driver.load_texture_single();}
+| SRC COLON STRING {driver.tex_src = $3.substr(1,$3.size()-2);driver.load_texture_single();} //no comma nor name
 ;
 
 texture_rec:texture_rec texture_stmt|texture_stmt;
 texture_stmt
-: NAME COLON STRING {driver.tex_name = $3;}
+: NAME COLON STRING {driver.tex_name = $3.substr(1,$3.size()-2);}
 | COMMA
 ;
 

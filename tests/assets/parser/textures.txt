@@ -1,0 +1,6 @@
+texture: {
+  name: "Manually written name"
+  src: "correct.bmp"
+}
+
+texture: "../assets"

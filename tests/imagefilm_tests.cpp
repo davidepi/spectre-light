@@ -22,15 +22,15 @@ TEST(ImageFilm,constructor)
     FilterBox filter;
     img2.set_filter(&filter);
     EXPECT_TRUE(img2.save_image());
-    EXPECT_EQ(access("./file.ok.ppm",F_OK),0);
-    unlink("./file.ok.ppm");
+    EXPECT_EQ(access(TEST_ASSETS "/file.ok.ppm",F_OK),0);
+    unlink(TEST_ASSETS "/file.ok.ppm");
 
     //this folder, writable, extension ok
     ImageFilm img3(2,2,"file.ppm");
     img3.set_filter(&filter);
     EXPECT_TRUE(img3.save_image());
-    EXPECT_EQ(access("file.ppm",F_OK),0);
-    unlink("file.ppm");
+    EXPECT_EQ(access(TEST_ASSETS "/file.ppm",F_OK),0);
+    unlink(TEST_ASSETS "/file.ppm");
 
     //another folder, no name provided
     errors_count[CRITICAL_INDEX] = 0;
@@ -54,14 +54,14 @@ TEST(ImageFilm,constructor)
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(img6.save_image());
-    EXPECT_EQ(access("out.pph.ppm",F_OK),0);
-    unlink("out.pph.ppm");
+    EXPECT_EQ(access(TEST_ASSETS "/out.pph.ppm",F_OK),0);
+    unlink(TEST_ASSETS "/out.pph.ppm");
 
     //bmp extension
     ImageFilm img7(2,2,"out.bmp");
     EXPECT_TRUE(img7.save_image());
-    EXPECT_EQ(access("out.bmp",F_OK),0);
-    unlink("out.bmp");
+    EXPECT_EQ(access(TEST_ASSETS "/out.bmp",F_OK),0);
+    unlink(TEST_ASSETS "/out.bmp");
 
     //bmp similar extension
     errors_count[WARNING_INDEX] = 0;
@@ -69,23 +69,23 @@ TEST(ImageFilm,constructor)
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(img8.save_image());
-    EXPECT_EQ(access("out.bmm.ppm",F_OK),0);
-    unlink("out.bmm.ppm");
+    EXPECT_EQ(access(TEST_ASSETS "/out.bmm.ppm",F_OK),0);
+    unlink(TEST_ASSETS "/out.bmm.ppm");
 
     //jpg correctly saved
 #ifdef IMAGEMAGICK
     ImageFilm img9(2,2,"out.jpg");
     EXPECT_TRUE(img9.save_image());
-    EXPECT_EQ(access("out.jpg",F_OK),0);
-    unlink("out.jpg");
+    EXPECT_EQ(access(TEST_ASSETS "/out.jpg",F_OK),0);
+    unlink(TEST_ASSETS "/out.jpg");
 #else
     errors_count[WARNING_INDEX] = 0;
     ImageFilm img9(2,2,"out.jpg");
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(img9.save_image());
-    EXPECT_EQ(access("out.jpg.ppm",F_OK),0);
-    unlink("out.jpg.ppm");
+    EXPECT_EQ(access(TEST_ASSETS "/out.jpg.ppm",F_OK),0);
+    unlink(TEST_ASSETS "/out.jpg.ppm");
 #endif
 }
 
@@ -169,8 +169,8 @@ TEST(ImageFilm,add_pixel)
     EXPECT_TRUE(secure_area.deferred.empty());
 
     EXPECT_TRUE(img.save_image());
-    EXPECT_EQ(access("out.ppm",F_OK),0);
-    unlink("out.ppm");
+    EXPECT_EQ(access(TEST_ASSETS "/out.ppm",F_OK),0);
+    unlink(TEST_ASSETS "/out.ppm");
 }
 
 TEST(ImageFilm,add_pixel_deferred)
