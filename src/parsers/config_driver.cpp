@@ -11,6 +11,7 @@ ConfigDriver::ConfigDriver()
     spp = 121;
     sampler_type = SPECTRE_SAMPLER_STRATIFIED;
     camera_type = SPECTRE_CAMERA_PERSPECTIVE;
+    camera = NULL;
     fov = 55.f;
     filter = new FilterMitchell(0.33f,0.33f);
     value0 = 0.33f;
@@ -19,8 +20,9 @@ ConfigDriver::ConfigDriver()
     tex_name = "";
 }
 
-int ConfigDriver::parse(const std::string& f, Renderer* r)
+Renderer* ConfigDriver::parse(const std::string& f)
 {
+    Renderer* r = NULL;
     file = f;
     scan_begin();
     yy::ConfigParser parser(*this);
@@ -38,7 +40,7 @@ int ConfigDriver::parse(const std::string& f, Renderer* r)
     r->inherit_camera(camera);
     r->inherit_filter(filter);
     r->inherit_integrator(integrator);
-    return 1;
+    return r;
 }
 
 void ConfigDriver::check_resolution()
@@ -136,7 +138,8 @@ void ConfigDriver::build_filter()
 
 void ConfigDriver::build_camera()
 {
-    delete camera;
+    if(camera!=NULL)
+        delete camera;
     switch(camera_type)
     {
         case SPECTRE_CAMERA_ORTHOGRAPHIC:
@@ -165,7 +168,7 @@ static void load_texture_rec(File& src)
         if(src.is_folder()) //recursive call if folder
         {
             std::vector<File> res;
-            current_file.ls(&res);
+            src.ls(&res);
             for(int i=0;i<res.size();i++)
                 load_texture_rec(res.at(i));
         }
@@ -177,7 +180,7 @@ static void load_texture_rec(File& src)
                 //TODO: placeholder because the texture class is not ready
                 //TOOD: check texture not already loaded
                 Texture* addme = new UniformTexture(SPECTRUM_WHITE);
-                TexLib.add_inherit(tex_name, addme);
+                TexLib.add_inherit(src.filename(), addme);
             }
             else
                 /* silently skip unsupported texture */;
@@ -193,11 +196,11 @@ void ConfigDriver::load_texture_folder(std::string& src)
 
 void ConfigDriver::load_texture_single(std::string& src)
 {
-    File current_file(src.c_str());
-    if(src.exists() && src.readable() && !src.is_folder() &&
-       image_supported(src.extension())>=0))
+    File cur_file(src.c_str());
+    if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
+       image_supported(cur_file.extension())>=0)
     {
-        printf("load texture %s\n",src.filename());
+        printf("load texture %s\n",src.c_str());
         //TODO: placeholder because the texture class is not ready
         //TOOD: check texture not already loaded
         Texture* addme = new UniformTexture(SPECTRUM_WHITE);
@@ -205,5 +208,5 @@ void ConfigDriver::load_texture_single(std::string& src)
         tex_name = ""; //reset name for next texture
     }
     else
-        Console.warning(MESSAGE_TEXTURE_ERROR,current_file.absolute_path());
+        Console.warning(MESSAGE_TEXTURE_ERROR,cur_file.absolute_path());
 }

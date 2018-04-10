@@ -587,7 +587,7 @@ namespace yy {
             {
   case 4:
 #line 110 "config_parser.y" // lalr1.cc:859
-    {driver.output = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-1);}
+    {driver.output = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
 #line 592 "config_parser.tab.cc" // lalr1.cc:859
     break;
 

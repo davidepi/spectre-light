@@ -33,7 +33,7 @@ public:
     ConfigDriver();
     virtual ~ConfigDriver() = default;
     
-    int parse(const std::string& f, Renderer*);
+    Renderer* parse(const std::string& f);
     std::string file;
     std::string output;
     int width;

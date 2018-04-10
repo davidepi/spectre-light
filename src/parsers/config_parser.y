@@ -107,7 +107,7 @@ file
 ;
 
 stmt
-: OUTPUT COLON STRING {driver.output = $3.substr(1,$3.size()-1);}
+: OUTPUT COLON STRING {driver.output = $3.substr(1,$3.size()-2);}
 | RESOLUTION COLON OPEN_CU resolution_obj CLOSE_CU
 | FILTER COLON OPEN_CU filter_obj CLOSE_CU {driver.build_filter();}
 | SAMPLER  COLON RANDOM {driver.sampler_type = SPECTRE_SAMPLER_RANDOM;}

@@ -192,7 +192,7 @@ TEST(ImageIO,save_bmp)
     bool res = save_bmp("test.bmp",16,10,image_sample);
     ASSERT_TRUE(res);
 
-    //check if saved image is actually a .ppm
+    //check if saved image is actually a .bmp
     FILE* fp = popen("file -b --mime test.bmp","r");
     fgets(file_stat, 64, fp);
     pclose(fp);
