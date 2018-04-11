@@ -3,8 +3,17 @@
 
 #include "lambertian.hpp"
 
-Lambertian::Lambertian(const Spectrum& scattered_spectrum)
-:Bdf(FLAG_BRDF),diffuse(scattered_spectrum*INV_PI)
+//need to construct the SPECTRUM_ONE here since the static vars in the spectrum
+//file is not guaranteed to be initialized before this
+const Spectrum Lambertian::DIFFUSE = Spectrum(
+{
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f
+})*INV_PI;
+
+Lambertian::Lambertian():Bdf(FLAG_BRDF)
 {
     
 }
@@ -12,5 +21,5 @@ Lambertian::Lambertian(const Spectrum& scattered_spectrum)
 Spectrum Lambertian::value(const Vec3*, const Vec3*)const
 {
     //equally scattered in every direction
-    return Lambertian::diffuse;
+    return Lambertian::DIFFUSE;
 }

@@ -1,12 +1,12 @@
 //Created,   7 Jun 2017
-//Last Edit  1 Jul 2017
+//Last Edit 11 Apr 2018
 
 /**
  *  \file lambertian.hpp
  *  \brief     Lambertian BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      1 Jul 2017
+ *  \date      11 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -25,7 +25,7 @@
  *  \brief BRDF for a perfectly diffuse smooth surface
  *
  *  The Lambertian is a BRDF that defines an ideal matte surface.
- *  For surfaces that reflects better a real world matter surface consider
+ *  For surfaces that better simulates a real world matte surface consider
  *  using the slower Oren-Nayar model defined in the OrenNayar class
  */
 class Lambertian : public Bdf
@@ -34,11 +34,10 @@ public:
 
     /** \brief Default constructor
      *
-     *  Generate a lambertian model with the given color
-     *
-     *  \param[in] scattered_spectrum The portion of light scattered by the BRDF
+     *  Generate a lambertian model with a white spectrum. This can be later
+     *  mutiplied by the actual spectrum of the reflecting surface
      */
-    Lambertian(const Spectrum& scattered_spectrum);
+    Lambertian();
 
     /** \brief Return the value of the BRDF
      *
@@ -55,7 +54,7 @@ public:
 private:
 
     //scattered portion of spectrum
-    const Spectrum diffuse;
+    const static Spectrum DIFFUSE;
 };
 
 #endif

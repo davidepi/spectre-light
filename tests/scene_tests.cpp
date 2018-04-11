@@ -35,7 +35,7 @@ TEST(Scene,add_asset)
     EXPECT_EQ(scene.assets_size(), 1);
 
     //add second asset with material
-    Bdf* bxdf = new Lambertian(SPECTRUM_ONE);
+    Bdf* bxdf = new Lambertian();
     Bsdf material;
     material.inherit_bdf(bxdf);
     EXPECT_EQ(scene.assets_size(), 1);

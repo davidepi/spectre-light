@@ -20,8 +20,7 @@
 
 TEST(Materials,Lambertian_flags)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
-    Lambertian mat(red);
+    Lambertian mat;
     EXPECT_EQ(mat.get_flags(),FLAG_BRDF);
     EXPECT_TRUE(mat.matches(FLAG_BRDF));
     EXPECT_FALSE(mat.matches(FLAG_BTDF));
@@ -35,45 +34,40 @@ TEST(Materials,Lambertian_flags)
 
 TEST(Materials,Lambertian_value)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
-    ColorXYZ color = red.to_xyz();
-    Lambertian mat(red);
+    Lambertian mat;
     const Vec3 wo(-1.f,0.f,.5f);
     const Vec3 wi(1.f,0.f,.5f);
     Spectrum res = mat.value(&wo, &wi);
-    EXPECT_EQ(res.w[0], color.r/ONE_PI);
-    EXPECT_EQ(res.w[1], color.g/ONE_PI);
-    EXPECT_EQ(res.w[2], color.b/ONE_PI);
+    EXPECT_NEAR(res.w[0], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[1], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[2], .318310f, 1e-5);
 }
 
 TEST(Materials,Lambertian_sample_value)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
-    ColorXYZ color = red.to_xyz();
-    Lambertian mat(red);
+    Lambertian mat;
     const Vec3 wo(-1.f,0.f,.5f);
     Vec3 wi;
     float pdf;
     Spectrum res = mat.sample_value(&wo, &wi, 0.5f, 0.5f, &pdf);
-    EXPECT_EQ(res.w[0], color.r/ONE_PI);
-    EXPECT_EQ(res.w[1], color.g/ONE_PI);
-    EXPECT_EQ(res.w[2], color.b/ONE_PI);
+    EXPECT_NEAR(res.w[0], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[1], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[2], .318310f, 1e-5);
     EXPECT_EQ(sign(wo.z),sign(wi.z));
     EXPECT_FLOAT_EQ(pdf,0.22507906f);
 
     const Vec3 wo2(-1.f,0.f,-0.5f);
     res = mat.sample_value(&wo2, &wi, 0.5f, 0.5f, &pdf);
-    EXPECT_EQ(res.w[0], color.r/ONE_PI);
-    EXPECT_EQ(res.w[1], color.g/ONE_PI);
-    EXPECT_EQ(res.w[2], color.b/ONE_PI);
+    EXPECT_NEAR(res.w[0], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[1], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[2], .318310f, 1e-5);
     EXPECT_EQ(sign(wo2.z),sign(wi.z));
     EXPECT_FLOAT_EQ(pdf,0.22507906f);
 }
 
 TEST(Materials,Lambertian_pdf)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
-    Lambertian mat(red);
+    Lambertian mat;
 
     //same hemisphere
     const Vec3 wo(-1.f,0.f,.5f);
@@ -89,8 +83,7 @@ TEST(Materials,Lambertian_pdf)
 
 TEST(Materials,OrenNayar_flags)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
-    OrenNayar mat(red,15);
+    OrenNayar mat(15);
     EXPECT_EQ(mat.get_flags(),FLAG_BRDF);
     EXPECT_TRUE(mat.matches(FLAG_BRDF));
     EXPECT_FALSE(mat.matches(FLAG_BTDF));
@@ -103,22 +96,21 @@ TEST(Materials,OrenNayar_flags)
 
 TEST(Materials,OrenNayar_value)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
-    OrenNayar mat(red,15.f);
+    OrenNayar mat(15.f);
 
     Vec3 wo(-1.f,0.f,.4f);
     Vec3 wi(1.f,0.f,.6f);
     Spectrum res = mat.value(&wo, &wi);
-    EXPECT_EQ(res.w[0], 0.0657406151f);
-    EXPECT_EQ(res.w[1], 0.0338975154f);
-    EXPECT_EQ(res.w[2], 0.0030815925f);
+    EXPECT_NEAR(res.w[0], 0.159388f,1e-5);
+    EXPECT_NEAR(res.w[1], 0.159388f,1e-5);
+    EXPECT_NEAR(res.w[2], 0.159388f,1e-5);
 
     wo = Vec3(-1.f,0.f,0.6f);
     wi = Vec3(1.f,0.f,0.4f);
     res = mat.value(&wo, &wi);
-    EXPECT_EQ(res.w[0], 0.0657406151f);
-    EXPECT_EQ(res.w[1], 0.0338975154f);
-    EXPECT_EQ(res.w[2], 0.0030815925f);
+    EXPECT_NEAR(res.w[0], 0.159388f,1e-5);
+    EXPECT_NEAR(res.w[1], 0.159388f,1e-5);
+    EXPECT_NEAR(res.w[2], 0.159388f,1e-5);
 
     //assert different results by changing incident angles
     wo = Vec3(-.2f,0.5f,0.2f);
@@ -131,45 +123,45 @@ TEST(Materials,OrenNayar_value)
     wo = Vec3(-1.f,0.f,1.f);
     wi = Vec3(1.f,0.f,0.5f);
     res = mat.value(&wo, &wi);
-    EXPECT_EQ(res.w[0], 0.0657406151f);
-    EXPECT_EQ(res.w[1], 0.0338975154f);
-    EXPECT_EQ(res.w[2], 0.0030815925f);
+    EXPECT_NEAR(res.w[0], 0.159388f,1e-5);
+    EXPECT_NEAR(res.w[1], 0.159388f,1e-5);
+    EXPECT_NEAR(res.w[2], 0.159388f,1e-5);
 
     wo = Vec3(-1.f,0.f,0.5f);
     wi = Vec3(1.f,0.f,1.f);
     res = mat.value(&wo, &wi);
-    EXPECT_EQ(res.w[0], 0.0657406151f);
-    EXPECT_EQ(res.w[1], 0.0338975154f);
-    EXPECT_EQ(res.w[2], 0.0030815925f);
+    EXPECT_NEAR(res.w[0], 0.159388f,1e-5);
+    EXPECT_NEAR(res.w[1], 0.159388f,1e-5);
+    EXPECT_NEAR(res.w[2], 0.159388f,1e-5);
 }
 
 TEST(Materials,OrenNayar_sample_value)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
-    OrenNayar mat(red,15);
+    Spectrum white(ColorRGB(1.f,1.f,1.f));
+    OrenNayar mat(15);
     const Vec3 wo(-1.f,0.f,.5f);
     Vec3 wi;
     float pdf;
     Spectrum res = mat.sample_value(&wo, &wi, 0.5f, 0.5f, &pdf);
     EXPECT_EQ(sign(wo.z),sign(wi.z));
-    EXPECT_EQ(res.w[0],0.116884954f);
-    EXPECT_EQ(res.w[1],0.0602688268f);
-    EXPECT_EQ(res.w[2],0.00547898421f);
+    EXPECT_NEAR(res.w[0], 0.283387f,1e-5);
+    EXPECT_NEAR(res.w[1], 0.283387f,1e-5);
+    EXPECT_NEAR(res.w[2], 0.283387f,1e-5);
     EXPECT_FLOAT_EQ(pdf,0.22507906f);
 
     const Vec3 wo2(-1.f,0.f,-0.5f);
     res = mat.sample_value(&wo2, &wi, 0.5f, 0.5f, &pdf);
-    EXPECT_EQ(res.w[0],0.116884954f);
-    EXPECT_EQ(res.w[1],0.0602688268f);
-    EXPECT_EQ(res.w[2],0.00547898421f);
+    EXPECT_NEAR(res.w[0], 0.283387f,1e-5);
+    EXPECT_NEAR(res.w[1], 0.283387f,1e-5);
+    EXPECT_NEAR(res.w[2], 0.283387f,1e-5);
     EXPECT_EQ(sign(wo2.z),sign(wi.z));
     EXPECT_FLOAT_EQ(pdf,0.22507906f);
 }
 
 TEST(Materials,OrenNayar_pdf)
 {
-    Spectrum red(ColorRGB(1.f,0.f,0.f));
-    OrenNayar mat(red,15);
+    Spectrum white(ColorRGB(1.f,1.f,1.f));
+    OrenNayar mat(15);
 
     //same hemisphere
     const Vec3 wo(-1.f,0.f,.5f);
@@ -185,8 +177,8 @@ TEST(Materials,OrenNayar_pdf)
 
 TEST(Materials,SpecularReflection_flags)
 {
-    ConductorReflection cond(SPECTRUM_ONE,SILVER.n,SILVER.k);
-    DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
+    ConductorReflection cond(SILVER.n,SILVER.k);
+    DielectricReflection diel(1.f,1.33f);
     EXPECT_EQ(cond.get_flags(),FLAG_BRDF|FLAG_SPEC);
     EXPECT_FALSE(cond.matches(FLAG_BRDF));
     EXPECT_FALSE(cond.matches(FLAG_BTDF));
@@ -207,8 +199,8 @@ TEST(Materials,SpecularReflection_flags)
 
 TEST(Materials,SpecularReflection_value)
 {
-    ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
-    DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
+    ConductorReflection cond(COPPER.n,COPPER.k);
+    DielectricReflection diel(1.f,1.33f);
     const Vec3 wo(-1.f,0.f,.4f);
     const Vec3 wi(1.f,0.f,.6f);
     Spectrum res1 = cond.value(&wo, &wi);
@@ -219,8 +211,8 @@ TEST(Materials,SpecularReflection_value)
 
 TEST(Materials,SpecularReflection_sample_value)
 {
-    ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
-    DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
+    ConductorReflection cond(COPPER.n,COPPER.k);
+    DielectricReflection diel(1.f,1.33f);
 
     //outside, conductor
     const Vec3 wo(-1.f,0.f,.4f);
@@ -273,8 +265,8 @@ TEST(Materials,SpecularReflection_sample_value)
 
 TEST(Materials,SpecularReflection_pdf)
 {
-    ConductorReflection cond(SPECTRUM_ONE,COPPER.n,COPPER.k);
-    DielectricReflection diel(SPECTRUM_ONE,1.f,1.33f);
+    ConductorReflection cond(COPPER.n,COPPER.k);
+    DielectricReflection diel(1.f,1.33f);
 
     //same hemisphere
     const Vec3 wo(-1.f,0.f,.4f);
@@ -294,7 +286,7 @@ TEST(Materials,SpecularReflection_pdf)
 
 TEST(Materials,SpecularRefraction_flags)
 {
-    Refraction diel(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+    Refraction diel(cauchy(1.f,0,0),cauchy(1.33f,0,0));
     EXPECT_EQ(diel.get_flags(),FLAG_BTDF|FLAG_SPEC);
     EXPECT_FALSE(diel.matches(FLAG_BRDF));
     EXPECT_FALSE(diel.matches(FLAG_BTDF));
@@ -307,7 +299,7 @@ TEST(Materials,SpecularRefraction_flags)
 
 TEST(Materials,SpecularRefraction_value)
 {
-    Refraction diel(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+    Refraction diel(cauchy(1.f,0,0),cauchy(1.33f,0,0));
     const Vec3 wo(-1.f,0.f,.4f);
     const Vec3 wi(1.f,0.f,.6f);
     Spectrum res = diel.value(&wo, &wi);
@@ -327,7 +319,7 @@ TEST(Materials,SpecularRefraction_cauchy_sellmeier_equations)
 
 TEST(Materials,SpecularRefraction_sample_value)
 {
-    Refraction diel(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+    Refraction diel(cauchy(1.f,0,0),cauchy(1.33f,0,0));
     const Vec3 wo(-1.f,0.f,.4f);
     Vec3 wi;
     float pdf;
@@ -364,7 +356,7 @@ TEST(Materials,SpecularRefraction_sample_value)
 
 TEST(Materials,SpecularRefraction_pdf)
 {
-    Refraction diel(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+    Refraction diel(cauchy(1.f,0,0),cauchy(1.33f,0,0));
 
     //same hemisphere
     const Vec3 wo(-1.f,0.f,.4f);
@@ -382,7 +374,7 @@ TEST(Materials,MicrofacetR_flags)
 {
     Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     MicrofacetDist* blinn = new Blinn(100.f);
-    MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
+    MicrofacetR mat(blinn,fresnel);
     EXPECT_EQ(mat.get_flags(),FLAG_BRDF);
     EXPECT_TRUE(mat.matches(FLAG_BRDF));
     EXPECT_FALSE(mat.matches(FLAG_BTDF));
@@ -397,7 +389,7 @@ TEST(Materials,MicrofacetR_value)
 {
     Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     MicrofacetDist* blinn = new Blinn(100.f);
-    MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
+    MicrofacetR mat(blinn,fresnel);
     Spectrum res;
 
     //different hemispheres
@@ -435,7 +427,7 @@ TEST(Materials,MicrofacetR_sample_value)
 {
     Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     MicrofacetDist* blinn = new Blinn(100.f);
-    MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
+    MicrofacetR mat(blinn,fresnel);
     Spectrum res;
     float pdf;
 
@@ -462,7 +454,7 @@ TEST(Materials,MicrofacetR_pdf)
 {
     Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     MicrofacetDist* blinn = new Blinn(100.f);
-    MicrofacetR mat(SPECTRUM_ONE,blinn,fresnel);
+    MicrofacetR mat(blinn,fresnel);
     float pdf;
 
     //different hemispheres
@@ -486,8 +478,7 @@ TEST(Materials,MicrofacetR_pdf)
 TEST(Materials,MicrofacetT_flags)
 {
     MicrofacetDist* beckmann = new Beckmann(0.3f);
-    MicrofacetT mat(SPECTRUM_ONE,beckmann,
-                    cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    MicrofacetT mat(beckmann,cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     EXPECT_EQ(mat.get_flags(),FLAG_BTDF);
     EXPECT_FALSE(mat.matches(FLAG_BRDF));
     EXPECT_TRUE(mat.matches(FLAG_BTDF));
@@ -501,8 +492,7 @@ TEST(Materials,MicrofacetT_flags)
 TEST(Materials,MicrofacetT_value)
 {
     MicrofacetDist* beckmann = new Beckmann(0.3f);
-    MicrofacetT mat(SPECTRUM_ONE,beckmann,
-                    cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    MicrofacetT mat(beckmann,cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     Spectrum res;
 
     //same hemispheres
@@ -560,8 +550,7 @@ TEST(Materials,MicrofacetT_value)
 TEST(Materials,MicrofacetT_sample_value)
 {
     MicrofacetDist* beckmann = new Beckmann(0.3f);
-    MicrofacetT mat(SPECTRUM_ONE,beckmann,
-                    cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    MicrofacetT mat(beckmann,cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     Spectrum res;
     float pdf;
     Vec3 wi;
@@ -610,8 +599,7 @@ TEST(Materials,MicrofacetT_sample_value)
 TEST(Materials,MicrofacetT_pdf)
 {
     MicrofacetDist* beckmann = new Beckmann(0.3f);
-    MicrofacetT mat(SPECTRUM_ONE,beckmann,
-                    cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
+    MicrofacetT mat(beckmann,cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     float pdf;
 
     //same hemispheres
@@ -693,10 +681,10 @@ TEST(Materials,FresnelConditions_Dielectric_eval)
 TEST(Materials,Bsdf_inherit_bdf)
 {
     Bsdf material;
-    material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    material.inherit_bdf(new Lambertian());
     for(int i=1;i<_MAX_BDF_;i++)
-        material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
-    Bdf* lambertian = new Lambertian(SPECTRUM_ONE);
+        material.inherit_bdf(new Lambertian());
+    Bdf* lambertian = new Lambertian();
     errors_count[ERROR_INDEX] = 0;
     material.inherit_bdf(lambertian);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
@@ -720,8 +708,8 @@ TEST(Materials,Bsdf_value)
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
-    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
-    metal.inherit_bdf(new ConductorReflection(SPECTRUM_ONE,GOLD.n,GOLD.k));
+    material_r.inherit_bdf(new Lambertian());
+    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     //reflected ray spec ok
@@ -757,7 +745,7 @@ TEST(Materials,Bsdf_value)
     EXPECT_TRUE(res.is_black());
 
     //multi material, pick only non specular
-    metal.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    metal.inherit_bdf(new Lambertian());
     a.set_material(&metal,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
@@ -782,7 +770,7 @@ TEST(Materials,Bsdf_sample_value)
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     Bsdf material_r;
-    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    material_r.inherit_bdf(new Lambertian());
 
     //brdf diffuse match spec ok
     res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
@@ -813,8 +801,8 @@ TEST(Materials,Bsdf_sample_value)
     Bsdf mat_glass;
     Spectrum ior_i = cauchy(1.f,0.f);
     Spectrum ior_t = cauchy(1.33f,0.f);
-    mat_glass.inherit_bdf(new DielectricReflection(SPECTRUM_ONE,ior_i,ior_t));
-    mat_glass.inherit_bdf(new Refraction(SPECTRUM_ONE,ior_i,ior_t));
+    mat_glass.inherit_bdf(new DielectricReflection(ior_i,ior_t));
+    mat_glass.inherit_bdf(new Refraction(ior_i,ior_t));
     //multi material specular, choose first (reflection)
     res = mat_glass.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                                   &pdf, true, &matched_spec);
@@ -847,7 +835,7 @@ TEST(Materials,Bsdf_sample_value)
     EXPECT_EQ(pdf,0.f);
 
     //multi material specular + non specular, non specular not allowed
-    mat_glass.inherit_bdf((Bdf*)new Lambertian(SPECTRUM_ONE));
+    mat_glass.inherit_bdf((Bdf*)new Lambertian());
     res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                                   &pdf, false, &matched_spec);
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
@@ -863,9 +851,9 @@ TEST(Materials,Bsdf_sample_value)
     Bsdf mat_glossy;
     MicrofacetDist* ggx1 = new GGXiso(0.2f);
     MicrofacetDist* ggx2 = new GGXiso(0.2f);
-    mat_glossy.inherit_bdf(new MicrofacetR(SPECTRUM_ONE,ggx1,
+    mat_glossy.inherit_bdf(new MicrofacetR(ggx1,
                            new Dielectric(ior_i,ior_t)));
-    mat_glossy.inherit_bdf(new MicrofacetT(SPECTRUM_ONE,ggx2,ior_i,ior_t));
+    mat_glossy.inherit_bdf(new MicrofacetT(ggx2,ior_i,ior_t));
     //multi material glossy, choose first (reflection)
     res = mat_glossy.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                                  &pdf, false, &matched_spec);
@@ -913,20 +901,20 @@ TEST(Materials,Bsdf_pdf)
     EXPECT_EQ(pdf, 0.f);
 
     //non matching
-    metal.inherit_bdf(new ConductorReflection(SPECTRUM_ONE,GOLD.n,GOLD.k));
+    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
     pdf = metal.pdf(&(r.direction),&hit,&wi,false);
     EXPECT_EQ(pdf, 0.f);
 
     //matching
-    material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    material.inherit_bdf(new Lambertian());
     pdf = material.pdf(&(r.direction), &hit, &wi, false);
     EXPECT_FLOAT_EQ(pdf, 0.318309873f);
 
     //multiple values
     Bsdf material2;
     float pdf2;
-    material2.inherit_bdf(new Lambertian(SPECTRUM_ONE));
-    material2.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    material2.inherit_bdf(new Lambertian());
+    material2.inherit_bdf(new Lambertian());
     pdf2 = material2.pdf(&(r.direction), &hit, &wi, false);
     EXPECT_FLOAT_EQ(pdf2, pdf);
 }
@@ -936,12 +924,11 @@ TEST(Materials,SingleBRDF_inherit_bdf)
     //add single reflective material
     SingleBRDF material;
     errors_count[WARNING_INDEX] = 0;
-    material.inherit_bdf(new Lambertian(SPECTRUM_ONE));
+    material.inherit_bdf(new Lambertian());
     EXPECT_EQ(errors_count[WARNING_INDEX], 0);
     //fail to add transmittive material
     errors_count[WARNING_INDEX] = 0;
-    material.inherit_bdf(new Refraction(SPECTRUM_ONE,cauchy(1.0,0.f),
-                                        cauchy(1.33f,0.f)));
+    material.inherit_bdf(new Refraction(cauchy(1.0,0.f),cauchy(1.33f,0.f)));
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
 }
@@ -972,8 +959,8 @@ TEST(Materials,SingleBRDF_value)
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
-    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
-    metal.inherit_bdf(new ConductorReflection(SPECTRUM_ONE,GOLD.n,GOLD.k));
+    material_r.inherit_bdf(new Lambertian());
+    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     //matching brdf no-spec
@@ -1030,8 +1017,8 @@ TEST(Materials,SingleBRDF_sample_value)
 
     SingleBRDF material_r;
     SingleBRDF metal;
-    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
-    metal.inherit_bdf(new ConductorReflection(SPECTRUM_ONE,GOLD.n,GOLD.k));
+    material_r.inherit_bdf(new Lambertian());
+    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
     a.set_material((Bsdf*)&metal,1);
     //brdf specular no match
     res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
@@ -1093,8 +1080,8 @@ TEST(Materials,SingleBRDF_pdf)
 
     SingleBRDF material_r;
     SingleBRDF metal;
-    material_r.inherit_bdf(new Lambertian(SPECTRUM_ONE));
-    metal.inherit_bdf(new ConductorReflection(SPECTRUM_ONE,GOLD.n,GOLD.k));
+    material_r.inherit_bdf(new Lambertian());
+    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
     wi = Vec3(0.f,1.f,0.f);
 
     //non matching spec

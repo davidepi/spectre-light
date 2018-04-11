@@ -242,9 +242,9 @@ TEST(Parser,texture)
         const Texture* tex = TexLib.get("Red");
         Spectrum spectrum = tex->map(0.f,0.f);
         ColorRGB res = spectrum.to_xyz().to_sRGB();
-        EXPECT_FLOAT_EQ(res.r,1.f);
-        EXPECT_FLOAT_EQ(res.g,0.f);
-        EXPECT_FLOAT_EQ(res.b,0.f);
+        EXPECT_NEAR(res.r,1.f,1e-3f);
+        EXPECT_NEAR(res.g,0.f,1e-3f);
+        EXPECT_NEAR(res.b,0.f,1e-3f);
     }
     else
         FAIL();
@@ -253,9 +253,9 @@ TEST(Parser,texture)
         const Texture* tex = TexLib.get("Grey");
         Spectrum spectrum = tex->map(0.f,0.f);
         ColorRGB res = spectrum.to_xyz().to_sRGB();
-        EXPECT_FLOAT_EQ(res.r,0.501960814f);
-        EXPECT_FLOAT_EQ(res.g,0.501960814f);
-        EXPECT_FLOAT_EQ(res.b,0.501960814f);
+        EXPECT_NEAR(res.r,0.501960814f,1e-3f);
+        EXPECT_NEAR(res.g,0.501960814f,1e-3f);
+        EXPECT_NEAR(res.b,0.501960814f,1e-3f);
     }
     else
         FAIL();

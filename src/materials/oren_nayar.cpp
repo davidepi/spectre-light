@@ -3,8 +3,18 @@
 
 #include "oren_nayar.hpp"
 
-OrenNayar::OrenNayar(const Spectrum& diffuse, float sigma)
-:Bdf(FLAG_BRDF),diffuse(diffuse*INV_PI)
+//need to construct the SPECTRUM_ONE here since, the static vars in the spectrum
+//file is not guaranteed to be initialized before this
+const Spectrum OrenNayar::DIFFUSE = Spectrum(
+{
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f,
+    1.f, 1.f, 1.f, 1.f
+})*INV_PI;
+
+OrenNayar::OrenNayar(float sigma)
+:Bdf(FLAG_BRDF)
 {
     float sigma2 = sigma*sigma;
     OrenNayar::A = 1.f - (sigma2/(2*(sigma2+0.33f)));
@@ -32,7 +42,7 @@ Spectrum OrenNayar::value(const Vec3 *wout, const Vec3 *wincident) const
         maxcos = max(0.0f, cosphiin * cosphiout + sinphiin * sinphiout);
     }
     else
-        return OrenNayar::diffuse*A;
+        return OrenNayar::DIFFUSE*A;
 
     float sinalpha, tanbeta;
     if(abscosthetain>abscosthetaout)
@@ -47,6 +57,6 @@ Spectrum OrenNayar::value(const Vec3 *wout, const Vec3 *wincident) const
     }
 
     //diffuse/pi * (A+B*max[0,cos(phiin-phiout)]*sinalpha*tanbeta)
-    return OrenNayar::diffuse * (A+B*maxcos*sinalpha*tanbeta);
+    return OrenNayar::DIFFUSE * (A+B*maxcos*sinalpha*tanbeta);
 }
 

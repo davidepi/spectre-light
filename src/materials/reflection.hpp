@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 15 Sep 2017
+//Last Edit 11 Apr 2018
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      15 Sep 2017
+ *  \date      11 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -36,7 +36,7 @@ public:
      *
      *  \param[in] specular The spectrum of light reflected back
      */
-    explicit Reflection(const Spectrum& specular);
+    explicit Reflection();
 
     /** \brief NOOP
      *
@@ -78,11 +78,6 @@ public:
      *  \return 0
      */
     float pdf(const Vec3* wo, const Vec3* wi)const;
-
-protected:
-
-    ///Scattered light
-    const Spectrum specular;
 };
 
 /**
@@ -98,13 +93,11 @@ public:
 
     /** \brief Default Constructor for metallic material
      *
-     *  \param[in] specular The spectrum of light reflected back
      *  \param[in] refraction The index of refraction of the material if isMetal
      *  is true. The incident index of refraction otherwise.
      *  \param[in] absorption The amount of light absorbed by the material if
      */
-    ConductorReflection(const Spectrum& specular, const Spectrum& refraction,
-                        const Spectrum& absorption);
+    ConductorReflection(const Spectrum& refraction, const Spectrum& absorption);
 
     /** \brief Returns the value of the BRDF
      *
@@ -139,12 +132,10 @@ class DielectricReflection : public Reflection
 public:
     /** \brief Default Constructor for dielectric material
      *
-     *  \param[in] specular The spectrum of light reflected back
      *  \param[in] ior_i The incident index of refraction
      *  \param[in] ior_t The transmitted index of refraction
      */
-    DielectricReflection(const Spectrum& specular, const Spectrum& ior_i,
-                         const Spectrum& ior_t);
+    DielectricReflection(const Spectrum& ior_i, const Spectrum& ior_t);
 
     /** \brief Returns the value of the BRDF
      *

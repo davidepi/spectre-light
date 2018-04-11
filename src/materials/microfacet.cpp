@@ -2,10 +2,9 @@
 //license: GNU GPLv3
 
 #include "microfacet.hpp"
-MicrofacetR::MicrofacetR(const Spectrum& spectrum,
-                         const MicrofacetDist* distribution,
+MicrofacetR::MicrofacetR(const MicrofacetDist* distribution,
                          const Fresnel* fresnel)
-: Bdf(FLAG_BRDF),specular(spectrum)
+: Bdf(FLAG_BRDF)
 {
     MicrofacetR::fresnel = fresnel;
     MicrofacetR::distribution = distribution;
@@ -29,8 +28,8 @@ Spectrum MicrofacetR::value(const Vec3* woS, const Vec3* wiS)const
         return SPECTRUM_BLACK;
     wh.normalize();
     float inv = 4.f*costwo*costwi;
-    return specular*distribution->D(&wh)*distribution->G(woS,wiS)*
-           fresnel->eval(dot(*wiS,wh))/inv;
+    return fresnel->eval(dot(*wiS,wh))*distribution->D(&wh)*
+           distribution->G(woS,wiS)/inv;
 }
 
 Spectrum MicrofacetR::sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
@@ -65,9 +64,9 @@ float MicrofacetR::pdf(const Vec3* woS, const Vec3* wiS)const
     return MicrofacetR::distribution->pdf(woS, &wh)/(4.f*dot(*woS,wh));
 }
 
-MicrofacetT::MicrofacetT(const Spectrum& spe, const MicrofacetDist* md,
+MicrofacetT::MicrofacetT(const MicrofacetDist* md,
                          const Spectrum& etai, const Spectrum& etat)
-: Bdf(FLAG_BTDF), specular(spe), fresnel_diel(etai,etat)
+: Bdf(FLAG_BTDF), fresnel_diel(etai,etat)
 {
     MicrofacetT::distribution = md;
     MicrofacetT::eta_i = fresnel_diel.get_eta_incident();
@@ -117,7 +116,7 @@ Spectrum MicrofacetT::value(const Vec3* woS, const Vec3* wiS)const
     float denom = etao*dotwoh+etai*dotwih;
     denom*=denom;
     denom*=costwo*costwi;
-    return  specular*(SPECTRUM_ONE-fresnel_diel.eval(dotwih))*fabsf(up/denom);
+    return  (SPECTRUM_ONE-fresnel_diel.eval(dotwih))*fabsf(up/denom);
 }
 
 Spectrum MicrofacetT::sample_value(const Vec3* woS, Vec3* wiS, float r0,
@@ -156,7 +155,6 @@ Spectrum MicrofacetT::sample_value(const Vec3* woS, Vec3* wiS, float r0,
     jacobian/=jacobian_denom*jacobian_denom;
     wiS->normalize();
     *pdf = MicrofacetT::distribution->pdf(woS, &wh)*jacobian;
-//    *pdf = MicrofacetT::pdf(woS,wiS);
     return MicrofacetT::value(woS,wiS);
 }
 

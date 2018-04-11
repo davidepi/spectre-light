@@ -3,13 +3,12 @@
 
 #include "reflection.hpp"
 
-Reflection::Reflection(const Spectrum& specular)
-    : Bdf(FLAG_BRDF|FLAG_SPEC),specular(specular)
+Reflection::Reflection():Bdf(FLAG_BRDF|FLAG_SPEC)
 {
 
 }
 
-Spectrum Reflection::value(const Vec3*, const Vec3*) const
+Spectrum Reflection::value(const Vec3*, const Vec3*)const
 {
     return SPECTRUM_BLACK;
 }
@@ -19,18 +18,14 @@ float Reflection::pdf(const Vec3*, const Vec3*)const
     return 0.f;
 }
 
-ConductorReflection::ConductorReflection(const Spectrum& specular,
-                                         const Spectrum& refraction,
+ConductorReflection::ConductorReflection(const Spectrum& refraction,
                                          const Spectrum& absorption)
-: Reflection(specular),ior(refraction),
-  fresnel((ior*ior)+(absorption*absorption))
+:ior(refraction),fresnel((ior*ior)+(absorption*absorption))
 {
 }
 
-DielectricReflection::DielectricReflection(const Spectrum& specular,
-                                           const Spectrum& ior_i,
+DielectricReflection::DielectricReflection(const Spectrum& ior_i,
                                            const Spectrum& ior_t)
-: Reflection(specular)
 {
 #ifdef SPECTRAL
     DielectricReflection::eta_i = 0;
@@ -66,7 +61,7 @@ Spectrum ConductorReflection::sample_value(const Vec3 *wo, Vec3 *wi,
     Spectrum rparsq = (tmp-etacosin2+1)/(tmp+etacosin2+1);
     eval = (rperpsq+rparsq)/2.f;
     *pdf=1.f;
-    return eval*specular/fabsf(wo->z);
+    return eval/fabsf(wo->z);
 }
 
 Spectrum DielectricReflection::sample_value(const Vec3 *wo, Vec3 *wi,
@@ -107,6 +102,6 @@ Spectrum DielectricReflection::sample_value(const Vec3 *wo, Vec3 *wi,
         eval = (rpar * rpar + rperp * rperp) / 2.f;
         eval /= fabsf(wo->z);
     }
-    return specular*eval;
+    return eval;
 }
 

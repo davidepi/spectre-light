@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 16 Jan 2018
+//Last Edit 11 Apr 2018
 
 /**
  *  \file refraction.hpp
  *  \brief Implementation of a BTDF
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      16 Jan 2018
+ *  \date      11 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -32,12 +32,10 @@ public:
 
     /** \brief Default constructor
      *
-     *  \param[in] specular Scale factor for transmitted light
      *  \param[in] eta_incident Refraction index for the incident material
      *  \param[in] eta_transmitted Refraction index for the transmitted material
      */
-    Refraction(const Spectrum& specular, const Spectrum& eta_incident,
-               const Spectrum& eta_transmitted);
+    Refraction(const Spectrum& eta_incident, const Spectrum& eta_transmitted);
 
     /** \brief NOOP
      *
@@ -82,10 +80,7 @@ public:
     float pdf(const Vec3* wo, const Vec3* wi)const;
 
 private:
-
-    //scale factor
-    const Spectrum specular;
-
+    
     float eta_i;
     float eta_t;
 };

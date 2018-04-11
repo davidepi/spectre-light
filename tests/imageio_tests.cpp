@@ -378,7 +378,6 @@ TEST(ImageIO,save_rgb)
 #else
     res = save_RGB("test.jpg",16,10,image_sample);
     EXPECT_FALSE(res);
-    EXPECT_EQ(unlink("test.jpg"),0);
 #endif
 }
 

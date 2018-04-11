@@ -2,9 +2,8 @@
 //license: GNU GPLv3
 
 #include "refraction.hpp"
-Refraction::Refraction(const Spectrum& s, const Spectrum& etai,
-                       const Spectrum& etat)
-: Bdf(FLAG_BTDF|FLAG_SPEC),specular(s)
+Refraction::Refraction(const Spectrum& etai,const Spectrum& etat)
+:Bdf(FLAG_BTDF|FLAG_SPEC)
 {
 #ifdef SPECTRAL
     Refraction::eta_i = 0;
@@ -82,13 +81,10 @@ Spectrum Refraction::sample_value(const Vec3 *wo, Vec3 *wi, float, float,
     float rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
     eval = 1.f-((rpar*rpar+rperp*rperp)/2.f); //refracted part
 
-    eval *= (ei*ei)/(et*et); //these should be calculated directly on spectrum
-    eval/=fabsf(wi->z); //but they are wavelength independent so I put them here
+    eval *= (ei*ei)/(et*et);
+    eval/=fabsf(wi->z);
 
-    //return BTDF
-    Spectrum retval(eval);
-    retval *= specular;
-    return retval;
+    return eval;
 }
 
 float Refraction::pdf(const Vec3*, const Vec3*)const

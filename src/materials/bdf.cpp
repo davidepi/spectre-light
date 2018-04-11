@@ -189,7 +189,7 @@ SingleBRDF::SingleBRDF()
     //used as a fallback if the inherit_bdf passes in an illegal value.
     //not the best course of action, but these methods will be called at startup
     //time
-    SingleBRDF::reflection = (Bdf*)new Lambertian(SPECTRUM_WHITE);
+    SingleBRDF::reflection = (Bdf*)new Lambertian();
     //to avoid SEGFAULT, default texture is completely white
     SingleBRDF::diffuse = TexLib.get("Default");
 }
