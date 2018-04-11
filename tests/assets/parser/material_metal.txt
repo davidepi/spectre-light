@@ -1,0 +1,18 @@
+#for each metal there are the variants: both letter correct, second wrong, first wrong. To check every condition in the if
+material: {type:metal, name: "Silver", element: "ag"} #specular
+material: {type:metal, name: "Wrong0", element: "aa"}
+material: {type:metal, name: "Aluminium", element: "al", anisotropy: 0.2} #anisotropic
+material: {type:metal, name: "Gold", element: "AU", roughness: 0.2, distribution: blinn} #blinn
+material: {type:metal, name: "Copper", element: "Cu", roughness: 1.5} #beckmann
+material: {type:metal, name: "Wrong1", element: "ca"}
+material: {type:metal, name: "Iron", element: "fE", roughness: 0.5, distribution: ggx} #ggx
+material: {type:metal, name: "Wrong2", element: "ff"}
+material: {type:metal, name: "Mercury", element: "hg"}
+material: {type:metal, name: "Wrong3", element: "hh"} 
+material: {type:metal, name: "Lead", element: "pb"}
+material: {type:metal, name: "Platinum", element: "pt"}
+material: {type:metal, name: "Wrong4", element: "pr"} 
+material: {type:metal, name: "Non-existent", element: "ah"}
+material: {type:metal, name: "Wrong5", element: "gg"}
+
+

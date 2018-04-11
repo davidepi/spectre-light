@@ -3,6 +3,8 @@
 
 
 #include "parsers/config_driver.hpp"
+#include "primitives/asset.hpp"
+#include "primitives/sphere.hpp"
 #include "renderer.hpp"
 
 TEST(Parser,out)
@@ -269,5 +271,161 @@ TEST(Parser,texture)
     free(r1);
     chdir(current_dir);
     free((void*)current_dir);
+}
+
+TEST(Parser,material_matte)
+{
+    Bsdf material_t;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m,1);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    wi = Vec3(0.f,1.f,0.f);
+    wi.normalize();
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt");
+    EXPECT_TRUE(TexLib.contains("Red"));
+    ASSERT_TRUE(MtlLib.contains("Like default"));
+    ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
+    //TODO: maybe RTTI to get class info?
+    const Bsdf* mat0 = MtlLib.get("Like default");
+    const Bsdf* mat1 = MtlLib.get("Red Oren-Nayar");
+
+    a.set_material(mat0,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat1,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.0656985715f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.0338758416f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.00307962182f,1e-5f);
+    delete r0;
+}
+
+TEST(Parser,material_metal)
+{
+    Bsdf material_t;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m,1);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    wi = Vec3(0.f,1.f,0.f);
+    wi.normalize();
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    ConfigDriver driver0;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_metal.txt");
+    EXPECT_EQ(errors_count[WARNING_INDEX],1);
+    errors_count[WARNING_INDEX] = 0;
+    ASSERT_TRUE(MtlLib.contains("Silver"));
+    ASSERT_TRUE(MtlLib.contains("Aluminium"));
+    ASSERT_TRUE(MtlLib.contains("Gold"));
+    ASSERT_TRUE(MtlLib.contains("Copper"));
+    ASSERT_TRUE(MtlLib.contains("Iron"));
+    ASSERT_TRUE(MtlLib.contains("Mercury"));
+    ASSERT_TRUE(MtlLib.contains("Lead"));
+    ASSERT_TRUE(MtlLib.contains("Platinum"));
+    ASSERT_TRUE(MtlLib.contains("Non-existent"));
+    const Bsdf* mat0 = MtlLib.get("Silver");
+    const Bsdf* mat1 = MtlLib.get("Aluminium");
+    const Bsdf* mat2 = MtlLib.get("Gold");
+    const Bsdf* mat3 = MtlLib.get("Copper");
+    const Bsdf* mat4 = MtlLib.get("Iron");
+    const Bsdf* mat5 = MtlLib.get("Mercury");
+    const Bsdf* mat6 = MtlLib.get("Lead");
+    const Bsdf* mat7 = MtlLib.get("Platinum");
+    const Bsdf* mat8 = MtlLib.get("Non-existent");
+
+    a.set_material(mat0,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat1,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat2,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat8,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat3,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat4,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat5,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat6,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
+
+    a.set_material(mat7,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
 }
 

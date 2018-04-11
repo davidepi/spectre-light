@@ -97,7 +97,8 @@ element {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
 {int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 {float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
 {string} { UPDATE_POS; return yy::ConfigParser::make_STRING(yytext,loc); }
-[ \t\r]            {UPDATE_POS; loc.step();}
+#[^\n\r]* {UPDATE_POS; loc.step();}
+[ \t\r]   {UPDATE_POS; loc.step();}
 [\n]     {UPDATE_POS; loc.lines(yyleng);loc.step(); last_line_pos=current_pos; }
 .        {UPDATE_POS; driver.unknown_char(loc,yytext[0]);}
 <<EOF>>            { UPDATE_POS; return yy::ConfigParser::make_END(loc); }

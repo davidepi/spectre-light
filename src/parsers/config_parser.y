@@ -189,8 +189,10 @@ texture_stmt
 
 
 material_obj
-: NAME COLON STRING material_rec {driver.cur_mat.name = $3;}
-| material_rec NAME COLON STRING {driver.cur_mat.name = $4;}
+: NAME COLON STRING material_rec {driver.cur_mat.name = $3.substr(1,$3.size()-2);}
+| material_rec NAME COLON STRING {driver.cur_mat.name = $4.substr(1,$4.size()-2);}
+| material_rec NAME COLON STRING material_rec {driver.cur_mat.name = $4.substr(1,$4.size()-2);}
+| NAME COLON STRING {driver.cur_mat.name = $3.substr(1,$3.size()-2);}
 ;
 
 material_rec: material_rec material_stmt | material_stmt;
@@ -207,9 +209,9 @@ material_stmt
 | DISTRIBUTION COLON BLINN {driver.cur_mat.dist = SPECTRE_DIST_BLINN;}
 | DISTRIBUTION COLON BECKMANN {driver.cur_mat.dist = SPECTRE_DIST_BECKMANN;}
 | DISTRIBUTION COLON GGX {driver.cur_mat.dist = SPECTRE_DIST_GGX;}
-| DIFFUSE COLON STRING {driver.cur_mat.diffuse = $3;}
-| SPECULAR COLON STRING {driver.cur_mat.specular = $3;}
-| ELEM COLON STRING {driver.cur_mat.elem[0]=$3[0];driver.cur_mat.elem[1]=$3[1];}
+| DIFFUSE COLON STRING {driver.cur_mat.diffuse = $3.substr(1,$3.size()-2);}
+| SPECULAR COLON STRING {driver.cur_mat.specular = $3.substr(1,$3.size()-2);}
+| ELEM COLON STRING {driver.cur_mat.elem[0]=$3[1];driver.cur_mat.elem[1]=$3[2];}
 | COMMA
 ;
 

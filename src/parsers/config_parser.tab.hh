@@ -973,7 +973,7 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 259,     ///< Last index in yytable_.
+      yylast_ = 263,     ///< Last index in yytable_.
       yynnts_ = 26,  ///< Number of nonterminal symbols.
       yyfinal_ = 28, ///< Termination state number.
       yyterror_ = 1,

@@ -40,6 +40,7 @@ Renderer* ConfigDriver::parse(const std::string& f)
     r->inherit_camera(camera);
     r->inherit_filter(filter);
     r->inherit_integrator(integrator);
+    build_materials();
     return r;
 }
 
@@ -219,7 +220,7 @@ void ConfigDriver::load_texture_single()
        image_supported(cur_file.extension())>=0)
     {
         //TODO: placeholder because the texture class is not ready
-        //TOOD: check texture not already loaded
+        //TOOD: check texture not already loaded (MESSAGE_DUPLICATE_TEXTURE)
         if(tex_name.empty())
             tex_name = cur_file.filename();
         Texture* addme = new UniformTexture(SPECTRUM_WHITE);
@@ -236,7 +237,7 @@ void ConfigDriver::build_materials()
     Bsdf* material;
     const Texture* diffuse;
     const Texture* specular;
-    for(int i=0;i<deferred_materials.size();i++)
+    for(int i=0;i<(int)deferred_materials.size();i++)
     {
         mat = &deferred_materials[i];
         //isotropic element, no point in using anisotropic one
@@ -244,7 +245,7 @@ void ConfigDriver::build_materials()
             mat->rough_y=-1;
         mat->rough_x = clamp(mat->rough_x,0.f,1.f);
         if(mat->rough_y!=-1)
-            mat->rough_y = clamp(mat->rough_x,0.0001f,1.f);
+            mat->rough_y = clamp(mat->rough_y,0.0001f,1.f);
         switch(mat->type)
         {
             case MATTE:
@@ -415,8 +416,12 @@ void ConfigDriver::build_materials()
                     absorption = Spectrum(PLATINUM.k);
                 }
                 else
+                {
                     Console.warning(MESSAGE_METAL_NOT_SUPPORTED,
                                     mat->elem[0],mat->elem[1]);
+                    ior = Spectrum(GOLD.n);
+                    absorption = Spectrum(GOLD.k);
+                }
                 if(mat->rough_x==0 && mat->rough_y==-1) //specular
                     bdf = new ConductorReflection(ior,absorption);
                 else
@@ -442,7 +447,10 @@ void ConfigDriver::build_materials()
         if(!MtlLib.contains(mat->name))
             MtlLib.add_inherit(mat->name,material);
         else
+        {
+            Console.warning(MESSAGE_DUPLICATE_MATERIAL,mat->name.c_str());
             delete material; //already existent, prevents memory leaks
+        }
     }
 }
 
@@ -456,6 +464,6 @@ ParsedMaterial::ParsedMaterial()
     rough_x = 0;
     rough_y = -1;
     dist = SPECTRE_DIST_BECKMANN;
-    std::string diffuse = "Default";
-    std::string specular = "Default";
+    diffuse = "Default";
+    specular = "Default";
 }

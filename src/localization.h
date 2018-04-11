@@ -124,10 +124,18 @@
 
 #define MESSAGE_TEXTURE_ERROR "Unable to load texture file %s"
 
-#define MESSAGE_TEXTURE_NOT_FOUND_MTL "Texture %s not found in library; to be used in material %s"
-#define MESSAGE_METAL_NOT_SUPPORTED "Metal %c%c is not supported"
+#define MESSAGE_TEXTURE_NOT_FOUND_MTL "Texture %s not found in library; to be "\
+"used in material %s"
+#define MESSAGE_METAL_NOT_SUPPORTED "Metal %c%c is not supported."\
+" Using the default Au"
 
 #define MESSAGE_SYNTAX_ERROR "Syntax error: Unexpected character %c"
+
+#define MESSAGE_DUPLICATE_TEXTURE "Duplicate name for texture %s. The newest " \
+"was not inserted into the library"
+
+#define MESSAGE_DUPLICATE_MATERIAL "Duplicate name for material %s. The newest "\
+"was not inserted into the library"
 
 #endif
 
