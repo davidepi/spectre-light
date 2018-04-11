@@ -12,6 +12,7 @@
 {
     #include <string>
     #include "geometry/vec3.hpp"
+    #include "geometry/vec2.hpp"
     class ConfigDriver;
 }
 %param{ ConfigDriver& driver }
@@ -76,7 +77,7 @@
 %token BLINN "`blinn` keyword"
 %token DIFFUSE "`diffuse` keyword"
 %token DISTRIBUTION "`distribution` keyword"
-%token ELEMENT "`element` keyword"
+%token ELEM "`element` keyword"
 %token GGX "`ggx` keyword"
 %token GLASS "`glass` keyword"
 %token GLOSSY "`glossy` keyword"
@@ -96,6 +97,7 @@
 %type <float> number
 %type <int> integer
 %type <Vec3> vector
+%type <Vec2> vector2
 
 %%
 
@@ -120,7 +122,7 @@ stmt
 | LIGHT COLON OPEN_CU light_obj CLOSE_CU
 | TEXTURE COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_folder();}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
-| MATERIAL COLON OPEN_CU material_obj CLOSE_CU
+| MATERIAL COLON OPEN_CU material_obj CLOSE_CU {driver.deferred_materials.push_back(driver.cur_mat);driver.cur_mat=ParsedMaterial();}
 | COMMA
 ;
 
@@ -185,30 +187,39 @@ texture_stmt
 | COMMA
 ;
 
-material_obj: material_obj material_stmt | material_stmt;
+
+material_obj
+: NAME COLON STRING material_rec {driver.cur_mat.name = $3;}
+| material_rec NAME COLON STRING {driver.cur_mat.name = $4;}
+;
+
+material_rec: material_rec material_stmt | material_stmt;
 material_stmt
-: NAME COLON STRING
-| TYPE COLON MATTE
-| TYPE COLON GLOSSY
-| TYPE COLON METAL
-| TYPE COLON GLASS
-| IOR COLON FLOAT
-| ELEMENT COLON STRING
-| ROUGHNESS COLON FLOAT
-| ANISOTROPY COLON FLOAT
-| DISTRIBUTION COLON BLINN
-| DISTRIBUTION COLON BECKMANN
-| DISTRIBUTION COLON GGX
-| DIFFUSE COLON vector
-| DIFFUSE COLON STRING
-| SPECULAR COLON vector
-| SPECULAR COLON STRING
+: TYPE COLON MATTE {driver.cur_mat.type = MATTE;}
+| TYPE COLON GLOSSY {driver.cur_mat.type = GLOSSY;}
+| TYPE COLON METAL {driver.cur_mat.type = METAL;}
+| TYPE COLON GLASS {driver.cur_mat.type = GLASS;}
+| IOR COLON FLOAT {driver.cur_mat.ior = cauchy($3,0,0);}
+| IOR COLON vector2 {driver.cur_mat.ior = cauchy($3.x,$3.y);}
+| IOR COLON vector vector {driver.cur_mat.ior = sellmeier($3.x,$3.y,$3.z,$4.x,$4.y,$4.z);}
+| ROUGHNESS COLON FLOAT {driver.cur_mat.rough_x = $3;}
+| ANISOTROPY COLON FLOAT {driver.cur_mat.rough_y = $3;}
+| DISTRIBUTION COLON BLINN {driver.cur_mat.dist = SPECTRE_DIST_BLINN;}
+| DISTRIBUTION COLON BECKMANN {driver.cur_mat.dist = SPECTRE_DIST_BECKMANN;}
+| DISTRIBUTION COLON GGX {driver.cur_mat.dist = SPECTRE_DIST_GGX;}
+| DIFFUSE COLON STRING {driver.cur_mat.diffuse = $3;}
+| SPECULAR COLON STRING {driver.cur_mat.specular = $3;}
+| ELEM COLON STRING {driver.cur_mat.elem[0]=$3[0];driver.cur_mat.elem[1]=$3[1];}
 | COMMA
 ;
 
 vector:
 OPEN_SQ number COMMA number COMMA number CLOSE_SQ
 { $$ = Vec3($2,$4,$6);}
+;
+
+vector2
+: OPEN_SQ number COMMA number CLOSE_SQ { $$ = Vec2($2,$4);}
 ;
 
 number

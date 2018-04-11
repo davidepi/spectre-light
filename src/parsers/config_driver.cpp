@@ -229,3 +229,233 @@ void ConfigDriver::load_texture_single()
     else
         Console.warning(MESSAGE_TEXTURE_ERROR,cur_file.absolute_path());
 }
+
+void ConfigDriver::build_materials()
+{
+    ParsedMaterial* mat;
+    Bsdf* material;
+    const Texture* diffuse;
+    const Texture* specular;
+    for(int i=0;i<deferred_materials.size();i++)
+    {
+        mat = &deferred_materials[i];
+        //isotropic element, no point in using anisotropic one
+        if(mat->rough_y==mat->rough_x)
+            mat->rough_y=-1;
+        mat->rough_x = clamp(mat->rough_x,0.f,1.f);
+        if(mat->rough_y!=-1)
+            mat->rough_y = clamp(mat->rough_x,0.0001f,1.f);
+        switch(mat->type)
+        {
+            case MATTE:
+            {
+                material = new SingleBRDF();
+                if(TexLib.contains(mat->diffuse))
+                    diffuse = TexLib.get(mat->diffuse);
+                else
+                {
+                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
+                                    mat->diffuse.c_str(),mat->name.c_str());
+                    diffuse = TexLib.get("Default");
+                }
+                if(mat->rough_x!=0)
+                {
+                    float roughness = lerp(mat->rough_x, 0.f, 100.f);
+                    material->inherit_bdf(new OrenNayar(roughness),diffuse);
+                }
+                else
+                    material->inherit_bdf(new Lambertian,diffuse);
+                break;
+            }
+            case GLOSSY:
+            {
+                material = new Bsdf();
+                Fresnel* fresnel = new Dielectric(cauchy(1.f,0),cauchy(1.5f,0));
+                MicrofacetDist* dist;
+                if(TexLib.contains(mat->diffuse))
+                    diffuse = TexLib.get(mat->diffuse);
+                else
+                {
+                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
+                                    mat->diffuse.c_str(),mat->name.c_str());
+                    diffuse = TexLib.get("Default");
+                }
+                if(TexLib.contains(mat->specular))
+                    diffuse = TexLib.get(mat->specular);
+                else
+                {
+                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
+                                    mat->specular.c_str(),mat->name.c_str());
+                    diffuse = TexLib.get("Default");
+                }
+                material->inherit_bdf(new Lambertian(),diffuse);
+                //no specular in glossy, avoid division by zero
+                if(mat->rough_x==0)
+                    mat->rough_x = 0.0001;
+                if(mat->rough_y!=-1)
+                    dist = new GGXaniso(mat->rough_x,mat->rough_y);
+                else
+                {
+                    if(mat->dist == SPECTRE_DIST_BLINN)
+                        dist = new Blinn(1.f/mat->rough_x);
+                    else if(mat->dist == SPECTRE_DIST_BECKMANN)
+                        dist = new Beckmann(mat->rough_x);
+                    else
+                        dist = new GGXiso(mat->rough_x);
+                }
+                material->inherit_bdf(new MicrofacetR(dist,fresnel),specular);
+            }
+            case GLASS:
+            {
+                if(TexLib.contains(mat->diffuse))
+                    diffuse = TexLib.get(mat->diffuse);
+                else
+                {
+                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
+                                    mat->diffuse.c_str(),mat->name.c_str());
+                    diffuse = TexLib.get("Default");
+                }
+                if(TexLib.contains(mat->specular))
+                    diffuse = TexLib.get(mat->specular);
+                else
+                {
+                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
+                                    mat->specular.c_str(),mat->name.c_str());
+                    diffuse = TexLib.get("Default");
+                }
+                material = new Bsdf();
+                Bdf* reflective;
+                Bdf* refractive;
+                Spectrum etai = cauchy(1.f,0.f);
+                if(mat->rough_x==0 && mat->rough_y==-1) //spec
+                {
+                    reflective = new DielectricReflection(etai,mat->ior);
+                    refractive = new Refraction(etai,mat->ior);
+                }
+                else
+                {
+                    MicrofacetDist* dist_r;
+                    MicrofacetDist* dist_t;
+                    Fresnel* fresnel_r = new Dielectric(etai,mat->ior);
+                    if(mat->rough_y!=-1)
+                    {
+                        dist_r = new GGXaniso(mat->rough_x,mat->rough_y);
+                        dist_t = new GGXaniso(mat->rough_x,mat->rough_y);
+                    }
+                    else
+                    {
+                        if(mat->dist == SPECTRE_DIST_BLINN)
+                        {
+                            dist_r = new Blinn(1.f/mat->rough_x);
+                            dist_t = new Blinn(1.f/mat->rough_x);
+                        }
+                        else if(mat->dist == SPECTRE_DIST_BECKMANN)
+                        {
+                            dist_r = new Beckmann(mat->rough_x);
+                            dist_t = new Beckmann(mat->rough_x);
+                        }
+                        else
+                        {
+                            dist_r = new GGXiso(mat->rough_x);
+                            dist_t = new GGXiso(mat->rough_x);
+                        }
+                    }
+                    reflective = new MicrofacetR(dist_r,fresnel_r);
+                    refractive = new MicrofacetT(dist_t,etai,mat->ior);
+                }
+                material->inherit_bdf(refractive,diffuse);
+                material->inherit_bdf(reflective,specular);
+            }
+            case METAL:
+            {
+                Spectrum ior;
+                Spectrum absorption;
+                Bdf* bdf;
+                MicrofacetDist* dist;
+                Fresnel* fresnel;
+                material = new SingleBRDF();
+                if(mat->elem[0]=='a' && mat->elem[1]=='g')
+                {
+                    ior = Spectrum(SILVER.n);
+                    absorption = Spectrum(SILVER.k);
+                }
+                else if(mat->elem[0]=='a' && mat->elem[1]=='l')
+                {
+                    ior = Spectrum(ALUMINIUM.n);
+                    absorption = Spectrum(ALUMINIUM.k);
+                }
+                else if(mat->elem[0]=='a' && mat->elem[1]=='u')
+                {
+                    ior = Spectrum(GOLD.n);
+                    absorption = Spectrum(GOLD.k);
+                }
+                else if(mat->elem[0]=='c' && mat->elem[1]=='u')
+                {
+                    ior = Spectrum(COPPER.n);
+                    absorption = Spectrum(COPPER.k);
+                }
+                else if(mat->elem[0]=='f' && mat->elem[1]=='e')
+                {
+                    ior = Spectrum(IRON.n);
+                    absorption = Spectrum(IRON.k);
+                }
+                else if(mat->elem[0]=='h' && mat->elem[1]=='g')
+                {
+                    ior = Spectrum(MERCURY.n);
+                    absorption = Spectrum(MERCURY.k);
+                }
+                else if(mat->elem[0]=='p' && mat->elem[1]=='b')
+                {
+                    ior = Spectrum(LEAD.n);
+                    absorption = Spectrum(LEAD.k);
+                }
+                else if(mat->elem[0]=='p' && mat->elem[1]=='t')
+                {
+                    ior = Spectrum(PLATINUM.n);
+                    absorption = Spectrum(PLATINUM.k);
+                }
+                else
+                    Console.warning(MESSAGE_METAL_NOT_SUPPORTED,
+                                    mat->elem[0],mat->elem[1]);
+                if(mat->rough_x==0 && mat->rough_y==-1) //specular
+                    bdf = new ConductorReflection(ior,absorption);
+                else
+                {
+                    
+                    if(mat->rough_x!=0 && mat->rough_y!=-1) //anisotropic microf
+                        dist = new GGXaniso(mat->rough_x,mat->rough_y);
+                    else
+                    {
+                        if(mat->dist == SPECTRE_DIST_BLINN)
+                            dist = new Blinn(1.f/mat->rough_x);
+                        else if(mat->dist == SPECTRE_DIST_BECKMANN)
+                            dist = new Beckmann(mat->rough_x);
+                        else
+                            dist = new GGXiso(mat->rough_x);
+                    }
+                    fresnel = new Conductor(ior,absorption);
+                    bdf = new MicrofacetR(dist,fresnel);
+                }
+                material->inherit_bdf(bdf);
+            }
+        }
+        if(!MtlLib.contains(mat->name))
+            MtlLib.add_inherit(mat->name,material);
+        else
+            delete material; //already existent, prevents memory leaks
+    }
+}
+
+ParsedMaterial::ParsedMaterial()
+{
+    name = "";
+    elem[0] = 'a';
+    elem[1] = 'u';
+    type = MATTE;
+    ior = cauchy(1.45f, 0.f);
+    rough_x = 0;
+    rough_y = -1;
+    dist = SPECTRE_DIST_BECKMANN;
+    std::string diffuse = "Default";
+    std::string specular = "Default";
+}

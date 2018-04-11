@@ -44,9 +44,10 @@
 
     #include <string>
     #include "geometry/vec3.hpp"
+    #include "geometry/vec2.hpp"
     class ConfigDriver;
 
-#line 50 "config_parser.tab.hh" // lalr1.cc:392
+#line 51 "config_parser.tab.hh" // lalr1.cc:392
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -123,7 +124,7 @@
 
 
 namespace yy {
-#line 127 "config_parser.tab.hh" // lalr1.cc:392
+#line 128 "config_parser.tab.hh" // lalr1.cc:392
 
 
 
@@ -290,22 +291,25 @@ namespace yy {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // vector2
+      char dummy1[sizeof(Vec2)];
+
       // vector
-      char dummy1[sizeof(Vec3)];
+      char dummy2[sizeof(Vec3)];
 
       // "floating point value"
       // number
-      char dummy2[sizeof(float)];
+      char dummy3[sizeof(float)];
 
       // "integer value"
       // integer
-      char dummy3[sizeof(int)];
+      char dummy4[sizeof(int)];
 
       // "quoted string"
-      char dummy4[sizeof(std::string)];
+      char dummy5[sizeof(std::string)];
 
       // "positive integer value"
-      char dummy5[sizeof(unsigned int)];
+      char dummy6[sizeof(unsigned int)];
 };
 
     /// Symbol semantic values.
@@ -377,7 +381,7 @@ namespace yy {
         CONFIG_BLINN = 303,
         CONFIG_DIFFUSE = 304,
         CONFIG_DISTRIBUTION = 305,
-        CONFIG_ELEMENT = 306,
+        CONFIG_ELEM = 306,
         CONFIG_GGX = 307,
         CONFIG_GLASS = 308,
         CONFIG_GLOSSY = 309,
@@ -428,6 +432,8 @@ namespace yy {
       /// Constructor for valueless symbols, and symbols from each type.
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const Vec2 v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const Vec3 v, const location_type& l);
 
@@ -704,7 +710,7 @@ namespace yy {
 
     static inline
     symbol_type
-    make_ELEMENT (const location_type& l);
+    make_ELEM (const location_type& l);
 
     static inline
     symbol_type
@@ -820,7 +826,7 @@ namespace yy {
     /// \param yyvalue   the value to check
     static bool yy_table_value_is_error_ (int yyvalue);
 
-    static const signed char yypact_ninf_;
+    static const short int yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -967,8 +973,8 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 242,     ///< Last index in yytable_.
-      yynnts_ = 24,  ///< Number of nonterminal symbols.
+      yylast_ = 259,     ///< Last index in yytable_.
+      yynnts_ = 26,  ///< Number of nonterminal symbols.
       yyfinal_ = 28, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -1056,17 +1062,21 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 87: // vector
+      case 89: // vector2
+        value.copy< Vec2 > (other.value);
+        break;
+
+      case 88: // vector
         value.copy< Vec3 > (other.value);
         break;
 
       case 64: // "floating point value"
-      case 88: // number
+      case 90: // number
         value.copy< float > (other.value);
         break;
 
       case 63: // "integer value"
-      case 89: // integer
+      case 91: // integer
         value.copy< int > (other.value);
         break;
 
@@ -1095,17 +1105,21 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 87: // vector
+      case 89: // vector2
+        value.copy< Vec2 > (v);
+        break;
+
+      case 88: // vector
         value.copy< Vec3 > (v);
         break;
 
       case 64: // "floating point value"
-      case 88: // number
+      case 90: // number
         value.copy< float > (v);
         break;
 
       case 63: // "integer value"
-      case 89: // integer
+      case 91: // integer
         value.copy< int > (v);
         break;
 
@@ -1129,6 +1143,13 @@ namespace yy {
   ConfigParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
     : Base (t)
     , value ()
+    , location (l)
+  {}
+
+  template <typename Base>
+  ConfigParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const Vec2 v, const location_type& l)
+    : Base (t)
+    , value (v)
     , location (l)
   {}
 
@@ -1193,17 +1214,21 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 87: // vector
+      case 89: // vector2
+        value.template destroy< Vec2 > ();
+        break;
+
+      case 88: // vector
         value.template destroy< Vec3 > ();
         break;
 
       case 64: // "floating point value"
-      case 88: // number
+      case 90: // number
         value.template destroy< float > ();
         break;
 
       case 63: // "integer value"
-      case 89: // integer
+      case 91: // integer
         value.template destroy< int > ();
         break;
 
@@ -1238,17 +1263,21 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 87: // vector
+      case 89: // vector2
+        value.move< Vec2 > (s.value);
+        break;
+
+      case 88: // vector
         value.move< Vec3 > (s.value);
         break;
 
       case 64: // "floating point value"
-      case 88: // number
+      case 90: // number
         value.move< float > (s.value);
         break;
 
       case 63: // "integer value"
-      case 89: // integer
+      case 91: // integer
         value.move< int > (s.value);
         break;
 
@@ -1621,9 +1650,9 @@ namespace yy {
   }
 
   ConfigParser::symbol_type
-  ConfigParser::make_ELEMENT (const location_type& l)
+  ConfigParser::make_ELEM (const location_type& l)
   {
-    return symbol_type (token::CONFIG_ELEMENT, l);
+    return symbol_type (token::CONFIG_ELEM, l);
   }
 
   ConfigParser::symbol_type
@@ -1713,7 +1742,7 @@ namespace yy {
 
 
 } // yy
-#line 1717 "config_parser.tab.hh" // lalr1.cc:392
+#line 1746 "config_parser.tab.hh" // lalr1.cc:392
 
 
 

@@ -124,6 +124,9 @@
 
 #define MESSAGE_TEXTURE_ERROR "Unable to load texture file %s"
 
+#define MESSAGE_TEXTURE_NOT_FOUND_MTL "Texture %s not found in library; to be used in material %s"
+#define MESSAGE_METAL_NOT_SUPPORTED "Metal %c%c is not supported"
+
 #define MESSAGE_SYNTAX_ERROR "Syntax error: Unexpected character %c"
 
 #endif

@@ -92,6 +92,7 @@ blinn { UPDATE_POS; return yy::ConfigParser::make_BLINN(loc); }
 beckmann { UPDATE_POS; return yy::ConfigParser::make_BECKMANN(loc); }
 ggx { UPDATE_POS; return yy::ConfigParser::make_GGX(loc); }
 color {UPDATE_POS; return yy::ConfigParser::make_COLOR(loc);}
+element {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
 {uint}    { UPDATE_POS; return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
 {int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 {float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }

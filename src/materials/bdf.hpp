@@ -167,7 +167,7 @@ public:
      *  spectrum of the Bsdf. If left empty, the default White texture will be
      *  used
      */
-    virtual void inherit_bdf(Bdf* addme, Texture* spectrum = NULL);
+    virtual void inherit_bdf(Bdf* addme, const Texture* spectrum = NULL);
 
     /** \brief Return the value of the BSDF
      *
@@ -267,7 +267,7 @@ public:
      *  spectrum of the Bsdf (otherwise every Bdf uses a white spectrum). If
      *  left empty, the default White texture will be used
      */
-    void inherit_bdf(Bdf* addme, Texture* texture = NULL);
+    void inherit_bdf(Bdf* addme, const Texture* texture = NULL);
     
     /** \brief Return the value of the BSDF
      *

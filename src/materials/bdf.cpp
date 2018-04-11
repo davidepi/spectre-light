@@ -44,7 +44,7 @@ Bsdf::~Bsdf()
         delete Bsdf::bdfs[i];
 }
 
-void Bsdf::inherit_bdf(Bdf* addme, Texture* spectrum)
+void Bsdf::inherit_bdf(Bdf* addme, const Texture* spectrum)
 {
 #ifdef DEBUG
     if(count==_MAX_BDF_)
@@ -209,7 +209,7 @@ SingleBRDF::~SingleBRDF()
     delete SingleBRDF::bdfs[0];
 }
 
-void SingleBRDF::inherit_bdf(Bdf* addme, Texture* spectrum)
+void SingleBRDF::inherit_bdf(Bdf* addme, const Texture* spectrum)
 {
     if(addme->is_BRDF())
     {

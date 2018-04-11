@@ -21,11 +21,37 @@
 #include "integrators/path_tracer.hpp"
 #include "parsers/config_parser.tab.hh"
 #include "textures/texture_library.hpp"
+#include "materials/bdf.hpp"
+#include "materials/metals.hpp"
+#include "materials/lambertian.hpp"
+#include "materials/oren_nayar.hpp"
+#include "materials/microfacet.hpp"
+#include "materials/microfacet_distributions.hpp"
+#include "materials/reflection.hpp"
+#include "materials/refraction.hpp"
 #include "renderer.hpp"
 
 #define YY_DECL \
 yy::ConfigParser::symbol_type yylex(ConfigDriver& driver)
 YY_DECL;
+
+enum mat_t {MATTE,GLOSSY,METAL,GLASS};
+
+class ParsedMaterial
+{
+public:
+    std::string name;
+    char elem[2];
+    mat_t type;
+    Spectrum ior;
+    float rough_x;
+    float rough_y;
+    char dist;
+    std::string diffuse;
+    std::string specular;
+    
+    ParsedMaterial();
+};
 
 class ConfigDriver
 {
@@ -71,6 +97,12 @@ public:
     void load_texture_single();
     void load_texture_folder();
     void load_texture_uniform();
+    
+    //materials
+    ParsedMaterial cur_mat;
+    //deferred because I need to parse every texture first
+    std::vector<ParsedMaterial>deferred_materials;
+    void build_materials();
     
     void error(const yy::location& l, const std::string& m);
     void unknown_char(const yy::location& l, char c);
