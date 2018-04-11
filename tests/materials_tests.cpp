@@ -699,6 +699,9 @@ TEST(Materials,Bsdf_value)
 {
     Bsdf material_r;
     Bsdf metal;
+    Bsdf materialWtexture;
+    ColorRGB red((unsigned char)255,0,0);
+    Texture* ut = new UniformTexture(Spectrum(red,false));
     Sphere s;
     Matrix4 m;
     Vec3 wi;
@@ -709,6 +712,7 @@ TEST(Materials,Bsdf_value)
     HitPoint hit;
     float distance = FLT_MAX;
     material_r.inherit_bdf(new Lambertian());
+    materialWtexture.inherit_bdf(new Lambertian(),ut);
     metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
@@ -752,6 +756,14 @@ TEST(Materials,Bsdf_value)
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
+
+    //textured material
+    a.set_material(&materialWtexture,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    EXPECT_NEAR(res.w[0],0.131288946f,1e-5);
+    EXPECT_NEAR(res.w[1],0.0676958858f,1e-5);
+    EXPECT_NEAR(res.w[2],0.00615417166f,1e-5);
 }
 
 TEST(Materials,Bsdf_sample_value)
@@ -791,6 +803,23 @@ TEST(Materials,Bsdf_sample_value)
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
+    EXPECT_FLOAT_EQ(pdf,0.22507906f);
+    EXPECT_FLOAT_EQ(wi.x,-0.707106769f);
+    EXPECT_FLOAT_EQ(wi.y, 0.707106769);
+    EXPECT_TRUE(flt_equal(wi.z,0.f));
+    EXPECT_EQ(matched_spec,false);
+    EXPECT_TRUE(wi.is_normalized());
+
+    //textured material
+    Bsdf materialWtexture;
+    ColorRGB red((unsigned char)255,0,0);
+    Texture* ut = new UniformTexture(Spectrum(red,false));
+    materialWtexture.inherit_bdf(new Lambertian(),ut);
+    res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                        &wi, &pdf, false, &matched_spec);
+    EXPECT_NEAR(res.w[0],0.131288946f,1e-5);
+    EXPECT_NEAR(res.w[1],0.0676958858f,1e-5);
+    EXPECT_NEAR(res.w[2],0.00615417166f,1e-5);
     EXPECT_FLOAT_EQ(pdf,0.22507906f);
     EXPECT_FLOAT_EQ(wi.x,-0.707106769f);
     EXPECT_FLOAT_EQ(wi.y, 0.707106769);
@@ -933,22 +962,13 @@ TEST(Materials,SingleBRDF_inherit_bdf)
     errors_count[WARNING_INDEX] = 0;
 }
 
-TEST(Materials,SingleBRDF_add_diffuse_texture)
-{
-    SingleBRDF material;
-    //existing
-    errors_count[WARNING_INDEX] = 0;
-    material.add_diffuse_texture("Default");
-    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
-    //non-existing
-    material.add_diffuse_texture("Non existing texture");
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-}
-
 TEST(Materials,SingleBRDF_value)
 {
     SingleBRDF material_r;
+    SingleBRDF materialWtexture;
     SingleBRDF metal;
+    ColorRGB red((unsigned char)255,0,0);
+    Texture* ut = new UniformTexture(Spectrum(red,false));
     Bsdf material_t;
     Sphere s;
     Matrix4 m;
@@ -960,6 +980,7 @@ TEST(Materials,SingleBRDF_value)
     HitPoint hit;
     float distance = FLT_MAX;
     material_r.inherit_bdf(new Lambertian());
+    materialWtexture.inherit_bdf(new Lambertian(),ut);
     metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
@@ -998,6 +1019,14 @@ TEST(Materials,SingleBRDF_value)
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
     EXPECT_TRUE(res.is_black());
+
+    //textured material
+    a.set_material(&materialWtexture,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    EXPECT_NEAR(res.w[0],0.131288946f,1e-5);
+    EXPECT_NEAR(res.w[1],0.0676958858f,1e-5);
+    EXPECT_NEAR(res.w[2],0.00615417166f,1e-5);
 }
 
 TEST(Materials,SingleBRDF_sample_value)
@@ -1057,6 +1086,23 @@ TEST(Materials,SingleBRDF_sample_value)
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
+    EXPECT_FLOAT_EQ(pdf,0.22507906f);
+    EXPECT_FLOAT_EQ(wi.x,-0.707106769f);
+    EXPECT_FLOAT_EQ(wi.y, 0.707106769);
+    EXPECT_TRUE(flt_equal(wi.z,0.f));
+    EXPECT_EQ(matched_spec,false);
+    EXPECT_TRUE(wi.is_normalized());
+
+    //textured material
+    Bsdf materialWtexture;
+    ColorRGB red((unsigned char)255,0,0);
+    Texture* ut = new UniformTexture(Spectrum(red,false));
+    materialWtexture.inherit_bdf(new Lambertian(),ut);
+    res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                        &wi, &pdf, false, &matched_spec);
+    EXPECT_NEAR(res.w[0],0.131288946f,1e-5);
+    EXPECT_NEAR(res.w[1],0.0676958858f,1e-5);
+    EXPECT_NEAR(res.w[2],0.00615417166f,1e-5);
     EXPECT_FLOAT_EQ(pdf,0.22507906f);
     EXPECT_FLOAT_EQ(wi.x,-0.707106769f);
     EXPECT_FLOAT_EQ(wi.y, 0.707106769);

@@ -1,5 +1,5 @@
 //Created,   16 Jun 2017
-//Last Edit  18 Mar 2018
+//Last Edit  11 Apr 2018
 
 /**
  *  \file bdf.hpp
@@ -7,7 +7,7 @@
  *  \details   Basic classes for material definitions
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      18 Mar 2018
+ *  \date      11 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -35,6 +35,8 @@
  *  The bdf class can represent either a BRDF or a BTDF. It is a fundamental
  *  component of the Bsdf class, describing how the light is reflected at a
  *  surface.
+ *  Note that every Bdf produces a Greyscale spectrum. Then the Bsdf class is
+ *  responsible of chosing the right texture to module the results of Bdfs
  */
 class Bdf
 {
@@ -161,8 +163,11 @@ public:
      *  free at destruction time
      *
      *  \param[in] addme The Bdf that will be added
+     *  \param[in] spectrum The texture that will be used to compute the
+     *  spectrum of the Bsdf. If left empty, the default White texture will be
+     *  used
      */
-    virtual void inherit_bdf(Bdf* addme);
+    virtual void inherit_bdf(Bdf* addme, Texture* spectrum = NULL);
 
     /** \brief Return the value of the BSDF
      *
@@ -215,13 +220,16 @@ public:
     virtual float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
                       bool matchSpec)const;
 
-private:
+protected:
 
     //number of Bdfs
     unsigned char count;
 
     //Bdfs
     Bdf* bdfs[_MAX_BDF_];
+    
+    //Textures
+    const Texture* textures[_MAX_BDF_];
 };
 
 /**
@@ -255,18 +263,11 @@ public:
      *  free at destruction time
      *
      *  \param[in] addme The Bdf that will be added
+     *  \param[in] texture The texture that will be used to compute the
+     *  spectrum of the Bsdf (otherwise every Bdf uses a white spectrum). If
+     *  left empty, the default White texture will be used
      */
-    void inherit_bdf(Bdf* addme);
-    
-    /** Add a texture to this BRDF
-     *
-     *  Given the name, this method search in the texture library and adds the
-     *  corresponding texture to this BRDF, as a diffuse component. If the
-     *  texture is not to be found, an uniform white texture will be added
-     *
-     *  \param[in] name The name of the texture that will be added
-     */
-    void add_diffuse_texture(const char* name);
+    void inherit_bdf(Bdf* addme, Texture* texture = NULL);
     
     /** \brief Return the value of the BSDF
      *
@@ -316,13 +317,6 @@ public:
      */
     virtual float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
                       bool matchSpec)const;
-private:
-    
-    //The enclosed BRDF
-    Bdf* reflection;
-    
-    //Texture for the diffuse component
-    const Texture* diffuse;
 };
 
 #endif

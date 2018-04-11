@@ -44,7 +44,7 @@ Bsdf::~Bsdf()
         delete Bsdf::bdfs[i];
 }
 
-void Bsdf::inherit_bdf(Bdf* addme)
+void Bsdf::inherit_bdf(Bdf* addme, Texture* spectrum)
 {
 #ifdef DEBUG
     if(count==_MAX_BDF_)
@@ -53,7 +53,13 @@ void Bsdf::inherit_bdf(Bdf* addme)
         return;
     }
 #endif
-    Bsdf::bdfs[count++] = addme;
+    Bsdf::bdfs[count] = addme;
+    if(spectrum!=NULL)
+        Bsdf::textures[count] = spectrum;
+    else
+        //assuming default texture always exists and is SPECTRUM_ONE
+        Bsdf::textures[count] = TexLib.get("Default");
+    count++;
 }
 
 Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
@@ -73,7 +79,8 @@ Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
     {
         //add contribution only if matches refl/trans
         if(bdfs[i]->matches(flags))
-            retval += bdfs[i]->value(&wo_shading,&wi_shading);
+            retval += bdfs[i]->value(&wo_shading,&wi_shading) *
+                      textures[i]->map(h->u, h->v);
     }
     return retval;
 }
@@ -115,7 +122,9 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     
     //I don't care about the result, but I need to generate the &wi vector
     Spectrum retval;
-    retval=matching[chosen]->sample_value(&wo_shading, &tmpwi,r1,r2,pdf);
+    //texture computation is done after the if. Because if this is not specular
+    //the result is thrown away
+    retval = matching[chosen]->sample_value(&wo_shading, &tmpwi,r1,r2,pdf);
     if(tmpwi.length()==0) //total internal reflection
     {
         *pdf = 0.f;
@@ -146,7 +155,8 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
         {
             if (bdfs[i]->matches(flags))//add contribution only if matches
             {
-                retval += bdfs[i]->value(&wo_shading, &tmpwi);
+                retval += bdfs[i]->value(&wo_shading, &tmpwi) *
+                          textures[chosen]->map(h->u,h->v);
                 *pdf+= bdfs[i]->pdf(&wo_shading, &tmpwi);
             }
         }
@@ -154,10 +164,10 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     else
     {
         *matchedSpec = true;
+        retval*=textures[chosen]->map(h->u,h->v);
     }
-    if(matchcount==0)
-        throw "ouch";
-    *pdf/=(float)matchcount;
+    if(matchcount>1)
+        *pdf/=(float)matchcount;
     return retval;
 }
 
@@ -189,22 +199,26 @@ SingleBRDF::SingleBRDF()
     //used as a fallback if the inherit_bdf passes in an illegal value.
     //not the best course of action, but these methods will be called at startup
     //time
-    SingleBRDF::reflection = (Bdf*)new Lambertian();
+    SingleBRDF::bdfs[0] = (Bdf*)new Lambertian();
     //to avoid SEGFAULT, default texture is completely white
-    SingleBRDF::diffuse = TexLib.get("Default");
+    SingleBRDF::textures[0] = TexLib.get("Default");
 }
 
 SingleBRDF::~SingleBRDF()
 {
-    delete SingleBRDF::reflection;
+    delete SingleBRDF::bdfs[0];
 }
 
-void SingleBRDF::inherit_bdf(Bdf* addme)
+void SingleBRDF::inherit_bdf(Bdf* addme, Texture* spectrum)
 {
     if(addme->is_BRDF())
     {
-        delete SingleBRDF::reflection;
-        SingleBRDF::reflection = addme;
+        delete SingleBRDF::bdfs[0];
+        SingleBRDF::bdfs[0] = addme;
+        if(spectrum!=NULL)
+            SingleBRDF::textures[0] = spectrum;
+        else
+            SingleBRDF::textures[0] = TexLib.get("Default");
     }
     else
     {
@@ -213,19 +227,6 @@ void SingleBRDF::inherit_bdf(Bdf* addme)
         //the fact is that once passed to this function, addme is managed by
         //this class. This class refuses to add it, so it is instadeleted
         delete addme;
-    }
-}
-
-void SingleBRDF::add_diffuse_texture(const char *name)
-{
-    SingleBRDF::diffuse = TexLib.get(name);
-    if(SingleBRDF::diffuse==NULL)
-    {
-        char* errormsg = (char*)malloc(sizeof(char)*strlen(name)+1+
-                                       strlen(MESSAGE_TEXTURE_NOT_FOUND));
-        sprintf(errormsg, MESSAGE_TEXTURE_NOT_FOUND, name);
-        Console.warning(errormsg);
-        free(errormsg);
     }
 }
 
@@ -242,10 +243,10 @@ Spectrum SingleBRDF::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
     Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
     wo_shading.normalize();
     wi_shading.normalize();
-    if(reflection->matches(flags))
+    if(bdfs[0]->matches(flags))
     {
-        retval = reflection->value(&wo_shading,&wi_shading);
-        retval *= diffuse->map(h->u, h->v);
+        retval = bdfs[0]->value(&wo_shading,&wi_shading);
+        retval *= textures[0]->map(h->u, h->v);
     }
     return retval;
 }
@@ -254,7 +255,7 @@ Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
                                   const HitPoint* h, Vec3* wi, float* pdf,
                                   bool matchSpec, bool* matchedSpec)const
 {
-    if(reflection->is_specular())
+    if(bdfs[0]->is_specular())
     {
         *matchedSpec = true;
         if(!matchSpec)
@@ -269,25 +270,25 @@ Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
     wo_shading.normalize();
     Vec3 tmpwi;
     Spectrum retval;
-    retval=reflection->sample_value(&wo_shading, &tmpwi,r1,r2,pdf);
+    retval=bdfs[0]->sample_value(&wo_shading, &tmpwi,r1,r2,pdf);
     tmpwi.normalize();
     wi->x = h->right.x*tmpwi.x + h->cross.x * tmpwi.y + h->normal_h.x * tmpwi.z;
     wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->normal_h.y * tmpwi.z;
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
     wi->normalize();
-    return retval*diffuse->map(h->u, h->v);
+    return retval*textures[0]->map(h->u, h->v);
 }
 
 float SingleBRDF::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,
                       bool matchSpec)const
 {
-    if(!matchSpec && reflection->is_specular())
+    if(!matchSpec && bdfs[0]->is_specular())
         return 0.f;
     Vec3 wo_shading(wo->dot(h->right),wo->dot(h->cross),wo->dot(h->normal_h));
     Vec3 wi_shading(wi->dot(h->right),wi->dot(h->cross),wi->dot(h->normal_h));
     wo_shading.normalize();
     wi_shading.normalize();
     float pdf = 0.f;
-    pdf = reflection->pdf(&wo_shading, &wi_shading);
+    pdf = bdfs[0]->pdf(&wo_shading, &wi_shading);
     return pdf;
 }
