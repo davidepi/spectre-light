@@ -434,6 +434,9 @@ Spectrum::Spectrum(const std::initializer_list<float> vals)
     //spectrum rendering is almost required so the result won't be precise
     //anyway (referring to Conductor reflection)
     //TODO: maybe change it later but with lower priority
+    Spectrum::w[0]=0;
+    Spectrum::w[1]=0;
+    Spectrum::w[2]=0;
     for(float val:vals)
     {
         if(i<5)

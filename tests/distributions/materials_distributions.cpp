@@ -66,11 +66,11 @@ static void gen_data(const char* out_path, const char* filename, Bdf* mat)
 
 void generate_materials_data(const char* out_path)
 {
-    Bdf* lamb = new Lambertian(ColorRGB(1.f,0.f,0.f));
-    Bdf* on = new OrenNayar(ColorRGB(1.f,0.f,0.f),15.f);
-    Bdf* cond = new ConductorReflection(SPECTRUM_ONE,COPPER.n,COPPER.k);
-    Bdf* diel = new DielectricReflection(SPECTRUM_ONE,1.f,1.33f);
-    Bdf* refr = new Refraction(SPECTRUM_ONE,cauchy(1.f,0,0),cauchy(1.33f,0,0));
+    Bdf* lamb = new Lambertian();
+    Bdf* on = new OrenNayar(15.f);
+    Bdf* cond = new ConductorReflection(METALS[METAL_COPPER].n,METALS[METAL_COPPER].k);
+    Bdf* diel = new DielectricReflection(1.f,1.33f);
+    Bdf* refr = new Refraction(cauchy(1.f,0,0),cauchy(1.33f,0,0));
     gen_data(out_path,"lambertian",lamb);
     gen_data(out_path,"oren_nayar",on);
     gen_data(out_path,"conductor_reflection",cond);
@@ -79,9 +79,9 @@ void generate_materials_data(const char* out_path)
 
     Fresnel* fresnel=new Dielectric(cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
     MicrofacetDist* blinn = new Blinn(1000.f);
-    Bdf* microfacetR = new MicrofacetR(SPECTRUM_ONE,blinn,fresnel);
+    Bdf* microfacetR = new MicrofacetR(blinn,fresnel);
     MicrofacetDist* beckmann = new Beckmann(0.4f);
-    Bdf* microfacetT = new MicrofacetT(SPECTRUM_ONE,beckmann,
+    Bdf* microfacetT = new MicrofacetT(beckmann,
                     cauchy(1.f,0.f,0.f),cauchy(1.33f,0.f,0.f));
 
     gen_data(out_path,"microfacetr",microfacetR);
