@@ -19,20 +19,6 @@ TEST(MaterialLibrary,add)
     delete mat3;
 }
 
-TEST(MaterialLibrary,edit)
-{
-    Bsdf* mat = new Bsdf;
-    MtlLib.add_inherit("Editme",mat);
-
-    //found
-    Bsdf* got = MtlLib.edit("Editme");
-    EXPECT_EQ(got, mat);
-
-    //not found
-    Bsdf* got2 = MtlLib.edit("Not found");
-    EXPECT_EQ(got2, nullptr);
-}
-
 TEST(MaterialLibrary,remove)
 {
     Bsdf* mat = new Bsdf;
@@ -49,6 +35,11 @@ TEST(MaterialLibrary,remove)
     MtlLib.erase("Removeme");
     got = MtlLib.get("Removeme");
     EXPECT_EQ(got, nullptr);
+
+    got = MtlLib.get("Default");
+    EXPECT_NE(got, nullptr);
+    MtlLib.erase("Default");
+    EXPECT_NE(got, nullptr);
 }
 
 TEST(MaterialLibrary,contains)
@@ -60,5 +51,36 @@ TEST(MaterialLibrary,contains)
     MtlLib.erase("Contained");
     res = MtlLib.contains("Contained");
     EXPECT_FALSE(res);
+}
+
+TEST(MaterialLibrary,clear)
+{
+    Bsdf* mat = new Bsdf();
+    MtlLib.add_inherit("Removeme",mat);
+    Bsdf* mat2 = new Bsdf();
+    MtlLib.add_inherit("Removeme2",mat2);
+    Bsdf* mat3 = new Bsdf();
+    MtlLib.add_inherit("Removeme3",mat3);
+
+    const Bsdf* got;
+    got = MtlLib.get("Removeme");
+    EXPECT_NE(got, nullptr);
+    got = MtlLib.get("Removeme2");
+    EXPECT_NE(got, nullptr);
+    got = MtlLib.get("Removeme3");
+    EXPECT_NE(got, nullptr);
+    got = MtlLib.get("Default");
+    EXPECT_NE(got, nullptr);
+
+    MtlLib.clear();
+
+    got = MtlLib.get("Removeme");
+    EXPECT_EQ(got, nullptr);
+    got = MtlLib.get("Removeme2");
+    EXPECT_EQ(got, nullptr);
+    got = MtlLib.get("Removeme3");
+    EXPECT_EQ(got, nullptr);
+    got = MtlLib.get("Default");
+    EXPECT_NE(got, nullptr);
 }
 

@@ -5,8 +5,8 @@
 
 TextureLibrary::TextureLibrary()
 {
-    Texture* default_tex = new UniformTexture(SPECTRUM_ONE);
-    lib.insert(std::make_pair("Default",default_tex));
+    Texture* dflt = new UniformTexture(SPECTRUM_ONE);
+    lib.insert(std::make_pair("Default",dflt));
 }
 
 TextureLibrary::~TextureLibrary()
@@ -32,19 +32,31 @@ const Texture* TextureLibrary::get(const std::string& name)const
 
 void TextureLibrary::erase(const std::string& name)
 {
-    std::unordered_map<std::string,Texture*>::const_iterator got=lib.find(name);
-    if(got!=lib.end())
+    if(name!="Default")
     {
-        lib.erase(got);
-        delete got->second;
+        std::unordered_map<std::string,Texture*>::const_iterator it =
+            lib.find(name);
+        if(it!=lib.end())
+        {
+            lib.erase(it);
+            delete it->second;
+        }
     }
 }
 
 void TextureLibrary::clear()
 {
+    //remove Default to avoid deallocation
+    std::unordered_map<std::string,Texture*>::const_iterator got=lib.find("Default");
+    Texture* dflt = got->second;
+    lib.erase(got);
+    
     for(std::pair<std::string, Texture*> element:TextureLibrary::lib)
         delete element.second;
     TextureLibrary::lib.clear();
+    
+    //readd default texture
+    lib.insert(std::make_pair("Default",dflt));
 }
 
 bool TextureLibrary::contains(const std::string &name)const

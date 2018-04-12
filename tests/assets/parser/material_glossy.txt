@@ -26,7 +26,7 @@ material: {
 }
 
 material: {
-  name: "ggx"
+  name: "Ggx"
   distribution: ggx
   type: glossy,
   roughness: 1.0

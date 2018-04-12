@@ -50,6 +50,11 @@ TEST(TextureLibrary,remove)
     TexLib.erase("Removeme");
     got = TexLib.get("Removeme");
     EXPECT_EQ(got, nullptr);
+
+    got = TexLib.get("Default");
+    EXPECT_NE(got, nullptr);
+    TexLib.erase("Default");
+    EXPECT_NE(got, nullptr);
 }
 
 TEST(TextureLibrary,contains)
@@ -61,5 +66,36 @@ TEST(TextureLibrary,contains)
     TexLib.erase("Contained");
     res = TexLib.contains("Contained");
     EXPECT_FALSE(res);
+}
+
+TEST(TextureLibrary,clear)
+{
+    Texture* tex = new UniformTexture(SPECTRUM_WHITE);
+    TexLib.add_inherit("Removeme",tex);
+    Texture* tex2 = new UniformTexture(SPECTRUM_WHITE);
+    TexLib.add_inherit("Removeme2",tex2);
+    Texture* tex3 = new UniformTexture(SPECTRUM_WHITE);
+    TexLib.add_inherit("Removeme3",tex3);
+
+    const Texture* got;
+    got = TexLib.get("Removeme");
+    EXPECT_NE(got, nullptr);
+    got = TexLib.get("Removeme2");
+    EXPECT_NE(got, nullptr);
+    got = TexLib.get("Removeme3");
+    EXPECT_NE(got, nullptr);
+    got = TexLib.get("Default");
+    EXPECT_NE(got, nullptr);
+
+    TexLib.clear();
+
+    got = TexLib.get("Removeme");
+    EXPECT_EQ(got, nullptr);
+    got = TexLib.get("Removeme2");
+    EXPECT_EQ(got, nullptr);
+    got = TexLib.get("Removeme3");
+    EXPECT_EQ(got, nullptr);
+    got = TexLib.get("Default");
+    EXPECT_NE(got, nullptr);
 }
 

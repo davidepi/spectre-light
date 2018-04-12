@@ -1,12 +1,12 @@
 //Created,   7 Jul 2017
-//Last Edit 14 Jan 2018
+//Last Edit 12 Apr 2018
 
 /**
  *  \file material_library.hpp
  *  \brief MaterialLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  14 Jan 2018
+ *  \date  12 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -75,17 +75,9 @@ public:
      */
     const Bsdf* get(const std::string& name)const;
 
-    /** \brief Retrieve a material from the library
-     *
-     *  Retrieve a material from the library for editing.
-     *  If the material can not be found the returned value will be NULL
-     *
-     * \param[in] name The material to retrieve
-     * \return The material, if it is stored in the library, NULL otherwise
-     */
-    Bsdf* edit(const std::string& name)const;
-
     /** \brief Remove and deallocate a material from the library
+     *
+     *  Note that it is not possible to erase the default material
      *
      * \param[in] name The material that will be removed and deallocated
      */
@@ -95,6 +87,8 @@ public:
      *
      *  This method will clear and thus deallocate every material stored in the
      *  library. It is the same as calling erase for every stored material
+     *  Note, however, that the default material will not be erased for
+     *  integrity reasons.
      */
     void clear();
 

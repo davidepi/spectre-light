@@ -7,9 +7,3 @@ material: {
   roughness: 0.2
 }
 
-#non-existent texture, white lambertian 
-material: {
-  name: "Like default"
-  roughness: -1.5
-  diffuse: "I do not exist"
-}

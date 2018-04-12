@@ -21,8 +21,8 @@
 - [ ] -> **lex/yacc parser** <-
 - [ ] diffuse texture mapping
 - [ ] bump/normal textures
-- [ ] environment (sky) system
 - [ ] sun position and sunlight
+- [ ] environment (sky) system
 - [ ] camera lenses
 - [ ] depth of field
 - [ ] bidirectional path tracer

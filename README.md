@@ -34,7 +34,7 @@ site
 Although no dependency is strictly required, with the exception of [cmake](https://cmake.org "cmake homepage"),
 having the Magick++ library is stronly suggested (API version 7.0 or newer). The Magick++ lib is part of the
 [ImageMagick](https://www.imagemagick.org/script/index.php) suite and can be easily installed
-in any OS. WIthout Magick++, *spectre-light* is limited to read and write only NetPBM and
+in any OS. Without Magick++, *spectre-light* is limited to read and write only NetPBM and
 Windows Bitmap V3.0 files.
 
 ### Building
@@ -83,7 +83,7 @@ spectre-full input.txt
 
 The input file format is explained [here](./src/parsers/README.md).
 
-*spectre-light* support `.obj` files for scene and models,  `.ppm` and `.bmp` for textures. As already said, if Magick++ is
+*spectre-light* supports `.obj` files for scene and models,  `.ppm` and `.bmp` for textures. As already said, if Magick++ is
 available, additional image formats such as `.jpg`, `.tiff`, `.tga`, `.dds` and `.png` are available.
 `.mtl` is not available as an obj companion file for materials due to its tremendous binding with the Phong illumination model. Check the section *Missing .mtl* of the aforementioned input readme for more informations .
 

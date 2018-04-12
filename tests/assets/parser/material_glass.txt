@@ -1,0 +1,8 @@
+texture: { name: "Red", color:[255,0,0]}
+texture: { name: "Green", color:[0,255,0]}
+texture: { name: "Blue", color:[0,0,255]}
+material:{name:"spec", type:glass}
+material:{name:"aniso", type:glass, roughness:0.1, anisotropy: 0.2, diffuse: "Red", specular: "Green"}
+material:{name:"blinn", type:glass, roughness:0.3, distribution: blinn, diffuse: "Green"}
+material:{name:"beckmann", type:glass, roughness:0.3, distribution: beckmann, specular: "Blue"}
+material:{name:"ggx", type: glass, roughness:0.3, distribution:ggx}

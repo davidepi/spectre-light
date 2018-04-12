@@ -212,8 +212,9 @@ material_stmt
 | TYPE COLON GLOSSY {driver.cur_mat.type = GLOSSY;}
 | TYPE COLON METAL {driver.cur_mat.type = METAL;}
 | TYPE COLON GLASS {driver.cur_mat.type = GLASS;}
-| IOR COLON FLOAT {driver.cur_mat.ior = cauchy($3,0,0);}
+| IOR COLON FLOAT {driver.cur_mat.ior = cauchy($3,0);}
 | IOR COLON vector2 {driver.cur_mat.ior = cauchy($3.x,$3.y);}
+| IOR COLON vector {driver.cur_mat.ior = cauchy($3.x,$3.y,$3.z);}
 | IOR COLON vector vector {driver.cur_mat.ior = sellmeier($3.x,$3.y,$3.z,$4.x,$4.y,$4.z);}
 | ROUGHNESS COLON FLOAT {driver.cur_mat.rough_x = $3;}
 | ANISOTROPY COLON FLOAT {driver.cur_mat.rough_y = $3;}

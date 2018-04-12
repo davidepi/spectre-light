@@ -271,6 +271,7 @@ TEST(Parser,texture)
     free(r1);
     chdir(current_dir);
     free((void*)current_dir);
+    TexLib.clear();
 }
 
 TEST(Parser,material_matte)
@@ -292,13 +293,28 @@ TEST(Parser,material_matte)
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt");
     EXPECT_TRUE(TexLib.contains("Red"));
-    ASSERT_TRUE(MtlLib.contains("Like default"));
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     //TODO: maybe RTTI to get class info?
-    const Bsdf* mat0 = MtlLib.get("Like default");
-    const Bsdf* mat1 = MtlLib.get("Red Oren-Nayar");
+    const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
 
     a.set_material(mat0,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.0656985715f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.0338758416f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.00307962182f,1e-5f);
+
+    ConfigDriver driver1;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r1 = driver1.parse(TEST_ASSETS
+                   "parser/material_matte_diffuse_not_found.txt");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    ASSERT_TRUE(MtlLib.contains("Like default"));
+    const Bsdf* mat1 = MtlLib.get("Like default");
+
+    a.set_material(mat1,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
@@ -306,14 +322,10 @@ TEST(Parser,material_matte)
     EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
     EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
 
-    a.set_material(mat1,1);
-    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
-    EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0],0.0656985715f,1e-5f);
-    EXPECT_NEAR(res.w[1],0.0338758416f,1e-5f);
-    EXPECT_NEAR(res.w[2],0.00307962182f,1e-5f);
     delete r0;
+    delete r1;
+    MtlLib.clear();
+    TexLib.clear();
 }
 
 TEST(Parser,material_glossy)
@@ -335,15 +347,17 @@ TEST(Parser,material_glossy)
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glossy.txt");
     EXPECT_TRUE(TexLib.contains("Red"));
+    EXPECT_TRUE(TexLib.contains("Green"));
+    EXPECT_TRUE(TexLib.contains("Blue"));
     ASSERT_TRUE(MtlLib.contains("Anisotropic"));
     ASSERT_TRUE(MtlLib.contains("Blinn"));
     ASSERT_TRUE(MtlLib.contains("Beckmann"));
-    ASSERT_TRUE(MtlLib.contains("ggx"));
+    ASSERT_TRUE(MtlLib.contains("Ggx"));
     //TODO: maybe RTTI to get class info?
     const Bsdf* mat0 = MtlLib.get("Anisotropic");
     const Bsdf* mat1 = MtlLib.get("Blinn");
     const Bsdf* mat2 = MtlLib.get("Beckmann");
-    const Bsdf* mat3 = MtlLib.get("ggx");
+    const Bsdf* mat3 = MtlLib.get("Ggx");
 
     a.set_material(mat0,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
@@ -382,7 +396,7 @@ TEST(Parser,material_glossy)
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS
-                   "parser/material_glossy_diffuse_not_found.txt");
+    "parser/material_glossy_diffuse_not_found.txt");
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(MtlLib.contains("DNF"));
@@ -390,7 +404,7 @@ TEST(Parser,material_glossy)
     ConfigDriver driver2;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r2 = driver2.parse(TEST_ASSETS
-                   "parser/material_glossy_specular_not_found.txt");
+    "parser/material_glossy_specular_not_found.txt");
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(MtlLib.contains("SNF"));
@@ -398,6 +412,98 @@ TEST(Parser,material_glossy)
     delete r0;
     delete r1;
     delete r2;
+    MtlLib.clear();
+    TexLib.clear();
+}
+
+TEST(Parser,material_glass)
+{
+    Bsdf material_t;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    float pdf;
+    bool spec;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m,1);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    wi = Vec3(0.f,1.f,0.f);
+    wi.normalize();
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glass.txt");
+    EXPECT_TRUE(TexLib.contains("Red"));
+    EXPECT_TRUE(TexLib.contains("Green"));
+    EXPECT_TRUE(TexLib.contains("Blue"));
+    ASSERT_TRUE(MtlLib.contains("spec"));
+    ASSERT_TRUE(MtlLib.contains("aniso"));
+    ASSERT_TRUE(MtlLib.contains("blinn"));
+    ASSERT_TRUE(MtlLib.contains("beckmann"));
+    ASSERT_TRUE(MtlLib.contains("ggx"));
+    //TODO: maybe RTTI to get class info?
+    const Bsdf* mat0 = MtlLib.get("spec");
+    const Bsdf* mat1 = MtlLib.get("aniso");
+    const Bsdf* mat2 = MtlLib.get("blinn");
+    const Bsdf* mat3 = MtlLib.get("beckmann");
+    const Bsdf* mat4 = MtlLib.get("ggx");
+
+    a.set_material(mat0,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                             &pdf, true, &spec);
+    EXPECT_NEAR(res.w[0],0.0337359607f, 1e-5f);
+    EXPECT_NEAR(res.w[1],0.0337359607f, 1e-5f);
+    EXPECT_NEAR(res.w[2],0.0337359607f, 1e-5f);
+
+    res = mat1->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                             &pdf, true, &spec);
+    EXPECT_NEAR(res.w[0],0.00702887168f, 1e-5f);
+    EXPECT_NEAR(res.w[1],0.0140577434f, 1e-5f);
+    EXPECT_NEAR(res.w[2],0.00234295661f, 1e-5f);
+
+    res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                             &pdf, true, &spec);
+    EXPECT_NEAR(res.w[0],0.0176751148f, 1e-5f);
+    EXPECT_NEAR(res.w[1],0.0176751148f, 1e-5f);
+    EXPECT_NEAR(res.w[2],0.0176751148f, 1e-5f);
+
+    res = mat3->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                             &pdf, true, &spec);
+    EXPECT_NEAR(res.w[0],0.00172365177f, 1e-5f);
+    EXPECT_NEAR(res.w[1],0.000689460721f, 1e-5f);
+    EXPECT_NEAR(res.w[2],0.00907789823f, 1e-5f);
+
+    res = mat4->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+                             &pdf, true, &spec);
+    EXPECT_NEAR(res.w[0],0.0104777161f, 1e-5f);
+    EXPECT_NEAR(res.w[1],0.0104777161f, 1e-5f);
+    EXPECT_NEAR(res.w[2],0.0104777161f, 1e-5f);
+
+    ConfigDriver driver1;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r1 = driver1.parse(TEST_ASSETS
+    "parser/material_glass_diffuse_not_found.txt");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(MtlLib.contains("DNF"));
+
+    ConfigDriver driver2;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r2 = driver2.parse(TEST_ASSETS
+    "parser/material_glass_specular_not_found.txt");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(MtlLib.contains("SNF"));
+
+    delete r0;
+    delete r1;
+    delete r2;
+    MtlLib.clear();
+    TexLib.clear();
 }
 
 TEST(Parser,material_metal)
@@ -450,10 +556,11 @@ TEST(Parser,material_metal)
 
     res = mat1->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                              &pdf, true, &spec);
-    //TODO: these does not seems corrects
-    EXPECT_NEAR(res.w[0],536.285095f, 1e-5f);
-    EXPECT_NEAR(res.w[1],532.028809f, 1e-5f);
-    EXPECT_NEAR(res.w[2],524.990051f, 1e-5f);
+    //TODO: these does not seems corrects. However increasing roughness by a
+    //factor 10 decreases values by a factor 10, so I guess is ok
+    EXPECT_NEAR(res.w[0],53.6285095f, 1e-5f);
+    EXPECT_NEAR(res.w[1],53.2028809f, 1e-5f);
+    EXPECT_NEAR(res.w[2],52.4990005f, 1e-5f);
 
     res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                              &pdf, true, &spec);
@@ -496,5 +603,7 @@ TEST(Parser,material_metal)
     EXPECT_NEAR(res.w[0],1.3052932f, 1e-5f);
     EXPECT_NEAR(res.w[1],1.18112957f, 1e-5f);
     EXPECT_NEAR(res.w[2],1.07088006f, 1e-5f);
+    MtlLib.clear();
+    TexLib.clear();
 }
 

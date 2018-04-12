@@ -58,11 +58,12 @@ It is possible to load additional configuration files with the following syntax
 
 ## Primitives
 
-For every keys described in the [keyword](#keywords) seciont, the following values can be used where specified
+For every key described in the [keyword](#keywords) section, the following values can be used where specified
 
 Value | Description | Examples
 ---|---|---
 int | An integer number, negative or non-negative | -2147483647
+int+ | A positive integer number | 2147483647
 float | A floating point number | 1.5   .5  1e18    .1E-3  E10
 quoted string | A string delimited by a pair of " or '. Escaping is not supported | "Hello world"   'Hello world'
 float[n] | An array of n floats delimited by [ ] | [1.5,0.5,0]
@@ -82,7 +83,7 @@ Key | Type | Usage | Default value
 out| quoted string | The file that will be written when rendering the current scene | out.ppm
 resolution | [object](#resolution) | The resolution of the final rendered image | [Check object description](#resolution)
 filter | [object](#filter) | The filter used to process the final image after gathering each sample value | [Check object description](#filter)
-spp | int | The number of samples per pixel | 121
+spp | int+ | The number of samples per pixel | 121
 integrator | enum | The type of integrator used to solve the rendering equation. The only possible value is `path` for path trace | path
 sampler | enum | The type of sampler used to gather samples. Possible values are `random` for a pure random sampler or `stratified` for a sampler that subdivides a region in strata and picks a random sample for each strata. The latter is the suggested value | stratified
 camera | [object](#camera) | A description of the camera used to render the current scene | [Check object description](#camera)
@@ -100,8 +101,8 @@ Keys for Resolution objects
 
 Key | Type | Usage | Default value
 ---|---|---|---
-width | int | The width of the rendered image | 800
-height | int | The height of the rendered image | 600
+width | int+ | The width of the rendered image | 800
+height | int+ | The height of the rendered image | 600
 
 #### Camera
 Keys for Camera objects
@@ -129,7 +130,7 @@ Keys for Light objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the light model. This is the name of a mesh previously parsed with the `shape` keyword | Syntax error
-temperature | int | The temperature in kelvin of the light. This value will set the light color based on its temperature and thus should not be used in conjunction with the `color` keyword | This value is mutually exclusive with the `color` one. The latter is the one used as default
+temperature | int+ | The temperature in kelvin of the light. This value will set the light color based on its temperature and thus should not be used in conjunction with the `color` keyword | This value is mutually exclusive with the `color` one. The latter is the one used as default
 color | float[3] | The spectrum emitted by this light. The spectrum is represented as a 3 values RGB number where `[0,0,0]` is full black and `[1,1,1]` is full white |  [1,1,1]
 position | float[3] | The position of the light in the scene | [0,0,0]
 rotation | float[3] | The rotation of the light in the scene, in degrees | [0,0,0]
@@ -161,12 +162,12 @@ Keys for Material objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the material that will be added to the Library | Syntax error
-type | enum | The type of material that will be used. Possible values are `matte`, `glossy`, `metal` or `glass` (used for transmittive materials such as glass or water). `metal` type materials do not support textures but instead will use `element` | matte
-ior | float or float[2] or float[3]float[3] | Refractive index of the material. Used in `glass` typed materials. The index of refraction is wavelength dependent and can be issued with a single number, a 2-values array or two 3-values array. The first will use the same value for every wavelength, the second will use cauchy equation with parameters `ior:[B,C]` to calculate the values. The third one, used as `ior:[B1,B2,B3][C1,C2,C3]` will use Sellmeier equation instead. Note that disperision is still not supported  | [1.45,0]
+type | enum | The type of material that will be used. Possible values are `matte`, `glossy`, `metal` or `glass` (used for transmittive materials such as glass or water). `metal` type materials do not support textures but instead will use `element` keyword to define their appareance | matte
+ior | float or float[2] or float[3] or float[3]float[3] | Refractive index of the material. Used in `glass` typed materials. The index of refraction is wavelength dependent and can be issued with a single number, a 2-values array, a 3-values array or two 3-values array. The first will use the same value for every wavelength, the second and third will use cauchy equation with parameters `ior:[B,C]` and `ior:[B,C,D]` respectively to calculate the values. The third one, used as `ior:[B1,B2,B3][C1,C2,C3]` will use Sellmeier equation instead. Note that despite having wavelength dependent index of refractions, dispersion is still not supported  | [1.45,0]
 element | enum | For `metal` typed materials, this will specify a metal from the periodic table for which sampled data will be used. [More informations here](#metals) | Au
 roughness | float | single value in range [0-1] used to calculate the roughness of a material | 0
-anisotropy | float | single value in range [0-1] used to calcualte the y roughness of a material for surfaces that exhibit anisotropic reflections. If this equals the roughness value or is unset, the surface is assumed isotropic | roughness value
-distribution | enum | If the material has a roughness higher than 0, the distribution that will be used to simulate the roughness. Possible values are `blinn`, `beckmann`, `ggx`. If the anisotropy value is set and is different from the roughness, the distribution value will always be `ggx` because it is the only distribution implemented for anisotropic materials | beckmann
+anisotropy | float | single value in range [0-1] used to calcualte the y roughness of a material for surfaces that exhibit anisotropic reflections like hairs or brushed steel. If this equals the roughness value or is unset, the surface is assumed isotropic | roughness value
+distribution | enum | If the material has a roughness higher than 0, the distribution that will be used to simulate the roughness. Possible values are `blinn`, `beckmann`, `ggx`. If the anisotropy value is set and is different from the roughness, the distribution value will always be `ggx` since it is the only distribution implemented for anisotropic materials | beckmann
 diffuse | quoted string | The texture map that will be used for the spectrum. A texture must be added also for uniform colours. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | "Default" (white texture)
 specular | quoted string | The texture map that will be used for the spectrum. A texture must be added also for uniform colours. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| "Default" (white texture)
 

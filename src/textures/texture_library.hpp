@@ -1,12 +1,12 @@
 //Created,  14 Mar 2018
-//Last Edit 14 Mar 2018
+//Last Edit 12 Apr 2018
 
 /**
  *  \file texture_library.hpp
  *  \brief TextureLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  14 Jan 2018
+ *  \date  12 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -74,6 +74,8 @@ public:
     
     /** \brief Remove and deallocate a texture from the library
      *
+     *  Note that it is not possible to erase the "Default" texture
+     *
      * \param[in] name The texture that will be removed and deallocated
      */
     void erase(const std::string& name);
@@ -81,7 +83,9 @@ public:
     /** \brief Erase and deallocate everything inside the texture library
      *
      *  This method will clear and thus deallocate every texture stored in the
-     *  library. It is the same as calling erase for every stored texture
+     *  library. It is the same as calling erase for every stored texture.
+     *  Note, however, that the "Default" texture will not be removed for
+     *  integrity reasons
      */
     void clear();
     

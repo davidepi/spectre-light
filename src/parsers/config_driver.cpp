@@ -2,6 +2,8 @@
 
 #include "config_driver.hpp"
 
+#define MIN_ROUGHNESS 0.001f
+
 ConfigDriver::ConfigDriver()
 :camera_pos(0,0,0), camera_tar(0,0,1), camera_up(0,1,0)
 {
@@ -241,14 +243,14 @@ void ConfigDriver::build_materials()
     {
         mat = &deferred_materials[i];
         //isotropic element, no point in using anisotropic one
+        mat->rough_x = clamp(mat->rough_x,0.f,1.f);
         if(mat->rough_y==mat->rough_x)
             mat->rough_y=-1;
-        mat->rough_x = clamp(mat->rough_x,0.f,1.f);
         if(mat->rough_y!=-1)
         {
             //cannot be specular so avoid 0
-            mat->rough_x = clamp(mat->rough_x,0.0001f,1.f);
-            mat->rough_y = clamp(mat->rough_y,0.0001f,1.f);
+            mat->rough_x = clamp(mat->rough_x,MIN_ROUGHNESS,1.f);
+            mat->rough_y = clamp(mat->rough_y,MIN_ROUGHNESS,1.f);
         }
         switch(mat->type)
         {
@@ -296,7 +298,7 @@ void ConfigDriver::build_materials()
                 material->inherit_bdf(new Lambertian(),diffuse);
                 //no specular in glossy, avoid division by zero
                 if(mat->rough_x==0)
-                    mat->rough_x = 0.0001;
+                    mat->rough_x = MIN_ROUGHNESS;
                 if(mat->rough_y!=-1)
                     dist = new GGXaniso(mat->rough_x,mat->rough_y);
                 else
@@ -322,12 +324,12 @@ void ConfigDriver::build_materials()
                     diffuse = TexLib.get("Default");
                 }
                 if(TexLib.contains(mat->specular))
-                    diffuse = TexLib.get(mat->specular);
+                    specular = TexLib.get(mat->specular);
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->specular.c_str(),mat->name.c_str());
-                    diffuse = TexLib.get("Default");
+                    specular = TexLib.get("Default");
                 }
                 material = new Bsdf();
                 Bdf* reflective;
