@@ -37,7 +37,7 @@ class TextureLibrary
 public:
     
     ///Get an instance of the texture library
-    static TextureLibrary& getInstance()
+    static TextureLibrary& instance()
     {
         static TextureLibrary instance;
         return instance;
@@ -103,7 +103,7 @@ private:
 };
 
 ///Access the texture library just by writing "TexLib"
-#define TexLib TextureLibrary::getInstance()
+#define TexLib TextureLibrary::instance()
 
 #endif
 

@@ -286,12 +286,12 @@ void ConfigDriver::build_materials()
                     diffuse = TexLib.get("Default");
                 }
                 if(TexLib.contains(mat->specular))
-                    diffuse = TexLib.get(mat->specular);
+                    specular = TexLib.get(mat->specular);
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->specular.c_str(),mat->name.c_str());
-                    diffuse = TexLib.get("Default");
+                    specular = TexLib.get("Default");
                 }
                 material->inherit_bdf(new Lambertian(),diffuse);
                 //no specular in glossy, avoid division by zero
@@ -309,6 +309,7 @@ void ConfigDriver::build_materials()
                         dist = new GGXiso(mat->rough_x);
                 }
                 material->inherit_bdf(new MicrofacetR(dist,fresnel),specular);
+                break;
             }
             case GLASS:
             {
@@ -370,6 +371,7 @@ void ConfigDriver::build_materials()
                 }
                 material->inherit_bdf(refractive,diffuse);
                 material->inherit_bdf(reflective,specular);
+                break;
             }
             case METAL:
             {
@@ -401,6 +403,7 @@ void ConfigDriver::build_materials()
                     bdf = new MicrofacetR(dist,fresnel);
                 }
                 material->inherit_bdf(bdf);
+                break;
             }
         }
         if(!MtlLib.contains(mat->name))

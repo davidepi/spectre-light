@@ -316,6 +316,90 @@ TEST(Parser,material_matte)
     delete r0;
 }
 
+TEST(Parser,material_glossy)
+{
+    Bsdf material_t;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    m.set_translation(Vec3(-2,0,0));
+    Asset a(&s,m,1);
+    Ray r(Point3(-2,-10,0),Vec3(0,1,0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    wi = Vec3(0.f,1.f,0.f);
+    wi.normalize();
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glossy.txt");
+    EXPECT_TRUE(TexLib.contains("Red"));
+    ASSERT_TRUE(MtlLib.contains("Anisotropic"));
+    ASSERT_TRUE(MtlLib.contains("Blinn"));
+    ASSERT_TRUE(MtlLib.contains("Beckmann"));
+    ASSERT_TRUE(MtlLib.contains("ggx"));
+    //TODO: maybe RTTI to get class info?
+    const Bsdf* mat0 = MtlLib.get("Anisotropic");
+    const Bsdf* mat1 = MtlLib.get("Blinn");
+    const Bsdf* mat2 = MtlLib.get("Beckmann");
+    const Bsdf* mat3 = MtlLib.get("ggx");
+
+    a.set_material(mat0,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.319684714f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.319018781f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.318374306f,1e-5f);
+
+    a.set_material(mat1,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.193397462f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.307217479f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.117517456f,1e-5f);
+
+    //TODO: these values are not convincing, but the roughness is 0.001
+    //so it should be fine... need to check again visually
+    a.set_material(mat2,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],3183.22998f,1e-5f);
+    EXPECT_NEAR(res.w[1],3183.16626f,1e-5f);
+    EXPECT_NEAR(res.w[2],3183.10474f,1e-5f);
+
+    a.set_material(mat3,1);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.0606181398f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.0261571147f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.305674285f,1e-5f);
+
+    ConfigDriver driver1;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r1 = driver1.parse(TEST_ASSETS
+                   "parser/material_glossy_diffuse_not_found.txt");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(MtlLib.contains("DNF"));
+
+    ConfigDriver driver2;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r2 = driver2.parse(TEST_ASSETS
+                   "parser/material_glossy_specular_not_found.txt");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(MtlLib.contains("SNF"));
+
+    delete r0;
+    delete r1;
+    delete r2;
+}
+
 TEST(Parser,material_metal)
 {
     Bsdf material_t;

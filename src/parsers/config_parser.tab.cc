@@ -916,91 +916,91 @@ namespace yy {
     break;
 
   case 92:
-#line 230 "config_parser.y" // lalr1.cc:859
+#line 233 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_SILVER; }
 #line 922 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 93:
-#line 231 "config_parser.y" // lalr1.cc:859
+#line 234 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_ALUMINIUM; }
 #line 928 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 94:
-#line 232 "config_parser.y" // lalr1.cc:859
+#line 235 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_GOLD; }
 #line 934 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 95:
-#line 233 "config_parser.y" // lalr1.cc:859
+#line 236 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_COPPER; }
 #line 940 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 96:
-#line 234 "config_parser.y" // lalr1.cc:859
+#line 237 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_IRON; }
 #line 946 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 97:
-#line 235 "config_parser.y" // lalr1.cc:859
+#line 238 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_MERCURY; }
 #line 952 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 98:
-#line 236 "config_parser.y" // lalr1.cc:859
+#line 239 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_LEAD; }
 #line 958 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 99:
-#line 237 "config_parser.y" // lalr1.cc:859
+#line 240 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_PLATINUM; }
 #line 964 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 100:
-#line 238 "config_parser.y" // lalr1.cc:859
+#line 241 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_TUNGSTEN; }
 #line 970 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 101:
-#line 243 "config_parser.y" // lalr1.cc:859
+#line 246 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< Vec3 > () = Vec3(yystack_[5].value.as< float > (),yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
 #line 976 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 102:
-#line 247 "config_parser.y" // lalr1.cc:859
+#line 250 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< Vec2 > () = Vec2(yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
 #line 982 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 103:
-#line 251 "config_parser.y" // lalr1.cc:859
+#line 254 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< float > () = yystack_[0].value.as< float > ();}
 #line 988 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 104:
-#line 252 "config_parser.y" // lalr1.cc:859
+#line 255 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< float > () = (float)yystack_[0].value.as< int > ();}
 #line 994 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 105:
-#line 256 "config_parser.y" // lalr1.cc:859
+#line 259 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< int > () = yystack_[0].value.as< unsigned int > ();}
 #line 1000 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 106:
-#line 257 "config_parser.y" // lalr1.cc:859
+#line 260 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< int > () = yystack_[0].value.as< int > ();}
 #line 1006 "config_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1518,8 +1518,8 @@ namespace yy {
      187,   188,   189,   190,   191,   192,   195,   195,   197,   198,
      203,   204,   205,   206,   209,   209,   211,   212,   213,   214,
      215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
-     225,   226,   230,   231,   232,   233,   234,   235,   236,   237,
-     238,   242,   247,   251,   252,   256,   257
+     225,   226,   233,   234,   235,   236,   237,   238,   239,   240,
+     241,   245,   250,   254,   255,   259,   260
   };
 
   // Print the state stack on the debug stream.
@@ -1555,7 +1555,7 @@ namespace yy {
 
 } // yy
 #line 1558 "config_parser.tab.cc" // lalr1.cc:1167
-#line 260 "config_parser.y" // lalr1.cc:1168
+#line 263 "config_parser.y" // lalr1.cc:1168
 
 
 void yy::ConfigParser::error (const location_type& l, const std::string& m)

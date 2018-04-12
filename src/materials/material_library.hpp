@@ -40,7 +40,7 @@ class MaterialLibrary
 public:
 
     ///Get an instance of the material library
-    static MaterialLibrary& getInstance()
+    static MaterialLibrary& instance()
     {
         static MaterialLibrary instance;
         return instance;
@@ -116,6 +116,6 @@ private:
 };
 
 ///Access the material library just by writing "MtlLib"
-#define MtlLib MaterialLibrary::getInstance()
+#define MtlLib MaterialLibrary::instance()
 
 #endif

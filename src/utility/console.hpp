@@ -41,7 +41,7 @@ class Console
 public:
 
     ///Get an instance of the console
-    static Console& getInstance()
+    static Console& instance()
     {
         static Console instance;
         return instance;
@@ -156,8 +156,8 @@ private:
     void motd();
 };
 
-///Access the console just by writing "Console" instead of calling getInstance()
-#define Console Console::getInstance()
+///Access the console just by writing "Console" instead of calling instance()
+#define Console Console::instance()
 
 #ifdef TESTS
 #define LOG_INDEX 0

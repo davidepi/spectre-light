@@ -7,7 +7,7 @@
 #include <climits>
 
 //tests are named Consolet instead of Console to avoid triggering
-//the Console::getInstance() define
+//the Console::instance() define
 
 TEST(Consolet,constructor_motd)
 {

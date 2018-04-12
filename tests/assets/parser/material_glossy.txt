@@ -1,0 +1,35 @@
+texture: { name: "Red", color:[255,0,0]}
+texture: { name: "Green", color:[0,255,0]}
+texture: { name: "Blue", color:[0,0,255]}
+material: {
+  name: "Anisotropic"
+  type: glossy
+  roughness: 0.2
+  anisotropy: 0.3
+  specular: "Red"
+}
+
+material: {
+  name: "Blinn"
+  type: glossy
+  distribution: blinn
+  roughness: 0.2
+  diffuse: "Green"
+}
+
+material: {
+  name: "Beckmann"
+  distribution: beckmann
+  type: glossy
+  roughness: 0.001
+  diffuse: "Red"
+}
+
+material: {
+  name: "ggx"
+  distribution: ggx
+  type: glossy,
+  roughness: 1.0
+  diffuse: "Blue"
+}
+
