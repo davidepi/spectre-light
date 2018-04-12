@@ -41,7 +41,7 @@ class ParsedMaterial
 {
 public:
     std::string name;
-    char elem[2];
+    metal_t elem;
     mat_t type;
     Spectrum ior;
     float rough_x;
@@ -106,7 +106,6 @@ public:
     
     void error(const yy::location& l, const std::string& m);
     void unknown_char(const yy::location& l, char c);
-    
 private:
     void scan_begin();
     void scan_end();

@@ -45,9 +45,10 @@
     #include <string>
     #include "geometry/vec3.hpp"
     #include "geometry/vec2.hpp"
+    #include "materials/metals.hpp"
     class ConfigDriver;
 
-#line 51 "config_parser.tab.hh" // lalr1.cc:392
+#line 52 "config_parser.tab.hh" // lalr1.cc:392
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -124,7 +125,7 @@
 
 
 namespace yy {
-#line 128 "config_parser.tab.hh" // lalr1.cc:392
+#line 129 "config_parser.tab.hh" // lalr1.cc:392
 
 
 
@@ -305,11 +306,14 @@ namespace yy {
       // integer
       char dummy4[sizeof(int)];
 
+      // element
+      char dummy5[sizeof(metal_t)];
+
       // "quoted string"
-      char dummy5[sizeof(std::string)];
+      char dummy6[sizeof(std::string)];
 
       // "positive integer value"
-      char dummy6[sizeof(unsigned int)];
+      char dummy7[sizeof(unsigned int)];
 };
 
     /// Symbol semantic values.
@@ -392,10 +396,19 @@ namespace yy {
         CONFIG_SPECULAR = 314,
         CONFIG_SRC = 315,
         CONFIG_PATH_TRACE = 316,
-        CONFIG_UINT = 317,
-        CONFIG_INT = 318,
-        CONFIG_FLOAT = 319,
-        CONFIG_STRING = 320
+        CONFIG_SILVER = 317,
+        CONFIG_ALUMINIUM = 318,
+        CONFIG_GOLD = 319,
+        CONFIG_COPPER = 320,
+        CONFIG_IRON = 321,
+        CONFIG_MERCURY = 322,
+        CONFIG_LEAD = 323,
+        CONFIG_PLATINUM = 324,
+        CONFIG_TUNGSTEN = 325,
+        CONFIG_UINT = 326,
+        CONFIG_INT = 327,
+        CONFIG_FLOAT = 328,
+        CONFIG_STRING = 329
       };
     };
 
@@ -440,6 +453,8 @@ namespace yy {
   basic_symbol (typename Base::kind_type t, const float v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const metal_t v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
 
@@ -754,6 +769,42 @@ namespace yy {
 
     static inline
     symbol_type
+    make_SILVER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_ALUMINIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_GOLD (const location_type& l);
+
+    static inline
+    symbol_type
+    make_COPPER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_IRON (const location_type& l);
+
+    static inline
+    symbol_type
+    make_MERCURY (const location_type& l);
+
+    static inline
+    symbol_type
+    make_LEAD (const location_type& l);
+
+    static inline
+    symbol_type
+    make_PLATINUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_TUNGSTEN (const location_type& l);
+
+    static inline
+    symbol_type
     make_UINT (const unsigned int& v, const location_type& l);
 
     static inline
@@ -874,7 +925,7 @@ namespace yy {
     static const char* const yytname_[];
 #if YYDEBUG
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-  static const unsigned char yyrline_[];
+  static const unsigned short int yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
@@ -973,12 +1024,12 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 263,     ///< Last index in yytable_.
-      yynnts_ = 26,  ///< Number of nonterminal symbols.
+      yylast_ = 288,     ///< Last index in yytable_.
+      yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 28, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 66  ///< Number of tokens.
+      yyntokens_ = 75  ///< Number of tokens.
     };
 
 
@@ -1027,9 +1078,9 @@ namespace yy {
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65
+      65,    66,    67,    68,    69,    70,    71,    72,    73,    74
     };
-    const unsigned int user_token_number_max_ = 320;
+    const unsigned int user_token_number_max_ = 329;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1062,29 +1113,33 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 89: // vector2
+      case 99: // vector2
         value.copy< Vec2 > (other.value);
         break;
 
-      case 88: // vector
+      case 98: // vector
         value.copy< Vec3 > (other.value);
         break;
 
-      case 64: // "floating point value"
-      case 90: // number
+      case 73: // "floating point value"
+      case 100: // number
         value.copy< float > (other.value);
         break;
 
-      case 63: // "integer value"
-      case 91: // integer
+      case 72: // "integer value"
+      case 101: // integer
         value.copy< int > (other.value);
         break;
 
-      case 65: // "quoted string"
+      case 97: // element
+        value.copy< metal_t > (other.value);
+        break;
+
+      case 74: // "quoted string"
         value.copy< std::string > (other.value);
         break;
 
-      case 62: // "positive integer value"
+      case 71: // "positive integer value"
         value.copy< unsigned int > (other.value);
         break;
 
@@ -1105,29 +1160,33 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 89: // vector2
+      case 99: // vector2
         value.copy< Vec2 > (v);
         break;
 
-      case 88: // vector
+      case 98: // vector
         value.copy< Vec3 > (v);
         break;
 
-      case 64: // "floating point value"
-      case 90: // number
+      case 73: // "floating point value"
+      case 100: // number
         value.copy< float > (v);
         break;
 
-      case 63: // "integer value"
-      case 91: // integer
+      case 72: // "integer value"
+      case 101: // integer
         value.copy< int > (v);
         break;
 
-      case 65: // "quoted string"
+      case 97: // element
+        value.copy< metal_t > (v);
+        break;
+
+      case 74: // "quoted string"
         value.copy< std::string > (v);
         break;
 
-      case 62: // "positive integer value"
+      case 71: // "positive integer value"
         value.copy< unsigned int > (v);
         break;
 
@@ -1175,6 +1234,13 @@ namespace yy {
   {}
 
   template <typename Base>
+  ConfigParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const metal_t v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
   ConfigParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
     : Base (t)
     , value (v)
@@ -1214,29 +1280,33 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 89: // vector2
+      case 99: // vector2
         value.template destroy< Vec2 > ();
         break;
 
-      case 88: // vector
+      case 98: // vector
         value.template destroy< Vec3 > ();
         break;
 
-      case 64: // "floating point value"
-      case 90: // number
+      case 73: // "floating point value"
+      case 100: // number
         value.template destroy< float > ();
         break;
 
-      case 63: // "integer value"
-      case 91: // integer
+      case 72: // "integer value"
+      case 101: // integer
         value.template destroy< int > ();
         break;
 
-      case 65: // "quoted string"
+      case 97: // element
+        value.template destroy< metal_t > ();
+        break;
+
+      case 74: // "quoted string"
         value.template destroy< std::string > ();
         break;
 
-      case 62: // "positive integer value"
+      case 71: // "positive integer value"
         value.template destroy< unsigned int > ();
         break;
 
@@ -1263,29 +1333,33 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 89: // vector2
+      case 99: // vector2
         value.move< Vec2 > (s.value);
         break;
 
-      case 88: // vector
+      case 98: // vector
         value.move< Vec3 > (s.value);
         break;
 
-      case 64: // "floating point value"
-      case 90: // number
+      case 73: // "floating point value"
+      case 100: // number
         value.move< float > (s.value);
         break;
 
-      case 63: // "integer value"
-      case 91: // integer
+      case 72: // "integer value"
+      case 101: // integer
         value.move< int > (s.value);
         break;
 
-      case 65: // "quoted string"
+      case 97: // element
+        value.move< metal_t > (s.value);
+        break;
+
+      case 74: // "quoted string"
         value.move< std::string > (s.value);
         break;
 
-      case 62: // "positive integer value"
+      case 71: // "positive integer value"
         value.move< unsigned int > (s.value);
         break;
 
@@ -1350,7 +1424,8 @@ namespace yy {
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
      305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
-     315,   316,   317,   318,   319,   320
+     315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
+     325,   326,   327,   328,   329
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
@@ -1716,6 +1791,60 @@ namespace yy {
   }
 
   ConfigParser::symbol_type
+  ConfigParser::make_SILVER (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_SILVER, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_ALUMINIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_ALUMINIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_GOLD (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_GOLD, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_COPPER (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_COPPER, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_IRON (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_IRON, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_MERCURY (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_MERCURY, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_LEAD (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_LEAD, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_PLATINUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_PLATINUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_TUNGSTEN (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_TUNGSTEN, l);
+  }
+
+  ConfigParser::symbol_type
   ConfigParser::make_UINT (const unsigned int& v, const location_type& l)
   {
     return symbol_type (token::CONFIG_UINT, v, l);
@@ -1742,7 +1871,7 @@ namespace yy {
 
 
 } // yy
-#line 1746 "config_parser.tab.hh" // lalr1.cc:392
+#line 1875 "config_parser.tab.hh" // lalr1.cc:392
 
 
 

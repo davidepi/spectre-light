@@ -13,6 +13,7 @@
     #include <string>
     #include "geometry/vec3.hpp"
     #include "geometry/vec2.hpp"
+    #include "materials/metals.hpp"
     class ConfigDriver;
 }
 %param{ ConfigDriver& driver }
@@ -87,7 +88,16 @@
 %token ROUGHNESS "`roughness` keyword"
 %token SPECULAR "`specular` keyword"
 %token SRC "`src` keyword"
-%token PATH_TRACE "`pt` keyword"
+%token PATH_TRACE "`path` keyword"
+%token SILVER "`Ag`"
+%token ALUMINIUM "`Al`"
+%token GOLD "`Au`"
+%token COPPER "`Cu`"
+%token IRON "`Fe`"
+%token MERCURY "`Hg`"
+%token LEAD "`Pb`"
+%token PLATINUM "`Pt`"
+%token TUNGSTEN "`W`"
 
 %token <unsigned int> UINT "positive integer value"
 %token <int> INT "integer value"
@@ -95,6 +105,7 @@
 %token <std::string> STRING "quoted string"
 
 %type <float> number
+%type <metal_t> element
 %type <int> integer
 %type <Vec3> vector
 %type <Vec2> vector2
@@ -211,8 +222,23 @@ material_stmt
 | DISTRIBUTION COLON GGX {driver.cur_mat.dist = SPECTRE_DIST_GGX;}
 | DIFFUSE COLON STRING {driver.cur_mat.diffuse = $3.substr(1,$3.size()-2);}
 | SPECULAR COLON STRING {driver.cur_mat.specular = $3.substr(1,$3.size()-2);}
-| ELEM COLON STRING {driver.cur_mat.elem[0]=$3[1];driver.cur_mat.elem[1]=$3[2];}
+| ELEM COLON element {driver.cur_mat.elem = $3;}
 | COMMA
+;
+
+/* add also elements to materials/metals.hpp file, while respecting indexes.
+   Non-existent materials are thrown away here, so no check is performed outside
+   the parser */
+element
+: SILVER {$$ = METAL_SILVER; }
+| ALUMINIUM {$$ = METAL_ALUMINIUM; }
+| GOLD {$$ = METAL_GOLD; }
+| COPPER {$$ = METAL_COPPER; }
+| IRON {$$ = METAL_IRON; }
+| MERCURY {$$ = METAL_MERCURY; }
+| LEAD {$$ = METAL_LEAD; }
+| PLATINUM {$$ = METAL_PLATINUM; }
+| TUNGSTEN {$$ = METAL_TUNGSTEN; }
 ;
 
 vector:

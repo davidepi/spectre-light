@@ -29,14 +29,30 @@ public:
      */
     Metal(const std::initializer_list<float> ior,
           const std::initializer_list<float> abs):n(ior),k(abs){};
-
+    
     ///The index of refraction of the metal
     const Spectrum n;
     ///The absorption coefficient of the metal
     const Spectrum k;
 };
 
-const Metal SILVER({
+enum metal_t
+{
+    METAL_NO_VAL = -1,
+    METAL_SILVER = 0,
+    METAL_ALUMINIUM,
+    METAL_GOLD,
+    METAL_COPPER,
+    METAL_IRON,
+    METAL_MERCURY,
+    METAL_LEAD,
+    METAL_PLATINUM,
+    METAL_TUNGSTEN,
+    METAL_MAX
+};
+
+const Metal METALS[METAL_MAX] = {
+    Metal({ // SILVER
                        0.049347531050443649f,
                        0.041602473706007004f,
                        0.041009880602359772f,
@@ -70,9 +86,8 @@ const Metal SILVER({
                        4.5658330917358398f,
                        4.7236108779907227f,
                        4.8811230659484863f
-                   });
-
-const Metal ALUMINIUM({
+                   }),
+Metal({ //ALUMINIUM
                           0.51354420185089111f,
                           0.57037156820297241f,
                           0.63335359096527100f,
@@ -106,9 +121,8 @@ const Metal ALUMINIUM({
                           7.8930425643920898f,
                           8.0657701492309570f,
                           8.2151412963867188f
-                      });
-
-const Metal GOLD({
+                      }),
+Metal ({ //GOLD
                      1.46212887763977050f,
                      1.44386053085327150f,
                      1.38312280178070070f,
@@ -142,9 +156,8 @@ const Metal GOLD({
                      3.7917332649230957f,
                      3.9721779823303223f,
                      4.1496315002441406f
-                 });
-
-const Metal COPPER({
+                 }),
+Metal ({ //COPPER
                        1.28916776180267330f,
                        1.25370144844055180f,
                        1.24246585369110110f,
@@ -178,9 +191,8 @@ const Metal COPPER({
                        3.8538665771484375f,
                        4.0574221611022949f,
                        4.2534952163696289f
-                   });
-
-const Metal IRON({
+                   }),
+Metal ({ //IRON
                      2.3298003673553467f,
                      2.4692902565002441f,
                      2.5814623832702637f,
@@ -214,9 +226,8 @@ const Metal IRON({
                      3.1219997406005859f,
                      3.1619999408721924f,
                      3.2002768516540527f,
-                 });
-
-const Metal MERCURY({
+                 }),
+Metal ({ //MERCURY
                         0.88590449094772339f,
                         0.97105371952056885f,
                         1.0606544017791748f,
@@ -251,9 +262,8 @@ const Metal MERCURY({
                         5.4638824462890625f,
                         5.5869340896606445f,
                         5.6981401443481445f,
-                    });
-
-const Metal LEAD({
+                    }),
+Metal ({ //LEAD
                      0.32494312524795532f,
                      0.35549980401992798f,
                      0.38853448629379272f,
@@ -288,9 +298,8 @@ const Metal LEAD({
                      6.5651617050170898f,
                      6.6778092384338379f,
                      6.804783821105957f
-                 });
-
-const Metal PLATINUM({
+                 }),
+Metal ({ //PLATINUM
                          0.91863840818405151f,
                          0.76061177253723145f,
                          0.64079082012176514f,
@@ -324,9 +333,8 @@ const Metal PLATINUM({
                          6.5703592300415039f,
                          6.8078484535217285f,
                          7.0440154075622559f
-                     });
-
-const Metal TUNGSTEN({
+                     }),
+Metal ({ //TUNGSTEN
                          1.6186065673828125f,
                          1.9181926250457764f,
                          2.1916623115539551f,
@@ -360,6 +368,6 @@ const Metal TUNGSTEN({
                          7.1841917037963867f,
                          7.508875846862793f,
                          7.8302183151245117f
-                     });
+                     })};
 
 #endif

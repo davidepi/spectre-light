@@ -177,7 +177,7 @@ TEST(Materials,OrenNayar_pdf)
 
 TEST(Materials,SpecularReflection_flags)
 {
-    ConductorReflection cond(SILVER.n,SILVER.k);
+    ConductorReflection cond(METALS[METAL_SILVER].n,METALS[METAL_SILVER].k);
     DielectricReflection diel(1.f,1.33f);
     EXPECT_EQ(cond.get_flags(),FLAG_BRDF|FLAG_SPEC);
     EXPECT_FALSE(cond.matches(FLAG_BRDF));
@@ -199,7 +199,7 @@ TEST(Materials,SpecularReflection_flags)
 
 TEST(Materials,SpecularReflection_value)
 {
-    ConductorReflection cond(COPPER.n,COPPER.k);
+    ConductorReflection cond(METALS[METAL_COPPER].n,METALS[METAL_COPPER].k);
     DielectricReflection diel(1.f,1.33f);
     const Vec3 wo(-1.f,0.f,.4f);
     const Vec3 wi(1.f,0.f,.6f);
@@ -211,7 +211,7 @@ TEST(Materials,SpecularReflection_value)
 
 TEST(Materials,SpecularReflection_sample_value)
 {
-    ConductorReflection cond(COPPER.n,COPPER.k);
+    ConductorReflection cond(METALS[METAL_COPPER].n,METALS[METAL_COPPER].k);
     DielectricReflection diel(1.f,1.33f);
 
     //outside, conductor
@@ -265,7 +265,7 @@ TEST(Materials,SpecularReflection_sample_value)
 
 TEST(Materials,SpecularReflection_pdf)
 {
-    ConductorReflection cond(COPPER.n,COPPER.k);
+    ConductorReflection cond(METALS[METAL_COPPER].n,METALS[METAL_COPPER].k);
     DielectricReflection diel(1.f,1.33f);
 
     //same hemisphere
@@ -643,7 +643,7 @@ TEST(Materials,MicrofacetT_pdf)
 
 TEST(Materials,FresnelConditions_Conductor_eval)
 {
-    Conductor cond(COPPER.n,COPPER.k);
+    Conductor cond(METALS[METAL_COPPER].n,METALS[METAL_COPPER].k);
     Spectrum res = cond.eval(0.5f);
     EXPECT_FLOAT_EQ(res.w[0], 0.548298597f);
     EXPECT_FLOAT_EQ(res.w[1], 0.688397527f);
@@ -713,7 +713,7 @@ TEST(Materials,Bsdf_value)
     float distance = FLT_MAX;
     material_r.inherit_bdf(new Lambertian());
     materialWtexture.inherit_bdf(new Lambertian(),ut);
-    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
+    metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,METALS[METAL_GOLD].k));
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     //reflected ray spec ok
@@ -930,7 +930,7 @@ TEST(Materials,Bsdf_pdf)
     EXPECT_EQ(pdf, 0.f);
 
     //non matching
-    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
+    metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,METALS[METAL_GOLD].k));
     pdf = metal.pdf(&(r.direction),&hit,&wi,false);
     EXPECT_EQ(pdf, 0.f);
 
@@ -981,7 +981,7 @@ TEST(Materials,SingleBRDF_value)
     float distance = FLT_MAX;
     material_r.inherit_bdf(new Lambertian());
     materialWtexture.inherit_bdf(new Lambertian(),ut);
-    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
+    metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,METALS[METAL_GOLD].k));
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     //matching brdf no-spec
@@ -1047,7 +1047,7 @@ TEST(Materials,SingleBRDF_sample_value)
     SingleBRDF material_r;
     SingleBRDF metal;
     material_r.inherit_bdf(new Lambertian());
-    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
+    metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,METALS[METAL_GOLD].k));
     a.set_material((Bsdf*)&metal,1);
     //brdf specular no match
     res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
@@ -1127,7 +1127,7 @@ TEST(Materials,SingleBRDF_pdf)
     SingleBRDF material_r;
     SingleBRDF metal;
     material_r.inherit_bdf(new Lambertian());
-    metal.inherit_bdf(new ConductorReflection(GOLD.n,GOLD.k));
+    metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,METALS[METAL_GOLD].k));
     wi = Vec3(0.f,1.f,0.f);
 
     //non matching spec

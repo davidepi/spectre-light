@@ -23,6 +23,16 @@ uint \+?[0-9]+
 int -[0-9]+
 float [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?
 string (\"(\\.|[^\\"])*\")|('(\\.|[^'])*')
+silver [Aa][Gg]
+aluminium [Aa][Ll]
+gold [Aa][Uu]
+copper [Cc][Uu]
+iron [Ff][Ee]
+mercury [Hh][Gg]
+lead [Pp][Bb]
+platinum [Pp][Tt]
+tungsten [Ww]
+
 %{
     #define YY_USER_ACTION loc.columns(yyleng);
     #define UPDATE_POS current_pos+=strlen(yytext)
@@ -41,7 +51,7 @@ string (\"(\\.|[^\\"])*\")|('(\\.|[^'])*')
 , { UPDATE_POS; return yy::ConfigParser::make_COMMA(loc); }
 out { UPDATE_POS; return yy::ConfigParser::make_OUTPUT(loc); }
 integrator { UPDATE_POS; return yy::ConfigParser::make_INTEGRATOR(loc); }
-pt         { UPDATE_POS; return yy::ConfigParser::make_PATH_TRACE(loc); }
+path         { UPDATE_POS; return yy::ConfigParser::make_PATH_TRACE(loc); }
 resolution { UPDATE_POS; return yy::ConfigParser::make_RESOLUTION(loc); }
 spp {UPDATE_POS; return yy::ConfigParser::make_SPP(loc); }
 width { UPDATE_POS; return yy::ConfigParser::make_WIDTH(loc); }
@@ -97,6 +107,15 @@ element {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
 {int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 {float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
 {string} { UPDATE_POS; return yy::ConfigParser::make_STRING(yytext,loc); }
+{silver} { UPDATE_POS; return yy::ConfigParser::make_SILVER(loc);}
+{aluminium} { UPDATE_POS; return yy::ConfigParser::make_ALUMINIUM(loc);}
+{gold} { UPDATE_POS; return yy::ConfigParser::make_GOLD(loc);}
+{copper} { UPDATE_POS; return yy::ConfigParser::make_COPPER(loc);}
+{iron} { UPDATE_POS; return yy::ConfigParser::make_IRON(loc);}
+{mercury} { UPDATE_POS; return yy::ConfigParser::make_MERCURY(loc);}
+{lead} { UPDATE_POS; return yy::ConfigParser::make_LEAD(loc);}
+{platinum} { UPDATE_POS; return yy::ConfigParser::make_PLATINUM(loc);}
+{tungsten} { UPDATE_POS; return yy::ConfigParser::make_TUNGSTEN(loc);}
 #[^\n\r]* {UPDATE_POS; loc.step();}
 [ \t\r]   {UPDATE_POS; loc.step();}
 [\n]     {UPDATE_POS; loc.lines(yyleng);loc.step(); last_line_pos=current_pos; }

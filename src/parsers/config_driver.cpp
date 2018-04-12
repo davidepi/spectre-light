@@ -245,7 +245,11 @@ void ConfigDriver::build_materials()
             mat->rough_y=-1;
         mat->rough_x = clamp(mat->rough_x,0.f,1.f);
         if(mat->rough_y!=-1)
+        {
+            //cannot be specular so avoid 0
+            mat->rough_x = clamp(mat->rough_x,0.0001f,1.f);
             mat->rough_y = clamp(mat->rough_y,0.0001f,1.f);
+        }
         switch(mat->type)
         {
             case MATTE:
@@ -298,7 +302,7 @@ void ConfigDriver::build_materials()
                 else
                 {
                     if(mat->dist == SPECTRE_DIST_BLINN)
-                        dist = new Blinn(1.f/mat->rough_x);
+                        dist = new Blinn(2.f/(mat->rough_x*mat->rough_x)-2);
                     else if(mat->dist == SPECTRE_DIST_BECKMANN)
                         dist = new Beckmann(mat->rough_x);
                     else
@@ -347,8 +351,8 @@ void ConfigDriver::build_materials()
                     {
                         if(mat->dist == SPECTRE_DIST_BLINN)
                         {
-                            dist_r = new Blinn(1.f/mat->rough_x);
-                            dist_t = new Blinn(1.f/mat->rough_x);
+                            dist_r=new Blinn(2.f/(mat->rough_x*mat->rough_x)-2);
+                            dist_t=new Blinn(2.f/(mat->rough_x*mat->rough_x)-2);
                         }
                         else if(mat->dist == SPECTRE_DIST_BECKMANN)
                         {
@@ -375,53 +379,8 @@ void ConfigDriver::build_materials()
                 MicrofacetDist* dist;
                 Fresnel* fresnel;
                 material = new SingleBRDF();
-                if(mat->elem[0]=='a' && mat->elem[1]=='g')
-                {
-                    ior = Spectrum(SILVER.n);
-                    absorption = Spectrum(SILVER.k);
-                }
-                else if(mat->elem[0]=='a' && mat->elem[1]=='l')
-                {
-                    ior = Spectrum(ALUMINIUM.n);
-                    absorption = Spectrum(ALUMINIUM.k);
-                }
-                else if(mat->elem[0]=='a' && mat->elem[1]=='u')
-                {
-                    ior = Spectrum(GOLD.n);
-                    absorption = Spectrum(GOLD.k);
-                }
-                else if(mat->elem[0]=='c' && mat->elem[1]=='u')
-                {
-                    ior = Spectrum(COPPER.n);
-                    absorption = Spectrum(COPPER.k);
-                }
-                else if(mat->elem[0]=='f' && mat->elem[1]=='e')
-                {
-                    ior = Spectrum(IRON.n);
-                    absorption = Spectrum(IRON.k);
-                }
-                else if(mat->elem[0]=='h' && mat->elem[1]=='g')
-                {
-                    ior = Spectrum(MERCURY.n);
-                    absorption = Spectrum(MERCURY.k);
-                }
-                else if(mat->elem[0]=='p' && mat->elem[1]=='b')
-                {
-                    ior = Spectrum(LEAD.n);
-                    absorption = Spectrum(LEAD.k);
-                }
-                else if(mat->elem[0]=='p' && mat->elem[1]=='t')
-                {
-                    ior = Spectrum(PLATINUM.n);
-                    absorption = Spectrum(PLATINUM.k);
-                }
-                else
-                {
-                    Console.warning(MESSAGE_METAL_NOT_SUPPORTED,
-                                    mat->elem[0],mat->elem[1]);
-                    ior = Spectrum(GOLD.n);
-                    absorption = Spectrum(GOLD.k);
-                }
+                ior = Spectrum(METALS[mat->elem].n);
+                absorption = Spectrum(METALS[mat->elem].k);
                 if(mat->rough_x==0 && mat->rough_y==-1) //specular
                     bdf = new ConductorReflection(ior,absorption);
                 else
@@ -432,7 +391,7 @@ void ConfigDriver::build_materials()
                     else
                     {
                         if(mat->dist == SPECTRE_DIST_BLINN)
-                            dist = new Blinn(1.f/mat->rough_x);
+                            dist = new Blinn(2.f/(mat->rough_x*mat->rough_x)-2);
                         else if(mat->dist == SPECTRE_DIST_BECKMANN)
                             dist = new Beckmann(mat->rough_x);
                         else
@@ -457,8 +416,7 @@ void ConfigDriver::build_materials()
 ParsedMaterial::ParsedMaterial()
 {
     name = "";
-    elem[0] = 'a';
-    elem[1] = 'u';
+    elem = METAL_GOLD;
     type = MATTE;
     ior = cauchy(1.45f, 0.f);
     rough_x = 0;
