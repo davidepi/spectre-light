@@ -467,9 +467,9 @@ TEST(Parser,material_glass)
 
     res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0],0.0176751148f, 1e-5f);
-    EXPECT_NEAR(res.w[1],0.0176751148f, 1e-5f);
-    EXPECT_NEAR(res.w[2],0.0176751148f, 1e-5f);
+    EXPECT_NEAR(res.w[0],0.0190198198f, 1e-5f);
+    EXPECT_NEAR(res.w[1],0.0190198198f, 1e-5f);
+    EXPECT_NEAR(res.w[2],0.0190198198f, 1e-5f);
 
     res = mat3->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                              &pdf, true, &spec);
@@ -479,9 +479,9 @@ TEST(Parser,material_glass)
 
     res = mat4->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0],0.0104777161f, 1e-5f);
-    EXPECT_NEAR(res.w[1],0.0104777161f, 1e-5f);
-    EXPECT_NEAR(res.w[2],0.0104777161f, 1e-5f);
+    EXPECT_NEAR(res.w[0],0.0132096251f, 1e-5f);
+    EXPECT_NEAR(res.w[1],0.0132096251f, 1e-5f);
+    EXPECT_NEAR(res.w[2],0.0132096251f, 1e-5f);
 
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
@@ -605,5 +605,6 @@ TEST(Parser,material_metal)
     EXPECT_NEAR(res.w[2],1.07088006f, 1e-5f);
     MtlLib.clear();
     TexLib.clear();
+    delete r0;
 }
 

@@ -2,7 +2,7 @@ texture: { name: "Red", color:[255,0,0]}
 texture: { name: "Green", color:[0,255,0]}
 texture: { name: "Blue", color:[0,0,255]}
 material:{name:"spec", type:glass}
-material:{name:"aniso", type:glass, roughness:0.1, anisotropy: 0.2, diffuse: "Red", specular: "Green"}
-material:{name:"blinn", type:glass, roughness:0.3, distribution: blinn, diffuse: "Green"}
+material:{name:"aniso", type:glass, roughness:0.1, anisotropy: 0.2, diffuse: "Red", specular: "Green" ior:1.45}
+material:{name:"blinn", type:glass, roughness:0.3, distribution: blinn, diffuse: "Green", ior:[1.458,0.00354] }
 material:{name:"beckmann", type:glass, roughness:0.3, distribution: beckmann, specular: "Blue"}
-material:{name:"ggx", type: glass, roughness:0.3, distribution:ggx}
+material:{name:"ggx", type: glass, roughness:0.3, distribution:ggx, ior:[1.03961212,0.231792344,1.01046945][6.0006986E-3,2.00179144e-2,1.03560653E2]}
