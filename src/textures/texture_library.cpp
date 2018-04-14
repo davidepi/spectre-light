@@ -4,9 +4,9 @@
 #include "texture_library.hpp"
 
 TextureLibrary::TextureLibrary()
+:default_texture(new UniformTexture(SPECTRUM_ONE))
 {
-    Texture* dflt = new UniformTexture(SPECTRUM_ONE);
-    lib.insert(std::make_pair("Default",dflt));
+    lib.insert(std::make_pair("Default",default_texture));
 }
 
 TextureLibrary::~TextureLibrary()
@@ -22,7 +22,8 @@ void TextureLibrary::add_inherit(const std::string& name, Texture* texture)
 const Texture* TextureLibrary::get(const std::string& name)const
 {
     const Texture* retval;
-    std::unordered_map<std::string,Texture*>::const_iterator got=lib.find(name);
+    std::unordered_map<std::string,const Texture*>::const_iterator got =
+    lib.find(name);
     if(got!=lib.end())
         retval = got->second;
     else
@@ -34,7 +35,7 @@ void TextureLibrary::erase(const std::string& name)
 {
     if(name!="Default")
     {
-        std::unordered_map<std::string,Texture*>::const_iterator it =
+        std::unordered_map<std::string,const Texture*>::const_iterator it =
             lib.find(name);
         if(it!=lib.end())
         {
@@ -47,11 +48,11 @@ void TextureLibrary::erase(const std::string& name)
 void TextureLibrary::clear()
 {
     //remove Default to avoid deallocation
-    std::unordered_map<std::string,Texture*>::const_iterator got=lib.find("Default");
-    Texture* dflt = got->second;
+    std::unordered_map<std::string,const Texture*>::const_iterator got=lib.find("Default");
+    const Texture* dflt = got->second;
     lib.erase(got);
     
-    for(std::pair<std::string, Texture*> element:TextureLibrary::lib)
+    for(std::pair<std::string, const Texture*> element:TextureLibrary::lib)
         delete element.second;
     TextureLibrary::lib.clear();
     
@@ -61,9 +62,15 @@ void TextureLibrary::clear()
 
 bool TextureLibrary::contains(const std::string &name)const
 {
-    std::unordered_map<std::string,Texture*>::const_iterator got=lib.find(name);
+    std::unordered_map<std::string,const Texture*>::const_iterator got =
+    lib.find(name);
     if(got!=lib.end())
         return true;
     else
         return false;
+}
+
+const Texture* TextureLibrary::get_default()const
+{
+    return TextureLibrary::default_texture;
 }

@@ -84,3 +84,10 @@ TEST(MaterialLibrary,clear)
     EXPECT_NE(got, nullptr);
 }
 
+TEST(MaterialLibrary,get_default)
+{
+    const Bsdf* mat0 = MtlLib.get_default();
+    const Bsdf* mat1 = MtlLib.get("Default");
+    EXPECT_EQ(mat0,mat1); //assert that they point to the same value
+}
+

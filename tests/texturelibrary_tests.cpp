@@ -99,3 +99,10 @@ TEST(TextureLibrary,clear)
     EXPECT_NE(got, nullptr);
 }
 
+TEST(MaterialLibrary,get_default)
+{
+    const Texture* tex0 = TexLib.get_default();
+    const Texture* tex1 = TexLib.get("Default");
+    EXPECT_EQ(tex0,tex1); //assert that they point to the same value
+}
+

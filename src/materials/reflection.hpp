@@ -34,7 +34,6 @@ public:
 
     /** \brief Default Constructor for perfectly specular reflective material
      *
-     *  \param[in] specular The spectrum of light reflected back
      */
     explicit Reflection();
 

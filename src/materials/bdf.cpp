@@ -58,7 +58,7 @@ void Bsdf::inherit_bdf(Bdf* addme, const Texture* spectrum)
         Bsdf::textures[count] = spectrum;
     else
         //assuming default texture always exists and is SPECTRUM_ONE
-        Bsdf::textures[count] = TexLib.get("Default");
+        Bsdf::textures[count] = TexLib.get_default();
     count++;
 }
 
@@ -201,7 +201,7 @@ SingleBRDF::SingleBRDF()
     //time
     SingleBRDF::bdfs[0] = (Bdf*)new Lambertian();
     //to avoid SEGFAULT, default texture is completely white
-    SingleBRDF::textures[0] = TexLib.get("Default");
+    SingleBRDF::textures[0] = TexLib.get_default();
 }
 
 SingleBRDF::~SingleBRDF()
@@ -218,7 +218,7 @@ void SingleBRDF::inherit_bdf(Bdf* addme, const Texture* spectrum)
         if(spectrum!=NULL)
             SingleBRDF::textures[0] = spectrum;
         else
-            SingleBRDF::textures[0] = TexLib.get("Default");
+            SingleBRDF::textures[0] = TexLib.get_default();
     }
     else
     {

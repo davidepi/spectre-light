@@ -1,12 +1,12 @@
 //Created,   7 Jul 2017
-//Last Edit 12 Apr 2018
+//Last Edit 14 Apr 2018
 
 /**
  *  \file material_library.hpp
  *  \brief MaterialLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  12 Apr 2018
+ *  \date  14 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -101,12 +101,24 @@ public:
      *  \return true if the material is already inside the library
      */
     bool contains(const std::string& name)const;
+    
+    /** \brief Returns the "Default" material
+     *
+     *  This method returns the "Default" material. It performs the same action
+     *  as calling MaterialLibrary::get() with "Default" as parameter. However,
+     *  since "Default" is a system material, it is cached inside this class
+     *  and by using this method a call to the underlying hash map is avoided
+     *
+     *  \return The "Default" material
+     */
+    const Bsdf* get_default()const;
 
 private:
 
     MaterialLibrary();
     ~MaterialLibrary();
-    std::unordered_map<std::string,Bsdf*> lib;
+    std::unordered_map<std::string,const Bsdf*> lib;
+    Bsdf* default_material;
 };
 
 ///Access the material library just by writing "MtlLib"

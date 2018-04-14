@@ -263,7 +263,7 @@ void ConfigDriver::build_materials()
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->diffuse.c_str(),mat->name.c_str());
-                    diffuse = TexLib.get("Default");
+                    diffuse = TexLib.get_default();
                 }
                 if(mat->rough_x!=0)
                 {
@@ -285,7 +285,7 @@ void ConfigDriver::build_materials()
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->diffuse.c_str(),mat->name.c_str());
-                    diffuse = TexLib.get("Default");
+                    diffuse = TexLib.get_default();
                 }
                 if(TexLib.contains(mat->specular))
                     specular = TexLib.get(mat->specular);
@@ -293,7 +293,7 @@ void ConfigDriver::build_materials()
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->specular.c_str(),mat->name.c_str());
-                    specular = TexLib.get("Default");
+                    specular = TexLib.get_default();
                 }
                 material->inherit_bdf(new Lambertian(),diffuse);
                 //no specular in glossy, avoid division by zero
@@ -321,7 +321,7 @@ void ConfigDriver::build_materials()
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->diffuse.c_str(),mat->name.c_str());
-                    diffuse = TexLib.get("Default");
+                    diffuse = TexLib.get_default();
                 }
                 if(TexLib.contains(mat->specular))
                     specular = TexLib.get(mat->specular);
@@ -329,7 +329,7 @@ void ConfigDriver::build_materials()
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->specular.c_str(),mat->name.c_str());
-                    specular = TexLib.get("Default");
+                    specular = TexLib.get_default();
                 }
                 material = new Bsdf();
                 Bdf* reflective;

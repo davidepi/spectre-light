@@ -1,12 +1,12 @@
 //Created,  14 Mar 2018
-//Last Edit 12 Apr 2018
+//Last Edit 14 Apr 2018
 
 /**
  *  \file texture_library.hpp
  *  \brief TextureLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  12 Apr 2018
+ *  \date  14 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -99,11 +99,23 @@ public:
      */
     bool contains(const std::string& name)const;
     
+    /** \brief Returns the "Default" texture
+     *
+     *  This method returns the "Default" texture. It performs the same action
+     *  as calling TextureLibrary::get() with "Default" as parameter. However,
+     *  since "Default" is a system texture, it is cached inside this class
+     *  and by using this method a call to the underlying hash map is avoided
+     *
+     *  \return The "Default" texture
+     */
+    const Texture* get_default()const;
+    
 private:
     
     TextureLibrary();
     ~TextureLibrary();
-    std::unordered_map<std::string,Texture*> lib;
+    std::unordered_map<std::string, const Texture*> lib;
+    const Texture* default_texture;
 };
 
 ///Access the texture library just by writing "TexLib"
