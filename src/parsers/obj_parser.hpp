@@ -13,14 +13,27 @@
 #include "primitives/triangle.hpp"
 #include "geometry/point3.hpp"
 #include "geometry/vec3.hpp"
+#include "materials/bdf.hpp"
+#include "materials/material_library.hpp"
 #include <vector>
 #include <cstdio>
 #include <cstring>
-#include <cstdlib>
+#include <string>
+#include <cstdlib> //strtof
 
     //only tris, mandatory normals, no check on errors
     //very restrictive, yet temporary, parser for debug purposes
-    Mesh* parseObj(const char* path);
+class ObjParser
+{
+public:
+    ObjParser();
+    ~ObjParser() = default;
+
+    void parse_obj(const char *path);
+
+private:
+    int lineno;
+};
 
 #endif
 
