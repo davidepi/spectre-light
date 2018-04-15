@@ -29,9 +29,10 @@ public:
     ObjParser();
     ~ObjParser() = default;
 
-    void parse_obj(const char *path);
+    Mesh* parse_obj(const char *path);
 
 private:
+    bool parse(const char* path, Mesh* mesh);
     int lineno;
 };
 
