@@ -19,6 +19,7 @@
 #include "utility/utility.hpp"
 #include "primitives/shape.hpp"
 #include "geometry/point3.hpp"
+#include "geometry/point2.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/AABB.hpp"
@@ -34,6 +35,9 @@ struct Vertex
 
     ///The normal of the vertex
     Normal n;
+
+    ///The texture coordinates of the vertex
+    Point2 t;
 };
 
 /**
@@ -71,21 +75,6 @@ public:
      */
     Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2);
     
-    /** \brief Constructor, given the vertices and the material.
-     *
-     *  Construct a triangle in object space with the given vertices and
-     *  material
-     *
-     *  \param[in] v0 The first vertex of the triangle
-     *  \param[in] v1 The second vertex of the triangle
-     *  \param[in] v2 The third vertex of the triangle
-     *  \param[in] material_index The index of the material used by this
-     *  Triangle, referencing the material array of the containing Mesh. More
-     *  info can be found in the Mesh::set_bsdf method
-     */
-    Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2,
-             unsigned char material_index);
-
     /** \brief Intersection of a Ray and this triangle
      *
      *  This method tries to intersect a ray passed as a parameter with the
