@@ -7,9 +7,38 @@
 static inline void skip_spaces(char** source);
 static inline void skip_line(char** source);
 static inline void get_next_token(char **source, char *buffer, int max_size);
-ObjParser::ObjParser(const char* path)
+ObjParser::ObjParser()
+{
+    buffer_ro = NULL;
+}
+
+ObjParser::~ObjParser()
+{
+    if(buffer_ro!=NULL)
+        delete buffer_ro;
+}
+
+void ObjParser::start_parsing(const char *path)
 {
     ObjParser::path = path;
+    lineno = 1;
+    fin = fopen(path,"r");
+    groups_as_names = false;
+    if(fin!=NULL)
+    {
+        buffer_ro = (char*)malloc(sizeof(char)*(BUFFER_SIZE+1));
+        read_bytes = (int)fread(buffer_ro, sizeof(char), BUFFER_SIZE, fin);
+        buffer_ro[read_bytes] = END_OF_BUFFER_GUARD;
+        buffer = buffer_ro;
+    }
+    else
+        Console.severe(MESSAGE_INPUT_ERROR,path,strerror(errno));
+}
+
+void ObjParser::end_parsing()
+{
+    fclose(fin);
+    fin = NULL;
 }
 
 Mesh* ObjParser::parse()
@@ -31,11 +60,9 @@ Mesh* ObjParser::parse()
 
 bool ObjParser::parse_internal(Mesh* obj)
 {
-    FILE* fin = fopen(path,"r");
-    lineno = 1;
-    std::vector<Point3>vertices;
-    std::vector<Point2>textures;
-    std::vector<Normal>normals;
+    if(fin==NULL)
+        return false;
+    bool terminate = false;
     std::vector<Vertex>face_tmp;
     //records which materials were already used in this object
     std::unordered_map<std::string,unsigned char> used_materials;
@@ -48,22 +75,9 @@ bool ObjParser::parse_internal(Mesh* obj)
     material_association.clear();
     face_no = 0;
     std::string object_name = "";
-    bool groups_as_names = false;
-    char read_buffer[BUFFER_SIZE+1];
-    char* buffer;
     char token[TOKEN_SIZE];
-    int read_bytes;
-    if(fin==NULL)
+    while(!terminate)
     {
-        Console.severe(MESSAGE_INPUT_ERROR,path,strerror(errno));
-        return false;
-    }
-    uint32_t tris = 0;
-    //first pass, verts and norms
-    while((read_bytes = (int)fread(read_buffer, 1, BUFFER_SIZE, fin)) != 0)
-    {
-        buffer = read_buffer;
-        buffer[read_bytes] = END_OF_BUFFER_GUARD;
         while(*buffer != END_OF_BUFFER_GUARD)
         {
             skip_spaces(&buffer);
@@ -137,6 +151,9 @@ bool ObjParser::parse_internal(Mesh* obj)
                 }
                 case 'o':
                 {
+                    //old object finished, bail out
+                    if(object_name!="")
+                        return true;
                     buffer++;
                     get_next_token(&buffer, token, TOKEN_SIZE);
                     object_name = std::string(token);
@@ -144,6 +161,8 @@ bool ObjParser::parse_internal(Mesh* obj)
                 }
                 case 'g':
                 {
+                    if(object_name!="" && groups_as_names)
+                        return true;
                     //probably the file uses groups as object names
                     if(object_name == "" || groups_as_names)
                     {

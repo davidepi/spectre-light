@@ -15,7 +15,7 @@ TEST(TextureLibrary,add)
     Texture* tex = new UniformTexture(color1);
     TexLib.add_inherit("New", tex);
     const Texture* got = TexLib.get("New");
-    res = got->map(0,0);
+    res = got->map(Point2());
     EXPECT_EQ(color1.w[0], res.w[0]);
     EXPECT_EQ(color1.w[1], res.w[1]);
     EXPECT_EQ(color1.w[2], res.w[2]);
@@ -24,7 +24,7 @@ TEST(TextureLibrary,add)
     Texture* tex2 = new UniformTexture(color2);
     TexLib.add_inherit("New", tex2);
     const Texture* got2 = TexLib.get("New");
-    res = got2->map(0,0);
+    res = got2->map(Point2());
     EXPECT_EQ(color1.w[0], res.w[0]);
     EXPECT_EQ(color1.w[1], res.w[1]);
     EXPECT_EQ(color1.w[2], res.w[2]);

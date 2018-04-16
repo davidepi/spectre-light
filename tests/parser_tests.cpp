@@ -242,7 +242,7 @@ TEST(Parser,texture)
     if(TexLib.contains("Red"))
     {
         const Texture* tex = TexLib.get("Red");
-        Spectrum spectrum = tex->map(0.f,0.f);
+        Spectrum spectrum = tex->map(Point2());
         ColorRGB res = spectrum.to_xyz().to_sRGB();
         EXPECT_NEAR(res.r,1.f,1e-3f);
         EXPECT_NEAR(res.g,0.f,1e-3f);
@@ -253,7 +253,7 @@ TEST(Parser,texture)
     if(TexLib.contains("Grey"))
     {
         const Texture* tex = TexLib.get("Grey");
-        Spectrum spectrum = tex->map(0.f,0.f);
+        Spectrum spectrum = tex->map(Point2());
         ColorRGB res = spectrum.to_xyz().to_sRGB();
         EXPECT_NEAR(res.r,0.501960814f,1e-3f);
         EXPECT_NEAR(res.g,0.501960814f,1e-3f);

@@ -24,9 +24,12 @@
 class ObjParser
 {
 public:
-    ObjParser(const char* path);
-    ~ObjParser() = default;
-
+    ObjParser();
+    ~ObjParser();
+    
+    void start_parsing(const char* path);
+    void end_parsing();
+    
     Mesh* parse();
     unsigned char get_material_no()const;
     void get_materials(const Bsdf**)const;
@@ -35,14 +38,22 @@ public:
 
 private:
     const char* path;
+    char* buffer_ro;
+    char* buffer;
+    FILE* fin;
     bool parse_internal(Mesh* mesh);
     int lineno;
+    bool groups_as_names;
+    int read_bytes;
     unsigned int face_no;
     //list of the materials used in this object
     std::vector<const Bsdf*> materials;
     //the material associated for every triangle. It is the offset of the
     // materials array
     std::vector<unsigned char> material_association;
+    std::vector<Point3>vertices;
+    std::vector<Point2>textures;
+    std::vector<Normal>normals;
 };
 
 #endif
