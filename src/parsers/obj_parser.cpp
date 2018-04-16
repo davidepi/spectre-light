@@ -7,6 +7,7 @@
 static inline void skip_spaces(char** source);
 static inline void skip_line(char** source);
 static inline void get_next_token(char **source, char *buffer, int max_size);
+static inline void feed_buffer(int* read_bytes, char* buffer_ro, FILE* input);
 ObjParser::ObjParser()
 {
     buffer_ro = NULL;
@@ -62,7 +63,6 @@ bool ObjParser::parse_internal(Mesh* obj)
 {
     if(fin==NULL)
         return false;
-    bool terminate = false;
     std::vector<Vertex>face_tmp;
     //records which materials were already used in this object
     std::unordered_map<std::string,unsigned char> used_materials;
@@ -76,8 +76,6 @@ bool ObjParser::parse_internal(Mesh* obj)
     face_no = 0;
     std::string object_name = "";
     char token[TOKEN_SIZE];
-    while(!terminate)
-    {
         while(*buffer != END_OF_BUFFER_GUARD)
         {
             skip_spaces(&buffer);
@@ -284,7 +282,6 @@ bool ObjParser::parse_internal(Mesh* obj)
                 lineno++;
             }
         }
-    }
     return true;
 }
 
@@ -339,4 +336,10 @@ static inline void get_next_token(char** source, char* buffer, int max_size)
         current = **source;
     }
     buffer[i] = 0x0; //transform buffer to null terminated string
+}
+
+static inline void feed_buffer(int* read_bytes, char* buffer_ro, FILE* input)
+{
+    *read_bytes = (int)fread(buffer_ro, sizeof(char), BUFFER_SIZE, input);
+    buffer_ro[*read_bytes] = END_OF_BUFFER_GUARD;
 }

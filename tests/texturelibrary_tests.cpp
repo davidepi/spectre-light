@@ -99,7 +99,7 @@ TEST(TextureLibrary,clear)
     EXPECT_NE(got, nullptr);
 }
 
-TEST(MaterialLibrary,get_default)
+TEST(TextureLibrary,get_default)
 {
     const Texture* tex0 = TexLib.get_default();
     const Texture* tex1 = TexLib.get("Default");
