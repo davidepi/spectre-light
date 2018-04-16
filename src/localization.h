@@ -146,6 +146,11 @@
 #define MESSAGE_OBJ_ERROR "Reading of file %s failed. File has not been "\
 "imported"
 
+#define MESSAGE_MISSING_MATERIAL "Missing material %s for object %s"
+
+#define MESSAGE_OVERFLOW_MATERIALS "Maximum number of materials is 255 per "\
+"asset. Some materials for object %s will be missing"
+
 #endif
 
 /**

@@ -21,19 +21,28 @@
 #include <string>
 #include <cstdlib> //strtof
 
-    //only tris, mandatory normals, no check on errors
-    //very restrictive, yet temporary, parser for debug purposes
 class ObjParser
 {
 public:
-    ObjParser();
+    ObjParser(const char* path);
     ~ObjParser() = default;
 
-    Mesh* parse_obj(const char *path);
+    Mesh* parse();
+    unsigned char get_material_no()const;
+    void get_materials(const Bsdf**)const;
+    unsigned int get_face_no()const;
+    void get_material_association(unsigned char*)const;
 
 private:
-    bool parse(const char* path, Mesh* mesh);
+    const char* path;
+    bool parse_internal(Mesh* mesh);
     int lineno;
+    unsigned int face_no;
+    //list of the materials used in this object
+    std::vector<const Bsdf*> materials;
+    //the material associated for every triangle. It is the offset of the
+    // materials array
+    std::vector<unsigned char> material_association;
 };
 
 #endif

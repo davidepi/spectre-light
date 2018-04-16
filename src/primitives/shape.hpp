@@ -15,6 +15,7 @@
 #ifndef __SHAPE_HPP_
 #define __SHAPE_HPP_
 
+#include "geometry/point2.hpp"
 #include "geometry/ray.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/AABB.hpp"
@@ -170,10 +171,7 @@ struct HitPoint
     unsigned int index;
     
     ///Mapping coordinate u of the point, used for texture mapping
-    float u;
-    
-    ///Mapping coordinate v of the point, used for texture mapping
-    float v;
+    Point2 uv;
 };
 
 #endif

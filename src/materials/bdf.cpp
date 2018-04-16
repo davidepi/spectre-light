@@ -80,7 +80,7 @@ Spectrum Bsdf::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
         //add contribution only if matches refl/trans
         if(bdfs[i]->matches(flags))
             retval += bdfs[i]->value(&wo_shading,&wi_shading) *
-                      textures[i]->map(h->u, h->v);
+                      textures[i]->map(h->uv);
     }
     return retval;
 }
@@ -156,7 +156,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
             if (bdfs[i]->matches(flags))//add contribution only if matches
             {
                 retval += bdfs[i]->value(&wo_shading, &tmpwi) *
-                          textures[chosen]->map(h->u,h->v);
+                          textures[chosen]->map(h->uv);
                 *pdf+= bdfs[i]->pdf(&wo_shading, &tmpwi);
             }
         }
@@ -164,7 +164,7 @@ Spectrum Bsdf::sample_value(float r0, float r1, float r2, const Vec3* wo,
     else
     {
         *matchedSpec = true;
-        retval*=textures[chosen]->map(h->u,h->v);
+        retval*=textures[chosen]->map(h->uv);
     }
     if(matchcount>1)
         *pdf/=(float)matchcount;
@@ -246,7 +246,7 @@ Spectrum SingleBRDF::value(const Vec3 *wo, const HitPoint* h, const Vec3 *wi,
     if(bdfs[0]->matches(flags))
     {
         retval = bdfs[0]->value(&wo_shading,&wi_shading);
-        retval *= textures[0]->map(h->u, h->v);
+        retval *= textures[0]->map(h->uv);
     }
     return retval;
 }
@@ -276,7 +276,7 @@ Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
     wi->y = h->right.y*tmpwi.x + h->cross.y * tmpwi.y + h->normal_h.y * tmpwi.z;
     wi->z = h->right.z*tmpwi.x + h->cross.z * tmpwi.y + h->normal_h.z * tmpwi.z;
     wi->normalize();
-    return retval*textures[0]->map(h->u, h->v);
+    return retval*textures[0]->map(h->uv);
 }
 
 float SingleBRDF::pdf(const Vec3* wo,  const HitPoint* h, const Vec3* wi,

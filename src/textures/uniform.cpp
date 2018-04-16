@@ -9,7 +9,7 @@ UniformTexture::UniformTexture(const Spectrum& color)
     
 }
 
-Spectrum UniformTexture::map(float, float)const
+Spectrum UniformTexture::map(Point2)const
 {
     return UniformTexture::value;
 }

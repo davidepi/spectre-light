@@ -7,15 +7,15 @@
 static inline void skip_spaces(char** source);
 static inline void skip_line(char** source);
 static inline void get_next_token(char **source, char *buffer, int max_size);
-ObjParser::ObjParser()
+ObjParser::ObjParser(const char* path)
 {
-    lineno = 1;
+    ObjParser::path = path;
 }
 
-Mesh* ObjParser::parse_obj(const char* path)
+Mesh* ObjParser::parse()
 {
     Mesh* obj = new Mesh(1000); //initialize random number of tris
-    bool res = parse(path, obj);
+    bool res = parse_internal(obj);
     if(res)
     {
         obj->finalize();
@@ -29,14 +29,24 @@ Mesh* ObjParser::parse_obj(const char* path)
     }
 }
 
-bool ObjParser::parse(const char *path, Mesh* obj)
+bool ObjParser::parse_internal(Mesh* obj)
 {
     FILE* fin = fopen(path,"r");
+    lineno = 1;
     std::vector<Point3>vertices;
-    std::vector<Point2> textures;
+    std::vector<Point2>textures;
     std::vector<Normal>normals;
     std::vector<Vertex>face_tmp;
-    const Bsdf* current_material;
+    //records which materials were already used in this object
+    std::unordered_map<std::string,unsigned char> used_materials;
+    //the current material to be assigned to every face (should change while
+    // parsing faces)
+    unsigned char current_material = 0;
+    //start clear
+    materials.clear();
+    materials.push_back(MtlLib.get_default());
+    material_association.clear();
+    face_no = 0;
     std::string object_name = "";
     bool groups_as_names = false;
     char read_buffer[BUFFER_SIZE+1];
@@ -103,10 +113,25 @@ bool ObjParser::parse(const char *path, Mesh* obj)
                     {
                         //get material name
                         get_next_token(&buffer, token, TOKEN_SIZE);
-                        //retrieve material, assuming Default mat exists
-                        current_material = MtlLib.get(token);
-                        if(current_material == NULL)
-                            current_material = MtlLib.get_default();
+                        //check if material was already used and s
+                        std::unordered_map<std::string,unsigned
+                        char>::const_iterator it = used_materials.find(token);
+                        if(it==used_materials.end())
+                        {
+                            //material not used, insert into arrays
+                            used_materials.insert({{token,
+                                                  used_materials.size()}});
+                            const Bsdf* cur_mat = MtlLib.get(token);
+                            if(cur_mat==NULL)
+                            {
+                                cur_mat = MtlLib.get_default();
+                                Console.warning(MESSAGE_MISSING_MATERIAL,
+                                                token,path);
+                            }
+                            materials.push_back(cur_mat);
+                        }
+                        else
+                            current_material = it->second;
                     }
                     break;
                 }
@@ -205,14 +230,23 @@ bool ObjParser::parse(const char *path, Mesh* obj)
                     {
                         obj->add_triangle(&face_tmp.at(0),&face_tmp.at(1),
                                           &face_tmp.at(2));
+                        material_association.push_back(current_material);
+                        face_no++;
                     }
                     else if(face_tmp.size()>3)//quad or n-gon
                     {
                         obj->add_triangle(&face_tmp.at(0),&face_tmp.at(1),
                                           &face_tmp.at(2));
+                        material_association.push_back(current_material);
+                        face_no++;
                         for(unsigned long i=3;i<face_tmp.size();i++)
-                            obj->add_triangle(&face_tmp.at(0),&face_tmp.at(i-1),
+                        {
+                            obj->add_triangle(&face_tmp.at(0),
+                                              &face_tmp.at(i-1),
                                               &face_tmp.at(i));
+                            material_association.push_back(current_material);
+                            face_no++;
+                        }
                     }
                     else //face with less than 2 vertex. not even writing to
                     {    // console
@@ -233,6 +267,30 @@ bool ObjParser::parse(const char *path, Mesh* obj)
         }
     }
     return true;
+}
+
+unsigned char ObjParser::get_material_no()const
+{
+    if(materials.size()>256)
+        Console.warning(MESSAGE_OVERFLOW_MATERIALS,path);
+    return (unsigned char)materials.size();
+}
+
+void ObjParser::get_materials(const Bsdf** out_materials)const
+{
+    for(int i=0;i<min((int)materials.size(),256);i++)
+        out_materials[i] = materials[i];
+}
+
+unsigned int ObjParser::get_face_no() const
+{
+    return face_no;
+}
+
+void ObjParser::get_material_association(unsigned char* out_association)const
+{
+    for(int i=0;i<face_no;i++)
+        out_association[i] = material_association[i];
 }
 
 static inline void skip_spaces(char** source)

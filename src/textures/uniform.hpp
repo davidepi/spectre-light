@@ -46,10 +46,10 @@ public:
      *  Spectrum value associated with these coordinates by looking at the
      *  underlying image
      *
-     *  \param[in] u The x value of the mapped point in image space
-     *  \param[in] v The y value of the mapped point in image space
+     *  \param[in] uv A Point2 representing the value of the mapped point in
+     *  image space
      */
-    Spectrum map(float u,float v)const;
+    Spectrum map(Point2 uv)const;
 
 private:
     const Spectrum value;

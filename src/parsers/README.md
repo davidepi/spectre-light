@@ -47,7 +47,7 @@ material: "another_file2.txt"
 
 As already stated in the [README](../../README.md), this renderer supports `.obj` files but not their companion `.mtl`. The reason of this discrepancy is the tight bound that `.mtl` specification has with the Phong illumination model that greatly limits the expressiveness of a physically based material system.
 
-In order to overcome this limitation, the `newmtl` keyword is ignored while parsing. However, the `usemtl` is still used and the name of the material is searched in the Material Library that contains the materials defined in the main input file.
+In order to overcome this limitation, the `mtllib` keyword is ignored while parsing. However, the `usemtl` is still used and the name of the material is searched in the Material Library that contains the materials defined in the main input file.
 
 ### Chained (Children) Files
 
