@@ -2,7 +2,7 @@
 //Last Edit 17 Apr 2018
 
 /**
- *  \file      obj_parser.hpp
+ *  \file      parser_obj.hpp
  *  \brief     Class definition of a .obj parser
  *  \author    Davide Pizzolotto
  *  \version   0.2
@@ -27,7 +27,7 @@
 #include <cstdlib>
 
 /**
- *  \class ObjParser obj_parser.hpp "parsers/obj_parser.hpp"
+ *  \class ParserObj parser_obj.hpp "parsers/parser_obj.hpp"
  *  \brief A parser for the .obj ASCII format
  *
  *  This class is a parser for the Wavefront .obj format. With the start_parsing
@@ -48,15 +48,15 @@
  *  checking is not performed
  *
  */
-class ObjParser
+class ParserObj
 {
 public:
     
     ///Default constructor
-    ObjParser();
+    ParserObj();
     
     ///Default destructor
-    ~ObjParser();
+    ~ParserObj();
     
     /** \brief Initiates parsing
      *
@@ -74,17 +74,22 @@ public:
      */
     void end_parsing();
     
-    /** \brief Returns the next Mesh contained in the parsed file
+    /** \brief Creates the next Mesh contained in the parsed file
      *
      *  After calling start_parsing, this function will return every mesh
      *  contained in the file passed to start_parsing. Since a single .obj file
-     *  could contain multiple meshes, for each invocation this function returns
-     *  one in the order they are encountered in the file. When every mesh has
-     *  been returned, this function returns a NULL pointer.
+     *  could contain multiple meshes, for each invocation this function creates
+     *  the next mesh in the order they are encountered in the file. The meshes
+     *  are created in the pointer passed as input, once per call. When every
+     *  mesh has been created, this function returns false.
      *
-     *  \return The next mesh contained in the parsed .obj file
+     *  \param[out] out An already allocated pointer, where the triangles of the
+     *  meshes will be added. The created mesh will be ready-to-use (already
+     *  finalized)
+     *  \return True if the mesh was parsed successfully, false otherwise or if
+     *  there are no more mesh left in the file
      */
-    Mesh* get_next_mesh();
+    bool get_next_mesh(Mesh* out);
     
     /** \brief Returns the mesh name
      *
@@ -150,8 +155,6 @@ private:
     int read_bytes;
     //pointer pointing to buffer_ro with the data to be processed
     char* buffer;
-    //function used to actually parse the mesh
-    bool parse_internal(Mesh* mesh);
     //current_line being read
     int lineno;
     //use `g` keyword as `o` for filenames

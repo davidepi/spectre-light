@@ -1,4 +1,4 @@
-#include "obj_parser.hpp"
+#include "parser_obj.hpp"
 
 #define BUFFER_SIZE 4096
 #define END_OF_BUFFER_GUARD 0x7 //unused ASCII char, keep it as kinda EOF
@@ -7,20 +7,20 @@
 static inline void get_next_token(char **source, char *buffer, int max_size,
                                   int* read_bytes, char* buffer_ro, FILE* in);
 static inline void feed_buffer(int* read_bytes, char* buffer_ro, FILE* input);
-ObjParser::ObjParser()
+ParserObj::ParserObj()
 {
     buffer_ro = NULL;
 }
 
-ObjParser::~ObjParser()
+ParserObj::~ParserObj()
 {
     if(buffer_ro!=NULL)
         delete buffer_ro;
 }
 
-void ObjParser::start_parsing(const char *path)
+void ParserObj::start_parsing(const char *path)
 {
-    ObjParser::path = path;
+    ParserObj::path = path;
     lineno = 1;
     fin = fopen(path,"r");
     groups_as_names = false;
@@ -35,31 +35,13 @@ void ObjParser::start_parsing(const char *path)
         Console.severe(MESSAGE_INPUT_ERROR,path,strerror(errno));
 }
 
-void ObjParser::end_parsing()
+void ParserObj::end_parsing()
 {
     fclose(fin);
     fin = NULL;
 }
 
-Mesh* ObjParser::get_next_mesh()
-{
-    //initialize random number of tris. Will be shrinked with finalize()
-    Mesh* obj = new Mesh(1000);
-    bool res = parse_internal(obj);
-    if(res)
-    {
-        obj->finalize();
-        return obj;
-    }
-    else
-    {
-        Console.warning(MESSAGE_OBJ_ERROR,path);
-        delete obj;
-        return NULL;
-    }
-}
-
-bool ObjParser::parse_internal(Mesh* obj)
+bool ParserObj::get_next_mesh(Mesh* obj)
 {
     if(fin==NULL)
         return false;
@@ -275,7 +257,6 @@ bool ObjParser::parse_internal(Mesh* obj)
                         Vec3 u = face_tmp[1].p - face_tmp[0].p;
                         Vec3 v = face_tmp[2] .p - face_tmp[0].p;
                         Normal face_normal = (Normal)cross(u,v);
-                        printf("Normal:(%f,%f,%f)\n",face_normal.x,face_normal.y,face_normal.z);
                         for(int i=0;i<(int)face_tmp.size();i++)
                             face_tmp[i].n = face_normal;
                     }
@@ -330,33 +311,34 @@ bool ObjParser::parse_internal(Mesh* obj)
                 lineno++;
             }
         }
+    obj->finalize();
     return true;
 }
 
-const std::string& ObjParser::get_mesh_name()const 
+const std::string& ParserObj::get_mesh_name()const 
 {
     return object_name;
 }
 
-unsigned char ObjParser::get_material_no()const
+unsigned char ParserObj::get_material_no()const
 {
     if(materials.size()>256)
         Console.warning(MESSAGE_OVERFLOW_MATERIALS,path);
     return (unsigned char)materials.size();
 }
 
-void ObjParser::get_materials(const Bsdf** out_materials)const
+void ParserObj::get_materials(const Bsdf** out_materials)const
 {
     for(int i=0;i<min((int)materials.size(),256);i++)
         out_materials[i] = materials[i];
 }
 
-unsigned int ObjParser::get_face_no() const
+unsigned int ParserObj::get_face_no() const
 {
     return face_no;
 }
 
-void ObjParser::get_material_association(unsigned char* out_association)const
+void ParserObj::get_material_association(unsigned char* out_association)const
 {
     for(unsigned int i=0;i<face_no;i++)
         out_association[i] = material_association[i];
