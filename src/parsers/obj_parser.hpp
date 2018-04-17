@@ -31,6 +31,8 @@ public:
     void end_parsing();
     
     Mesh* parse();
+    
+    const std::string& get_mesh_name()const;
     unsigned char get_material_no()const;
     void get_materials(const Bsdf**)const;
     unsigned int get_face_no()const;
@@ -51,6 +53,7 @@ private:
     //the material associated for every triangle. It is the offset of the
     // materials array
     std::vector<unsigned char> material_association;
+    std::string object_name;
     std::vector<Point3>vertices;
     std::vector<Point2>textures;
     std::vector<Normal>normals;
