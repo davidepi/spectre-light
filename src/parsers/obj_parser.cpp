@@ -41,9 +41,10 @@ void ObjParser::end_parsing()
     fin = NULL;
 }
 
-Mesh* ObjParser::parse()
+Mesh* ObjParser::get_next_mesh()
 {
-    Mesh* obj = new Mesh(1000); //initialize random number of tris
+    //initialize random number of tris. Will be shrinked with finalize()
+    Mesh* obj = new Mesh(1000);
     bool res = parse_internal(obj);
     if(res)
     {
@@ -193,7 +194,7 @@ bool ObjParser::parse_internal(Mesh* obj)
                 }
                 case 'f': //process face
                 {
-                    buffer++;
+                    bool recreate_normals = false;
                     while(*buffer == ' ') //load every component of the face
                     {
                         get_next_token(&buffer, token, TOKEN_SIZE,
@@ -261,10 +262,22 @@ bool ObjParser::parse_internal(Mesh* obj)
                         }
                         else
                         {
-                            Console.severe(MESSAGE_MISSING_NORMALS,path);
-                            return false;
+                            recreate_normals = true;
                         }
                         face_tmp.push_back(res);
+                    }
+                    if(recreate_normals)
+                    {
+                        //the normal should be created for the entire face
+                        //no risk of losing info: if the normal is missing
+                        //for one vertex it MUST be missing for every vertex
+                        //of the face
+                        Vec3 u = face_tmp[1].p - face_tmp[0].p;
+                        Vec3 v = face_tmp[2] .p - face_tmp[0].p;
+                        Normal face_normal = (Normal)cross(u,v);
+                        printf("Normal:(%f,%f,%f)\n",face_normal.x,face_normal.y,face_normal.z);
+                        for(int i=0;i<(int)face_tmp.size();i++)
+                            face_tmp[i].n = face_normal;
                     }
                     if(face_tmp.size() == 3)//triangle
                     {

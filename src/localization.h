@@ -140,9 +140,6 @@
 #define MESSAGE_INDEX_OBJ "Error while parsing file %s. "\
 "File file was malformed. Face at line %d refers to a non-existent vertex"
 
-#define MESSAGE_MISSING_NORMALS "Missing normals for an object in file %s. "\
-"Normals are mandatory, since automatic normal generation is not implemented"
-
 #define MESSAGE_OBJ_ERROR "Reading of file %s failed. File has not been "\
 "imported"
 
