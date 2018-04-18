@@ -1,6 +1,10 @@
 #include "parser_obj.hpp"
 
+#ifdef TESTS
+#define BUFFER_SIZE 4
+#else
 #define BUFFER_SIZE 4096
+#endif
 #define END_OF_BUFFER_GUARD 0x7 //unused ASCII char, keep it as kinda EOF
 #define TOKEN_SIZE 255
 
@@ -10,6 +14,7 @@ static inline void feed_buffer(int* read_bytes, char* buffer_ro, FILE* input);
 ParserObj::ParserObj()
 {
     buffer_ro = NULL;
+    fin = NULL;
 }
 
 ParserObj::~ParserObj()
@@ -188,10 +193,10 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         int norm_idx = 0;
                         vert_idx = (int)strtol(tk_idx, &tk_idx, 10);
                         Vertex res;
-                        if(*token != '\0')
+                        if(*tk_idx != '\0')
                         {
                             tk_idx++;
-                            if(*token != '/') //v/vt/vn
+                            if(*tk_idx != '/') //v/vt/vn
                                 text_idx = (int)strtol(tk_idx, &tk_idx, 10);
                             tk_idx++;
                             norm_idx = (int)strtol(tk_idx, &tk_idx, 10);
