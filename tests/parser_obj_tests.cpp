@@ -30,6 +30,7 @@ TEST(ParserObj,get_next_mesh_unopened)
     EXPECT_FALSE(parser.get_next_mesh(&m));
     parser.start_parsing(TEST_ASSETS "parser_obj/nonexistent.obj");
     EXPECT_FALSE(parser.get_next_mesh(&m));
+    parser.end_parsing();
 }
 
 TEST(ParserObj,get_next_mesh_retval)
@@ -104,8 +105,8 @@ TEST(ParserObj,multiple_meshes)
     ASSERT_TRUE(res);
     res = parser.get_next_mesh(&m1);
     ASSERT_TRUE(res);
-    EXPECT_NEAR(m0.surface(),6,1e-5);
-    EXPECT_NEAR(m1.surface(),6,1e-5);
+    EXPECT_NEAR(m0.surface(),24,1e-5);
+    EXPECT_NEAR(m1.surface(),24,1e-5);
     parser.end_parsing();
 }
 

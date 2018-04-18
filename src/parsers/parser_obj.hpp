@@ -159,6 +159,8 @@ private:
     int lineno;
     //use `g` keyword as `o` for filenames
     bool groups_as_names;
+    //record if prev call of get_next_mesh ended while parsing 'o' or 'g'
+    char craft_token;
     //number of faces of the current mesh
     unsigned int face_no;
     //list of the materials used in this object
