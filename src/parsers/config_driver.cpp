@@ -418,6 +418,37 @@ void ConfigDriver::build_materials()
     }
 }
 
+void ConfigDriver::allocate_shape(const char* obj_file)
+{
+    Mesh* m = new Mesh(1);
+    //existence check is left to ParserObj class
+    File f(obj_file);
+    if(strcmp(f.extension(),"obj")!=0)
+    {
+        Console.severe(MESSAGE_OBJ_ERROR,f.extension());
+        delete m;
+        return;
+    }
+    ParserObj p;
+    p.start_parsing(f.absolute_path());
+    while(p.get_next_mesh(m))
+    {
+        std::string name = p.get_mesh_name();
+        std::unordered_map<std::string&, Mesh*>::const_iterator it;
+        it = shapes.find(name);
+        if(it==shapes.end())
+            shapes.insert({{name,m}});
+        else
+        {
+            Console.warning(MESSAGE_DUPLICATE_SHAPE,name.c_str());
+            delete m;
+        }
+        m = new Mesh(1);
+    }
+    //allocated mesh but they were finished
+    delete m;
+}
+
 ParsedMaterial::ParsedMaterial()
 {
     name = "";

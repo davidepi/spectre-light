@@ -608,3 +608,23 @@ TEST(Parser,material_metal)
     delete r0;
 }
 
+TEST(Parser,shape)
+{
+    const char* current_dir = realpath(".",NULL);
+    chdir(TEST_ASSETS);
+    //existing
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt");
+    EXPECT_NE(driver0.shapes.find("SquarePyr"),driver0.shapes.end());
+    delete r0;
+
+    ConfigDriver driver1;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt");
+    EXPECT_EQ(errors_count[WARNING_INDEX],1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(driver1.shapes.find("SquarePyr"),driver0.shapes.end());
+    delete r1;
+    delete current_dir;
+}
+

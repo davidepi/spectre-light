@@ -128,7 +128,7 @@ stmt
 | SPP COLON UINT        {driver.spp = $3;}
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
-| SHAPE COLON STRING
+| SHAPE COLON STRING {driver.allocate_shape($3);}
 | WORLD COLON OPEN_CU world_obj CLOSE_CU
 | LIGHT COLON OPEN_CU light_obj CLOSE_CU
 | TEXTURE COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_folder();}

@@ -4,6 +4,9 @@
 #define __CONFIG_DRIVER_HPP__
 
 #include <string>
+#include <unordered_map>
+#include "parsers/parser_obj.hpp"
+#include "primitives/mesh.hpp"
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
 #include "utility/file.hpp"
@@ -103,6 +106,10 @@ public:
     //deferred because I need to parse every texture first
     std::vector<ParsedMaterial>deferred_materials;
     void build_materials();
+    
+    //shapes
+    void allocate_shape(const char* obj_file);
+    std::unordered_map<std::string,Mesh*> shapes;
     
     void error(const yy::location& l, const std::string& m);
     void unknown_char(const yy::location& l, char c);
