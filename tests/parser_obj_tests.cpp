@@ -59,6 +59,52 @@ TEST(ParserObj,get_next_mesh_retval)
     parser.end_parsing();
 }
 
+TEST(ParserObj,two_vertices_face)
+{
+    Mesh m(1);
+    ParserObj parser;
+    bool res;
+    parser.start_parsing(TEST_ASSETS "parser_obj/2vertface.obj");
+    errors_count[ERROR_INDEX] = 0;
+    res = parser.get_next_mesh(&m);
+    EXPECT_EQ(res,false);
+    parser.end_parsing();
+}
+
+TEST(ParserObj,out_of_index)
+{
+    Mesh m0(1);
+    Mesh m1(1);
+    Mesh m2(1);
+    ParserObj parser;
+    bool res;
+
+    //vertices
+    parser.start_parsing(TEST_ASSETS "parser_obj/outofindex_vert.obj");
+    errors_count[ERROR_INDEX] = 0;
+    res = parser.get_next_mesh(&m0);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    EXPECT_EQ(res,false);
+    errors_count[ERROR_INDEX] = 0;
+    parser.end_parsing();
+    //normals
+    parser.start_parsing(TEST_ASSETS "parser_obj/outofindex_norm.obj");
+    errors_count[ERROR_INDEX] = 0;
+    res = parser.get_next_mesh(&m1);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    EXPECT_EQ(res,false);
+    errors_count[ERROR_INDEX] = 0;
+    parser.end_parsing();
+    //textures
+    parser.start_parsing(TEST_ASSETS "parser_obj/outofindex_text.obj");
+    errors_count[ERROR_INDEX] = 0;
+    res = parser.get_next_mesh(&m2);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    EXPECT_EQ(res,false);
+    errors_count[ERROR_INDEX] = 0;
+    parser.end_parsing();
+}
+
 TEST(ParserObj,get_next_obj_tris)
 {
     bool res;
@@ -298,6 +344,8 @@ TEST(ParserObj,get_material_association)
     parser.start_parsing(TEST_ASSETS "parser_obj/multimat_nodflt.obj");
     Mesh m1(6);
     res = parser.get_next_mesh(&m1);
+
+
     unsigned char* assoc2 = new unsigned char[parser.get_face_no()];
     parser.get_material_association(assoc2);
     parser.end_parsing();
@@ -310,5 +358,19 @@ TEST(ParserObj,get_material_association)
     EXPECT_TRUE(res);
 
     MtlLib.clear();
+}
+
+TEST(ParserObj,no_name)
+{
+    Mesh m0(1);
+    ParserObj parser;
+    bool res;
+    parser.start_parsing(TEST_ASSETS "parser_obj/noname.obj");
+    res = parser.get_next_mesh(&m0);
+    EXPECT_EQ(res,true);
+    EXPECT_EQ(parser.get_material_no(),1);
+    EXPECT_EQ(parser.get_mesh_name(),"Unnamed");
+    EXPECT_EQ(parser.get_face_no(),1);
+    parser.end_parsing();
 }
 

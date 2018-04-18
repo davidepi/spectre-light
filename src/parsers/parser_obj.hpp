@@ -31,9 +31,9 @@
  *  \brief A parser for the .obj ASCII format
  *
  *  This class is a parser for the Wavefront .obj format. With the start_parsing
- *  method a new file is read. Then for every call of get_next_obj a mesh
- *  contained in the file is returned, until NULL when the meshes described in
- *  the .obj files are finished.
+ *  method a new file is read. Then for every call of get_next_mesh the input
+ *  mesh is updated, until the function returns false when the meshes described
+ *  in the .obj files are finished.
  *
  *  This class triangulizes the mesh and tries to recreate surface normals when
  *  these are not found in the parsed file, however, it doesn't take into
@@ -80,8 +80,9 @@ public:
      *  contained in the file passed to start_parsing. Since a single .obj file
      *  could contain multiple meshes, for each invocation this function creates
      *  the next mesh in the order they are encountered in the file. The meshes
-     *  are created in the pointer passed as input, once per call. When every
-     *  mesh has been created, this function returns false.
+     *  are created in the pointer passed as input, once per call, by adding
+     *  triangles to this parameter. When every mesh has been created, this
+     *  function returns false.
      *
      *  \param[out] out An already allocated pointer, where the triangles of the
      *  meshes will be added. The created mesh will be ready-to-use (already
@@ -144,8 +145,9 @@ public:
     void get_material_association(unsigned char* assoc)const;
 
 private:
+    
     //used to finalize the mesh and remove unused but declared materials
-    void clean_materials(Mesh* obj);
+    void finalize_mesh(Mesh* obj);
     //path of the parsed file
     const char* path;
     //input file

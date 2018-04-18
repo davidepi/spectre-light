@@ -25,7 +25,7 @@ file(GLOB spectre_core_sources
     src/parsers/config_parser.tab.cc
     src/parsers/lex.yy.cc
     src/parsers/config_driver.cpp
-    src/parsers/obj_parser.cpp)
+    src/parsers/parser_obj.cpp)
 file(GLOB spectre_test_sources
     tests/*.cpp
     )

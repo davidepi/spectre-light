@@ -61,7 +61,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
 {
     if(fin==NULL)
     {
-        clean_materials(obj);;
+        finalize_mesh(obj);;
         return false;
     }
     std::vector<Vertex>face_tmp;
@@ -186,10 +186,9 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     //so with this variable I record the fact that the
                     //next switch will need to craft a 'o\0' token
                     craft_token = 'o';
-                    clean_materials(obj);
+                    finalize_mesh(obj);
                     return retval;
                 }
-                retval = true;
                 get_next_token(&buffer, token, TOKEN_SIZE,
                                &read_bytes, buffer_ro, fin);
                 object_name = std::string(token);
@@ -201,13 +200,12 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 {
                     //like in the 'o' switch, but craft a 'g' instead
                     craft_token = 'g';
-                    clean_materials(obj);;
+                    finalize_mesh(obj);;
                     return retval;
                 }
                 //probably the file uses groups as object names
                 if(object_name == "" || groups_as_names)
                 {
-                    retval = true;
                     groups_as_names = true;
                     get_next_token(&buffer, token, TOKEN_SIZE,
                                    &read_bytes, buffer_ro, fin);
@@ -219,11 +217,6 @@ bool ParserObj::get_next_mesh(Mesh* obj)
             case 'f': //process face
             {
                 bool recreate_normals = false;
-                if(*buffer == END_OF_BUFFER_GUARD)
-                {
-                    feed_buffer(&read_bytes, buffer_ro, fin);
-                    buffer = buffer_ro;
-                }
                 while(*buffer == ' ') //load every component of the face
                 {
                     get_next_token(&buffer, token, TOKEN_SIZE,
@@ -255,7 +248,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         {
                             Console.severe(MESSAGE_INDEX_OBJ,
                                            path, lineno);
-                            clean_materials(obj);;
+                            finalize_mesh(obj);
                             return false;
                         }
                         res.p = vertices.at((unsigned long)vert_idx);
@@ -271,7 +264,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         {
                             Console.severe(MESSAGE_INDEX_OBJ,
                                            path, lineno);
-                            clean_materials(obj);;
+                            finalize_mesh(obj);;
                             return false;
                         }
                         res.t = textures.at((unsigned long)text_idx);
@@ -287,7 +280,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         {
                             Console.severe(MESSAGE_INDEX_OBJ,
                                            path, lineno);
-                            clean_materials(obj);;
+                            finalize_mesh(obj);;
                             return false;
                         }
                         res.n = normals.at((unsigned long)norm_idx);
@@ -297,12 +290,13 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         recreate_normals = true;
                     }
                     face_tmp.push_back(res);
-                    //avoid broken conditions for the loop
-                    if(*buffer == END_OF_BUFFER_GUARD)
-                    {
-                        feed_buffer(&read_bytes, buffer_ro, fin);
-                        buffer = buffer_ro;
-                    }
+                    //  Never managed to reach this point.
+                    //  TODO: try with non POSIX files
+                    // if(*buffer == END_OF_BUFFER_GUARD)
+                    // {
+                    //     feed_buffer(&read_bytes, buffer_ro, fin);
+                    //     buffer = buffer_ro;
+                    // }
                 }
                 if(recreate_normals)
                 {
@@ -319,6 +313,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 }
                 if(face_tmp.size() == 3)//triangle
                 {
+                    retval = true; //case for no-name but >1 triangle added
                     obj->add_triangle(&face_tmp.at(0),&face_tmp.at(1),
                                       &face_tmp.at(2));
                     material_association.push_back(current_material);
@@ -326,6 +321,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 }
                 else if(face_tmp.size()>3)//quad or n-gon
                 {
+                    retval = true; //case for no-name but >1 triangle added
                     obj->add_triangle(&face_tmp.at(0),&face_tmp.at(1),
                                       &face_tmp.at(2));
                     material_association.push_back(current_material);
@@ -341,7 +337,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 }
                 else //face with less than 2 vertex. not even writing to
                 {    // console
-                    clean_materials(obj);;
+                    finalize_mesh(obj);
                     return false;
                 }
                 face_tmp.clear();
@@ -376,33 +372,40 @@ bool ParserObj::get_next_mesh(Mesh* obj)
             }
         }
     }
-    clean_materials(obj);;
+    finalize_mesh(obj);;
     return retval;
 }
 
-void ParserObj::clean_materials(Mesh *obj)
+void ParserObj::finalize_mesh(Mesh *obj)
 {
+    //finalize mesh (to avoid freeing already freed object on dealloc)
     obj->finalize();
+    //set name for unnamed meshes
+    if(object_name=="")
+        object_name = "Unnamed";
+    //reorganize materials
     std::vector<const Bsdf*> old_materials = materials;
     materials.clear();
     //compress array of used materials
     //use counting sort to determine position
-    //-1 is not used
+    //-1 = not used
     short index = -1;
     short count[256];
     memset(&count,index,sizeof(short)*256);
+    //count the used materials and use i as their new index
     for(unsigned int i=0;i<face_no;i++)
     {
         if(count[material_association[i]]==-1)
             count[material_association[i]] = ++index;
     }
-    //update index for faces
+    //update materials array
     materials.resize(index+1);
     for(short i=0;i<256;i++)
     {
         if(count[i]!=-1)
             materials[count[i]] = old_materials[i];
     }
+    //update index for faces
     for(unsigned int i=0;i<face_no;i++)
         material_association[i] = count[material_association[i]];
 }
@@ -414,8 +417,7 @@ const std::string& ParserObj::get_mesh_name()const
 
 unsigned char ParserObj::get_material_no()const
 {
-    if(materials.size()>256)
-        Console.warning(MESSAGE_OVERFLOW_MATERIALS,path);
+    //no checks for overflow but seriously... more than 255 materials???
     return (unsigned char)materials.size();
 }
 
@@ -448,8 +450,10 @@ static inline void get_next_token(char** source, char* token_buf, int max_size,
             feed_buffer(read_bytes, buffer_ro, input);
             *source = buffer_ro;
             current = **source;
-            if(current == END_OF_BUFFER_GUARD)
-                return;
+            //should never happen
+            //TODO: try with non POSIX files
+            //if(current == END_OF_BUFFER_GUARD)
+            //    return;
         }
         else
         {
@@ -466,8 +470,10 @@ static inline void get_next_token(char** source, char* token_buf, int max_size,
             feed_buffer(read_bytes, buffer_ro, input);
             *source = buffer_ro;
             current = **source;
-            if(current == END_OF_BUFFER_GUARD) //end of file
-                break; //break instead of return since I want an ok token
+            //should never happen
+            //TODO: try with non POSIX files
+            //if(current == END_OF_BUFFER_GUARD) //end of file
+            //    break; //break instead of return since I want an ok token
         }
         else
         {
