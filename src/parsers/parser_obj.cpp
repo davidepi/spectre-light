@@ -2,7 +2,7 @@
 
 #ifdef TESTS
 //extreme value to test every case
-#define BUFFER_SIZE 4
+#define BUFFER_SIZE 3
 #else
 #define BUFFER_SIZE 4096
 #endif
@@ -61,7 +61,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
 {
     if(fin==NULL)
     {
-        obj->finalize();
+        clean_materials(obj);;
         return false;
     }
     std::vector<Vertex>face_tmp;
@@ -76,6 +76,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
     //used as a boolean. Described in the 'o' and 'g' switch
     materials.push_back(MtlLib.get_default());
     material_association.clear();
+    used_materials.insert({{"Default",0}});
     face_no = 0;
     object_name = "";
     char token[TOKEN_SIZE];
@@ -152,17 +153,22 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     char>::const_iterator it = used_materials.find(token);
                     if(it==used_materials.end())
                     {
-                        //material not used, insert into arrays
-                        used_materials.insert({{token,
-                            used_materials.size()}});
                         const Bsdf* cur_mat = MtlLib.get(token);
                         if(cur_mat==NULL)
                         {
                             cur_mat = MtlLib.get_default();
+                            //insert as default material
+                            used_materials.insert({{token,0}});
+                            current_material = 0;
                             Console.warning(MESSAGE_MISSING_MATERIAL,
                                             token,path);
                         }
-                        materials.push_back(cur_mat);
+                        else
+                        {
+                            current_material = materials.size();
+                            used_materials.insert({{token,current_material}});
+                            materials.push_back(cur_mat);
+                        }
                     }
                     else
                         current_material = it->second;
@@ -180,7 +186,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     //so with this variable I record the fact that the
                     //next switch will need to craft a 'o\0' token
                     craft_token = 'o';
-                    obj->finalize();
+                    clean_materials(obj);
                     return retval;
                 }
                 retval = true;
@@ -195,7 +201,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 {
                     //like in the 'o' switch, but craft a 'g' instead
                     craft_token = 'g';
-                    obj->finalize();
+                    clean_materials(obj);;
                     return retval;
                 }
                 //probably the file uses groups as object names
@@ -249,7 +255,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         {
                             Console.severe(MESSAGE_INDEX_OBJ,
                                            path, lineno);
-                            obj->finalize();
+                            clean_materials(obj);;
                             return false;
                         }
                         res.p = vertices.at((unsigned long)vert_idx);
@@ -265,7 +271,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         {
                             Console.severe(MESSAGE_INDEX_OBJ,
                                            path, lineno);
-                            obj->finalize();
+                            clean_materials(obj);;
                             return false;
                         }
                         res.t = textures.at((unsigned long)text_idx);
@@ -281,7 +287,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         {
                             Console.severe(MESSAGE_INDEX_OBJ,
                                            path, lineno);
-                            obj->finalize();
+                            clean_materials(obj);;
                             return false;
                         }
                         res.n = normals.at((unsigned long)norm_idx);
@@ -307,6 +313,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     Vec3 u = face_tmp[1].p - face_tmp[0].p;
                     Vec3 v = face_tmp[2] .p - face_tmp[0].p;
                     Normal face_normal = (Normal)cross(u,v);
+                    face_normal.normalize();
                     for(int i=0;i<(int)face_tmp.size();i++)
                         face_tmp[i].n = face_normal;
                 }
@@ -334,7 +341,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 }
                 else //face with less than 2 vertex. not even writing to
                 {    // console
-                    obj->finalize();
+                    clean_materials(obj);;
                     return false;
                 }
                 face_tmp.clear();
@@ -369,8 +376,35 @@ bool ParserObj::get_next_mesh(Mesh* obj)
             }
         }
     }
-    obj->finalize();
+    clean_materials(obj);;
     return retval;
+}
+
+void ParserObj::clean_materials(Mesh *obj)
+{
+    obj->finalize();
+    std::vector<const Bsdf*> old_materials = materials;
+    materials.clear();
+    //compress array of used materials
+    //use counting sort to determine position
+    //-1 is not used
+    short index = -1;
+    short count[256];
+    memset(&count,index,sizeof(short)*256);
+    for(unsigned int i=0;i<face_no;i++)
+    {
+        if(count[material_association[i]]==-1)
+            count[material_association[i]] = ++index;
+    }
+    //update index for faces
+    materials.resize(index+1);
+    for(short i=0;i<256;i++)
+    {
+        if(count[i]!=-1)
+            materials[count[i]] = old_materials[i];
+    }
+    for(unsigned int i=0;i<face_no;i++)
+        material_association[i] = count[material_association[i]];
 }
 
 const std::string& ParserObj::get_mesh_name()const 

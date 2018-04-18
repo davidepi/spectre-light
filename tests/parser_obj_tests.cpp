@@ -18,6 +18,8 @@ TEST(ParserObj,close_unopened_input)
 {
     ParserObj parser;
     parser.end_parsing();
+    parser.start_parsing(TEST_ASSETS "parser_obj/pyramid.obj");
+    parser.end_parsing();
     //test passes if everything does not crash
     EXPECT_TRUE(true);
 }
@@ -143,9 +145,9 @@ TEST(ParserObj,normal_reconstruction)
     Point3 p;
     Normal n;
     m.sample_point(0.f, 0.f, densities, &p, &n);
-    EXPECT_NEAR(n.x,1.6,1e-5);
+    EXPECT_NEAR(n.x,0,1e-5);
     EXPECT_NEAR(n.y,0,1e-5);
-    EXPECT_NEAR(n.z,0.5,1e-5);
+    EXPECT_NEAR(n.z,-1,1e-5);
     parser.end_parsing();
 }
 
@@ -154,10 +156,14 @@ TEST(ParserObj,get_object_name)
     //object name with g
     bool res;
     ParserObj parser;
-    parser.start_parsing(TEST_ASSETS "parser_obj/pyramid.obj");
+    parser.start_parsing(TEST_ASSETS "parser_obj/multi.obj");
     Mesh m(6);
+    Mesh m1(6);
     res = parser.get_next_mesh(&m);
-    EXPECT_EQ(parser.get_mesh_name(), "SquarePyr");
+    EXPECT_EQ(parser.get_mesh_name(), "Cube.001");
+    EXPECT_TRUE(res);
+    res = parser.get_next_mesh(&m1);
+    EXPECT_EQ(parser.get_mesh_name(), "Cube");
     EXPECT_TRUE(res);
     parser.end_parsing();
 
@@ -187,18 +193,32 @@ TEST(ParserObj,get_material_no)
     //push some materials used in the file into the library
     Bsdf* mat0 = new SingleBRDF();
     Bsdf* mat1 = new SingleBRDF();
+    Bsdf* mat2 = new SingleBRDF();
     mat0->inherit_bdf(new Lambertian());
     mat1->inherit_bdf(new Lambertian());
+    mat2->inherit_bdf(new Lambertian());
     MtlLib.add_inherit("Red", mat0);
     MtlLib.add_inherit("Green", mat1);
+    MtlLib.add_inherit("Blue", mat2);
     ParserObj parser;
     bool res;
+
+    //with default material and unused, should be shrinked to have only 1 entry
     parser.start_parsing(TEST_ASSETS "parser_obj/multimat.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
-    EXPECT_EQ(parser.get_material_no(), 4);
+    EXPECT_EQ(parser.get_material_no(), 3);
     EXPECT_TRUE(res);
     parser.end_parsing();
+
+    //no default material
+    parser.start_parsing(TEST_ASSETS "parser_obj/multimat_nodflt.obj");
+    Mesh m1(6);
+    res = parser.get_next_mesh(&m1);
+    EXPECT_EQ(parser.get_material_no(), 3);
+    EXPECT_TRUE(res);
+    parser.end_parsing();
+
     MtlLib.clear();
 }
 
@@ -207,22 +227,40 @@ TEST(ParserObj,get_materials)
     //push some materials used in the file into the library
     Bsdf* mat0 = new SingleBRDF();
     Bsdf* mat1 = new SingleBRDF();
+    Bsdf* mat2 = new SingleBRDF();
     mat0->inherit_bdf(new Lambertian());
     mat1->inherit_bdf(new Lambertian());
+    mat2->inherit_bdf(new Lambertian());
     MtlLib.add_inherit("Red", mat0);
     MtlLib.add_inherit("Green", mat1);
+    MtlLib.add_inherit("Blue", mat2);
     ParserObj parser;
     bool res;
+
     parser.start_parsing(TEST_ASSETS "parser_obj/multimat.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
     const Bsdf** mats = new const Bsdf*[parser.get_material_no()];
     parser.get_materials(mats);
-    for(int i=0;i<parser.get_material_no();i++)
-        EXPECT_EQ(mats[i], MtlLib.get_default());
+    EXPECT_EQ(mats[0],MtlLib.get_default());
+    EXPECT_EQ(mats[1],MtlLib.get("Red"));
+    EXPECT_EQ(mats[2],MtlLib.get("Green"));
     EXPECT_TRUE(res);
     delete[] mats;
     parser.end_parsing();
+
+    parser.start_parsing(TEST_ASSETS "parser_obj/multimat_nodflt.obj");
+    Mesh m1(6);
+    res = parser.get_next_mesh(&m1);
+    const Bsdf** mats2 = new const Bsdf*[parser.get_material_no()];
+    parser.get_materials(mats2);
+    EXPECT_EQ(mats2[0],MtlLib.get("Blue"));
+    EXPECT_EQ(mats2[1],MtlLib.get("Green"));
+    EXPECT_EQ(mats2[2],MtlLib.get("Red"));
+    EXPECT_TRUE(res);
+    delete[] mats2;
+    parser.end_parsing();
+
     MtlLib.clear();
 }
 
@@ -231,12 +269,17 @@ TEST(ParserObj,get_material_association)
     //push some materials used in the file into the library
     Bsdf* mat0 = new SingleBRDF();
     Bsdf* mat1 = new SingleBRDF();
+    Bsdf* mat2 = new SingleBRDF();
     mat0->inherit_bdf(new Lambertian());
     mat1->inherit_bdf(new Lambertian());
+    mat2->inherit_bdf(new Lambertian());
     MtlLib.add_inherit("Red", mat0);
     MtlLib.add_inherit("Green", mat1);
+    MtlLib.add_inherit("Blue", mat2);
     ParserObj parser;
     bool res;
+
+    //dflt
     parser.start_parsing(TEST_ASSETS "parser_obj/multimat.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
@@ -245,12 +288,27 @@ TEST(ParserObj,get_material_association)
     parser.end_parsing();
     EXPECT_EQ(assoc[0],0);
     EXPECT_EQ(assoc[1],0);
-    EXPECT_EQ(assoc[2],1);
-    EXPECT_EQ(assoc[3],2);
+    EXPECT_EQ(assoc[2],0);
+    EXPECT_EQ(assoc[3],1);
     EXPECT_EQ(assoc[4],0);
-    EXPECT_EQ(assoc[5],3);
+    EXPECT_EQ(assoc[5],2);
     EXPECT_TRUE(res);
+
+    //no dflt
+    parser.start_parsing(TEST_ASSETS "parser_obj/multimat_nodflt.obj");
+    Mesh m1(6);
+    res = parser.get_next_mesh(&m1);
+    unsigned char* assoc2 = new unsigned char[parser.get_face_no()];
+    parser.get_material_association(assoc2);
+    parser.end_parsing();
+    EXPECT_EQ(assoc2[0],0);
+    EXPECT_EQ(assoc2[1],0);
+    EXPECT_EQ(assoc2[2],1);
+    EXPECT_EQ(assoc2[3],2);
+    EXPECT_EQ(assoc2[4],0);
+    EXPECT_EQ(assoc2[5],1);
+    EXPECT_TRUE(res);
+
     MtlLib.clear();
 }
-
 

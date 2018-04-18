@@ -144,7 +144,8 @@ public:
     void get_material_association(unsigned char* assoc)const;
 
 private:
-    
+    //used to finalize the mesh and remove unused but declared materials
+    void clean_materials(Mesh* obj);
     //path of the parsed file
     const char* path;
     //input file

@@ -276,7 +276,7 @@ TEST(File,ls)
 
     File f2(TEST_ASSETS);
     f2.ls(&res);
-    EXPECT_EQ(res.size(), 21);
+    EXPECT_EQ(res.size(), 22);
 }
 
 
