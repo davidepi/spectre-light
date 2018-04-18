@@ -56,6 +56,16 @@ public:
     ParsedMaterial();
 };
 
+//bind mesh and materials
+struct MeshAgglomerate
+{
+    Mesh* mesh;
+    const Bsdf** materials;
+    unsigned char materials_len;
+    unsigned char* association;
+    unsigned int association_len;
+};
+
 class ConfigDriver
 {
 public:
@@ -109,7 +119,7 @@ public:
     
     //shapes
     void allocate_shape(const char* obj_file);
-    std::unordered_map<std::string,Mesh*> shapes;
+    std::unordered_map<std::string,MeshAgglomerate> shapes;
     
     void error(const yy::location& l, const std::string& m);
     void unknown_char(const yy::location& l, char c);

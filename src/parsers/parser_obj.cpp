@@ -31,6 +31,7 @@ void ParserObj::start_parsing(const char *path)
 {
     ParserObj::path = path;
     lineno = 1;
+    face_no = 0; //used to know when nothing was parsed
     fin = fopen(path,"r");
     groups_as_names = false;
     craft_token = '\0';
@@ -61,7 +62,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
 {
     if(fin==NULL)
     {
-        finalize_mesh(obj);;
+        finalize_mesh(obj);
         return false;
     }
     std::vector<Vertex>face_tmp;
@@ -383,31 +384,34 @@ void ParserObj::finalize_mesh(Mesh *obj)
     //set name for unnamed meshes
     if(object_name=="")
         object_name = "Unnamed";
-    //reorganize materials
-    std::vector<const Bsdf*> old_materials = materials;
-    materials.clear();
-    //compress array of used materials
-    //use counting sort to determine position
-    //-1 = not used
-    short index = -1;
-    short count[256];
-    memset(&count,index,sizeof(short)*256);
-    //count the used materials and use i as their new index
-    for(unsigned int i=0;i<face_no;i++)
+    if(face_no>0)
     {
-        if(count[material_association[i]]==-1)
-            count[material_association[i]] = ++index;
+        //reorganize materials
+        std::vector<const Bsdf*> old_materials = materials;
+        materials.clear();
+        //compress array of used materials
+        //use counting sort to determine position
+        //-1 = not used
+        short index = -1;
+        short count[256];
+        memset(&count,index,sizeof(short)*256);
+        //count the used materials and use i as their new index
+        for(unsigned int i=0;i<face_no;i++)
+        {
+            if(count[material_association[i]]==-1)
+                count[material_association[i]] = ++index;
+        }
+        //update materials array
+        materials.resize(index+1);
+        for(short i=0;i<256;i++)
+        {
+            if(count[i]!=-1)
+                materials[count[i]] = old_materials[i];
+        }
+        //update index for faces
+        for(unsigned int i=0;i<face_no;i++)
+            material_association[i] = count[material_association[i]];
     }
-    //update materials array
-    materials.resize(index+1);
-    for(short i=0;i<256;i++)
-    {
-        if(count[i]!=-1)
-            materials[count[i]] = old_materials[i];
-    }
-    //update index for faces
-    for(unsigned int i=0;i<face_no;i++)
-        material_association[i] = count[material_association[i]];
 }
 
 const std::string& ParserObj::get_mesh_name()const 

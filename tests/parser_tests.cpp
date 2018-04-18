@@ -617,14 +617,23 @@ TEST(Parser,shape)
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt");
     EXPECT_NE(driver0.shapes.find("SquarePyr"),driver0.shapes.end());
     delete r0;
-
+    //wrong extension
     ConfigDriver driver1;
-    errors_count[WARNING_INDEX] = 0;
+    errors_count[ERROR_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt");
+    EXPECT_EQ(errors_count[ERROR_INDEX],1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(driver1.shapes.find("SquarePyr"),driver1.shapes.end());
+    delete r1;
+    //duplicate
+    ConfigDriver driver2;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/shape_duplicate.txt");
     EXPECT_EQ(errors_count[WARNING_INDEX],1);
     errors_count[WARNING_INDEX] = 0;
-    EXPECT_EQ(driver1.shapes.find("SquarePyr"),driver0.shapes.end());
-    delete r1;
+    EXPECT_NE(driver2.shapes.find("SquarePyr"),driver2.shapes.end());
+    delete r2;
+    chdir(current_dir);
     delete current_dir;
 }
 

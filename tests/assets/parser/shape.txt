@@ -1,1 +1,1 @@
-shape: "../parser_obj/pyramid.obj"
+shape: "parser_obj/pyramid.obj"

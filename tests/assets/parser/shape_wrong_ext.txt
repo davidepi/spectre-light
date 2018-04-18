@@ -1,1 +1,1 @@
-shape: "shape_wrong_ext.txt"
+shape: "parser/shape_wrong_ext.txt"
