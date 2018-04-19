@@ -122,7 +122,7 @@
 
 #define MESSAGE_INPUT_ERROR "Unable to open file %s: %s"
 
-#define MESSAGE_TEXTURE_ERROR "Unable to load texture file %s"
+#define MESSAGE_TEXTURE_ERROR "Unable to load texture %s"
 
 #define MESSAGE_TEXTURE_NOT_FOUND_MTL "Texture %s not found in library; to be "\
 "used in material %s"

@@ -1,14 +1,14 @@
 texture: {
   name: "Manually written name"
-  src: "correct.bmp"
+  src: "load_texture.bmp"
 }
 
 texture: {
-  src: "../leave_me_here_for_testing.bmp"
+  src: "../images/correct.bmp"
 }
 
 texture: {name:"Red",color:[257,-1,-1]}
 texture: {name:"Grey" color:[128,128,128]}
 texture: {color:[0,255,0]}
 
-texture: "../assets"
+texture: "../images/recursive"

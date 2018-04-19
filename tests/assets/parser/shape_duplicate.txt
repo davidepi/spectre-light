@@ -1,2 +1,2 @@
-shape: "parser_obj/pyramid.obj"
-shape: "parser_obj/neg_vertices.obj"
+shape: "../parser_obj/pyramid.obj"
+shape: "../parser_obj/neg_vertices.obj"

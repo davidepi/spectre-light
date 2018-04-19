@@ -82,7 +82,7 @@ static void append_relative(const char* abs, const char* rel, char* out)
 File::File(const char* path)
 {
     int pathlen = (int)strlen(path);
-    if(path[0]==File::PATH_SEPARATOR) //absolute. But need to resolve ../
+    if(is_absolute(path)) //absolute. But need to resolve ../
     {
         absolute = (char*)malloc(sizeof(char)*(pathlen+1));
         append_relative("", path, absolute);

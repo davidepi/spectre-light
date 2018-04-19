@@ -74,6 +74,7 @@ public:
     
     Renderer* parse(const std::string& f);
     std::string file;
+    File current_dir;
     std::string output;
     int width;
     int height;

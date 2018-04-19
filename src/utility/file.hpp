@@ -217,6 +217,12 @@ private:
     struct stat fileinfo;
 };
 
+///Determine if a path is absolute or not
+inline bool is_absolute(const char* path)
+{
+    return path[0]==File::PATH_SEPARATOR;
+}
+
 
 #endif
 

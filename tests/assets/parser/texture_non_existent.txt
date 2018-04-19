@@ -3,3 +3,11 @@ texture:
   name: "I do not exist"
   src: "nonexistent.bmp"
 }
+
+texture:
+{
+  name: "Absolute path and I still don't exist"
+  src: "/root/totally/random/path"
+}
+
+texture: "/cant/test/existing/absolute/paths"

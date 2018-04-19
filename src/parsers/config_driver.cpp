@@ -5,7 +5,7 @@
 #define MIN_ROUGHNESS 0.001f
 
 ConfigDriver::ConfigDriver()
-:camera_pos(0,0,0), camera_tar(0,0,1), camera_up(0,1,0)
+:camera_pos(0,0,0), camera_tar(0,0,1), camera_up(0,1,0),current_dir(".")
 {
     output = "out.ppm";
     width = 800;
@@ -25,6 +25,7 @@ ConfigDriver::ConfigDriver()
 Renderer* ConfigDriver::parse(const std::string& f)
 {
     Renderer* r = NULL;
+    current_dir = File(f.c_str()).get_parent();
     file = f;
     scan_begin();
     yy::ConfigParser parser(*this);
@@ -197,8 +198,16 @@ static void load_texture_rec(File& src)
 
 void ConfigDriver::load_texture_folder()
 {
-    File current_file(tex_src.c_str());
-    load_texture_rec(current_file);
+    File current_file = current_dir;
+    if(!is_absolute(tex_src.c_str()))
+        current_file.append(tex_src.c_str());
+    else
+        current_file = File(tex_src.c_str());
+    if(current_file.exists())
+        load_texture_rec(current_file);
+    else
+        //error just for the first specified folder
+        Console.warning(MESSAGE_TEXTURE_ERROR,current_file.absolute_path());
 }
 
 void ConfigDriver::load_texture_uniform()
@@ -217,12 +226,18 @@ void ConfigDriver::load_texture_uniform()
 
 void ConfigDriver::load_texture_single()
 {
-    File cur_file(tex_src.c_str());
+    File cur_file = current_dir;
+    if(is_absolute(tex_src.c_str()))
+        //recreates the File clas... but absolute path should be a rare case
+        //File does not have a dflt constructor. Should I make one?
+        cur_file = File(tex_src.c_str());
+    else
+        cur_file.append(tex_src.c_str());
     if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
        image_supported(cur_file.extension())>=0)
     {
         //TODO: placeholder because the texture class is not ready
-        //TOOD: check texture not already loaded (MESSAGE_DUPLICATE_TEXTURE)
+        //TODO: check texture not already loaded (MESSAGE_DUPLICATE_TEXTURE)
         if(tex_name.empty())
             tex_name = cur_file.filename();
         Texture* addme = new UniformTexture(SPECTRUM_WHITE);
@@ -421,7 +436,11 @@ void ConfigDriver::build_materials()
 void ConfigDriver::allocate_shape(const char* obj_file)
 {
     //existence check is left to ParserObj class
-    File f(obj_file);
+    File f = current_dir;
+    if(!is_absolute(obj_file))
+        f.append(obj_file);
+    else
+        f = File(obj_file);
     if(strcmp(f.extension(),"obj")!=0)
     {
         Console.severe(MESSAGE_OBJ_ERROR,f.extension());
