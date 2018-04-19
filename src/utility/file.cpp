@@ -6,103 +6,94 @@
 const char File::PATH_SEPARATOR = '/';
 const char* File::PATH_SEPARATOR_STRING = "/";
 
-File::File(const char* path)
+//given an absolute path like "/root" and a relative like "../home/User/./"
+//resolves the "../" and "./" and removes "//"
+static void append_relative(const char* abs, const char* rel, char* out)
 {
-    int pathlen = (int)strlen(path);
-    if(path[0]==File::PATH_SEPARATOR) //absolute, simply copy this path
+    strcpy(out, abs);
+    int absolute_index = (int)strlen(abs);
+    int relative_index = 0;
+    if(rel[0]=='.')
     {
-        absolute = (char*)malloc(sizeof(char)*(pathlen+1));
-        int relative_index=0;
-        int absolute_index=0;
-        //copy everything inside the buffer but skip duplicated separators
-        while(path[relative_index]!=0)
+        //resolve ../file
+        if(rel[1]=='.' && rel[2]==File::PATH_SEPARATOR)
         {
-            if(path[relative_index]==File::PATH_SEPARATOR && path[relative_index+1]==File::PATH_SEPARATOR)
+            relative_index = 2;
+            //backtrack to previous / in the absolute path
+            //(guaranteed to exists since file is absolute)
+            //position right on / ready to be substituted
+            while(absolute_index-->0 &&
+                  out[absolute_index]!=File::PATH_SEPARATOR);
+        }
+        else if(rel[1]==File::PATH_SEPARATOR) //resolve ./file
+            relative_index=1;
+    }
+    if(rel[relative_index]!=File::PATH_SEPARATOR)
+        out[absolute_index++]=File::PATH_SEPARATOR;
+    /*
+     *  at this point
+     *  -> relative path does not start with . (checked in this if)
+     *  -> relative starts with / or a filename
+     *  -> absolute path ends with / if relative does not starts with /
+     */
+    while(relative_index<strlen(rel))
+    {
+        if(rel[relative_index]==File::PATH_SEPARATOR)
+        {
+            if(rel[relative_index+1]=='.')
+            {
+                //handle /./
+                if(rel[relative_index+2]==File::PATH_SEPARATOR ||
+                   rel[relative_index+2]==0)
+                {
+                    relative_index+=2;
+                    continue;
+                }
+                //handle /../
+                else if(rel[relative_index+2]=='.' &&
+                       (rel[relative_index+3]==File::PATH_SEPARATOR ||
+                        rel[relative_index+3]==0))
+                {
+                    relative_index+=3;
+                    //avoid out of bounds if too many ../../../
+                    if(absolute_index<=1)
+                        continue;
+                    absolute_index-=2;
+                    while(absolute_index-->0 &&
+                          out[absolute_index]!=File::PATH_SEPARATOR);
+                    continue;
+                }
+            }
+            //handle //
+            else if(rel[relative_index+1]==File::PATH_SEPARATOR)
             {
                 relative_index++;
                 continue;
             }
-            else
-                absolute[absolute_index++] = path[relative_index++];
         }
-        //remove last trailing char, if exists and not the root trailing
-        if(absolute[absolute_index-1]==File::PATH_SEPARATOR && absolute_index>1)
-            absolute_index--;
-        absolute[absolute_index] = 0;
+        out[absolute_index++] = rel[relative_index++];
+    }
+    //remove last trailing char, if exists and not root trailing
+    if(out[absolute_index-1]==File::PATH_SEPARATOR && absolute_index>1)
+        absolute_index--;
+    out[absolute_index]=0;
+}
+
+File::File(const char* path)
+{
+    int pathlen = (int)strlen(path);
+    if(path[0]==File::PATH_SEPARATOR) //absolute. But need to resolve ../
+    {
+        absolute = (char*)malloc(sizeof(char)*(pathlen+1));
+        append_relative("", path, absolute);
     }
     else //resolve the relative path
     {
-        const char* CURRENT_DIR = realpath(".", NULL);
-        const size_t CURRENT_DIR_LEN = strlen(CURRENT_DIR);
-        absolute = (char*)malloc(sizeof(char)*(CURRENT_DIR_LEN+1+pathlen+1));
-        strcpy(absolute, CURRENT_DIR);
-        int absolute_index = (int)CURRENT_DIR_LEN;
-        int relative_index = 0;
-        if(path[0]=='.')
-        {
-            //resolve ../file
-            if(path[1]=='.' && path[2]==File::PATH_SEPARATOR)
-            {
-                relative_index = 2;
-                //backtrack to previous / in the absolute path
-                //(guaranteed to exists since file is absolute)
-                //position right on / ready to be substituted
-                while(absolute_index-->0 &&
-                      absolute[absolute_index]!=File::PATH_SEPARATOR);
-            }
-            else if(path[1]==File::PATH_SEPARATOR) //resolve ./file
-                relative_index=1;
-        }
-        if(path[relative_index]!=File::PATH_SEPARATOR)
-            absolute[absolute_index++]=File::PATH_SEPARATOR;
-        /*
-         *  at this point
-         *  -> relative path does not start with . (checked in this if)
-         *  -> relative starts with / or a filename
-         *  -> absolute path ends with / if relative does not starts with /
-         */
-        while(relative_index<pathlen)
-        {
-            if(path[relative_index]==File::PATH_SEPARATOR)
-            {
-                if(path[relative_index+1]=='.')
-                {
-                    //handle /./
-                    if(path[relative_index+2]==File::PATH_SEPARATOR ||
-                       path[relative_index+2]==0)
-                    {
-                        relative_index+=2;
-                        continue;
-                    }
-                    //handle /../
-                    else if(path[relative_index+2]=='.' &&
-                            (path[relative_index+3]==File::PATH_SEPARATOR ||
-                             path[relative_index+3]==0))
-                    {
-                        relative_index+=3;
-                        //avoid out of bounds if too many ../../../
-                        if(absolute_index<=1)
-                            continue;
-                        absolute_index-=2;
-                        while(absolute_index-->0 &&
-                              absolute[absolute_index]!=PATH_SEPARATOR);
-                        continue;
-                    }
-                }
-                //handle //
-                else if(path[relative_index+1]==File::PATH_SEPARATOR)
-                {
-                    relative_index++;
-                    continue;
-                }
-            }
-            absolute[absolute_index++] = path[relative_index++];
-        }
-        //remove last trailing char, if exists and not root trailing
-        if(absolute[absolute_index-1]==File::PATH_SEPARATOR && absolute_index>1)
-            absolute_index--;
-        absolute[absolute_index]=0;
-        free((void*)CURRENT_DIR);
+        const char* current_dir = realpath(".", NULL);
+        int current_dir_len = (int)strlen(current_dir);
+        absolute = (char*)malloc(sizeof(char)*(current_dir_len+1+pathlen+1));
+        append_relative(current_dir, path, absolute);
+        free((void*)current_dir);
     }
     File::statres = stat(absolute, &(File::fileinfo))==0;
     //guaranteed to exists at least the toplevel /
@@ -187,6 +178,25 @@ File& File::operator=(const File &old)
     File::statres = old.statres;
     File::fileinfo = old.fileinfo;
     return *this;
+}
+
+void File::append(const char* path)
+{
+    char* newp = (char*)malloc(sizeof(char)*(strlen(absolute)+strlen(path)+1));
+    append_relative(absolute, path, newp);
+    free(absolute);
+    absolute = newp;
+    File::statres = stat(absolute, &(File::fileinfo))==0;
+    File::file = strrchr(absolute, File::PATH_SEPARATOR);
+    if(*(file+1)!=0)
+        File::file++;
+    File::ext = strrchr(file, '.');
+    if(ext==NULL)
+        ext = absolute+strlen(absolute);
+    else
+        ext+=1;
+    if(ext==file+1)
+        ext = absolute+strlen(absolute);
 }
 
 File File::get_parent()const

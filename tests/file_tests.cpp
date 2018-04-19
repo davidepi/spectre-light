@@ -279,4 +279,21 @@ TEST(File,ls)
     EXPECT_EQ(res.size(), 22);
 }
 
+TEST(File,append)
+{
+    File f1(TEST_ASSETS);
+    f1.append("flipped.bmp");
+    EXPECT_TRUE(f1.exists());
+    f1.append("non-existend");
+    EXPECT_FALSE(f1.exists());
+
+    File f2(TEST_ASSETS "/parser");
+    f2.append("..//./correct.bmp");
+    EXPECT_TRUE(f2.exists());
+    f2.append("../parser_obj");
+    EXPECT_TRUE(f2.is_folder());
+    f2.append(".bashrc");
+    EXPECT_EQ(strcmp(f2.extension(),""),0);
+}
+
 

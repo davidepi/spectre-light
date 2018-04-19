@@ -1,12 +1,12 @@
 //Created,   4 Apr 2018
-//Last Edit 10 Apr 2018
+//Last Edit 19 Apr 2018
 
 /**
  *  \file file.hpp
  *  \brief Utilities involving the filesystem
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  10 Apr 2018
+ *  \date  19 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -185,6 +185,18 @@ public:
      *  directory
      */
     void ls(std::vector<File>* retval)const;
+    
+    /** \brief Appends a path to the current one
+     *
+     *  Given a relative path as input, this function append the path to the one
+     *  represented by the current class. Note that no checks are performed on
+     *  the current class, so be aware that if the current class represents a
+     *  file, it will be treated as a folder after calling this method
+     *
+     *  \param[in] path A relative path that will be appended to the current
+     *  class
+     */
+    void append(const char* path);
     
     ///assignment operator
     File& operator=(const File& old);
