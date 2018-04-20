@@ -40,7 +40,7 @@
 #ifndef YY_YY_CONFIG_PARSER_TAB_HH_INCLUDED
 # define YY_YY_CONFIG_PARSER_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 12 "config_parser.y" // lalr1.cc:392
+#line 12 "config_parser.y" // lalr1.cc:377
 
     #include <string>
     #include "geometry/vec3.hpp"
@@ -48,7 +48,7 @@
     #include "materials/metals.hpp"
     class ConfigDriver;
 
-#line 52 "config_parser.tab.hh" // lalr1.cc:392
+#line 52 "config_parser.tab.hh" // lalr1.cc:377
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -125,7 +125,7 @@
 
 
 namespace yy {
-#line 129 "config_parser.tab.hh" // lalr1.cc:392
+#line 129 "config_parser.tab.hh" // lalr1.cc:377
 
 
 
@@ -1024,7 +1024,7 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 288,     ///< Last index in yytable_.
+      yylast_ = 264,     ///< Last index in yytable_.
       yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 28, ///< Termination state number.
       yyterror_ = 1,
@@ -1871,7 +1871,7 @@ namespace yy {
 
 
 } // yy
-#line 1875 "config_parser.tab.hh" // lalr1.cc:392
+#line 1875 "config_parser.tab.hh" // lalr1.cc:377
 
 
 

@@ -5,7 +5,7 @@
 #define MIN_ROUGHNESS 0.001f
 
 ConfigDriver::ConfigDriver()
-:camera_pos(0,0,0), camera_tar(0,0,1), camera_up(0,1,0),current_dir(".")
+:current_dir("."), camera_pos(0,0,0), camera_tar(0,0,1), camera_up(0,1,0)
 {
     output = "out.ppm";
     width = 800;
@@ -43,7 +43,31 @@ Renderer* ConfigDriver::parse(const std::string& f)
     r->inherit_camera(camera);
     r->inherit_filter(filter);
     r->inherit_integrator(integrator);
+
+    //load children files
+    //avoid recursive children
+    std::vector<std::string> consolidated_children = children;
+    children.clear();
+    for(unsigned int i = 0;i<consolidated_children.size();i++)
+    {
+        File file1 = is_absolute(consolidated_children[i].c_str())?
+                     File(consolidated_children[i].c_str()):
+                     current_dir.append(consolidated_children[i].c_str());
+        file = file1.absolute_path();
+        scan_begin();
+        parser.parse();
+        scan_end();
+    }
+    //free some memory
+    consolidated_children.clear();
+    consolidated_children.resize(0);
+    children.resize(0);
+
+    //build deferred objects
     build_materials();
+    for(unsigned int i = 0;i<deferred_shapes.size();i++)
+        allocate_shape(deferred_shapes[i].c_str());
+    build_meshes();
     return r;
 }
 
@@ -476,9 +500,13 @@ void ConfigDriver::allocate_shape(const char* obj_file)
     delete m;
 }
 
+void ConfigDriver::build_meshes()
+{
+
+}
+
 ParsedMaterial::ParsedMaterial()
 {
-    name = "";
     elem = METAL_GOLD;
     type = MATTE;
     ior = cauchy(1.45f, 0.f);

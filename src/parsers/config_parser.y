@@ -128,11 +128,12 @@ stmt
 | SPP COLON UINT        {driver.spp = $3;}
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
-| SHAPE COLON STRING {driver.allocate_shape($3.substr(1,$3.size()-2).c_str());}
-| WORLD COLON OPEN_CU world_obj CLOSE_CU
+| SHAPE COLON STRING {driver.deferred_shapes.push_back($3.substr(1,$3.size()-2));}
+| WORLD COLON OPEN_CU world_obj CLOSE_CU {driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=WorldMesh();}
 | LIGHT COLON OPEN_CU light_obj CLOSE_CU
 | TEXTURE COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_folder();}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
+| MATERIAL COLON STRING {driver.children.push_back($3.substr(1,$3.size()-2));}
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU {driver.deferred_materials.push_back(driver.cur_mat);driver.cur_mat=ParsedMaterial();}
 | COMMA
 ;
@@ -169,13 +170,14 @@ camera_stmt
 ;
 
 world_obj: world_name world_rec;
-world_rec: world_rec world_stmt | world_rec MATERIAL COLON STRING| world_stmt;
-world_name: NAME COLON STRING;
+world_rec: world_rec world_stmt | world_stmt;
+world_name: NAME COLON STRING {driver.cur_mesh.name = $3.substr(1,$3.size()-2);}
 world_stmt
-: POSITION COLON vector
-| ROTATION COLON vector
-| SCALE COLON vector
-| SCALE COLON FLOAT
+: POSITION COLON vector {driver.cur_mesh.position = (Point3($3.x,$3.y,$3.z));}
+| ROTATION COLON vector {driver.cur_mesh.rotation = $3;}
+| SCALE COLON vector {driver.cur_mesh.scale = $3;}
+| SCALE COLON FLOAT {driver.cur_mesh.scale = $3;}
+| MATERIAL COLON STRING {driver.cur_mesh.material_name = $3.substr(1,$3.size()-2);}
 | COMMA
 ;
 

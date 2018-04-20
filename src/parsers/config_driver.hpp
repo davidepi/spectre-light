@@ -5,6 +5,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include "parsers/parser_obj.hpp"
 #include "primitives/mesh.hpp"
 #include "utility/console.hpp"
@@ -66,6 +67,18 @@ struct MeshAgglomerate
     unsigned int association_len;
 };
 
+class WorldMesh
+{
+public:
+    std::string name;
+    std::string material_name;
+    Point3 position;
+    Vec3 rotation;
+    Vec3 scale;
+
+    WorldMesh():scale(1){};
+};
+
 class ConfigDriver
 {
 public:
@@ -114,14 +127,25 @@ public:
     
     //materials
     ParsedMaterial cur_mat;
-    //deferred because I need to parse every texture first
+    //deferred because depending on textures
     std::vector<ParsedMaterial>deferred_materials;
     void build_materials();
-    
+    std::vector<std::string> children;
+
     //shapes
     void allocate_shape(const char* obj_file);
+    //deferred because depending on materials
+    std::vector<std::string> deferred_shapes;
     std::unordered_map<std::string,MeshAgglomerate> shapes;
-    
+
+    //world and lights
+    WorldMesh cur_mesh;
+    //deferred becuse depending on materials and objects
+    std::vector<WorldMesh> deferred_meshes;
+    std::unordered_set<std::string> used_shapes;
+    void build_meshes();
+
+
     void error(const yy::location& l, const std::string& m);
     void unknown_char(const yy::location& l, char c);
 private:

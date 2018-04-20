@@ -144,7 +144,7 @@ Keys for World objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the model previously parsed with the `shape` keyword | Syntax error
-material | quoted string | The name of the material that will be applied to the model | "Default" material
+material | quoted string | The name of the material that will be applied to the model. This overrides any material parsed in the .obj file. However, if the original mesh used multiple materials, setting this keyword will override EVERY material with the specified one. Useful only for single-material mesh | Materials parsed in the .obj file
 position | float[3] | The position of the model in the scene | [0,0,0]
 rotation | float[3] | The rotation of the model in the scene, in degrees | [0,0,0]
 scale | float[3] or float | The scaling applied to the model in the scene. The single float value applies uniform scaling to every dimension | 1
@@ -164,7 +164,7 @@ Keys for Material objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the material that will be added to the Library | Syntax error
-type | enum | The type of material that will be used. Possible values are `matte`, `glossy`, `metal` or `glass` (used for transmittive materials such as glass or water). `metal` type materials do not support textures but instead will use `element` keyword to define their appareance | matte
+type | enum | The type of material that will be used. Possible values are `matte`, `glossy`, `metal` or `glass` (used for transmittive materials included water). `metal` type materials do not support textures but instead will use `element` keyword to define their appareance | matte
 ior | float or float[2] or float[3] or float[3]float[3] | Refractive index of the material. Used in `glass` typed materials. The index of refraction is wavelength dependent and can be issued with a single number, a 2-values array, a 3-values array or two 3-values array. The first will use the same value for every wavelength, the second and third will use Cauchy equation with parameters `ior:[B,C]` and `ior:[B,C,D]` respectively to calculate the values. The third one, used as `ior:[B1,B2,B3][C1,C2,C3]` will use Sellmeier equation instead. The supplied values for Cauchy's `C` and `D` parameters and for Sellmeier's `C1`, `C2` and `C3` parameters are expected in μm. Note that despite having wavelength dependent index of refractions, light dispersion is still not supported  | [1.45,0]
 element | enum | For `metal` typed materials, this will specify a metal from the periodic table for which sampled data will be used. [More informations here](#metals) | Au
 roughness | float | single value in range [0-1] used to calculate the roughness of a material | 0

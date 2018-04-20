@@ -180,7 +180,7 @@ File& File::operator=(const File &old)
     return *this;
 }
 
-void File::append(const char* path)
+File& File::append(const char* path)
 {
     char* newp = (char*)malloc(sizeof(char)*(strlen(absolute)+strlen(path)+1));
     append_relative(absolute, path, newp);
@@ -197,6 +197,7 @@ void File::append(const char* path)
         ext+=1;
     if(ext==file+1)
         ext = absolute+strlen(absolute);
+    return *this;
 }
 
 File File::get_parent()const

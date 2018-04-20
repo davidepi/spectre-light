@@ -196,7 +196,7 @@ public:
      *  \param[in] path A relative path that will be appended to the current
      *  class
      */
-    void append(const char* path);
+    File& append(const char* path);
     
     ///assignment operator
     File& operator=(const File& old);
