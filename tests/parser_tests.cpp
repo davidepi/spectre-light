@@ -227,8 +227,6 @@ TEST(Parser,camera)
 
 TEST(Parser,texture)
 {
-    const char* current_dir = realpath(".",NULL);
-    chdir(TEST_ASSETS);
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/textures.txt");
     //check that contains is not broken and returning always true
@@ -236,7 +234,7 @@ TEST(Parser,texture)
     //check the single texture was added
     EXPECT_TRUE(TexLib.contains("Manually written name"));
     //nameless addition
-    EXPECT_TRUE(TexLib.contains("leave_me_here_for_testing.bmp"));
+    EXPECT_TRUE(TexLib.contains("correct.bmp"));
     //check the recursive file was added
     EXPECT_TRUE(TexLib.contains("recursive_load.bmp"));
     if(TexLib.contains("Red"))
@@ -265,12 +263,10 @@ TEST(Parser,texture)
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/texture_non_existent.txt");
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 3);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_FALSE(TexLib.contains("I do not exist"));
     free(r1);
-    chdir(current_dir);
-    free((void*)current_dir);
     TexLib.clear();
 }
 
@@ -608,21 +604,46 @@ TEST(Parser,material_metal)
     delete r0;
 }
 
+TEST(Parser,children)
+{
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/children.txt");
+    EXPECT_TRUE(MtlLib.contains("Red Oren-Nayar"));
+    MtlLib.clear();
+    delete r0;
+    //children not existent
+    ConfigDriver driver1;
+    errors_count[ERROR_INDEX] = 0;
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/children_absolute.txt");
+    EXPECT_EQ(errors_count[ERROR_INDEX],1);
+    errors_count[ERROR_INDEX] = 0;
+    delete r1;
+    //not recursive children
+    ConfigDriver driver2;
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/children_recursive.txt");
+    EXPECT_TRUE(MtlLib.contains("Red mat")); //directly parsed
+    EXPECT_FALSE(MtlLib.contains("Red Oren-Nayar")); //recursively parsed
+    delete r2;
+    MtlLib.clear();
+}
+
 TEST(Parser,shape)
 {
-    const char* current_dir = realpath(".",NULL);
-    chdir(TEST_ASSETS);
-    //existing
+    //existing relative path + non existing absolute path
     ConfigDriver driver0;
+    errors_count[ERROR_INDEX] = 0; //for the non-existing root folder obj
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt");
     EXPECT_NE(driver0.shapes.find("SquarePyr"),driver0.shapes.end());
+    EXPECT_EQ(errors_count[ERROR_INDEX],1);
+    errors_count[ERROR_INDEX] = 0;
     delete r0;
+
     //wrong extension
     ConfigDriver driver1;
     errors_count[ERROR_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt");
     EXPECT_EQ(errors_count[ERROR_INDEX],1);
-    errors_count[WARNING_INDEX] = 0;
+    errors_count[ERROR_INDEX] = 0;
     EXPECT_EQ(driver1.shapes.find("SquarePyr"),driver1.shapes.end());
     delete r1;
     //duplicate
@@ -633,7 +654,5 @@ TEST(Parser,shape)
     errors_count[WARNING_INDEX] = 0;
     EXPECT_NE(driver2.shapes.find("SquarePyr"),driver2.shapes.end());
     delete r2;
-    chdir(current_dir);
-    delete current_dir;
 }
 

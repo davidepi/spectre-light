@@ -10,15 +10,20 @@ Asset::Asset(const Shape* sp, const Matrix4& transform, unsigned char mat_no)
 
 {
     Asset::model = sp;
-    Asset::
     Asset::materials = (const Bsdf**)malloc(sizeof(Bsdf*)*(mat_no+1));
-    Asset::material_index = (unsigned char*)malloc(sp->get_faces_number());
+    Asset::materials_index = (unsigned char*)malloc(sp->get_faces_number());
     Asset::objToWorld.inverse(&(Asset::worldToObj));
 }
 
 unsigned int Asset::get_id()const
 {
     return Asset::id;
+}
+
+Asset::~Asset()
+{
+    free(materials);
+    free(materials_index);
 }
 
 bool Asset::intersect(const Ray* ray_obj,float* distance, HitPoint* hit)const
@@ -61,6 +66,15 @@ bool Asset::is_light() const
 void Asset::set_material(const Bsdf* material, unsigned char index)
 {
     Asset::materials[index] = material;
+}
+
+void Asset::set_materials(const Bsdf** mats, unsigned char mats_len,
+                          const unsigned char* indexes)
+{
+    free(materials);
+    materials = (const Bsdf**)malloc(sizeof(Bsdf*)*mats_len);
+    memcpy(materials, mats, sizeof(Bsdf*)*mats_len);
+    memcpy(materials_index,indexes,model->get_faces_number());
 }
 
 const Bsdf* Asset::get_material(unsigned int index)const

@@ -54,9 +54,14 @@ Renderer* ConfigDriver::parse(const std::string& f)
                      File(consolidated_children[i].c_str()):
                      current_dir.append(consolidated_children[i].c_str());
         file = file1.absolute_path();
-        scan_begin();
-        parser.parse();
-        scan_end();
+        if(file1.exists())
+        {
+            scan_begin();
+            parser.parse();
+            scan_end();
+        }
+        else
+            Console.severe(MESSAGE_INPUT_ERROR,file.c_str());
     }
     //free some memory
     consolidated_children.clear();

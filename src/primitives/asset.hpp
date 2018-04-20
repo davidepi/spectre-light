@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 30 Mar 2018
+//Last Edit 20 Apr 2018
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      30 Mar 2018
+ *  \date      20 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -42,7 +42,7 @@ public:
     Asset(const Shape* sp, const Matrix4& transform, unsigned char material_no);
 
     ///Default destructor
-    virtual ~Asset() = default;
+    virtual ~Asset();
 
     /** \brief Return the ID of this asset
      *
@@ -126,6 +126,24 @@ public:
      */
     void set_material(const Bsdf* material, unsigned char index);
     
+    /** \brief Sets the materials used by this asset
+     *
+     *  This function sets an array of materials that will be used by the asset.
+     *  It works exactly like the set_material() function, but sets multiple
+     *  materials at once. Note that this function overwrites any previously
+     *  material set.
+     *
+     *  \param[in] materials An array containing pointer to the materials used
+     *  by this asset
+     *  \param[in] material_len The length of the materials array
+     *  \param[in] indexes An array containing integer values, where every value
+     *  at the ith position is the material for the ith triangle of the mesh,
+     *  represented as an offset of the materials array. The length of this
+     *  array MUST be equal to the number of faces of the underlying shape
+     */
+    void set_materials(const Bsdf** materials, unsigned char material_len,
+                       const unsigned char* indexes);
+    
     /** \brief Return a pointer to the material
      *
      *  Return the material associated with the asset or the particular triangle
@@ -159,7 +177,7 @@ private:
     const Bsdf** materials;
     
     //index associating every face to every material
-    unsigned char* material_index;
+    unsigned char* materials_index;
 
 };
 

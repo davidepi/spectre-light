@@ -116,7 +116,7 @@ TEST(File,exists)
     File f0("nonexistent.jpg");
     EXPECT_FALSE(f0.exists());
     //existent
-    File f1(TEST_ASSETS "wrong_magic1.ppm");
+    File f1(TEST_ASSETS "images/wrong_magic1.ppm");
     EXPECT_TRUE(f1.exists());
 }
 
@@ -126,7 +126,7 @@ TEST(File,readable)
     File f0("nonexistent.jpg");
     EXPECT_FALSE(f0.readable());
     //readable
-    File f1(TEST_ASSETS "wrong_magic1.ppm");
+    File f1(TEST_ASSETS "images/wrong_magic1.ppm");
     EXPECT_TRUE(f1.readable());
 }
 
@@ -168,7 +168,7 @@ TEST(File,is_file)
     File f1("non existent");
     EXPECT_FALSE(f1.is_file());
     //existent but not file
-    File f2(TEST_ASSETS "wrong_magic1.ppm");
+    File f2(TEST_ASSETS "images/wrong_magic1.ppm");
     EXPECT_TRUE(f2.is_file());
     //existent and file
     File f3(TEST_ASSETS);
@@ -276,24 +276,30 @@ TEST(File,ls)
 
     File f2(TEST_ASSETS);
     f2.ls(&res);
-    EXPECT_EQ(res.size(), 22);
+    EXPECT_EQ(res.size(), 3);
 }
 
 TEST(File,append)
 {
     File f1(TEST_ASSETS);
-    f1.append("flipped.bmp");
+    f1.append("images/flipped.bmp");
     EXPECT_TRUE(f1.exists());
     f1.append("non-existend");
     EXPECT_FALSE(f1.exists());
 
     File f2(TEST_ASSETS "/parser");
-    f2.append("..//./correct.bmp");
+    f2.append("..//./images/./correct.bmp");
     EXPECT_TRUE(f2.exists());
-    f2.append("../parser_obj");
+    f2.append("../");
     EXPECT_TRUE(f2.is_folder());
     f2.append(".bashrc");
     EXPECT_EQ(strcmp(f2.extension(),""),0);
+}
+
+TEST(File,is_absolute)
+{
+    EXPECT_TRUE(is_absolute("/path"));
+    EXPECT_FALSE(is_absolute("../path"));
 }
 
 

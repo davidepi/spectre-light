@@ -87,6 +87,24 @@ TEST(Asset,material_setter_getter)
 
     a.set_material(&material,1);
     EXPECT_EQ(a.get_material(1), &material);
+
+    //set materials
+    Bsdf material1;
+    material1.inherit_bdf(new Lambertian());
+    Bsdf material2;
+    material2.inherit_bdf(new Lambertian());
+    Bsdf material3;
+    material3.inherit_bdf(new Lambertian());
+    Bsdf material4;
+    material4.inherit_bdf(new Lambertian());
+    const Bsdf* array[] = {&material1,&material2,&material3,&material4};
+    const unsigned char indexes[] = {0};
+    Asset b(&s,m,1);
+    b.set_materials(array, 4, indexes);
+    EXPECT_EQ(b.get_material(0), &material1);
+    EXPECT_EQ(b.get_material(1), &material2);
+    EXPECT_EQ(b.get_material(2), &material3);
+    EXPECT_EQ(b.get_material(3), &material4);
 }
 
 TEST(Asset,is_light)
