@@ -150,3 +150,15 @@ const AreaLight*const* Scene::get_lights()const
 {
     return (const AreaLight*const*)Scene::lights;
 }
+
+void Scene::inherit_asset(Asset* addme)
+{
+    Scene::assets[Scene::asset_index++] = addme;
+    k.addAsset(addme);
+}
+
+void Scene::inherit_light(AreaLight* addme)
+{
+    Scene::assets[Scene::asset_index++] = addme;
+    k.addAsset(addme);
+}

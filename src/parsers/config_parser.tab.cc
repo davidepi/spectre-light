@@ -785,7 +785,7 @@ namespace yy {
 
   case 49:
 #line 176 "config_parser.y" // lalr1.cc:859
-    {driver.cur_mesh.position = (Point3(yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z));}
+    {driver.cur_mesh.position = yystack_[0].value.as< Vec3 > ();}
 #line 790 "config_parser.tab.cc" // lalr1.cc:859
     break;
 

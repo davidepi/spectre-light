@@ -33,6 +33,7 @@
 #include "materials/microfacet_distributions.hpp"
 #include "materials/reflection.hpp"
 #include "materials/refraction.hpp"
+#include "utility/scene.hpp"
 #include "renderer.hpp"
 
 #define YY_DECL \
@@ -72,7 +73,7 @@ class WorldMesh
 public:
     std::string name;
     std::string material_name;
-    Point3 position;
+    Vec3 position;
     Vec3 rotation;
     Vec3 scale;
 
@@ -144,6 +145,8 @@ public:
     std::vector<WorldMesh> deferred_meshes;
     std::unordered_set<std::string> used_shapes;
     void build_meshes();
+
+    Scene* current_scene;
 
 
     void error(const yy::location& l, const std::string& m);

@@ -74,10 +74,15 @@ void Asset::set_materials(const Bsdf** mats, unsigned char mats_len,
     free(materials);
     materials = (const Bsdf**)malloc(sizeof(Bsdf*)*mats_len);
     memcpy(materials, mats, sizeof(Bsdf*)*mats_len);
-    memcpy(materials_index,indexes,model->get_faces_number());
+    memcpy(materials_index,indexes,(size_t)model->get_faces_number());
 }
 
 const Bsdf* Asset::get_material(unsigned int index)const
 {
     return Asset::materials[index];
+}
+
+void Asset::set_associations(const unsigned char* indexes)
+{
+    memcpy(materials_index,indexes,(size_t)model->get_faces_number());
 }

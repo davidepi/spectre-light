@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 19 Dec 2017
+//Last Edit 21 Apr 2018
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      19 Dec 2017
+ *  \date      21 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -87,6 +87,17 @@ public:
     unsigned int add_asset(unsigned int shapeid, const Matrix4& transform,
                           const Bsdf* material = NULL);
 
+    /** \brief Add an Asset to the scene
+     *
+     *  Given a pointer to an asset, the scene inherits its ownership.
+     *  If possible, use shapes already inside this class by calling the
+     *  Scene::add_asset function. Use this function only if the Shape wrapped
+     *  by the Asset was already added to the scene
+     *
+     *  \param[in] addme The asset that will be added
+     */
+    void inherit_asset(Asset* addme);
+
     /** \brief Return the number of assets in the scene
      * \return The number of assets in the scene
      */
@@ -102,6 +113,17 @@ public:
      */
     unsigned int add_light(unsigned int shapeid, const Matrix4& transform,
                           const Spectrum& c);
+
+    /** \brief Add a Light to the scene
+     *
+     *  Given a pointer to a Light, the scene inherits its ownership.
+     *  If possible, use shapes already inside this class by calling the
+     *  Scene::add_light function. Use this function only if the Shape wrapped
+     *  by the Light was already added to the scene
+     *
+     *  \param[in] addme The light that will be added
+     */
+    void inherit_light(AreaLight* addme);
 
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene

@@ -120,12 +120,15 @@
 
 #define MESSAGE_TEXTURE_NOT_FOUND "Texture %s not found in library"
 
+#define MESSAGE_SHAPE_NOT_FOUND "Shape %s not found in any of the .obj parsed"
+
 #define MESSAGE_INPUT_ERROR "Unable to open file %s: %s"
 
 #define MESSAGE_TEXTURE_ERROR "Unable to load texture %s"
 
 #define MESSAGE_TEXTURE_NOT_FOUND_MTL "Texture %s not found in library; to be "\
 "used in material %s"
+
 #define MESSAGE_METAL_NOT_SUPPORTED "Metal %c%c is not supported."\
 " Using the default Au"
 
@@ -149,6 +152,9 @@
 #define MESSAGE_NOT_OBJ "Expected .obj file, but found %s extension"
 
 #define MESSAGE_MISSING_MATERIAL "Missing material %s for object %s"
+
+#define MESSAGE_MISSING_MATERIAL_OVERRIDE MESSAGE_MISSING_MATERIAL " while "\
+"overriding its materials"
 #endif
 
 /**

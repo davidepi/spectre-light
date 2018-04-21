@@ -493,7 +493,12 @@ void ConfigDriver::allocate_shape(const char* obj_file)
         std::unordered_map<std::string, MeshAgglomerate>::const_iterator it;
         it = shapes.find(name);
         if(it==shapes.end())
-            shapes.insert({{name,insertme}});
+        {
+            shapes.insert({{name, insertme}});
+            //give ownership to scene. So the shape will be deleted
+            //Totally useless, but let's keep the flow clean
+            current_scene->inherit_shape(m);
+        }
         else
         {
             Console.warning(MESSAGE_DUPLICATE_SHAPE,name.c_str());
@@ -507,7 +512,63 @@ void ConfigDriver::allocate_shape(const char* obj_file)
 
 void ConfigDriver::build_meshes()
 {
+    for(unsigned int i=0;i<deferred_meshes.size();i++)
+    {
+        WorldMesh popped_mesh = deferred_meshes.back();
+        deferred_meshes.pop_back();
+        std::unordered_map<std::string,MeshAgglomerate>::const_iterator mesh_it;
+        mesh_it = shapes.find(popped_mesh.name);
+        if(mesh_it!=shapes.end())
+        {
+            Matrix4 transform;
+            Matrix4 position_matrix;
+            Matrix4 rotation_matrix;
+            Matrix4 rotx_matrix;
+            Matrix4 roty_matrix;
+            Matrix4 rotz_matrix;
+            Matrix4 scale_matrix;
+            position_matrix.set_translation(popped_mesh.position);
+            rotx_matrix.set_rotate_x(popped_mesh.rotation.x);
+            roty_matrix.set_rotate_y(popped_mesh.rotation.y);
+            rotz_matrix.set_rotate_z(popped_mesh.rotation.z);
+            rotation_matrix = rotx_matrix * roty_matrix * rotz_matrix;
+            scale_matrix.set_scale(popped_mesh.scale);
+            transform = scale_matrix * rotation_matrix * position_matrix;
+            Asset* current_asset;
+            current_asset = new Asset(mesh_it->second.mesh, transform,1);
+            used_shapes.insert(popped_mesh.name);
+            //use parsed materials
+            if(popped_mesh.material_name.empty())
+            {
+                current_asset->set_materials(mesh_it->second.materials,
+                                             mesh_it->second.materials_len,
+                                             mesh_it->second.association);
+            }
+            else //override materials
+            {
+                const Bsdf* overriden_material;
+                overriden_material = MtlLib.get(popped_mesh.material_name);
+                if(overriden_material==NULL)
+                {
+                    //use default if the material is missing
+                    overriden_material = MtlLib.get_default();
+                    Console.warning(MESSAGE_MISSING_MATERIAL_OVERRIDE,
+                                    popped_mesh.material_name,popped_mesh.name);
+                }
+                unsigned char* associations;
+                associations = (unsigned char*)malloc
+                        (mesh_it->second.mesh->get_faces_number());
+                memset(associations,0,mesh_it->second.mesh->get_faces_number());
+                current_asset->set_associations(associations);
+                free(associations);
+                current_asset->set_material(overriden_material,0);
+            }
+            current_scene->inherit_asset(current_asset);
+        }
+        else
+            Console.warning(MESSAGE_SHAPE_NOT_FOUND,popped_mesh.name);
 
+    }
 }
 
 ParsedMaterial::ParsedMaterial()

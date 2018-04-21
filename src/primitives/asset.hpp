@@ -125,6 +125,16 @@ public:
      *  index
      */
     void set_material(const Bsdf* material, unsigned char index);
+
+    /** \brief Sets the associations <triangle, material offset> for this asset
+     *
+     *  Override the array used to associate materials used by triangles
+     *  composing this mesh. Recall that the values of this array are offsets
+     *  of the Asset::materials array
+     *
+     *  \param[in] indexes The array of indexes that will be copied
+     */
+    void set_associations(const unsigned char* indexes);
     
     /** \brief Sets the materials used by this asset
      *

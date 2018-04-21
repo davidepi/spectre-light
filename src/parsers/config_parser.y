@@ -173,7 +173,7 @@ world_obj: world_name world_rec;
 world_rec: world_rec world_stmt | world_stmt;
 world_name: NAME COLON STRING {driver.cur_mesh.name = $3.substr(1,$3.size()-2);}
 world_stmt
-: POSITION COLON vector {driver.cur_mesh.position = (Point3($3.x,$3.y,$3.z));}
+: POSITION COLON vector {driver.cur_mesh.position = $3;}
 | ROTATION COLON vector {driver.cur_mesh.rotation = $3;}
 | SCALE COLON vector {driver.cur_mesh.scale = $3;}
 | SCALE COLON FLOAT {driver.cur_mesh.scale = $3;}
