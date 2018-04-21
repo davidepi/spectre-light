@@ -63,8 +63,10 @@ public:
 
     /** \brief Add a Shape to the scene
      *
-     *  Given a pointer to a shape, the scene inherits its ownership and use it
-     *  for subsequent add_asset calls
+     *  Given a pointer to a shape, the scene inherits its ownership. This
+     *  method is useless because the inherited shapes are not used directly
+     *  by the Scene, however, ensures that they are deleted by this class
+     *  along with the assets when rendering is over
      *
      *  \param[in] addme The shape that will be added to the Scene
      *  \return The added shape id
@@ -75,17 +77,6 @@ public:
      * \return The number of shapes in the scene
      */
     unsigned int shapes_size()const;
-
-    /** \brief Given a shape id and a matrix, create an asset with those
-     *
-     *  \param[in] shapeid The id of the shape, already inherited by the scene
-     *  \param[in] transform The transform matrix for the asset
-     *  \param[in] material The material for the asset. If NULL the material
-     *  will remain the default one
-     *  \return the added assets id. 0 if nothing was added
-     */
-    unsigned int add_asset(unsigned int shapeid, const Matrix4& transform,
-                          const Bsdf* material = NULL);
 
     /** \brief Add an Asset to the scene
      *
@@ -102,17 +93,6 @@ public:
      * \return The number of assets in the scene
      */
     unsigned int assets_size()const;
-
-    /** \brief Given a shapeid and a matrix, create a light with those
-     *
-     *  \param[in] shapeid The id of the shape, already inherited by the scene
-     *  \param[in] transform The transform matrix for the light
-     *  \param[in] c The emissive spectrum of the light
-     *  \return the added light id. Since a light is essentially an asset, this
-     *  is an asset id. 0 if nothing was added
-     */
-    unsigned int add_light(unsigned int shapeid, const Matrix4& transform,
-                          const Spectrum& c);
 
     /** \brief Add a Light to the scene
      *

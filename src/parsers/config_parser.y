@@ -130,7 +130,7 @@ stmt
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
 | SHAPE COLON STRING {driver.deferred_shapes.push_back($3.substr(1,$3.size()-2));}
 | WORLD COLON OPEN_CU world_obj CLOSE_CU {driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=WorldMesh();}
-| LIGHT COLON OPEN_CU light_obj CLOSE_CU
+| LIGHT COLON OPEN_CU light_obj CLOSE_CU {driver.cur_mesh.is_light=true;driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=WorldMesh();}
 | TEXTURE COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_folder();}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON STRING {driver.children.push_back($3.substr(1,$3.size()-2));}
@@ -183,7 +183,10 @@ world_stmt
 
 light_obj: world_name light_rec;
 light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt;
-light_stmt: TEMPERATURE COLON UINT | COLOR COLON vector;
+light_stmt
+: TEMPERATURE COLON UINT {driver.cur_mesh.temperature = $3;}
+| COLOR COLON vector {driver.cur_mesh.color = $3;}
+;
 
 texture_obj /* name is already known at this point */
 : SRC COLON STRING texture_rec {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_single();}

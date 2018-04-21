@@ -5,7 +5,8 @@
 #define MIN_ROUGHNESS 0.001f
 
 ConfigDriver::ConfigDriver()
-:current_dir("."), camera_pos(0,0,0), camera_tar(0,0,1), camera_up(0,1,0)
+        :current_dir("."), camera_pos(0, 0, 0), camera_tar(0, 0, 1),
+         camera_up(0, 1, 0)
 {
     output = "out.ppm";
     width = 800;
@@ -15,7 +16,7 @@ ConfigDriver::ConfigDriver()
     camera_type = SPECTRE_CAMERA_PERSPECTIVE;
     camera = NULL;
     fov = 55.f;
-    filter = new FilterMitchell(0.33f,0.33f);
+    filter = new FilterMitchell(0.33f, 0.33f);
     value0 = 0.33f;
     value1 = 0.33f;
     integrator = new PathTracer();
@@ -34,7 +35,7 @@ Renderer* ConfigDriver::parse(const std::string& f)
     check_resolution();
     check_spp();
 #ifdef DEBUG //single threaded
-    r = new Renderer(width,height,spp,output.c_str(),1);
+    r = new Renderer(width, height, spp, output.c_str(), 1);
 #else //maximum threads
     r = new Renderer(width,height,spp,output.c_str());
 #endif
@@ -48,7 +49,7 @@ Renderer* ConfigDriver::parse(const std::string& f)
     //avoid recursive children
     std::vector<std::string> consolidated_children = children;
     children.clear();
-    for(unsigned int i = 0;i<consolidated_children.size();i++)
+    for(unsigned int i = 0; i<consolidated_children.size(); i++)
     {
         File file1 = is_absolute(consolidated_children[i].c_str())?
                      File(consolidated_children[i].c_str()):
@@ -61,45 +62,65 @@ Renderer* ConfigDriver::parse(const std::string& f)
             scan_end();
         }
         else
-            Console.severe(MESSAGE_INPUT_ERROR,file.c_str());
+            Console.severe(MESSAGE_INPUT_ERROR, file.c_str());
     }
     //free some memory
     consolidated_children.clear();
     consolidated_children.resize(0);
     children.resize(0);
 
+    //build default sphere
+    default_sphere = new Sphere();
+    current_scene->inherit_shape(default_sphere);
+
     //build deferred objects
     build_materials();
-    for(unsigned int i = 0;i<deferred_shapes.size();i++)
+    for(unsigned int i = 0; i<deferred_shapes.size(); i++)
         allocate_shape(deferred_shapes[i].c_str());
     build_meshes();
+
+    //delete unused shapes, the ones not inherited by Scene
+    //delete also materials array, since they are copied by the asset
+    std::unordered_map<std::string, MeshAgglomerate>::iterator shape_it;
+    shape_it = shapes.begin();
+    while(shape_it != shapes.end())
+    {
+        if(used_shapes.find(shape_it->first) == used_shapes.end())
+        {
+            delete shape_it->second.mesh;
+        }
+        delete shape_it->second.materials;
+        delete shape_it->second.association;
+        shape_it++;
+    }
+
     return r;
 }
 
 void ConfigDriver::check_resolution()
 {
     float rem = width%SPLIT_SIZE;
-    if(rem!=0)
+    if(rem != 0)
     {
         float aspect_ratio = (float)width/(float)height;
-        width+=SPLIT_SIZE-rem;
-        height+=(int)((SPLIT_SIZE-rem)/aspect_ratio);
-        if(height%2!=0)
+        width += SPLIT_SIZE-rem;
+        height += (int)((SPLIT_SIZE-rem)/aspect_ratio);
+        if(height%2 != 0)
             height++;
-        Console.notice(MESSAGE_RESOLUTION_CHANGED,SPLIT_SIZE,width,height);
+        Console.notice(MESSAGE_RESOLUTION_CHANGED, SPLIT_SIZE, width, height);
     }
 }
 
 void ConfigDriver::check_spp()
 {
-    if(sampler_type==SPECTRE_SAMPLER_STRATIFIED)
+    if(sampler_type == SPECTRE_SAMPLER_STRATIFIED)
     {
         float root = sqrtf(spp);
-        if((int)root*(int)root!=spp)
+        if((int)root*(int)root != spp)
         {
             spp = static_cast<int>(static_cast<float>(root+.5f));
-            spp*=spp;
-            Console.notice(MESSAGE_SPP_CHANGED,spp);
+            spp *= spp;
+            Console.notice(MESSAGE_SPP_CHANGED, spp);
         }
     }
 }
@@ -114,26 +135,27 @@ void ConfigDriver::error(const yy::location& l, const std::string& m)
 #define NRM "\x1B[0m"
 #define BLD "\x1B[1m"
 #define BUFFER 128
-    unsigned int end_col = 0 < l.end.column ? l.end.column - 1 : 0;
+    unsigned int end_col = 0<l.end.column?l.end.column-1:0;
     //underline wrong token
-    if(l.begin.column<l.end.column && l.begin.line==l.end.line &&
+    if(l.begin.column<l.end.column && l.begin.line == l.end.line &&
        l.end.column-l.begin.column<=BUFFER-5) //prev. segfault if token len >buf
     {
         char buf[128];
         char under[128];
-        int offset = get_line(buf,128);
-        for(unsigned int i=0;i<l.begin.column-1-offset;i++)
+        int offset = get_line(buf, 128);
+        for(unsigned int i = 0; i<l.begin.column-1-offset; i++)
             under[i] = ' ';
-        for(unsigned int i=l.begin.column-1-offset;i<end_col-offset;i++)
+        for(unsigned int i = l.begin.column-1-offset; i<end_col-offset; i++)
             under[i] = '~';
         under[end_col-offset] = 0;
         Console.critical("%s:%d.%d: " BLD "%s" NRM "\n%s\n%" GRN "%s" NRM,
-                         file.c_str(),l.end.line,end_col,m.c_str(),buf,under);
+                         file.c_str(), l.end.line, end_col, m.c_str(), buf,
+                         under);
     }
     else //just print the error
     {
         Console.critical("%s:%d.%d: " BLD "%s" NRM,
-                         file.c_str(),l.end.line,end_col,m.c_str());
+                         file.c_str(), l.end.line, end_col, m.c_str());
     }
 }
 
@@ -142,8 +164,8 @@ void ConfigDriver::unknown_char(const yy::location& l, char c)
     //MESSAGE_SYNTAX_ERROR constains a %c that is substituted by a sinlge char
     //gaining 1 space for the \0. Hence the missing +1 in the array alloc.
     char errormsg[sizeof(MESSAGE_SYNTAX_ERROR)]; //constexpr strlen()
-    sprintf(errormsg,MESSAGE_SYNTAX_ERROR,c);
-    error(l,std::string(errormsg));
+    sprintf(errormsg, MESSAGE_SYNTAX_ERROR, c);
+    error(l, std::string(errormsg));
 }
 
 void ConfigDriver::build_filter()
@@ -151,50 +173,47 @@ void ConfigDriver::build_filter()
     delete filter;
     switch(filter_type)
     {
-        case SPECTRE_FILTER_BOX:
-            filter = new FilterBox();
+        case SPECTRE_FILTER_BOX:filter = new FilterBox();
             break;
-        case SPECTRE_FILTER_TENT:
-            filter = new FilterTent();
+        case SPECTRE_FILTER_TENT:filter = new FilterTent();
             break;
-        case SPECTRE_FILTER_GAUSS:
-            filter = new FilterGaussian(value0);
+        case SPECTRE_FILTER_GAUSS:filter = new FilterGaussian(value0);
             break;
         case SPECTRE_FILTER_MITCHELL:
-            filter = new FilterMitchell(value0,value1);
+            filter = new FilterMitchell(value0, value1);
             break;
-        case SPECTRE_FILTER_LANCZOS:
-            filter = new FilterLanczos(value0);
+        case SPECTRE_FILTER_LANCZOS:filter = new FilterLanczos(value0);
             break;
         default:
             /* default is unreachable */
-            fprintf(stderr,"Unknown filter type. This is unknown also to the"
-                    "Parser so check config_parser.y first\n");
+            fprintf(stderr, "Unknown filter type. This is unknown also to the"
+                            "Parser so check config_parser.y first\n");
     }
 }
 
 void ConfigDriver::build_camera()
 {
-    if(camera!=NULL)
+    if(camera != NULL)
         delete camera;
     switch(camera_type)
     {
         case SPECTRE_CAMERA_ORTHOGRAPHIC:
-            camera = new CameraOrthographic(&camera_pos,&camera_tar,&camera_up,
-                                            width,height);
+            camera = new CameraOrthographic(&camera_pos, &camera_tar,
+                                            &camera_up,
+                                            width, height);
             break;
         case SPECTRE_CAMERA_PERSPECTIVE:
-            camera = new CameraPerspective(&camera_pos,&camera_tar,&camera_up,
-                                           width,height,fov);
+            camera = new CameraPerspective(&camera_pos, &camera_tar, &camera_up,
+                                           width, height, fov);
             break;
         case SPECTRE_CAMERA_PANORAMA:
-            camera = new Camera360(&camera_pos,&camera_tar,&camera_up,
-                                   width,height);
+            camera = new Camera360(&camera_pos, &camera_tar, &camera_up,
+                                   width, height);
             break;
         default:
             /* default is unreachable */
-            fprintf(stderr,"Unknown camera type. This is unknown also to the"
-                    "Parser so check config_parser.y first\n");
+            fprintf(stderr, "Unknown camera type. This is unknown also to the"
+                            "Parser so check config_parser.y first\n");
     }
 }
 
@@ -206,14 +225,14 @@ static void load_texture_rec(File& src)
         {
             std::vector<File> res;
             src.ls(&res);
-            for(int i=0;i<(int)res.size();i++)
+            for(int i = 0; i<(int)res.size(); i++)
                 load_texture_rec(res.at(i));
         }
         else
         {
             if(image_supported(src.extension())>=0) //check extension
             {
-                printf("load texture %s\n",src.filename());
+                printf("load texture %s\n", src.filename());
                 //TODO: placeholder because the texture class is not ready
                 //TOOD: check texture not already loaded
                 Texture* addme = new UniformTexture(SPECTRUM_WHITE);
@@ -236,18 +255,18 @@ void ConfigDriver::load_texture_folder()
         load_texture_rec(current_file);
     else
         //error just for the first specified folder
-        Console.warning(MESSAGE_TEXTURE_ERROR,current_file.absolute_path());
+        Console.warning(MESSAGE_TEXTURE_ERROR, current_file.absolute_path());
 }
 
 void ConfigDriver::load_texture_uniform()
 {
     if(!tex_name.empty())
     {
-        tex_color.clamp(Vec3(0,0,0), Vec3(255,255,255));
+        tex_color.clamp(Vec3(0, 0, 0), Vec3(255, 255, 255));
         ColorRGB rgb((unsigned char)tex_color.x,
                      (unsigned char)tex_color.y,
                      (unsigned char)tex_color.z);
-        Spectrum color(rgb,false);
+        Spectrum color(rgb, false);
         TexLib.add_inherit(tex_name, new UniformTexture(color));
         tex_name.clear();
     }
@@ -274,7 +293,7 @@ void ConfigDriver::load_texture_single()
         tex_name.clear(); //reset name for next texture
     }
     else
-        Console.warning(MESSAGE_TEXTURE_ERROR,cur_file.absolute_path());
+        Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
 }
 
 void ConfigDriver::build_materials()
@@ -283,18 +302,18 @@ void ConfigDriver::build_materials()
     Bsdf* material;
     const Texture* diffuse;
     const Texture* specular;
-    for(int i=0;i<(int)deferred_materials.size();i++)
+    for(int i = 0; i<(int)deferred_materials.size(); i++)
     {
         mat = &deferred_materials[i];
         //isotropic element, no point in using anisotropic one
-        mat->rough_x = clamp(mat->rough_x,0.f,1.f);
-        if(mat->rough_y==mat->rough_x)
-            mat->rough_y=-1;
-        if(mat->rough_y!=-1)
+        mat->rough_x = clamp(mat->rough_x, 0.f, 1.f);
+        if(mat->rough_y == mat->rough_x)
+            mat->rough_y = -1;
+        if(mat->rough_y != -1)
         {
             //cannot be specular so avoid 0
-            mat->rough_x = clamp(mat->rough_x,MIN_ROUGHNESS,1.f);
-            mat->rough_y = clamp(mat->rough_y,MIN_ROUGHNESS,1.f);
+            mat->rough_x = clamp(mat->rough_x, MIN_ROUGHNESS, 1.f);
+            mat->rough_y = clamp(mat->rough_y, MIN_ROUGHNESS, 1.f);
         }
         switch(mat->type)
         {
@@ -306,29 +325,30 @@ void ConfigDriver::build_materials()
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->diffuse.c_str(),mat->name.c_str());
+                                    mat->diffuse.c_str(), mat->name.c_str());
                     diffuse = TexLib.get_default();
                 }
-                if(mat->rough_x!=0)
+                if(mat->rough_x != 0)
                 {
                     float roughness = lerp(mat->rough_x, 0.f, 100.f);
-                    material->inherit_bdf(new OrenNayar(roughness),diffuse);
+                    material->inherit_bdf(new OrenNayar(roughness), diffuse);
                 }
                 else
-                    material->inherit_bdf(new Lambertian,diffuse);
+                    material->inherit_bdf(new Lambertian, diffuse);
                 break;
             }
             case GLOSSY:
             {
                 material = new Bsdf();
-                Fresnel* fresnel = new Dielectric(cauchy(1.f,0),cauchy(1.5f,0));
+                Fresnel* fresnel = new Dielectric(cauchy(1.f, 0),
+                                                  cauchy(1.5f, 0));
                 MicrofacetDist* dist;
                 if(TexLib.contains(mat->diffuse))
                     diffuse = TexLib.get(mat->diffuse);
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->diffuse.c_str(),mat->name.c_str());
+                                    mat->diffuse.c_str(), mat->name.c_str());
                     diffuse = TexLib.get_default();
                 }
                 if(TexLib.contains(mat->specular))
@@ -336,15 +356,15 @@ void ConfigDriver::build_materials()
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->specular.c_str(),mat->name.c_str());
+                                    mat->specular.c_str(), mat->name.c_str());
                     specular = TexLib.get_default();
                 }
-                material->inherit_bdf(new Lambertian(),diffuse);
+                material->inherit_bdf(new Lambertian(), diffuse);
                 //no specular in glossy, avoid division by zero
-                if(mat->rough_x==0)
+                if(mat->rough_x == 0)
                     mat->rough_x = MIN_ROUGHNESS;
-                if(mat->rough_y!=-1)
-                    dist = new GGXaniso(mat->rough_x,mat->rough_y);
+                if(mat->rough_y != -1)
+                    dist = new GGXaniso(mat->rough_x, mat->rough_y);
                 else
                 {
                     if(mat->dist == SPECTRE_DIST_BLINN)
@@ -354,7 +374,7 @@ void ConfigDriver::build_materials()
                     else
                         dist = new GGXiso(mat->rough_x);
                 }
-                material->inherit_bdf(new MicrofacetR(dist,fresnel),specular);
+                material->inherit_bdf(new MicrofacetR(dist, fresnel), specular);
                 break;
             }
             case GLASS:
@@ -364,7 +384,7 @@ void ConfigDriver::build_materials()
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->diffuse.c_str(),mat->name.c_str());
+                                    mat->diffuse.c_str(), mat->name.c_str());
                     diffuse = TexLib.get_default();
                 }
                 if(TexLib.contains(mat->specular))
@@ -372,34 +392,36 @@ void ConfigDriver::build_materials()
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->specular.c_str(),mat->name.c_str());
+                                    mat->specular.c_str(), mat->name.c_str());
                     specular = TexLib.get_default();
                 }
                 material = new Bsdf();
                 Bdf* reflective;
                 Bdf* refractive;
-                Spectrum etai = cauchy(1.f,0.f);
-                if(mat->rough_x==0 && mat->rough_y==-1) //spec
+                Spectrum etai = cauchy(1.f, 0.f);
+                if(mat->rough_x == 0 && mat->rough_y == -1) //spec
                 {
-                    reflective = new DielectricReflection(etai,mat->ior);
-                    refractive = new Refraction(etai,mat->ior);
+                    reflective = new DielectricReflection(etai, mat->ior);
+                    refractive = new Refraction(etai, mat->ior);
                 }
                 else
                 {
                     MicrofacetDist* dist_r;
                     MicrofacetDist* dist_t;
-                    Fresnel* fresnel_r = new Dielectric(etai,mat->ior);
-                    if(mat->rough_y!=-1)
+                    Fresnel* fresnel_r = new Dielectric(etai, mat->ior);
+                    if(mat->rough_y != -1)
                     {
-                        dist_r = new GGXaniso(mat->rough_x,mat->rough_y);
-                        dist_t = new GGXaniso(mat->rough_x,mat->rough_y);
+                        dist_r = new GGXaniso(mat->rough_x, mat->rough_y);
+                        dist_t = new GGXaniso(mat->rough_x, mat->rough_y);
                     }
                     else
                     {
                         if(mat->dist == SPECTRE_DIST_BLINN)
                         {
-                            dist_r=new Blinn(2.f/(mat->rough_x*mat->rough_x)-2);
-                            dist_t=new Blinn(2.f/(mat->rough_x*mat->rough_x)-2);
+                            dist_r = new Blinn(
+                                    2.f/(mat->rough_x*mat->rough_x)-2);
+                            dist_t = new Blinn(
+                                    2.f/(mat->rough_x*mat->rough_x)-2);
                         }
                         else if(mat->dist == SPECTRE_DIST_BECKMANN)
                         {
@@ -412,11 +434,11 @@ void ConfigDriver::build_materials()
                             dist_t = new GGXiso(mat->rough_x);
                         }
                     }
-                    reflective = new MicrofacetR(dist_r,fresnel_r);
-                    refractive = new MicrofacetT(dist_t,etai,mat->ior);
+                    reflective = new MicrofacetR(dist_r, fresnel_r);
+                    refractive = new MicrofacetT(dist_t, etai, mat->ior);
                 }
-                material->inherit_bdf(refractive,diffuse);
-                material->inherit_bdf(reflective,specular);
+                material->inherit_bdf(refractive, diffuse);
+                material->inherit_bdf(reflective, specular);
                 break;
             }
             case METAL:
@@ -429,13 +451,14 @@ void ConfigDriver::build_materials()
                 material = new SingleBRDF();
                 ior = Spectrum(METALS[mat->elem].n);
                 absorption = Spectrum(METALS[mat->elem].k);
-                if(mat->rough_x==0 && mat->rough_y==-1) //specular
-                    bdf = new ConductorReflection(ior,absorption);
+                if(mat->rough_x == 0 && mat->rough_y == -1) //specular
+                    bdf = new ConductorReflection(ior, absorption);
                 else
                 {
-                    
-                    if(mat->rough_x!=0 && mat->rough_y!=-1) //anisotropic microf
-                        dist = new GGXaniso(mat->rough_x,mat->rough_y);
+
+                    if(mat->rough_x != 0 &&
+                       mat->rough_y != -1) //anisotropic microf
+                        dist = new GGXaniso(mat->rough_x, mat->rough_y);
                     else
                     {
                         if(mat->dist == SPECTRE_DIST_BLINN)
@@ -445,18 +468,18 @@ void ConfigDriver::build_materials()
                         else
                             dist = new GGXiso(mat->rough_x);
                     }
-                    fresnel = new Conductor(ior,absorption);
-                    bdf = new MicrofacetR(dist,fresnel);
+                    fresnel = new Conductor(ior, absorption);
+                    bdf = new MicrofacetR(dist, fresnel);
                 }
                 material->inherit_bdf(bdf);
                 break;
             }
         }
         if(!MtlLib.contains(mat->name))
-            MtlLib.add_inherit(mat->name,material);
+            MtlLib.add_inherit(mat->name, material);
         else
         {
-            Console.warning(MESSAGE_DUPLICATE_MATERIAL,mat->name.c_str());
+            Console.warning(MESSAGE_DUPLICATE_MATERIAL, mat->name.c_str());
             delete material; //already existent, prevents memory leaks
         }
     }
@@ -470,9 +493,9 @@ void ConfigDriver::allocate_shape(const char* obj_file)
         f.append(obj_file);
     else
         f = File(obj_file);
-    if(strcmp(f.extension(),"obj")!=0)
+    if(strcmp(f.extension(), "obj") != 0)
     {
-        Console.severe(MESSAGE_OBJ_ERROR,f.extension());
+        Console.severe(MESSAGE_OBJ_ERROR, f.extension());
         return;
     }
     ParserObj p;
@@ -485,14 +508,13 @@ void ConfigDriver::allocate_shape(const char* obj_file)
         insertme.materials_len = p.get_material_no();
         insertme.materials = (const Bsdf**)malloc(sizeof(const Bsdf*)*
                                                   p.get_material_no());
-        insertme.association_len = p.get_face_no();
         insertme.association = (unsigned char*)malloc(p.get_face_no());
         p.get_materials(insertme.materials);
         p.get_material_association(insertme.association);
         std::string name = p.get_mesh_name();
         std::unordered_map<std::string, MeshAgglomerate>::const_iterator it;
         it = shapes.find(name);
-        if(it==shapes.end())
+        if(it == shapes.end())
         {
             shapes.insert({{name, insertme}});
             //give ownership to scene. So the shape will be deleted
@@ -501,7 +523,7 @@ void ConfigDriver::allocate_shape(const char* obj_file)
         }
         else
         {
-            Console.warning(MESSAGE_DUPLICATE_SHAPE,name.c_str());
+            Console.warning(MESSAGE_DUPLICATE_SHAPE, name.c_str());
             delete m;
         }
         m = new Mesh(1);
@@ -512,62 +534,111 @@ void ConfigDriver::allocate_shape(const char* obj_file)
 
 void ConfigDriver::build_meshes()
 {
-    for(unsigned int i=0;i<deferred_meshes.size();i++)
+    for(unsigned int i = 0; i<deferred_meshes.size(); i++)
     {
         WorldMesh popped_mesh = deferred_meshes.back();
         deferred_meshes.pop_back();
-        std::unordered_map<std::string,MeshAgglomerate>::const_iterator mesh_it;
-        mesh_it = shapes.find(popped_mesh.name);
-        if(mesh_it!=shapes.end())
+        std::unordered_map<std::string, MeshAgglomerate>::const_iterator mesh_i;
+        MeshAgglomerate mesh;
+
+        //differentiate between sdl or mesh
+        if(popped_mesh.name != "Sphere")
         {
-            Matrix4 transform;
-            Matrix4 position_matrix;
-            Matrix4 rotation_matrix;
-            Matrix4 rotx_matrix;
-            Matrix4 roty_matrix;
-            Matrix4 rotz_matrix;
-            Matrix4 scale_matrix;
-            position_matrix.set_translation(popped_mesh.position);
-            rotx_matrix.set_rotate_x(popped_mesh.rotation.x);
-            roty_matrix.set_rotate_y(popped_mesh.rotation.y);
-            rotz_matrix.set_rotate_z(popped_mesh.rotation.z);
-            rotation_matrix = rotx_matrix * roty_matrix * rotz_matrix;
-            scale_matrix.set_scale(popped_mesh.scale);
-            transform = scale_matrix * rotation_matrix * position_matrix;
-            Asset* current_asset;
-            current_asset = new Asset(mesh_it->second.mesh, transform,1);
-            used_shapes.insert(popped_mesh.name);
+            //parsed obj that will be deleted if not used
+            mesh_i = shapes.find(popped_mesh.name);
+            if(mesh_i != shapes.end())
+            {
+                mesh = mesh_i->second;
+                //this step should not be performed by sdl: since they are not
+                //in the array of the parsed shapes and will always be removed
+                //when cleaning the Scene of unused meshes
+                used_shapes.insert(popped_mesh.name);
+            }
+            else
+            {
+                Console.warning(MESSAGE_SHAPE_NOT_FOUND, popped_mesh.name);
+                continue; //otherwise it would be an if-else nightmare
+            }
+        }
+        else
+        {
+            //sdl that will always stays in the scene
+            //construct the MeshAgglomerate (which is the parsed .obj) in place
+            mesh.mesh = default_sphere;
+            mesh.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
+            mesh.materials[0] = MtlLib.get_default();
+            mesh.materials_len = 1;
+            mesh.association = (unsigned char*)malloc(1);
+            mesh.association[0] = 0;
+        }
+
+        Matrix4 transform;
+        Matrix4 position_matrix;
+        Matrix4 rotation_matrix;
+        Matrix4 rotx_matrix;
+        Matrix4 roty_matrix;
+        Matrix4 rotz_matrix;
+        Matrix4 scale_matrix;
+        position_matrix.set_translation(popped_mesh.position);
+        rotx_matrix.set_rotate_x(popped_mesh.rotation.x);
+        roty_matrix.set_rotate_y(popped_mesh.rotation.y);
+        rotz_matrix.set_rotate_z(popped_mesh.rotation.z);
+        rotation_matrix = rotx_matrix*roty_matrix*rotz_matrix;
+        scale_matrix.set_scale(popped_mesh.scale);
+        transform = scale_matrix*rotation_matrix*position_matrix;
+        Asset* current_asset;
+        if(!popped_mesh.is_light)
+        {
+            current_asset = new Asset(mesh.mesh, transform, 1);
+
             //use parsed materials
             if(popped_mesh.material_name.empty())
             {
-                current_asset->set_materials(mesh_it->second.materials,
-                                             mesh_it->second.materials_len,
-                                             mesh_it->second.association);
+                current_asset->set_materials(mesh.materials,
+                                             mesh.materials_len,
+                                             mesh.association);
             }
             else //override materials
             {
-                const Bsdf* overriden_material;
-                overriden_material = MtlLib.get(popped_mesh.material_name);
-                if(overriden_material==NULL)
+                const Bsdf* overridden_material;
+                overridden_material = MtlLib.get(popped_mesh.material_name);
+                if(overridden_material == NULL)
                 {
                     //use default if the material is missing
-                    overriden_material = MtlLib.get_default();
+                    overridden_material = MtlLib.get_default();
                     Console.warning(MESSAGE_MISSING_MATERIAL_OVERRIDE,
-                                    popped_mesh.material_name,popped_mesh.name);
+                                    popped_mesh.material_name,
+                                    popped_mesh.name);
                 }
                 unsigned char* associations;
                 associations = (unsigned char*)malloc
-                        (mesh_it->second.mesh->get_faces_number());
-                memset(associations,0,mesh_it->second.mesh->get_faces_number());
+                        (mesh.mesh->get_faces_number());
+                memset(associations, 0, mesh.mesh->get_faces_number());
                 current_asset->set_associations(associations);
                 free(associations);
-                current_asset->set_material(overriden_material,0);
+                current_asset->set_material(overridden_material, 0);
             }
             current_scene->inherit_asset(current_asset);
         }
         else
-            Console.warning(MESSAGE_SHAPE_NOT_FOUND,popped_mesh.name);
-
+        {
+            //blackbody
+            if(popped_mesh.temperature>=0)
+                current_asset = new AreaLight(mesh.mesh, transform,
+                                              popped_mesh.temperature);
+            else
+            {
+                unsigned char r;
+                unsigned char g;
+                unsigned char b;
+                r = (unsigned char)clamp(popped_mesh.color.x, 0.f, 255.f);
+                g = (unsigned char)clamp(popped_mesh.color.y, 0.f, 255.f);
+                b = (unsigned char)clamp(popped_mesh.color.z, 0.f, 255.f);
+                Spectrum color(ColorRGB(r, g, b), true);
+                current_asset = new AreaLight(mesh.mesh, transform, color);
+            }
+            current_scene->inherit_light((AreaLight*)current_asset);
+        }
     }
 }
 

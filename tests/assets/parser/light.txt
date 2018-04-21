@@ -1,0 +1,4 @@
+light: {name: "Sphere"}
+light: {name: "SquarePyr", position: [10,10,10], scale: 1.5, color: [255,10,10]}
+light: {name: "Sphere", temperature: 4500}
+

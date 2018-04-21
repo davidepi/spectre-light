@@ -47,7 +47,8 @@ material: "another_file2.txt"
 ```
 ## Missing .mtl
 
-As already stated in the [README](../../README.md), this renderer supports `.obj` files but not their companion `.mtl`. The reason of this discrepancy is the tight bound that `.mtl` specification has with the Phong illumination model that greatly limits the expressiveness of a physically based material system.
+As already stated in the [README](../../README.md), this renderer supports `
+.obj` files but not their companion `.mtl`. The reason of this discrepancy lies in the tight bound that `.mtl` specification has with the Phong illumination model that greatly limits the expressiveness of a physically based material system.
 
 In order to overcome this limitation, the `mtllib` keyword is ignored while parsing. However, the `usemtl` is still used and the name of the material is searched in the Material Library that contains the materials defined in the main input file.
 
@@ -133,7 +134,7 @@ Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the light model. This is the name of a mesh previously parsed with the `shape` keyword | Syntax error
 temperature | int+ | The temperature in kelvin of the light. This value will set the light color based on its temperature and thus should not be used in conjunction with the `color` keyword | This value is mutually exclusive with the `color` one. The latter is the one used as default
-color | float[3] | The spectrum emitted by this light. The spectrum is represented as a 3 values RGB number where `[0,0,0]` is full black and `[1,1,1]` is full white |  [1,1,1]
+color | float[3] | The spectrum emitted by this light. The spectrum is represented as a 3 values RGB number in range [0-255] |  [255,255,255]
 position | float[3] | The position of the light in the scene | [0,0,0]
 rotation | float[3] | The rotation of the light in the scene, in degrees | [0,0,0]
 scale | float[3] or float | The scaling applied to the light in the scene. The single float value applies uniform scaling to every dimension | 1
@@ -143,7 +144,9 @@ Keys for World objects
 
 Key | Type | Usage | Default value
 ---|---|---|---
-name | quoted string | The name of the model previously parsed with the `shape` keyword | Syntax error
+name | quoted string | The name of the model previously parsed with the `shape` keyword. The name "Sphere" can also be used to reference a sphere without any input obj file. Radius can be set with `scale` keyword |
+ Syntax 
+error
 material | quoted string | The name of the material that will be applied to the model. This overrides any material parsed in the .obj file. However, if the original mesh used multiple materials, setting this keyword will override EVERY material with the specified one. Useful only for single-material mesh | Materials parsed in the .obj file
 position | float[3] | The position of the model in the scene | [0,0,0]
 rotation | float[3] | The rotation of the model in the scene, in degrees | [0,0,0]
@@ -156,7 +159,7 @@ Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the texture as it will appear in the Texture Library | filename without extension
 src | quoted string | The path to the texture on the disk that will be stored in the Texture Library. To load everything inside a folder do not use this object but directly the `texture:"folder"` at toplevel. This value is mutually exclusive with `color` | Syntax error
-color | float[3] | The RGB color of the uniform texture, in range [0-255]. This value is mutually exclusive with l `src` | Syntax error
+color | float[3] | The RGB color of the uniform texture, in range [0-255]. This value is mutually exclusive with `src` | Syntax error
 
 #### Material
 Keys for Material objects

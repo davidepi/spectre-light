@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include "parsers/parser_obj.hpp"
 #include "primitives/mesh.hpp"
+#include "primitives/sphere.hpp"
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
 #include "utility/file.hpp"
@@ -61,11 +62,10 @@ public:
 //bind mesh and materials
 struct MeshAgglomerate
 {
-    Mesh* mesh;
+    Shape* mesh;
     const Bsdf** materials;
     unsigned char materials_len;
     unsigned char* association;
-    unsigned int association_len;
 };
 
 class WorldMesh
@@ -76,8 +76,11 @@ public:
     Vec3 position;
     Vec3 rotation;
     Vec3 scale;
+    bool is_light;
+    int temperature;
+    Vec3 color;
 
-    WorldMesh():scale(1){};
+    WorldMesh():scale(1),is_light(false),temperature(-1),color(255,255,255){};
 };
 
 class ConfigDriver
@@ -138,6 +141,7 @@ public:
     //deferred because depending on materials
     std::vector<std::string> deferred_shapes;
     std::unordered_map<std::string,MeshAgglomerate> shapes;
+    Sphere* default_sphere;
 
     //world and lights
     WorldMesh cur_mesh;

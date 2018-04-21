@@ -1,0 +1,7 @@
+stexture: {name: "Red", color: [255,0,0]}
+material: {name: "Red Oren-Nayar" type: matte, diffuse: "Red", roughness: 0.2}
+shape: "shape.txt"
+world: {name: "Sphere"}
+world: {name: "Square Pyr", position: [10,10,10], scale: 1.5}
+world: {name: "Sphere", material: "Red Oren-Nayar"}
+

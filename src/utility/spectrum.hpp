@@ -73,14 +73,6 @@ public:
 
     /** \brief Initialize the spectrum with the given values
      *
-     *  Initialize this class by filling it with the given values
-     *
-     *  \param[in] vals The values, sorted by nm, used for this spectrum
-     */
-    Spectrum(const float* vals);
-
-    /** \brief Initialize the spectrum with the given values
-     *
      *  Initialize this class by filling it with the given values, passed as
      *  an initializer list {float1, float2, float3, ... }
      *
