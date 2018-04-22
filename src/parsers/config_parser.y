@@ -122,15 +122,15 @@ file
 stmt
 : OUTPUT COLON STRING {driver.output = $3.substr(1,$3.size()-2);}
 | RESOLUTION COLON OPEN_CU resolution_obj CLOSE_CU
-| FILTER COLON OPEN_CU filter_obj CLOSE_CU {driver.build_filter();}
+| FILTER COLON OPEN_CU filter_obj CLOSE_CU
 | SAMPLER  COLON RANDOM {driver.sampler_type = SPECTRE_SAMPLER_RANDOM;}
 | SAMPLER COLON STRATIFIED {driver.sampler_type = SPECTRE_SAMPLER_STRATIFIED;}
 | SPP COLON UINT        {driver.spp = $3;}
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
 | SHAPE COLON STRING {driver.deferred_shapes.push_back($3.substr(1,$3.size()-2));}
-| WORLD COLON OPEN_CU world_obj CLOSE_CU {driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=WorldMesh();}
-| LIGHT COLON OPEN_CU light_obj CLOSE_CU {driver.cur_mesh.is_light=true;driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=WorldMesh();}
+| WORLD COLON OPEN_CU world_obj CLOSE_CU {driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
+| LIGHT COLON OPEN_CU light_obj CLOSE_CU {driver.cur_mesh.is_light=true;driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
 | TEXTURE COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_folder();}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON STRING {driver.children.push_back($3.substr(1,$3.size()-2));}

@@ -1,8 +1,22 @@
-//created 2-04-18
+//author: Davide Pizzolotto
+//license: GNU GPLv3
 
 #include "config_driver.hpp"
 
+///minimum value for ParsedMaterial::rough_x when the material is not specular
 #define MIN_ROUGHNESS 0.001f
+
+ParsedMaterial::ParsedMaterial()
+{
+    elem = METAL_GOLD;
+    type = MATTE;
+    ior = cauchy(1.45f, 0.f);
+    rough_x = 0;
+    rough_y = -1;
+    dist = SPECTRE_DIST_BECKMANN;
+    diffuse = "Default";
+    specular = "Default";
+}
 
 ConfigDriver::ConfigDriver()
         :current_dir("."), camera_pos(0, 0, 0), camera_tar(0, 0, 1),
@@ -14,18 +28,17 @@ ConfigDriver::ConfigDriver()
     spp = 121;
     sampler_type = SPECTRE_SAMPLER_STRATIFIED;
     camera_type = SPECTRE_CAMERA_PERSPECTIVE;
-    camera = NULL;
     fov = 55.f;
-    filter = new FilterMitchell(0.33f, 0.33f);
     value0 = 0.33f;
     value1 = 0.33f;
     integrator = new PathTracer();
     tex_name = "";
 }
 
-Renderer* ConfigDriver::parse(const std::string& f)
+Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
 {
     Renderer* r = NULL;
+    current_scene = scene;
     current_dir = File(f.c_str()).get_parent();
     file = f;
     scan_begin();
@@ -40,9 +53,8 @@ Renderer* ConfigDriver::parse(const std::string& f)
     r = new Renderer(width,height,spp,output.c_str());
 #endif
     r->set_sampler(sampler_type);
-    build_camera();
-    r->inherit_camera(camera);
-    r->inherit_filter(filter);
+    r->inherit_camera(build_camera());
+    r->inherit_filter(build_filter());
     r->inherit_integrator(integrator);
 
     //load children files
@@ -76,12 +88,12 @@ Renderer* ConfigDriver::parse(const std::string& f)
     //build deferred objects
     build_materials();
     for(unsigned int i = 0; i<deferred_shapes.size(); i++)
-        allocate_shape(deferred_shapes[i].c_str());
+        parse_and_allocate_obj(deferred_shapes[i].c_str());
     build_meshes();
 
     //delete unused shapes, the ones not inherited by Scene
     //delete also materials array, since they are copied by the asset
-    std::unordered_map<std::string, MeshAgglomerate>::iterator shape_it;
+    std::unordered_map<std::string, MeshObject>::iterator shape_it;
     shape_it = shapes.begin();
     while(shape_it != shapes.end())
     {
@@ -161,16 +173,18 @@ void ConfigDriver::error(const yy::location& l, const std::string& m)
 
 void ConfigDriver::unknown_char(const yy::location& l, char c)
 {
-    //MESSAGE_SYNTAX_ERROR constains a %c that is substituted by a sinlge char
-    //gaining 1 space for the \0. Hence the missing +1 in the array alloc.
+    // MESSAGE_SYNTAX_ERROR contains a "%c" (2 letters) that is substituted
+    // by a single char gaining 1 space for the \0. Hence the missing +1 in the
+    // array alloc.
     char errormsg[sizeof(MESSAGE_SYNTAX_ERROR)]; //constexpr strlen()
     sprintf(errormsg, MESSAGE_SYNTAX_ERROR, c);
     error(l, std::string(errormsg));
 }
 
-void ConfigDriver::build_filter()
+Filter* ConfigDriver::build_filter()
 {
-    delete filter;
+    //not a good practice, but the alternative is moving this switch elsewhere
+    Filter* filter;
     switch(filter_type)
     {
         case SPECTRE_FILTER_BOX:filter = new FilterBox();
@@ -179,22 +193,19 @@ void ConfigDriver::build_filter()
             break;
         case SPECTRE_FILTER_GAUSS:filter = new FilterGaussian(value0);
             break;
-        case SPECTRE_FILTER_MITCHELL:
-            filter = new FilterMitchell(value0, value1);
-            break;
         case SPECTRE_FILTER_LANCZOS:filter = new FilterLanczos(value0);
             break;
-        default:
-            /* default is unreachable */
-            fprintf(stderr, "Unknown filter type. This is unknown also to the"
-                            "Parser so check config_parser.y first\n");
+        case SPECTRE_FILTER_MITCHELL:
+        default:filter = new FilterMitchell(value0, value1);
+            break;
     }
+    return filter;
 }
 
-void ConfigDriver::build_camera()
+Camera* ConfigDriver::build_camera()
 {
-    if(camera != NULL)
-        delete camera;
+    //not a good practice, but the alternative is moving this switch elsewhere
+    Camera* camera;
     switch(camera_type)
     {
         case SPECTRE_CAMERA_ORTHOGRAPHIC:
@@ -202,21 +213,21 @@ void ConfigDriver::build_camera()
                                             &camera_up,
                                             width, height);
             break;
-        case SPECTRE_CAMERA_PERSPECTIVE:
-            camera = new CameraPerspective(&camera_pos, &camera_tar, &camera_up,
-                                           width, height, fov);
-            break;
+
         case SPECTRE_CAMERA_PANORAMA:
             camera = new Camera360(&camera_pos, &camera_tar, &camera_up,
                                    width, height);
             break;
+        case SPECTRE_CAMERA_PERSPECTIVE:
         default:
-            /* default is unreachable */
-            fprintf(stderr, "Unknown camera type. This is unknown also to the"
-                            "Parser so check config_parser.y first\n");
+            camera = new CameraPerspective(&camera_pos, &camera_tar, &camera_up,
+                                           width, height, fov);
+            break;
     }
+    return camera;
 }
 
+//recursive step of the load_texture_folder
 static void load_texture_rec(File& src)
 {
     if(src.exists() && src.readable())
@@ -238,8 +249,7 @@ static void load_texture_rec(File& src)
                 Texture* addme = new UniformTexture(SPECTRUM_WHITE);
                 TexLib.add_inherit(src.filename(), addme);
             }
-            else
-                /* silently skip unsupported texture */;
+            /*else silently skip unsupported texture */
         }
     }
 }
@@ -485,7 +495,7 @@ void ConfigDriver::build_materials()
     }
 }
 
-void ConfigDriver::allocate_shape(const char* obj_file)
+void ConfigDriver::parse_and_allocate_obj(const char* obj_file)
 {
     //existence check is left to ParserObj class
     File f = current_dir;
@@ -503,7 +513,7 @@ void ConfigDriver::allocate_shape(const char* obj_file)
     Mesh* m = new Mesh(1);
     while(p.get_next_mesh(m))
     {
-        MeshAgglomerate insertme;
+        MeshObject insertme;
         insertme.mesh = m;
         insertme.materials_len = p.get_material_no();
         insertme.materials = (const Bsdf**)malloc(sizeof(const Bsdf*)*
@@ -512,7 +522,7 @@ void ConfigDriver::allocate_shape(const char* obj_file)
         p.get_materials(insertme.materials);
         p.get_material_association(insertme.association);
         std::string name = p.get_mesh_name();
-        std::unordered_map<std::string, MeshAgglomerate>::const_iterator it;
+        std::unordered_map<std::string, MeshObject>::const_iterator it;
         it = shapes.find(name);
         if(it == shapes.end())
         {
@@ -536,40 +546,40 @@ void ConfigDriver::build_meshes()
 {
     for(unsigned int i = 0; i<deferred_meshes.size(); i++)
     {
-        WorldMesh popped_mesh = deferred_meshes.back();
+        MeshObject mesh_o;
+        MeshWorld mesh_w = deferred_meshes.back();
         deferred_meshes.pop_back();
-        std::unordered_map<std::string, MeshAgglomerate>::const_iterator mesh_i;
-        MeshAgglomerate mesh;
+        std::unordered_map<std::string, MeshObject>::const_iterator mesh_i;
 
         //differentiate between sdl or mesh
-        if(popped_mesh.name != "Sphere")
+        if(mesh_w.name != "Sphere")
         {
             //parsed obj that will be deleted if not used
-            mesh_i = shapes.find(popped_mesh.name);
+            mesh_i = shapes.find(mesh_w.name);
             if(mesh_i != shapes.end())
             {
-                mesh = mesh_i->second;
+                mesh_o = mesh_i->second;
                 //this step should not be performed by sdl: since they are not
                 //in the array of the parsed shapes and will always be removed
                 //when cleaning the Scene of unused meshes
-                used_shapes.insert(popped_mesh.name);
+                used_shapes.insert(mesh_w.name);
             }
             else
             {
-                Console.warning(MESSAGE_SHAPE_NOT_FOUND, popped_mesh.name);
+                Console.warning(MESSAGE_SHAPE_NOT_FOUND, mesh_w.name);
                 continue; //otherwise it would be an if-else nightmare
             }
         }
         else
         {
             //sdl that will always stays in the scene
-            //construct the MeshAgglomerate (which is the parsed .obj) in place
-            mesh.mesh = default_sphere;
-            mesh.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
-            mesh.materials[0] = MtlLib.get_default();
-            mesh.materials_len = 1;
-            mesh.association = (unsigned char*)malloc(1);
-            mesh.association[0] = 0;
+            //construct the MeshObject (which is the parsed .obj) in place
+            mesh_o.mesh = default_sphere;
+            mesh_o.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
+            mesh_o.materials[0] = MtlLib.get_default();
+            mesh_o.materials_len = 1;
+            mesh_o.association = (unsigned char*)malloc(1);
+            mesh_o.association[0] = 0;
         }
 
         Matrix4 transform;
@@ -579,41 +589,41 @@ void ConfigDriver::build_meshes()
         Matrix4 roty_matrix;
         Matrix4 rotz_matrix;
         Matrix4 scale_matrix;
-        position_matrix.set_translation(popped_mesh.position);
-        rotx_matrix.set_rotate_x(popped_mesh.rotation.x);
-        roty_matrix.set_rotate_y(popped_mesh.rotation.y);
-        rotz_matrix.set_rotate_z(popped_mesh.rotation.z);
+        position_matrix.set_translation(mesh_w.position);
+        rotx_matrix.set_rotate_x(mesh_w.rotation.x);
+        roty_matrix.set_rotate_y(mesh_w.rotation.y);
+        rotz_matrix.set_rotate_z(mesh_w.rotation.z);
         rotation_matrix = rotx_matrix*roty_matrix*rotz_matrix;
-        scale_matrix.set_scale(popped_mesh.scale);
+        scale_matrix.set_scale(mesh_w.scale);
         transform = scale_matrix*rotation_matrix*position_matrix;
         Asset* current_asset;
-        if(!popped_mesh.is_light)
+        if(!mesh_w.is_light)
         {
-            current_asset = new Asset(mesh.mesh, transform, 1);
+            current_asset = new Asset(mesh_o.mesh, transform, 1);
 
             //use parsed materials
-            if(popped_mesh.material_name.empty())
+            if(mesh_w.material_name.empty())
             {
-                current_asset->set_materials(mesh.materials,
-                                             mesh.materials_len,
-                                             mesh.association);
+                current_asset->set_materials(mesh_o.materials,
+                                             mesh_o.materials_len,
+                                             mesh_o.association);
             }
             else //override materials
             {
                 const Bsdf* overridden_material;
-                overridden_material = MtlLib.get(popped_mesh.material_name);
+                overridden_material = MtlLib.get(mesh_w.material_name);
                 if(overridden_material == NULL)
                 {
                     //use default if the material is missing
                     overridden_material = MtlLib.get_default();
                     Console.warning(MESSAGE_MISSING_MATERIAL_OVERRIDE,
-                                    popped_mesh.material_name,
-                                    popped_mesh.name);
+                                    mesh_w.material_name,
+                                    mesh_w.name);
                 }
                 unsigned char* associations;
                 associations = (unsigned char*)malloc
-                        (mesh.mesh->get_faces_number());
-                memset(associations, 0, mesh.mesh->get_faces_number());
+                        (mesh_o.mesh->get_faces_number());
+                memset(associations, 0, mesh_o.mesh->get_faces_number());
                 current_asset->set_associations(associations);
                 free(associations);
                 current_asset->set_material(overridden_material, 0);
@@ -623,33 +633,21 @@ void ConfigDriver::build_meshes()
         else
         {
             //blackbody
-            if(popped_mesh.temperature>=0)
-                current_asset = new AreaLight(mesh.mesh, transform,
-                                              popped_mesh.temperature);
+            if(mesh_w.temperature>=0)
+                current_asset = new AreaLight(mesh_o.mesh, transform,
+                                              mesh_w.temperature);
             else
             {
                 unsigned char r;
                 unsigned char g;
                 unsigned char b;
-                r = (unsigned char)clamp(popped_mesh.color.x, 0.f, 255.f);
-                g = (unsigned char)clamp(popped_mesh.color.y, 0.f, 255.f);
-                b = (unsigned char)clamp(popped_mesh.color.z, 0.f, 255.f);
+                r = (unsigned char)clamp(mesh_w.color.x, 0.f, 255.f);
+                g = (unsigned char)clamp(mesh_w.color.y, 0.f, 255.f);
+                b = (unsigned char)clamp(mesh_w.color.z, 0.f, 255.f);
                 Spectrum color(ColorRGB(r, g, b), true);
-                current_asset = new AreaLight(mesh.mesh, transform, color);
+                current_asset = new AreaLight(mesh_o.mesh, transform, color);
             }
             current_scene->inherit_light((AreaLight*)current_asset);
         }
     }
-}
-
-ParsedMaterial::ParsedMaterial()
-{
-    elem = METAL_GOLD;
-    type = MATTE;
-    ior = cauchy(1.45f, 0.f);
-    rough_x = 0;
-    rough_y = -1;
-    dist = SPECTRE_DIST_BECKMANN;
-    diffuse = "Default";
-    specular = "Default";
 }
