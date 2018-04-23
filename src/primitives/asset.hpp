@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 20 Apr 2018
+//Last Edit 23 Apr 2018
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      20 Apr 2018
+ *  \date      23 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -78,7 +78,7 @@ public:
     /** \brief Return a pointer to the AABB
      *
      *  Return a constant pointer to the axis aligned bounding box surrounding
-     *  this asset
+     *  this asset. This AABB is in world space.
      *
      *  \return A pointer to the aabb surrounding this asset
      */
@@ -159,8 +159,10 @@ public:
      *  Return the material associated with the asset or the particular triangle
      *
      *  \param[in] index The ith face of the mesh for which the material should
-     *  be looked up. 0 Returns the default material
-     *  \return material A pointer to the material of the asset
+     *  be looked up. 0 for SDLs
+     *
+     *  \return material A pointer to the material of the asset used by
+     *  the face passed as parameter
      */
     const Bsdf* get_material(unsigned int index)const;
 

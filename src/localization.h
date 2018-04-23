@@ -123,7 +123,7 @@
 
 #define MESSAGE_TEXTURE_NOT_FOUND "Texture %s not found in library"
 
-#define MESSAGE_SHAPE_NOT_FOUND "Shape %s not found in any of the .obj parsed"
+#define MESSAGE_SHAPE_NOT_FOUND "Shape \"%s\" not found in any of the .obj parsed"
 
 #define MESSAGE_INPUT_ERROR "Unable to open file %s: %s"
 
@@ -149,7 +149,8 @@
 #define MESSAGE_INDEX_OBJ "Error while parsing file %s. "\
 "File file was malformed. Face at line %d refers to a non-existent index"
 
-#define MESSAGE_OBJ_ERROR "Reading of file %s failed. File has not been "\
+#define MESSAGE_OBJ_ERROR "Reading of file %s failed. The expected extension "\
+"was .obj but instead the file extension is .%s. File has not been "\
 "imported"
 
 #define MESSAGE_NOT_OBJ "Expected .obj file, but found %s extension"

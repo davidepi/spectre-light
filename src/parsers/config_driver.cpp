@@ -92,15 +92,16 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
     build_meshes();
 
     //delete unused shapes, the ones not inherited by Scene
+    //else add them to the scene
     //delete also materials array, since they are copied by the asset
     std::unordered_map<std::string, MeshObject>::iterator shape_it;
     shape_it = shapes.begin();
     while(shape_it != shapes.end())
     {
         if(used_shapes.find(shape_it->first) == used_shapes.end())
-        {
             delete shape_it->second.mesh;
-        }
+        else
+            current_scene->inherit_shape(shape_it->second.mesh);
         delete shape_it->second.materials;
         delete shape_it->second.association;
         shape_it++;
@@ -505,7 +506,7 @@ void ConfigDriver::parse_and_allocate_obj(const char* obj_file)
         f = File(obj_file);
     if(strcmp(f.extension(), "obj") != 0)
     {
-        Console.severe(MESSAGE_OBJ_ERROR, f.extension());
+        Console.severe(MESSAGE_OBJ_ERROR, f.absolute_path(), f.extension());
         return;
     }
     ParserObj p;
@@ -528,8 +529,11 @@ void ConfigDriver::parse_and_allocate_obj(const char* obj_file)
         {
             shapes.insert({{name, insertme}});
             //give ownership to scene. So the shape will be deleted
-            //Totally useless, but let's keep the flow clean
-            current_scene->inherit_shape(m);
+            //current_scene->inherit_shape(m); <- THIS IS WRONG HERE
+            //because some shapes inside the scene will be cleaned if not used
+            //and at program termination, boom, double free.
+            //shape inheriting is done IF the shape is used, in the parse func
+            //This comment is left here to prevent the readdition of this stmt
         }
         else
         {
@@ -544,7 +548,7 @@ void ConfigDriver::parse_and_allocate_obj(const char* obj_file)
 
 void ConfigDriver::build_meshes()
 {
-    for(unsigned int i = 0; i<deferred_meshes.size(); i++)
+    while(!deferred_meshes.empty())
     {
         MeshObject mesh_o;
         MeshWorld mesh_w = deferred_meshes.back();
@@ -595,7 +599,8 @@ void ConfigDriver::build_meshes()
         rotz_matrix.set_rotate_z(mesh_w.rotation.z);
         rotation_matrix = rotx_matrix*roty_matrix*rotz_matrix;
         scale_matrix.set_scale(mesh_w.scale);
-        transform = scale_matrix*rotation_matrix*position_matrix;
+        //watchout the order!!!
+        transform = position_matrix*rotation_matrix*scale_matrix;
         Asset* current_asset;
         if(!mesh_w.is_light)
         {

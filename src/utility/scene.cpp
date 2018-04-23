@@ -26,7 +26,7 @@ void Scene::inherit_shape(const Shape *addme)
     shapes.insert(std::make_pair(addme->get_id(),addme));
 }
 
-unsigned int Scene::shapes_size()const
+unsigned int Scene::size_shapes()const
 {
     return (unsigned int)shapes.size();
 }
@@ -38,7 +38,7 @@ void Scene::inherit_asset(const Asset* addme)
     k.addAsset(addme);
 }
 
-unsigned int Scene::assets_size()const
+unsigned int Scene::size_assets()const
 {
     return (unsigned int)assets.size();
 }
@@ -59,7 +59,7 @@ void Scene::inherit_light(const AreaLight* addme)
         Console.warning(MESSAGE_MAXLIGHTSNUMBER, _MAX_LIGHTS_);
 }
 
-unsigned int Scene::lights_size()const
+unsigned int Scene::size_lights()const
 {
     return (unsigned int)lights.size();
 }

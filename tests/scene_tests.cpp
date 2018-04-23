@@ -12,13 +12,13 @@ TEST(Scene,inherit_shape)
 {
     Sphere* sphere = new Sphere;
     Scene scene;
-    EXPECT_EQ(scene.shapes_size(), 0);
+    EXPECT_EQ(scene.size_shapes(), 0);
     scene.inherit_shape(sphere);
-    EXPECT_EQ(scene.shapes_size(), 1);
+    EXPECT_EQ(scene.size_shapes(), 1);
 
     //add duplicate
     scene.inherit_shape(sphere);
-    EXPECT_EQ(scene.shapes_size(), 1);
+    EXPECT_EQ(scene.size_shapes(), 1);
 }
 
 TEST(Scene,inherit_asset)
@@ -29,15 +29,15 @@ TEST(Scene,inherit_asset)
     Matrix4 transform;
     transform.set_identity();
     Asset* addme = new Asset(sphere,transform,1);
-    EXPECT_EQ(scene.assets_size(), 0);
+    EXPECT_EQ(scene.size_assets(), 0);
     scene.inherit_shape(sphere);
     scene.inherit_asset(addme);
-    EXPECT_EQ(scene.shapes_size(), 1);
-    EXPECT_EQ(scene.assets_size(), 1);
+    EXPECT_EQ(scene.size_shapes(), 1);
+    EXPECT_EQ(scene.size_assets(), 1);
 
     //duplicates can not be added
     scene.inherit_asset(addme);
-    EXPECT_EQ(scene.assets_size(), 1);
+    EXPECT_EQ(scene.size_assets(), 1);
 }
 
 TEST(Scene,inherit_light)
@@ -47,28 +47,28 @@ TEST(Scene,inherit_light)
     Matrix4 transform;
     transform.set_identity();
     Asset* addme1 = new AreaLight(sphere,transform,Spectrum(1500));
-    EXPECT_EQ(scene.assets_size(), 0);
-    EXPECT_EQ(scene.lights_size(), 0);
+    EXPECT_EQ(scene.size_assets(), 0);
+    EXPECT_EQ(scene.size_lights(), 0);
     scene.inherit_shape(sphere);
     scene.inherit_asset(addme1);
-    EXPECT_EQ(scene.assets_size(), 1);
-    EXPECT_EQ(scene.lights_size(), 0);
+    EXPECT_EQ(scene.size_assets(), 1);
+    EXPECT_EQ(scene.size_lights(), 0);
 
     Asset* addme2 = new AreaLight(sphere,transform,Spectrum(1500));
     scene.inherit_light((AreaLight*)addme2);
-    EXPECT_EQ(scene.assets_size(), 2);
-    EXPECT_EQ(scene.lights_size(), 1);
+    EXPECT_EQ(scene.size_assets(), 2);
+    EXPECT_EQ(scene.size_lights(), 1);
 
     //don't add duplicates
-    for(int i=scene.lights_size();i<_MAX_LIGHTS_;i++)
+    for(int i=scene.size_lights();i<_MAX_LIGHTS_;i++)
         scene.inherit_light((AreaLight*)addme1);
-    EXPECT_EQ(scene.assets_size(), 2);
-    EXPECT_EQ(scene.lights_size(), 1);
+    EXPECT_EQ(scene.size_assets(), 2);
+    EXPECT_EQ(scene.size_lights(), 1);
 
     //fill all lights
-    for(int i=scene.lights_size();i<_MAX_LIGHTS_;i++)
+    for(int i=scene.size_lights();i<_MAX_LIGHTS_;i++)
         scene.inherit_light(new AreaLight(sphere,transform,Spectrum(1500)));
-    EXPECT_EQ(scene.lights_size(),_MAX_LIGHTS_);
+    EXPECT_EQ(scene.size_lights(),_MAX_LIGHTS_);
 
     //add extra light
     errors_count[WARNING_INDEX] = 0;
@@ -90,7 +90,7 @@ TEST(Scene,get_lights)
         values[i] = new AreaLight(sphere,transform,Spectrum(1500));
         scene.inherit_light(values[i]);
     }
-    for(int i=0;i<scene.lights_size();i++)
+    for(int i=0;i<scene.size_lights();i++)
         EXPECT_EQ(scene.get_light(i),values[i]);
 }
 

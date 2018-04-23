@@ -169,7 +169,7 @@ camera_stmt
 | COMMA
 ;
 
-world_obj: world_name world_rec;
+world_obj: world_name world_rec | world_name;
 world_rec: world_rec world_stmt | world_stmt;
 world_name: NAME COLON STRING {driver.cur_mesh.name = $3.substr(1,$3.size()-2);}
 world_stmt

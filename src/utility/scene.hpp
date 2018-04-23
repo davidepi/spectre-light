@@ -75,7 +75,7 @@ public:
     /** \brief Return the number of shapes in the scene
      * \return The number of shapes in the scene
      */
-    unsigned int shapes_size()const;
+    unsigned int size_shapes()const;
 
     /** \brief Add an Asset to the scene
      *
@@ -91,7 +91,7 @@ public:
     /** \brief Return the number of assets in the scene
      * \return The number of assets in the scene
      */
-    unsigned int assets_size()const;
+    unsigned int size_assets()const;
 
     /** \brief Add a Light to the scene
      *
@@ -107,7 +107,7 @@ public:
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene
      */
-    unsigned int lights_size()const;
+    unsigned int size_lights()const;
 
     /** \brief  Return the ith light of the scene
      *

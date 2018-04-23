@@ -641,31 +641,108 @@ TEST(Parser,children)
 
 TEST(Parser,shape)
 {
-    Scene s;
+    Scene s0;
+    Scene s1;
+    Scene s2;
     //existing relative path + non existing absolute path
     ConfigDriver driver0;
     errors_count[ERROR_INDEX] = 0; //for the non-existing root folder obj
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt",&s);
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt",&s0);
     EXPECT_NE(driver0.shapes.find("SquarePyr"),driver0.shapes.end());
     EXPECT_EQ(errors_count[ERROR_INDEX],1);
+    EXPECT_EQ(s0.size_shapes(), 1); //only sphere should be added
     errors_count[ERROR_INDEX] = 0;
     delete r0;
 
     //wrong extension
     ConfigDriver driver1;
     errors_count[ERROR_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt",&s);
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt",&s1);
     EXPECT_EQ(errors_count[ERROR_INDEX],1);
     errors_count[ERROR_INDEX] = 0;
     EXPECT_EQ(driver1.shapes.find("SquarePyr"),driver1.shapes.end());
+    EXPECT_EQ(s0.size_shapes(), 1); //only sphere should be added
     delete r1;
+
     //duplicate
     ConfigDriver driver2;
     errors_count[WARNING_INDEX] = 0;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/shape_duplicate.txt",&s);
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/shape_duplicate.txt",&s2);
     EXPECT_EQ(errors_count[WARNING_INDEX],1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_NE(driver2.shapes.find("SquarePyr"),driver2.shapes.end());
+    EXPECT_EQ(s0.size_shapes(), 1); //only sphere should be added
     delete r2;
+}
+
+TEST(Parser,world)
+{
+    const AABB* box;
+    HitPoint hp;
+    Ray ray;
+    bool res;
+    const Bsdf* material;
+
+    Scene s0;
+    ConfigDriver driver0;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/world.txt",&s0);
+    EXPECT_EQ(errors_count[WARNING_INDEX],1);//material not found
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(s0.size_shapes(), 2);
+    EXPECT_EQ(s0.size_assets(), 5);
+    EXPECT_EQ(driver0.deferred_meshes.size(), 0);
+    s0.k.buildTree();
+
+    //test position changed for last sphere
+    ray = Ray(Point3(5,5,5),Vec3(0,0,1));
+    res = s0.k.intersect(&ray,&hp);
+    ASSERT_TRUE(res);
+    // only way to get private info about position
+    box = hp.asset_h->get_AABB();
+    EXPECT_EQ(box->bounds[0].x, 4);
+    EXPECT_EQ(box->bounds[0].y, 4);
+    EXPECT_EQ(box->bounds[0].z, 4);
+    EXPECT_EQ(box->bounds[1].x, 6);
+    EXPECT_EQ(box->bounds[1].y, 6);
+    EXPECT_EQ(box->bounds[1].z, 6);
+
+    //test scale changed for last sphere
+    ray = Ray(Point3(15,-15,15),Vec3(0,0,1));
+    res = s0.k.intersect(&ray,&hp);
+    ASSERT_TRUE(res);
+    box = hp.asset_h->get_AABB();
+    EXPECT_EQ(box->bounds[0].x, 13);
+    EXPECT_EQ(box->bounds[0].y, -17);
+    EXPECT_EQ(box->bounds[0].z, 13);
+    EXPECT_EQ(box->bounds[1].x, 17);
+    EXPECT_EQ(box->bounds[1].y, -13);
+    EXPECT_EQ(box->bounds[1].z, 17);
+
+    //test material overriden for second sphere
+    ray = Ray(Point3(-10,-10,-9.5),Vec3(0,0,1));
+    res = s0.k.intersect(&ray,&hp);
+    ASSERT_TRUE(res);
+    material = hp.asset_h->get_material(hp.index);
+    EXPECT_NE(material, MtlLib.get_default()); //overridden
+    EXPECT_EQ(material, MtlLib.get("Red Oren-Nayar"));
+
+    //test material default when not found
+    ray = Ray(Point3(5,5,5),Vec3(0,0,1));
+    res = s0.k.intersect(&ray,&hp);
+    ASSERT_TRUE(res);
+    material = hp.asset_h->get_material(hp.index);
+    EXPECT_NE(material, MtlLib.get("Blue"));
+    EXPECT_EQ(material, MtlLib.get_default());
+    delete r0;
+
+    //not found
+    Scene s1;
+    ConfigDriver driver1;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r1 = driver0.parse(TEST_ASSETS "parser/world_not_found.txt",&s1);
+    EXPECT_EQ(errors_count[WARNING_INDEX],1);//material not found
+    errors_count[WARNING_INDEX] = 0;
+    delete r1;
 }
 

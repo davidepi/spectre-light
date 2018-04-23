@@ -79,7 +79,7 @@ void Asset::set_materials(const Bsdf** mats, unsigned char mats_len,
 
 const Bsdf* Asset::get_material(unsigned int index)const
 {
-    return Asset::materials[index];
+    return Asset::materials[materials_index[index]];
 }
 
 void Asset::set_associations(const unsigned char* indexes)

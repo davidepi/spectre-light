@@ -7,7 +7,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                   Sampler* sam, OcclusionTester* ot)
 {
     Spectrum L = SPECTRUM_BLACK;
-    int nlights = sc->lights_size();
+    int nlights = sc->size_lights();
     if(hp->asset_h->is_light())
         if(dot(hp->normal_h,-r->direction)>0)
             L+=((AreaLight *) hp->asset_h)->emissive_spectrum();
