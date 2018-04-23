@@ -46,6 +46,7 @@
 #include "materials/reflection.hpp"
 #include "materials/refraction.hpp"
 #include "utility/scene.hpp"
+#include "validator.h"
 #include "renderer.hpp"
 
 #define YY_DECL \
@@ -188,6 +189,7 @@ public:
      *  allocated
      *  \return An heap allocated Renderer
      */
+    CHECK_RETVAL_USED
     Renderer* parse(const std::string& f, Scene* scene);
 
     /**
@@ -211,7 +213,10 @@ public:
      */
     void unknown_char(const yy::location& l, char c);
 
+//dirty hack because this class is impossible to test otherwise, and all the
+#ifndef TESTS
 private:
+#endif
 
     ///The name of the output image that will be created by the renderer
     std::string output;
@@ -269,6 +274,7 @@ private:
     char camera_type;
 
     ///Allocate the camera with parsed parameters
+    CHECK_RETVAL_USED
     Camera* build_camera();
 
     /*-------------------------.
@@ -288,6 +294,7 @@ private:
     float value1;
 
     ///Allocate the filter with parsed parameters
+    CHECK_RETVAL_USED
     Filter* build_filter();
 
     /*---------------.

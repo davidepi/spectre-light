@@ -8,7 +8,6 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
 {
     Spectrum L = SPECTRUM_BLACK;
     int nlights = sc->lights_size();
-    const AreaLight*const* lights = sc->get_lights();
     if(hp->asset_h->is_light())
         if(dot(hp->normal_h,-r->direction)>0)
             L+=((AreaLight *) hp->asset_h)->emissive_spectrum();
@@ -20,7 +19,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
         Vec3 wi;
         //choose a light to sample
         int sampledlight = min((int)(rand[0]*nlights),nlights-1);
-        const AreaLight* light = lights[sampledlight];
+        const AreaLight* light = sc->get_light(sampledlight);
         const Bsdf* mat = hp->asset_h->get_material(hp->index);
         float lightpdf;
         float bsdfpdf;

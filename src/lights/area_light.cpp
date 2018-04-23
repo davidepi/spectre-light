@@ -4,7 +4,7 @@
 #include "area_light.hpp"
 
 AreaLight::AreaLight(const Shape* sp,const Matrix4& obj2World,const Spectrum& c)
-: Asset(sp,obj2World,0), c(c)
+: Asset(sp,obj2World,1), c(c)
 {
     //calculate the surface of the world-space object
     AreaLight::area = sp->surface(&obj2World);

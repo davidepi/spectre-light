@@ -566,7 +566,7 @@ void ConfigDriver::build_meshes()
             }
             else
             {
-                Console.warning(MESSAGE_SHAPE_NOT_FOUND, mesh_w.name);
+                Console.warning(MESSAGE_SHAPE_NOT_FOUND, mesh_w.name.c_str());
                 continue; //otherwise it would be an if-else nightmare
             }
         }
@@ -617,8 +617,8 @@ void ConfigDriver::build_meshes()
                     //use default if the material is missing
                     overridden_material = MtlLib.get_default();
                     Console.warning(MESSAGE_MISSING_MATERIAL_OVERRIDE,
-                                    mesh_w.material_name,
-                                    mesh_w.name);
+                                    mesh_w.material_name.c_str(),
+                                    mesh_w.name.c_str());
                 }
                 unsigned char* associations;
                 associations = (unsigned char*)malloc

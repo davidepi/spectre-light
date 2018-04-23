@@ -11,6 +11,9 @@
 
 #define MESSAGE_MAXASSETNUMBER "Can't add more assets"
 
+#define MESSAGE_MAXLIGHTSNUMBER "Reached the maximum number of lights for the"\
+"current scene: %d"
+
 #define MESSAGE_MAXTRISNUMBER "Reached the limit of triangles per mesh"
 
 #define MESSAGE_MISSING_EXTENSION "Missing extension in filename."\

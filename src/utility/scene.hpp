@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 21 Apr 2018
+//Last Edit 23 Apr 2018
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      21 Apr 2018
+ *  \date      23 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -47,7 +47,7 @@ class Scene
 public:
 
     ///Default constructor
-    Scene();
+    Scene() = default;
 
     ///Default destructor
     ~Scene();
@@ -69,9 +69,8 @@ public:
      *  along with the assets when rendering is over
      *
      *  \param[in] addme The shape that will be added to the Scene
-     *  \return The added shape id
      */
-    unsigned int inherit_shape(Shape* addme);
+    void inherit_shape(const Shape* addme);
 
     /** \brief Return the number of shapes in the scene
      * \return The number of shapes in the scene
@@ -87,7 +86,7 @@ public:
      *
      *  \param[in] addme The asset that will be added
      */
-    void inherit_asset(Asset* addme);
+    void inherit_asset(const Asset* addme);
 
     /** \brief Return the number of assets in the scene
      * \return The number of assets in the scene
@@ -103,40 +102,30 @@ public:
      *
      *  \param[in] addme The light that will be added
      */
-    void inherit_light(AreaLight* addme);
+    void inherit_light(const AreaLight* addme);
 
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene
      */
     unsigned int lights_size()const;
 
-    /** \brief  Return the array of lights in the scene
+    /** \brief  Return the ith light of the scene
+     *
+     *  \param[in] index The index of the light in the light array
      * \return The array of lights in the scene
      */
-    const AreaLight* const* get_lights()const;
+    const AreaLight* get_light(int index)const;
 
 private:
 
-    //map of shapes
-    std::unordered_map<unsigned int,const Shape*> shapes;
+    ///map of shapes
+    std::unordered_map<unsigned int, const Shape*> shapes;
 
-    //Array of asset pointers
-    Asset** assets;
+    ///map of assets and lights
+    std::unordered_map<unsigned int, const Asset*> assets;
 
-    //size of asset pointers array
-    unsigned int assets_allocated;
-
-    //next insertion index in the asset pointers array
-    unsigned int asset_index;
-
-    //Array of light pointers
-    AreaLight** lights;
-
-    //size of light pointers array
-    unsigned int lights_allocated;
-
-    //next insertion index in the asset pointers array
-    unsigned int light_index;
+    ///array of lights, allocated version is stored inside Scene::assets
+    std::vector<const AreaLight*> lights;
 
 };
 

@@ -52,6 +52,19 @@
 #define DEPRECATED __attribute__((deprecated))
 #endif
 
+#ifdef _MSC_VER
+#if _MSC_VER >= 1700
+///Checks that the return value is used
+#define CHECK_RETVAL_USED _Check_return_
+#else
+///Checks that the return value is used
+#define CHECK_RETVAL_USED
+#endif
+#else
+///Checks that the return value is used
+#define CHECK_RETVAL_USED __attribute__((warn_unused_result))
+#endif
+
 #define UNUSED(X) (void)X
 
 #endif

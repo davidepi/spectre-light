@@ -12,14 +12,14 @@ TEST(OcclusionTester,is_occluded)
 {
     Sphere* sphere = new Sphere;
     Scene scene;
-    unsigned int id = scene.inherit_shape(sphere);
+    scene.inherit_shape(sphere);
     Matrix4 m;
     m.set_identity();
-    scene.add_asset(id, m);
+    scene.inherit_asset(new Asset(sphere,m,1));
     m.set_translation(Vec3(-5.f,0.f,0.f));
-    scene.add_asset(id, m);
+    scene.inherit_asset(new Asset(sphere,m,1));
     m.set_translation(Vec3(5.f,0.f,0.f));
-    scene.add_asset(id, m);
+    scene.inherit_asset(new Asset(sphere,m,1));
     scene.k.buildTree();
     OcclusionTester tester(&scene);
 

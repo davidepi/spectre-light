@@ -9,24 +9,26 @@
 
 TEST(Parser,out)
 {
+    Scene s;
     //set
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/out.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/out.txt",&s);
     EXPECT_EQ(strcmp(driver0.output.c_str(),"filename.jpg"),0);
     delete r0;
     //default
     ConfigDriver driver1;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/resolution_ok.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/resolution_ok.txt",&s);
     EXPECT_EQ(strcmp(driver1.output.c_str(),"out.ppm"),0);
     delete r1;
 }
 
 TEST(Parser,resolution)
 {
+    Scene s;
     //resolution ok
     ConfigDriver driver0;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 0);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver0.width, 1920);
@@ -35,7 +37,7 @@ TEST(Parser,resolution)
     //resolution default
     ConfigDriver driver1;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/out.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/out.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 0);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver1.width, 800);
@@ -44,7 +46,7 @@ TEST(Parser,resolution)
     //not multiple of 32, but height even
     ConfigDriver driver2;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/resolution_even.txt");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/resolution_even.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver2.width, 6016);
@@ -53,7 +55,7 @@ TEST(Parser,resolution)
     //not multiple of 32, but height odd
     ConfigDriver driver3;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/resolution_odd.txt");
+    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/resolution_odd.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver3.width, 1952);
@@ -63,29 +65,31 @@ TEST(Parser,resolution)
 
 TEST(Parser,sampler)
 {
+    Scene s;
     //unset
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt",&s);
     EXPECT_EQ(driver0.sampler_type, SPECTRE_SAMPLER_STRATIFIED);
     delete r0;
     //stratified
     ConfigDriver driver1;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/sampler_stratified.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/sampler_stratified.txt",&s);
     EXPECT_EQ(driver1.sampler_type, SPECTRE_SAMPLER_STRATIFIED);
     delete r1;
     //random
     ConfigDriver driver2;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/sampler_random.txt");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/sampler_random.txt",&s);
     EXPECT_EQ(driver2.sampler_type, SPECTRE_SAMPLER_RANDOM);
     delete r2;
 }
 
 TEST(Parser,spp)
 {
+    Scene s;
     //unset
     ConfigDriver driver0;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 0);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver0.spp, 121);
@@ -93,7 +97,7 @@ TEST(Parser,spp)
     //perfect_square
     ConfigDriver driver1;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/spp_perfect_square.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/spp_perfect_square.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 0);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver1.spp, 900);
@@ -101,7 +105,7 @@ TEST(Parser,spp)
     //round up
     ConfigDriver driver2;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/spp_change_ceil.txt");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/spp_change_ceil.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver2.spp, 36);
@@ -109,7 +113,7 @@ TEST(Parser,spp)
     //round down
     ConfigDriver driver3;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/spp_change_floor.txt");
+    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/spp_change_floor.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver3.spp, 36);
@@ -117,7 +121,7 @@ TEST(Parser,spp)
     //random sampler, not rounding
     ConfigDriver driver4;
     errors_count[NOTICE_INDEX] = 0;
-    Renderer* r4 = driver4.parse(TEST_ASSETS "parser/spp_random.txt");
+    Renderer* r4 = driver4.parse(TEST_ASSETS "parser/spp_random.txt",&s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 0);
     errors_count[NOTICE_INDEX] = 0;
     EXPECT_EQ(driver4.spp, 122);
@@ -126,38 +130,39 @@ TEST(Parser,spp)
 
 TEST(Parser,filter)
 {
+    Scene s;
     //unset
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt",&s);
     EXPECT_EQ(driver0.value0, 0.33f);
     EXPECT_EQ(driver0.value1, 0.33f);
     delete r0;
     //box
     ConfigDriver driver1;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/filter_box.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/filter_box.txt",&s);
     EXPECT_EQ(driver1.filter_type, SPECTRE_FILTER_BOX);
     delete r1;
     //tent
     ConfigDriver driver2;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/filter_tent.txt");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/filter_tent.txt",&s);
     EXPECT_EQ(driver2.filter_type, SPECTRE_FILTER_TENT);
     delete r2;
     //gaussian
     ConfigDriver driver3;
-    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/filter_gaussian_set.txt");
+    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/filter_gaussian_set.txt",&s);
     EXPECT_EQ(driver3.filter_type, SPECTRE_FILTER_GAUSS);
     EXPECT_EQ(driver3.value0, 2.5f);
     delete r3;
     //mitchell
     ConfigDriver driver4;
-    Renderer* r4 = driver4.parse(TEST_ASSETS "parser/filter_mitchell_set.txt");
+    Renderer* r4 = driver4.parse(TEST_ASSETS "parser/filter_mitchell_set.txt",&s);
     EXPECT_EQ(driver4.filter_type, SPECTRE_FILTER_MITCHELL);
     EXPECT_EQ(driver4.value0, 3.f);
     EXPECT_EQ(driver4.value1, 0.f);
     delete r4;
     //lanczos
     ConfigDriver driver5;
-    Renderer* r5 = driver5.parse(TEST_ASSETS "parser/filter_lanczos_set.txt");
+    Renderer* r5 = driver5.parse(TEST_ASSETS "parser/filter_lanczos_set.txt",&s);
     EXPECT_EQ(driver5.filter_type, SPECTRE_FILTER_LANCZOS);
     EXPECT_EQ(driver5.value0, 2.f);
     delete r5;
@@ -165,9 +170,10 @@ TEST(Parser,filter)
 
 TEST(Parser,camera)
 {
+    Scene s;
     //unset
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt",&s);
     EXPECT_EQ(driver0.camera_pos.x,0);
     EXPECT_EQ(driver0.camera_pos.y,0);
     EXPECT_EQ(driver0.camera_pos.z,0);
@@ -182,7 +188,7 @@ TEST(Parser,camera)
     delete r0;
     //orthographic
     ConfigDriver driver1;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/camera_orthographic.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/camera_orthographic.txt",&s);
     EXPECT_EQ(driver1.camera_pos.x,1);
     EXPECT_EQ(driver1.camera_pos.y,0);
     EXPECT_EQ(driver1.camera_pos.z,0);
@@ -196,7 +202,7 @@ TEST(Parser,camera)
     delete r1;
     //perspective
     ConfigDriver driver2;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/camera_perspective.txt");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/camera_perspective.txt",&s);
     EXPECT_EQ(driver2.camera_pos.x,1);
     EXPECT_EQ(driver2.camera_pos.y,2);
     EXPECT_EQ(driver2.camera_pos.z,3);
@@ -211,7 +217,7 @@ TEST(Parser,camera)
     delete r2;
     //panorama
     ConfigDriver driver3;
-    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/camera_panorama.txt");
+    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/camera_panorama.txt",&s);
     EXPECT_EQ(driver3.camera_pos.x,6);
     EXPECT_EQ(driver3.camera_pos.y,5);
     EXPECT_EQ(driver3.camera_pos.z,4);
@@ -227,8 +233,9 @@ TEST(Parser,camera)
 
 TEST(Parser,texture)
 {
+    Scene s;
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/textures.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/textures.txt",&s);
     //check that contains is not broken and returning always true
     EXPECT_FALSE(TexLib.contains("bogus"));
     //check the single texture was added
@@ -262,7 +269,7 @@ TEST(Parser,texture)
     delete r0;
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/texture_non_existent.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/texture_non_existent.txt",&s);
     EXPECT_EQ(errors_count[WARNING_INDEX], 3);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_FALSE(TexLib.contains("I do not exist"));
@@ -272,13 +279,14 @@ TEST(Parser,texture)
 
 TEST(Parser,material_matte)
 {
+    Scene s;
     Bsdf material_t;
-    Sphere s;
+    Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m,1);
+    Asset a(&sphere,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -287,7 +295,7 @@ TEST(Parser,material_matte)
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt",&s);
     EXPECT_TRUE(TexLib.contains("Red"));
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     //TODO: maybe RTTI to get class info?
@@ -304,7 +312,7 @@ TEST(Parser,material_matte)
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS
-                   "parser/material_matte_diffuse_not_found.txt");
+                   "parser/material_matte_diffuse_not_found.txt",&s);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     ASSERT_TRUE(MtlLib.contains("Like default"));
@@ -326,13 +334,14 @@ TEST(Parser,material_matte)
 
 TEST(Parser,material_glossy)
 {
+    Scene s;
     Bsdf material_t;
-    Sphere s;
+    Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m,1);
+    Asset a(&sphere,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -341,7 +350,7 @@ TEST(Parser,material_glossy)
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glossy.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glossy.txt",&s);
     EXPECT_TRUE(TexLib.contains("Red"));
     EXPECT_TRUE(TexLib.contains("Green"));
     EXPECT_TRUE(TexLib.contains("Blue"));
@@ -392,7 +401,7 @@ TEST(Parser,material_glossy)
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS
-    "parser/material_glossy_diffuse_not_found.txt");
+    "parser/material_glossy_diffuse_not_found.txt",&s);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(MtlLib.contains("DNF"));
@@ -400,7 +409,7 @@ TEST(Parser,material_glossy)
     ConfigDriver driver2;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r2 = driver2.parse(TEST_ASSETS
-    "parser/material_glossy_specular_not_found.txt");
+    "parser/material_glossy_specular_not_found.txt",&s);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(MtlLib.contains("SNF"));
@@ -414,15 +423,16 @@ TEST(Parser,material_glossy)
 
 TEST(Parser,material_glass)
 {
+    Scene s;
     Bsdf material_t;
-    Sphere s;
+    Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
     float pdf;
     bool spec;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m,1);
+    Asset a(&sphere,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -431,7 +441,7 @@ TEST(Parser,material_glass)
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glass.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glass.txt",&s);
     EXPECT_TRUE(TexLib.contains("Red"));
     EXPECT_TRUE(TexLib.contains("Green"));
     EXPECT_TRUE(TexLib.contains("Blue"));
@@ -482,7 +492,7 @@ TEST(Parser,material_glass)
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS
-    "parser/material_glass_diffuse_not_found.txt");
+    "parser/material_glass_diffuse_not_found.txt",&s);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(MtlLib.contains("DNF"));
@@ -490,7 +500,7 @@ TEST(Parser,material_glass)
     ConfigDriver driver2;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r2 = driver2.parse(TEST_ASSETS
-    "parser/material_glass_specular_not_found.txt");
+    "parser/material_glass_specular_not_found.txt",&s);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_TRUE(MtlLib.contains("SNF"));
@@ -504,13 +514,14 @@ TEST(Parser,material_glass)
 
 TEST(Parser,material_metal)
 {
+    Scene s;
     Bsdf material_t;
-    Sphere s;
+    Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m,1);
+    Asset a(&sphere,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
     HitPoint hit;
     float distance = FLT_MAX;
@@ -521,7 +532,7 @@ TEST(Parser,material_metal)
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
 
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_metal.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_metal.txt",&s);
     errors_count[WARNING_INDEX] = 0;
     ASSERT_TRUE(MtlLib.contains("Silver"));
     ASSERT_TRUE(MtlLib.contains("Aluminium"));
@@ -606,21 +617,22 @@ TEST(Parser,material_metal)
 
 TEST(Parser,children)
 {
+    Scene s;
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/children.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/children.txt",&s);
     EXPECT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     MtlLib.clear();
     delete r0;
     //children not existent
     ConfigDriver driver1;
     errors_count[ERROR_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/children_absolute.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/children_absolute.txt",&s);
     EXPECT_EQ(errors_count[ERROR_INDEX],1);
     errors_count[ERROR_INDEX] = 0;
     delete r1;
     //not recursive children
     ConfigDriver driver2;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/children_recursive.txt");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/children_recursive.txt",&s);
     EXPECT_TRUE(MtlLib.contains("Red mat")); //directly parsed
     EXPECT_FALSE(MtlLib.contains("Red Oren-Nayar")); //recursively parsed
     delete r2;
@@ -629,10 +641,11 @@ TEST(Parser,children)
 
 TEST(Parser,shape)
 {
+    Scene s;
     //existing relative path + non existing absolute path
     ConfigDriver driver0;
     errors_count[ERROR_INDEX] = 0; //for the non-existing root folder obj
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt");
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt",&s);
     EXPECT_NE(driver0.shapes.find("SquarePyr"),driver0.shapes.end());
     EXPECT_EQ(errors_count[ERROR_INDEX],1);
     errors_count[ERROR_INDEX] = 0;
@@ -641,7 +654,7 @@ TEST(Parser,shape)
     //wrong extension
     ConfigDriver driver1;
     errors_count[ERROR_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt");
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt",&s);
     EXPECT_EQ(errors_count[ERROR_INDEX],1);
     errors_count[ERROR_INDEX] = 0;
     EXPECT_EQ(driver1.shapes.find("SquarePyr"),driver1.shapes.end());
@@ -649,7 +662,7 @@ TEST(Parser,shape)
     //duplicate
     ConfigDriver driver2;
     errors_count[WARNING_INDEX] = 0;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/shape_duplicate.txt");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/shape_duplicate.txt",&s);
     EXPECT_EQ(errors_count[WARNING_INDEX],1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_NE(driver2.shapes.find("SquarePyr"),driver2.shapes.end());
