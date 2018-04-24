@@ -650,9 +650,9 @@ TEST(Parser,shape)
     Scene s2;
     //existing relative path + non existing absolute path
     ConfigDriver driver0;
+    EXPECT_EQ(s0.size_shapes(),0);
     errors_count[ERROR_INDEX] = 0; //for the non-existing root folder obj
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt",&s0);
-    EXPECT_NE(driver0.shapes.find("SquarePyr"),driver0.shapes.end());
     EXPECT_EQ(errors_count[ERROR_INDEX],1);
     EXPECT_EQ(s0.size_shapes(), 1); //only sphere should be added
     errors_count[ERROR_INDEX] = 0;
@@ -661,21 +661,22 @@ TEST(Parser,shape)
     //wrong extension
     ConfigDriver driver1;
     errors_count[ERROR_INDEX] = 0;
+    EXPECT_EQ(s1.size_shapes(),0);
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt",&s1);
     EXPECT_EQ(errors_count[ERROR_INDEX],1);
     errors_count[ERROR_INDEX] = 0;
     EXPECT_EQ(driver1.shapes.find("SquarePyr"),driver1.shapes.end());
-    EXPECT_EQ(s0.size_shapes(), 1); //only sphere should be added
+    EXPECT_EQ(s1.size_shapes(), 1); //only sphere should be added
     delete r1;
 
     //duplicate
     ConfigDriver driver2;
     errors_count[WARNING_INDEX] = 0;
+    EXPECT_EQ(s2.size_shapes(),0);
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/shape_duplicate.txt",&s2);
     EXPECT_EQ(errors_count[WARNING_INDEX],1);
     errors_count[WARNING_INDEX] = 0;
-    EXPECT_NE(driver2.shapes.find("SquarePyr"),driver2.shapes.end());
-    EXPECT_EQ(s0.size_shapes(), 1); //only sphere should be added
+    EXPECT_EQ(s2.size_shapes(), 1); //only sphere should be added
     delete r2;
 }
 
@@ -744,8 +745,62 @@ TEST(Parser,world)
     Scene s1;
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
-    Renderer* r1 = driver0.parse(TEST_ASSETS "parser/world_not_found.txt",&s1);
-    EXPECT_EQ(errors_count[WARNING_INDEX],1);//material not found
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/world_not_found.txt",&s1);
+    EXPECT_EQ(errors_count[WARNING_INDEX],1);
+    errors_count[WARNING_INDEX] = 0;
+    delete r1;
+}
+
+TEST(Parser,light)
+{
+    HitPoint hp;
+    Ray ray;
+    bool res;
+    Spectrum emitted;
+
+    Scene s0;
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/light.txt",&s0);
+    EXPECT_EQ(s0.size_shapes(), 2);
+    EXPECT_EQ(s0.size_assets(), 4);
+    EXPECT_EQ(driver0.deferred_meshes.size(), 0);
+    s0.k.buildTree();
+
+    //test position changed for last sphere
+    ray = Ray(Point3(0,0,0),Vec3(0,0,1));
+    res = s0.k.intersect(&ray,&hp);
+    ASSERT_TRUE(res);
+    ASSERT_TRUE(hp.asset_h->is_light());
+    emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
+    EXPECT_NEAR(emitted.w[0],0.95047003,1e-5);
+    EXPECT_NEAR(emitted.w[1],1.00000012,1e-5);
+    EXPECT_NEAR(emitted.w[2],1.08882999,1e-5);
+
+    ray = Ray(Point3(5,5,5),Vec3(0,0,1));
+    res = s0.k.intersect(&ray,&hp);
+    ASSERT_TRUE(res);
+    ASSERT_TRUE(hp.asset_h->is_light());
+    emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
+    EXPECT_NEAR(emitted.w[0],0.92846781,1e-5);
+    EXPECT_NEAR(emitted.w[1],0.940558672,1e-5);
+    EXPECT_NEAR(emitted.w[2],0.694520294,1e-5);
+
+    ray = Ray(Point3(10,10,10),Vec3(0,0,1));
+    res = s0.k.intersect(&ray,&hp);
+    ASSERT_TRUE(res);
+    ASSERT_TRUE(hp.asset_h->is_light());
+    emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
+    EXPECT_NEAR(emitted.w[0],0.359375685,1e-5);
+    EXPECT_NEAR(emitted.w[1],0.716016769,1e-5);
+    EXPECT_NEAR(emitted.w[2],0.12213511,1e-5);
+    delete r0;
+
+    //not found
+    Scene s1;
+    ConfigDriver driver1;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/light_not_found.txt",&s1);
+    EXPECT_EQ(errors_count[WARNING_INDEX],1);
     errors_count[WARNING_INDEX] = 0;
     delete r1;
 }

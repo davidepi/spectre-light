@@ -813,265 +813,265 @@ namespace yy {
 #line 814 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 60:
+  case 62:
 #line 187 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.temperature = yystack_[0].value.as< unsigned int > ();}
 #line 820 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 61:
+  case 63:
 #line 188 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.color = yystack_[0].value.as< Vec3 > ();}
 #line 826 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 62:
+  case 64:
 #line 192 "config_parser.y" // lalr1.cc:859
     {driver.tex_src=yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);driver.load_texture_single();}
 #line 832 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 63:
+  case 65:
 #line 193 "config_parser.y" // lalr1.cc:859
     {driver.tex_src=yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);driver.load_texture_single();}
 #line 838 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 64:
+  case 66:
 #line 194 "config_parser.y" // lalr1.cc:859
     {driver.tex_src = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);driver.load_texture_single();}
 #line 844 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 65:
+  case 67:
 #line 195 "config_parser.y" // lalr1.cc:859
     {driver.tex_color=yystack_[1].value.as< Vec3 > ();driver.load_texture_uniform();}
 #line 850 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 66:
+  case 68:
 #line 196 "config_parser.y" // lalr1.cc:859
     {driver.tex_color=yystack_[0].value.as< Vec3 > ();driver.load_texture_uniform();}
 #line 856 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 67:
+  case 69:
 #line 197 "config_parser.y" // lalr1.cc:859
     {driver.tex_color=yystack_[0].value.as< Vec3 > ();driver.load_texture_uniform();}
 #line 862 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 70:
+  case 72:
 #line 202 "config_parser.y" // lalr1.cc:859
     {driver.tex_name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
 #line 868 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 72:
+  case 74:
 #line 208 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.name = yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);}
 #line 874 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 73:
+  case 75:
 #line 209 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
 #line 880 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 74:
+  case 76:
 #line 210 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.name = yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);}
 #line 886 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 75:
+  case 77:
 #line 211 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
 #line 892 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 78:
+  case 80:
 #line 216 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.type = MATTE;}
 #line 898 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 79:
+  case 81:
 #line 217 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.type = GLOSSY;}
 #line 904 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 80:
+  case 82:
 #line 218 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.type = METAL;}
 #line 910 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 81:
+  case 83:
 #line 219 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.type = GLASS;}
 #line 916 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 82:
+  case 84:
 #line 220 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.ior = cauchy(yystack_[0].value.as< float > (),0);}
 #line 922 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 83:
+  case 85:
 #line 221 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.ior = cauchy(yystack_[0].value.as< Vec2 > ().x,yystack_[0].value.as< Vec2 > ().y);}
 #line 928 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 84:
+  case 86:
 #line 222 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.ior = cauchy(yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z);}
 #line 934 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 85:
+  case 87:
 #line 223 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.ior = sellmeier(yystack_[1].value.as< Vec3 > ().x,yystack_[1].value.as< Vec3 > ().y,yystack_[1].value.as< Vec3 > ().z,yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z);}
 #line 940 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 86:
+  case 88:
 #line 224 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.rough_x = yystack_[0].value.as< float > ();}
 #line 946 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 87:
+  case 89:
 #line 225 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.rough_y = yystack_[0].value.as< float > ();}
 #line 952 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 88:
+  case 90:
 #line 226 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.dist = SPECTRE_DIST_BLINN;}
 #line 958 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 89:
+  case 91:
 #line 227 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.dist = SPECTRE_DIST_BECKMANN;}
 #line 964 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 90:
+  case 92:
 #line 228 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.dist = SPECTRE_DIST_GGX;}
 #line 970 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 91:
+  case 93:
 #line 229 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.diffuse = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
 #line 976 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 92:
+  case 94:
 #line 230 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.specular = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
 #line 982 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 93:
+  case 95:
 #line 231 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.elem = yystack_[0].value.as< metal_t > ();}
 #line 988 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 95:
+  case 97:
 #line 239 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_SILVER; }
 #line 994 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 96:
+  case 98:
 #line 240 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_ALUMINIUM; }
 #line 1000 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 97:
+  case 99:
 #line 241 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_GOLD; }
 #line 1006 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 98:
+  case 100:
 #line 242 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_COPPER; }
 #line 1012 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 99:
+  case 101:
 #line 243 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_IRON; }
 #line 1018 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 100:
+  case 102:
 #line 244 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_MERCURY; }
 #line 1024 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 101:
+  case 103:
 #line 245 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_LEAD; }
 #line 1030 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 102:
+  case 104:
 #line 246 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_PLATINUM; }
 #line 1036 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 103:
+  case 105:
 #line 247 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_TUNGSTEN; }
 #line 1042 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 104:
+  case 106:
 #line 252 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< Vec3 > () = Vec3(yystack_[5].value.as< float > (),yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
 #line 1048 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 105:
+  case 107:
 #line 256 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< Vec2 > () = Vec2(yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
 #line 1054 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 106:
+  case 108:
 #line 260 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< float > () = yystack_[0].value.as< float > ();}
 #line 1060 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 107:
+  case 109:
 #line 261 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< float > () = (float)yystack_[0].value.as< int > ();}
 #line 1066 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 108:
+  case 110:
 #line 265 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< int > () = yystack_[0].value.as< unsigned int > ();}
 #line 1072 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
-  case 109:
+  case 111:
 #line 266 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< int > () = yystack_[0].value.as< int > ();}
 #line 1078 "config_parser.tab.cc" // lalr1.cc:859
@@ -1333,36 +1333,36 @@ namespace yy {
   }
 
 
-  const short int ConfigParser::yypact_ninf_ = -162;
+  const short int ConfigParser::yypact_ninf_ = -164;
 
   const signed char ConfigParser::yytable_ninf_ = -1;
 
   const short int
   ConfigParser::yypact_[] =
   {
-     158,  -162,     7,    16,    24,    49,    63,    65,    74,    82,
-      94,   101,   105,   110,   147,  -162,    28,    61,   131,    98,
-      69,   135,   136,    77,   141,   145,     2,     3,  -162,  -162,
-    -162,  -162,    26,  -162,  -162,  -162,    76,     6,  -162,   115,
-     115,    41,  -162,    -2,  -162,  -162,   156,   157,    75,  -162,
-    -162,   161,   167,   168,     8,  -162,  -162,   172,   184,   189,
-     193,   194,   109,  -162,   195,   192,    38,   -18,   205,  -162,
-     197,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-      57,  -162,  -162,   219,   220,   221,   222,     5,  -162,    78,
-     151,  -162,  -162,   149,    -1,    -1,  -162,  -162,    99,   223,
-     223,   223,    -1,  -162,  -162,   153,  -162,  -162,   225,   227,
-     228,   229,    38,  -162,   230,   231,    13,  -162,  -162,   133,
-     162,   164,   165,   -29,   142,     0,   169,   166,  -162,   234,
-    -162,   170,   223,   171,  -162,   237,   239,  -162,  -162,  -162,
-    -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,
-    -162,  -162,  -162,  -162,    -1,  -162,  -162,  -162,  -162,  -162,
-     223,   223,     1,   173,  -162,   175,   223,  -162,  -162,  -162,
-    -162,  -162,  -162,    95,  -162,  -162,  -162,  -162,  -162,  -162,
-    -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,    -1,
-    -162,   223,  -162,  -162,  -162,   174,  -162,     4,     4,   223,
-     176,   240,  -162,  -162,  -162,  -162,  -162,  -162,  -162,    95,
-     242,  -162,    95,     4,     4,  -162,  -162,    -1,    -1,    95,
-     243,    40,    -1,  -162,   247,  -162
+     160,  -164,    33,    41,    50,    52,    67,    71,    74,    76,
+      79,    85,    91,    94,   149,  -164,   -15,    29,    92,    20,
+      34,   100,   101,    30,   103,   104,     2,     3,  -164,  -164,
+    -164,  -164,    18,  -164,  -164,  -164,     5,    61,  -164,    77,
+      77,    42,  -164,    -2,  -164,  -164,   112,   116,    16,  -164,
+    -164,   119,   135,   137,     8,  -164,  -164,   138,   140,   141,
+     146,   147,   165,  -164,   150,   111,    11,   169,   145,  -164,
+     153,   158,   159,   163,   176,   177,   178,   180,   191,   198,
+      63,  -164,  -164,   203,   205,   219,   216,     6,  -164,   154,
+     155,  -164,  -164,   170,    55,    55,  -164,  -164,   115,   222,
+     222,   222,    55,  -164,  -164,   156,  -164,  -164,   224,   225,
+     227,   228,    11,  -164,   229,   230,  -164,   169,  -164,  -164,
+     -35,   161,   164,   162,    86,   152,     0,   166,   167,  -164,
+     234,  -164,   168,   222,   171,  -164,   236,   239,  -164,  -164,
+    -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,
+    -164,  -164,  -164,  -164,  -164,    55,  -164,  -164,  -164,  -164,
+    -164,   222,   222,     1,   172,  -164,   173,   222,  -164,  -164,
+    -164,  -164,  -164,  -164,    97,  -164,  -164,  -164,  -164,  -164,
+    -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,  -164,
+      55,  -164,   222,  -164,  -164,  -164,   174,  -164,     4,     4,
+     222,   175,   238,  -164,  -164,  -164,  -164,  -164,  -164,  -164,
+      97,   241,  -164,    97,     4,     4,  -164,  -164,    55,    55,
+      97,   242,    27,    55,  -164,   246,  -164
   };
 
   const unsigned char
@@ -1374,103 +1374,101 @@ namespace yy {
        4,    10,     0,     7,     8,     9,     0,     0,    12,     0,
        0,     0,    17,     0,    15,    24,     0,     0,     0,    21,
       34,     0,     0,     0,     0,    26,    44,     0,     0,     0,
-       0,     0,     0,    36,     0,     0,    46,     0,     0,    94,
+       0,     0,     0,    36,     0,     0,    46,    57,     0,    96,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    77,    71,     0,     0,     0,     0,     0,    69,     0,
+       0,    79,    73,     0,     0,     0,     0,     0,    71,     0,
        0,     5,    20,     0,     0,     0,     6,    25,     0,     0,
        0,     0,     0,    11,    35,     0,    13,    55,     0,     0,
-       0,     0,    45,    48,     0,     0,    56,    59,    14,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    18,     0,
-      76,     0,     0,     0,    16,     0,     0,    68,    22,    23,
-      27,    28,    29,    30,    31,   108,   109,   106,    32,   107,
-      33,    37,    38,    39,     0,    40,    41,    42,    43,    49,
-       0,     0,     0,     0,    47,     0,     0,    57,    58,    81,
-      79,    78,    80,    75,    87,    91,    89,    88,    90,    95,
-      96,    97,    98,    99,   100,   101,   102,   103,    93,     0,
-      82,    84,    83,    86,    92,     0,    70,    67,    64,     0,
-       0,     0,    50,    51,    53,    52,    54,    60,    61,    72,
-       0,    85,    73,    65,    62,    66,    63,     0,     0,    74,
-       0,     0,     0,   105,     0,   104
+       0,     0,    45,    48,     0,     0,    61,    56,    60,    14,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    18,
+       0,    78,     0,     0,     0,    16,     0,     0,    70,    22,
+      23,    27,    28,    29,    30,    31,   110,   111,   108,    32,
+     109,    33,    37,    38,    39,     0,    40,    41,    42,    43,
+      49,     0,     0,     0,     0,    47,     0,     0,    58,    59,
+      83,    81,    80,    82,    77,    89,    93,    91,    90,    92,
+      97,    98,    99,   100,   101,   102,   103,   104,   105,    95,
+       0,    84,    86,    85,    88,    94,     0,    72,    69,    66,
+       0,     0,     0,    50,    51,    53,    52,    54,    62,    63,
+      74,     0,    87,    75,    67,    64,    68,    65,     0,     0,
+      76,     0,     0,     0,   107,     0,   106
   };
 
   const short int
   ConfigParser::yypgoto_[] =
   {
-    -162,  -162,   241,  -162,   206,  -162,   202,  -162,   196,  -162,
-    -162,   224,   -79,  -162,  -162,   143,  -162,   -61,   -83,  -162,
-    -161,   -80,  -162,   -98,  -162,   -94,  -162
+    -164,  -164,   240,  -164,   207,  -164,   199,  -164,   194,  -164,
+    -164,   217,   -55,  -164,  -164,   142,  -164,  -131,   -83,  -164,
+    -163,   -80,  -164,   -98,  -164,   -94,  -164
   };
 
   const short int
   ConfigParser::yydefgoto_[] =
   {
       -1,    14,    15,    48,    49,    54,    55,    62,    63,    65,
-     112,    66,   113,    68,   116,   117,    86,    87,    88,    79,
-      80,    81,   188,   155,   192,   148,   149
+     112,    66,   113,    68,   117,   118,    86,    87,    88,    79,
+      80,    81,   189,   156,   193,   149,   150
   };
 
   const unsigned char
   ConfigParser::yytable_[] =
   {
-     130,   150,   156,   157,   137,   189,   154,    82,   158,    41,
-      43,    16,   209,    82,    82,    56,    96,    50,   176,   177,
-      17,   114,   107,   178,    57,   115,    51,   191,    18,    58,
-      59,    60,    61,   164,   197,    45,   108,   167,    83,    46,
-      47,    84,    52,    53,    83,    83,   223,   107,   135,   222,
-      69,   219,   114,    19,   109,   110,   115,   111,    85,    70,
-     201,   108,   202,   203,   205,   136,    69,    20,   208,    21,
-     145,   146,   147,   190,   204,    70,    42,    44,    22,   109,
-     110,    71,   111,    91,    45,    50,    23,    72,    46,    47,
-      73,    74,    75,   211,    51,   210,    76,   129,    24,    77,
-      78,   215,    30,    72,    69,    25,    73,    74,    75,    26,
-      52,    53,    76,    70,    27,    77,    78,   103,    56,   151,
-     152,   153,    31,   220,   221,    33,    34,    57,   224,   130,
-     137,   137,    58,    59,    60,    61,   213,   214,    32,   130,
-      35,    72,    36,    37,    73,    74,    75,    28,    39,   138,
-      76,    38,    40,    77,    78,    64,     1,     2,     3,     4,
-      89,    90,     5,     6,     7,    93,     8,     1,     2,     3,
-       4,    94,    95,     5,     6,     7,    98,     8,   140,   141,
-     142,   143,   144,     9,    10,    11,   169,   170,    99,   171,
-     172,    12,    13,   100,     9,    10,    11,   101,   102,   105,
-     106,   119,    12,    13,   179,   180,   181,   182,   183,   184,
-     185,   186,   187,   118,   120,   121,   122,   123,   124,   125,
-     126,   127,   139,   131,   132,   133,   128,   159,   154,   160,
-     134,   161,   162,   163,   165,   166,   173,   174,   195,   175,
-     194,   199,   193,   200,   196,   198,   207,   206,   212,   217,
-     216,   218,   222,   225,    92,    29,    97,     0,   104,   168,
-       0,     0,     0,     0,    67
+     131,   151,   157,   158,   138,   190,   155,    82,   159,    41,
+      43,   210,   116,    82,    50,    82,    96,    50,   170,   171,
+     107,   172,   173,    51,    91,    45,    51,    45,   192,    46,
+      47,    46,    47,   224,   108,   198,   223,    16,    83,    52,
+      53,    84,    52,    53,    83,    17,    83,    33,    34,   136,
+     220,    69,   109,   110,    18,   111,    19,   165,    85,    30,
+      70,   202,   168,   203,   204,   206,   137,   214,   215,   209,
+      56,    20,    69,   191,   205,    21,    42,    44,    22,    57,
+      23,    70,    71,    24,    58,    59,    60,    61,    72,    25,
+      31,    73,    74,    75,   212,    26,   211,    76,    27,    32,
+      77,    78,   216,   130,    38,    35,    69,    36,    37,    72,
+      39,    40,    73,    74,    75,    70,    89,    64,    76,   106,
+      90,    77,    78,    93,   221,   222,   146,   147,   148,   225,
+     131,   138,   138,   177,   178,   152,   153,   154,   179,    94,
+     131,    95,    98,    72,    99,   100,    73,    74,    75,    28,
+     101,   102,    76,   119,   105,    77,    78,   120,     1,     2,
+       3,     4,   121,   122,     5,     6,     7,   123,     8,     1,
+       2,     3,     4,   103,    56,     5,     6,     7,   107,     8,
+     124,   125,   126,    57,   127,     9,    10,    11,    58,    59,
+      60,    61,   108,    12,    13,   128,     9,    10,    11,   141,
+     142,   143,   144,   145,    12,    13,   129,   132,   114,   133,
+     109,   110,   115,   111,   180,   181,   182,   183,   184,   185,
+     186,   187,   188,   134,   135,   139,   140,   155,   161,   162,
+     160,   163,   164,   166,   167,   174,   176,   175,   196,   194,
+     200,   195,   197,   201,   208,   199,   207,   218,   213,   217,
+     219,   223,   226,    97,    29,    92,   104,    67,     0,   169
   };
 
   const short int
   ConfigParser::yycheck_[] =
   {
       80,    95,   100,   101,    87,     5,     5,     9,   102,     7,
-       7,     4,   173,     9,     9,     9,     8,     9,    47,    48,
-       4,    39,     9,    52,    18,    43,    18,   125,     4,    23,
-      24,    25,    26,   112,   132,     9,    23,   116,    40,    13,
-      14,    43,    34,    35,    40,    40,     6,     9,    43,     9,
-       9,   212,    39,     4,    41,    42,    43,    44,    60,    18,
-     154,    23,   160,   161,   162,    60,     9,     4,   166,     4,
-      71,    72,    73,    73,    73,    18,    74,    74,     4,    41,
-      42,    40,    44,     8,     9,     9,     4,    46,    13,    14,
-      49,    50,    51,   191,    18,   189,    55,    40,     4,    58,
-      59,   199,    74,    46,     9,     4,    49,    50,    51,     4,
-      34,    35,    55,    18,     4,    58,    59,     8,     9,    20,
-      21,    22,    61,   217,   218,    27,    28,    18,   222,   209,
-     213,   214,    23,    24,    25,    26,   197,   198,     7,   219,
-      71,    46,     7,     7,    49,    50,    51,     0,     7,    71,
-      55,    74,     7,    58,    59,    40,     9,    10,    11,    12,
-       4,     4,    15,    16,    17,     4,    19,     9,    10,    11,
-      12,     4,     4,    15,    16,    17,     4,    19,    29,    30,
-      31,    32,    33,    36,    37,    38,    53,    54,     4,    56,
-      57,    44,    45,     4,    36,    37,    38,     4,     4,     4,
-       8,     4,    44,    45,    62,    63,    64,    65,    66,    67,
-      68,    69,    70,     8,     4,     4,     4,     4,     4,     4,
-       4,     4,    71,     4,     4,     4,     8,    74,     5,     4,
-       8,     4,     4,     4,     4,     4,    74,    73,     4,    74,
-      74,     4,    73,     4,    74,    74,    71,    74,    74,     9,
-      74,     9,     9,     6,    48,    14,    54,    -1,    62,   116,
-      -1,    -1,    -1,    -1,    40
+       7,   174,    67,     9,     9,     9,     8,     9,    53,    54,
+       9,    56,    57,    18,     8,     9,    18,     9,   126,    13,
+      14,    13,    14,     6,    23,   133,     9,     4,    40,    34,
+      35,    43,    34,    35,    40,     4,    40,    27,    28,    43,
+     213,     9,    41,    42,     4,    44,     4,   112,    60,    74,
+      18,   155,   117,   161,   162,   163,    60,   198,   199,   167,
+       9,     4,     9,    73,    73,     4,    74,    74,     4,    18,
+       4,    18,    40,     4,    23,    24,    25,    26,    46,     4,
+      61,    49,    50,    51,   192,     4,   190,    55,     4,     7,
+      58,    59,   200,    40,    74,    71,     9,     7,     7,    46,
+       7,     7,    49,    50,    51,    18,     4,    40,    55,     8,
+       4,    58,    59,     4,   218,   219,    71,    72,    73,   223,
+     210,   214,   215,    47,    48,    20,    21,    22,    52,     4,
+     220,     4,     4,    46,     4,     4,    49,    50,    51,     0,
+       4,     4,    55,     8,     4,    58,    59,     4,     9,    10,
+      11,    12,     4,     4,    15,    16,    17,     4,    19,     9,
+      10,    11,    12,     8,     9,    15,    16,    17,     9,    19,
+       4,     4,     4,    18,     4,    36,    37,    38,    23,    24,
+      25,    26,    23,    44,    45,     4,    36,    37,    38,    29,
+      30,    31,    32,    33,    44,    45,     8,     4,    39,     4,
+      41,    42,    43,    44,    62,    63,    64,    65,    66,    67,
+      68,    69,    70,     4,     8,    71,    71,     5,     4,     4,
+      74,     4,     4,     4,     4,    74,    74,    73,     4,    73,
+       4,    74,    74,     4,    71,    74,    74,     9,    74,    74,
+       9,     9,     6,    54,    14,    48,    62,    40,    -1,   117
   };
 
   const unsigned char
@@ -1487,18 +1485,18 @@ namespace yy {
       95,    96,     9,    40,    43,    60,    91,    92,    93,     4,
        4,     8,    79,     4,     4,     4,     8,    81,     4,     4,
        4,     4,     4,     8,    83,     4,     8,     9,    23,    41,
-      42,    44,    85,    87,    39,    43,    89,    90,     8,     4,
-       4,     4,     4,     4,     4,     4,     4,     4,     8,    40,
-      96,     4,     4,     4,     8,    43,    60,    93,    71,    71,
-      29,    30,    31,    32,    33,    71,    72,    73,   100,   101,
-     100,    20,    21,    22,     5,    98,    98,    98,   100,    74,
-       4,     4,     4,     4,    87,     4,     4,    87,    90,    53,
-      54,    56,    57,    74,    73,    74,    47,    48,    52,    62,
-      63,    64,    65,    66,    67,    68,    69,    70,    97,     5,
-      73,    98,    99,    73,    74,     4,    74,    98,    74,     4,
-       4,   100,    98,    98,    73,    98,    74,    71,    98,    95,
-     100,    98,    74,    92,    92,    98,    74,     9,     9,    95,
-     100,   100,     9,     6,   100,     6
+      42,    44,    85,    87,    39,    43,    87,    89,    90,     8,
+       4,     4,     4,     4,     4,     4,     4,     4,     4,     8,
+      40,    96,     4,     4,     4,     8,    43,    60,    93,    71,
+      71,    29,    30,    31,    32,    33,    71,    72,    73,   100,
+     101,   100,    20,    21,    22,     5,    98,    98,    98,   100,
+      74,     4,     4,     4,     4,    87,     4,     4,    87,    90,
+      53,    54,    56,    57,    74,    73,    74,    47,    48,    52,
+      62,    63,    64,    65,    66,    67,    68,    69,    70,    97,
+       5,    73,    98,    99,    73,    74,     4,    74,    98,    74,
+       4,     4,   100,    98,    98,    73,    98,    74,    71,    98,
+      95,   100,    98,    74,    92,    92,    98,    74,     9,     9,
+      95,   100,   100,     9,     6,   100,     6
   };
 
   const unsigned char
@@ -1509,12 +1507,13 @@ namespace yy {
       78,    78,    79,    79,    79,    80,    80,    81,    81,    81,
       81,    81,    81,    81,    81,    82,    82,    83,    83,    83,
       83,    83,    83,    83,    83,    84,    84,    85,    85,    86,
-      87,    87,    87,    87,    87,    87,    88,    89,    89,    89,
-      90,    90,    91,    91,    91,    91,    91,    91,    92,    92,
-      93,    93,    94,    94,    94,    94,    95,    95,    96,    96,
+      87,    87,    87,    87,    87,    87,    88,    88,    89,    89,
+      89,    89,    90,    90,    91,    91,    91,    91,    91,    91,
+      92,    92,    93,    93,    94,    94,    94,    94,    95,    95,
       96,    96,    96,    96,    96,    96,    96,    96,    96,    96,
-      96,    96,    96,    96,    96,    97,    97,    97,    97,    97,
-      97,    97,    97,    97,    98,    99,   100,   100,   101,   101
+      96,    96,    96,    96,    96,    96,    96,    97,    97,    97,
+      97,    97,    97,    97,    97,    97,    98,    99,   100,   100,
+     101,   101
   };
 
   const unsigned char
@@ -1525,12 +1524,13 @@ namespace yy {
        2,     1,     3,     3,     1,     2,     1,     3,     3,     3,
        3,     3,     3,     3,     1,     2,     1,     3,     3,     3,
        3,     3,     3,     3,     1,     2,     1,     2,     1,     3,
-       3,     3,     3,     3,     3,     1,     2,     2,     2,     1,
-       3,     3,     4,     4,     3,     4,     4,     3,     2,     1,
-       3,     1,     4,     4,     5,     3,     2,     1,     3,     3,
-       3,     3,     3,     3,     3,     4,     3,     3,     3,     3,
-       3,     3,     3,     3,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     7,     5,     1,     1,     1,     1
+       3,     3,     3,     3,     3,     1,     2,     1,     2,     2,
+       1,     1,     3,     3,     4,     4,     3,     4,     4,     3,
+       2,     1,     3,     1,     4,     4,     5,     3,     2,     1,
+       3,     3,     3,     3,     3,     3,     3,     4,     3,     3,
+       3,     3,     3,     3,     3,     3,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     7,     5,     1,     1,
+       1,     1
   };
 
 
@@ -1582,12 +1582,13 @@ namespace yy {
      141,   141,   143,   144,   145,   148,   148,   150,   151,   152,
      153,   154,   155,   156,   157,   160,   160,   162,   163,   164,
      165,   166,   167,   168,   169,   172,   172,   173,   173,   174,
-     176,   177,   178,   179,   180,   181,   184,   185,   185,   185,
-     187,   188,   192,   193,   194,   195,   196,   197,   200,   200,
-     202,   203,   208,   209,   210,   211,   214,   214,   216,   217,
-     218,   219,   220,   221,   222,   223,   224,   225,   226,   227,
-     228,   229,   230,   231,   232,   239,   240,   241,   242,   243,
-     244,   245,   246,   247,   251,   256,   260,   261,   265,   266
+     176,   177,   178,   179,   180,   181,   184,   184,   185,   185,
+     185,   185,   187,   188,   192,   193,   194,   195,   196,   197,
+     200,   200,   202,   203,   208,   209,   210,   211,   214,   214,
+     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
+     226,   227,   228,   229,   230,   231,   232,   239,   240,   241,
+     242,   243,   244,   245,   246,   247,   251,   256,   260,   261,
+     265,   266
   };
 
   // Print the state stack on the debug stream.
@@ -1622,7 +1623,7 @@ namespace yy {
 
 
 } // yy
-#line 1626 "config_parser.tab.cc" // lalr1.cc:1167
+#line 1627 "config_parser.tab.cc" // lalr1.cc:1167
 #line 269 "config_parser.y" // lalr1.cc:1168
 
 

@@ -181,8 +181,8 @@ world_stmt
 | COMMA
 ;
 
-light_obj: world_name light_rec;
-light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt;
+light_obj: world_name light_rec | world_name;
+light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt | world_stmt;
 light_stmt
 : TEMPERATURE COLON UINT {driver.cur_mesh.temperature = $3;}
 | COLOR COLON vector {driver.cur_mesh.color = $3;}

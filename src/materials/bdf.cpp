@@ -202,11 +202,14 @@ SingleBRDF::SingleBRDF()
     SingleBRDF::bdfs[0] = (Bdf*)new Lambertian();
     //to avoid SEGFAULT, default texture is completely white
     SingleBRDF::textures[0] = TexLib.get_default();
+    count = 1;
 }
 
 SingleBRDF::~SingleBRDF()
 {
     delete SingleBRDF::bdfs[0];
+    count = 0; //otherwise then the Bsdf constructor will be called and attempt
+               //a deletion of bdfs[0] again
 }
 
 void SingleBRDF::inherit_bdf(Bdf* addme, const Texture* spectrum)

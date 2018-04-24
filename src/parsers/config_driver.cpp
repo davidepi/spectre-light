@@ -102,11 +102,19 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
             delete shape_it->second.mesh;
         else
             current_scene->inherit_shape(shape_it->second.mesh);
-        delete shape_it->second.materials;
-        delete shape_it->second.association;
+        free(shape_it->second.materials);
+        free(shape_it->second.association);
         shape_it++;
     }
-
+    
+    //delete everything else used for parsing
+    children.clear();
+    deferred_materials.clear();
+    shapes.clear();
+    deferred_shapes.clear();
+    deferred_meshes.clear();
+    used_shapes.clear();
+    
     return r;
 }
 
@@ -631,9 +639,7 @@ void ConfigDriver::build_meshes()
                 associations = (unsigned char*)malloc
                         (mesh_o.mesh->get_faces_number());
                 memset(associations, 0, mesh_o.mesh->get_faces_number());
-                current_asset->set_materials(materials,
-                                             1,
-                                             associations);
+                current_asset->set_materials(materials, 1, associations);
                 free(associations);
             }
             current_scene->inherit_asset(current_asset);
