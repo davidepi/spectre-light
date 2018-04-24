@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
     else
         renderer = parser->parse(argv[1],&scene);
     delete parser;
-    Console.critical("Rendering disabled, checkout master branch");
+    int retval = renderer->render(&scene);
     delete renderer;
+    return retval;
 }

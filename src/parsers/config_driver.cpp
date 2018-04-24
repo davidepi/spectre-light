@@ -28,6 +28,7 @@ ConfigDriver::ConfigDriver()
     spp = 121;
     sampler_type = SPECTRE_SAMPLER_STRATIFIED;
     camera_type = SPECTRE_CAMERA_PERSPECTIVE;
+    filter_type = SPECTRE_FILTER_MITCHELL;
     fov = 55.f;
     value0 = 0.33f;
     value1 = 0.33f;
@@ -661,6 +662,15 @@ void ConfigDriver::build_meshes()
                 Spectrum color(ColorRGB(r, g, b), true);
                 current_asset = new AreaLight(mesh_o.mesh, transform, color);
             }
+            //create a default material for cameras
+            const Bsdf* materials[1];
+            materials[0] = MtlLib.get_default();
+            unsigned char* associations;
+            associations = (unsigned char*)malloc
+                    (mesh_o.mesh->get_faces_number());
+            memset(associations, 0, mesh_o.mesh->get_faces_number());
+            current_asset->set_materials(materials, 1, associations);
+            free(associations);
             current_scene->inherit_light((AreaLight*)current_asset);
         }
     }

@@ -18,7 +18,7 @@
 ### V0.2 ###
 - [x] unit testing
 - [x] extended image support (.jpg/.tiff support)
-- [ ] -> **lex/yacc parser** <-
+- [x] lex/yacc parser
 - [ ] diffuse texture mapping
 - [ ] bump/normal textures
 - [ ] sun position and sunlight

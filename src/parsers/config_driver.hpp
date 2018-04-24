@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 22 Apr 2018
+//Last Edit 24 Apr 2018
 
 /**
  *  \file      config_driver.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      22 Apr 2018
+ *  \date      24 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -213,7 +213,7 @@ public:
      */
     void unknown_char(const yy::location& l, char c);
 
-//dirty hack because this class is impossible to test otherwise, and all the
+//dirty hack because this class is impossible to test otherwise
 #ifndef TESTS
 private:
 #endif

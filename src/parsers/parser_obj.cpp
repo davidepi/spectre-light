@@ -54,12 +54,16 @@ void ParserObj::end_parsing()
         buffer_ro = NULL;
         delete buffer_ro;
     }
-    fclose(fin);
-    fin = NULL;
+    if(fin!=NULL)
+    {
+        fclose(fin);
+        fin = NULL;
+    }
 }
 
 bool ParserObj::get_next_mesh(Mesh* obj)
 {
+    face_no = 0; //avoid materials init in finalize_mesh()
     if(fin==NULL)
     {
         finalize_mesh(obj);
@@ -78,7 +82,6 @@ bool ParserObj::get_next_mesh(Mesh* obj)
     materials.push_back(MtlLib.get_default());
     material_association.clear();
     used_materials.insert({{"Default",0}});
-    face_no = 0;
     object_name = "";
     char token[TOKEN_SIZE];
     while(*buffer != END_OF_BUFFER_GUARD)
@@ -265,7 +268,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         {
                             Console.severe(MESSAGE_INDEX_OBJ,
                                            path, lineno);
-                            finalize_mesh(obj);;
+                            finalize_mesh(obj);
                             return false;
                         }
                         res.t = textures.at((unsigned long)text_idx);
@@ -281,7 +284,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         {
                             Console.severe(MESSAGE_INDEX_OBJ,
                                            path, lineno);
-                            finalize_mesh(obj);;
+                            finalize_mesh(obj);
                             return false;
                         }
                         res.n = normals.at((unsigned long)norm_idx);

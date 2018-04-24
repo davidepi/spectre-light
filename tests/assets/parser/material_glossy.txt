@@ -21,7 +21,6 @@ material: {
   name: "Beckmann"
   distribution: beckmann
   type: glossy
-  roughness: 0.001
   diffuse: "Red"
 }
 

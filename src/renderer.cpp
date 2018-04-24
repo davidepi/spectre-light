@@ -68,6 +68,7 @@ void Renderer::set_sampler(int sampler)
 void Renderer::inherit_filter(Filter* filter)
 {
     Renderer::filter = filter;
+    Renderer::film.set_filter(filter);
 }
 
 void Renderer::inherit_integrator(LightIntegrator* integrator)

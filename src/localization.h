@@ -81,6 +81,8 @@
 #define MESSAGE_DEGENERATE_BOX "Trying to create a degenerate box, with edges "\
                                 "less than or equal to zero"
 
+#define MESSAGE_DEBUG "Debug (slow) mode"
+
 #define MESSAGE_STARTED_PARSING "Parsing started..."
 
 #define MESSAGE_ENDED_PARSING "Parsing ended (%d ms)"

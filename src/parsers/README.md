@@ -93,7 +93,7 @@ camera | [object](#camera) | A description of the camera used to render the curr
 shape | quoted string | A path to an obj file containing mesh descriptions. The actual mesh/es are not used in the scene until positioned with the `world` keyword | -
 light | [object](#light) | Description of a light positioned into the scene | -
 world | [object](#world) | Description of a shape positioned into the scene | -
-texture | [object](#texture) or quoted string | Path to the texture on disk that will be added to the Texture Library. If the quoted string version is used, the filename without extension will be also the name of the texture. **Be aware of naming conflicts!** If a folder is specified, every image inside the folder will be loaded | -
+texture | [object](#texture) or quoted string | Path to the texture on disk that will be added to the Texture Library. If the quoted string version is used, the filename with extension will be also the name of the texture. **Be aware of naming conflicts!** If a folder is specified, every image inside the folder will be loaded | -
 material | [object](#material) or quoted string | Description of a material that will be put in the Material Library. The quoted string will chain another file to this one to be parsed, see section [Chained Files](#chained-children-files) for more information | -
 
 ### Objects

@@ -3,7 +3,7 @@ material: {type:metal, name: "Silver", element: ag} #specular
 material: {type:metal, name: "Aluminium", element: al, anisotropy: 0.2} #anisotropic
 material: {type:metal, name: "Gold", element: AU, roughness: 0.2, distribution: blinn} #blinn
 material: {type:metal, name: "Copper", element: Cu, roughness: 1.5} #beckmann
-material: {type:metal, name: "Iron", element: fE, roughness: 0.5, distribution: ggx} #ggx
+material: {type:metal, name: "Iron", element: fE, roughness: 0.5, anisotropy: 0.5, distribution: ggx} #ggx
 material: {type:metal, name: "Mercury", element: hg}
 material: {type:metal, name: "Lead", element: pb}
 material: {type:metal, name: "Platinum", element: pt}

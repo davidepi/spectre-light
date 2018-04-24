@@ -22,6 +22,17 @@ TEST(Parser,out)
     delete r1;
 }
 
+TEST(Parser,errors)
+{
+    Scene s;
+    ConfigDriver driver0;
+    errors_count[CRITICAL_INDEX] = 0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/error.txt",&s);
+    EXPECT_EQ(errors_count[CRITICAL_INDEX],2);
+    errors_count[CRITICAL_INDEX] = 0;
+    delete r0;
+}
+
 TEST(Parser,resolution)
 {
     Scene s;
@@ -327,8 +338,27 @@ TEST(Parser,material_matte)
     EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
     EXPECT_NEAR(res.w[2],0.318309873f,1e-5f);
 
+    //check duplicates
+    MtlLib.clear();
+    ConfigDriver driver2;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r2 = driver2.parse(TEST_ASSETS
+                                 "parser/material_duplicate.txt",&s);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
+    const Bsdf* mat2 = MtlLib.get("Red Oren-Nayar");
+    a.set_materials((const Bsdf**)&mat2,1,&association);
+    EXPECT_TRUE(a.intersect(&r,&distance,&hit));
+    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0],0.0656985715f,1e-5f);
+    EXPECT_NEAR(res.w[1],0.0338758416f,1e-5f);
+    EXPECT_NEAR(res.w[2],0.00307962182f,1e-5f);
+
     delete r0;
     delete r1;
+    delete r2;
     MtlLib.clear();
     TexLib.clear();
 }
