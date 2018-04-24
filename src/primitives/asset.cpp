@@ -63,11 +63,6 @@ bool Asset::is_light() const
     return false;
 }
 
-void Asset::set_material(const Bsdf* material, unsigned char index)
-{
-    Asset::materials[index] = material;
-}
-
 void Asset::set_materials(const Bsdf** mats, unsigned char mats_len,
                           const unsigned char* indexes)
 {
@@ -80,9 +75,4 @@ void Asset::set_materials(const Bsdf** mats, unsigned char mats_len,
 const Bsdf* Asset::get_material(unsigned int index)const
 {
     return Asset::materials[materials_index[index]];
-}
-
-void Asset::set_associations(const unsigned char* indexes)
-{
-    memcpy(materials_index,indexes,(size_t)model->get_faces_number());
 }

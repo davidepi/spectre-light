@@ -167,7 +167,7 @@ struct HitPoint
     ///Hit asset
     const Asset* asset_h;
     
-    ///index of the hit triangle (1 if the asset is not a mesh)
+    ///index of the hit triangle (0 if the asset is not a mesh)
     unsigned int index;
     
     ///Mapping coordinate u of the point, used for texture mapping

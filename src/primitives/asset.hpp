@@ -90,11 +90,11 @@ public:
      */
     virtual bool is_light()const;
     
-    /** \brief Add a material to the set of materials used in this Asset
+    /** \brief Add a set of materials used by this Asset
      *
      *  More than the usage of this function it is important to understand the
      *  reason of it. In particular when considering Meshes where every triangle
-     *  has a different material. In this case:
+     *  could have a different material. In this case:
      *  - Storing the material name for every triangle inside the Mesh and then
      *    perform a lookup in the hash map at each intersection would be too
      *    much computationally and memory expensive
@@ -110,46 +110,17 @@ public:
      *  pointers (from 16 byte for a single material mesh up to 2K for mesh with
      *  255 materials)
      *
-     *  This method is used to set the material at the ith index to be
-     *  referenced by the triangles contained into the mesh. The 0th material
-     *  should be the Default material since every Triangle without a material
-     *  is assigned the index 0.
+     *  This method is used to set the array of materials, and the array of
+     *  associations: face_index-material
      *
      *  \warning This method does not allocate a bigger array if the index is
      *  outside the referenced area. The parser should take care of not writing
      *  outside the array bounds
      *
-     *  \param[in] index The index at which the material is assigned. Index 0
-     *  represents the default material
-     *  \param[in] material A pointer to the material assigned to the given
-     *  index
-     */
-    void set_material(const Bsdf* material, unsigned char index);
-
-    /** \brief Sets the associations <triangle, material offset> for this asset
-     *
-     *  Override the array used to associate materials used by triangles
-     *  composing this mesh. Recall that the values of this array are offsets
-     *  of the Asset::materials array
-     *
-     *  \param[in] indexes The array of indexes that will be copied
-     */
-    void set_associations(const unsigned char* indexes);
-    
-    /** \brief Sets the materials used by this asset
-     *
-     *  This function sets an array of materials that will be used by the asset.
-     *  It works exactly like the set_material() function, but sets multiple
-     *  materials at once. Note that this function overwrites any previously
-     *  material set.
-     *
-     *  \param[in] materials An array containing pointer to the materials used
-     *  by this asset
+     *  \param[in] materials The array of materials used by this asset
      *  \param[in] material_len The length of the materials array
-     *  \param[in] indexes An array containing integer values, where every value
-     *  at the ith position is the material for the ith triangle of the mesh,
-     *  represented as an offset of the materials array. The length of this
-     *  array MUST be equal to the number of faces of the underlying shape
+     *  \param[in] indexes An array where the ith entry is the offset of the
+     *  materials array for the ith face
      */
     void set_materials(const Bsdf** materials, unsigned char material_len,
                        const unsigned char* indexes);
@@ -158,13 +129,14 @@ public:
      *
      *  Return the material associated with the asset or the particular triangle
      *
-     *  \param[in] index The ith face of the mesh for which the material should
-     *  be looked up. 0 for SDLs
+     *  \param[in] ith_face The ith face of the mesh for which the material
+     *  should be looked up. This can be found after performing an intersection,
+     *  inside the HitPoint::index parameter
      *
      *  \return material A pointer to the material of the asset used by
      *  the face passed as parameter
      */
-    const Bsdf* get_material(unsigned int index)const;
+    const Bsdf* get_material(unsigned int ith_face)const;
 
 protected:
 

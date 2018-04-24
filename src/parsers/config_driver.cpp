@@ -625,13 +625,16 @@ void ConfigDriver::build_meshes()
                                     mesh_w.material_name.c_str(),
                                     mesh_w.name.c_str());
                 }
+                const Bsdf* materials[1];
+                materials[0] = overridden_material;
                 unsigned char* associations;
                 associations = (unsigned char*)malloc
                         (mesh_o.mesh->get_faces_number());
                 memset(associations, 0, mesh_o.mesh->get_faces_number());
-                current_asset->set_associations(associations);
+                current_asset->set_materials(materials,
+                                             1,
+                                             associations);
                 free(associations);
-                current_asset->set_material(overridden_material, 0);
             }
             current_scene->inherit_asset(current_asset);
         }

@@ -285,6 +285,7 @@ TEST(Parser,material_matte)
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
+    unsigned char association = 0;
     m.set_translation(Vec3(-2,0,0));
     Asset a(&sphere,m,1);
     Ray r(Point3(-2,-10,0),Vec3(0,1,0));
@@ -301,7 +302,7 @@ TEST(Parser,material_matte)
     //TODO: maybe RTTI to get class info?
     const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
 
-    a.set_material(mat0,1);
+    a.set_materials((const Bsdf**)&mat0,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
@@ -318,7 +319,7 @@ TEST(Parser,material_matte)
     ASSERT_TRUE(MtlLib.contains("Like default"));
     const Bsdf* mat1 = MtlLib.get("Like default");
 
-    a.set_material(mat1,1);
+    a.set_materials((const Bsdf**)&mat1,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
@@ -334,6 +335,7 @@ TEST(Parser,material_matte)
 
 TEST(Parser,material_glossy)
 {
+    unsigned char association = 0;
     Scene s;
     Bsdf material_t;
     Sphere sphere;
@@ -364,7 +366,7 @@ TEST(Parser,material_glossy)
     const Bsdf* mat2 = MtlLib.get("Beckmann");
     const Bsdf* mat3 = MtlLib.get("Ggx");
 
-    a.set_material(mat0,1);
+    a.set_materials((const Bsdf**)&mat0,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
@@ -372,7 +374,7 @@ TEST(Parser,material_glossy)
     EXPECT_NEAR(res.w[1],0.319018781f,1e-5f);
     EXPECT_NEAR(res.w[2],0.318374306f,1e-5f);
 
-    a.set_material(mat1,1);
+    a.set_materials((const Bsdf**)&mat1,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
@@ -382,7 +384,7 @@ TEST(Parser,material_glossy)
 
     //TODO: these values are not convincing, but the roughness is 0.001
     //so it should be fine... need to check again visually
-    a.set_material(mat2,1);
+    a.set_materials((const Bsdf**)&mat2,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
@@ -390,7 +392,7 @@ TEST(Parser,material_glossy)
     EXPECT_NEAR(res.w[1],3183.16626f,1e-5f);
     EXPECT_NEAR(res.w[2],3183.10474f,1e-5f);
 
-    a.set_material(mat3,1);
+    a.set_materials((const Bsdf**)&mat3,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
@@ -423,6 +425,7 @@ TEST(Parser,material_glossy)
 
 TEST(Parser,material_glass)
 {
+    unsigned char association = 0;
     Scene s;
     Bsdf material_t;
     Sphere sphere;
@@ -457,7 +460,7 @@ TEST(Parser,material_glass)
     const Bsdf* mat3 = MtlLib.get("beckmann");
     const Bsdf* mat4 = MtlLib.get("ggx");
 
-    a.set_material(mat0,1);
+    a.set_materials((const Bsdf**)&mat0,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                              &pdf, true, &spec);
@@ -514,6 +517,7 @@ TEST(Parser,material_glass)
 
 TEST(Parser,material_metal)
 {
+    unsigned char association = 0;
     Scene s;
     Bsdf material_t;
     Sphere sphere;
@@ -553,7 +557,7 @@ TEST(Parser,material_metal)
     const Bsdf* mat7 = MtlLib.get("Platinum");
     const Bsdf* mat8 = MtlLib.get("Tungsten");
 
-    a.set_material(mat0,1);
+    a.set_materials((const Bsdf**)&mat0,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
     res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                              &pdf, true, &spec);

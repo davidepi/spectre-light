@@ -697,9 +697,11 @@ TEST(Materials,Bsdf_inherit_bdf)
 
 TEST(Materials,Bsdf_value)
 {
+    const Bsdf* materials[1];
     Bsdf material_r;
     Bsdf metal;
     Bsdf materialWtexture;
+    unsigned char associations = 0;
     ColorRGB red((unsigned char)255,0,0);
     Texture* ut = new UniformTexture(Spectrum(red,false));
     Sphere s;
@@ -719,48 +721,50 @@ TEST(Materials,Bsdf_value)
     //reflected ray spec ok
     wi = Vec3(0.f,1.f,0.f);
     wi.normalize();
-    a.set_material(&material_r,1);
+    materials[0] = &material_r;
+    a.set_materials(materials,1,&associations);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,true);
     EXPECT_FALSE(res.is_black());
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
 
     //reflected ray spec not ok
-    a.set_material(&material_r,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
 
     //specular ray not allowed
-    a.set_material(&metal,1);
+    materials[0] = &metal;
+    a.set_materials(materials,1,&associations);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_TRUE(res.is_black());
 
     //specular ray allowed (however value will always return false for specular)
-    a.set_material(&metal,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,true);
     EXPECT_TRUE(res.is_black());
 
     //multi material, pick only non specular
     metal.inherit_bdf(new Lambertian());
-    a.set_material(&metal,1);
+    materials[0] = &metal;
+    a.set_materials(materials,1,&associations);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,true);
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
 
     //textured material
-    a.set_material(&materialWtexture,1);
+    materials[0] = &materialWtexture;
+    a.set_materials(materials,1,&associations);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,true);
     EXPECT_NEAR(res.w[0],0.131288946f,1e-5);
     EXPECT_NEAR(res.w[1],0.0676958858f,1e-5);
     EXPECT_NEAR(res.w[2],0.00615417166f,1e-5);
@@ -964,9 +968,11 @@ TEST(Materials,SingleBRDF_inherit_bdf)
 
 TEST(Materials,SingleBRDF_value)
 {
+    const Bsdf* materials[1];
     SingleBRDF material_r;
     SingleBRDF materialWtexture;
     SingleBRDF metal;
+    unsigned char associations = 0;
     ColorRGB red((unsigned char)255,0,0);
     Texture* ut = new UniformTexture(Spectrum(red,false));
     Bsdf material_t;
@@ -987,9 +993,10 @@ TEST(Materials,SingleBRDF_value)
     //matching brdf no-spec
     wi = Vec3(0.f,1.f,0.f);
     wi.normalize();
-    a.set_material(&material_r,1);
+    materials[0] = &material_r;
+    a.set_materials(materials,1,&associations);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
@@ -998,32 +1005,32 @@ TEST(Materials,SingleBRDF_value)
     //matching brdf yes-spec
     wi = Vec3(0.f,1.f,0.f);
     wi.normalize();
-    a.set_material(&material_r,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,true);
     EXPECT_FALSE(res.is_black());
     EXPECT_FLOAT_EQ(res.w[0],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[1],0.318309873f);
     EXPECT_FLOAT_EQ(res.w[2],0.318309873f);
 
     //non matching spec
-    a.set_material(&metal,1);
+    materials[0] = &metal;
+    a.set_materials(materials,1,&associations);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_TRUE(res.is_black());
 
     //matching spec.. but value does not allow me to return > 0 for specular
     wi = Vec3(0.f,1.f,0.f);
     wi.normalize();
-    a.set_material(&metal,1);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,true);
     EXPECT_TRUE(res.is_black());
 
     //textured material
-    a.set_material(&materialWtexture,1);
+    materials[0] = &materialWtexture;
+    a.set_materials(materials,1,&associations);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,true);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,true);
     EXPECT_NEAR(res.w[0],0.131288946f,1e-5);
     EXPECT_NEAR(res.w[1],0.0676958858f,1e-5);
     EXPECT_NEAR(res.w[2],0.00615417166f,1e-5);
@@ -1031,6 +1038,8 @@ TEST(Materials,SingleBRDF_value)
 
 TEST(Materials,SingleBRDF_sample_value)
 {
+    const Bsdf* materials[1];
+    unsigned char association = 0;
     bool matched_spec;
     Sphere s;
     Matrix4 m;
@@ -1048,7 +1057,8 @@ TEST(Materials,SingleBRDF_sample_value)
     SingleBRDF metal;
     material_r.inherit_bdf(new Lambertian());
     metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,METALS[METAL_GOLD].k));
-    a.set_material((Bsdf*)&metal,1);
+    materials[0] = &metal;
+    a.set_materials(materials,1,&association);
     //brdf specular no match
     res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
                                   &pdf, false, &matched_spec);

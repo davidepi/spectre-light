@@ -4,6 +4,7 @@
 
 #include "primitives/asset.hpp"
 #include "primitives/sphere.hpp"
+#include "primitives/box.hpp"
 #include "utility/utility.hpp"
 #include <climits>
 
@@ -80,13 +81,9 @@ TEST(Asset,material_setter_getter)
 {
     Bsdf material;
     material.inherit_bdf(new Lambertian());
-    Sphere s;
+    Box s;
     Matrix4 m;
     m.set_translation(Vec3(-2,0,0));
-    Asset a(&s,m,1);
-
-    a.set_material(&material,0);
-    EXPECT_EQ(a.get_material(0), &material);
 
     //set materials
     Bsdf material1;
@@ -98,7 +95,7 @@ TEST(Asset,material_setter_getter)
     Bsdf material4;
     material4.inherit_bdf(new Lambertian());
     const Bsdf* array[] = {&material1,&material2,&material3,&material4};
-    const unsigned char indexes[] = {0,1,2,3,0,2,3};
+    const unsigned char indexes[] = {0,1,2,3,0,2};
     Asset b(&s,m,1);
     b.set_materials(array, 4, indexes);
     EXPECT_EQ(b.get_material(0), &material1);
@@ -106,8 +103,7 @@ TEST(Asset,material_setter_getter)
     EXPECT_EQ(b.get_material(2), &material3);
     EXPECT_EQ(b.get_material(3), &material4);
     EXPECT_EQ(b.get_material(4), &material1);
-    EXPECT_EQ(b.get_material(5), &material2);
-    EXPECT_EQ(b.get_material(6), &material4);
+    EXPECT_EQ(b.get_material(5), &material3);
 }
 
 TEST(Asset,is_light)
