@@ -22,7 +22,7 @@
 #include <cstdarg> //va_start, va_end
 
 ///Version of the software
-#define SPECTRE_VERSION "0.1.1 (dev)"
+#define SPECTRE_VERSION "0.1.2 (dev)"
 
 ///Release date of this version
 #define SPECTRE_RELEASE "Jan 25 2018"

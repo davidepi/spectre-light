@@ -25,7 +25,7 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
         //to add the .ppm at the end, if necessary
         if(ImageFilm::extension<0)
         {
-            char* tmp_buf = (char*)malloc(sizeof(char)*path_len+1);
+            char* tmp_buf = (char*)malloc(sizeof(char)*path_len+4);
             strcpy(tmp_buf,fullpath);
             strcat(tmp_buf,".ppm");
             output = File(tmp_buf);

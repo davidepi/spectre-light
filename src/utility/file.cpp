@@ -182,7 +182,8 @@ File& File::operator=(const File &old)
 
 File& File::append(const char* path)
 {
-    char* newp = (char*)malloc(sizeof(char)*(strlen(absolute)+strlen(path)+1));
+    //an extra byte is needed if the file separator needs to be added
+    char* newp = (char*)malloc(sizeof(char)*(strlen(absolute)+strlen(path)+2));
     append_relative(absolute, path, newp);
     free(absolute);
     absolute = newp;

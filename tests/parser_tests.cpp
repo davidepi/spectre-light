@@ -315,7 +315,7 @@ TEST(Parser,material_matte)
 
     a.set_materials((const Bsdf**)&mat0,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0],0.0656985715f,1e-5f);
     EXPECT_NEAR(res.w[1],0.0338758416f,1e-5f);
@@ -332,7 +332,7 @@ TEST(Parser,material_matte)
 
     a.set_materials((const Bsdf**)&mat1,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0],0.318309873f,1e-5f);
     EXPECT_NEAR(res.w[1],0.318309873f,1e-5f);
@@ -350,7 +350,7 @@ TEST(Parser,material_matte)
     const Bsdf* mat2 = MtlLib.get("Red Oren-Nayar");
     a.set_materials((const Bsdf**)&mat2,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0],0.0656985715f,1e-5f);
     EXPECT_NEAR(res.w[1],0.0338758416f,1e-5f);
@@ -398,7 +398,7 @@ TEST(Parser,material_glossy)
 
     a.set_materials((const Bsdf**)&mat0,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0],0.319684714f,1e-5f);
     EXPECT_NEAR(res.w[1],0.319018781f,1e-5f);
@@ -406,7 +406,7 @@ TEST(Parser,material_glossy)
 
     a.set_materials((const Bsdf**)&mat1,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0],0.193397462f,1e-5f);
     EXPECT_NEAR(res.w[1],0.307217479f,1e-5f);
@@ -416,7 +416,7 @@ TEST(Parser,material_glossy)
     //so it should be fine... need to check again visually
     a.set_materials((const Bsdf**)&mat2,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0],3183.22998f,1e-5f);
     EXPECT_NEAR(res.w[1],3183.16626f,1e-5f);
@@ -424,7 +424,7 @@ TEST(Parser,material_glossy)
 
     a.set_materials((const Bsdf**)&mat3,1,&association);
     EXPECT_TRUE(a.intersect(&r,&distance,&hit));
-    res = a.get_material(1)->value(&r.direction,&hit,&wi,false);
+    res = a.get_material(0)->value(&r.direction,&hit,&wi,false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0],0.0606181398f,1e-5f);
     EXPECT_NEAR(res.w[1],0.0261571147f,1e-5f);
