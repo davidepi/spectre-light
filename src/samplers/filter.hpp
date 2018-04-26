@@ -36,7 +36,8 @@ public:
      * \param[in] range_y The number of pixel affected by this filter in the y
      *  axis
      */
-    Filter(float range_x, float range_y):range_x(range_x),range_y(range_y){};
+    Filter(float range_x, float range_y):range_x(range_x), range_y(range_y)
+    {};
 
     ///Default destructor
     virtual ~Filter() = default;
@@ -50,7 +51,7 @@ public:
      * \param[in] offset_y The \a y distance of the sample from the centre
      * \return The weight of the sample in the final average for the pixel
      */
-    virtual float weight(float offset_x, float offset_y)const = 0;
+    virtual float weight(float offset_x, float offset_y) const = 0;
 
     ///The number of pixel affected by this filter in the x axis
     const float range_x;

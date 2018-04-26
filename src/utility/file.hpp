@@ -45,20 +45,20 @@
 class File
 {
 public:
-    
+
     /** \brief default Constructor
      *
      *  \param[in] path An absolute or relative path to a File or a directory,
      *  existent or non-existent
      */
     File(const char* path);
-    
+
     ///Copy constructor
     File(const File& old_obj);
-    
+
     ///Default destructor
     ~File();
-    
+
     /** \brief Checks whether a file or a folder exists or not
      *
      *  Returns true if the file exists, false otherwise or if some folder of
@@ -66,8 +66,8 @@ public:
      *
      *  \return true if the file exists, false otherwise
      */
-    bool exists()const;
-    
+    bool exists() const;
+
     /** \brief Checks wheter a file or a folder is readable or not
      *
      *  Returns true if the file is readable, false otherwise or if some folder
@@ -75,8 +75,8 @@ public:
      *
      *  \return true if the file is readable, false otherwise
      */
-    bool readable()const;
-    
+    bool readable() const;
+
     /** \brief Checks wheter a file or a folder is writable or not
      *
      *  Returns true if the file is writable, false otherwise or if some folder
@@ -88,8 +88,8 @@ public:
      *
      *  \return true if the file is writable, false otherwise
      */
-    bool writable()const;
-    
+    bool writable() const;
+
     /** \brief Returns the extension of this file
      *
      *  Return a c string representing the extension of this file.
@@ -99,8 +99,8 @@ public:
      *  \return The extension of the file or an empty string if the
      *  file has no extension
      */
-    const char* extension()const;
-    
+    const char* extension() const;
+
     /** \brief Returns the name of the file or the directory
      *
      *  Since the constructor of this class can accept an absolute path to
@@ -109,8 +109,8 @@ public:
      *
      *  \return The name of the file itself in the path passed to constructor
      */
-    const char* filename()const;
-    
+    const char* filename() const;
+
     /** \brief Returns the absolute path for this file
      *
      *  Note that if the provided path is / in a *nix system, the filename will
@@ -119,8 +119,8 @@ public:
      *
      *  /return The absolute path for this file or directory
      */
-    const char* absolute_path()const;
-    
+    const char* absolute_path() const;
+
     /** \brief Returns whether the provided file is a folder
      *
      *  Returns true if the provided file is a folder, false otherwise.
@@ -128,8 +128,8 @@ public:
      *
      *  \return true if the provided file exists and is a directory
      */
-    bool is_folder()const;
-    
+    bool is_folder() const;
+
     /** \brief Returns whether the provided file is a regular file
      *
      *  Returns true if the provided file is a regular file, false otherwise
@@ -138,8 +138,8 @@ public:
      *
      *  \return true if the provided file exists and is a regular file
      */
-    bool is_file()const;
-    
+    bool is_file() const;
+
     /** \brief Returns the parent folder of this file
      *
      *  Returns the folder containing the file passed at construction time. If
@@ -148,8 +148,8 @@ public:
      *
      *  \return A File class containing the parent directory of the current file
      */
-    File get_parent()const;
-    
+    File get_parent() const;
+
     /** \brief Creates the current folder
      *
      *  If the path specified at construction time specifies a non-existing
@@ -161,7 +161,7 @@ public:
      *  \sa mkdirs()
      */
     bool mkdir();
-    
+
     /** \brief Creates every missing folder in the path
      *
      *  This method is the recursive version of File::mkdir(). It will attempt
@@ -175,7 +175,7 @@ public:
      *  \sa mkdir()
      */
     bool mkdirs();
-    
+
     /** \brief List directory contents
      *
      *  Returns a vector containing File classes where every class is contained
@@ -184,8 +184,8 @@ public:
      *  \param[out] retval The vector containing the list of file of the current
      *  directory
      */
-    void ls(std::vector<File>* retval)const;
-    
+    void ls(std::vector<File>* retval) const;
+
     /** \brief Appends a path to the current one
      *
      *  Given a relative path as input, this function append the path to the one
@@ -197,17 +197,17 @@ public:
      *  class
      */
     File& append(const char* path);
-    
+
     ///assignment operator
     File& operator=(const File& old);
-    
+
     ///The path separator for the current OS
     static const char PATH_SEPARATOR;
     ///The path separator for the current OS, string version
     static const char* PATH_SEPARATOR_STRING;
-    
+
 private:
-    
+
     char* absolute;
     const char* ext;
     const char* file;
@@ -220,7 +220,7 @@ private:
 ///Determine if a path is absolute or not
 inline bool is_absolute(const char* path)
 {
-    return path[0]==File::PATH_SEPARATOR;
+    return path[0] == File::PATH_SEPARATOR;
 }
 
 

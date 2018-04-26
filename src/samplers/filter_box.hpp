@@ -51,7 +51,7 @@ public:
      * Which is always 1.0 in a box filter, since every sample has the same
      * weight
      */
-    float weight(float offset_x, float offset_y)const;
+    float weight(float offset_x, float offset_y) const;
 };
 
 #endif

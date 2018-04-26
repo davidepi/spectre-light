@@ -9,20 +9,20 @@
 #define EXTENT_FILTER_GAUSSIAN_Y 2
 
 FilterGaussian::FilterGaussian(float falloff)
-:Filter(EXTENT_FILTER_GAUSSIAN_X,EXTENT_FILTER_GAUSSIAN_Y)
+        :Filter(EXTENT_FILTER_GAUSSIAN_X, EXTENT_FILTER_GAUSSIAN_Y)
 {
     FilterGaussian::precomputed_exp_x =
-    expf(-falloff*EXTENT_FILTER_GAUSSIAN_X*EXTENT_FILTER_GAUSSIAN_X);
+            expf(-falloff*EXTENT_FILTER_GAUSSIAN_X*EXTENT_FILTER_GAUSSIAN_X);
     FilterGaussian::precomputed_exp_y =
-    expf(-falloff*EXTENT_FILTER_GAUSSIAN_Y*EXTENT_FILTER_GAUSSIAN_Y);
+            expf(-falloff*EXTENT_FILTER_GAUSSIAN_Y*EXTENT_FILTER_GAUSSIAN_Y);
     FilterGaussian::alpha = falloff;
 }
 
-float FilterGaussian::weight(float offset_x, float offset_y)const
+float FilterGaussian::weight(float offset_x, float offset_y) const
 {
     //f(x) = e^(-alpha*x^2)-e^(-alpha*width^2)
     //where the second term is used to let the gaussian tend to zero at its
     //limit and is precomputed in the constructor
-    return max(0.f,expf(-alpha*offset_x*offset_x) - precomputed_exp_x) *
-           max(0.f,expf(-alpha*offset_y*offset_y) - precomputed_exp_y);
+    return max(0.f, expf(-alpha*offset_x*offset_x)-precomputed_exp_x)*
+           max(0.f, expf(-alpha*offset_y*offset_y)-precomputed_exp_y);
 }

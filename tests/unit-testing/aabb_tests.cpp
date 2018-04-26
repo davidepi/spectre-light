@@ -236,7 +236,7 @@ SPECTRE_TEST(AABB, engulf_aabb_pointer)
 
     //inf
     AABB addme3(Point3(-138.73003f, -73.22298f, INFINITY),
-                Point3(-INFINITYf, INFINITYf, 53.70019f));
+                Point3(-INFINITY, INFINITY, 53.70019f));
     box.engulf(&addme3);
     EXPECT_NEAR(box.bounds[0].x, addme3.bounds[0].x, 1e-5f);
     EXPECT_NEAR(box.bounds[0].y, addme3.bounds[0].y, 1e-5f);

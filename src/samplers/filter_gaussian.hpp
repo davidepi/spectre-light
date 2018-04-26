@@ -55,7 +55,7 @@ public:
      * \param[in] offset_y The \a y distance of the sample from the centre.
      * \return The weight of the sample in the final average for the pixel.
      */
-    float weight(float offset_x, float offset_y)const;
+    float weight(float offset_x, float offset_y) const;
 
 private:
 

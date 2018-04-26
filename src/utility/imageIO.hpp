@@ -33,10 +33,13 @@
 #include "utility.hpp"
 #include <cstdio>
 #include <cstdlib>
+
 #ifdef IMAGEMAGICK
+
 #include <cstring>
 #include <Magick++.h>
 #include <type_traits> //std::is_floating_point
+
 #endif
 
 ///Initialized ImageMagick routines

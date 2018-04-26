@@ -26,10 +26,13 @@
 #include <mutex>
 #include <stack>
 #include <cstdio>
+
 #ifdef WIN32
 #include <io.h>
 #else
+
 #include <unistd.h>
+
 #endif
 
 ///Used to store the weigthed average for every pixel
@@ -212,7 +215,7 @@ private:
 
     //output image
     File output;
-    
+
     //int used to know which function of ImageIO should be called
     char extension;
 

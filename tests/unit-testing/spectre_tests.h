@@ -15,6 +15,7 @@
 #define EXPECT_GE(x,y) XCTAssertGreaterThanOrEqual(x,y)
 #define EXPECT_LT(x,y) XCTAssertLessThan(x,y)
 #define EXPECT_LE(x,y) XCTAssertLessThanOrEqual(x,y)
+#define EXPECT_STREQ(x,y) XCTAssertEqual(strcmp(x,y),0)
 #define FAIL() {XCTAssertTrue(false);return;}
 #define ASSERT_TRUE(X) if(!X){FAIL();}
 #define ASSERT_EQ(x,y) if(x!=y){FAIL();}
