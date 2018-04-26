@@ -63,7 +63,7 @@ public:
      *  \return The value of the BxDF
      *  \sa sample_value(const Vec3* woS, Vec3* wiS)const
      */
-    virtual Spectrum value(const Vec3* woS, const Vec3* wiS)const = 0;
+    virtual Spectrum value(const Vec3* woS, const Vec3* wiS) const = 0;
 
     /** \brief Return the value of the Bdf
      *
@@ -83,8 +83,9 @@ public:
      *  \return The value of the Bdf for the pair of direction
      *  \sa value(const Vec3* woS, const Vec3* wiS)const
      */
-    virtual Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0,float r1,
-                                  float* pdf)const;
+    virtual Spectrum
+    sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
+                 float* pdf) const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -94,28 +95,28 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The pdf for this set of values
      */
-    virtual float pdf(const Vec3* woS, const Vec3* wiS)const;
-    
+    virtual float pdf(const Vec3* woS, const Vec3* wiS) const;
+
     ///Return true if the flags of this Bdf are a subset of the input ones
-    inline bool matches(char flags)const
+    inline bool matches(char flags) const
     {
         return (type & flags) == type;
     }
-    
+
     ///Return true if the Bdf is a BRDF
-    inline bool is_BRDF()const
+    inline bool is_BRDF() const
     {
         return type & FLAG_BRDF;
     }
-    
+
     ///Return true if the Bdf is a BTDF
-    inline bool is_BTDF()const
+    inline bool is_BTDF() const
     {
         return type & FLAG_BTDF;
     }
-    
+
     ///Return true if the Bdf is specular
-    inline bool is_specular()const
+    inline bool is_specular() const
     {
         return type & FLAG_SPEC;
     }
@@ -124,7 +125,7 @@ public:
      *
      *  \return The flags representing the type of Bdf
      */
-    char get_flags()const;
+    char get_flags() const;
 
 private:
 
@@ -183,7 +184,7 @@ public:
      *  \return The value of the BSDF
      */
     virtual Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                           bool matchSpec)const;
+                           bool matchSpec) const;
 
     /** \brief Return the value of the BSDF
      *
@@ -205,7 +206,7 @@ public:
      */
     virtual Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
                                   const HitPoint* h, Vec3* wiW, float* pdf,
-                                  bool matchSpec, bool* matchedSpec)const;
+                                  bool matchSpec, bool* matchedSpec) const;
 
     /** \brief Return the probability density function for this bsdf
      *
@@ -217,8 +218,8 @@ public:
      *  \param[in] matchSpec True if the method should match specular Bdfs
      *  \return The pdf for this set of values
      */
-    virtual float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
-                      bool matchSpec)const;
+    virtual float pdf(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+                      bool matchSpec) const;
 
 protected:
 
@@ -227,7 +228,7 @@ protected:
 
     //Bdfs
     Bdf* bdfs[_MAX_BDF_];
-    
+
     //Textures
     const Texture* textures[_MAX_BDF_];
 };
@@ -244,13 +245,13 @@ protected:
 class SingleBRDF : public Bsdf
 {
 public:
-    
+
     ///Default constructor
     SingleBRDF();
-    
+
     ///Default destructor
     virtual ~SingleBRDF();
-    
+
     /** \brief Add the BRDF to this Bsdf
      *
      *  Inherit the ownership of the given BRDF and adds it to this Bsdf.
@@ -268,7 +269,7 @@ public:
      *  left empty, the default White texture will be used
      */
     void inherit_bdf(Bdf* addme, const Texture* texture = NULL);
-    
+
     /** \brief Return the value of the BSDF
      *
      *  Computes the value of the enclosed BRDF in the point, defining how the
@@ -281,8 +282,8 @@ public:
      *  \return The value of the BSDF
      */
     Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                   bool matchSpec)const;
-    
+                   bool matchSpec) const;
+
     /** \brief Return the value of the BRDF
      *
      *  Similar to the value method, this one sample a single direction and
@@ -303,8 +304,8 @@ public:
      */
     Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
                           const HitPoint* h, Vec3* wiW, float* pdf,
-                          bool matchSpec, bool* matchedSpec)const;
-    
+                          bool matchSpec, bool* matchedSpec) const;
+
     /** \brief Return the probability density function for this BRDF
      *
      *  Given a pair of vectors, return the pdf value for these directions.
@@ -315,8 +316,8 @@ public:
      *  \param[in] matchSpec True if the method should consider specular BRDFs
      *  \return The pdf for this set of values
      */
-    virtual float pdf(const Vec3* woW,  const HitPoint* h, const Vec3* wiW,
-                      bool matchSpec)const;
+    virtual float pdf(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+                      bool matchSpec) const;
 };
 
 #endif

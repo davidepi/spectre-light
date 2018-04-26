@@ -5,8 +5,8 @@
 
 Mesh::Mesh(unsigned int size)
 {
-    Mesh::count=0; //number of triangles added
-    Mesh::alloc=size; //number of triangles allocated
+    Mesh::count = 0; //number of triangles added
+    Mesh::alloc = size; //number of triangles allocated
 
     //can't use malloc, vtable pointer would be uninitialized
     Mesh::tris = new Triangle[size];
@@ -18,7 +18,7 @@ Mesh::~Mesh()
 }
 
 void Mesh::add_triangle(const Point3& a, const Point3& b, const Point3& c,
-                       const Normal& n)
+                        const Normal& n)
 {
     Vertex v0;
     Vertex v1;
@@ -29,12 +29,12 @@ void Mesh::add_triangle(const Point3& a, const Point3& b, const Point3& c,
     v1.n = n;
     v2.p = c;
     v2.n = n;
-    Mesh::add_triangle(&v0,&v1,&v2);
+    Mesh::add_triangle(&v0, &v1, &v2);
 }
 
 void Mesh::add_triangle(const Vertex* a, const Vertex* b, const Vertex* c)
 {
-    if(Mesh::count==_MAX_TRIS_) //max tris per primitive
+    if(Mesh::count == _MAX_TRIS_) //max tris per primitive
     {
         Console.severe(MESSAGE_MAXTRISNUMBER);
     }
@@ -42,7 +42,7 @@ void Mesh::add_triangle(const Vertex* a, const Vertex* b, const Vertex* c)
     {
         if(Mesh::count == Mesh::alloc) //need to realloc a bigger area
         {
-            unsigned int newsize = alloc<<1<_MAX_TRIS_?alloc<<1:_MAX_TRIS_;
+            unsigned int newsize = alloc << 1<_MAX_TRIS_?alloc << 1:_MAX_TRIS_;
             Triangle* tmp = new Triangle[newsize];
             memcpy((void*)tmp, (void*)Mesh::tris, Mesh::count*sizeof(Triangle));
             delete[] Mesh::tris;
@@ -63,7 +63,7 @@ void Mesh::finalize()
     //array doubled
     if(Mesh::alloc>Mesh::count)
     {
-        Triangle *tmp = new Triangle[Mesh::count];
+        Triangle* tmp = new Triangle[Mesh::count];
         memcpy((void*)tmp, (void*)Mesh::tris, Mesh::count*sizeof(Triangle));
         delete[] Mesh::tris;
         Mesh::tris = tmp;
@@ -71,29 +71,29 @@ void Mesh::finalize()
     }
 
     //precompute the surface of the mesh and the aabb
-    for(unsigned int i=0;i<count;i++)
+    for(unsigned int i = 0; i<count; i++)
     {
         AABB tmp = Mesh::tris[i].compute_AABB();
         aabb.engulf(&tmp);
     }
 
-    bvh.buildTree(Mesh::tris,count);
+    bvh.buildTree(Mesh::tris, count);
 }
 
-bool Mesh::intersect(const Ray* r,float* distance, HitPoint* h)const
+bool Mesh::intersect(const Ray* r, float* distance, HitPoint* h) const
 {
-    return bvh.intersect(r,distance,h);
+    return bvh.intersect(r, distance, h);
 }
 
-AABB Mesh::compute_AABB()const
+AABB Mesh::compute_AABB() const
 {
     return Mesh::aabb;
 }
 
-AABB Mesh::compute_AABB(const Matrix4 *trans) const
+AABB Mesh::compute_AABB(const Matrix4* trans) const
 {
 #ifdef DEBUG
-    if(trans==NULL)
+    if(trans == NULL)
     {
         Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
         return AABB();
@@ -124,48 +124,50 @@ AABB Mesh::compute_AABB(const Matrix4 *trans) const
                                     Mesh::aabb.bounds[1].y,
                                     Mesh::aabb.bounds[1].z);
 
-    const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
-    const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
-    return AABB(min(pmi,pma), max(pmi,pma));
+    const Point3 pmi = min(
+            min(min(min(min(min(min(p0, p1), p2), p3), p4), p5), p6), p7);
+    const Point3 pma = max(
+            max(max(max(max(max(max(p0, p1), p2), p3), p4), p5), p6), p7);
+    return AABB(min(pmi, pma), max(pmi, pma));
 }
 
-float Mesh::surface()const
+float Mesh::surface() const
 {
     float totalArea = 0;
-    for(unsigned int i=0;i<Mesh::count;i++)
+    for(unsigned int i = 0; i<Mesh::count; i++)
     {
         totalArea += tris[i].surface();
     }
     return totalArea;
 }
 
-float Mesh::surface(const Matrix4 *transform)const
+float Mesh::surface(const Matrix4* transform) const
 {
     float totalArea = 0;
-    for(unsigned int i=0;i<Mesh::count;i++)
+    for(unsigned int i = 0; i<Mesh::count; i++)
     {
         totalArea += tris[i].surface(transform);
     }
     return totalArea;
 }
 
-int Mesh::get_faces_number()const
+int Mesh::get_faces_number() const
 {
     return Mesh::count;
 }
 
-void Mesh::get_densities_array(const Matrix4* transform,float* array)const
+void Mesh::get_densities_array(const Matrix4* transform, float* array) const
 {
     float sum = 0;
-    for(unsigned int i=0;i<count;i++)
+    for(unsigned int i = 0; i<count; i++)
     {
-        sum+=tris[i].surface(transform);
-        array[i]=sum;
+        sum += tris[i].surface(transform);
+        array[i] = sum;
     }
 }
 
 void Mesh::sample_point(float r0, float r1, const float* densities, Point3* p,
-                          Normal* n)const
+                        Normal* n) const
 {
     //flatten the random value between 0.0 and the total area
     float extSample = lerp(r0, 0.0f, densities[count-1]);
@@ -179,16 +181,16 @@ void Mesh::sample_point(float r0, float r1, const float* densities, Point3* p,
 
     //limit cases, they generate infinite loops
     //first triangle of the array
-    if(extSample < densities[0])
+    if(extSample<densities[0])
     {
-        sample01 = inverse_lerp(extSample,0,densities[0]);
+        sample01 = inverse_lerp(extSample, 0, densities[0]);
         tris[0].sample_point(sample01, r1, NULL, p, n);
         return;
     }
     //last triangle of the array
     if(extSample>densities[end-1])
     {
-        sample01 = inverse_lerp(extSample-densities[end-1],0,
+        sample01 = inverse_lerp(extSample-densities[end-1], 0,
                                 densities[end]-densities[end-1]);
         tris[end].sample_point(sample01, r1, NULL, p, n);
         return;

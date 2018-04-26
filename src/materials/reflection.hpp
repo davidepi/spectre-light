@@ -46,7 +46,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Spectrum value(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi) const;
 
     /** \brief Returns the value of the BRDF
      *
@@ -62,8 +62,8 @@ public:
      *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
-    virtual Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const = 0;
+    virtual Spectrum sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
+                                  float* pdf) const = 0;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -76,7 +76,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return 0
      */
-    float pdf(const Vec3* wo, const Vec3* wi)const;
+    float pdf(const Vec3* wo, const Vec3* wi) const;
 };
 
 /**
@@ -112,8 +112,9 @@ public:
      *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
-    Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const;
+    Spectrum sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
+                          float* pdf) const;
+
 private:
     const Spectrum ior;
     const Spectrum fresnel;
@@ -150,8 +151,9 @@ public:
      *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
-    Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const;
+    Spectrum sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
+                          float* pdf) const;
+
 private:
     float eta_i;
     float eta_t;

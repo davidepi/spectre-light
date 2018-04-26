@@ -46,7 +46,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Spectrum value(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi) const;
 
     /** \brief Returns the value of the BTDF
      *
@@ -63,8 +63,8 @@ public:
      *  generated, this method returns 1.0 as pdf
      *  \return The value of the BTDF
      */
-    Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const;
+    Spectrum sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
+                          float* pdf) const;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -77,10 +77,10 @@ public:
      *  \param[in] wi The incident direction
      *  \return 0
      */
-    float pdf(const Vec3* wo, const Vec3* wi)const;
+    float pdf(const Vec3* wo, const Vec3* wi) const;
 
 private:
-    
+
     float eta_i;
     float eta_t;
 };
@@ -112,7 +112,7 @@ Spectrum cauchy(float B, float C, float D = 0);
  *  \param[in] C3 The C3 paramter of the Sellmeier equation
  *  \return The wavelenght dependent ior
  */
-Spectrum sellmeier(float B1,float B2,float B3,float C1,float C2,float C3);
+Spectrum sellmeier(float B1, float B2, float B3, float C1, float C2, float C3);
 
 #endif
 

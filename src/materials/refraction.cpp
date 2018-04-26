@@ -2,8 +2,9 @@
 //license: GNU GPLv3
 
 #include "refraction.hpp"
-Refraction::Refraction(const Spectrum& etai,const Spectrum& etat)
-:Bdf(FLAG_BTDF|FLAG_SPEC)
+
+Refraction::Refraction(const Spectrum& etai, const Spectrum& etat)
+        :Bdf(FLAG_BTDF | FLAG_SPEC)
 {
 #ifdef SPECTRAL
     Refraction::eta_i = 0;
@@ -21,20 +22,20 @@ Refraction::Refraction(const Spectrum& etai,const Spectrum& etat)
 #endif
 }
 
-Spectrum Refraction::value(const Vec3*, const Vec3*)const
+Spectrum Refraction::value(const Vec3*, const Vec3*) const
 {
     return SPECTRUM_BLACK;
 }
 
-Spectrum Refraction::sample_value(const Vec3 *wo, Vec3 *wi, float, float,
-                                  float* pdf)const
+Spectrum Refraction::sample_value(const Vec3* wo, Vec3* wi, float, float,
+                                  float* pdf) const
 {
     float ei;
     float et;
 
     //check if the incident ray is coming from outside the object or not
     //normal is (0,0,1) so z > 0 = coming from outside
-    bool fromOutside = wo->z > 0;
+    bool fromOutside = wo->z>0;
     float eval;
     float abscosincident = wo->z;
     if(!fromOutside) //swaps the index, since I assume ei is for the outside
@@ -68,8 +69,8 @@ Spectrum Refraction::sample_value(const Vec3 *wo, Vec3 *wi, float, float,
     float costransmitted = fromOutside?-costhetat:costhetat;
 
     //calculate transmitted ray
-    wi->x = eta * -wo->x;
-    wi->y = eta * -wo->y;
+    wi->x = eta*-wo->x;
+    wi->y = eta*-wo->y;
     wi->z = costransmitted;
     *pdf = 1.f;
 
@@ -77,17 +78,17 @@ Spectrum Refraction::sample_value(const Vec3 *wo, Vec3 *wi, float, float,
     float etaicosi = ei*abscosincident;
     float etatcost = et*costhetat;
     float etaicost = ei*costhetat;
-    float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
-    float rpar  = (etatcosi - etaicost) / (etatcosi + etaicost);
+    float rperp = (etaicosi-etatcost)/(etaicosi+etatcost);
+    float rpar = (etatcosi-etaicost)/(etatcosi+etaicost);
     eval = 1.f-((rpar*rpar+rperp*rperp)/2.f); //refracted part
 
     eval *= (ei*ei)/(et*et);
-    eval/=fabsf(wi->z);
+    eval /= fabsf(wi->z);
 
     return eval;
 }
 
-float Refraction::pdf(const Vec3*, const Vec3*)const
+float Refraction::pdf(const Vec3*, const Vec3*) const
 {
     return 0.f;
 }
@@ -101,14 +102,14 @@ Spectrum cauchy(float B, float C, float D)
 #endif
 
     float current_wavelength = SPECTRUM_START*1E-3f;
-    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+    for(int i = 0; i<SPECTRUM_SAMPLES; i++)
     {
         float c = C/(current_wavelength*current_wavelength);
-        float d = D/powf(current_wavelength,4);
+        float d = D/powf(current_wavelength, 4);
 #ifdef SPECTRAL
         retval.w[i] = B + c + d;
 #else
-        ior += B + c + d;
+        ior += B+c+d;
 #endif
         current_wavelength += SPECTRUM_INTERVAL*1E-3f;
     }
@@ -120,7 +121,7 @@ Spectrum cauchy(float B, float C, float D)
 
 }
 
-Spectrum sellmeier(float B1,float B2,float B3,float C1,float C2,float C3)
+Spectrum sellmeier(float B1, float B2, float B3, float C1, float C2, float C3)
 {
 #ifdef SPECTRAL
     Spectrum retval;
@@ -128,17 +129,17 @@ Spectrum sellmeier(float B1,float B2,float B3,float C1,float C2,float C3)
     float ior = 0;
 #endif
     float current_wavelength = SPECTRUM_START*1E-3f;
-    float p1,p2,p3;
-    for(int i=0;i<SPECTRUM_SAMPLES;i++)
+    float p1, p2, p3;
+    for(int i = 0; i<SPECTRUM_SAMPLES; i++)
     {
         float wavelength_squared = current_wavelength*current_wavelength;
-        p1 = (B1*wavelength_squared) / (wavelength_squared-C1);
-        p2 = (B2*wavelength_squared) / (wavelength_squared-C2);
-        p3 = (B3*wavelength_squared) / (wavelength_squared-C3);
+        p1 = (B1*wavelength_squared)/(wavelength_squared-C1);
+        p2 = (B2*wavelength_squared)/(wavelength_squared-C2);
+        p3 = (B3*wavelength_squared)/(wavelength_squared-C3);
 #ifdef SPECTRAL
         retval.w[i] = sqrtf(1 + p1 + p2 + p3);
 #else
-        ior += sqrtf(1 + p1 + p2 + p3);
+        ior += sqrtf(1+p1+p2+p3);
 #endif
         current_wavelength += SPECTRUM_INTERVAL*1E-3f;
     }

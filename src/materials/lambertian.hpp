@@ -49,7 +49,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the BxDF
      */
-    Spectrum value(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi) const;
 
 private:
 

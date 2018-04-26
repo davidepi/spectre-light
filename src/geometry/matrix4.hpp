@@ -106,7 +106,7 @@ public:
      *  \note A char* is allocated on heap and must be deleted
      *  \sa toArray()
      */
-    char* toString()const;
+    char* toString() const;
 
     /**  \brief Represent this matrix with an array
      *
@@ -117,7 +117,7 @@ public:
      *              matrix in row major order
      *  \sa toString()
      */
-    void toArray(float* values)const;
+    void toArray(float* values) const;
 
     /** \brief Set this matrix to a zero-matrix
      *
@@ -220,7 +220,7 @@ public:
      *  \param[in] up A vector representing the direction poiting upside the
      *  camera. With the camera parallel to the terrain, this will be (0,1,0)
      */
-    void set_lookAt_inverse(const Point3& pos,const Point3& target,
+    void set_lookAt_inverse(const Point3& pos, const Point3& target,
                             const Vec3& up);
 
     /**  \brief Returns a new matrix that is the transpose of the current matrix
@@ -228,7 +228,7 @@ public:
      *  \param[out] output A pointer to the allocated area where the new matrix
      *                     will be written
      */
-    void transpose(Matrix4* output)const;
+    void transpose(Matrix4* output) const;
 
     /**  \brief Returns a new matrix that is the inverse of the current matrix
      *
@@ -241,7 +241,7 @@ public:
      *  \return A boolean value indicating if the matrix has been inverted or
      *          not
      */
-    bool inverse(Matrix4* output)const;
+    bool inverse(Matrix4* output) const;
 
     /** \brief Extract the translation component from the matrix
      *
@@ -250,7 +250,7 @@ public:
      *
      *  \return A Vec3 representing the translation component of the matrix
      */
-    Vec3 get_translation()const;
+    Vec3 get_translation() const;
 
     /** \brief Extract the scale component from the matrix
      *
@@ -259,34 +259,43 @@ public:
      *
      *  \return A Vec3 representing the scale component of the matrix
      */
-    Vec3 get_scale()const;
+    Vec3 get_scale() const;
 
 
     //------ Operators ---------------------------------------------------------
 
     ///The addition operation between two matrices
-    Matrix4 operator+(const Matrix4&)const;
+    Matrix4 operator+(const Matrix4&) const;
+
     ///The subtraction operation between two matrices
-    Matrix4 operator-(const Matrix4&)const;
+    Matrix4 operator-(const Matrix4&) const;
+
     ///The multiplication operation between two matrices
-    Matrix4 operator*(const Matrix4&)const;
+    Matrix4 operator*(const Matrix4&) const;
+
     ///The addition operation between two matrices
     void operator+=(const Matrix4&);
+
     ///The subtraction operation between two matrices
     void operator-=(const Matrix4&);
+
     ///The multiplication operation between two matrices
     void operator*=(const Matrix4&);
+
     ///Checks if two matrices are equal
-    bool operator==(const Matrix4&)const;
+    bool operator==(const Matrix4&) const;
+
     ///Checks if two matrices are different
-    bool operator!=(const Matrix4&)const;
+    bool operator!=(const Matrix4&) const;
 
     ///Apply the transformation matrix to the Point
-    Point3 operator*(const Point3&)const;
+    Point3 operator*(const Point3&) const;
+
     ///Apply the transformation matrix to the Vector
-    Vec3 operator*(const Vec3&)const;
+    Vec3 operator*(const Vec3&) const;
+
     ///Apply the transformation matrix to the Ray
-    Ray operator*(const Ray&)const;
+    Ray operator*(const Ray&) const;
 
 
     //--------------------------------------------------------------------------

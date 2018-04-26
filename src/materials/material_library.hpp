@@ -73,7 +73,7 @@ public:
      * \param[in] name The material to retrieve
      * \return The material, if it is stored in the library, NULL otherwise
      */
-    const Bsdf* get(const std::string& name)const;
+    const Bsdf* get(const std::string& name) const;
 
     /** \brief Remove and deallocate a material from the library
      *
@@ -100,8 +100,8 @@ public:
      *  \param[in] name The name of the material that will be checked
      *  \return true if the material is already inside the library
      */
-    bool contains(const std::string& name)const;
-    
+    bool contains(const std::string& name) const;
+
     /** \brief Returns the "Default" material
      *
      *  This method returns the "Default" material. It performs the same action
@@ -111,13 +111,15 @@ public:
      *
      *  \return The "Default" material
      */
-    const Bsdf* get_default()const;
+    const Bsdf* get_default() const;
 
 private:
 
     MaterialLibrary();
+
     ~MaterialLibrary();
-    std::unordered_map<std::string,const Bsdf*> lib;
+
+    std::unordered_map<std::string, const Bsdf*> lib;
     Bsdf* default_material;
 };
 
