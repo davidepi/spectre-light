@@ -48,7 +48,7 @@ public:
      *
      *  \return A unsigned int representing the ID of this asset
      */
-    unsigned int get_id()const;
+    unsigned int get_id() const;
 
     /** \brief Intersection of a Ray and this asset
      *
@@ -60,7 +60,7 @@ public:
      *  \param[out] h An HitPoint class containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r,float* distance, HitPoint* h)const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
 
     /** \brief Intersection of a Ray and the bounding box of the asset
      *
@@ -73,7 +73,7 @@ public:
      *  \param[out] exit_point The exit point of the AABB
      */
     bool intersect_AABB(const Ray* r, const RayProperties* rp,
-                       float* entry_point, float* exit_point)const;
+                        float* entry_point, float* exit_point) const;
 
     /** \brief Return a pointer to the AABB
      *
@@ -88,8 +88,8 @@ public:
      *
      *  \return true if the asset is a light
      */
-    virtual bool is_light()const;
-    
+    virtual bool is_light() const;
+
     /** \brief Add a set of materials used by this Asset
      *
      *  More than the usage of this function it is important to understand the
@@ -124,7 +124,7 @@ public:
      */
     void set_materials(const Bsdf** materials, unsigned char material_len,
                        const unsigned char* indexes);
-    
+
     /** \brief Return a pointer to the material
      *
      *  Return the material associated with the asset or the particular triangle
@@ -136,7 +136,7 @@ public:
      *  \return material A pointer to the material of the asset used by
      *  the face passed as parameter
      */
-    const Bsdf* get_material(unsigned int ith_face)const;
+    const Bsdf* get_material(unsigned int ith_face) const;
 
 protected:
 
@@ -159,7 +159,7 @@ private:
 
     //Materials
     const Bsdf** materials;
-    
+
     //index associating every face to every material
     unsigned char* materials_index;
 

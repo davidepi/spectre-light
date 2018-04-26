@@ -3,15 +3,15 @@
 
 #include "camera_orthographic.hpp"
 
-CameraOrthographic::CameraOrthographic(const Point3* pos,const Point3* target,
+CameraOrthographic::CameraOrthographic(const Point3* pos, const Point3* target,
                                        const Vec3* up, int width, int height)
-: Camera(pos,target,up,width,height)
+        :Camera(pos, target, up, width, height)
 {
     raster2world = camera2world;
 
     float aspect_ratio = (float)width/(float)height;
     float bounds[4]; //screen-space bounds
-    if(aspect_ratio > 1) //horizontal image
+    if(aspect_ratio>1) //horizontal image
     {
         bounds[0] = -aspect_ratio; //minx
         bounds[1] = aspect_ratio;  //maxx
@@ -27,10 +27,10 @@ CameraOrthographic::CameraOrthographic(const Point3* pos,const Point3* target,
     }
     float f = 1.0f; //far plane
     float n = 0.0f; //near plane
-    float values[16] = {1, 0,  0,  0,  //already inverted camera
-                        0, 1,  0,  0,  //screen to camera
+    float values[16] = {1, 0, 0, 0,  //already inverted camera
+                        0, 1, 0, 0,  //screen to camera
                         0, 0, f-n, n,
-                        0, 0,  0,  1};
+                        0, 0, 0, 1};
 
     Matrix4 screen2camera(values);
 
@@ -60,9 +60,9 @@ CameraOrthographic::CameraOrthographic(const Point3* pos,const Point3* target,
     raster2world *= raster2screen;
 }
 
-void CameraOrthographic::create_ray(Sample* sample, Ray* ray)const
+void CameraOrthographic::create_ray(Sample* sample, Ray* ray) const
 {
-    ray->origin = raster2world * Point3(sample->posx,sample->posy,0);
-    ray->direction = camera2world * Vec3(0,0,1);
+    ray->origin = raster2world*Point3(sample->posx, sample->posy, 0);
+    ray->direction = camera2world*Vec3(0, 0, 1);
     ray->direction.normalize();
 }

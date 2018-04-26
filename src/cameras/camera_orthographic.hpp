@@ -59,7 +59,7 @@ public:
      *  \param[in] sample The given sample
      *  \param[out] ray The output ray
      */
-    void create_ray(Sample* sample, Ray* ray)const;
+    void create_ray(Sample* sample, Ray* ray) const;
 
 private:
 

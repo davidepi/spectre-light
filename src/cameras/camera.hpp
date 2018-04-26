@@ -60,7 +60,7 @@ public:
      *  \param[in] sample The given sample
      *  \param[out] ray The output ray
      */
-    virtual void create_ray(Sample* sample, Ray* ray)const = 0;
+    virtual void create_ray(Sample* sample, Ray* ray) const = 0;
 
 protected:
 

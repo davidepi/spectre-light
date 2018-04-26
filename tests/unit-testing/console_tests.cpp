@@ -1,6 +1,14 @@
+#include "spectre_tests.h"
+
+#ifdef __XCODE__
+#import <XCTest/XCTest.h>
+#else
 
 #include <gtest/gtest.h>
 
+#endif
+
+SPECTRE_TEST_INIT(Consolet_tests)
 
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
@@ -9,26 +17,26 @@
 //tests are named Consolet instead of Console to avoid triggering
 //the Console::instance() define
 
-TEST(Consolet,constructor_motd)
+SPECTRE_TEST(Consolet, constructor_motd)
 {
     //just for coverage, changes here are pretty evident
     Console;
 }
 
-TEST(Consolet,log)
+SPECTRE_TEST(Consolet, log)
 {
     errors_count[LOG_INDEX] = 0;
-    Console.log("test",NULL);
+    Console.log("test", NULL);
     EXPECT_EQ(errors_count[LOG_INDEX], 1);
     errors_count[LOG_INDEX] = 0;
 
     errors_count[LOG_INDEX] = 0;
-    Console.log("test","test verbose");
+    Console.log("test", "test verbose");
     EXPECT_EQ(errors_count[LOG_INDEX], 1);
     errors_count[LOG_INDEX] = 0;
 }
 
-TEST(Consolet,notice)
+SPECTRE_TEST(Consolet, notice)
 {
     errors_count[NOTICE_INDEX] = 0;
     Console.notice("test");
@@ -36,15 +44,15 @@ TEST(Consolet,notice)
     errors_count[NOTICE_INDEX] = 0;
 }
 
-TEST(Consolet,notice_vargs)
+SPECTRE_TEST(Consolet, notice_vargs)
 {
     errors_count[NOTICE_INDEX] = 0;
-    Console.notice("test #%d %s",1,"ok");
+    Console.notice("test #%d %s", 1, "ok");
     EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
     errors_count[NOTICE_INDEX] = 0;
 }
 
-TEST(Consolet,warning)
+SPECTRE_TEST(Consolet, warning)
 {
     errors_count[WARNING_INDEX] = 0;
     Console.warning("test");
@@ -52,15 +60,15 @@ TEST(Consolet,warning)
     errors_count[WARNING_INDEX] = 0;
 }
 
-TEST(Consolet,warning_vargs)
+SPECTRE_TEST(Consolet, warning_vargs)
 {
     errors_count[WARNING_INDEX] = 0;
-    Console.warning("test #%d %s",1,"ok");
+    Console.warning("test #%d %s", 1, "ok");
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
 }
 
-TEST(Consolet,severe)
+SPECTRE_TEST(Consolet, severe)
 {
     errors_count[ERROR_INDEX] = 0;
     Console.severe("test");
@@ -68,15 +76,15 @@ TEST(Consolet,severe)
     errors_count[ERROR_INDEX] = 0;
 }
 
-TEST(Consolet,severe_vargs)
+SPECTRE_TEST(Consolet, severe_vargs)
 {
     errors_count[ERROR_INDEX] = 0;
-    Console.severe("test #%d %s",1,"ok");
+    Console.severe("test #%d %s", 1, "ok");
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
 }
 
-TEST(Consolet,critical)
+SPECTRE_TEST(Consolet, critical)
 {
     errors_count[CRITICAL_INDEX] = 0;
     Console.critical("test");
@@ -84,23 +92,24 @@ TEST(Consolet,critical)
     errors_count[CRITICAL_INDEX] = 0;
 }
 
-TEST(Consolet,critical_vargs)
+SPECTRE_TEST(Consolet, critical_vargs)
 {
     errors_count[CRITICAL_INDEX] = 0;
-    Console.critical("test #%d %s",1,"ok");
+    Console.critical("test #%d %s", 1, "ok");
     EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
     errors_count[CRITICAL_INDEX] = 0;
 }
 
-TEST(Consolet,progress_bar)
+SPECTRE_TEST(Consolet, progress_bar)
 {
     //just for coverage, changes here are pretty evident
-    Console.progress_bar(0.5,300);
+//    Console.progress_bar(0.5,300);
 }
 
-TEST(Consolet,progress_bar_done)
+SPECTRE_TEST(Consolet, progress_bar_done)
 {
     //just for coverage, changes here are pretty evident
     Console.progress_bar_done();
 }
 
+SPECTRE_TEST_END(Consolet_tests)

@@ -50,7 +50,7 @@ public:
      *  \param[in] fov The angle of view in radians
      */
     CameraPerspective(const Point3* position, const Point3* target,
-                       const Vec3* up, int width, int height, float fov);
+                      const Vec3* up, int width, int height, float fov);
 
     /** \brief Create a ray from a sample
      *
@@ -60,7 +60,7 @@ public:
      *  \param[in] sample The given sample
      *  \param[out] ray The output ray
      */
-    void create_ray(Sample* sample, Ray* ray)const;
+    void create_ray(Sample* sample, Ray* ray) const;
 
 private:
 

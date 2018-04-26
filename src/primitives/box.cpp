@@ -3,17 +3,17 @@
 
 #include "box.hpp"
 
-AABB Box::compute_AABB()const
+AABB Box::compute_AABB() const
 {
-    const Point3 min(0,0,0);
-    const Point3 max(1,1,1);
-    return AABB(&min,&max);
+    const Point3 min(0, 0, 0);
+    const Point3 max(1, 1, 1);
+    return AABB(&min, &max);
 }
 
-AABB Box::compute_AABB(const Matrix4* transform)const
+AABB Box::compute_AABB(const Matrix4* transform) const
 {
 #ifdef DEBUG
-    if(transform==NULL)
+    if(transform == NULL)
     {
         Console.severe(MESSAGE_WORLD_AABB_NULL_MATRIX);
         return AABB();
@@ -21,39 +21,41 @@ AABB Box::compute_AABB(const Matrix4* transform)const
 #endif
 
     //transforming min and max is not enough for rotation, i.e. in 90 deg rot
-    const Point3 p0=*transform*Point3(0,0,0);
-    const Point3 p1=*transform*Point3(1,0,0);
-    const Point3 p2=*transform*Point3(1,1,0);
-    const Point3 p3=*transform*Point3(0,1,0);
-    const Point3 p4=*transform*Point3(0,0,1);
-    const Point3 p5=*transform*Point3(1,0,1);
-    const Point3 p6=*transform*Point3(1,1,1);
-    const Point3 p7=*transform*Point3(0,1,1);
+    const Point3 p0 = *transform*Point3(0, 0, 0);
+    const Point3 p1 = *transform*Point3(1, 0, 0);
+    const Point3 p2 = *transform*Point3(1, 1, 0);
+    const Point3 p3 = *transform*Point3(0, 1, 0);
+    const Point3 p4 = *transform*Point3(0, 0, 1);
+    const Point3 p5 = *transform*Point3(1, 0, 1);
+    const Point3 p6 = *transform*Point3(1, 1, 1);
+    const Point3 p7 = *transform*Point3(0, 1, 1);
 
-    const Point3 pmi=min(min(min(min(min(min(min(p0,p1),p2),p3),p4),p5),p6),p7);
-    const Point3 pma=max(max(max(max(max(max(max(p0,p1),p2),p3),p4),p5),p6),p7);
+    const Point3 pmi = min(
+            min(min(min(min(min(min(p0, p1), p2), p3), p4), p5), p6), p7);
+    const Point3 pma = max(
+            max(max(max(max(max(max(p0, p1), p2), p3), p4), p5), p6), p7);
 
-    return AABB(pmi,pma);
+    return AABB(pmi, pma);
 }
 
-int Box::get_faces_number()const
+int Box::get_faces_number() const
 {
     return 6;
 }
 
-float Box::surface()const
+float Box::surface() const
 {
     return 6;
 }
 
-float Box::surface(const Matrix4* transform)const
+float Box::surface(const Matrix4* transform) const
 {
     Vec3 scale = transform->get_scale();
     float la = 2*(scale.x+scale.z)*scale.y;
     return la+2*scale.x*scale.z;
 }
 
-bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
+bool Box::intersect(const Ray* r, float* distance, HitPoint* h) const
 {
     bool inside = false;
     float mint;
@@ -62,20 +64,20 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 
     //x plane
     float invr = 1.0f/r->direction.x;
-    float near = (-r->origin.x) * invr;
-    float far = (1.f-r->origin.x) * invr;
+    float near = (-r->origin.x)*invr;
+    float far = (1.f-r->origin.x)*invr;
     if(near>far)
-        swap(&near,&far);
+        swap(&near, &far);
     mint = near;
     maxt = far;
 
     //y plane
     invr = 1.0f/r->direction.y;
-    near = (-r->origin.y) * invr;
-    far = (1.f-r->origin.y) * invr;
+    near = (-r->origin.y)*invr;
+    far = (1.f-r->origin.y)*invr;
     if(near>far)
-        swap(&near,&far);
-    if(near > mint)
+        swap(&near, &far);
+    if(near>mint)
     {
         mint = near;
         axis = 1;
@@ -86,11 +88,11 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
 
     //z plane
     invr = 1.0f/r->direction.z;
-    near = (-r->origin.z) * invr;
-    far = (1.f-r->origin.z) * invr;
+    near = (-r->origin.z)*invr;
+    far = (1.f-r->origin.z)*invr;
     if(near>far)
-        swap(&near,&far);
-    if(near > mint)
+        swap(&near, &far);
+    if(near>mint)
     {
         mint = near;
         axis = 2;
@@ -116,16 +118,16 @@ bool Box::intersect(const Ray* r,float* distance,HitPoint* h)const
     h->normal_h = Normal();
     h->normal_h[axis] = -sign(r->direction[axis]);
     if(inside)
-        h->normal_h[axis]*=-1;
-    if(h->normal_h.z!=0)
-        h->right = Vec3(h->normal_h.z,0,0);
+        h->normal_h[axis] *= -1;
+    if(h->normal_h.z != 0)
+        h->right = Vec3(h->normal_h.z, 0, 0);
     else
-        h->right = Vec3(-h->normal_h.y,h->normal_h.x,0);
+        h->right = Vec3(-h->normal_h.y, h->normal_h.x, 0);
     h->index = 0;
     return true;
 }
 
-void Box::get_densities_array(const Matrix4* transform, float* array)const
+void Box::get_densities_array(const Matrix4* transform, float* array) const
 {
     Vec3 scale = transform->get_scale();
     array[0] = scale.x*scale.y;
@@ -137,7 +139,7 @@ void Box::get_densities_array(const Matrix4* transform, float* array)const
 }
 
 void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
-                            Normal* n)const
+                       Normal* n) const
 {
     //works like the Mesh::getRandomPoint
     //
@@ -159,11 +161,11 @@ void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
     //   one outside the square
 
     //cd[5] contains the total surface in world space units
-    float res = lerp(r0,0,densities[5]);
+    float res = lerp(r0, 0, densities[5]);
     if(res<densities[0])
     {
         //top
-        p->x = inverse_lerp(res,0,densities[0]);
+        p->x = inverse_lerp(res, 0, densities[0]);
         p->y = r1;
         p->z = 1;
         n->x = 0;
@@ -173,7 +175,7 @@ void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
     else if(res<densities[1])
     {
         //bottom
-        p->x = inverse_lerp(res-densities[0],0,densities[1]-densities[0]);
+        p->x = inverse_lerp(res-densities[0], 0, densities[1]-densities[0]);
         p->y = r1;
         p->z = 0;
         n->x = 0;
@@ -183,7 +185,7 @@ void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
     else if(res<densities[2])
     {
         //front
-        p->x = inverse_lerp(res-densities[1],0,densities[2]-densities[1]);
+        p->x = inverse_lerp(res-densities[1], 0, densities[2]-densities[1]);
         p->y = 0;
         p->z = r1;
         n->x = 0;
@@ -193,7 +195,7 @@ void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
     else if(res<densities[3])
     {
         //back
-        p->x = inverse_lerp(res-densities[2],0,densities[3]-densities[2]);
+        p->x = inverse_lerp(res-densities[2], 0, densities[3]-densities[2]);
         p->y = 1;
         p->z = r1;
         n->x = 0;
@@ -205,7 +207,7 @@ void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
         //left
         p->x = 0;
         p->y = r1;
-        p->z = inverse_lerp(res-densities[3],0,densities[4]-densities[3]);
+        p->z = inverse_lerp(res-densities[3], 0, densities[4]-densities[3]);
         n->x = -1;
         n->y = 0;
         n->z = 0;
@@ -215,7 +217,7 @@ void Box::sample_point(float r0, float r1, const float* densities, Point3* p,
         //right
         p->x = 1;
         p->y = r1;
-        p->z = inverse_lerp(res-densities[4],0,densities[5]-densities[4]);
+        p->z = inverse_lerp(res-densities[4], 0, densities[5]-densities[4]);
         n->x = 1;
         n->y = 0;
         n->z = 0;

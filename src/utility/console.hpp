@@ -70,7 +70,7 @@ public:
      *  \sa critical(const char* message)
      */
     void log(const char* message, const char* verbose);
-    
+
     /** \brief Log a message
      *
      *  Log a message in the console with a severity of "Notice". Format strings
@@ -86,7 +86,7 @@ public:
      *  \sa critical(const char* message, ...)
      */
     void notice(const char* format, ...);
-    
+
     /** \brief Log a message
      *
      *  Log a message in the console with a severity of "Warning". Format
@@ -102,7 +102,7 @@ public:
      *  \sa critical(const char* message, ...)
      */
     void warning(const char* format, ...);
-    
+
     /** \brief Log a message
      *
      *  Log a message in the console with a severity of "Error". Format strings
@@ -118,7 +118,7 @@ public:
      *  \sa critical(const char* message, ...)
      */
     void severe(const char* format, ...);
-    
+
     /** \brief Log a message and kill the program
      *
      *  Log a message in the console with a severity of "Critical", then quit
@@ -142,10 +142,10 @@ public:
      * \param[in] eta The estimated remainint time in seconds
      * \sa progressBarDone()
      */
-    void progress_bar(float done, float eta)const;
+    void progress_bar(float done, float eta) const;
 
     ///Print a completed progress bar
-    void progress_bar_done()const;
+    void progress_bar_done() const;
 
 private:
 

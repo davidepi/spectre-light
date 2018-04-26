@@ -4,7 +4,7 @@
 #include "console.hpp"
 
 #ifdef TESTS
-int errors_count[5] = {0,0,0,0,0};
+int errors_count[5] = {0, 0, 0, 0, 0};
 #ifndef UNUSED
 #define UNUSED(x) (void)x;
 #endif
@@ -44,15 +44,15 @@ Console::Console()
 void Console::motd()
 {
 #ifndef SUPPRESS_MOTD
-    fprintf(stdout,"Spectre version %s\nReleased on %s, compiled on %s\n",
-            SPECTRE_VERSION,SPECTRE_RELEASE,__DATE__);
+    fprintf(stdout, "Spectre version %s\nReleased on %s, compiled on %s\n",
+            SPECTRE_VERSION, SPECTRE_RELEASE, __DATE__);
 #ifdef DEBUG
-    fprintf(stdout,MESSAGE_DEBUG "\n");
+    fprintf(stdout, MESSAGE_DEBUG "\n");
 #endif
 #ifdef SPECTRAL
     fprintf(stdout,"Using full-spectrum renderer\n");
 #else
-    fprintf(stdout,"Using " SPRED "r" SPGRN "g" SPBLU "b" SPNRM " renderer\n");
+    fprintf(stdout, "Using " SPRED "r" SPGRN "g" SPBLU "b" SPNRM " renderer\n");
 #endif
 #endif
 }
@@ -133,25 +133,26 @@ void Console::critical(const char* format, ...)
 #endif
 }
 
-void Console::progress_bar_done()const
+void Console::progress_bar_done() const
 {
 #ifdef WIN32
     std::cout<<"\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
               <<std::endl;
 #else
-    std::cout<<"\33[2K\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
-             <<std::endl;
+    std::cout << "\33[2K\r(####################) " << SPGRN << "100% Done!"
+              << SPNRM
+              << std::endl;
 #endif
 }
 
-void Console::progress_bar(float done, float eta)const
+void Console::progress_bar(float done, float eta) const
 {
-    done*=20;
+    done *= 20;
     const char fullblock = '#';
     const char emptyblock = '-';
     std::string progress;
 
-    int i=0;
+    int i = 0;
     while(i<(int)done)
     {
         progress.push_back(fullblock);
@@ -165,7 +166,8 @@ void Console::progress_bar(float done, float eta)const
 #ifdef WIN32
     std::cout<<"("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s\r";
 #else
-    std::cout<<"\33[2K\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
+    std::cout << "\33[2K\r(" << progress << ") " << (int)(done*5) << "%\tETA:"
+              << eta << " s";
 #endif
     fflush(stdout);
 }

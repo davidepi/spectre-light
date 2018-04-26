@@ -6,15 +6,15 @@
 CameraPerspective::CameraPerspective(const Point3* pos, const Point3* target,
                                      const Vec3* up, int width, int heigth,
                                      float fov)
-: Camera(pos,target,up,width,heigth)
+        :Camera(pos, target, up, width, heigth)
 {
     float f = 1000.0f; //far plane
     float n = 0.01f; //near plane
     float inv_aspect_ratio = 1.f/tanf(fov/2.f);
-    float values[16] = {inv_aspect_ratio, 0,  0,  0,
-                        0, inv_aspect_ratio,  0,  0,
+    float values[16] = {inv_aspect_ratio, 0, 0, 0,
+                        0, inv_aspect_ratio, 0, 0,
                         0, 0, f/(f-n), (-f*n)/(f-n),
-                        0, 0,  1,  0};
+                        0, 0, 1, 0};
 
     Matrix4 camera2screen(values);
     Matrix4 screen2camera;
@@ -22,7 +22,7 @@ CameraPerspective::CameraPerspective(const Point3* pos, const Point3* target,
 
     float aspect_ratio = (float)width/(float)heigth;
     float bounds[4]; //screen-space bounds
-    if(aspect_ratio > 1) //horizontal image
+    if(aspect_ratio>1) //horizontal image
     {
         bounds[0] = -aspect_ratio; //minx
         bounds[1] = aspect_ratio;  //maxx
@@ -56,13 +56,13 @@ CameraPerspective::CameraPerspective(const Point3* pos, const Point3* target,
 
     Matrix4 raster2screen(values);
     raster2camera.set_identity();
-    raster2camera*= screen2camera;
+    raster2camera *= screen2camera;
     raster2camera *= raster2screen;
 }
 
-void CameraPerspective::create_ray(Sample* sample, Ray* ray)const
+void CameraPerspective::create_ray(Sample* sample, Ray* ray) const
 {
-    ray->origin = camera2world * Point3(0,0,0);
-    Point3 dir = raster2camera * Point3(sample->posx,sample->posy,0);
-    ray->direction = camera2world * normalize(Vec3(dir.x,dir.y,dir.z));
+    ray->origin = camera2world*Point3(0, 0, 0);
+    Point3 dir = raster2camera*Point3(sample->posx, sample->posy, 0);
+    ray->direction = camera2world*normalize(Vec3(dir.x, dir.y, dir.z));
 }
