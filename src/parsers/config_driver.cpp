@@ -107,7 +107,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
         free(shape_it->second.association);
         shape_it++;
     }
-    
+
     //delete everything else used for parsing
     children.clear();
     deferred_materials.clear();
@@ -115,7 +115,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
     deferred_shapes.clear();
     deferred_meshes.clear();
     used_shapes.clear();
-    
+
     return r;
 }
 

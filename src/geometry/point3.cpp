@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "point3.hpp"
+
 Point3::Point3()
 {
     Point3::x = 0.0f;
@@ -31,40 +32,40 @@ Point3::Point3(float x, float y, float z)
     Point3::z = z;
 }
 
-float Point3::distanceTo(const Point3& p)const
+float Point3::distanceTo(const Point3& p) const
 {
-    float x = p.x - Point3::x;
-    float y = p.y - Point3::y;
-    float z = p.z - Point3::z;
+    float x = p.x-Point3::x;
+    float y = p.y-Point3::y;
+    float z = p.z-Point3::z;
 
-    return std::sqrt((x * x) + (y * y) + (z*z));
+    return std::sqrt((x*x)+(y*y)+(z*z));
 }
 
 void Point3::max(const Point3& p)
 {
-    if(p.x > Point3::x)
+    if(p.x>Point3::x)
         Point3::x = p.x;
-    if(p.y > Point3::y)
+    if(p.y>Point3::y)
         Point3::y = p.y;
-    if(p.z > Point3::z)
+    if(p.z>Point3::z)
         Point3::z = p.z;
 }
 
 void Point3::min(const Point3& p)
 {
-    if(p.x < Point3::x)
+    if(p.x<Point3::x)
         Point3::x = p.x;
-    if(p.y < Point3::y)
+    if(p.y<Point3::y)
         Point3::y = p.y;
-    if(p.z < Point3::z)
+    if(p.z<Point3::z)
         Point3::z = p.z;
 }
 
 //------ Operators -------------------------------------------------------------
 
-Point3 Point3::operator+ (const Vec3& v) const
+Point3 Point3::operator+(const Vec3& v) const
 {
-    return Point3(Point3::x + v.x, Point3::y + v.y, Point3::z + v.z);
+    return Point3(Point3::x+v.x, Point3::y+v.y, Point3::z+v.z);
 }
 
 //Point3 Point3::operator+ (const Point3& p) const
@@ -72,24 +73,24 @@ Point3 Point3::operator+ (const Vec3& v) const
 //    return Point3(Point3::x + p.x, Point3::y + p.y, Point3::z + p.z);
 //}
 
-void Point3::operator+=(const Vec3&  v)
+void Point3::operator+=(const Vec3& v)
 {
     Point3::x += v.x;
     Point3::y += v.y;
     Point3::z += v.z;
 }
 
-Vec3 Point3::operator-(const Point3& p)const
+Vec3 Point3::operator-(const Point3& p) const
 {
-    return Vec3(Point3::x - p.x, Point3::y - p.y, Point3::z - p.z);
+    return Vec3(Point3::x-p.x, Point3::y-p.y, Point3::z-p.z);
 }
 
-Point3 Point3::operator-(const Vec3&  v)const
+Point3 Point3::operator-(const Vec3& v) const
 {
-    return Point3(Point3::x - v.x, Point3::y - v.y, Point3::z - v.z);
+    return Point3(Point3::x-v.x, Point3::y-v.y, Point3::z-v.z);
 }
 
-void Point3::operator-=(const Vec3&  v)
+void Point3::operator-=(const Vec3& v)
 {
     Point3::x -= v.x;
     Point3::y -= v.y;
@@ -101,28 +102,28 @@ void Point3::operator-=(const Vec3&  v)
 //    return Point3(Point3::x * f, Point3::y * f, Point3::z * f);
 //}
 
-bool Point3::operator==(const Point3& p)const
+bool Point3::operator==(const Point3& p) const
 {
 #ifdef DEBUG
     if(p.x == INFINITY || p.y == INFINITY || p.z == INFINITY ||
        Point3::x == INFINITY || Point3::y == INFINITY || Point3::z == INFINITY)
         Console.severe(MESSAGE_COMPARE_INF);
 #endif
-    return std::fabs(Point3::x-p.x) <= FLT_EPSILON &&
-           std::fabs(Point3::y-p.y) <= FLT_EPSILON &&
-           std::fabs(Point3::z-p.z) <= FLT_EPSILON;
+    return std::fabs(Point3::x-p.x)<=FLT_EPSILON &&
+           std::fabs(Point3::y-p.y)<=FLT_EPSILON &&
+           std::fabs(Point3::z-p.z)<=FLT_EPSILON;
 }
 
-bool Point3::operator!=(const Point3& p)const
+bool Point3::operator!=(const Point3& p) const
 {
 #ifdef DEBUG
     if(p.x == INFINITY || p.y == INFINITY || p.z == INFINITY ||
        Point3::x == INFINITY || Point3::y == INFINITY || Point3::z == INFINITY)
         Console.severe(MESSAGE_COMPARE_INF);
 #endif
-    return std::fabs(Point3::x-p.x) > FLT_EPSILON ||
-           std::fabs(Point3::y-p.y) > FLT_EPSILON ||
-           std::fabs(Point3::z-p.z) > FLT_EPSILON;
+    return std::fabs(Point3::x-p.x)>FLT_EPSILON ||
+           std::fabs(Point3::y-p.y)>FLT_EPSILON ||
+           std::fabs(Point3::z-p.z)>FLT_EPSILON;
 }
 
 float& Point3::operator[](int val)
@@ -130,7 +131,7 @@ float& Point3::operator[](int val)
     return *(&(Point3::x)+val);
 }
 
-float Point3::operator[](int val)const
+float Point3::operator[](int val) const
 {
     return *(&(Point3::x)+val);
 }

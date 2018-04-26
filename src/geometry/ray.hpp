@@ -45,7 +45,7 @@ public:
      *  A \a Vec3 representing the direction (orientation) of the ray in the
      *  space
      */
-    Vec3  direction;
+    Vec3 direction;
 
     /** \brief Maximum number of bounces for this ray
      *
@@ -97,7 +97,7 @@ public:
      *
      *  \param[in] t the distance of the point from the origin
      */
-    Point3 apply(float t)const;
+    Point3 apply(float t) const;
 
 };
 
@@ -124,9 +124,12 @@ public:
         RayProperties::inverseX = 1.f/v.direction.x;
         RayProperties::inverseY = 1.f/v.direction.y;
         RayProperties::inverseZ = 1.f/v.direction.z;
-        RayProperties::isXInvNeg = RayProperties::inverseX<0;
-        RayProperties::isYInvNeg = RayProperties::inverseY<0;
-        RayProperties::isZInvNeg = RayProperties::inverseZ<0;
+        RayProperties::isXInvNeg = RayProperties::inverseX<
+        0;
+        RayProperties::isYInvNeg = RayProperties::inverseY<
+        0;
+        RayProperties::isZInvNeg = RayProperties::inverseZ<
+        0;
     }
 
     ///The inverse of the \a x component of the ray's direction

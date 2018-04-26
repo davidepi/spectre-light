@@ -51,13 +51,13 @@
 class ParserObj
 {
 public:
-    
+
     ///Default constructor
     ParserObj();
-    
+
     ///Default destructor
     ~ParserObj();
-    
+
     /** \brief Initiates parsing
      *
      *  Starts the parsing of a file passed as parameter. Every information
@@ -67,13 +67,13 @@ public:
      *  \param[in] path Path to the .obj file that will be parsed.
      */
     void start_parsing(const char* path);
-    
+
     /** \brief Ends parsing
      *
      *  Cleanup function after finishing the paring
      */
     void end_parsing();
-    
+
     /** \brief Creates the next Mesh contained in the parsed file
      *
      *  After calling start_parsing, this function will return every mesh
@@ -91,7 +91,7 @@ public:
      *  there are no more mesh left in the file
      */
     bool get_next_mesh(Mesh* out);
-    
+
     /** \brief Returns the mesh name
      *
      *  Returns the mesh name for the last mesh retrieved by the get_next_mesh()
@@ -99,8 +99,8 @@ public:
      *
      *  \return The name of the last parsed mesh
      */
-    const std::string& get_mesh_name()const;
-    
+    const std::string& get_mesh_name() const;
+
     /** \brief Returns the number of materials used in the mesh
      *
      *  Returns the number of materials used in the last mesh retrieved by the
@@ -108,8 +108,8 @@ public:
      *
      *  \return The number of materials used in the last parsed mesh
      */
-    unsigned char get_material_no()const;
-    
+    unsigned char get_material_no() const;
+
     /** \brief Returns the materials used in the mesh
      *
      *  Returns the materials used in the last mesh retrieved by the
@@ -120,8 +120,8 @@ public:
      *  must be already initialized
      *  \sa get_material_no()
      */
-    void get_materials(const Bsdf** mats)const;
-    
+    void get_materials(const Bsdf** mats) const;
+
     /** \brief Returns the number of triangles used in the mesh
      *
      *  Returns the number of triangles used in the last mesh retrieved by the
@@ -129,8 +129,8 @@ public:
      *
      *  \return The number of triangles used in the last parsed mesh
      */
-    unsigned int get_face_no()const;
-    
+    unsigned int get_face_no() const;
+
     /** \brief Return the material used by every triangle
      *
      *  Return the association n-triangle:material, where the association is
@@ -142,12 +142,13 @@ public:
      *  \sa get_face_no();
      *  \sa get_materials();
      */
-    void get_material_association(unsigned char* assoc)const;
+    void get_material_association(unsigned char* assoc) const;
 
 private:
-    
+
     //used to finalize the mesh and remove unused but declared materials
     void finalize_mesh(Mesh* obj);
+
     //path of the parsed file
     const char* path;
     //input file
@@ -174,11 +175,11 @@ private:
     //name of the mesh
     std::string object_name;
     //vertices of every mesh contained in the file
-    std::vector<Point3>vertices;
+    std::vector<Point3> vertices;
     //texture coord of every mesh contained in the file
-    std::vector<Point2>textures;
+    std::vector<Point2> textures;
     //normal of every mesh contained in the file
-    std::vector<Normal>normals;
+    std::vector<Normal> normals;
 };
 
 #endif

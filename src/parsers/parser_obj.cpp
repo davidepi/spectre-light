@@ -9,9 +9,11 @@
 #define END_OF_BUFFER_GUARD 0x7 //unused ASCII char, keep it as kinda EOF
 #define TOKEN_SIZE 255
 
-static inline void get_next_token(char **source, char *buffer, int max_size,
+static inline void get_next_token(char** source, char* buffer, int max_size,
                                   int* read_bytes, char* buffer_ro, FILE* in);
+
 static inline void feed_buffer(int* read_bytes, char* buffer_ro, FILE* input);
+
 ParserObj::ParserObj()
 {
     buffer_ro = NULL;
@@ -20,41 +22,41 @@ ParserObj::ParserObj()
 
 ParserObj::~ParserObj()
 {
-    if(buffer_ro!=NULL)
+    if(buffer_ro != NULL)
     {
         buffer_ro = NULL;
         delete buffer_ro;
     }
 }
 
-void ParserObj::start_parsing(const char *path)
+void ParserObj::start_parsing(const char* path)
 {
     ParserObj::path = path;
     lineno = 1;
     face_no = 0; //used to know when nothing was parsed
-    fin = fopen(path,"r");
+    fin = fopen(path, "r");
     groups_as_names = false;
     craft_token = '\0';
-    if(buffer_ro==NULL)
+    if(buffer_ro == NULL)
         buffer_ro = (char*)malloc(sizeof(char)*(BUFFER_SIZE+1));
-    if(fin!=NULL)
+    if(fin != NULL)
     {
         read_bytes = (int)fread(buffer_ro, sizeof(char), BUFFER_SIZE, fin);
         buffer_ro[read_bytes] = END_OF_BUFFER_GUARD;
         buffer = buffer_ro;
     }
     else
-        Console.severe(MESSAGE_INPUT_ERROR,path,strerror(errno));
+        Console.severe(MESSAGE_INPUT_ERROR, path, strerror(errno));
 }
 
 void ParserObj::end_parsing()
 {
-    if(buffer_ro!=NULL)
+    if(buffer_ro != NULL)
     {
         buffer_ro = NULL;
         delete buffer_ro;
     }
-    if(fin!=NULL)
+    if(fin != NULL)
     {
         fclose(fin);
         fin = NULL;
@@ -64,15 +66,15 @@ void ParserObj::end_parsing()
 bool ParserObj::get_next_mesh(Mesh* obj)
 {
     face_no = 0; //avoid materials init in finalize_mesh()
-    if(fin==NULL)
+    if(fin == NULL)
     {
         finalize_mesh(obj);
         return false;
     }
-    std::vector<Vertex>face_tmp;
+    std::vector<Vertex> face_tmp;
     bool retval = false;
     //records which materials were already used in this object
-    std::unordered_map<std::string,unsigned char> used_materials;
+    std::unordered_map<std::string, unsigned char> used_materials;
     //the current material to be assigned to every face (should change while
     // parsing faces)
     unsigned char current_material = 0;
@@ -81,7 +83,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
     //used as a boolean. Described in the 'o' and 'g' switch
     materials.push_back(MtlLib.get_default());
     material_association.clear();
-    used_materials.insert({{"Default",0}});
+    used_materials.insert({{"Default", 0}});
     object_name = "";
     char token[TOKEN_SIZE];
     while(*buffer != END_OF_BUFFER_GUARD)
@@ -106,7 +108,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         float u, v;
                         get_next_token(&buffer, token, TOKEN_SIZE,
                                        &read_bytes, buffer_ro, fin);
-                        u = strtof(token,NULL);
+                        u = strtof(token, NULL);
                         get_next_token(&buffer, token, TOKEN_SIZE,
                                        &read_bytes, buffer_ro, fin);
                         v = strtof(token, NULL);
@@ -118,13 +120,13 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         float x, y, z;
                         get_next_token(&buffer, token, TOKEN_SIZE,
                                        &read_bytes, buffer_ro, fin);
-                        x = strtof(token,NULL);
+                        x = strtof(token, NULL);
                         get_next_token(&buffer, token, TOKEN_SIZE,
                                        &read_bytes, buffer_ro, fin);
-                        y = strtof(token,NULL);
+                        y = strtof(token, NULL);
                         get_next_token(&buffer, token, TOKEN_SIZE,
                                        &read_bytes, buffer_ro, fin);
-                        z = strtof(token,NULL);
+                        z = strtof(token, NULL);
                         normals.emplace_back(x, y, z);
                         break;
                     }
@@ -153,24 +155,24 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     get_next_token(&buffer, token, TOKEN_SIZE,
                                    &read_bytes, buffer_ro, fin);
                     //check if material was already used and s
-                    std::unordered_map<std::string,unsigned
+                    std::unordered_map<std::string, unsigned
                     char>::const_iterator it = used_materials.find(token);
-                    if(it==used_materials.end())
+                    if(it == used_materials.end())
                     {
                         const Bsdf* cur_mat = MtlLib.get(token);
-                        if(cur_mat==NULL)
+                        if(cur_mat == NULL)
                         {
                             cur_mat = MtlLib.get_default();
                             //insert as default material
-                            used_materials.insert({{token,0}});
+                            used_materials.insert({{token, 0}});
                             current_material = 0;
                             Console.warning(MESSAGE_MISSING_MATERIAL,
-                                            token,path);
+                                            token, path);
                         }
                         else
                         {
                             current_material = materials.size();
-                            used_materials.insert({{token,current_material}});
+                            used_materials.insert({{token, current_material}});
                             materials.push_back(cur_mat);
                         }
                     }
@@ -182,7 +184,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
             case 'o':
             {
                 //old object finished, bail out
-                if(object_name!="")
+                if(object_name != "")
                 {
                     //since the original get_next_token already ate the 'g'
                     //buffer needs to be decremented. But buffer could have
@@ -200,7 +202,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
             }
             case 'g':
             {
-                if(object_name!="" && groups_as_names)
+                if(object_name != "" && groups_as_names)
                 {
                     //like in the 'o' switch, but craft a 'g' instead
                     craft_token = 'g';
@@ -226,7 +228,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     get_next_token(&buffer, token, TOKEN_SIZE,
                                    &read_bytes, buffer_ro, fin);
                     char* tk_idx = token; //token index
-                                          //process face
+                    //process face
                     int vert_idx = 0;
                     int text_idx = 0;
                     int norm_idx = 0;
@@ -245,7 +247,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     {
                         int vert_size = (int)vertices.size();
                         if(vert_idx<0)
-                            vert_idx = vert_size + vert_idx;
+                            vert_idx = vert_size+vert_idx;
                         else if(vert_idx>0 && vert_idx<=vert_size)
                             vert_idx--;
                         else
@@ -261,7 +263,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     {
                         int text_size = (int)textures.size();
                         if(text_idx<0)
-                            text_idx = text_size + text_idx;
+                            text_idx = text_size+text_idx;
                         else if(text_idx>0 && text_idx<=text_size)
                             text_idx--;
                         else
@@ -277,7 +279,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     {
                         int norm_size = (int)normals.size();
                         if(norm_idx<0)
-                            norm_idx = norm_size + norm_idx;
+                            norm_idx = norm_size+norm_idx;
                         else if(norm_idx>0 && norm_idx<=norm_size)
                             norm_idx--;
                         else
@@ -308,17 +310,17 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     //no risk of losing info: if the normal is missing
                     //for one vertex it MUST be missing for every vertex
                     //of the face
-                    Vec3 u = face_tmp[1].p - face_tmp[0].p;
-                    Vec3 v = face_tmp[2] .p - face_tmp[0].p;
-                    Normal face_normal = (Normal)cross(u,v);
+                    Vec3 u = face_tmp[1].p-face_tmp[0].p;
+                    Vec3 v = face_tmp[2].p-face_tmp[0].p;
+                    Normal face_normal = (Normal)cross(u, v);
                     face_normal.normalize();
-                    for(int i=0;i<(int)face_tmp.size();i++)
+                    for(int i = 0; i<(int)face_tmp.size(); i++)
                         face_tmp[i].n = face_normal;
                 }
                 if(face_tmp.size() == 3)//triangle
                 {
                     retval = true; //case for no-name but >1 triangle added
-                    obj->add_triangle(&face_tmp.at(0),&face_tmp.at(1),
+                    obj->add_triangle(&face_tmp.at(0), &face_tmp.at(1),
                                       &face_tmp.at(2));
                     material_association.push_back(current_material);
                     face_no++;
@@ -326,11 +328,11 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 else if(face_tmp.size()>3)//quad or n-gon
                 {
                     retval = true; //case for no-name but >1 triangle added
-                    obj->add_triangle(&face_tmp.at(0),&face_tmp.at(1),
+                    obj->add_triangle(&face_tmp.at(0), &face_tmp.at(1),
                                       &face_tmp.at(2));
                     material_association.push_back(current_material);
                     face_no++;
-                    for(unsigned long i=3;i<face_tmp.size();i++)
+                    for(unsigned long i = 3; i<face_tmp.size(); i++)
                     {
                         obj->add_triangle(&face_tmp.at(0),
                                           &face_tmp.at(i-1),
@@ -351,9 +353,9 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 /*skip unknown line*/;
         }
         //skip rest of line /////////////
-        while(*buffer!='\n')
+        while(*buffer != '\n')
         {
-            if(*buffer==END_OF_BUFFER_GUARD)
+            if(*buffer == END_OF_BUFFER_GUARD)
             {
                 feed_buffer(&read_bytes, buffer_ro, fin);
                 buffer = buffer_ro;
@@ -368,7 +370,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
             lineno++;
             //avoid leaving buffer pointer on the guard while there
             //are still bytes to read
-            if(*buffer==END_OF_BUFFER_GUARD)
+            if(*buffer == END_OF_BUFFER_GUARD)
             {
                 feed_buffer(&read_bytes, buffer_ro, fin);
                 buffer = buffer_ro;
@@ -380,12 +382,12 @@ bool ParserObj::get_next_mesh(Mesh* obj)
     return retval;
 }
 
-void ParserObj::finalize_mesh(Mesh *obj)
+void ParserObj::finalize_mesh(Mesh* obj)
 {
     //finalize mesh (to avoid freeing already freed object on dealloc)
     obj->finalize();
     //set name for unnamed meshes
-    if(object_name=="")
+    if(object_name == "")
         object_name = "Unnamed";
     if(face_no>0)
     {
@@ -397,40 +399,40 @@ void ParserObj::finalize_mesh(Mesh *obj)
         //-1 = not used
         short index = -1;
         short count[256];
-        memset(&count,index,sizeof(short)*256);
+        memset(&count, index, sizeof(short)*256);
         //count the used materials and use i as their new index
-        for(unsigned int i=0;i<face_no;i++)
+        for(unsigned int i = 0; i<face_no; i++)
         {
-            if(count[material_association[i]]==-1)
+            if(count[material_association[i]] == -1)
                 count[material_association[i]] = ++index;
         }
         //update materials array
         materials.resize(index+1);
-        for(short i=0;i<256;i++)
+        for(short i = 0; i<256; i++)
         {
-            if(count[i]!=-1)
+            if(count[i] != -1)
                 materials[count[i]] = old_materials[i];
         }
         //update index for faces
-        for(unsigned int i=0;i<face_no;i++)
+        for(unsigned int i = 0; i<face_no; i++)
             material_association[i] = count[material_association[i]];
     }
 }
 
-const std::string& ParserObj::get_mesh_name()const 
+const std::string& ParserObj::get_mesh_name() const
 {
     return object_name;
 }
 
-unsigned char ParserObj::get_material_no()const
+unsigned char ParserObj::get_material_no() const
 {
     //no checks for overflow but seriously... more than 255 materials???
     return (unsigned char)materials.size();
 }
 
-void ParserObj::get_materials(const Bsdf** out_materials)const
+void ParserObj::get_materials(const Bsdf** out_materials) const
 {
-    for(int i=0;i<min((int)materials.size(),256);i++)
+    for(int i = 0; i<min((int)materials.size(), 256); i++)
         out_materials[i] = materials[i];
 }
 
@@ -439,9 +441,9 @@ unsigned int ParserObj::get_face_no() const
     return face_no;
 }
 
-void ParserObj::get_material_association(unsigned char* out_association)const
+void ParserObj::get_material_association(unsigned char* out_association) const
 {
-    for(unsigned int i=0;i<face_no;i++)
+    for(unsigned int i = 0; i<face_no; i++)
         out_association[i] = material_association[i];
 }
 
@@ -450,9 +452,9 @@ static inline void get_next_token(char** source, char* token_buf, int max_size,
 {
     char current = **source;
     //skip spaces
-    while(current==' ' || current=='\t' || current==END_OF_BUFFER_GUARD)
+    while(current == ' ' || current == '\t' || current == END_OF_BUFFER_GUARD)
     {
-        if(current==END_OF_BUFFER_GUARD)
+        if(current == END_OF_BUFFER_GUARD)
         {
             feed_buffer(read_bytes, buffer_ro, input);
             *source = buffer_ro;
@@ -472,7 +474,7 @@ static inline void get_next_token(char** source, char* token_buf, int max_size,
     int i = 0;
     while(current != ' ' && current != '\n' && current != '\r')
     {
-        if(current==END_OF_BUFFER_GUARD)
+        if(current == END_OF_BUFFER_GUARD)
         {
             feed_buffer(read_bytes, buffer_ro, input);
             *source = buffer_ro;
@@ -485,7 +487,7 @@ static inline void get_next_token(char** source, char* token_buf, int max_size,
         else
         {
             //update buffer if there is space left
-            if(i < max_size - 1) //max_size-1 is reserved for last '\0'
+            if(i<max_size-1) //max_size-1 is reserved for last '\0'
                 token_buf[i++] = current;
             (*source)++;
             current = **source;

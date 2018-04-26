@@ -215,7 +215,7 @@ public:
 
 //dirty hack because this class is impossible to test otherwise
 #ifndef TESTS
-private:
+    private:
 #endif
 
     ///The name of the output image that will be created by the renderer
