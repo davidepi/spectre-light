@@ -97,7 +97,7 @@ public:
      * \return A float representing the length of this vector
      * \sa lengthSquared()
      */
-    float length()const;
+    float length() const;
 
     /**
      * \brief Returns the squared length of the vector
@@ -105,7 +105,7 @@ public:
      * \return A float representing the squared length of this vector
      * \sa length()
      */
-    float lengthSquared()const;
+    float lengthSquared() const;
 
     /** \brief Normalize this vector
      *
@@ -120,7 +120,7 @@ public:
      *          not
      *  \sa normalize()
      */
-    bool is_normalized()const;
+    bool is_normalized() const;
 
     /**
      *  \brief Represent this vector with an array
@@ -132,7 +132,7 @@ public:
      *           one
      *  \sa toString()
      */
-    void toArray(float* values)const;
+    void toArray(float* values) const;
 
     /**
      *  \brief Represent this vector with a C-string
@@ -145,7 +145,7 @@ public:
      *  \note A char* is allocated on heap and MUST be deleted
      *  \sa toArray()
      */
-    char* toString()const;
+    char* toString() const;
 
     /**
      *  \brief Clamp this vector by restricting it between two boundaries
@@ -174,7 +174,7 @@ public:
      *             distance should be calculated
      *  \return A float representing the distance from the \p target vector
      */
-    float distanceTo(const Vec2& target)const;
+    float distanceTo(const Vec2& target) const;
 
     /**
      *  \brief Compute the dot product
@@ -185,7 +185,7 @@ public:
      *  \param[in] target The target Vec2 used to compute the dot product
      *  \return A float representing the dot product
      */
-    float dot(const Vec2& target)const;
+    float dot(const Vec2& target) const;
 
     /**
      *  \brief Compute the max value between two vectors
@@ -212,45 +212,64 @@ public:
     //------ Operators ---------------------------------------------------------
 
     ///The addition operation between two vectors
-    Vec2 operator+(const Vec2&)const;
+    Vec2 operator+(const Vec2&) const;
+
     ///The addition operation between a vector and a float
-    Vec2 operator+(float)const;
+    Vec2 operator+(float) const;
+
     ///The addition operation between two vectors
     void operator+=(const Vec2&);
+
     ///The addition operation between a vector and a float
     void operator+=(float);
+
     ///The subtraction operation between two vectors
-    Vec2 operator-(const Vec2&)const;
+    Vec2 operator-(const Vec2&) const;
+
     ///The subtraction operation between a vector and a float
-    Vec2 operator-(float)const;
+    Vec2 operator-(float) const;
+
     ///The subtraction operation between two vectors
     void operator-=(const Vec2&);
+
     ///The subtraction operation between a vector and a float
     void operator-=(float);
+
     ///The element-wise multiplication between two vectors
-    Vec2 operator*(const Vec2&)const;
+    Vec2 operator*(const Vec2&) const;
+
     ///The element-wise multiplication between a vector and a float
-    Vec2 operator*(float)const;
+    Vec2 operator*(float) const;
+
     ///The element-wise multiplication between two vectors
     void operator*=(const Vec2&);
+
     ///The element-wise multiplication between a vector and a float
     void operator*=(float);
+
     ///The element-wise division between two vectors
-    Vec2 operator/(const Vec2&)const;
+    Vec2 operator/(const Vec2&) const;
+
     ///The element-wise division between a vector and a float
-    Vec2 operator/(float)const;
+    Vec2 operator/(float) const;
+
     ///The element-wise division between two vectors
     void operator/=(const Vec2&);
+
     ///The element-wise division between a vector and a float
     void operator/=(float);
+
     ///The negative of this vector
-    Vec2 operator!()const;
+    Vec2 operator!() const;
+
     ///The negative of this vector
-    Vec2 operator-()const;
+    Vec2 operator-() const;
+
     ///Check if two vectors are equal
-    bool operator==(const Vec2&)const;
+    bool operator==(const Vec2&) const;
+
     ///Check if two vector are different
-    bool operator!=(const Vec2&)const;
+    bool operator!=(const Vec2&) const;
 
     //--------------------------------------------------------------------------
 
@@ -268,7 +287,7 @@ public:
  */
 inline float length(const Vec2 vector)
 {
-    return std::sqrt((vector.x * vector.x) + (vector.y * vector.y));
+    return std::sqrt((vector.x*vector.x)+(vector.y*vector.y));
 }
 
 /**
@@ -280,7 +299,7 @@ inline float length(const Vec2 vector)
  */
 inline float lengthSquared(const Vec2 vector)
 {
-    return (vector.x * vector.x) + (vector.y * vector.y);
+    return (vector.x*vector.x)+(vector.y*vector.y);
 }
 
 /**
@@ -295,14 +314,14 @@ inline Vec2 normalize(const Vec2 vector)
 {
     float len = length(vector);
 #ifdef DEBUG
-    if(len==0)
+    if(len == 0)
     {
         Console.critical("Trying to normalize a zero-length vector");
         return Vec2();
     }
 #endif
     float inv = 1/len;
-    return Vec2(vector.x * inv,vector.y * inv);
+    return Vec2(vector.x*inv, vector.y*inv);
 }
 
 /**
@@ -319,14 +338,14 @@ inline Vec2 normalize(const Vec2 vector)
  */
 inline Vec2 clamp(const Vec2 vector, const Vec2 min, const Vec2 max)
 {
-    float x,y;
-    if (vector.x < min.x) x = min.x;
-    else if (vector.x > max.x) x = max.x;
+    float x, y;
+    if(vector.x<min.x) x = min.x;
+    else if(vector.x>max.x) x = max.x;
     else x = vector.x;
-    if (vector.y < min.y) y = min.y;
-    else if (vector.y > max.y) y = max.y;
+    if(vector.y<min.y) y = min.y;
+    else if(vector.y>max.y) y = max.y;
     else y = vector.y;
-    return Vec2(x,y);
+    return Vec2(x, y);
 }
 
 /**
@@ -338,14 +357,14 @@ inline Vec2 clamp(const Vec2 vector, const Vec2 min, const Vec2 max)
  */
 inline Vec2 saturate(const Vec2 vector)
 {
-    float x,y;
-    if (vector.x < .0f) x = .0f;
-    else if (vector.x > 1.0f) x = 1.0f;
+    float x, y;
+    if(vector.x<.0f) x = .0f;
+    else if(vector.x>1.0f) x = 1.0f;
     else x = vector.x;
-    if (vector.y < .0f) y = .0f;
-    else if (vector.y > 1.0f) y = 1.0f;
+    if(vector.y<.0f) y = .0f;
+    else if(vector.y>1.0f) y = 1.0f;
     else y = vector.y;
-    return Vec2(x,y);
+    return Vec2(x, y);
 }
 
 /**
@@ -361,10 +380,10 @@ inline Vec2 saturate(const Vec2 vector)
  */
 inline float distance(const Vec2 source, const Vec2 target)
 {
-    float x = target.x - source.x;
-    float y = target.y - source.y;
+    float x = target.x-source.x;
+    float y = target.y-source.y;
 
-    return std::sqrt((x * x) + (y * y));
+    return std::sqrt((x*x)+(y*y));
 }
 
 /**
@@ -380,7 +399,7 @@ inline float distance(const Vec2 source, const Vec2 target)
  */
 inline float dot(const Vec2 source, const Vec2 target)
 {
-    return ((source.x * target.x) + (source.y * target.y));
+    return ((source.x*target.x)+(source.y*target.y));
 }
 
 /**
@@ -397,16 +416,16 @@ inline float dot(const Vec2 source, const Vec2 target)
 inline Vec2 max(const Vec2 vector1, const Vec2 vector2)
 {
     float x, y;
-    if (vector1.x > vector2.x)
+    if(vector1.x>vector2.x)
         x = vector1.x;
     else
         x = vector2.x;
-    if (vector1.y > vector2.y)
+    if(vector1.y>vector2.y)
         y = vector1.y;
     else
         y = vector2.y;
 
-    return Vec2(x,y);
+    return Vec2(x, y);
 }
 
 /**
@@ -420,19 +439,19 @@ inline Vec2 max(const Vec2 vector1, const Vec2 vector2)
  *  \return A Vec2 containing the minimum value of the two input vectors
  *  \sa max(const Vec2 vector1, const Vec2 vector2)
  */
-inline Vec2 min (const Vec2 vector1, const Vec2 vector2)
+inline Vec2 min(const Vec2 vector1, const Vec2 vector2)
 {
     float x, y;
-    if (vector1.x < vector2.x)
+    if(vector1.x<vector2.x)
         x = vector1.x;
     else
         x = vector2.x;
-    if (vector1.y < vector2.y)
+    if(vector1.y<vector2.y)
         y = vector1.y;
     else
         y = vector2.y;
 
-    return Vec2(x,y);
+    return Vec2(x, y);
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//

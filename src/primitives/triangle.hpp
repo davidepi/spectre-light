@@ -74,7 +74,7 @@ public:
      *  \param[in] v2 The third vertex of the triangle
      */
     Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2);
-    
+
     /** \brief Intersection of a Ray and this triangle
      *
      *  This method tries to intersect a ray passed as a parameter with the
@@ -92,7 +92,7 @@ public:
      *  \param[out] h an HitPoint class containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r,float* distance, HitPoint* h)const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
 
     /** \brief Calculate the AABB
      *
@@ -100,7 +100,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB compute_AABB()const;
+    AABB compute_AABB() const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -112,7 +112,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB compute_AABB(const Matrix4* transform)const;
+    AABB compute_AABB(const Matrix4* transform) const;
 
     /** \brief Returns the surface of the triangle
      *
@@ -122,7 +122,7 @@ public:
      *  \return A float representing the area of the triangle in object-space
      *  units
      */
-    float surface()const;
+    float surface() const;
 
     /** \brief Return the surface of the triangle considering the scaling factor
      *
@@ -136,7 +136,7 @@ public:
      *  \return A float representing the area of the triangle in world-space
      *  units
      */
-    float surface(const Matrix4* transform)const;
+    float surface(const Matrix4* transform) const;
 
     /** \brief Returns a random point on the surface of the triangle
      *
@@ -150,7 +150,7 @@ public:
      *  \param[out] n The normal of the computed point
      */
     void sample_point(float r0, float r1, const float* densities, Point3* p,
-                        Normal* n)const;
+                      Normal* n) const;
 
     ///First vertex of the triangle
     Vertex a;

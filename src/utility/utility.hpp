@@ -51,7 +51,7 @@ void format_seconds(unsigned int secs, char* out);
  *  \param[in,out] f1 A pointer to the first float
  *  \param[in,out] f2 A pointer to the second float
  */
-inline void swap(float *f1, float *f2)
+inline void swap(float* f1, float* f2)
 {
     float tmp;
     tmp = *f1;
@@ -67,7 +67,7 @@ inline void swap(float *f1, float *f2)
  *  \param[in,out] u1 A pointer to the first value
  *  \param[in,out] u2 A pointer to the second value
  */
-inline void swap(uint8_t *u1, uint8_t *u2)
+inline void swap(uint8_t* u1, uint8_t* u2)
 {
     uint8_t tmp;
     tmp = *u1;
@@ -86,7 +86,7 @@ inline void swap(uint8_t *u1, uint8_t *u2)
  */
 inline float radians(const float deg)
 {
-    return (ONE_PI/180.f) * deg;
+    return (ONE_PI/180.f)*deg;
 }
 
 /** \brief Convert radians to degrees
@@ -100,7 +100,7 @@ inline float radians(const float deg)
  */
 inline float degrees(const float rad)
 {
-    return (180.f/ONE_PI) * rad;
+    return (180.f/ONE_PI)*rad;
 }
 
 /**
@@ -171,9 +171,9 @@ inline int max(const int i1, const int i2)
  */
 inline float clamp(const float value, const float min, const float max)
 {
-    if(value < min)
+    if(value<min)
         return min;
-    else if (value > max)
+    else if(value>max)
         return max;
     else
         return value;
@@ -191,7 +191,7 @@ inline float clamp(const float value, const float min, const float max)
  */
 inline float lerp(const float value, const float min, const float max)
 {
-    return (1 - value) * min + value * max;
+    return (1-value)*min+value*max;
 }
 
 /** \brief Perform the inverse of a linear interpolation
@@ -206,7 +206,7 @@ inline float lerp(const float value, const float min, const float max)
  */
 inline float inverse_lerp(float value, float min, float max)
 {
-    return (value - min) / (max - min);
+    return (value-min)/(max-min);
 }
 
 /**
@@ -221,7 +221,7 @@ inline float inverse_lerp(float value, float min, float max)
  */
 inline bool flt_equal(const float val1, const float val2)
 {
-    return std::fabs(val1-val2) <= EPSILON;
+    return std::fabs(val1-val2)<=EPSILON;
 }
 
 /** \brief Determine the sign of the given number
@@ -266,7 +266,7 @@ inline unsigned int nearest_uint(unsigned int num, unsigned int multiple)
 inline float equation1(const float a, const float b)
 {
 #ifdef DEBUG
-    if(a==0)
+    if(a == 0)
     {
         Console.severe(MESSAGE_LINEAR_EQUATION_IMPOSSIBLE);
         return b;
@@ -320,8 +320,8 @@ inline bool equation2(const float a, const float b, const float c,
  */
 inline uint32_t swap_endianness(uint32_t num)
 {
-   return ((num & 0x000000FF) << 24) | ((num & 0x0000FF00) << 8) |
-          ((num & 0x00FF0000) >>  8) | ((num & 0xFF000000) >> 24);
+    return ((num & 0x000000FF) << 24) | ((num & 0x0000FF00) << 8) |
+           ((num & 0x00FF0000) >> 8) | ((num & 0xFF000000) >> 24);
 }
 
 /** \brief Swap endianness (16-bit)
