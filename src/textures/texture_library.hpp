@@ -35,20 +35,20 @@
 class TextureLibrary
 {
 public:
-    
+
     ///Get an instance of the texture library
     static TextureLibrary& instance()
     {
         static TextureLibrary instance;
         return instance;
     }
-    
+
     ///Avoid a copy of the object
     TextureLibrary(TextureLibrary const&) = delete;
-    
+
     ///Avoid a copy of the object
     void operator=(TextureLibrary const&) = delete;
-    
+
     /** \brief Add a texture to the library
      *
      *  Inherit a texture and add it to the library. The library will ensure
@@ -61,7 +61,7 @@ public:
      *  \param[in] texture The texture that will be added
      */
     void add_inherit(const std::string& name, Texture* texture);
-    
+
     /** \brief Retrieve a texture from the library
      *
      *  Retrieve a texture from the library. If the texture can not be found
@@ -70,8 +70,8 @@ public:
      * \param[in] name The texture to retrieve
      * \return The texture, if it is stored in the library, NULL otherwise
      */
-    const Texture* get(const std::string& name)const;
-    
+    const Texture* get(const std::string& name) const;
+
     /** \brief Remove and deallocate a texture from the library
      *
      *  Note that it is not possible to erase the "Default" texture
@@ -79,7 +79,7 @@ public:
      * \param[in] name The texture that will be removed and deallocated
      */
     void erase(const std::string& name);
-    
+
     /** \brief Erase and deallocate everything inside the texture library
      *
      *  This method will clear and thus deallocate every texture stored in the
@@ -88,7 +88,7 @@ public:
      *  integrity reasons
      */
     void clear();
-    
+
     /** \brief Check if the texture library already contains a texture
      *
      *  This method only checks if a texture with the input name is already
@@ -97,8 +97,8 @@ public:
      *  \param[in] name The name of the texture that will be checked
      *  \return true if the texture is already inside the library
      */
-    bool contains(const std::string& name)const;
-    
+    bool contains(const std::string& name) const;
+
     /** \brief Returns the "Default" texture
      *
      *  This method returns the "Default" texture. It performs the same action
@@ -108,12 +108,14 @@ public:
      *
      *  \return The "Default" texture
      */
-    const Texture* get_default()const;
-    
+    const Texture* get_default() const;
+
 private:
-    
+
     TextureLibrary();
+
     ~TextureLibrary();
+
     std::unordered_map<std::string, const Texture*> lib;
     const Texture* default_texture;
 };

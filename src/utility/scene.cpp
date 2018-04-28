@@ -5,13 +5,13 @@
 
 Scene::~Scene()
 {
-    std::unordered_map<unsigned int,const Shape*>::const_iterator shape_it;
-    for(shape_it=shapes.begin();shape_it!=shapes.end();shape_it++)
+    std::unordered_map<unsigned int, const Shape*>::const_iterator shape_it;
+    for(shape_it = shapes.begin(); shape_it != shapes.end(); shape_it++)
         delete shape_it->second;
     shapes.clear();
-    
-    std::unordered_map<unsigned int,const Asset*>::const_iterator asset_it;
-    for(asset_it=assets.begin();asset_it!=assets.end();asset_it++)
+
+    std::unordered_map<unsigned int, const Asset*>::const_iterator asset_it;
+    for(asset_it = assets.begin(); asset_it != assets.end(); asset_it++)
         delete asset_it->second;
     assets.clear();
 
@@ -20,13 +20,13 @@ Scene::~Scene()
     //The light array is there just for faster lookup
 }
 
-void Scene::inherit_shape(const Shape *addme)
+void Scene::inherit_shape(const Shape* addme)
 {
     //unordered map to check in O(1) if the shape is duplicate upon addition
-    shapes.insert(std::make_pair(addme->get_id(),addme));
+    shapes.insert(std::make_pair(addme->get_id(), addme));
 }
 
-unsigned int Scene::size_shapes()const
+unsigned int Scene::size_shapes() const
 {
     return (unsigned int)shapes.size();
 }
@@ -34,21 +34,21 @@ unsigned int Scene::size_shapes()const
 void Scene::inherit_asset(const Asset* addme)
 {
     //unordered map to check in O(1) if the asset is duplicate upon addition
-    assets.insert(std::make_pair(addme->get_id(),addme));
+    assets.insert(std::make_pair(addme->get_id(), addme));
     k.addAsset(addme);
 }
 
-unsigned int Scene::size_assets()const
+unsigned int Scene::size_assets() const
 {
     return (unsigned int)assets.size();
 }
 
 void Scene::inherit_light(const AreaLight* addme)
 {
-    if(lights.size() < _MAX_LIGHTS_)
+    if(lights.size()<_MAX_LIGHTS_)
     {
         //usually I avoid auto keyword, but this iterator would be > 80 col
-        auto insert_res = assets.insert(std::make_pair(addme->get_id(),addme));
+        auto insert_res = assets.insert(std::make_pair(addme->get_id(), addme));
         if(insert_res.second) //true if it was added
         {
             lights.push_back(addme);
@@ -59,12 +59,12 @@ void Scene::inherit_light(const AreaLight* addme)
         Console.warning(MESSAGE_MAXLIGHTSNUMBER, _MAX_LIGHTS_);
 }
 
-unsigned int Scene::size_lights()const
+unsigned int Scene::size_lights() const
 {
     return (unsigned int)lights.size();
 }
 
-const AreaLight* Scene::get_light(int index)const
+const AreaLight* Scene::get_light(int index) const
 {
     return lights[index];
 }

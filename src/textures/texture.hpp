@@ -29,13 +29,13 @@
 class Texture
 {
 public:
-    
+
     ///Default constructor
     Texture() = default;
-    
+
     ///Default destructor
     virtual ~Texture() = default;
-    
+
     /** \brief Maps an (u,v) coordinate to a texture value
      *
      *  Given the coordinates \p u and \p v of a point, this method finds the
@@ -47,7 +47,7 @@ public:
      *  \return The Spectrum value of the mesh with this texture applied at the
      *  coordinates (u,v)
      */
-    virtual Spectrum map(Point2 uv)const = 0;
+    virtual Spectrum map(Point2 uv) const = 0;
 };
 
 #endif

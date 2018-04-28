@@ -18,6 +18,7 @@
 #define EXPECT_STREQ(x,y) XCTAssertEqual(strcmp(x,y),0)
 #define FAIL() {XCTAssertTrue(false);return;}
 #define ASSERT_TRUE(X) if(!X){FAIL();}
+#define ASSERT_FALSE(X) if(X){FAIL();}
 #define ASSERT_EQ(x,y) if(x!=y){FAIL();}
 #define ASSERT_ANY_THROW(x); try{x;XCTAssertTrue(false);}catch(const char* m){}
 #elif defined(__MSVS__)

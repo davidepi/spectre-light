@@ -59,7 +59,7 @@ public:
      *  \param[out] h an HitPoint class containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r,float* distance, HitPoint* h)const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
 
     /** \brief Calculate the AABB
      *
@@ -67,7 +67,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB compute_AABB()const;
+    AABB compute_AABB() const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -79,7 +79,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB compute_AABB(const Matrix4* transform)const;
+    AABB compute_AABB(const Matrix4* transform) const;
 
     /** \brief Return the surface of the sphere
      *
@@ -89,7 +89,7 @@ public:
      *  \return A float representing the area of the sphere in object-space
      *  units
      */
-    float surface()const;
+    float surface() const;
 
     /** \brief Return the surface of the sphere considering the scaling factor
      *
@@ -101,7 +101,7 @@ public:
      *
      *  \return A float representing the area of the sphere in world-space units
      */
-    float surface(const Matrix4* transform)const;
+    float surface(const Matrix4* transform) const;
 
     /** \brief Returns a random point on the surface of the sphere
      *
@@ -115,7 +115,7 @@ public:
      *  \param[out] n The normal of the computed point
      */
     virtual void sample_point(float r0, float r1, const float* densities,
-                                Point3* p, Normal* n)const;
+                              Point3* p, Normal* n) const;
 };
 
 #endif

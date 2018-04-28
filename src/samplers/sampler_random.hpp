@@ -48,7 +48,7 @@ public:
      * \param[in] seed The seed of the prng (128 bytes array)
      */
     SamplerRandom(int startx, int endx, int starty, int endy, int spp,
-                      const unsigned int* seed);
+                  const unsigned int* seed);
 
     /** Return the samples
      *

@@ -51,7 +51,7 @@ public:
      * or in the centre
      */
     SamplerStratified(int startx, int endx, int starty, int endy, int spp,
-                              const unsigned int* seed, bool random);
+                      const unsigned int* seed, bool random);
 
     /** Return the samples
      *

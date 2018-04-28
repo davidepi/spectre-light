@@ -96,7 +96,7 @@ public:
      *
      *  \return The XYZ representation of this spectrum
      */
-    ColorXYZ to_xyz()const;
+    ColorXYZ to_xyz() const;
 
     /** \brief Calculate the luminous intensity of this spectrum
      *
@@ -105,13 +105,13 @@ public:
      *
      *  \return The luminous intensity of this spectrum
      */
-    float luminance()const;
+    float luminance() const;
 
     /** \brief Retun true if the spectrum is composed only by 0 values
      * 
      *  \return true if only 0 values compose this spectrum
      */
-    bool is_black()const;
+    bool is_black() const;
 
     /** \brief Checks if this class contains NaNs or infinite values
      *
@@ -120,38 +120,53 @@ public:
      *  this method simply returns true
      *  \return true if there are not NaNs or infinite values, false otherwise
      */
-    bool is_valid()const;
+    bool is_valid() const;
 
     ///The addition operation between two spectra
-    Spectrum operator+(const Spectrum& s)const;
+    Spectrum operator+(const Spectrum& s) const;
+
     ///The addition operation between two spectra
     void operator+=(const Spectrum& s);
+
     ///The subtraction operation between two spectra
-    Spectrum operator-(const Spectrum& s)const;
+    Spectrum operator-(const Spectrum& s) const;
+
     ///The subtraction operation between two spectra
     void operator-=(const Spectrum& s);
+
     ///The multiplication operation between two spectra
-    Spectrum operator*(const Spectrum& s)const;
+    Spectrum operator*(const Spectrum& s) const;
+
     ///The multiplication operation between two spectra
     void operator*=(const Spectrum& s);
+
     ///The division operation between two spectra
-    Spectrum operator/(const Spectrum& s)const;
+    Spectrum operator/(const Spectrum& s) const;
+
     ///The division operation between two spectra
     void operator/=(const Spectrum& s);
+
     ///The addition operation between a value and a spectrum
-    Spectrum operator+(float v)const;
+    Spectrum operator+(float v) const;
+
     ///The addition operation between a value and a spectrum
     void operator+=(float v);
+
     ///The subtraction operation between a value and a spectrum
-    Spectrum operator-(float v)const;
+    Spectrum operator-(float v) const;
+
     ///The subtraction operation between a value and a spectrum
     void operator-=(float v);
+
     ///The multiplication operation between a value and a spectrum
-    Spectrum operator*(float v)const;
+    Spectrum operator*(float v) const;
+
     ///The multiplication operation between a value and a spectrum
     void operator*=(float v);
+
     ///The division operation between a value and a spectrum
-    Spectrum operator/(float v)const;
+    Spectrum operator/(float v) const;
+
     ///The division operation between a value and a spectrum
     void operator/=(float v);
 

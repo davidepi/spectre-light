@@ -29,17 +29,17 @@
 class UniformTexture : public Texture
 {
 public:
-    
+
     /*  \brief Default constructor
      *
      *  \param[in] value The spectrum value that will be returned by the map()
      *  function
      */
     UniformTexture(const Spectrum& value);
-    
+
     ///Default destructor
     ~UniformTexture() = default;
-    
+
     /** \brief Maps an (u,v) coordinate to a texture value
      *
      *  Given the coordinates \p u and \p v of a point, this method finds the
@@ -49,7 +49,7 @@ public:
      *  \param[in] uv A Point2 representing the value of the mapped point in
      *  image space
      */
-    Spectrum map(Point2 uv)const;
+    Spectrum map(Point2 uv) const;
 
 private:
     const Spectrum value;
