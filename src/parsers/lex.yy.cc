@@ -690,10 +690,11 @@ static yy::location loc;
 long int current_pos;
 long int last_line_pos;
 #define YY_NO_INPUT 1
-#line 37 "config_lexer.l"
+#define YY_NO_UNISTD_H 1
+#line 39 "config_lexer.l"
     #define YY_USER_ACTION loc.columns(yyleng);
     #define UPDATE_POS current_pos+=strlen(yytext)
-#line 697 "lex.yy.c"
+#line 698 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -873,13 +874,13 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 41 "config_lexer.l"
+#line 43 "config_lexer.l"
 
 
 
     loc.step();
 
-#line 883 "lex.yy.c"
+#line 884 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -938,16 +939,12 @@ yy_match:
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 437 );
+		while ( yy_current_state != 343 );
+		yy_cp = (yy_last_accepting_cpos);
+		yy_current_state = (yy_last_accepting_state);
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
-		if ( yy_act == 0 )
-			{ /* have to back up */
-			yy_cp = (yy_last_accepting_cpos);
-			yy_current_state = (yy_last_accepting_state);
-			yy_act = yy_accept[yy_current_state];
-			}
 
 		YY_DO_BEFORE_ACTION;
 
@@ -964,401 +961,401 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 46 "config_lexer.l"
+#line 48 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_COLON(loc); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 47 "config_lexer.l"
+#line 49 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_OPEN_SQ(loc); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 48 "config_lexer.l"
+#line 50 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_CLOSE_SQ(loc); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 49 "config_lexer.l"
+#line 51 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_OPEN_CU(loc); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 50 "config_lexer.l"
+#line 52 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_CLOSE_CU(loc); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 51 "config_lexer.l"
+#line 53 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_COMMA(loc); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 52 "config_lexer.l"
+#line 54 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_OUTPUT(loc); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 53 "config_lexer.l"
+#line 55 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_INTEGRATOR(loc); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 54 "config_lexer.l"
+#line 56 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_PATH_TRACE(loc); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 55 "config_lexer.l"
+#line 57 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_RESOLUTION(loc); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 56 "config_lexer.l"
+#line 58 "config_lexer.l"
 {UPDATE_POS; return yy::ConfigParser::make_SPP(loc); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 57 "config_lexer.l"
+#line 59 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_WIDTH(loc); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 58 "config_lexer.l"
+#line 60 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_HEIGHT(loc); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 59 "config_lexer.l"
+#line 61 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_VAL_0(loc); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 60 "config_lexer.l"
+#line 62 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_VAL_1(loc); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 61 "config_lexer.l"
+#line 63 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_SAMPLER(loc); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 62 "config_lexer.l"
+#line 64 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_RANDOM(loc); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 63 "config_lexer.l"
+#line 65 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_STRATIFIED(loc); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 64 "config_lexer.l"
+#line 66 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_FILTER(loc); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 65 "config_lexer.l"
+#line 67 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_TYPE(loc); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 66 "config_lexer.l"
+#line 68 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_BOX(loc); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 67 "config_lexer.l"
+#line 69 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_TENT(loc); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 68 "config_lexer.l"
+#line 70 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_TENT(loc); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 69 "config_lexer.l"
+#line 71 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_GAUSS(loc); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 70 "config_lexer.l"
+#line 72 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_GAUSS(loc); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 71 "config_lexer.l"
+#line 73 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_MITCHELL(loc); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 72 "config_lexer.l"
+#line 74 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_LANCZOS(loc); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 73 "config_lexer.l"
+#line 75 "config_lexer.l"
 {UPDATE_POS; return yy::ConfigParser::make_CAMERA(loc); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 74 "config_lexer.l"
+#line 76 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_PERSPECTIVE(loc); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 75 "config_lexer.l"
+#line 77 "config_lexer.l"
 {UPDATE_POS; return yy::ConfigParser::make_PANORAMA(loc); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 76 "config_lexer.l"
+#line 78 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_ORTHOGRAPHIC(loc); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 77 "config_lexer.l"
+#line 79 "config_lexer.l"
 {UPDATE_POS; return yy::ConfigParser::make_POSITION(loc); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 78 "config_lexer.l"
+#line 80 "config_lexer.l"
 {UPDATE_POS; return yy::ConfigParser::make_TARGET(loc); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 79 "config_lexer.l"
+#line 81 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_UP(loc); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 80 "config_lexer.l"
+#line 82 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_FOV(loc); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 81 "config_lexer.l"
+#line 83 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_SHAPE(loc); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 82 "config_lexer.l"
+#line 84 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_WORLD(loc); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 83 "config_lexer.l"
+#line 85 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_LIGHT(loc); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 84 "config_lexer.l"
+#line 86 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_NAME(loc); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 85 "config_lexer.l"
+#line 87 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_ROTATION(loc); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 86 "config_lexer.l"
+#line 88 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_SCALE(loc); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 87 "config_lexer.l"
+#line 89 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_TEMPERATURE(loc); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 88 "config_lexer.l"
+#line 90 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_MATERIAL(loc); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 89 "config_lexer.l"
+#line 91 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_TEXTURE(loc); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 90 "config_lexer.l"
+#line 92 "config_lexer.l"
 {UPDATE_POS; return yy::ConfigParser::make_SRC(loc); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 91 "config_lexer.l"
+#line 93 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_MATTE(loc); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 92 "config_lexer.l"
+#line 94 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_GLOSSY(loc); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 93 "config_lexer.l"
+#line 95 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_METAL(loc); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 94 "config_lexer.l"
+#line 96 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_GLASS(loc); }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 95 "config_lexer.l"
+#line 97 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_IOR(loc); }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 96 "config_lexer.l"
+#line 98 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_ROUGHNESS(loc); }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 97 "config_lexer.l"
+#line 99 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_ANISOTROPY(loc); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 98 "config_lexer.l"
+#line 100 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_DISTRIBUTION(loc); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 99 "config_lexer.l"
+#line 101 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_DIFFUSE(loc); }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 100 "config_lexer.l"
+#line 102 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_SPECULAR(loc); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 101 "config_lexer.l"
+#line 103 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_BLINN(loc); }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 102 "config_lexer.l"
+#line 104 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_BECKMANN(loc); }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 103 "config_lexer.l"
+#line 105 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_GGX(loc); }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 104 "config_lexer.l"
+#line 106 "config_lexer.l"
 {UPDATE_POS; return yy::ConfigParser::make_COLOR(loc);}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 105 "config_lexer.l"
+#line 107 "config_lexer.l"
 {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 106 "config_lexer.l"
+#line 108 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 107 "config_lexer.l"
+#line 109 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 108 "config_lexer.l"
+#line 110 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
 	YY_BREAK
 case 64:
 /* rule 64 can match eol */
 YY_RULE_SETUP
-#line 109 "config_lexer.l"
+#line 111 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_STRING(yytext,loc); }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 110 "config_lexer.l"
+#line 112 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_SILVER(loc);}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 111 "config_lexer.l"
+#line 113 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_ALUMINIUM(loc);}
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 112 "config_lexer.l"
+#line 114 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_GOLD(loc);}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 113 "config_lexer.l"
+#line 115 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_COPPER(loc);}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 114 "config_lexer.l"
+#line 116 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_IRON(loc);}
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 115 "config_lexer.l"
+#line 117 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_MERCURY(loc);}
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 116 "config_lexer.l"
+#line 118 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_LEAD(loc);}
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 117 "config_lexer.l"
+#line 119 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_PLATINUM(loc);}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 118 "config_lexer.l"
+#line 120 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_TUNGSTEN(loc);}
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 119 "config_lexer.l"
+#line 121 "config_lexer.l"
 {UPDATE_POS; loc.step();}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 120 "config_lexer.l"
+#line 122 "config_lexer.l"
 {UPDATE_POS; loc.step();}
 	YY_BREAK
 case 76:
 /* rule 76 can match eol */
 YY_RULE_SETUP
-#line 121 "config_lexer.l"
+#line 123 "config_lexer.l"
 {UPDATE_POS; loc.lines(yyleng);loc.step(); last_line_pos=current_pos; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 122 "config_lexer.l"
+#line 124 "config_lexer.l"
 {UPDATE_POS; driver.unknown_char(loc,yytext[0]);}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 123 "config_lexer.l"
+#line 125 "config_lexer.l"
 { UPDATE_POS; return yy::ConfigParser::make_END(loc); }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 125 "config_lexer.l"
+#line 127 "config_lexer.l"
 ECHO;
 	YY_BREAK
-#line 1362 "lex.yy.c"
+#line 1359 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1423,7 +1420,8 @@ ECHO;
 
 			else
 				{
-				yy_cp = (yy_c_buf_p);
+				yy_cp = (yy_last_accepting_cpos);
+				yy_current_state = (yy_last_accepting_state);
 				goto yy_find_action;
 				}
 			}
@@ -1869,10 +1867,6 @@ static void yy_load_buffer_state  (void)
 	yyfree((void *) b  );
 }
 
-#ifndef __cplusplus
-extern int isatty (int );
-#endif /* __cplusplus */
-    
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
  * such as during a yyrestart() or at EOF.
@@ -1896,7 +1890,7 @@ extern int isatty (int );
         b->yy_bs_column = 0;
     }
 
-        b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+        b->yy_is_interactive = 0;
     
 	errno = oerrno;
 }
@@ -2316,7 +2310,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 125 "config_lexer.l"
+#line 127 "config_lexer.l"
 
 
 
