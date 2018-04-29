@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\accelerators\bvh.cpp" />
+    <ClCompile Include="src\accelerators\kdtree.cpp" />
+    <ClCompile Include="src\cameras\camera.cpp" />
+    <ClCompile Include="src\cameras\camera360.cpp" />
+    <ClCompile Include="src\cameras\camera_orthographic.cpp" />
+    <ClCompile Include="src\cameras\camera_perspective.cpp" />
+    <ClCompile Include="src\cameras\image_film.cpp" />
+    <ClCompile Include="src\geometry\AABB.cpp" />
+    <ClCompile Include="src\geometry\matrix4.cpp" />
+    <ClCompile Include="src\geometry\point2.cpp" />
+    <ClCompile Include="src\geometry\point3.cpp" />
+    <ClCompile Include="src\geometry\ray.cpp" />
+    <ClCompile Include="src\geometry\vec2.cpp" />
+    <ClCompile Include="src\geometry\vec3.cpp" />
+    <ClCompile Include="src\integrators\path_tracer.cpp" />
+    <ClCompile Include="src\integrators\ray_tracer.cpp" />
+    <ClCompile Include="src\lights\area_light.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\materials\bdf.cpp" />
+    <ClCompile Include="src\materials\fresnel_conditions.cpp" />
+    <ClCompile Include="src\materials\lambertian.cpp" />
+    <ClCompile Include="src\materials\material_library.cpp" />
+    <ClCompile Include="src\materials\microfacet.cpp" />
+    <ClCompile Include="src\materials\microfacet_distributions.cpp" />
+    <ClCompile Include="src\materials\oren_nayar.cpp" />
+    <ClCompile Include="src\materials\reflection.cpp" />
+    <ClCompile Include="src\materials\refraction.cpp" />
+    <ClCompile Include="src\parsers\config_driver.cpp" />
+    <ClCompile Include="src\parsers\config_parser.tab.cc" />
+    <ClCompile Include="src\parsers\lex.yy.cc" />
+    <ClCompile Include="src\parsers\parser_obj.cpp" />
+    <ClCompile Include="src\primitives\asset.cpp" />
+    <ClCompile Include="src\primitives\box.cpp" />
+    <ClCompile Include="src\primitives\mesh.cpp" />
+    <ClCompile Include="src\primitives\shape.cpp" />
+    <ClCompile Include="src\primitives\sphere.cpp" />
+    <ClCompile Include="src\primitives\triangle.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\samplers\filter_box.cpp" />
+    <ClCompile Include="src\samplers\filter_gaussian.cpp" />
+    <ClCompile Include="src\samplers\filter_lanczos.cpp" />
+    <ClCompile Include="src\samplers\filter_mitchell.cpp" />
+    <ClCompile Include="src\samplers\filter_tent.cpp" />
+    <ClCompile Include="src\samplers\sampler.cpp" />
+    <ClCompile Include="src\samplers\sampler_random.cpp" />
+    <ClCompile Include="src\samplers\sampler_stratified.cpp" />
+    <ClCompile Include="src\textures\texture.cpp" />
+    <ClCompile Include="src\textures\texture_library.cpp" />
+    <ClCompile Include="src\textures\uniform.cpp" />
+    <ClCompile Include="src\utility\color.cpp" />
+    <ClCompile Include="src\utility\console.cpp" />
+    <ClCompile Include="src\utility\file.cpp" />
+    <ClCompile Include="src\utility\imageIO.cpp" />
+    <ClCompile Include="src\utility\occlusion_tester.cpp" />
+    <ClCompile Include="src\utility\scene.cpp" />
+    <ClCompile Include="src\utility\spectrum.cpp" />
+    <ClCompile Include="src\utility\utility.cpp" />
+    <ClCompile Include="src\utility\wellrng.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\accelerators\bvh.hpp" />
+    <ClInclude Include="src\accelerators\kdtree.hpp" />
+    <ClInclude Include="src\cameras\camera.hpp" />
+    <ClInclude Include="src\cameras\camera360.hpp" />
+    <ClInclude Include="src\cameras\camera_orthographic.hpp" />
+    <ClInclude Include="src\cameras\camera_perspective.hpp" />
+    <ClInclude Include="src\cameras\image_film.hpp" />
+    <ClInclude Include="src\geometry\AABB.hpp" />
+    <ClInclude Include="src\geometry\matrix4.hpp" />
+    <ClInclude Include="src\geometry\point2.hpp" />
+    <ClInclude Include="src\geometry\point3.hpp" />
+    <ClInclude Include="src\geometry\ray.hpp" />
+    <ClInclude Include="src\geometry\vec2.hpp" />
+    <ClInclude Include="src\geometry\vec3.hpp" />
+    <ClInclude Include="src\integrators\light_integrator.hpp" />
+    <ClInclude Include="src\integrators\path_tracer.hpp" />
+    <ClInclude Include="src\integrators\ray_tracer.hpp" />
+    <ClInclude Include="src\lights\area_light.hpp" />
+    <ClInclude Include="src\localization.h" />
+    <ClInclude Include="src\materials\bdf.hpp" />
+    <ClInclude Include="src\materials\fresnel_conditions.hpp" />
+    <ClInclude Include="src\materials\lambertian.hpp" />
+    <ClInclude Include="src\materials\material_library.hpp" />
+    <ClInclude Include="src\materials\metals.hpp" />
+    <ClInclude Include="src\materials\microfacet.hpp" />
+    <ClInclude Include="src\materials\microfacet_distributions.hpp" />
+    <ClInclude Include="src\materials\oren_nayar.hpp" />
+    <ClInclude Include="src\materials\reflection.hpp" />
+    <ClInclude Include="src\materials\refraction.hpp" />
+    <ClInclude Include="src\parsers\config_driver.hpp" />
+    <ClInclude Include="src\parsers\config_parser.tab.hh" />
+    <ClInclude Include="src\parsers\location.hh" />
+    <ClInclude Include="src\parsers\parser_obj.hpp" />
+    <ClInclude Include="src\parsers\position.hh" />
+    <ClInclude Include="src\parsers\stack.hh" />
+    <ClInclude Include="src\primitives\asset.hpp" />
+    <ClInclude Include="src\primitives\box.hpp" />
+    <ClInclude Include="src\primitives\mesh.hpp" />
+    <ClInclude Include="src\primitives\shape.hpp" />
+    <ClInclude Include="src\primitives\sphere.hpp" />
+    <ClInclude Include="src\primitives\triangle.hpp" />
+    <ClInclude Include="src\renderer.hpp" />
+    <ClInclude Include="src\samplers\filter.hpp" />
+    <ClInclude Include="src\samplers\filter_box.hpp" />
+    <ClInclude Include="src\samplers\filter_gaussian.hpp" />
+    <ClInclude Include="src\samplers\filter_lanczos.hpp" />
+    <ClInclude Include="src\samplers\filter_mitchell.hpp" />
+    <ClInclude Include="src\samplers\filter_tent.hpp" />
+    <ClInclude Include="src\samplers\sampler.hpp" />
+    <ClInclude Include="src\samplers\sampler_random.hpp" />
+    <ClInclude Include="src\samplers\sampler_stratified.hpp" />
+    <ClInclude Include="src\settings.h" />
+    <ClInclude Include="src\textures\texture.hpp" />
+    <ClInclude Include="src\textures\texture_library.hpp" />
+    <ClInclude Include="src\textures\uniform.hpp" />
+    <ClInclude Include="src\utility\color.hpp" />
+    <ClInclude Include="src\utility\console.hpp" />
+    <ClInclude Include="src\utility\file.hpp" />
+    <ClInclude Include="src\utility\imageIO.hpp" />
+    <ClInclude Include="src\utility\occlusion_tester.hpp" />
+    <ClInclude Include="src\utility\scene.hpp" />
+    <ClInclude Include="src\utility\spectrum.hpp" />
+    <ClInclude Include="src\utility\utility.hpp" />
+    <ClInclude Include="src\utility\wellrng.hpp" />
+    <ClInclude Include="src\validator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\parsers\config_lexer.l" />
+    <None Include="src\parsers\config_parser.y" />
+    <None Include="src\parsers\README.md" />
+    <None Include="src\README.md" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>spectrelight</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>spectre-full</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <OpenMPSupport>false</OpenMPSupport>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <FloatingPointModel>Strict</FloatingPointModel>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
+      <RemoveUnreferencedCodeData>false</RemoveUnreferencedCodeData>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <OpenMPSupport>false</OpenMPSupport>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

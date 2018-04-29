@@ -7,7 +7,7 @@
 #include <x86intrin.h> //for pdep
 #endif
 
-#if defined(WIN32) || defined(WIN64) //BMI2 and windows
+#ifdef _WIN32 //BMI2 and windows
 #include <intrin.h> //for bsf
 #include <immintrin.h> //for pdep
 #endif
@@ -68,7 +68,7 @@ namespace bvhhelpers
 
 static inline char BSF(uint64_t val)
 {
-#if defined(WIN32) || defined(WIN64)
+#ifdef _WIN32
     unsigned long out;
     _BitScanForward64(&out,val);
     return (char)out;

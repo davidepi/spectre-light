@@ -1,12 +1,12 @@
 //Created,   4 Apr 2018
-//Last Edit 19 Apr 2018
+//Last Edit 29 Apr 2018
 
 /**
  *  \file file.hpp
  *  \brief Utilities involving the filesystem
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  19 Apr 2018
+ *  \date  29 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -19,9 +19,14 @@
 #include <vector>
 #include <string>
 // -- *nix only
+#ifdef _WIN32
+#include <io.h>
+#include <windows.h>
+#else
 #include <unistd.h> //access
 #include <sys/stat.h> //ISDIR mkdir
 #include <dirent.h> //opendir & co
+#endif
 //
 
 /**
@@ -211,10 +216,12 @@ private:
     char* absolute;
     const char* ext;
     const char* file;
+#ifndef _WIN32
     //if the stat() called by the constructor succeded
     bool statres;
     //information about the fullpath
     struct stat fileinfo;
+#endif
 };
 
 ///Determine if a path is absolute or not

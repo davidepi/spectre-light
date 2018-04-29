@@ -3,8 +3,13 @@
 
 #include "file.hpp"
 
+#ifdef _WIN32
+const char File::PATH_SEPARATOR = '\\';
+const char* File::PATH_SEPARATOR_STRING = "\\";
+#else
 const char File::PATH_SEPARATOR = '/';
 const char* File::PATH_SEPARATOR_STRING = "/";
+#endif
 
 //given an absolute path like "/root" and a relative like "../home/User/./"
 //resolves the "../" and "./" and removes "//"
@@ -89,13 +94,23 @@ File::File(const char* path)
     }
     else //resolve the relative path
     {
-        const char* current_dir = realpath(".", NULL);
-        int current_dir_len = (int)strlen(current_dir);
+        char* current_dir;
+        int current_dir_len;
+#ifdef _WIN32
+        current_dir_len = GetFullPathName(".", 0, NULL, NULL);
+        current_dir = (char*)malloc(sizeof(char)*current_dir_len);
+        GetFullPathName(".", 0, current_dir, NULL);
+#else
+        current_dir = realpath(".", NULL);
+        current_dir_len = (int)strlen(current_dir);
+#endif
         absolute = (char*)malloc(sizeof(char)*(current_dir_len+1+pathlen+1));
         append_relative(current_dir, path, absolute);
         free((void*)current_dir);
     }
+#ifndef _WIN32
     File::statres = stat(absolute, &(File::fileinfo)) == 0;
+#endif
     //guaranteed to exists at least the toplevel /
     File::file = strrchr(absolute, File::PATH_SEPARATOR);
     //not /
@@ -119,8 +134,10 @@ File::File(const File& old_obj)
     //recalculate offsets(since I cannot blindly copy pointers of other classes)
     File::ext = File::absolute+(old_obj.ext-old_obj.absolute);
     File::file = File::absolute+(old_obj.file-old_obj.absolute);
+#ifndef _WIN32
     File::statres = old_obj.statres;
     File::fileinfo = old_obj.fileinfo;
+#endif
 }
 
 File::~File()
@@ -145,27 +162,49 @@ const char* File::absolute_path() const
 
 bool File::exists() const
 {
+#ifdef _WIN32
+    return _access(absolute, 0x00) == 0;
+#else
     return access(absolute, F_OK) == 0;
+#endif
 }
 
 bool File::readable() const
 {
+#ifdef _WIN32
+    return _access(absolute, 0x02) == 0;
+#else
     return access(absolute, R_OK) == 0;
+#endif
 }
 
 bool File::writable() const
 {
+#ifdef _WIN32
+    return _access(absolute, 0x04) == 0;
+#else
     return access(absolute, W_OK) == 0;
+#endif
 }
 
 bool File::is_folder() const
 {
+#ifdef _WIN32
+    DWORD attr = GetFileAttributes(absolute);
+    return (attr & FILE_ATTRIBUTE_DIRECTORY) != 0;
+#else
     return statres && S_ISDIR(fileinfo.st_mode);
+#endif
 }
 
 bool File::is_file() const
 {
+#ifdef _WIN32
+    DWORD attr = GetFileAttributes(absolute);
+    return (attr & FILE_ATTRIBUTE_DIRECTORY) == 0;
+#else
     return statres && S_ISREG(fileinfo.st_mode);
+#endif
 }
 
 File& File::operator=(const File& old)
@@ -175,8 +214,10 @@ File& File::operator=(const File& old)
     //recalculate offsets(since I cannot blindly copy pointers of other classes)
     File::ext = File::absolute+(old.ext-old.absolute);
     File::file = File::absolute+(old.file-old.absolute);
+#ifndef _WIN32
     File::statres = old.statres;
     File::fileinfo = old.fileinfo;
+#endif
     return *this;
 }
 
@@ -187,7 +228,9 @@ File& File::append(const char* path)
     append_relative(absolute, path, newp);
     free(absolute);
     absolute = newp;
+#ifndef _WIN32
     File::statres = stat(absolute, &(File::fileinfo)) == 0;
+#endif
     File::file = strrchr(absolute, File::PATH_SEPARATOR);
     if(*(file+1) != 0)
         File::file++;
@@ -236,10 +279,14 @@ File File::get_parent() const
 
 bool File::mkdir()
 {
+#ifdef _WIN32
+    return CreateDirectory(absolute, NULL);
+#else
     bool retval = ::mkdir(absolute, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
     //refresh info about this folder
     File::statres = stat(absolute, &(File::fileinfo)) == 0;
     return retval;
+#endif
 }
 
 bool File::mkdirs()
@@ -256,7 +303,11 @@ bool File::mkdirs()
             //reach separator
             while(index<len && absolute[++index] != File::PATH_SEPARATOR);
             absolute[index] = 0;
+#ifdef _WIN32
+            if(_access(absolute, 0x00) != 0)
+#else
             if(access(absolute, F_OK) != 0) //folder does not exist
+#endif
             {
                 res = File::mkdir();
                 created = true;
@@ -275,21 +326,50 @@ bool File::mkdirs()
 
 void File::ls(std::vector<File>* retval) const
 {
-    DIR* current_dir;
     unsigned int len = (unsigned int)strlen(absolute);
-    unsigned int allocated = len+255;
+    unsigned int allocated = len + 255;
+    //temp buffer for absolute files
+    char* element_name = (char*)malloc(sizeof(char)*allocated);
+#ifdef _WIN32
+    WIN32_FIND_DATA element;
+    HANDLE current_dir = INVALID_HANDLE_VALUE;
+    FindFirstFile(absolute, &element);
+    unsigned int allocated = len + 255;
+    if(is_folder() && current_dir != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            //name too long, reallocate the temp buffer
+            if ((len+1+2+strlen(element.cFileName)) >= allocated)
+            {
+                free(element_name);
+                allocated = len+1+2+(unsigned int)strlen(element.cFileName);
+                element_name = (char*)malloc(sizeof(char)*allocated);
+            }
+            if(strcmp(element.cFileName, ".") != 0 &&
+               strcmp(element.cFileName, "..") != 0)
+            {
+                strcpy(element_name, absolute);
+                strcat(element_name, File::PATH_SEPARATOR_STRING);
+                strcat(element_name, element.cFileName);
+                retval->emplace_back(element_name);
+            }
+        }
+        while(FindNextFile(current_dir, &element) != 0);
+        FindClose(current_dir);
+    }
+#else
+    DIR* current_dir;
     struct dirent* element;
     if(is_folder() && (current_dir = opendir(absolute)) != NULL)
     {
-        //temp buffer
-        char* element_name = (char*)malloc(sizeof(char)*allocated);
         while((element = readdir(current_dir)) != NULL)
         {
             //name too long, reallocate the temp buffer
-            if((len+1+1+strlen(element->d_name))>=allocated)
+            if((len+1+2+strlen(element->d_name))>=allocated)
             {
                 free(element_name);
-                allocated = len+1+1+(unsigned int)strlen(element->d_name);
+                allocated = len+1+2+(unsigned int)strlen(element->d_name);
                 element_name = (char*)malloc(sizeof(char)*allocated);
             }
             //avoid listing . and ..
@@ -302,7 +382,8 @@ void File::ls(std::vector<File>* retval) const
                 retval->emplace_back(element_name);
             }
         }
-        free(element_name);
         closedir(current_dir);
     }
+#endif
+    free(element_name);
 }
