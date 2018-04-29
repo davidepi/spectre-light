@@ -21,7 +21,7 @@
 // -- *nix only
 #ifdef _WIN32
 #include <io.h>
-#include <windows.h>
+//windows.h include moved in the .cpp
 #else
 #include <unistd.h> //access
 #include <sys/stat.h> //ISDIR mkdir
@@ -227,7 +227,11 @@ private:
 ///Determine if a path is absolute or not
 inline bool is_absolute(const char* path)
 {
+#ifdef _WIN32
+    return path[1] == ':' && path[2] == File::PATH_SEPARATOR;
+#else
     return path[0] == File::PATH_SEPARATOR;
+#endif
 }
 
 

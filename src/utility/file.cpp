@@ -4,6 +4,10 @@
 #include "file.hpp"
 
 #ifdef _WIN32
+//THIS MUST STAY HERE!
+//Windows.h adds #define interface struct and breaks vec3.hpp
+//seriously???
+#include <Windows.h>
 const char File::PATH_SEPARATOR = '\\';
 const char* File::PATH_SEPARATOR_STRING = "\\";
 #else
@@ -334,7 +338,6 @@ void File::ls(std::vector<File>* retval) const
     WIN32_FIND_DATA element;
     HANDLE current_dir = INVALID_HANDLE_VALUE;
     FindFirstFile(absolute, &element);
-    unsigned int allocated = len + 255;
     if(is_folder() && current_dir != INVALID_HANDLE_VALUE)
     {
         do

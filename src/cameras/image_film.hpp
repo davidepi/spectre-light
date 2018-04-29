@@ -27,14 +27,6 @@
 #include <stack>
 #include <cstdio>
 
-#ifdef WIN32
-#include <io.h>
-#else
-
-#include <unistd.h>
-
-#endif
-
 ///Used to store the weigthed average for every pixel
 struct Pixel
 {

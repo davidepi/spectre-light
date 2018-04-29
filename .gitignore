@@ -9,7 +9,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+# *.obj # conflicts with the .obj used for testing
 
 # Precompiled Headers
 *.gch

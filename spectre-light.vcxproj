@@ -138,10 +138,20 @@
     <ClInclude Include="src\validator.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include=".travis.yml" />
+    <None Include="appveyor.yml" />
+    <None Include="codecov.yml" />
+    <None Include="README.md" />
+    <None Include="Roadmap.md" />
     <None Include="src\parsers\config_lexer.l" />
     <None Include="src\parsers\config_parser.y" />
     <None Include="src\parsers\README.md" />
     <None Include="src\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+    <Text Include="LICENSE.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -189,10 +199,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;__VS__;SPECTRAL</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -201,9 +211,10 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>false</TreatWarningAsError>
       <StringPooling>true</StringPooling>
-      <FloatingPointModel>Strict</FloatingPointModel>
+      <FloatingPointModel>Precise</FloatingPointModel>
       <FloatingPointExceptions>true</FloatingPointExceptions>
-      <RemoveUnreferencedCodeData>false</RemoveUnreferencedCodeData>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -218,7 +229,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;__VS__;SPECTRAL</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -231,6 +242,11 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

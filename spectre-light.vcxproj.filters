@@ -425,5 +425,15 @@
     <None Include="src\README.md">
       <Filter>src</Filter>
     </None>
+    <None Include=".gitignore" />
+    <None Include=".travis.yml" />
+    <None Include="appveyor.yml" />
+    <None Include="codecov.yml" />
+    <None Include="README.md" />
+    <None Include="Roadmap.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+    <Text Include="LICENSE.txt" />
   </ItemGroup>
 </Project>
