@@ -82,12 +82,8 @@ namespace KdHelpers
     //Like the KdTreeNode, but with extra variables.
     //This is used to build the tree in a 'canonical' way. Then, when ready,
     //everything is flattened into the KdTreeNode array
-    class KdTreeBuildNode
+    struct KdTreeBuildNode
     {
-    public:
-        KdTreeBuildNode() = default;
-        ~KdTreeBuildNode() = default;
-
         //where the assets are stored
         unsigned int offset_start;
         bool isLeaf;
@@ -211,7 +207,7 @@ void KdTree::finalize(void* n)
                                         nodes_index);
         finalize(node->right);
     }
-    delete(node);
+    free(node);
 }
 
 void KdTree::buildTree()
@@ -221,7 +217,7 @@ void KdTree::buildTree()
 
     if(assets_number == 0)
         return;
-    KdTreeBuildNode* node = new KdTreeBuildNode();
+    KdTreeBuildNode* node = (KdTreeBuildNode*)malloc(sizeof(KdTreeBuildNode));
 
     //get the aabb for the whole scene
     scene_aabb = AABB(*(assetsList[0]->get_AABB)());

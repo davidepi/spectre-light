@@ -40,8 +40,8 @@ void MaterialLibrary::erase(const std::string& name)
                 lib.find(name);
         if(it != lib.end())
         {
-            lib.erase(it);
             delete it->second;
+            lib.erase(it);
         }
     }
 }

@@ -308,6 +308,7 @@ void Bvh::buildTree(Triangle* tris, int len)
         Bvh::nodesList = (BvhNode*)malloc(sizeof(BvhNode));
         Bvh::nodesList[0].len = (uint8_t)len;
         Bvh::nodesList[0].offset = 0;
+        Bvh::nodesList[0].bounding = AABB(); //init aabb to avoid wrong engulf
         for(int i=0;i<len;i++)
             Bvh::nodesList[0].bounding.engulf(tris[i].compute_AABB());
         return;

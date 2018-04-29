@@ -12,7 +12,7 @@ static void append_relative(const char* abs, const char* rel, char* out)
 {
     strcpy(out, abs);
     int absolute_index = (int)strlen(abs);
-    int relative_index = 0;
+    unsigned int relative_index = 0;
     if(rel[0] == '.')
     {
         //resolve ../file
@@ -59,7 +59,7 @@ static void append_relative(const char* abs, const char* rel, char* out)
                     if(absolute_index<=1)
                         continue;
                     absolute_index -= 2;
-                    while(absolute_index-->0 &&
+                    while((absolute_index--)>0 &&
                           out[absolute_index] != File::PATH_SEPARATOR);
                     continue;
                 }

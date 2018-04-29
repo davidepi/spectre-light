@@ -184,7 +184,7 @@ SPECTRE_TEST(Vec3, toString)
     Vec3 v(0, 1, 0);
     char* str = v.toString();
     EXPECT_STREQ(str, "vec3(0.000000, 1.000000, 0.000000)");
-    free(str);
+    delete[] str;
 }
 
 SPECTRE_TEST(Vec3, sum_vector)

@@ -88,7 +88,7 @@ public:
      *  \param[in] p A Point2 representing the point to which the
      *             distance should be calculated
      */
-    float distanceTo(const Point2& p)const;
+    float distanceTo(const Point2& p) const;
 
     /**  \brief Compute the maxium value between this point and another one
      *
@@ -113,21 +113,29 @@ public:
     //------ Operators ---------------------------------------------------------
 
     ///Offsets the point along a direction
-    Point2 operator+ (const Vec2&  v)const;
+    Point2 operator+(const Vec2& v) const;
+
     ///Offsets the point along a direction
-    void  operator+= (const Vec2&  v);
+    void operator+=(const Vec2& v);
+
     ///Returns the segment between two points
-    Vec2  operator-  (const Point2& p)const;
+    Vec2 operator-(const Point2& p) const;
+
     ///Offsets the point in the opposite of the given direction
-    Point2 operator- (const Vec2&  v)const;
+    Point2 operator-(const Vec2& v) const;
+
     ///Offsets the point in the opposite of the given direction
-    void operator-= (const Vec2&  v);
+    void operator-=(const Vec2& v);
+
     ///Check if two points are in the same spot
-    bool operator==  (const Point2&)const;
+    bool operator==(const Point2&) const;
+
     ///Check if two points are in different places
-    bool operator!=  (const Point2&)const;
+    bool operator!=(const Point2&) const;
+
     ///Access a component of the point
-    float operator[] (int)const;
+    float operator[](int) const;
+
     ///Access a component of the point, non-const version
     float& operator[](int);
 
@@ -151,10 +159,10 @@ public:
  */
 inline float distance(const Point2& p1, const Point2& p2)
 {
-    float x = p1.x - p2.x;
-    float y = p1.y - p2.y;
+    float x = p1.x-p2.x;
+    float y = p1.y-p2.y;
 
-    return std::sqrt((x * x) + (y * y));
+    return std::sqrt((x*x)+(y*y));
 }
 
 /**  \brief Compute the min value between two points
@@ -170,7 +178,7 @@ inline float distance(const Point2& p1, const Point2& p2)
 inline Point2 min(const Point2& p1, const Point2& p2)
 {
     return
-            Point2(min(p1.x,p2.x),min(p1.y,p2.y));
+            Point2(min(p1.x, p2.x), min(p1.y, p2.y));
 }
 
 /**  \brief Compute the max value between two points
@@ -186,7 +194,7 @@ inline Point2 min(const Point2& p1, const Point2& p2)
 inline Point2 max(const Point2& p1, const Point2& p2)
 {
     return
-            Point2(max(p1.x,p2.x),max(p1.y,p2.y));
+            Point2(max(p1.x, p2.x), max(p1.y, p2.y));
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//

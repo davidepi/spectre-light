@@ -9,7 +9,7 @@
 #define EXTENT_FILTER_TENT_Y 2
 
 FilterTent::FilterTent():Filter(EXTENT_FILTER_TENT_X, EXTENT_FILTER_TENT_Y)
-{};
+{}
 
 float FilterTent::weight(float offset_x, float offset_y) const
 {

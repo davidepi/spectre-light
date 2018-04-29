@@ -225,8 +225,8 @@ bool save_bmp(const char* name, int width, int height, const uint8_t* data)
                 swap(values+x, values+x+2);
             fwrite(values, sizeof(uint8_t), buf_len, fout);
         }
-        free(values);
         fclose(fout);
+        free(values);
         return true;
     }
     else

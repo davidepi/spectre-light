@@ -2,8 +2,8 @@ coverage:
   ignore:
     - "tests/*"
     - "src/parsers/lex.yy.cc"
-    - "src/parsers/config.tab.cc"
-    - "src/parsers/config.tab.hh"
+    - "src/parsers/config_parser.tab.cc"
+    - "src/parsers/config_parser.tab.hh"
     - "src/parsers/stack.hh"
     - "src/parsers/location.hh"
     - "src/parsers/position.hh"

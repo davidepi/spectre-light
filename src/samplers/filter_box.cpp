@@ -9,7 +9,7 @@
 #define EXTENT_FILTER_BOX_Y 1
 
 FilterBox::FilterBox():Filter(EXTENT_FILTER_BOX_X, EXTENT_FILTER_BOX_Y)
-{};
+{}
 
 float FilterBox::weight(float, float) const
 {
