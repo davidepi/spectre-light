@@ -19,6 +19,8 @@ long int last_line_pos;
 %option nounput
 %option noinput
 %option noyywrap
+%option nounistd
+%option never-interactive
 uint \+?[0-9]+
 int -[0-9]+
 float [-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?
