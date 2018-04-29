@@ -300,7 +300,7 @@ SPECTRE_TEST(Parser, texture)
     EXPECT_EQ(errors_count[WARNING_INDEX], 3);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_FALSE(TexLib.contains("I do not exist"));
-    free(r1);
+    delete r1;
     TexLib.clear();
 }
 

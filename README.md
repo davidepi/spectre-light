@@ -32,7 +32,7 @@ site
 ### Dependencies
 
 Although no dependency is strictly required, with the exception of [cmake](https://cmake.org "cmake homepage"),
-having the Magick++ library is stronly suggested (API version 7.0 or newer). The Magick++ lib is part of the
+having the Magick++ library is strongly suggested (API version 7.0 or newer). The Magick++ lib is part of the
 [ImageMagick](https://www.imagemagick.org/script/index.php) suite and can be easily installed
 in any OS. Without Magick++, *spectre-light* is limited to read and write only NetPBM and
 Windows Bitmap V3.0 files.

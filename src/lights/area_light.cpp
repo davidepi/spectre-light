@@ -17,7 +17,7 @@ AreaLight::AreaLight(const Shape* sp, const Matrix4& obj2World,
 
 AreaLight::~AreaLight()
 {
-    delete cd;
+    free(cd);
 }
 
 Spectrum AreaLight::emissive_spectrum() const

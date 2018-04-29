@@ -50,12 +50,12 @@ SPECTRE_TEST(Matrix4, toString)
     float vals[16] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
     Matrix4 m(vals);
     char* output = m.toString();
-    EXPECT_EQ(strcmp(output,
-                     "Matrix4[0.000000, 1.000000, 0.000000, 1.000000]\n"\
+    EXPECT_STREQ(output,
+                 "Matrix4[0.000000, 1.000000, 0.000000, 1.000000]\n"\
                           "       [0.000000, 1.000000, 0.000000, 1.000000]\n"\
                           "       [0.000000, 1.000000, 0.000000, 1.000000]\n"\
-                          "       [0.000000, 1.000000, 0.000000, 1.000000]\n"),
-              0);
+                          "       [0.000000, 1.000000, 0.000000, 1.000000]\n");
+    delete[] output;
 }
 
 SPECTRE_TEST(Matrix4, toArray)

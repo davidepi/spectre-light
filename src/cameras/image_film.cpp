@@ -164,6 +164,8 @@ bool ImageFilm::save_image()
                            buffer[j].cie_y*weight,
                            buffer[j].cie_z*weight).to_sRGB();
         }
+        else
+            rgb = ColorRGB(0.f, 0.f, 0.f);
         rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.r)*0xFF), 255.0f);
         rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.g)*0xFF), 255.0f);
         rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.b)*0xFF), 255.0f);
