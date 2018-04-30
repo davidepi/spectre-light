@@ -98,6 +98,26 @@
 %token LEAD "`Pb`"
 %token PLATINUM "`Pt`"
 %token TUNGSTEN "`W`"
+%token BERYLLIUM "`Be`"
+%token BISMUTH "`Bi`"
+%token COBALT "`Co`"
+%token CHROMIUM "`Cr`"
+%token GERMANIUM "`Ge`"
+%token POTASSIUM "`K`"
+%token LITHIUM "`Li`"
+%token MAGNESIUM "`Mg`"
+%token MANGANESE "`Mn`"
+%token MOLYBDENUM "`Mo`"
+%token SODIUM "`Na`"
+%token NIOBIUM "`Nb`"
+%token NICKEL "`Ni`"
+%token PALLADIUM "`Pd`"
+%token RHODIUM "`Rh`"
+%token TANTALUM "`Ta`"
+%token TITANIUM "`Ti`"
+%token VANADIUM "`V`"
+%token ZINC "`Zn`"
+%token ZIRCONIUM "`Zr`"
 
 %token <unsigned int> UINT "positive integer value"
 %token <int> INT "integer value"
@@ -245,6 +265,26 @@ element
 | LEAD {$$ = METAL_LEAD; }
 | PLATINUM {$$ = METAL_PLATINUM; }
 | TUNGSTEN {$$ = METAL_TUNGSTEN; }
+| BERYLLIUM {$$ = METAL_BERYLLIUM; }
+| BISMUTH {$$ = METAL_BISMUTH; }
+| COBALT {$$ = METAL_COBALT; }
+| CHROMIUM {$$ = METAL_CHROMIUM; }
+| GERMANIUM {$$ = METAL_GERMANIUM; }
+| POTASSIUM {$$ = METAL_POTASSIUM; }
+| LITHIUM {$$ = METAL_LITHIUM; }
+| MAGNESIUM {$$ = METAL_MAGNESIUM; }
+| MANGANESE {$$ = METAL_MANGANESE; }
+| MOLYBDENUM {$$ = METAL_MOLYBDENUM; }
+| SODIUM {$$ = METAL_SODIUM; }
+| NIOBIUM {$$ = METAL_NIOBIUM; }
+| NICKEL {$$ = METAL_NICKEL; }
+| PALLADIUM {$$ = METAL_PALLADIUM; }
+| RHODIUM {$$ = METAL_RHODIUM; }
+| TANTALUM {$$ = METAL_TANTALUM; }
+| TITANIUM {$$ = METAL_TITANIUM; }
+| VANADIUM {$$ = METAL_VANADIUM; }
+| ZINC {$$ = METAL_ZINC; }
+| ZIRCONIUM {$$ = METAL_ZIRCONIUM; }
 ;
 
 vector:

@@ -34,6 +34,26 @@ mercury [Hh][Gg]
 lead [Pp][Bb]
 platinum [Pp][Tt]
 tungsten [Ww]
+beryllium [Bb][Ee]
+bismuth [Bb][Ii]
+cobalt [Cc][Oo]
+chromium [Cc][Rr]
+germanium [Gg][Ee]
+potassium [Kk]
+lithium [Ll][Ii]
+magnesium [Mm][Gg]
+manganese [Mm][Nn]
+molybdenum [Mm][Oo]
+sodium [Nn][Aa]
+niobium [Nn][Bb]
+nickel [Nn][Ii]
+palladium [Pp][Dd]
+rhodium [Rr][Hh]
+tantalum [Tt][Aa]
+titanium [Tt][Ii]
+vanadium [Vv]
+zinc [Zz][Nn]
+zirconium [Zz][Rr]
 
 %{
     #define YY_USER_ACTION loc.columns(yyleng);
@@ -118,6 +138,26 @@ element {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
 {lead} { UPDATE_POS; return yy::ConfigParser::make_LEAD(loc);}
 {platinum} { UPDATE_POS; return yy::ConfigParser::make_PLATINUM(loc);}
 {tungsten} { UPDATE_POS; return yy::ConfigParser::make_TUNGSTEN(loc);}
+{beryllium} {UPDATE_POS; return yy::ConfigParser::make_BERYLLIUM(loc);}
+{bismuth} {UPDATE_POS; return yy::ConfigParser::make_BISMUTH(loc);}
+{cobalt} {UPDATE_POS; return yy::ConfigParser::make_COBALT(loc);}
+{chromium} {UPDATE_POS; return yy::ConfigParser::make_CHROMIUM(loc);}
+{germanium} {UPDATE_POS; return yy::ConfigParser::make_GERMANIUM(loc);}
+{potassium} {UPDATE_POS; return yy::ConfigParser::make_POTASSIUM(loc);}
+{lithium} {UPDATE_POS; return yy::ConfigParser::make_LITHIUM(loc);}
+{magnesium} {UPDATE_POS; return yy::ConfigParser::make_MAGNESIUM(loc);}
+{manganese} {UPDATE_POS; return yy::ConfigParser::make_MANGANESE(loc);}
+{molybdenum} {UPDATE_POS; return yy::ConfigParser::make_MOLYBDENUM(loc);}
+{sodium} {UPDATE_POS; return yy::ConfigParser::make_SODIUM(loc);}
+{niobium} {UPDATE_POS; return yy::ConfigParser::make_NIOBIUM(loc);}
+{nickel} {UPDATE_POS; return yy::ConfigParser::make_NICKEL(loc);}
+{palladium} {UPDATE_POS; return yy::ConfigParser::make_PALLADIUM(loc);}
+{rhodium} {UPDATE_POS; return yy::ConfigParser::make_RHODIUM(loc);}
+{tantalum} {UPDATE_POS; return yy::ConfigParser::make_TANTALUM(loc);}
+{titanium} {UPDATE_POS; return yy::ConfigParser::make_TITANIUM(loc);}
+{vanadium} {UPDATE_POS; return yy::ConfigParser::make_VANADIUM(loc);}
+{zinc} {UPDATE_POS; return yy::ConfigParser::make_ZINC(loc);}
+{zirconium} {UPDATE_POS; return yy::ConfigParser::make_ZIRCONIUM(loc);}
 #[^\n\r]* {UPDATE_POS; loc.step();}
 [ \t\r]   {UPDATE_POS; loc.step();}
 [\n]     {UPDATE_POS; loc.lines(yyleng);loc.step(); last_line_pos=current_pos; }

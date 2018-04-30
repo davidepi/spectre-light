@@ -405,10 +405,30 @@ namespace yy {
         CONFIG_LEAD = 323,
         CONFIG_PLATINUM = 324,
         CONFIG_TUNGSTEN = 325,
-        CONFIG_UINT = 326,
-        CONFIG_INT = 327,
-        CONFIG_FLOAT = 328,
-        CONFIG_STRING = 329
+        CONFIG_BERYLLIUM = 326,
+        CONFIG_BISMUTH = 327,
+        CONFIG_COBALT = 328,
+        CONFIG_CHROMIUM = 329,
+        CONFIG_GERMANIUM = 330,
+        CONFIG_POTASSIUM = 331,
+        CONFIG_LITHIUM = 332,
+        CONFIG_MAGNESIUM = 333,
+        CONFIG_MANGANESE = 334,
+        CONFIG_MOLYBDENUM = 335,
+        CONFIG_SODIUM = 336,
+        CONFIG_NIOBIUM = 337,
+        CONFIG_NICKEL = 338,
+        CONFIG_PALLADIUM = 339,
+        CONFIG_RHODIUM = 340,
+        CONFIG_TANTALUM = 341,
+        CONFIG_TITANIUM = 342,
+        CONFIG_VANADIUM = 343,
+        CONFIG_ZINC = 344,
+        CONFIG_ZIRCONIUM = 345,
+        CONFIG_UINT = 346,
+        CONFIG_INT = 347,
+        CONFIG_FLOAT = 348,
+        CONFIG_STRING = 349
       };
     };
 
@@ -805,6 +825,86 @@ namespace yy {
 
     static inline
     symbol_type
+    make_BERYLLIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_BISMUTH (const location_type& l);
+
+    static inline
+    symbol_type
+    make_COBALT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_CHROMIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_GERMANIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_POTASSIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_LITHIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_MAGNESIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_MANGANESE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_MOLYBDENUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SODIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_NIOBIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_NICKEL (const location_type& l);
+
+    static inline
+    symbol_type
+    make_PALLADIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_RHODIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_TANTALUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_TITANIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_VANADIUM (const location_type& l);
+
+    static inline
+    symbol_type
+    make_ZINC (const location_type& l);
+
+    static inline
+    symbol_type
+    make_ZIRCONIUM (const location_type& l);
+
+    static inline
+    symbol_type
     make_UINT (const unsigned int& v, const location_type& l);
 
     static inline
@@ -1024,12 +1124,12 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 259,     ///< Last index in yytable_.
+      yylast_ = 297,     ///< Last index in yytable_.
       yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 28, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 75  ///< Number of tokens.
+      yyntokens_ = 95  ///< Number of tokens.
     };
 
 
@@ -1078,9 +1178,11 @@ namespace yy {
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,    66,    67,    68,    69,    70,    71,    72,    73,    74
+      65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+      85,    86,    87,    88,    89,    90,    91,    92,    93,    94
     };
-    const unsigned int user_token_number_max_ = 329;
+    const unsigned int user_token_number_max_ = 349;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1113,33 +1215,33 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 99: // vector2
+      case 119: // vector2
         value.copy< Vec2 > (other.value);
         break;
 
-      case 98: // vector
+      case 118: // vector
         value.copy< Vec3 > (other.value);
         break;
 
-      case 73: // "floating point value"
-      case 100: // number
+      case 93: // "floating point value"
+      case 120: // number
         value.copy< float > (other.value);
         break;
 
-      case 72: // "integer value"
-      case 101: // integer
+      case 92: // "integer value"
+      case 121: // integer
         value.copy< int > (other.value);
         break;
 
-      case 97: // element
+      case 117: // element
         value.copy< metal_t > (other.value);
         break;
 
-      case 74: // "quoted string"
+      case 94: // "quoted string"
         value.copy< std::string > (other.value);
         break;
 
-      case 71: // "positive integer value"
+      case 91: // "positive integer value"
         value.copy< unsigned int > (other.value);
         break;
 
@@ -1160,33 +1262,33 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 99: // vector2
+      case 119: // vector2
         value.copy< Vec2 > (v);
         break;
 
-      case 98: // vector
+      case 118: // vector
         value.copy< Vec3 > (v);
         break;
 
-      case 73: // "floating point value"
-      case 100: // number
+      case 93: // "floating point value"
+      case 120: // number
         value.copy< float > (v);
         break;
 
-      case 72: // "integer value"
-      case 101: // integer
+      case 92: // "integer value"
+      case 121: // integer
         value.copy< int > (v);
         break;
 
-      case 97: // element
+      case 117: // element
         value.copy< metal_t > (v);
         break;
 
-      case 74: // "quoted string"
+      case 94: // "quoted string"
         value.copy< std::string > (v);
         break;
 
-      case 71: // "positive integer value"
+      case 91: // "positive integer value"
         value.copy< unsigned int > (v);
         break;
 
@@ -1280,33 +1382,33 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 99: // vector2
+      case 119: // vector2
         value.template destroy< Vec2 > ();
         break;
 
-      case 98: // vector
+      case 118: // vector
         value.template destroy< Vec3 > ();
         break;
 
-      case 73: // "floating point value"
-      case 100: // number
+      case 93: // "floating point value"
+      case 120: // number
         value.template destroy< float > ();
         break;
 
-      case 72: // "integer value"
-      case 101: // integer
+      case 92: // "integer value"
+      case 121: // integer
         value.template destroy< int > ();
         break;
 
-      case 97: // element
+      case 117: // element
         value.template destroy< metal_t > ();
         break;
 
-      case 74: // "quoted string"
+      case 94: // "quoted string"
         value.template destroy< std::string > ();
         break;
 
-      case 71: // "positive integer value"
+      case 91: // "positive integer value"
         value.template destroy< unsigned int > ();
         break;
 
@@ -1333,33 +1435,33 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 99: // vector2
+      case 119: // vector2
         value.move< Vec2 > (s.value);
         break;
 
-      case 98: // vector
+      case 118: // vector
         value.move< Vec3 > (s.value);
         break;
 
-      case 73: // "floating point value"
-      case 100: // number
+      case 93: // "floating point value"
+      case 120: // number
         value.move< float > (s.value);
         break;
 
-      case 72: // "integer value"
-      case 101: // integer
+      case 92: // "integer value"
+      case 121: // integer
         value.move< int > (s.value);
         break;
 
-      case 97: // element
+      case 117: // element
         value.move< metal_t > (s.value);
         break;
 
-      case 74: // "quoted string"
+      case 94: // "quoted string"
         value.move< std::string > (s.value);
         break;
 
-      case 71: // "positive integer value"
+      case 91: // "positive integer value"
         value.move< unsigned int > (s.value);
         break;
 
@@ -1425,7 +1527,9 @@ namespace yy {
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
      305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
      315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
-     325,   326,   327,   328,   329
+     325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
+     335,   336,   337,   338,   339,   340,   341,   342,   343,   344,
+     345,   346,   347,   348,   349
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
@@ -1845,6 +1949,126 @@ namespace yy {
   }
 
   ConfigParser::symbol_type
+  ConfigParser::make_BERYLLIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_BERYLLIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_BISMUTH (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_BISMUTH, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_COBALT (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_COBALT, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_CHROMIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_CHROMIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_GERMANIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_GERMANIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_POTASSIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_POTASSIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_LITHIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_LITHIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_MAGNESIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_MAGNESIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_MANGANESE (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_MANGANESE, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_MOLYBDENUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_MOLYBDENUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_SODIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_SODIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_NIOBIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_NIOBIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_NICKEL (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_NICKEL, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_PALLADIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_PALLADIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_RHODIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_RHODIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_TANTALUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_TANTALUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_TITANIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_TITANIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_VANADIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_VANADIUM, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_ZINC (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_ZINC, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_ZIRCONIUM (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_ZIRCONIUM, l);
+  }
+
+  ConfigParser::symbol_type
   ConfigParser::make_UINT (const unsigned int& v, const location_type& l)
   {
     return symbol_type (token::CONFIG_UINT, v, l);
@@ -1871,7 +2095,7 @@ namespace yy {
 
 
 } // yy
-#line 1875 "config_parser.tab.hh" // lalr1.cc:392
+#line 2099 "config_parser.tab.hh" // lalr1.cc:392
 
 
 
