@@ -442,3 +442,4 @@ __pycache__/
 # End of https://www.gitignore.io/api/c++,xcode,clion,cmake,visualstudio
 loc.sh
 TODO.txt
+.DS_Store
