@@ -18,10 +18,10 @@
 #define DEFAULT_BOUNCES 5
 
 ///The amount of floating point rounding error that can cause self-intersections
-#define SELF_INTERSECT_ERROR 1e-5f
+#define SELF_INTERSECT_ERROR 1e-2f
 
 ///The amount of error to consider when comparing shadow ray distance
-#define OCCLUSION_INTERSECT_ERROR SELF_INTERSECT_ERROR
+#define OCCLUSION_INTERSECT_ERROR 1e-3f
 
 ///Defines the max number of assets in the scene
 #define _MAX_ASSETS_ 4096
@@ -52,4 +52,5 @@
 //#define FORCED_SEED 0
 
 #include "validator.h"
+
 #endif

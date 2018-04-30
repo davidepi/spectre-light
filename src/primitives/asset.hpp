@@ -55,12 +55,13 @@ public:
      *  Calls the intersection routine on the underlying shape.
      *  Check Shape::intersect
      *
-     *  \param[in] r A pointer to the ray used to perform the intersection
+     *  \param[in] ray_world A pointer to the ray used to perform the
+     *  intersection
      *  \param[out] distance The distance of the point of intersection
      *  \param[out] h An HitPoint class containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
+    bool intersect(const Ray* ray_world, float* distance, HitPoint* h) const;
 
     /** \brief Intersection of a Ray and the bounding box of the asset
      *

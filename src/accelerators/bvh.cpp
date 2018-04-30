@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include "bvh.hpp"
+
 #ifdef __BMI2__
 #include <x86intrin.h> //for pdep
 #endif
@@ -27,9 +28,10 @@ namespace bvhhelpers
     {
         int index; //index in the primitive array
         uint64_t morton;
-        bool operator<(const Primitive& b)const
+
+        bool operator<(const Primitive& b) const
         {
-            return Primitive::morton < b.morton;
+            return Primitive::morton<b.morton;
         }
 
     };
@@ -125,13 +127,13 @@ using bvhhelpers::Primitive;
 
 //given a cluster and an element, find the index of the closest node to that
 //element in the cluster
-static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
+static uint32_t findBestMatch(std::vector<BvhBuildNode*>* c, BvhBuildNode* b)
 {
     float best_area = INFINITY;
     uint32_t retval = 0; //if size == 1 return myself
-    for(unsigned int i=0;i<c->size();i++) //linear search
+    for(unsigned int i = 0; i<c->size(); i++) //linear search
     {
-        if(c->at(i)!=b)
+        if(c->at(i) != b)
         {
             AABB unionbox = c->at(i)->bounding+b->bounding;
             float val = unionbox.surface();
@@ -149,7 +151,7 @@ static uint32_t findBestMatch(std::vector<BvhBuildNode*>*c, BvhBuildNode* b)
 //c[in] The clusters that will be combined
 //n[in] The desired number of clusters
 //return number of nodes created
-static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
+static uint32_t combineCluster(std::vector<BvhBuildNode*>* c, int n, char axis)
 {
     uint32_t created = 0;
     uint32_t* closest = (uint32_t*)malloc(sizeof(uint32_t)*c->size());
@@ -157,10 +159,10 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
     uint32_t right = 0xFFFFFFFF;
     if((int)c->size()>n) //calculate best pair only if needed
     {
-        for (unsigned int i = 0; i < c->size(); i++)
+        for(unsigned int i = 0; i<c->size(); i++)
         {
             //find best pair for this node
-            BvhBuildNode *at = c->at(i);
+            BvhBuildNode* at = c->at(i);
             closest[i] = findBestMatch(c, at);
         }
     }
@@ -168,10 +170,10 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
     {
         float best = INFINITY;
         //find best of best-pairs
-        for(unsigned int i=0;i<c->size();i++)
+        for(unsigned int i = 0; i<c->size(); i++)
         {
             float val;
-            val = (c->at(i)->bounding + c->at(closest[i])->bounding).surface();
+            val = (c->at(i)->bounding+c->at(closest[i])->bounding).surface();
             if(val<best)
             {
                 best = val;
@@ -183,7 +185,7 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
         //merge them together in a new node
         BvhBuildNode* node = new BvhBuildNode();
         created++;
-        node->interior(c->at(left),c->at(right),axis);
+        node->interior(c->at(left), c->at(right), axis);
         //replace one node with the new one, remove the other. Since I don't
         //care about order I can replace the second with the last and pop the
         //last one
@@ -201,16 +203,16 @@ static uint32_t combineCluster(std::vector<BvhBuildNode*>*c, int n, char axis)
             closest[left] = findBestMatch(c, c->at(left));
 
             //update closest node for the one referencing the old left and right
-            for (unsigned int i = 0; i < c->size(); i++)
+            for(unsigned int i = 0; i<c->size(); i++)
             {
                 //first check. left and right intended to be the old nodes,
                 //now removed. So I need to update the values
-                if (closest[i] == left || closest[i] == right)
+                if(closest[i] == left || closest[i] == right)
                     closest[i] = findBestMatch(c, c->at(i));
 
                 //second check. If this point to c->size, the node removed at
                 //the end, it should point to the ACTUAL node in right
-                if(closest[i]==c->size())
+                if(closest[i] == c->size())
                     closest[i] = right;
             }
         }
@@ -228,20 +230,20 @@ static uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end,
                               uint64_t m)
 {
     //every bit considered is equal || morton code is 0
-    if(((mc[start].morton&m)==(mc[end].morton&m)) || m == 0x0)
-        return (start+((end-start)>>1));
+    if(((mc[start].morton & m) == (mc[end].morton & m)) || m == 0x0)
+        return (start+((end-start) >> 1));
 
     //delimiters used to fin when bit changes from 0 to 1.
     uint32_t left = start; //points always to 0
     uint32_t right = end; //points always to 1
-    uint32_t cur = (left+right)>>1; //find the middle point
+    uint32_t cur = (left+right) >> 1; //find the middle point
     while(cur>left)//divide et impera approach
     {
-        if((mc[cur].morton & m)==0)
+        if((mc[cur].morton & m) == 0)
             left = cur;
         else
             right = cur;
-        cur = (left+right)>>1;
+        cur = (left+right) >> 1;
     }
     return left;
 }
@@ -255,36 +257,37 @@ static uint32_t makePartition(Primitive* mc, uint32_t start, uint32_t end,
 //bit[in] partition bit for morton code
 //return number of nodes created
 static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
-                             int len, uint64_t bit,std::vector<BvhBuildNode*>*c)
+                             int len, uint64_t bit,
+                             std::vector<BvhBuildNode*>* c)
 {
-    if(len==0)
+    if(len == 0)
         return 0;
     uint32_t created = 0;
     char axis = BSF(bit)%3;
-    if(len < AAC_DELTA)
+    if(len<AAC_DELTA)
     {
         AABB bounding;
         BvhBuildNode* node = new BvhBuildNode;
         created++;
-        for(int i=0;i<len;i++)
+        for(int i = 0; i<len; i++)
             bounding.engulf(tris[p[offs+i].index].compute_AABB());
-        node->leaf(bounding,offs,len);
+        node->leaf(bounding, offs, len);
         std::vector<BvhBuildNode*> tmp_cluster;
         tmp_cluster.push_back(node);
-        created+=combineCluster(&tmp_cluster,(int)(AAC_FD),axis);
-        c->insert(c->end(),tmp_cluster.begin(),tmp_cluster.end());
+        created += combineCluster(&tmp_cluster, (int)(AAC_FD), axis);
+        c->insert(c->end(), tmp_cluster.begin(), tmp_cluster.end());
     }
     else
     {
-        std::vector<BvhBuildNode*>left;
-        std::vector<BvhBuildNode*>right;
-        uint32_t part = makePartition(p,offs,offs+len-1,bit);
-        bit>>=1;
-        created+=traverseTree(tris,p,offs,part-offs,bit,&left);
-        created+=traverseTree(tris,p,part,offs+len-part,bit,&right);
-        left.insert(left.end(),right.begin(),right.end());
-        created+=combineCluster(&left,(int)AAC_F(len),axis);
-        c->insert(c->end(),left.begin(),left.end());
+        std::vector<BvhBuildNode*> left;
+        std::vector<BvhBuildNode*> right;
+        uint32_t part = makePartition(p, offs, offs+len-1, bit);
+        bit >>= 1;
+        created += traverseTree(tris, p, offs, part-offs, bit, &left);
+        created += traverseTree(tris, p, part, offs+len-part, bit, &right);
+        left.insert(left.end(), right.begin(), right.end());
+        created += combineCluster(&left, (int)AAC_F(len), axis);
+        c->insert(c->end(), left.begin(), left.end());
     }
     return created;
 }
@@ -309,57 +312,58 @@ void Bvh::buildTree(Triangle* tris, int len)
         Bvh::nodesList[0].len = (uint8_t)len;
         Bvh::nodesList[0].offset = 0;
         Bvh::nodesList[0].bounding = AABB(); //init aabb to avoid wrong engulf
-        for(int i=0;i<len;i++)
+        for(int i = 0; i<len; i++)
             Bvh::nodesList[0].bounding.engulf(tris[i].compute_AABB());
         return;
     }
     Primitive* prims = (Primitive*)malloc(sizeof(Primitive)*len);
     Point3* centroids = (Point3*)malloc(sizeof(Point3)*len);
     AABB centroidaabb;
-    for(int i=0;i<len;i++) //calculate centroid AABB
+    for(int i = 0; i<len; i++) //calculate centroid AABB
     {
-        prims[i].index=i;
+        prims[i].index = i;
         centroids[i] = tris[i].compute_AABB().center();
         centroidaabb.engulf(centroids+i);
     }
     //calculate reciprocal of the centroidaabb, used to map distance in [0-1]
-    Vec3 centroidaabb_ext=(centroidaabb.bounds[1]-centroidaabb.bounds[0]);
+    Vec3 centroidaabb_ext = (centroidaabb.bounds[1]-centroidaabb.bounds[0]);
     centroidaabb_ext.x = 1.f/centroidaabb_ext.x;
     centroidaabb_ext.y = 1.f/centroidaabb_ext.y;
     centroidaabb_ext.z = 1.f/centroidaabb_ext.z;
-    for(int i=0;i<len;i++) //maps triangle centroids in [0-1] wrt whole AABB
+    for(int i = 0; i<len; i++) //maps triangle centroids in [0-1] wrt whole AABB
     {
         Vec3 distance = (centroids[i]-centroidaabb.bounds[0])*centroidaabb_ext;
         //calculate morton code
-        prims[i].morton = mortonCode(distance.x,distance.y,distance.z);
+        prims[i].morton = mortonCode(distance.x, distance.y, distance.z);
     }
 
     free(centroids);
-    std::sort(prims,prims+len);
+    std::sort(prims, prims+len);
     uint64_t morton_flag = 0x4000000000000000U;
 
     std::vector<BvhBuildNode*> clusters;
     uint32_t created;
-    created = traverseTree(tris,prims,0,len,morton_flag,&clusters);
-    created+=combineCluster(&clusters,1,BSF(morton_flag)%3);
+    created = traverseTree(tris, prims, 0, len, morton_flag, &clusters);
+    created += combineCluster(&clusters, 1, BSF(morton_flag)%3);
     //bvh completed
 
     //flatten the tree into an array, like the kdtree one
     Bvh::nodesList = (BvhNode*)malloc(created*sizeof(BvhNode));
     if(clusters.size()>1)
     {
-        fprintf(stderr,"Node number error"); //TODO removeme
+        fprintf(stderr, "Node number error"); //TODO removeme
     }
     uint32_t index = 0;
 
-    flatten(clusters.at(0),&index);
+    flatten(clusters.at(0), &index);
 
     //reorder the Triangle* array
     //this is actually horrible but I don't want to deallocate array under
     //the hood. I really hope that memcpying the whole array is smh fast
     Triangle* tmp = (Triangle*)malloc(sizeof(Triangle)*len);
-    memcpy((void*)tmp,(void*)tris,sizeof(Triangle)*len);//create reference copy
-    for(int i=0;i<len;i++)
+    memcpy((void*)tmp, (void*)tris,
+           sizeof(Triangle)*len);//create reference copy
+    for(int i = 0; i<len; i++)
     {
         tris[i].a = tmp[prims[i].index].a; //copy from the reference
         tris[i].b = tmp[prims[i].index].b;
@@ -372,7 +376,7 @@ void Bvh::buildTree(Triangle* tris, int len)
 void Bvh::flatten(void* n, uint32_t* index)
 {
     BvhBuildNode* node = (BvhBuildNode*)n;
-    if(node->left==NULL) //leaf
+    if(node->left == NULL) //leaf
     {
         nodesList[*index].bounding = node->bounding;
         nodesList[*index].offset = node->offset;
@@ -386,21 +390,22 @@ void Bvh::flatten(void* n, uint32_t* index)
         uint32_t myindex = (*index)++;
 
         //left node is right after the parent, right node is somewhere else
-        flatten(node->left,index);
+        flatten(node->left, index);
 
         //I processed all the left nodes, so now I know the right node position
         nodesList[myindex].bounding = node->bounding;
         nodesList[myindex].sibling = *index;
         nodesList[myindex].len = 0;
         nodesList[myindex].axis = (uint8_t)(node->split);
-        flatten(node->right,index);
+        flatten(node->right, index);
     }
-    delete(node);
+    delete (node);
 }
 
 ///Max depth of the Bvh tree
 #define BVH_MAX_DEPTH 32
-bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h)const
+
+bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h) const
 {
     RayProperties rp(*r);
     float dmin;
@@ -410,23 +415,23 @@ bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h)const
     BvhNode* jobs[BVH_MAX_DEPTH];
     unsigned char jobs_stack_top = 0;
     BvhNode* node = Bvh::nodesList;
-    while(node!=NULL)
+    while(node != NULL)
     {
-        if(node->bounding.intersect(r,&rp,&dmin,&dmax) &&
-                !(found && dmin>*distance))//already found a closer one
+        if(node->bounding.intersect(r, &rp, &dmin, &dmax) &&
+           !(found && dmin>*distance))//already found a closer one
         {
             if(node->len>0) //is leaf
             {
-                for(int i=0;i<node->len;i++)
+                for(int i = 0; i<node->len; i++)
                 {
                     unsigned int tmp_index = node->offset+i;
-                    if(Bvh::tris[tmp_index].intersect(r,distance,h))
+                    if(Bvh::tris[tmp_index].intersect(r, distance, h))
                     {
                         h->index = tmp_index;
                         found = true;
                     }
                 }
-                if (jobs_stack_top > 0)
+                if(jobs_stack_top>0)
                     node = jobs[--jobs_stack_top];
                 else
                     break;
@@ -446,10 +451,10 @@ bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h)const
             }
         }
         else //try next node
-            if (jobs_stack_top > 0)
-                node = jobs[--jobs_stack_top];
-            else
-                break;
+        if(jobs_stack_top>0)
+            node = jobs[--jobs_stack_top];
+        else
+            break;
     }
 
     return found;

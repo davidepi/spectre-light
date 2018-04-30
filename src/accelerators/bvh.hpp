@@ -100,12 +100,12 @@ public:
      *  \param[out] h The hit triangle
      *  \return true if there is an intersection, false otherwise
      */
-    bool intersect(const Ray* r, float* distance, HitPoint* h)const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
 
 private:
 
     //transform the temp build structure in the flattened one
-    void flatten(void*,uint32_t*);
+    void flatten(void*, uint32_t*);
 
     //The flattened tree
     BvhNode* nodesList;

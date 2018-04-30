@@ -100,7 +100,7 @@ public:
      *
      *  \return true if this node is a leaf, false otherwise
      */
-    bool isLeaf()const;
+    bool isLeaf() const;
 
     /** \brief Return the split axis of this node
      *
@@ -113,7 +113,7 @@ public:
      *  \warning If this node is a leaf the behaviour of this function is
      *  undefined
      */
-    char getAxis()const;
+    char getAxis() const;
 
     /** \brief Return the split value of this node
      *
@@ -126,7 +126,7 @@ public:
      *  \warning If this node is a leaf the behaviour of this function is
      *  undefined
      */
-    float getSplit()const;
+    float getSplit() const;
 
     /** \brief Return the pointer to the sibling of this node
      *
@@ -138,7 +138,7 @@ public:
      *  \warning If this node is a leaf the behaviour of this function is
      *  undefined
      */
-    unsigned int getOtherChildOffset()const;
+    unsigned int getOtherChildOffset() const;
 
     /** \brief Return the number of assets referenced by the leaf
      *
@@ -151,7 +151,7 @@ public:
      *  \warning If this node is an internal node the behaviour of this function
      *  is undefined
      */
-    unsigned int getAssetsNumber()const;
+    unsigned int getAssetsNumber() const;
 
     /** \brief Return the offset of the first asset referenced
      *
@@ -164,7 +164,7 @@ public:
      *  \warning If this node is an internal node the behaviour of this function
      *  is undefined
      */
-    unsigned int getAssetOffset()const;
+    unsigned int getAssetOffset() const;
 
 private:
     //private members description in file kdtree.cpp
@@ -223,7 +223,7 @@ public:
      *  \param[out] hit The hit asset
      *  \return true if there is an intersection, false otherwise
      */
-    bool intersect(const Ray* r, HitPoint* hit)const;
+    bool intersect(const Ray* r, HitPoint* hit) const;
 
 private:
 

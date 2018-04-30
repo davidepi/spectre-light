@@ -26,12 +26,12 @@ Asset::~Asset()
     free(materials_index);
 }
 
-bool Asset::intersect(const Ray* ray_obj, float* distance, HitPoint* hit) const
+bool
+Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
 {
-
     //since intersection is performed in object_space, convert back the ray
-    Ray ray_world = worldToObj**ray_obj;
-    bool res = Asset::model->intersect(&ray_world, distance, hit);
+    Ray ray_obj = worldToObj**ray_world;
+    bool res = Asset::model->intersect(&ray_obj, distance, hit);
     if(res)
     {
         //retransform back to world space
