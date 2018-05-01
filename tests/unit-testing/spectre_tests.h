@@ -21,7 +21,6 @@
 #define ASSERT_FALSE(X) if(X){FAIL();}
 #define ASSERT_EQ(x,y) if(x!=y){FAIL();}
 #define ASSERT_ANY_THROW(x); try{x;XCTAssertTrue(false);}catch(const char* m){}
-#elif defined(__MSVS__)
 #else
 #define SPECTRE_TEST_INIT(CLASSNAME)
 #define SPECTRE_TEST_END(CLASSNAME)
