@@ -2,17 +2,17 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Light_tests)
 
 #include "lights/area_light.hpp"
 #include "primitives/sphere.hpp"
 #include <random>
+
+SPECTRE_TEST_INIT(Light_tests)
 
 SPECTRE_TEST(Light, AreaLight_is_light)
 {

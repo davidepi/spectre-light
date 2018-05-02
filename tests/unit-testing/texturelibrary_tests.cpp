@@ -2,17 +2,17 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(TextureLibrary_tests)
 
 #include "textures/texture_library.hpp"
 #include "textures/uniform.hpp"
 #include "utility/spectrum.hpp"
+
+SPECTRE_TEST_INIT(TextureLibrary_tests)
 
 SPECTRE_TEST(TextureLibrary, add)
 {
@@ -48,22 +48,22 @@ SPECTRE_TEST(TextureLibrary, remove)
     Texture* tex = new UniformTexture(SPECTRUM_WHITE);
     TexLib.add_inherit("Removeme", tex);
     const Texture* got = TexLib.get("Removeme");
-    ASSERT_EQ(got, tex);
+    ASSERT_PTR_EQ(got,tex);
 
     TexLib.erase("Removeme");
     got = TexLib.get("Removeme");
-    EXPECT_EQ(got, nullptr);
+    EXPECT_PTR_NULL(got);
 
     //this should do nothing, texture already removed
     got = tex;
     TexLib.erase("Removeme");
     got = TexLib.get("Removeme");
-    EXPECT_EQ(got, nullptr);
+    EXPECT_PTR_NULL(got);
 
     got = TexLib.get("Default");
-    EXPECT_NE(got, nullptr);
+    EXPECT_PTR_NOTNULL(got);
     TexLib.erase("Default");
-    EXPECT_NE(got, nullptr);
+    EXPECT_PTR_NOTNULL(got);
 }
 
 SPECTRE_TEST(TextureLibrary, contains)
@@ -88,31 +88,31 @@ SPECTRE_TEST(TextureLibrary, clear)
 
     const Texture* got;
     got = TexLib.get("Removeme");
-    EXPECT_NE(got, nullptr);
+    EXPECT_PTR_NOTNULL(got);
     got = TexLib.get("Removeme2");
-    EXPECT_NE(got, nullptr);
+    EXPECT_PTR_NOTNULL(got);
     got = TexLib.get("Removeme3");
-    EXPECT_NE(got, nullptr);
+    EXPECT_PTR_NOTNULL(got);
     got = TexLib.get("Default");
-    EXPECT_NE(got, nullptr);
+    EXPECT_PTR_NOTNULL(got);
 
     TexLib.clear();
 
     got = TexLib.get("Removeme");
-    EXPECT_EQ(got, nullptr);
+    EXPECT_PTR_NULL(got);
     got = TexLib.get("Removeme2");
-    EXPECT_EQ(got, nullptr);
+    EXPECT_PTR_NULL(got);
     got = TexLib.get("Removeme3");
-    EXPECT_EQ(got, nullptr);
+    EXPECT_PTR_NULL(got);
     got = TexLib.get("Default");
-    EXPECT_NE(got, nullptr);
+    EXPECT_PTR_NOTNULL(got);
 }
 
 SPECTRE_TEST(TextureLibrary, get_default)
 {
     const Texture* tex0 = TexLib.get_default();
     const Texture* tex1 = TexLib.get("Default");
-    EXPECT_EQ(tex0, tex1); //assert that they point to the same value
+    EXPECT_PTR_EQ(tex0, tex1); //assert that they point to the same value
 }
 
 SPECTRE_TEST_END(TextureLibrary)

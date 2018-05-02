@@ -2,17 +2,17 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Mesh_tests)
 
 #include "primitives/mesh.hpp"
 #include "utility/utility.hpp"
 #include <climits>
+
+SPECTRE_TEST_INIT(Mesh_tests)
 
 SPECTRE_TEST(Mesh, add_triangle_points)
 {
@@ -185,12 +185,12 @@ SPECTRE_TEST(Mesh, AABB_object_space)
     m.finalize();
     AABB box = m.compute_AABB();
 
-    EXPECT_EQ(box.bounds[0].x, -1);
-    EXPECT_EQ(box.bounds[0].y, 0);
-    EXPECT_EQ(box.bounds[0].z, 0);
-    EXPECT_EQ(box.bounds[1].x, 1);
-    EXPECT_EQ(box.bounds[1].y, 1);
-    EXPECT_EQ(box.bounds[1].z, 100);
+    EXPECT_EQ(box.bounds[0].x, -1.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 1.f);
+    EXPECT_EQ(box.bounds[1].y, 1.f);
+    EXPECT_EQ(box.bounds[1].z, 100.f);
 }
 
 SPECTRE_TEST(Mesh, AABB_world_space)
@@ -221,39 +221,39 @@ SPECTRE_TEST(Mesh, AABB_world_space)
     trans.set_identity();
     AABB box = m.compute_AABB(&trans);
 
-    EXPECT_EQ(box.bounds[0].x, -1);
-    EXPECT_EQ(box.bounds[0].y, 0);
-    EXPECT_EQ(box.bounds[0].z, 0);
-    EXPECT_EQ(box.bounds[1].x, 1);
-    EXPECT_EQ(box.bounds[1].y, 1);
-    EXPECT_EQ(box.bounds[1].z, 100);
+    EXPECT_EQ(box.bounds[0].x, -1.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 1.f);
+    EXPECT_EQ(box.bounds[1].y, 1.f);
+    EXPECT_EQ(box.bounds[1].z, 100.f);
 
     trans.set_scale(Vec3(15, 5, 1));
     box = m.compute_AABB(&trans);
-    EXPECT_EQ(box.bounds[0].x, -15);
-    EXPECT_EQ(box.bounds[0].y, 0);
-    EXPECT_EQ(box.bounds[0].z, 0);
-    EXPECT_EQ(box.bounds[1].x, 15);
-    EXPECT_EQ(box.bounds[1].y, 5);
-    EXPECT_EQ(box.bounds[1].z, 100);
+    EXPECT_EQ(box.bounds[0].x, -15.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 15.f);
+    EXPECT_EQ(box.bounds[1].y, 5.f);
+    EXPECT_EQ(box.bounds[1].z, 100.f);
 
     trans.set_translation(Vec3(15, 5, -10));
     box = m.compute_AABB(&trans);
-    EXPECT_EQ(box.bounds[0].x, 14);
-    EXPECT_EQ(box.bounds[0].y, 5);
-    EXPECT_EQ(box.bounds[0].z, -10);
-    EXPECT_EQ(box.bounds[1].x, 16);
-    EXPECT_EQ(box.bounds[1].y, 6);
-    EXPECT_EQ(box.bounds[1].z, 90);
+    EXPECT_EQ(box.bounds[0].x, 14.f);
+    EXPECT_EQ(box.bounds[0].y, 5.f);
+    EXPECT_EQ(box.bounds[0].z, -10.f);
+    EXPECT_EQ(box.bounds[1].x, 16.f);
+    EXPECT_EQ(box.bounds[1].y, 6.f);
+    EXPECT_EQ(box.bounds[1].z, 90.f);
 
     trans.set_rotate_z(ONE_PI/2.f);
     box = m.compute_AABB(&trans);
     EXPECT_NEAR(box.bounds[0].x, -1, 1e-5f);
     EXPECT_NEAR(box.bounds[0].y, -1, 1e-5f);
-    EXPECT_EQ(box.bounds[0].z, 0);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
     EXPECT_TRUE(flt_equal(box.bounds[1].x, 0)); //fuck floats
     EXPECT_NEAR(box.bounds[1].y, 1, 1e-5f);
-    EXPECT_EQ(box.bounds[1].z, 100);
+    EXPECT_EQ(box.bounds[1].z, 100.f);
 
     errors_count[ERROR_INDEX] = 0;
     box = m.compute_AABB(NULL);

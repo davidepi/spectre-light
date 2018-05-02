@@ -2,7 +2,7 @@ version: 0.1.{build}
 image: Visual Studio 2017
 clone_folder: c:\projects\spectre-light
 platform: x64
-configuration: Release
+configuration: Release-spectral
 build:
     project: c:\projects\spectre-light\visualstudio\spectre-light.sln
     parallel: true

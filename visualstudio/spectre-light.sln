@@ -10,43 +10,27 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug-rgb|x64 = Debug-rgb|x64
-		Debug-rgb|x86 = Debug-rgb|x86
 		Debug-spectral|x64 = Debug-spectral|x64
-		Debug-spectral|x86 = Debug-spectral|x86
 		Release-rgb|x64 = Release-rgb|x64
-		Release-rgb|x86 = Release-rgb|x86
 		Release-spectral|x64 = Release-spectral|x64
-		Release-spectral|x86 = Release-spectral|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Debug-rgb|x64.ActiveCfg = Debug-spectral|x64
 		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Debug-rgb|x64.Build.0 = Debug-spectral|x64
-		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Debug-rgb|x86.ActiveCfg = Debug-rgb|x64
 		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Debug-spectral|x64.ActiveCfg = Debug-spectral|x64
 		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Debug-spectral|x64.Build.0 = Debug-spectral|x64
-		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Debug-spectral|x86.ActiveCfg = Debug-spectral|x64
 		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Release-rgb|x64.ActiveCfg = Debug-spectral|x64
 		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Release-rgb|x64.Build.0 = Debug-spectral|x64
-		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Release-rgb|x86.ActiveCfg = Release-rgb|x64
 		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Release-spectral|x64.ActiveCfg = Debug-spectral|x64
 		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Release-spectral|x64.Build.0 = Debug-spectral|x64
-		{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}.Release-spectral|x86.ActiveCfg = Release-spectral|x64
 		{C03AB466-889F-49DB-8772-0725F58F74CE}.Debug-rgb|x64.ActiveCfg = Debug-rgb|x64
 		{C03AB466-889F-49DB-8772-0725F58F74CE}.Debug-rgb|x64.Build.0 = Debug-rgb|x64
-		{C03AB466-889F-49DB-8772-0725F58F74CE}.Debug-rgb|x86.ActiveCfg = Debug-rgb|Win32
-		{C03AB466-889F-49DB-8772-0725F58F74CE}.Debug-rgb|x86.Build.0 = Debug-rgb|Win32
 		{C03AB466-889F-49DB-8772-0725F58F74CE}.Debug-spectral|x64.ActiveCfg = Debug-rgb|x64
 		{C03AB466-889F-49DB-8772-0725F58F74CE}.Debug-spectral|x64.Build.0 = Debug-rgb|x64
-		{C03AB466-889F-49DB-8772-0725F58F74CE}.Debug-spectral|x86.ActiveCfg = Debug-rgb|Win32
-		{C03AB466-889F-49DB-8772-0725F58F74CE}.Debug-spectral|x86.Build.0 = Debug-rgb|Win32
 		{C03AB466-889F-49DB-8772-0725F58F74CE}.Release-rgb|x64.ActiveCfg = Debug-rgb|x64
 		{C03AB466-889F-49DB-8772-0725F58F74CE}.Release-rgb|x64.Build.0 = Debug-rgb|x64
-		{C03AB466-889F-49DB-8772-0725F58F74CE}.Release-rgb|x86.ActiveCfg = Debug-rgb|Win32
-		{C03AB466-889F-49DB-8772-0725F58F74CE}.Release-rgb|x86.Build.0 = Debug-rgb|Win32
 		{C03AB466-889F-49DB-8772-0725F58F74CE}.Release-spectral|x64.ActiveCfg = Debug-rgb|x64
 		{C03AB466-889F-49DB-8772-0725F58F74CE}.Release-spectral|x64.Build.0 = Debug-rgb|x64
-		{C03AB466-889F-49DB-8772-0725F58F74CE}.Release-spectral|x86.ActiveCfg = Debug-rgb|Win32
-		{C03AB466-889F-49DB-8772-0725F58F74CE}.Release-spectral|x86.Build.0 = Debug-rgb|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

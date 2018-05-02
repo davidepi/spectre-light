@@ -60,6 +60,150 @@
     <ClCompile Include="..\tests\unit-testing\vec3_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\filter_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\sampler_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_box.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_gaussian.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_lanczos.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_mitchell.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_tent.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\sampler.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\sampler_random.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\sampler_stratified.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\wellrng.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\color.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\spectrum.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageIO.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\occlusion_tester.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\scene.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\utility.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\bdf.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\fresnel_conditions.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\lambertian.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\material_library.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\microfacet.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\microfacet_distributions.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\oren_nayar.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\reflection.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\refraction.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\materiallibrary_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\materials_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\microfacets_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\texturelibrary_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture_library.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\uniform.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\asset.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\box.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\mesh.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\shape.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\sphere.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\triangle.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\area_light.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\asset_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\box_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\light_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\mesh_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\sphere_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\triangle_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\accelerators\bvh.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\accelerators\kdtree.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\unit-testing\spectre_tests.h">
@@ -87,6 +231,120 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\geometry\vec3.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_box.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_gaussian.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_lanczos.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_mitchell.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_tent.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\sampler.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\sampler_random.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\sampler_stratified.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\wellrng.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\color.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\spectrum.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageIO.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\occlusion_tester.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\scene.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\utility.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\bdf.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\fresnel_conditions.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\lambertian.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\material_library.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\metals.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\microfacet.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\microfacet_distributions.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\oren_nayar.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\reflection.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\refraction.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture_library.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\uniform.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\asset.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\box.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\mesh.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\shape.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\sphere.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\triangle.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\area_light.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\accelerators\bvh.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\accelerators\kdtree.hpp">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>

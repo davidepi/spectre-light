@@ -2,13 +2,11 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Filter_tests)
 
 #include "samplers/filter.hpp"
 #include "samplers/filter_box.hpp"
@@ -17,6 +15,8 @@ SPECTRE_TEST_INIT(Filter_tests)
 #include "samplers/filter_mitchell.hpp"
 #include "samplers/filter_lanczos.hpp"
 #include "utility/utility.hpp"
+
+SPECTRE_TEST_INIT(Filter_tests)
 
 #define PRECISION 0.001f
 

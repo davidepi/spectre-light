@@ -2,17 +2,17 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(MicrofacetDist_tests)
 
 #include "materials/microfacet_distributions.hpp"
 #include "utility/utility.hpp"
 #include <random>
+
+SPECTRE_TEST_INIT(MicrofacetDist_tests)
 
 SPECTRE_TEST(MicrofacetDist, Blinn_D)
 {
@@ -27,7 +27,7 @@ SPECTRE_TEST(MicrofacetDist, Blinn_D)
         mean += blinn.D(&wo);
     }
     mean /= SAMPLES;
-    EXPECT_NEAR(mean, 2.05130506f, 1e-5);
+    EXPECT_NEAR(mean, 2.05130506f, 1e-5f);
 
     for(float f = -40.f; f<=40.f; f += 0.5f)
     {
@@ -36,7 +36,7 @@ SPECTRE_TEST(MicrofacetDist, Blinn_D)
         stddev += sample*sample;
     }
     stddev = sqrtf(stddev/SAMPLES);
-    EXPECT_NEAR(stddev, 2.71867514f, 1e-5);
+    EXPECT_NEAR(stddev, 2.71867514f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, Blinn_G)
@@ -68,7 +68,7 @@ SPECTRE_TEST(MicrofacetDist, Blinn_G)
     wo = Vec3(0.f, 0.f, 0.1f);
     wi = Vec3(0.f, 0.f, 0.1f);
     res = blinn.G(&wo, &wi);
-    EXPECT_NEAR(res, 0.693502366f, 1e-5);
+    EXPECT_NEAR(res, 0.693502366f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, Blinn_pdf)
@@ -91,7 +91,7 @@ SPECTRE_TEST(MicrofacetDist, Blinn_pdf)
         mean += blinn.pdf(&wo, &wh);
     }
     mean /= SAMPLES;
-    EXPECT_NEAR(mean, 2.05130506f, 1e-5);
+    EXPECT_NEAR(mean, 2.05130506f, 1e-5f);
 
     for(float f = -40.f; f<=40.f; f += 0.5f)
     {
@@ -100,7 +100,7 @@ SPECTRE_TEST(MicrofacetDist, Blinn_pdf)
         stddev += sample*sample;
     }
     stddev = sqrtf(stddev/SAMPLES);
-    EXPECT_NEAR(stddev, 2.71867514f, 1e-5);
+    EXPECT_NEAR(stddev, 2.71867514f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, Blinn_sample_wh)
@@ -113,17 +113,17 @@ SPECTRE_TEST(MicrofacetDist, Blinn_sample_wh)
     wo = Vec3(0.5f, 0.1f, 0.9f);
     wo.normalize();
     blinn.sample_wh(&wo, 0.5f, 0.5f, &wh);
-    EXPECT_NEAR(wh.x, -0.167018592f, 1e-5);
-    EXPECT_NEAR(wh.y, -0.0000000146012287f, 1e-5);
-    EXPECT_NEAR(wh.z, 0.985953748f, 1e-5);
+    EXPECT_NEAR(wh.x, -0.167018592f, 1e-5f);
+    EXPECT_NEAR(wh.y, -0.0000000146012287f, 1e-5f);
+    EXPECT_NEAR(wh.z, 0.985953748f, 1e-5f);
 
     //different hemisphere sampled
     wo = Vec3(0.404866f, 0.647051f, -0.646071f);
     wo.normalize();
     blinn.sample_wh(&wo, 0.5f, 0.5f, &wh);
-    EXPECT_NEAR(wh.x, 0.167018592f, 1e-5);
-    EXPECT_NEAR(wh.y, 0.0000000146012287f, 1e-5);
-    EXPECT_NEAR(wh.z, -0.985953748f, 1e-5);
+    EXPECT_NEAR(wh.x, 0.167018592f, 1e-5f);
+    EXPECT_NEAR(wh.y, 0.0000000146012287f, 1e-5f);
+    EXPECT_NEAR(wh.z, -0.985953748f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, Beckmann_D)
@@ -142,7 +142,7 @@ SPECTRE_TEST(MicrofacetDist, Beckmann_D)
         mean += beckmann.D(&wo);
     }
     mean /= SAMPLES;
-    EXPECT_NEAR(mean, 1.44289351f, 1e-5);
+    EXPECT_NEAR(mean, 1.44289351f, 1e-5f);
 
     for(float f = -40.f; f<=40.f; f += 0.5f)
     {
@@ -151,7 +151,7 @@ SPECTRE_TEST(MicrofacetDist, Beckmann_D)
         stddev += sample*sample;
     }
     stddev = sqrtf(stddev/SAMPLES);
-    EXPECT_NEAR(stddev, 2.46824217f, 1e-5);
+    EXPECT_NEAR(stddev, 2.46824217f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, Beckmann_G)
@@ -183,7 +183,7 @@ SPECTRE_TEST(MicrofacetDist, Beckmann_G)
     wo = Vec3(0.f, 0.f, 0.1f);
     wi = Vec3(0.f, 0.f, 0.1f);
     res = beckmann.G(&wo, &wi);
-    EXPECT_NEAR(res, 0.693502366f, 1e-5);
+    EXPECT_NEAR(res, 0.693502366f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, Beckmann_sample_wh)
@@ -196,17 +196,17 @@ SPECTRE_TEST(MicrofacetDist, Beckmann_sample_wh)
     wo = Vec3(0.5f, 0.1f, 0.9f);
     wo.normalize();
     beckmann.sample_wh(&wo, 0.5f, 0.5f, &wh);
-    EXPECT_NEAR(wh.x, -0.164249673f, 1e-5);
-    EXPECT_NEAR(wh.y, -0.0000000143591627f, 1e-5);
-    EXPECT_NEAR(wh.z, 0.986418783f, 1e-5);
+    EXPECT_NEAR(wh.x, -0.164249673f, 1e-5f);
+    EXPECT_NEAR(wh.y, -0.0000000143591627f, 1e-5f);
+    EXPECT_NEAR(wh.z, 0.986418783f, 1e-5f);
 
     //different hemisphere sampled
     wo = Vec3(0.404866f, 0.647051f, -0.646071f);
     wo.normalize();
     beckmann.sample_wh(&wo, 0.5f, 0.5f, &wh);
-    EXPECT_NEAR(wh.x, 0.164249673f, 1e-5);
-    EXPECT_NEAR(wh.y, 0.0000000143591627f, 1e-5);
-    EXPECT_NEAR(wh.z, -0.986418783f, 1e-5);
+    EXPECT_NEAR(wh.x, 0.164249673f, 1e-5f);
+    EXPECT_NEAR(wh.y, 0.0000000143591627f, 1e-5f);
+    EXPECT_NEAR(wh.z, -0.986418783f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, Beckmann_pdf)
@@ -223,7 +223,7 @@ SPECTRE_TEST(MicrofacetDist, Beckmann_pdf)
         mean += beckmann.pdf(&wo, &wh);
     }
     mean /= SAMPLES;
-    EXPECT_NEAR(mean, 1.43569744f, 1e-5);
+    EXPECT_NEAR(mean, 1.43569744f, 1e-5f);
 
     for(float f = -40.f; f<=40.f; f += 0.5f)
     {
@@ -232,7 +232,7 @@ SPECTRE_TEST(MicrofacetDist, Beckmann_pdf)
         stddev += sample*sample;
     }
     stddev = sqrtf(stddev/SAMPLES);
-    EXPECT_NEAR(stddev, 2.46401787f, 1e-5);
+    EXPECT_NEAR(stddev, 2.46401787f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, GGXiso_D)
@@ -251,7 +251,7 @@ SPECTRE_TEST(MicrofacetDist, GGXiso_D)
         mean += ggx.D(&wo);
     }
     mean /= SAMPLES;
-    EXPECT_NEAR(mean, 1.83194709f, 1e-5);
+    EXPECT_NEAR(mean, 1.83194709f, 1e-5f);
 
     for(float f = -40.f; f<=40.f; f += 0.5f)
     {
@@ -260,7 +260,7 @@ SPECTRE_TEST(MicrofacetDist, GGXiso_D)
         stddev += sample*sample;
     }
     stddev = sqrtf(stddev/SAMPLES);
-    EXPECT_NEAR(stddev, 2.40666032f, 1e-5);
+    EXPECT_NEAR(stddev, 2.40666032f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, GGXiso_G)
@@ -280,7 +280,7 @@ SPECTRE_TEST(MicrofacetDist, GGXiso_G)
     wo = Vec3(0.f, 0.f, 0.3f);
     wi = Vec3(0.f, 0.f, 0.3f);
     res = ggx.G(&wo, &wi);
-    EXPECT_NEAR(res, 0.826182127f, 1e-5);
+    EXPECT_NEAR(res, 0.826182127f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, GGXiso_sample_wh)
@@ -293,17 +293,17 @@ SPECTRE_TEST(MicrofacetDist, GGXiso_sample_wh)
     wo = Vec3(0.5f, 0.1f, 0.9f);
     wo.normalize();
     ggx.sample_wh(&wo, 0.5f, 0.5f, &wh);
-    EXPECT_NEAR(wh.x, -0.19611606f, 1e-5);
-    EXPECT_NEAR(wh.y, -0.0000000171450107f, 1e-5);
-    EXPECT_NEAR(wh.z, 0.980580687f, 1e-5);
+    EXPECT_NEAR(wh.x, -0.19611606f, 1e-5f);
+    EXPECT_NEAR(wh.y, -0.0000000171450107f, 1e-5f);
+    EXPECT_NEAR(wh.z, 0.980580687f, 1e-5f);
 
     //different hemisphere sampled
     wo = Vec3(0.404866f, 0.647051f, -0.646071f);
     wo.normalize();
     ggx.sample_wh(&wo, 0.5f, 0.5f, &wh);
-    EXPECT_NEAR(wh.x, 0.19611606f, 1e-5);
-    EXPECT_NEAR(wh.y, 0.0000000171450107f, 1e-5);
-    EXPECT_NEAR(wh.z, -0.980580687f, 1e-5);
+    EXPECT_NEAR(wh.x, 0.19611606f, 1e-5f);
+    EXPECT_NEAR(wh.y, 0.0000000171450107f, 1e-5f);
+    EXPECT_NEAR(wh.z, -0.980580687f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, GGXiso_pdf)
@@ -320,7 +320,7 @@ SPECTRE_TEST(MicrofacetDist, GGXiso_pdf)
         mean += ggx.pdf(&wo, &wh);
     }
     mean /= SAMPLES;
-    EXPECT_NEAR(mean, 1.80560493f, 1e-5);
+    EXPECT_NEAR(mean, 1.80560493f, 1e-5f);
 
     for(float f = -40.f; f<=40.f; f += 0.5f)
     {
@@ -329,7 +329,7 @@ SPECTRE_TEST(MicrofacetDist, GGXiso_pdf)
         stddev += sample*sample;
     }
     stddev = sqrtf(stddev/SAMPLES);
-    EXPECT_NEAR(stddev, 2.41045499f, 1e-5);
+    EXPECT_NEAR(stddev, 2.41045499f, 1e-5f);
 }
 
 SPECTRE_TEST(MicrofacetDist, GGXaniso_everything)

@@ -2,17 +2,17 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Sampler_tests)
 
 #include "samplers/sampler.hpp"
 #include "samplers/sampler_stratified.hpp"
 #include "samplers/sampler_random.hpp"
+
+SPECTRE_TEST_INIT(Sampler_tests)
 
 SPECTRE_TEST(Sampler, get_random_numbers)
 {

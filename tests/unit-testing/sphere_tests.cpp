@@ -2,28 +2,28 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Sphere_tests)
 
 #include "primitives/sphere.hpp"
 #include "utility/utility.hpp"
 #include <climits>
 
+SPECTRE_TEST_INIT(Sphere_tests)
+
 SPECTRE_TEST(Sphere, AABB_object_space)
 {
     Sphere sphere;
     AABB box = sphere.compute_AABB();
-    EXPECT_EQ(box.bounds[0].x, -1);
-    EXPECT_EQ(box.bounds[0].y, -1);
-    EXPECT_EQ(box.bounds[0].z, -1);
-    EXPECT_EQ(box.bounds[1].x, 1);
-    EXPECT_EQ(box.bounds[1].y, 1);
-    EXPECT_EQ(box.bounds[1].z, 1);
+    EXPECT_EQ(box.bounds[0].x, -1.f);
+    EXPECT_EQ(box.bounds[0].y, -1.f);
+    EXPECT_EQ(box.bounds[0].z, -1.f);
+    EXPECT_EQ(box.bounds[1].x, 1.f);
+    EXPECT_EQ(box.bounds[1].y, 1.f);
+    EXPECT_EQ(box.bounds[1].z, 1.f);
 }
 
 SPECTRE_TEST(Sphere, AABB_world_space)
@@ -33,32 +33,32 @@ SPECTRE_TEST(Sphere, AABB_world_space)
     Matrix4 transform;
     transform.set_scale(3.f);
     AABB box = sphere.compute_AABB(&transform);
-    EXPECT_EQ(box.bounds[0].x, -3);
-    EXPECT_EQ(box.bounds[0].y, -3);
-    EXPECT_EQ(box.bounds[0].z, -3);
-    EXPECT_EQ(box.bounds[1].x, 3);
-    EXPECT_EQ(box.bounds[1].y, 3);
-    EXPECT_EQ(box.bounds[1].z, 3);
+    EXPECT_EQ(box.bounds[0].x, -3.f);
+    EXPECT_EQ(box.bounds[0].y, -3.f);
+    EXPECT_EQ(box.bounds[0].z, -3.f);
+    EXPECT_EQ(box.bounds[1].x, 3.f);
+    EXPECT_EQ(box.bounds[1].y, 3.f);
+    EXPECT_EQ(box.bounds[1].z, 3.f);
 
     //translation
     transform.set_translation(Vec3(-1, 10, 3.5));
     box = sphere.compute_AABB(&transform);
-    EXPECT_EQ(box.bounds[0].x, -2);
-    EXPECT_EQ(box.bounds[0].y, 9);
-    EXPECT_EQ(box.bounds[0].z, 2.5);
-    EXPECT_EQ(box.bounds[1].x, 0);
-    EXPECT_EQ(box.bounds[1].y, 11);
-    EXPECT_EQ(box.bounds[1].z, 4.5);
+    EXPECT_EQ(box.bounds[0].x, -2.f);
+    EXPECT_EQ(box.bounds[0].y, 9.f);
+    EXPECT_EQ(box.bounds[0].z, 2.5f);
+    EXPECT_EQ(box.bounds[1].x, 0.f);
+    EXPECT_EQ(box.bounds[1].y, 11.f);
+    EXPECT_EQ(box.bounds[1].z, 4.5f);
 
     //rotation
     transform.set_rotate_z(ONE_PI/2.f);
     box = sphere.compute_AABB(&transform);
-    EXPECT_EQ(box.bounds[0].x, -1);
-    EXPECT_EQ(box.bounds[0].y, -1);
-    EXPECT_EQ(box.bounds[0].z, -1);
-    EXPECT_EQ(box.bounds[1].x, 1);
-    EXPECT_EQ(box.bounds[1].y, 1);
-    EXPECT_EQ(box.bounds[1].z, 1);
+    EXPECT_EQ(box.bounds[0].x, -1.f);
+    EXPECT_EQ(box.bounds[0].y, -1.f);
+    EXPECT_EQ(box.bounds[0].z, -1.f);
+    EXPECT_EQ(box.bounds[1].x, 1.f);
+    EXPECT_EQ(box.bounds[1].y, 1.f);
+    EXPECT_EQ(box.bounds[1].z, 1.f);
 
     //null transform
     errors_count[ERROR_INDEX] = 0;
@@ -96,34 +96,34 @@ SPECTRE_TEST(Sphere, intersect)
     distance = FLT_MAX;
     res = s.intersect(&r, &distance, &h);
     ASSERT_TRUE(res);
-    EXPECT_EQ(distance, 9);
-    EXPECT_EQ(h.point_h.x, 0);
-    EXPECT_EQ(h.point_h.y, -1);
-    EXPECT_EQ(h.point_h.z, 0);
-    EXPECT_EQ(h.normal_h.x, 0);
-    EXPECT_EQ(h.normal_h.y, -1);
-    EXPECT_EQ(h.normal_h.z, 0);
+    EXPECT_EQ(distance, 9.f);
+    EXPECT_EQ(h.point_h.x, 0.f);
+    EXPECT_EQ(h.point_h.y, -1.f);
+    EXPECT_EQ(h.point_h.z, 0.f);
+    EXPECT_EQ(h.normal_h.x, 0.f);
+    EXPECT_EQ(h.normal_h.y, -1.f);
+    EXPECT_EQ(h.normal_h.z, 0.f);
     h.right.normalize();
-    EXPECT_EQ(h.right.x, 1);
-    EXPECT_EQ(h.right.y, 0);
-    EXPECT_EQ(h.right.z, 0);
+    EXPECT_EQ(h.right.x, 1.f);
+    EXPECT_EQ(h.right.y, 0.f);
+    EXPECT_EQ(h.right.z, 0.f);
 
     //hit origin inside the sphere
     r = Ray(Point3(0, 0, 0), Vec3(1, 0, 0));
     distance = FLT_MAX;
     res = s.intersect(&r, &distance, &h);
     ASSERT_TRUE(res);
-    EXPECT_EQ(distance, 1);
-    EXPECT_EQ(h.point_h.x, 1);
-    EXPECT_EQ(h.point_h.y, 0);
-    EXPECT_EQ(h.point_h.z, 0);
-    EXPECT_EQ(h.normal_h.x, 1);
-    EXPECT_EQ(h.normal_h.y, 0);
-    EXPECT_EQ(h.normal_h.z, 0);
+    EXPECT_EQ(distance, 1.f);
+    EXPECT_EQ(h.point_h.x, 1.f);
+    EXPECT_EQ(h.point_h.y, 0.f);
+    EXPECT_EQ(h.point_h.z, 0.f);
+    EXPECT_EQ(h.normal_h.x, 1.f);
+    EXPECT_EQ(h.normal_h.y, 0.f);
+    EXPECT_EQ(h.normal_h.z, 0.f);
     h.right.normalize();
-    EXPECT_EQ(h.right.x, 0);
-    EXPECT_EQ(h.right.y, 1);
-    EXPECT_EQ(h.right.z, 0);
+    EXPECT_EQ(h.right.x, 0.f);
+    EXPECT_EQ(h.right.y, 1.f);
+    EXPECT_EQ(h.right.z, 0.f);
 
     //hit but origin after the sphere (= miss)
     r = Ray(Point3(0, 10, 0), Vec3(0, 1, 0));
@@ -136,17 +136,17 @@ SPECTRE_TEST(Sphere, intersect)
     distance = FLT_MAX;
     res = s.intersect(&r, &distance, &h);
     ASSERT_TRUE(res);
-    EXPECT_EQ(distance, 1);
+    EXPECT_EQ(distance, 1.f);
     EXPECT_EQ(h.point_h.x, SELF_INTERSECT_ERROR);
-    EXPECT_EQ(h.point_h.y, 0);
-    EXPECT_EQ(h.point_h.z, 1);
-    EXPECT_EQ(h.normal_h.x, 0);
-    EXPECT_EQ(h.normal_h.y, 0);
-    EXPECT_EQ(h.normal_h.z, 1);
+    EXPECT_EQ(h.point_h.y, 0.f);
+    EXPECT_EQ(h.point_h.z, 1.f);
+    EXPECT_EQ(h.normal_h.x, 0.f);
+    EXPECT_EQ(h.normal_h.y, 0.f);
+    EXPECT_EQ(h.normal_h.z, 1.f);
     h.right.normalize();
-    EXPECT_EQ(h.right.x, 0);
-    EXPECT_EQ(h.right.y, 1);
-    EXPECT_EQ(h.right.z, 0);
+    EXPECT_EQ(h.right.x, 0.f);
+    EXPECT_EQ(h.right.y, 1.f);
+    EXPECT_EQ(h.right.z, 0.f);
 
     //complete miss
     r = Ray(Point3(-2, -2, -10), Vec3(0, 0, 1));

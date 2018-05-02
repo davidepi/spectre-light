@@ -2,13 +2,11 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Material_tests)
 
 #include "materials/lambertian.hpp"
 #include "materials/oren_nayar.hpp"
@@ -24,12 +22,12 @@ SPECTRE_TEST_INIT(Material_tests)
 #include "textures/uniform.hpp"
 #include "utility/spectrum.hpp"
 
-#define EPSILON 1E-5f
+SPECTRE_TEST_INIT(Material_tests)
 
 SPECTRE_TEST(Material, Lambertian_flags)
 {
     Lambertian mat;
-    EXPECT_EQ(mat.get_flags(), FLAG_BRDF);
+    EXPECT_EQ(mat.get_flags(), (char)FLAG_BRDF);
     EXPECT_TRUE(mat.matches(FLAG_BRDF));
     EXPECT_FALSE(mat.matches(FLAG_BTDF));
     EXPECT_FALSE(mat.matches(FLAG_SPEC));
@@ -46,9 +44,9 @@ SPECTRE_TEST(Material, Lambertian_value)
     const Vec3 wo(-1.f, 0.f, .5f);
     const Vec3 wi(1.f, 0.f, .5f);
     Spectrum res = mat.value(&wo, &wi);
-    EXPECT_NEAR(res.w[0], .318310f, 1e-5);
-    EXPECT_NEAR(res.w[1], .318310f, 1e-5);
-    EXPECT_NEAR(res.w[2], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[0], .318310f, 1e-5f);
+    EXPECT_NEAR(res.w[1], .318310f, 1e-5f);
+    EXPECT_NEAR(res.w[2], .318310f, 1e-5f);
 }
 
 SPECTRE_TEST(Material, Lambertian_sample_value)
@@ -58,17 +56,17 @@ SPECTRE_TEST(Material, Lambertian_sample_value)
     Vec3 wi;
     float pdf;
     Spectrum res = mat.sample_value(&wo, &wi, 0.5f, 0.5f, &pdf);
-    EXPECT_NEAR(res.w[0], .318310f, 1e-5);
-    EXPECT_NEAR(res.w[1], .318310f, 1e-5);
-    EXPECT_NEAR(res.w[2], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[0], .318310f, 1e-5f);
+    EXPECT_NEAR(res.w[1], .318310f, 1e-5f);
+    EXPECT_NEAR(res.w[2], .318310f, 1e-5f);
     EXPECT_EQ(sign(wo.z), sign(wi.z));
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
 
     const Vec3 wo2(-1.f, 0.f, -0.5f);
     res = mat.sample_value(&wo2, &wi, 0.5f, 0.5f, &pdf);
-    EXPECT_NEAR(res.w[0], .318310f, 1e-5);
-    EXPECT_NEAR(res.w[1], .318310f, 1e-5);
-    EXPECT_NEAR(res.w[2], .318310f, 1e-5);
+    EXPECT_NEAR(res.w[0], .318310f, 1e-5f);
+    EXPECT_NEAR(res.w[1], .318310f, 1e-5f);
+    EXPECT_NEAR(res.w[2], .318310f, 1e-5f);
     EXPECT_EQ(sign(wo2.z), sign(wi.z));
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
 }
@@ -92,7 +90,7 @@ SPECTRE_TEST(Material, Lambertian_pdf)
 SPECTRE_TEST(Material, OrenNayar_flags)
 {
     OrenNayar mat(15);
-    EXPECT_EQ(mat.get_flags(), FLAG_BRDF);
+    EXPECT_EQ(mat.get_flags(), (char)FLAG_BRDF);
     EXPECT_TRUE(mat.matches(FLAG_BRDF));
     EXPECT_FALSE(mat.matches(FLAG_BTDF));
     EXPECT_FALSE(mat.matches(FLAG_SPEC));
@@ -109,16 +107,16 @@ SPECTRE_TEST(Material, OrenNayar_value)
     Vec3 wo(-1.f, 0.f, .4f);
     Vec3 wi(1.f, 0.f, .6f);
     Spectrum res = mat.value(&wo, &wi);
-    EXPECT_NEAR(res.w[0], 0.159388f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.159388f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.159388f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.159388f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159388f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.159388f, 1e-5f);
 
     wo = Vec3(-1.f, 0.f, 0.6f);
     wi = Vec3(1.f, 0.f, 0.4f);
     res = mat.value(&wo, &wi);
-    EXPECT_NEAR(res.w[0], 0.159388f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.159388f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.159388f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.159388f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159388f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.159388f, 1e-5f);
 
     //assert different results by changing incident angles
     wo = Vec3(-.2f, 0.5f, 0.2f);
@@ -131,16 +129,16 @@ SPECTRE_TEST(Material, OrenNayar_value)
     wo = Vec3(-1.f, 0.f, 1.f);
     wi = Vec3(1.f, 0.f, 0.5f);
     res = mat.value(&wo, &wi);
-    EXPECT_NEAR(res.w[0], 0.159388f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.159388f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.159388f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.159388f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159388f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.159388f, 1e-5f);
 
     wo = Vec3(-1.f, 0.f, 0.5f);
     wi = Vec3(1.f, 0.f, 1.f);
     res = mat.value(&wo, &wi);
-    EXPECT_NEAR(res.w[0], 0.159388f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.159388f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.159388f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.159388f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159388f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.159388f, 1e-5f);
 }
 
 SPECTRE_TEST(Material, OrenNayar_sample_value)
@@ -152,16 +150,16 @@ SPECTRE_TEST(Material, OrenNayar_sample_value)
     float pdf;
     Spectrum res = mat.sample_value(&wo, &wi, 0.5f, 0.5f, &pdf);
     EXPECT_EQ(sign(wo.z), sign(wi.z));
-    EXPECT_NEAR(res.w[0], 0.283387f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.283387f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.283387f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.283387f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.283387f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.283387f, 1e-5f);
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
 
     const Vec3 wo2(-1.f, 0.f, -0.5f);
     res = mat.sample_value(&wo2, &wi, 0.5f, 0.5f, &pdf);
-    EXPECT_NEAR(res.w[0], 0.283387f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.283387f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.283387f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.283387f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.283387f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.283387f, 1e-5f);
     EXPECT_EQ(sign(wo2.z), sign(wi.z));
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
 }
@@ -187,7 +185,7 @@ SPECTRE_TEST(Material, SpecularReflection_flags)
 {
     ConductorReflection cond(METALS[METAL_SILVER].n, METALS[METAL_SILVER].k);
     DielectricReflection diel(1.f, 1.33f);
-    EXPECT_EQ(cond.get_flags(), FLAG_BRDF | FLAG_SPEC);
+    EXPECT_EQ(cond.get_flags(), (char)(FLAG_BRDF | FLAG_SPEC));
     EXPECT_FALSE(cond.matches(FLAG_BRDF));
     EXPECT_FALSE(cond.matches(FLAG_BTDF));
     EXPECT_FALSE(cond.matches(FLAG_SPEC));
@@ -195,7 +193,7 @@ SPECTRE_TEST(Material, SpecularReflection_flags)
     EXPECT_TRUE(cond.matches(FLAG_BRDF | FLAG_SPEC));
     EXPECT_TRUE(cond.matches(FLAG_BRDF | FLAG_BTDF | FLAG_SPEC));
     EXPECT_FALSE(cond.matches(FLAG_BTDF | FLAG_SPEC));
-    EXPECT_EQ(diel.get_flags(), FLAG_BRDF | FLAG_SPEC);
+    EXPECT_EQ(diel.get_flags(), (char)(FLAG_BRDF | FLAG_SPEC));
     EXPECT_FALSE(diel.matches(FLAG_BRDF));
     EXPECT_FALSE(diel.matches(FLAG_BTDF));
     EXPECT_FALSE(diel.matches(FLAG_SPEC));
@@ -295,7 +293,7 @@ SPECTRE_TEST(Material, SpecularReflection_pdf)
 SPECTRE_TEST(Material, SpecularRefraction_flags)
 {
     Refraction diel(cauchy(1.f, 0, 0), cauchy(1.33f, 0, 0));
-    EXPECT_EQ(diel.get_flags(), FLAG_BTDF | FLAG_SPEC);
+    EXPECT_EQ(diel.get_flags(), (char)(FLAG_BTDF | FLAG_SPEC));
     EXPECT_FALSE(diel.matches(FLAG_BRDF));
     EXPECT_FALSE(diel.matches(FLAG_BTDF));
     EXPECT_FALSE(diel.matches(FLAG_SPEC));
@@ -384,7 +382,7 @@ SPECTRE_TEST(Material, MicrofacetR_flags)
                                       cauchy(1.33f, 0.f, 0.f));
     MicrofacetDist* blinn = new Blinn(100.f);
     MicrofacetR mat(blinn, fresnel);
-    EXPECT_EQ(mat.get_flags(), FLAG_BRDF);
+    EXPECT_EQ(mat.get_flags(), (char)FLAG_BRDF);
     EXPECT_TRUE(mat.matches(FLAG_BRDF));
     EXPECT_FALSE(mat.matches(FLAG_BTDF));
     EXPECT_FALSE(mat.matches(FLAG_SPEC));
@@ -491,7 +489,7 @@ SPECTRE_TEST(Material, MicrofacetT_flags)
 {
     MicrofacetDist* beckmann = new Beckmann(0.3f);
     MicrofacetT mat(beckmann, cauchy(1.f, 0.f, 0.f), cauchy(1.33f, 0.f, 0.f));
-    EXPECT_EQ(mat.get_flags(), FLAG_BTDF);
+    EXPECT_EQ(mat.get_flags(), (char)FLAG_BTDF);
     EXPECT_FALSE(mat.matches(FLAG_BRDF));
     EXPECT_TRUE(mat.matches(FLAG_BTDF));
     EXPECT_FALSE(mat.matches(FLAG_SPEC));
@@ -778,9 +776,9 @@ SPECTRE_TEST(Material, Bsdf_value)
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
-    EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
 }
 
 SPECTRE_TEST(Material, Bsdf_sample_value)
@@ -809,7 +807,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     EXPECT_NEAR(res.w[2], 0.318309873f, 1e-5f);
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
     EXPECT_NEAR(wi.x, -0.707106769f, 1e-5f);
-    EXPECT_NEAR(wi.y, 0.707106769, 1e-5f);
+    EXPECT_NEAR(wi.y, 0.707106769f, 1e-5f);
     EXPECT_TRUE(flt_equal(wi.z, 0.f));
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
@@ -822,7 +820,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     EXPECT_NEAR(res.w[2], 0.318309873f, 1e-5f);
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
     EXPECT_NEAR(wi.x, -0.707106769f, 1e-5f);
-    EXPECT_NEAR(wi.y, 0.707106769, 1e-5f);
+    EXPECT_NEAR(wi.y, 0.707106769f, 1e-5f);
     EXPECT_TRUE(flt_equal(wi.z, 0.f));
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
@@ -834,12 +832,12 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     materialWtexture.inherit_bdf(new Lambertian(), ut);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                         &wi, &pdf, false, &matched_spec);
-    EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
     EXPECT_NEAR(wi.x, -0.707106769f, 1e-5f);
-    EXPECT_NEAR(wi.y, 0.707106769, 1e-5f);
+    EXPECT_NEAR(wi.y, 0.707106769f, 1e-5f);
     EXPECT_NEAR(wi.z, 0.f, 1e-5f);
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
@@ -1046,9 +1044,9 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
-    EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
 }
 
 SPECTRE_TEST(Material, SingleBRDF_sample_value)
@@ -1101,7 +1099,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     EXPECT_NEAR(res.w[2], 0.318309873f, 1e-5f);
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
     EXPECT_NEAR(wi.x, -0.707106769f, 1e-5f);
-    EXPECT_NEAR(wi.y, 0.707106769, 1e-5f);
+    EXPECT_NEAR(wi.y, 0.707106769f, 1e-5f);
     EXPECT_NEAR(wi.z, 0.f, 1e-5f);
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
@@ -1114,7 +1112,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     EXPECT_NEAR(res.w[2], 0.318309873f, 1e-5f);
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
     EXPECT_NEAR(wi.x, -0.707106769f, 1e-5f);
-    EXPECT_NEAR(wi.y, 0.707106769, 1e-5f);
+    EXPECT_NEAR(wi.y, 0.707106769f, 1e-5f);
     EXPECT_NEAR(wi.z, 0.f, 1e-5f);
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
@@ -1126,12 +1124,12 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     materialWtexture.inherit_bdf(new Lambertian(), ut);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                         &wi, &pdf, false, &matched_spec);
-    EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5);
-    EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5);
-    EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5);
+    EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
     EXPECT_NEAR(pdf, 0.22507906f, 1e-5f);
     EXPECT_NEAR(wi.x, -0.707106769f, 1e-5f);
-    EXPECT_NEAR(wi.y, 0.707106769, 1e-5f);
+    EXPECT_NEAR(wi.y, 0.707106769f, 1e-5f);
     EXPECT_TRUE(flt_equal(wi.z, 0.f));
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());

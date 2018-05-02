@@ -2,17 +2,17 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Triangle_tests)
 
 #include "primitives/triangle.hpp"
 #include "utility/utility.hpp"
 #include <climits>
+
+SPECTRE_TEST_INIT(Triangle_tests)
 
 SPECTRE_TEST(Triangle, AABB_object_space)
 {
@@ -24,12 +24,12 @@ SPECTRE_TEST(Triangle, AABB_object_space)
     Triangle t(v0, v1, v2);
 
     AABB box = t.compute_AABB();
-    EXPECT_EQ(box.bounds[0].x, 0);
-    EXPECT_EQ(box.bounds[0].y, 0);
-    EXPECT_EQ(box.bounds[0].z, 0);
-    EXPECT_EQ(box.bounds[1].x, 1);
-    EXPECT_EQ(box.bounds[1].y, 1);
-    EXPECT_EQ(box.bounds[1].z, 0);
+    EXPECT_EQ(box.bounds[0].x, 0.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 1.f);
+    EXPECT_EQ(box.bounds[1].y, 1.f);
+    EXPECT_EQ(box.bounds[1].z, 0.f);
 }
 
 SPECTRE_TEST(Triangle, AABB_world_space)
@@ -49,40 +49,40 @@ SPECTRE_TEST(Triangle, AABB_world_space)
     errors_count[ERROR_INDEX] = 0;
 
     box = t.compute_AABB(&m);
-    EXPECT_EQ(box.bounds[0].x, 0);
-    EXPECT_EQ(box.bounds[0].y, 0);
-    EXPECT_EQ(box.bounds[0].z, 0);
-    EXPECT_EQ(box.bounds[1].x, 1);
-    EXPECT_EQ(box.bounds[1].y, 1);
-    EXPECT_EQ(box.bounds[1].z, 0);
+    EXPECT_EQ(box.bounds[0].x, 0.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 1.f);
+    EXPECT_EQ(box.bounds[1].y, 1.f);
+    EXPECT_EQ(box.bounds[1].z, 0.f);
 
     m.set_scale(Vec3(1, 2, 3));
     t.compute_AABB(&m);
     box = t.compute_AABB(&m);
-    EXPECT_EQ(box.bounds[0].x, 0);
-    EXPECT_EQ(box.bounds[0].y, 0);
-    EXPECT_EQ(box.bounds[0].z, 0);
-    EXPECT_EQ(box.bounds[1].x, 1);
-    EXPECT_EQ(box.bounds[1].y, 2);
-    EXPECT_EQ(box.bounds[1].z, 0);
+    EXPECT_EQ(box.bounds[0].x, 0.f);
+    EXPECT_EQ(box.bounds[0].y, 0.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_EQ(box.bounds[1].x, 1.f);
+    EXPECT_EQ(box.bounds[1].y, 2.f);
+    EXPECT_EQ(box.bounds[1].z, 0.f);
 
     m.set_translation(Vec3(1, -1, 1));
     box = t.compute_AABB(&m);
-    EXPECT_EQ(box.bounds[0].x, 1);
-    EXPECT_EQ(box.bounds[0].y, -1);
-    EXPECT_EQ(box.bounds[0].z, 1);
-    EXPECT_EQ(box.bounds[1].x, 2);
-    EXPECT_EQ(box.bounds[1].y, 0);
-    EXPECT_EQ(box.bounds[1].z, 1);
+    EXPECT_EQ(box.bounds[0].x, 1.f);
+    EXPECT_EQ(box.bounds[0].y, -1.f);
+    EXPECT_EQ(box.bounds[0].z, 1.f);
+    EXPECT_EQ(box.bounds[1].x, 2.f);
+    EXPECT_EQ(box.bounds[1].y, 0.f);
+    EXPECT_EQ(box.bounds[1].z, 1.f);
 
     m.set_rotate_z(-ONE_PI/2.f);
     box = t.compute_AABB(&m);
-    EXPECT_NEAR(box.bounds[0].x, 0, 1e-5f);
-    EXPECT_EQ(box.bounds[0].y, -1);
-    EXPECT_EQ(box.bounds[0].z, 0);
-    EXPECT_NEAR(box.bounds[1].x, 1, 1e-5f);
-    EXPECT_EQ(box.bounds[1].y, 0);
-    EXPECT_EQ(box.bounds[1].z, 0);
+    EXPECT_NEAR(box.bounds[0].x, 0.f, 1e-5f);
+    EXPECT_EQ(box.bounds[0].y, -1.f);
+    EXPECT_EQ(box.bounds[0].z, 0.f);
+    EXPECT_NEAR(box.bounds[1].x, 1.f, 1e-5f);
+    EXPECT_EQ(box.bounds[1].y, 0.f);
+    EXPECT_EQ(box.bounds[1].z, 0.f);
 }
 
 SPECTRE_TEST(Triangle, surface_object)
@@ -95,7 +95,7 @@ SPECTRE_TEST(Triangle, surface_object)
     v2.p = Point3(0.5, 1, 0);
     Triangle t(v0, v1, v2);
 
-    EXPECT_EQ(t.surface(), 1);
+    EXPECT_EQ(t.surface(), 1.f);
 }
 
 SPECTRE_TEST(Triangle, surface_world)
@@ -109,10 +109,10 @@ SPECTRE_TEST(Triangle, surface_world)
     Triangle t(v0, v1, v2);
     Matrix4 m;
     m.set_scale(Vec3(3, 5, 0));
-    EXPECT_EQ(t.surface(&m), 15);
+    EXPECT_EQ(t.surface(&m), 15.f);
 
     m.set_translation(Vec3(3, 5, -8));
-    EXPECT_EQ(t.surface(&m), 1);
+    EXPECT_EQ(t.surface(&m), 1.f);
 
     m.set_rotate_z(-2);
     EXPECT_NEAR(t.surface(&m), 1, 1e-5f);
@@ -186,17 +186,17 @@ SPECTRE_TEST(Triangle, intersection)
     distance = FLT_MAX;
     res = t.intersect(&r, &distance, &hit);
     ASSERT_TRUE(res);
-    EXPECT_EQ(hit.point_h.x, 0.5);
-    EXPECT_EQ(hit.point_h.y, 0.5);
-    EXPECT_EQ(hit.point_h.z, 0);
-    EXPECT_EQ(distance, 1);
-    EXPECT_EQ(hit.normal_h.x, 0);
-    EXPECT_EQ(hit.normal_h.y, 0);
-    EXPECT_EQ(hit.normal_h.z, 1);
+    EXPECT_EQ(hit.point_h.x, 0.5f);
+    EXPECT_EQ(hit.point_h.y, 0.5f);
+    EXPECT_EQ(hit.point_h.z, 0.f);
+    EXPECT_EQ(distance, 1.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, 1.f);
     hit.right.normalize();
-    EXPECT_EQ(hit.right.x, -1);
-    EXPECT_EQ(hit.right.y, 0);
-    EXPECT_EQ(hit.right.z, 0);
+    EXPECT_EQ(hit.right.x, -1.f);
+    EXPECT_EQ(hit.right.y, 0.f);
+    EXPECT_EQ(hit.right.z, 0.f);
 }
 
 SPECTRE_TEST(Triangle, sample_point)

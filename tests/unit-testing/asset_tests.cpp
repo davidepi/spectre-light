@@ -2,13 +2,11 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Asset_tests)
 
 #include "primitives/asset.hpp"
 #include "primitives/sphere.hpp"
@@ -16,13 +14,15 @@ SPECTRE_TEST_INIT(Asset_tests)
 #include "utility/utility.hpp"
 #include <climits>
 
+SPECTRE_TEST_INIT(Asset_tests)
+
 SPECTRE_TEST(Asset, constructor_get_id)
 {
     Sphere s;
     Matrix4 m;
     m.set_identity();
     Asset a(&s, m, 1);
-    EXPECT_EQ(a.get_id(), 1);
+    EXPECT_EQ(a.get_id(), (unsigned int)1);
 }
 
 SPECTRE_TEST(Asset, intersect)
@@ -37,9 +37,9 @@ SPECTRE_TEST(Asset, intersect)
 
     EXPECT_FALSE(s.intersect(&r, &distance, &hit));
     ASSERT_TRUE(a.intersect(&r, &distance, &hit));
-    EXPECT_EQ(hit.point_h.x, -2);
-    EXPECT_EQ(hit.point_h.y, -1);
-    EXPECT_EQ(hit.point_h.z, 0);
+    EXPECT_EQ(hit.point_h.x, -2.f);
+    EXPECT_EQ(hit.point_h.y, -1.f);
+    EXPECT_EQ(hit.point_h.z, 0.f);
     EXPECT_TRUE(hit.cross.is_normalized());
     distance = 0.1;
     EXPECT_FALSE(a.intersect(&r, &distance, &hit));
@@ -56,12 +56,12 @@ SPECTRE_TEST(Asset, get_AABB)
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&s, m, 1);
     const AABB* box = a.get_AABB();
-    EXPECT_EQ(box->bounds[0].x, -3);
-    EXPECT_EQ(box->bounds[0].y, -1);
-    EXPECT_EQ(box->bounds[0].z, -1);
-    EXPECT_EQ(box->bounds[1].x, -1);
-    EXPECT_EQ(box->bounds[1].y, 1);
-    EXPECT_EQ(box->bounds[1].z, 1);
+    EXPECT_EQ(box->bounds[0].x, -3.f);
+    EXPECT_EQ(box->bounds[0].y, -1.f);
+    EXPECT_EQ(box->bounds[0].z, -1.f);
+    EXPECT_EQ(box->bounds[1].x, -1.f);
+    EXPECT_EQ(box->bounds[1].y, 1.f);
+    EXPECT_EQ(box->bounds[1].z, 1.f);
 }
 
 SPECTRE_TEST(Asset, intersect_AABB)
@@ -106,12 +106,12 @@ SPECTRE_TEST(Asset, material_setter_getter)
     const unsigned char indexes[] = {0, 1, 2, 3, 0, 2};
     Asset b(&s, m, 1);
     b.set_materials(array, 4, indexes);
-    EXPECT_EQ(b.get_material(0), &material1);
-    EXPECT_EQ(b.get_material(1), &material2);
-    EXPECT_EQ(b.get_material(2), &material3);
-    EXPECT_EQ(b.get_material(3), &material4);
-    EXPECT_EQ(b.get_material(4), &material1);
-    EXPECT_EQ(b.get_material(5), &material3);
+    EXPECT_PTR_EQ(b.get_material(0), (const Bsdf*)&material1);
+    EXPECT_PTR_EQ(b.get_material(1), (const Bsdf*)&material2);
+    EXPECT_PTR_EQ(b.get_material(2), (const Bsdf*)&material3);
+    EXPECT_PTR_EQ(b.get_material(3), (const Bsdf*)&material4);
+    EXPECT_PTR_EQ(b.get_material(4), (const Bsdf*)&material1);
+    EXPECT_PTR_EQ(b.get_material(5), (const Bsdf*)&material3);
 }
 
 SPECTRE_TEST(Asset, is_light)
