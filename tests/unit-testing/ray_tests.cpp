@@ -2,18 +2,18 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Ray_tests)
 
 #include "geometry/vec3.hpp"
 #include "geometry/ray.hpp"
 #include "utility/utility.hpp"
 #include <climits>
+
+SPECTRE_TEST_INIT(Ray_tests)
 
 SPECTRE_TEST(Ray, default_constructor)
 {
@@ -24,7 +24,7 @@ SPECTRE_TEST(Ray, default_constructor)
     EXPECT_EQ(r.direction.x, 0.f);
     EXPECT_EQ(r.direction.y, 0.f);
     EXPECT_EQ(r.direction.z, 0.f);
-    EXPECT_EQ(r.ricochet, 0.f);
+    EXPECT_EQ(r.ricochet, (unsigned char)0);
 }
 
 SPECTRE_TEST(Ray, vector_constructor)
@@ -38,7 +38,7 @@ SPECTRE_TEST(Ray, vector_constructor)
     EXPECT_EQ(r.direction.x, direction.x);
     EXPECT_EQ(r.direction.y, direction.y);
     EXPECT_EQ(r.direction.z, direction.z);
-    EXPECT_EQ(r.ricochet, 0.f);
+    EXPECT_EQ(r.ricochet, (unsigned char)0);
 }
 
 SPECTRE_TEST(Ray, component_constructor)
@@ -52,7 +52,7 @@ SPECTRE_TEST(Ray, component_constructor)
     EXPECT_EQ(r.direction.x, direction.x);
     EXPECT_EQ(r.direction.y, direction.y);
     EXPECT_EQ(r.direction.z, direction.z);
-    EXPECT_EQ(r.ricochet, 0.f);
+    EXPECT_EQ(r.ricochet, (unsigned char)0);
 }
 
 SPECTRE_TEST(Ray, apply)
@@ -93,7 +93,7 @@ SPECTRE_TEST(Ray, RayProperties_constructor)
     r = Ray(Point3(0, 0, 0), Vec3(0, 2, 0));
     rp = RayProperties(r);
     EXPECT_EQ(rp.inverseX, INFINITY);
-    EXPECT_EQ(rp.inverseY, 0.5);
+    EXPECT_EQ(rp.inverseY, 0.5f);
     EXPECT_EQ(rp.inverseZ, INFINITY);
     EXPECT_FALSE(rp.isXInvNeg);
     EXPECT_FALSE(rp.isYInvNeg);
@@ -103,7 +103,7 @@ SPECTRE_TEST(Ray, RayProperties_constructor)
     r = Ray(Point3(0, 0, 0), Vec3(0, -2, 0));
     rp = RayProperties(r);
     EXPECT_EQ(rp.inverseX, INFINITY);
-    EXPECT_EQ(rp.inverseY, -0.5);
+    EXPECT_EQ(rp.inverseY, -0.5f);
     EXPECT_EQ(rp.inverseZ, INFINITY);
     EXPECT_FALSE(rp.isXInvNeg);
     EXPECT_TRUE(rp.isYInvNeg);
@@ -114,7 +114,7 @@ SPECTRE_TEST(Ray, RayProperties_constructor)
     rp = RayProperties(r);
     EXPECT_EQ(rp.inverseX, INFINITY);
     EXPECT_EQ(rp.inverseY, INFINITY);
-    EXPECT_EQ(rp.inverseZ, 0.5);
+    EXPECT_EQ(rp.inverseZ, 0.5f);
     EXPECT_FALSE(rp.isXInvNeg);
     EXPECT_FALSE(rp.isYInvNeg);
     EXPECT_FALSE(rp.isZInvNeg);
@@ -124,7 +124,7 @@ SPECTRE_TEST(Ray, RayProperties_constructor)
     rp = RayProperties(r);
     EXPECT_EQ(rp.inverseX, INFINITY);
     EXPECT_EQ(rp.inverseY, INFINITY);
-    EXPECT_EQ(rp.inverseZ, -0.5);
+    EXPECT_EQ(rp.inverseZ, -0.5f);
     EXPECT_FALSE(rp.isXInvNeg);
     EXPECT_FALSE(rp.isYInvNeg);
     EXPECT_TRUE(rp.isZInvNeg);

@@ -2,20 +2,18 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Point2_tests)
 
 #include "geometry/point2.hpp"
 #include "utility/utility.hpp"
 #include <climits>
 #include <cmath>
 
-#define EPSILON 1E-5f
+SPECTRE_TEST_INIT(Point2_tests)
 
 SPECTRE_TEST(Point2, empty_constructor)
 {
@@ -58,7 +56,7 @@ SPECTRE_TEST(Point2, components_constructor)
     errors_count[ERROR_INDEX] = 0;
 }
 
-SPECTRE_TEST(Point2, distanceTo)
+SPECTRE_TEST(Point2, distance_noinline)
 {
     Point2 p0(1, 2);
     Point2 p1(4, 5);
@@ -66,7 +64,7 @@ SPECTRE_TEST(Point2, distanceTo)
     EXPECT_NEAR(distance, 4.242641f, 1e-5f);
 }
 
-SPECTRE_TEST(Point2, max)
+SPECTRE_TEST(Point2, max_noinline)
 {
     Point2 sample(0.5, 1.5);
     Point2 value;
@@ -95,7 +93,7 @@ SPECTRE_TEST(Point2, max)
     EXPECT_EQ(value.y, compare.y);
 }
 
-SPECTRE_TEST(Point2, min)
+SPECTRE_TEST(Point2, min_noinline)
 {
     Point2 sample(0.5, 1.5);
     Point2 value;
@@ -130,8 +128,8 @@ SPECTRE_TEST(Point2, sum_vector)
     Vec2 v2(4, 5.5);
 
     Point2 res = v1+v2;
-    EXPECT_NEAR(res.x, 5, 1e-5f);
-    EXPECT_NEAR(res.y, 7.5, 1e-5f);
+    EXPECT_NEAR(res.x, 5.f, 1e-5f);
+    EXPECT_NEAR(res.y, 7.5f, 1e-5f);
 }
 
 SPECTRE_TEST(Point2, sum_vector_this)
@@ -140,8 +138,8 @@ SPECTRE_TEST(Point2, sum_vector_this)
     Vec2 v2(4, 5.5);
 
     v1 += v2;
-    EXPECT_NEAR(v1.x, 5, 1e-5f);
-    EXPECT_NEAR(v1.y, 7.5, 1e-5f);
+    EXPECT_NEAR(v1.x, 5.f, 1e-5f);
+    EXPECT_NEAR(v1.y, 7.5f, 1e-5f);
 }
 
 SPECTRE_TEST(Point2, sub_point)
@@ -149,8 +147,8 @@ SPECTRE_TEST(Point2, sub_point)
     Point2 v1(1, 2);
     Point2 v2(4, 5.5);
     Vec2 res = v2-v1;
-    EXPECT_NEAR(res.x, 3, 1e-5f);
-    EXPECT_NEAR(res.y, 3.5, 1e-5f);
+    EXPECT_NEAR(res.x, 3.f, 1e-5f);
+    EXPECT_NEAR(res.y, 3.5f, 1e-5f);
 }
 
 SPECTRE_TEST(Point2, sub_vector)
@@ -158,8 +156,8 @@ SPECTRE_TEST(Point2, sub_vector)
     Vec2 v1(1, 2);
     Point2 v2(4, 5.5);
     Point2 res = v2-v1;
-    EXPECT_NEAR(res.x, 3, 1e-5f);
-    EXPECT_NEAR(res.y, 3.5, 1e-5f);
+    EXPECT_NEAR(res.x, 3.f, 1e-5f);
+    EXPECT_NEAR(res.y, 3.5f, 1e-5f);
 }
 
 SPECTRE_TEST(Point2, sub_vector_this)
@@ -167,8 +165,8 @@ SPECTRE_TEST(Point2, sub_vector_this)
     Point2 v1(1, 2);
     Vec2 v2(4, 5.5);
     v1 -= v2;
-    EXPECT_NEAR(v1.x, -3, 1e-5f);
-    EXPECT_NEAR(v1.y, -3.5, 1e-5f);
+    EXPECT_NEAR(v1.x, -3.f, 1e-5f);
+    EXPECT_NEAR(v1.y, -3.5f, 1e-5f);
 }
 
 SPECTRE_TEST(Point2, equal)
@@ -283,7 +281,7 @@ SPECTRE_TEST(Point2, const_access)
     EXPECT_EQ(v2.y, v2[1]);
 }
 
-SPECTRE_TEST(Point2, inline_distance)
+SPECTRE_TEST(Point2, distance_inline)
 {
     Point2 p0(1, 2);
     Point2 p1(4, 5);
@@ -291,7 +289,7 @@ SPECTRE_TEST(Point2, inline_distance)
     EXPECT_NEAR(dist, 4.242641f, 1e-5f);
 }
 
-SPECTRE_TEST(Point2, inline_max)
+SPECTRE_TEST(Point2, max_inline)
 {
     Point2 sample(0.5, 1.5);
     Point2 value;
@@ -320,7 +318,7 @@ SPECTRE_TEST(Point2, inline_max)
     EXPECT_EQ(value.y, compare.y);
 }
 
-SPECTRE_TEST(Point2, inline_min)
+SPECTRE_TEST(Point2, min_inline)
 {
     Point2 sample(0.5, 1.5);
     Point2 value;

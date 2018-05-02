@@ -4,5 +4,5 @@ clone_folder: c:\projects\spectre-light
 platform: x64
 configuration: Release
 build:
-    project: c:\projects\spectre-light\spectre-light.sln
+    project: c:\projects\spectre-light\visualstudio\spectre-light.sln
     parallel: true

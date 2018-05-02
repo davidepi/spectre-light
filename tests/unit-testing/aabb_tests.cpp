@@ -2,18 +2,18 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(AABB_tests)
 
 #include "geometry/AABB.hpp"
 #include "utility/utility.hpp"
 #include <climits>
 #include <cmath>
+
+SPECTRE_TEST_INIT(AABB_tests)
 
 SPECTRE_TEST(AABB, default_constructor)
 {
@@ -344,7 +344,7 @@ SPECTRE_TEST(AABB, surface)
     //normal length
     box = AABB(Point3(-1, -1, -1),
                Point3(3, 4, 5));
-    EXPECT_EQ(box.surface(), 148);
+    EXPECT_EQ(box.surface(), 148.f);
 
     //infinite length
     box = AABB(Point3(-1, -1, -1), Point3(1, 1, INFINITY));
@@ -365,7 +365,7 @@ SPECTRE_TEST(AABB, volume)
 
     //normal length
     box = AABB(Point3(-1, -1, -1), Point3(3, 4, 5));
-    EXPECT_EQ(box.volume(), 120);
+    EXPECT_EQ((int)box.volume(), 120);
 
     //infinite length
     box = AABB(Point3(-1, -1, -1), Point3(1, 1, INFINITY));
@@ -382,42 +382,42 @@ SPECTRE_TEST(AABB, longest_axis)
     //zero length -> return x
     Point3 p(-0.53123f, -24.29362f, 84.26433f);
     box = AABB(p);
-    EXPECT_EQ(box.longest_axis(), 0);
+    EXPECT_EQ(box.longest_axis(), (char)0);
 
     //longest x - non inf
     box = AABB(Point3(-85.77731f, 5.98468f, -10.75332f),
                Point3(74.13619f, 99.79995f, 37.72758f));
-    EXPECT_EQ(box.longest_axis(), 0);
+    EXPECT_EQ(box.longest_axis(), (char)0);
 
     //longest y - non inf
     box = AABB(Point3(-27.68684f, -73.58186f, -69.54105f),
                Point3(65.46841f, 95.43746f, -51.04507f));
-    EXPECT_EQ(box.longest_axis(), 1);
+    EXPECT_EQ(box.longest_axis(), (char)1);
 
     //longest z - non inf
     box = AABB(Point3(17.90233f, -6.71415f, -88.93419f),
                Point3(76.75507f, 50.73106f, 95.81359f));
-    EXPECT_EQ(box.longest_axis(), 2);
+    EXPECT_EQ(box.longest_axis(), (char)2);
 
     //longest x - inf
     box = AABB(Point3(-INFINITY, 5.98468f, -10.75332f),
                Point3(74.13619f, 99.79995f, 37.72758f));
-    EXPECT_EQ(box.longest_axis(), 0);
+    EXPECT_EQ(box.longest_axis(), (char)0);
 
     //longest y - inf
     box = AABB(Point3(-27.68684f, -73.58186f, -69.54105f),
                Point3(65.46841f, INFINITY, -51.04507f));
-    EXPECT_EQ(box.longest_axis(), 1);
+    EXPECT_EQ(box.longest_axis(), (char)1);
 
     //longest z - inf
     box = AABB(Point3(17.90233f, -46.71415f, -INFINITY),
                Point3(76.75507f, 90.73106f, 95.81359f));
-    EXPECT_EQ(box.longest_axis(), 2);
+    EXPECT_EQ(box.longest_axis(), (char)2);
 
     //everything infinite
     box = AABB(Point3(-INFINITY, -INFINITY, -INFINITY),
                Point3(INFINITY, INFINITY, INFINITY));
-    EXPECT_EQ(box.longest_axis(), 0);
+    EXPECT_EQ(box.longest_axis(), (char)0);
 }
 
 SPECTRE_TEST(AABB, center)

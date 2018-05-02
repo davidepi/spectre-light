@@ -6,7 +6,6 @@
 #include "CppUnitTest.h"
 #else
 #include <gtest/gtest.h>
-
 #endif
 
 #include "utility/console.hpp"

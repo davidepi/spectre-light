@@ -2,18 +2,18 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Vec3_tests)
 
 #include "geometry/vec3.hpp"
 #include "geometry/vec2.hpp"
 #include "utility/utility.hpp"
 #include <climits>
+
+SPECTRE_TEST_INIT(Vec3_tests)
 
 SPECTRE_TEST(Vec3, empty_constructor)
 {
@@ -94,21 +94,21 @@ SPECTRE_TEST(Vec3, clone)
     EXPECT_EQ(v.z, v2.z);
 }
 
-SPECTRE_TEST(Vec3, dot)
+SPECTRE_TEST(Vec3, dot_noinline)
 {
     Vec3 v(1, 2, 3);
     Vec3 v2(4, -5, 6);
-    EXPECT_EQ(v.dot(v2), 12);
+    EXPECT_EQ(v.dot(v2), 12.f);
 
     Vec3 v3(6, -1, 3);
     Vec3 v4(4, 18, -2);
-    EXPECT_EQ(v3.dot(v4), 0);
+    EXPECT_EQ(v3.dot(v4), 0.f);
 
     Normal n1(6, -1, 3);
-    EXPECT_EQ(v2.dot(n1), 47);
+    EXPECT_EQ(v2.dot(n1), 47.f);
 }
 
-SPECTRE_TEST(Vec3, cross)
+SPECTRE_TEST(Vec3, cross_noinline)
 {
     Vec3 v0(3, -3, 1);
     Vec3 v1(4, 9, 2);
@@ -120,9 +120,9 @@ SPECTRE_TEST(Vec3, cross)
 
     Vec3 res(-15, -2, 39);
 
-    EXPECT_EQ(outv.x, -15);
-    EXPECT_EQ(outv.y, -2);
-    EXPECT_EQ(outv.z, 39);
+    EXPECT_EQ(outv.x, -15.f);
+    EXPECT_EQ(outv.y, -2.f);
+    EXPECT_EQ(outv.z, 39.f);
     EXPECT_EQ(outv.x, out2.x);
     EXPECT_EQ(outv.y, out2.y);
     EXPECT_EQ(outv.z, out2.z);
@@ -135,14 +135,14 @@ SPECTRE_TEST(Vec3, length)
     EXPECT_NEAR(length, 41.833f, 1e-5f);
 
     Vec3 v1(-32, -53, 23);
-    EXPECT_EQ(v1.lengthSquared(), 4362);
+    EXPECT_EQ(v1.lengthSquared(), 4362.f);
     EXPECT_NEAR(v1.length()*v1.length(), v1.lengthSquared(), 1e-5f);
 
     Vec3 v2;
-    EXPECT_EQ(v2.length(), 0);
+    EXPECT_EQ(v2.length(), 0.f);
 }
 
-SPECTRE_TEST(Vec3, normalize)
+SPECTRE_TEST(Vec3, normalize_noinline)
 {
     Vec3 v1(3, 1, 2);
     EXPECT_NEAR(v1.length(), 3.7416575f, 1e-5f);
@@ -193,9 +193,9 @@ SPECTRE_TEST(Vec3, sum_vector)
     Vec3 v2(4, 5.5, -3);
 
     Vec3 res = v1+v2;
-    EXPECT_NEAR(res.x, 5, 1e-5f);
-    EXPECT_NEAR(res.y, 7.5, 1e-5f);
-    EXPECT_NEAR(res.z, 0, 1e-5f);
+    EXPECT_NEAR(res.x, 5.f, 1e-5f);
+    EXPECT_NEAR(res.y, 7.5f, 1e-5f);
+    EXPECT_NEAR(res.z, 0.f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, sum_float)
@@ -204,9 +204,9 @@ SPECTRE_TEST(Vec3, sum_float)
     float f = -0.75;
 
     Vec3 res = v1+f;
-    EXPECT_NEAR(res.x, 0.25, 1e-5f);
-    EXPECT_NEAR(res.y, 1.25, 1e-5f);
-    EXPECT_NEAR(res.z, -3.75, 1e-5f);
+    EXPECT_NEAR(res.x, 0.25f, 1e-5f);
+    EXPECT_NEAR(res.y, 1.25f, 1e-5f);
+    EXPECT_NEAR(res.z, -3.75f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, sum_vector_this)
@@ -215,9 +215,9 @@ SPECTRE_TEST(Vec3, sum_vector_this)
     Vec3 v2(4, 5.5, -3);
 
     v1 += v2;
-    EXPECT_NEAR(v1.x, 5, 1e-5f);
-    EXPECT_NEAR(v1.y, 7.5, 1e-5f);
-    EXPECT_NEAR(v1.z, 0, 1e-5f);
+    EXPECT_NEAR(v1.x, 5.f, 1e-5f);
+    EXPECT_NEAR(v1.y, 7.5f, 1e-5f);
+    EXPECT_NEAR(v1.z, 0.f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, sum_float_this)
@@ -225,9 +225,9 @@ SPECTRE_TEST(Vec3, sum_float_this)
     Vec3 v1(3.3, 1.2, -1.5);
     float f = 0.5;
     v1 += f;
-    EXPECT_NEAR(v1.x, 3.8, 1e-5f);
-    EXPECT_NEAR(v1.y, 1.7, 1e-5f);
-    EXPECT_NEAR(v1.z, -1, 1e-5f);
+    EXPECT_NEAR(v1.x, 3.8f, 1e-5f);
+    EXPECT_NEAR(v1.y, 1.7f, 1e-5f);
+    EXPECT_NEAR(v1.z, -1.f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, sub_vector)
@@ -236,9 +236,9 @@ SPECTRE_TEST(Vec3, sub_vector)
     Vec3 v2(7, 5.3, -4);
 
     Vec3 res = v1-v2;
-    EXPECT_NEAR(res.x, 0, 1e-5f);
-    EXPECT_NEAR(res.y, 1.2, 1e-5f);
-    EXPECT_NEAR(res.z, -1, 1e-5f);
+    EXPECT_NEAR(res.x, 0.f, 1e-5f);
+    EXPECT_NEAR(res.y, 1.2f, 1e-5f);
+    EXPECT_NEAR(res.z, -1.f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, sub_float)
@@ -246,9 +246,9 @@ SPECTRE_TEST(Vec3, sub_float)
     Vec3 v1(3.3, 1.2, -1.5);
     float f = 0.5;
     Vec3 res = v1-f;
-    EXPECT_NEAR(res.x, 2.8, 1e-5f);
-    EXPECT_NEAR(res.y, 0.7, 1e-5f);
-    EXPECT_NEAR(res.z, -2.0, 1e-5f);
+    EXPECT_NEAR(res.x, 2.8f, 1e-5f);
+    EXPECT_NEAR(res.y, 0.7f, 1e-5f);
+    EXPECT_NEAR(res.z, -2.0f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, sub_vector_this)
@@ -257,9 +257,9 @@ SPECTRE_TEST(Vec3, sub_vector_this)
     Vec3 v2(7, 3.3, 4);
 
     v1 -= v2;
-    EXPECT_NEAR(v1.x, -2, 1e-5f);
-    EXPECT_NEAR(v1.y, -0.3, 1e-5f);
-    EXPECT_NEAR(v1.z, -3, 1e-5f);
+    EXPECT_NEAR(v1.x, -2.f, 1e-5f);
+    EXPECT_NEAR(v1.y, -0.3f, 1e-5f);
+    EXPECT_NEAR(v1.z, -3.f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, sub_float_this)
@@ -267,9 +267,9 @@ SPECTRE_TEST(Vec3, sub_float_this)
     Vec3 v1(3.3, 1.2, -1.5);
     float f = 0.5;
     v1 -= f;
-    EXPECT_NEAR(v1.x, 2.8, 1e-5f);
-    EXPECT_NEAR(v1.y, 0.7, 1e-5f);
-    EXPECT_NEAR(v1.z, -2.0, 1e-5f);
+    EXPECT_NEAR(v1.x, 2.8f, 1e-5f);
+    EXPECT_NEAR(v1.y, 0.7f, 1e-5f);
+    EXPECT_NEAR(v1.z, -2.0f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, mul_vector)
@@ -278,9 +278,9 @@ SPECTRE_TEST(Vec3, mul_vector)
     Vec3 v2(1.4, 45, -.004);
 
     Vec3 res = v1*v2;
-    EXPECT_NEAR(res.x, 1.68, 1e-5f);
-    EXPECT_NEAR(res.y, 252, 1e-5f);
-    EXPECT_NEAR(res.z, -0.3492, 1e-5f);
+    EXPECT_NEAR(res.x, 1.68f, 1e-5f);
+    EXPECT_NEAR(res.y, 252.f, 1e-5f);
+    EXPECT_NEAR(res.z, -0.3492f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, mul_float)
@@ -288,9 +288,9 @@ SPECTRE_TEST(Vec3, mul_float)
     Vec3 v1(3.3, 1.2, -1.5);
     float f = 7.33;
     Vec3 res = v1*f;
-    EXPECT_NEAR(res.x, 24.189, 1e-5f);
-    EXPECT_NEAR(res.y, 8.796, 1e-5f);
-    EXPECT_NEAR(res.z, -10.995, 1e-5f);
+    EXPECT_NEAR(res.x, 24.189f, 1e-5f);
+    EXPECT_NEAR(res.y, 8.796f, 1e-5f);
+    EXPECT_NEAR(res.z, -10.995f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, mul_vector_this)
@@ -299,9 +299,9 @@ SPECTRE_TEST(Vec3, mul_vector_this)
     Vec3 v2(2, 3, 7);
 
     v1 *= v2;
-    EXPECT_NEAR(v1.x, 2, 1e-5f);
-    EXPECT_NEAR(v1.y, 0, 1e-5f);
-    EXPECT_NEAR(v1.z, 21, 1e-5f);
+    EXPECT_NEAR(v1.x, 2.f, 1e-5f);
+    EXPECT_NEAR(v1.y, 0.f, 1e-5f);
+    EXPECT_NEAR(v1.z, 21.f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, mul_float_this)
@@ -309,9 +309,9 @@ SPECTRE_TEST(Vec3, mul_float_this)
     Vec3 v1(3.3, 1.2, -1.5);
     float f = -53.477;
     v1 *= f;
-    EXPECT_NEAR(v1.x, -176.4741, 1e-5f);
-    EXPECT_NEAR(v1.y, -64.1724, 1e-5f);
-    EXPECT_NEAR(v1.z, 80.2155, 1e-5f);
+    EXPECT_NEAR(v1.x, -176.4741f, 1e-5f);
+    EXPECT_NEAR(v1.y, -64.1724f, 1e-5f);
+    EXPECT_NEAR(v1.z, 80.2155f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, div_vector)
@@ -320,9 +320,9 @@ SPECTRE_TEST(Vec3, div_vector)
     Vec3 v2(-6, -0.4, 2);
 
     Vec3 res = v1/v2;
-    EXPECT_NEAR(res.x, (7.0/-6.0), 1e-5f);
-    EXPECT_NEAR(res.y, (8.4/-0.4), 1e-5f);
-    EXPECT_NEAR(res.z, (7.0/2.0), 1e-5f);
+    EXPECT_NEAR(res.x, (7.0f/-6.0f), 1e-5f);
+    EXPECT_NEAR(res.y, (8.4f/-0.4f), 1e-5f);
+    EXPECT_NEAR(res.z, (7.0f/2.0f), 1e-5f);
 
     Vec3 vzerox(0, 1, 1);
     Vec3 vzeroy(1, 0, 1);
@@ -341,9 +341,9 @@ SPECTRE_TEST(Vec3, div_float)
     Vec3 v1(3.3, 1.2, -1.5);
     float f = 7.33;
     Vec3 res = v1/f;
-    EXPECT_NEAR(res.x, 3.3/7.33, 1e-5f);
-    EXPECT_NEAR(res.y, 1.2/7.33, 1e-5f);
-    EXPECT_NEAR(res.z, -1.5/7.33, 1e-5f);
+    EXPECT_NEAR(res.x, 3.3f/7.33f, 1e-5f);
+    EXPECT_NEAR(res.y, 1.2f/7.33f, 1e-5f);
+    EXPECT_NEAR(res.z, -1.5f/7.33f, 1e-5f);
 
     float zero = 0.f;
     v1/zero;
@@ -357,9 +357,9 @@ SPECTRE_TEST(Vec3, div_vector_this)
     Vec3 v2(2, 3, 7);
 
     v1 /= v2;
-    EXPECT_NEAR(v1.x, 1.0/2.0, 1e-5f);
-    EXPECT_NEAR(v1.y, 0.0/3.0, 1e-5f);
-    EXPECT_NEAR(v1.z, 3.0/7.0, 1e-5f);
+    EXPECT_NEAR(v1.x, 1.0f/2.0f, 1e-5f);
+    EXPECT_NEAR(v1.y, 0.0f/3.0f, 1e-5f);
+    EXPECT_NEAR(v1.z, 3.0f/7.0f, 1e-5f);
 
     Vec3 vzerox(0, 1, 1);
     Vec3 vzeroy(1, 0, 1);
@@ -381,9 +381,9 @@ SPECTRE_TEST(Vec3, div_float_this)
     Vec3 v1(3.3, 1.2, -1.5);
     float f = -53.477;
     v1 /= f;
-    EXPECT_NEAR(v1.x, 3.3/-53.477, 1e-5f);
-    EXPECT_NEAR(v1.y, 1.2/-53.477, 1e-5f);
-    EXPECT_NEAR(v1.z, -1.5/-53.477, 1e-5f);
+    EXPECT_NEAR(v1.x, 3.3f/-53.477f, 1e-5f);
+    EXPECT_NEAR(v1.y, 1.2f/-53.477f, 1e-5f);
+    EXPECT_NEAR(v1.z, -1.5f/-53.477f, 1e-5f);
 
 
     float zero = 0.f;
@@ -397,9 +397,9 @@ SPECTRE_TEST(Vec3, not_vector)
     Vec3 v1(3, 4.55556, -18);
     Vec3 res = !v1;
 
-    EXPECT_NEAR(res.x, -3, 1e-5f);
-    EXPECT_NEAR(res.y, -4.55556, 1e-5f);
-    EXPECT_NEAR(res.z, 18, 1e-5f);
+    EXPECT_NEAR(res.x, -3.f, 1e-5f);
+    EXPECT_NEAR(res.y, -4.55556f, 1e-5f);
+    EXPECT_NEAR(res.z, 18.f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, minus_vector)
@@ -407,9 +407,9 @@ SPECTRE_TEST(Vec3, minus_vector)
     Vec3 v1(6, 8.5, -3.76);
     Vec3 res = -v1;
 
-    EXPECT_NEAR(res.x, -6, 1e-5f);
-    EXPECT_NEAR(res.y, -8.5, 1e-5f);
-    EXPECT_NEAR(res.z, 3.76, 1e-5f);
+    EXPECT_NEAR(res.x, -6.f, 1e-5f);
+    EXPECT_NEAR(res.y, -8.5f, 1e-5f);
+    EXPECT_NEAR(res.z, 3.76f, 1e-5f);
 }
 
 SPECTRE_TEST(Vec3, equal_vector)
@@ -532,7 +532,7 @@ SPECTRE_TEST(Vec3, const_access)
     EXPECT_EQ(v2.z, v2[2]);
 }
 
-SPECTRE_TEST(Vec3, clamp)
+SPECTRE_TEST(Vec3, clamp_noinline)
 {
     Vec3 sample(4.9, -5.8, 3.6);;
     Vec3 v1 = sample;
@@ -588,7 +588,7 @@ SPECTRE_TEST(Vec3, clamp)
     max.z = 10;
 }
 
-SPECTRE_TEST(Vec3, saturate)
+SPECTRE_TEST(Vec3, saturate_noinline)
 {
     Vec3 sample(0.9, 0.5, 0.3);;
     Vec3 v1 = sample;
@@ -636,7 +636,7 @@ SPECTRE_TEST(Vec3, saturate)
     EXPECT_EQ(v1.z, 1.f);
 }
 
-SPECTRE_TEST(Vec3, distanceTo)
+SPECTRE_TEST(Vec3, distance_noinline)
 {
     Vec3 a(1.5f, -2.f, 1.7f);
     Vec3 b(3.7f, 2.5f, -4.6f);
@@ -644,7 +644,7 @@ SPECTRE_TEST(Vec3, distanceTo)
     EXPECT_EQ(8.0486023631f, dist);
 }
 
-SPECTRE_TEST(Vec3, max)
+SPECTRE_TEST(Vec3, max_noinline)
 {
     Vec3 sample(0.5, 1.5, -3.5);
     Vec3 value;
@@ -684,7 +684,7 @@ SPECTRE_TEST(Vec3, max)
     EXPECT_EQ(value.z, compare.z);
 }
 
-SPECTRE_TEST(Vec3, min)
+SPECTRE_TEST(Vec3, min_noinline)
 {
     Vec3 sample(0.5, 1.5, -3.5);
     Vec3 value;
@@ -724,7 +724,7 @@ SPECTRE_TEST(Vec3, min)
     EXPECT_EQ(value.z, sample.z);
 }
 
-SPECTRE_TEST(Vec3, reflect_vector)
+SPECTRE_TEST(Vec3, reflect_vector_noinline)
 {
     errors_count[WARNING_INDEX] = 0;
     Vec3 sample = Vec3(0.5f, 0.3f, -0.5f);
@@ -743,7 +743,7 @@ SPECTRE_TEST(Vec3, reflect_vector)
     errors_count[WARNING_INDEX] = 0;
 }
 
-SPECTRE_TEST(Vec3, reflect_normal)
+SPECTRE_TEST(Vec3, reflect_normal_noinline)
 {
     errors_count[WARNING_INDEX] = 0;
     Vec3 sample = Vec3(0.5f, 0.3f, -0.5f);
@@ -762,7 +762,7 @@ SPECTRE_TEST(Vec3, reflect_normal)
     errors_count[WARNING_INDEX] = 0;
 }
 
-SPECTRE_TEST(Vec3, refract_vector)
+SPECTRE_TEST(Vec3, refract_vector_noinline)
 {
     Vec3 v;
     Vec3 n(0.f, 0.f, 1.f);
@@ -785,7 +785,7 @@ SPECTRE_TEST(Vec3, refract_vector)
     errors_count[WARNING_INDEX] = 0;
 }
 
-SPECTRE_TEST(Vec3, refract_normal)
+SPECTRE_TEST(Vec3, refract_normal_noinline)
 {
     Vec3 v;
     Normal n(0.f, 0.f, 1.f);
@@ -810,63 +810,63 @@ SPECTRE_TEST(Vec3, refract_normal)
 
 // ------
 
-SPECTRE_TEST(Vec3, inline_dotvecvec)
+SPECTRE_TEST(Vec3, dotvecvec_inline)
 {
     Vec3 v(1, 2, 3);
     Vec3 v2(4, -5, 6);
-    EXPECT_EQ(dot(v, v2), 12);
+    EXPECT_EQ(dot(v, v2), 12.f);
 }
 
-SPECTRE_TEST(Vec3, inline_dotvecnormal)
+SPECTRE_TEST(Vec3, dotvecnormal_inline)
 {
     Vec3 v(1, 2, 3);
     Normal v2(4, -5, 6);
-    EXPECT_EQ(dot(v, v2), 12);
+    EXPECT_EQ(dot(v, v2), 12.f);
 }
 
-SPECTRE_TEST(Vec3, inline_dotnormalvec)
+SPECTRE_TEST(Vec3, dotnormalvec_inline)
 {
     Normal v(1, 2, 3);
     Vec3 v2(4, -5, 6);
-    EXPECT_EQ(dot(v, v2), 12);
+    EXPECT_EQ(dot(v, v2), 12.f);
 }
 
-SPECTRE_TEST(Vec3, inline_dotnormalnormal)
+SPECTRE_TEST(Vec3, dotnormalnormal_inline)
 {
     Normal v(1, 2, 3);
     Normal v2(4, -5, 6);
-    EXPECT_EQ(dot(v, v2), 12);
+    EXPECT_EQ(dot(v, v2), 12.f);
 }
 
-SPECTRE_TEST(Vec3, inline_absdotvecvec)
+SPECTRE_TEST(Vec3, absdotvecvec_inline)
 {
     Vec3 v(1, 2, 3);
     Vec3 v2(4, -5, 6);
     EXPECT_EQ(absdot(v, v2), fabsf(dot(v, v2)));
 }
 
-SPECTRE_TEST(Vec3, inline_absdotvecnormal)
+SPECTRE_TEST(Vec3, absdotvecnormal_inline)
 {
     Vec3 v(1, 2, 3);
     Normal v2(4, -5, 6);
     EXPECT_EQ(absdot(v, v2), fabsf(dot(v, v2)));
 }
 
-SPECTRE_TEST(Vec3, inline_absdotnormalvec)
+SPECTRE_TEST(Vec3, absdotnormalvec_inline)
 {
     Normal v(1, 2, 3);
     Vec3 v2(4, -5, 6);
     EXPECT_EQ(absdot(v, v2), fabsf(dot(v, v2)));
 }
 
-SPECTRE_TEST(Vec3, inline_absdotnormalnormal)
+SPECTRE_TEST(Vec3, absdotnormalnormal_inline)
 {
     Normal v(1, 2, 3);
     Normal v2(4, -5, 6);
     EXPECT_EQ(absdot(v, v2), fabsf(dot(v, v2)));
 }
 
-SPECTRE_TEST(Vec3, inline_cross)
+SPECTRE_TEST(Vec3, cross_inline)
 {
     Vec3 v0(3, -3, 1);
     Vec3 v1(4, 9, 2);
@@ -874,12 +874,12 @@ SPECTRE_TEST(Vec3, inline_cross)
 
     outv = cross(v0, v1);
 
-    EXPECT_EQ(outv.x, -15);
-    EXPECT_EQ(outv.y, -2);
-    EXPECT_EQ(outv.z, 39);
+    EXPECT_EQ(outv.x, -15.f);
+    EXPECT_EQ(outv.y, -2.f);
+    EXPECT_EQ(outv.z, 39.f);
 }
 
-SPECTRE_TEST(Vec3, inline_normalize)
+SPECTRE_TEST(Vec3, normalize_inline)
 {
     errors_count[CRITICAL_INDEX] = 0;
     Vec3 v1(3, 1, 2);
@@ -906,7 +906,7 @@ SPECTRE_TEST(Vec3, inline_normalize)
     EXPECT_TRUE(v2.is_normalized());
 }
 
-SPECTRE_TEST(Vec3, inline_clamp)
+SPECTRE_TEST(Vec3, clamp_inline)
 {
     Vec3 sample(4.9, -5.8, 3.6);;
     Vec3 v1 = sample;
@@ -963,7 +963,7 @@ SPECTRE_TEST(Vec3, inline_clamp)
     max.z = 10;
 }
 
-SPECTRE_TEST(Vec3, inline_saturate)
+SPECTRE_TEST(Vec3, saturate_inline)
 {
     Vec3 sample(0.9, 0.5, 0.3);;
     Vec3 v1 = sample;
@@ -1011,7 +1011,7 @@ SPECTRE_TEST(Vec3, inline_saturate)
     EXPECT_EQ(out.z, 1.f);
 }
 
-SPECTRE_TEST(Vec3, inline_distance)
+SPECTRE_TEST(Vec3, distance_inline)
 {
     Vec3 a(1.5f, -2.f, 1.7f);
     Vec3 b(3.7f, 2.5f, -4.6f);
@@ -1019,7 +1019,7 @@ SPECTRE_TEST(Vec3, inline_distance)
     EXPECT_EQ(8.0486023631f, dist);
 }
 
-SPECTRE_TEST(Vec3, inline_max)
+SPECTRE_TEST(Vec3, max_inline)
 {
     Vec3 sample(0.5, 1.5, -3.5);
     Vec3 value;
@@ -1060,7 +1060,7 @@ SPECTRE_TEST(Vec3, inline_max)
     EXPECT_EQ(out.z, compare.z);
 }
 
-SPECTRE_TEST(Vec3, inline_min)
+SPECTRE_TEST(Vec3, min_inline)
 {
     Vec3 sample(0.5, 1.5, -3.5);
     Vec3 value;
@@ -1101,7 +1101,7 @@ SPECTRE_TEST(Vec3, inline_min)
     EXPECT_EQ(out.z, sample.z);
 }
 
-SPECTRE_TEST(Vec3, inline_reflect_vector)
+SPECTRE_TEST(Vec3, reflect_vector_inline)
 {
     errors_count[WARNING_INDEX] = 0;
     Vec3 sample = Vec3(0.5f, 0.3f, -0.5f);
@@ -1121,7 +1121,7 @@ SPECTRE_TEST(Vec3, inline_reflect_vector)
     errors_count[WARNING_INDEX] = 0;
 }
 
-SPECTRE_TEST(Vec3, inline_reflect_normal)
+SPECTRE_TEST(Vec3, reflect_normal_inline)
 {
     errors_count[WARNING_INDEX] = 0;
     Vec3 sample = Vec3(0.5f, 0.3f, -0.5f);
@@ -1141,7 +1141,7 @@ SPECTRE_TEST(Vec3, inline_reflect_normal)
     errors_count[WARNING_INDEX] = 0;
 }
 
-SPECTRE_TEST(Vec3, inline_refract_vector)
+SPECTRE_TEST(Vec3, refract_vector_inline)
 {
     Vec3 v;
     Vec3 n(0.f, 0.f, 1.f);
@@ -1167,7 +1167,7 @@ SPECTRE_TEST(Vec3, inline_refract_vector)
     errors_count[WARNING_INDEX] = 0;
 }
 
-SPECTRE_TEST(Vec3, inline_refract_normal)
+SPECTRE_TEST(Vec3, refract_normal_inline)
 {
     Vec3 v;
     Normal n(0.f, 0.f, 1.f);

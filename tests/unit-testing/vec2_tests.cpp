@@ -2,18 +2,18 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Vec2_tests)
 
 #include "geometry/vec2.hpp"
 #include "utility/utility.hpp"
 #include <climits>
 #include <math.h>
+
+SPECTRE_TEST_INIT(Vec2_tests)
 
 SPECTRE_TEST(Vec2, empty_constructor)
 {
@@ -88,19 +88,19 @@ SPECTRE_TEST(Vec2, clone)
     EXPECT_EQ(v.y, v2.y);
 }
 
-SPECTRE_TEST(Vec2, dot)
+SPECTRE_TEST(Vec2, dot_noinline)
 {
     Vec2 v(1, 2);
     Vec2 v2(4, -5);
-    EXPECT_EQ(v.dot(v2), -6);
+    EXPECT_EQ(v.dot(v2), -6.f);
 
     Vec2 v3(6, -1);
     Vec2 v4(4, 18);
-    EXPECT_EQ(v3.dot(v4), 6);
+    EXPECT_EQ(v3.dot(v4), 6.f);
 
     Vec2 v5(6, -1);
     Vec2 v6(4, 24);
-    EXPECT_EQ(v5.dot(v6), 0);
+    EXPECT_EQ(v5.dot(v6), 0.f);
 }
 
 SPECTRE_TEST(Vec2, length)
@@ -110,15 +110,15 @@ SPECTRE_TEST(Vec2, length)
     EXPECT_NEAR(length, 15.1327459504f, 1e-5f);
 
     Vec2 v1(-32, -53);
-    EXPECT_EQ(v1.lengthSquared(), 3833);
+    EXPECT_EQ(v1.lengthSquared(), 3833.f);
 
-    EXPECT_EQ((int)(v1.length()*v1.length()), v1.lengthSquared());
+    EXPECT_EQ((float)(int)(v1.length()*v1.length()), v1.lengthSquared());
 
     Vec2 v2;
-    EXPECT_EQ(v2.length(), 0);
+    EXPECT_EQ(v2.length(), 0.f);
 }
 
-SPECTRE_TEST(Vec2, normalize)
+SPECTRE_TEST(Vec2, normalize_noinline)
 {
     Vec2 v1(3, 1);
     EXPECT_EQ(v1.length(), 3.1622776602f);
@@ -411,7 +411,7 @@ SPECTRE_TEST(Vec2, not_equal_vector)
     EXPECT_EQ(res, false);
 }
 
-SPECTRE_TEST(Vec2, clamp)
+SPECTRE_TEST(Vec2, clamp_noinline)
 {
     Vec2 sample(4.9, -5.8);
     Vec2 v1 = sample;
@@ -451,7 +451,7 @@ SPECTRE_TEST(Vec2, clamp)
     max.y = 10;
 }
 
-SPECTRE_TEST(Vec2, saturate)
+SPECTRE_TEST(Vec2, saturate_noinline)
 {
     Vec2 sample(0.9, 0.5);
     Vec2 v1 = sample;
@@ -485,7 +485,7 @@ SPECTRE_TEST(Vec2, saturate)
     EXPECT_EQ(v1.y, 1.f);
 }
 
-SPECTRE_TEST(Vec2, distanceTo)
+SPECTRE_TEST(Vec2, distance_noinline)
 {
     Vec2 a(1.5f, -2.f);
     Vec2 b(3.7f, 2.5f);
@@ -493,7 +493,7 @@ SPECTRE_TEST(Vec2, distanceTo)
     EXPECT_EQ(5.0089919145f, dist);
 }
 
-SPECTRE_TEST(Vec2, max)
+SPECTRE_TEST(Vec2, max_noinline)
 {
     Vec2 sample(0.5, 1.5);
     Vec2 value;
@@ -522,7 +522,7 @@ SPECTRE_TEST(Vec2, max)
     EXPECT_EQ(value.y, compare.y);
 }
 
-SPECTRE_TEST(Vec2, min)
+SPECTRE_TEST(Vec2, min_noinline)
 {
     Vec2 sample(0.5, 1.5);
     Vec2 value;
@@ -553,11 +553,11 @@ SPECTRE_TEST(Vec2, min)
 
 // ------
 
-SPECTRE_TEST(Vec2, inline_dot)
+SPECTRE_TEST(Vec2, dot_inline)
 {
     Vec2 v(1, 2);
     Vec2 v2(4, -5);
-    EXPECT_EQ(dot(v, v2), -6);
+    EXPECT_EQ(dot(v, v2), -6.f);
 }
 
 SPECTRE_TEST(Vec2, inline_normalize)
@@ -584,7 +584,7 @@ SPECTRE_TEST(Vec2, inline_normalize)
     errors_count[CRITICAL_INDEX] = 0;
 }
 
-SPECTRE_TEST(Vec2, inline_clamp)
+SPECTRE_TEST(Vec2, clamp_inline)
 {
     Vec2 sample(4.9, -5.8);
     Vec2 v1 = sample;
@@ -625,7 +625,7 @@ SPECTRE_TEST(Vec2, inline_clamp)
     max.y = 10;
 }
 
-SPECTRE_TEST(Vec2, inline_saturate)
+SPECTRE_TEST(Vec2, saturate_inline)
 {
     Vec2 sample(0.9, 0.5);
     Vec2 v1 = sample;
@@ -659,7 +659,7 @@ SPECTRE_TEST(Vec2, inline_saturate)
     EXPECT_EQ(out.y, 1.f);
 }
 
-SPECTRE_TEST(Vec2, inline_distance)
+SPECTRE_TEST(Vec2, distance_inline)
 {
     Vec2 a(1.5f, -2.f);
     Vec2 b(3.7f, 2.5f);
@@ -667,7 +667,7 @@ SPECTRE_TEST(Vec2, inline_distance)
     EXPECT_EQ(5.0089919145f, dist);
 }
 
-SPECTRE_TEST(Vec2, inline_max)
+SPECTRE_TEST(Vec2, max_inline)
 {
     Vec2 sample(0.5, 1.5);
     Vec2 value;
@@ -697,7 +697,7 @@ SPECTRE_TEST(Vec2, inline_max)
     EXPECT_EQ(out.y, compare.y);
 }
 
-SPECTRE_TEST(Vec2, inline_min)
+SPECTRE_TEST(Vec2, min_inline)
 {
     Vec2 sample(0.5, 1.5);
     Vec2 value;

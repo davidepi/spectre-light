@@ -2,20 +2,18 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Matrix4_tests)
 
 #include "geometry/matrix4.hpp"
 #include "utility/utility.hpp"
 #include <climits>
 #include <cmath>
 
-#define EPSILON 1E-5f
+SPECTRE_TEST_INIT(Matrix4_tests)
 
 SPECTRE_TEST(Matrix4, float_constructor)
 {
@@ -86,44 +84,44 @@ SPECTRE_TEST(Matrix4, set_zero)
 {
     Matrix4 m;
     m.set_zero();
-    EXPECT_EQ(m.m00, 0);
-    EXPECT_EQ(m.m01, 0);
-    EXPECT_EQ(m.m02, 0);
-    EXPECT_EQ(m.m03, 0);
-    EXPECT_EQ(m.m10, 0);
-    EXPECT_EQ(m.m11, 0);
-    EXPECT_EQ(m.m12, 0);
-    EXPECT_EQ(m.m13, 0);
-    EXPECT_EQ(m.m20, 0);
-    EXPECT_EQ(m.m21, 0);
-    EXPECT_EQ(m.m22, 0);
-    EXPECT_EQ(m.m23, 0);
-    EXPECT_EQ(m.m30, 0);
-    EXPECT_EQ(m.m31, 0);
-    EXPECT_EQ(m.m32, 0);
-    EXPECT_EQ(m.m33, 0);
+    EXPECT_EQ(m.m00, 0.f);
+    EXPECT_EQ(m.m01, 0.f);
+    EXPECT_EQ(m.m02, 0.f);
+    EXPECT_EQ(m.m03, 0.f);
+    EXPECT_EQ(m.m10, 0.f);
+    EXPECT_EQ(m.m11, 0.f);
+    EXPECT_EQ(m.m12, 0.f);
+    EXPECT_EQ(m.m13, 0.f);
+    EXPECT_EQ(m.m20, 0.f);
+    EXPECT_EQ(m.m21, 0.f);
+    EXPECT_EQ(m.m22, 0.f);
+    EXPECT_EQ(m.m23, 0.f);
+    EXPECT_EQ(m.m30, 0.f);
+    EXPECT_EQ(m.m31, 0.f);
+    EXPECT_EQ(m.m32, 0.f);
+    EXPECT_EQ(m.m33, 0.f);
 }
 
 SPECTRE_TEST(Matrix4, set_identity)
 {
     Matrix4 m;
     m.set_identity();
-    EXPECT_EQ(m.m00, 1);
-    EXPECT_EQ(m.m01, 0);
-    EXPECT_EQ(m.m02, 0);
-    EXPECT_EQ(m.m03, 0);
-    EXPECT_EQ(m.m10, 0);
-    EXPECT_EQ(m.m11, 1);
-    EXPECT_EQ(m.m12, 0);
-    EXPECT_EQ(m.m13, 0);
-    EXPECT_EQ(m.m20, 0);
-    EXPECT_EQ(m.m21, 0);
-    EXPECT_EQ(m.m22, 1);
-    EXPECT_EQ(m.m23, 0);
-    EXPECT_EQ(m.m30, 0);
-    EXPECT_EQ(m.m31, 0);
-    EXPECT_EQ(m.m32, 0);
-    EXPECT_EQ(m.m33, 1);
+    EXPECT_EQ(m.m00, 1.f);
+    EXPECT_EQ(m.m01, 0.f);
+    EXPECT_EQ(m.m02, 0.f);
+    EXPECT_EQ(m.m03, 0.f);
+    EXPECT_EQ(m.m10, 0.f);
+    EXPECT_EQ(m.m11, 1.f);
+    EXPECT_EQ(m.m12, 0.f);
+    EXPECT_EQ(m.m13, 0.f);
+    EXPECT_EQ(m.m20, 0.f);
+    EXPECT_EQ(m.m21, 0.f);
+    EXPECT_EQ(m.m22, 1.f);
+    EXPECT_EQ(m.m23, 0.f);
+    EXPECT_EQ(m.m30, 0.f);
+    EXPECT_EQ(m.m31, 0.f);
+    EXPECT_EQ(m.m32, 0.f);
+    EXPECT_EQ(m.m33, 1.f);
 }
 
 SPECTRE_TEST(Matrix4, set_translation)
@@ -131,22 +129,22 @@ SPECTRE_TEST(Matrix4, set_translation)
     Matrix4 m;
     Vec3 trans(-87.39175f, 8.35182f, -93.43325f);
     m.set_translation(trans);
-    EXPECT_EQ(m.m00, 1);
-    EXPECT_EQ(m.m01, 0);
-    EXPECT_EQ(m.m02, 0);
+    EXPECT_EQ(m.m00, 1.f);
+    EXPECT_EQ(m.m01, 0.f);
+    EXPECT_EQ(m.m02, 0.f);
     EXPECT_EQ(m.m03, trans.x);
-    EXPECT_EQ(m.m10, 0);
-    EXPECT_EQ(m.m11, 1);
-    EXPECT_EQ(m.m12, 0);
+    EXPECT_EQ(m.m10, 0.f);
+    EXPECT_EQ(m.m11, 1.f);
+    EXPECT_EQ(m.m12, 0.f);
     EXPECT_EQ(m.m13, trans.y);
-    EXPECT_EQ(m.m20, 0);
-    EXPECT_EQ(m.m21, 0);
-    EXPECT_EQ(m.m22, 1);
+    EXPECT_EQ(m.m20, 0.f);
+    EXPECT_EQ(m.m21, 0.f);
+    EXPECT_EQ(m.m22, 1.f);
     EXPECT_EQ(m.m23, trans.z);
-    EXPECT_EQ(m.m30, 0);
-    EXPECT_EQ(m.m31, 0);
-    EXPECT_EQ(m.m32, 0);
-    EXPECT_EQ(m.m33, 1);
+    EXPECT_EQ(m.m30, 0.f);
+    EXPECT_EQ(m.m31, 0.f);
+    EXPECT_EQ(m.m32, 0.f);
+    EXPECT_EQ(m.m33, 1.f);
 }
 
 SPECTRE_TEST(Matrix4, set_scale_uniform)
@@ -155,21 +153,21 @@ SPECTRE_TEST(Matrix4, set_scale_uniform)
     float magnitude = 73.35321f;
     m.set_scale(magnitude);
     EXPECT_EQ(m.m00, magnitude);
-    EXPECT_EQ(m.m01, 0);
-    EXPECT_EQ(m.m02, 0);
-    EXPECT_EQ(m.m03, 0);
-    EXPECT_EQ(m.m10, 0);
+    EXPECT_EQ(m.m01, 0.f);
+    EXPECT_EQ(m.m02, 0.f);
+    EXPECT_EQ(m.m03, 0.f);
+    EXPECT_EQ(m.m10, 0.f);
     EXPECT_EQ(m.m11, magnitude);
-    EXPECT_EQ(m.m12, 0);
-    EXPECT_EQ(m.m13, 0);
-    EXPECT_EQ(m.m20, 0);
-    EXPECT_EQ(m.m21, 0);
+    EXPECT_EQ(m.m12, 0.f);
+    EXPECT_EQ(m.m13, 0.f);
+    EXPECT_EQ(m.m20, 0.f);
+    EXPECT_EQ(m.m21, 0.f);
     EXPECT_EQ(m.m22, magnitude);
-    EXPECT_EQ(m.m23, 0);
-    EXPECT_EQ(m.m30, 0);
-    EXPECT_EQ(m.m31, 0);
-    EXPECT_EQ(m.m32, 0);
-    EXPECT_EQ(m.m33, 1);
+    EXPECT_EQ(m.m23, 0.f);
+    EXPECT_EQ(m.m30, 0.f);
+    EXPECT_EQ(m.m31, 0.f);
+    EXPECT_EQ(m.m32, 0.f);
+    EXPECT_EQ(m.m33, 1.f);
 }
 
 SPECTRE_TEST(Matrix4, set_scale_non_uniform)
@@ -178,21 +176,21 @@ SPECTRE_TEST(Matrix4, set_scale_non_uniform)
     Vec3 magnitude(41.24096, -93.12313, 31.83295);
     m.set_scale(magnitude);
     EXPECT_EQ(m.m00, magnitude.x);
-    EXPECT_EQ(m.m01, 0);
-    EXPECT_EQ(m.m02, 0);
-    EXPECT_EQ(m.m03, 0);
-    EXPECT_EQ(m.m10, 0);
+    EXPECT_EQ(m.m01, 0.f);
+    EXPECT_EQ(m.m02, 0.f);
+    EXPECT_EQ(m.m03, 0.f);
+    EXPECT_EQ(m.m10, 0.f);
     EXPECT_EQ(m.m11, magnitude.y);
-    EXPECT_EQ(m.m12, 0);
-    EXPECT_EQ(m.m13, 0);
-    EXPECT_EQ(m.m20, 0);
-    EXPECT_EQ(m.m21, 0);
+    EXPECT_EQ(m.m12, 0.f);
+    EXPECT_EQ(m.m13, 0.f);
+    EXPECT_EQ(m.m20, 0.f);
+    EXPECT_EQ(m.m21, 0.f);
     EXPECT_EQ(m.m22, magnitude.z);
-    EXPECT_EQ(m.m23, 0);
-    EXPECT_EQ(m.m30, 0);
-    EXPECT_EQ(m.m31, 0);
-    EXPECT_EQ(m.m32, 0);
-    EXPECT_EQ(m.m33, 1);
+    EXPECT_EQ(m.m23, 0.f);
+    EXPECT_EQ(m.m30, 0.f);
+    EXPECT_EQ(m.m31, 0.f);
+    EXPECT_EQ(m.m32, 0.f);
+    EXPECT_EQ(m.m33, 1.f);
 }
 
 SPECTRE_TEST(Matrix4, set_rotate_x)
@@ -200,22 +198,22 @@ SPECTRE_TEST(Matrix4, set_rotate_x)
     Matrix4 m;
     float val = 3.f/4.f*ONE_PI;
     m.set_rotate_x(val);
-    EXPECT_EQ(m.m00, 1);
-    EXPECT_EQ(m.m01, 0);
-    EXPECT_EQ(m.m02, 0);
-    EXPECT_EQ(m.m03, 0);
-    EXPECT_EQ(m.m10, 0);
+    EXPECT_EQ(m.m00, 1.f);
+    EXPECT_EQ(m.m01, 0.f);
+    EXPECT_EQ(m.m02, 0.f);
+    EXPECT_EQ(m.m03, 0.f);
+    EXPECT_EQ(m.m10, 0.f);
     EXPECT_NEAR(m.m11, -1.f/sqrtf(2), 1e-5f);
     EXPECT_NEAR(m.m12, -1.f/sqrtf(2), 1e-5f);
-    EXPECT_EQ(m.m13, 0);
-    EXPECT_EQ(m.m20, 0);
+    EXPECT_EQ(m.m13, 0.f);
+    EXPECT_EQ(m.m20, 0.f);
     EXPECT_NEAR(m.m21, 1.f/sqrtf(2), 1e-5f);
     EXPECT_NEAR(m.m22, -1.f/sqrtf(2), 1e-5f);
-    EXPECT_EQ(m.m23, 0);
-    EXPECT_EQ(m.m30, 0);
-    EXPECT_EQ(m.m31, 0);
-    EXPECT_EQ(m.m32, 0);
-    EXPECT_EQ(m.m33, 1);
+    EXPECT_EQ(m.m23, 0.f);
+    EXPECT_EQ(m.m30, 0.f);
+    EXPECT_EQ(m.m31, 0.f);
+    EXPECT_EQ(m.m32, 0.f);
+    EXPECT_EQ(m.m33, 1.f);
 }
 
 SPECTRE_TEST(Matrix4, set_rotate_y)
@@ -224,21 +222,21 @@ SPECTRE_TEST(Matrix4, set_rotate_y)
     float val = 3.f/4.f*ONE_PI;
     m.set_rotate_y(val);
     EXPECT_NEAR(m.m00, -1.f/sqrtf(2), 1e-5f);
-    EXPECT_EQ(m.m01, 0);
+    EXPECT_EQ(m.m01, 0.f);
     EXPECT_NEAR(m.m02, 1.f/sqrtf(2), 1e-5f);
-    EXPECT_EQ(m.m03, 0);
-    EXPECT_EQ(m.m10, 0);
-    EXPECT_EQ(m.m11, 1);
-    EXPECT_EQ(m.m12, 0);
-    EXPECT_EQ(m.m13, 0);
+    EXPECT_EQ(m.m03, 0.f);
+    EXPECT_EQ(m.m10, 0.f);
+    EXPECT_EQ(m.m11, 1.f);
+    EXPECT_EQ(m.m12, 0.f);
+    EXPECT_EQ(m.m13, 0.f);
     EXPECT_NEAR(m.m20, -1.f/sqrtf(2), 1e-5f);
-    EXPECT_EQ(m.m21, 0);
+    EXPECT_EQ(m.m21, 0.f);
     EXPECT_NEAR(m.m22, -1.f/sqrtf(2), 1e-5f);
-    EXPECT_EQ(m.m23, 0);
-    EXPECT_EQ(m.m30, 0);
-    EXPECT_EQ(m.m31, 0);
-    EXPECT_EQ(m.m32, 0);
-    EXPECT_EQ(m.m33, 1);
+    EXPECT_EQ(m.m23, 0.f);
+    EXPECT_EQ(m.m30, 0.f);
+    EXPECT_EQ(m.m31, 0.f);
+    EXPECT_EQ(m.m32, 0.f);
+    EXPECT_EQ(m.m33, 1.f);
 }
 
 SPECTRE_TEST(Matrix4, set_rotate_z)
@@ -248,20 +246,20 @@ SPECTRE_TEST(Matrix4, set_rotate_z)
     m.set_rotate_z(val);
     EXPECT_NEAR(m.m00, -1.f/sqrtf(2), 1e-5f);
     EXPECT_NEAR(m.m01, -1.f/sqrtf(2), 1e-5f);
-    EXPECT_EQ(m.m02, 0);
-    EXPECT_EQ(m.m03, 0);
+    EXPECT_EQ(m.m02, 0.f);
+    EXPECT_EQ(m.m03, 0.f);
     EXPECT_NEAR(m.m10, 1.f/sqrtf(2), 1e-5f);
     EXPECT_NEAR(m.m11, -1.f/sqrtf(2), 1e-5f);
-    EXPECT_EQ(m.m12, 0);
-    EXPECT_EQ(m.m13, 0);
-    EXPECT_EQ(m.m20, 0);
-    EXPECT_EQ(m.m21, 0);
-    EXPECT_EQ(m.m22, 1);
-    EXPECT_EQ(m.m23, 0);
-    EXPECT_EQ(m.m30, 0);
-    EXPECT_EQ(m.m31, 0);
-    EXPECT_EQ(m.m32, 0);
-    EXPECT_EQ(m.m33, 1);
+    EXPECT_EQ(m.m12, 0.f);
+    EXPECT_EQ(m.m13, 0.f);
+    EXPECT_EQ(m.m20, 0.f);
+    EXPECT_EQ(m.m21, 0.f);
+    EXPECT_EQ(m.m22, 1.f);
+    EXPECT_EQ(m.m23, 0.f);
+    EXPECT_EQ(m.m30, 0.f);
+    EXPECT_EQ(m.m31, 0.f);
+    EXPECT_EQ(m.m32, 0.f);
+    EXPECT_EQ(m.m33, 1.f);
 }
 
 SPECTRE_TEST(Matrix4, lookAt)
@@ -421,7 +419,7 @@ SPECTRE_TEST(Matrix4, get_scale)
     EXPECT_NEAR(extracted.z, scale.z, 1e-5f);
 }
 
-SPECTRE_TEST(Matrix4, sum)
+SPECTRE_TEST(Matrix4, sum_noinline)
 {
     float val1[] = {-98.96f, 98.99f, 72.96f, 98.37f, -61.17f, 6.f, -13.05f,
                     18.62f,
@@ -483,7 +481,7 @@ SPECTRE_TEST(Matrix4, sum_this)
     EXPECT_NEAR(m1.m33, 0.97000122f, 1e-5f);
 }
 
-SPECTRE_TEST(Matrix4, sum_pointer)
+SPECTRE_TEST(Matrix4, sum_inline)
 {
     float val1[] = {-98.96f, 98.99f, 72.96f, 98.37f, -61.17f, 6.f, -13.05f,
                     18.62f,
@@ -515,7 +513,7 @@ SPECTRE_TEST(Matrix4, sum_pointer)
     EXPECT_NEAR(out.m33, .97000122f, 1e-5f);
 }
 
-SPECTRE_TEST(Matrix4, sub)
+SPECTRE_TEST(Matrix4, sub_noinline)
 {
     float val1[] = {-20.64f, -25.69f, -17.56f, -97.15f, 88.28f, 28.07f, 65.32f,
                     46.34f,
@@ -577,7 +575,7 @@ SPECTRE_TEST(Matrix4, sub_this)
     EXPECT_NEAR(m1.m33, -74.83f, 1e-5f);
 }
 
-SPECTRE_TEST(Matrix4, sub_pointer)
+SPECTRE_TEST(Matrix4, sub_inline)
 {
     float val1[] = {-20.64f, -25.69f, -17.56f, -97.15f, 88.28f, 28.07f, 65.32f,
                     46.34f,
@@ -609,7 +607,7 @@ SPECTRE_TEST(Matrix4, sub_pointer)
     EXPECT_NEAR(out.m33, -74.83f, 1e-5f);
 }
 
-SPECTRE_TEST(Matrix4, mul)
+SPECTRE_TEST(Matrix4, mul_noinline)
 {
     float val1[] = {46.3f, 6.5f, -84.39f, 6.06f, 91.72f, 78.04f, -64.94f,
                     32.07f,
@@ -671,7 +669,7 @@ SPECTRE_TEST(Matrix4, mul_this)
     EXPECT_NEAR(m1.m33, -943.077087f, 1e-5f);
 }
 
-SPECTRE_TEST(Matrix4, mul_pointer)
+SPECTRE_TEST(Matrix4, mul_inline)
 {
     float val1[] = {46.3f, 6.5f, -84.39f, 6.06f, 91.72f, 78.04f, -64.94f,
                     32.07f, -59.33f, -78.26f, 54.08f, -73.42f, -27.12f, 4.49f,
@@ -760,9 +758,9 @@ SPECTRE_TEST(Matrix4, transform_point3)
     Matrix4 m;
     m.set_scale(3);
     p = m*p;
-    EXPECT_EQ(p.x, 3);
-    EXPECT_EQ(p.y, 3);
-    EXPECT_EQ(p.z, 3);
+    EXPECT_EQ(p.x, 3.f);
+    EXPECT_EQ(p.y, 3.f);
+    EXPECT_EQ(p.z, 3.f);
 
     //with w component, a bit cheated but otherwise I'll need camera tests
     p = Point3(0, 1, 1);
@@ -770,8 +768,8 @@ SPECTRE_TEST(Matrix4, transform_point3)
     m.m30 = 1.f;
     m.m32 = 1.f;
     p = m*p;
-    EXPECT_EQ(p.x, 0);
-    EXPECT_EQ(p.y, 0);
+    EXPECT_EQ(p.x, 0.f);
+    EXPECT_EQ(p.y, 0.f);
     EXPECT_EQ(p.z, 3.5f/2.f);
 }
 
@@ -782,9 +780,9 @@ SPECTRE_TEST(Matrix4, transform_vec3)
     Matrix4 m;
     m.set_scale(3);
     p = m*p;
-    EXPECT_EQ(p.x, 3);
-    EXPECT_EQ(p.y, 3);
-    EXPECT_EQ(p.z, 3);
+    EXPECT_EQ(p.x, 3.f);
+    EXPECT_EQ(p.y, 3.f);
+    EXPECT_EQ(p.z, 3.f);
 
     //translation should leave vector unaffected
     p = Vec3(0, 1, 1);
@@ -792,9 +790,9 @@ SPECTRE_TEST(Matrix4, transform_vec3)
     m.m30 = 1.f;
     m.m32 = 1.f;
     p = m*p;
-    EXPECT_EQ(p.x, 0);
-    EXPECT_EQ(p.y, 1);
-    EXPECT_EQ(p.z, 1);
+    EXPECT_EQ(p.x, 0.f);
+    EXPECT_EQ(p.y, 1.f);
+    EXPECT_EQ(p.z, 1.f);
 }
 
 SPECTRE_TEST(Matrix4, transform_ray)
@@ -814,7 +812,7 @@ SPECTRE_TEST(Matrix4, transform_ray)
     EXPECT_TRUE(r.direction == v);
 }
 
-SPECTRE_TEST(Matrix4, transform_normal)
+SPECTRE_TEST(Matrix4, transform_normal_inline)
 {
     //unchanged
     Normal n(0, 0, 1);
@@ -823,9 +821,9 @@ SPECTRE_TEST(Matrix4, transform_normal)
     trans.set_translation(Vec3(1, 1, 1));
     trans.inverse(&inv_trans);
     Normal transformed = transform_normal(n, &inv_trans);
-    EXPECT_EQ(transformed.x, 0);
-    EXPECT_EQ(transformed.y, 0);
-    EXPECT_EQ(transformed.z, 1);
+    EXPECT_EQ(transformed.x, 0.f);
+    EXPECT_EQ(transformed.y, 0.f);
+    EXPECT_EQ(transformed.z, 1.f);
 
     //rotation 90 degree right
     Normal n2(0, 0, 1);
