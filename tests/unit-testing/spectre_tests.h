@@ -21,6 +21,17 @@
 #define ASSERT_FALSE(X) if(X){FAIL();}
 #define ASSERT_EQ(x,y) if(x!=y){FAIL();}
 #define ASSERT_ANY_THROW(x); try{x;XCTAssertTrue(false);}catch(const char* m){}
+#elif defined(__VS__)
+#define SPECTRE_TEST_INIT(CLASSNAME) \
+using namespace Microsoft::VisualStudio::CppUnitTestFramework; \
+namespace tests \
+{ \
+    TEST_CLASS( CLASSNAME )\
+    { \
+    public:
+#define SPECTRE_TEST_END(CLASSNAME) };}
+#define SPECTRE_TEST(SUITE_NAME,TEST_NAME) TEST_METHOD(TEST_NAME)
+#define EXPECT_EQ(x,y) Assert::AreEqual(x,y)
 #else
 #define SPECTRE_TEST_INIT(CLASSNAME)
 #define SPECTRE_TEST_END(CLASSNAME)

@@ -2,17 +2,18 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
 
 #endif
 
-SPECTRE_TEST_INIT(Consolet_tests)
-
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
 #include <climits>
+
+SPECTRE_TEST_INIT(Consolet_tests)
 
 //tests are named Consolet instead of Console to avoid triggering
 //the Console::instance() define

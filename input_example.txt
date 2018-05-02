@@ -1,4 +1,4 @@
-out: "/Users/davide/Desktop/output.bmp"
+out: "output.bmp"
 resolution: {width:800, height:600}
 camera: {type: perspective position:[0,4,2] target:[0,0,-4] up:[0,1,0], fov:70}
 sampler: stratified

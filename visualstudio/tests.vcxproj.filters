@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="tests">
+      <UniqueIdentifier>{7dff6f1b-6b48-48d6-9e16-0d880ae06362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources">
+      <UniqueIdentifier>{96433028-fd25-467a-be0c-a695db5f28f8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\tests\unit-testing\console_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\console.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\tests\unit-testing\spectre_tests.h">
+      <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\console.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

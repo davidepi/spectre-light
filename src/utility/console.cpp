@@ -135,7 +135,7 @@ void Console::critical(const char* format, ...)
 
 void Console::progress_bar_done() const
 {
-#ifdef WIN32
+#ifdef _WIN32
     std::cout<<"\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
               <<std::endl;
 #else
@@ -163,7 +163,7 @@ void Console::progress_bar(float done, float eta) const
         progress.push_back(emptyblock);
         i++;
     }
-#ifdef WIN32
+#ifdef _WIN32
     std::cout<<"("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s\r";
 #else
     std::cout << "\33[2K\r(" << progress << ") " << (int)(done*5) << "%\tETA:"
