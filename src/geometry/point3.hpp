@@ -98,7 +98,7 @@ public:
      *  \param[in] p A Point3 representing the point to which the
      *             distance should be calculated
      */
-    float distanceTo(const Point3& p) const;
+    float distance(const Point3& p) const;
 
     /**  \brief Compute the maxium value between this point and another one
      *

@@ -32,7 +32,7 @@ Point3::Point3(float x, float y, float z)
     Point3::z = z;
 }
 
-float Point3::distanceTo(const Point3& p) const
+float Point3::distance(const Point3& p) const
 {
     float x = p.x-Point3::x;
     float y = p.y-Point3::y;

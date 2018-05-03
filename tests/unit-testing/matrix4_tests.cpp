@@ -47,13 +47,12 @@ SPECTRE_TEST(Matrix4, toString)
 {
     float vals[16] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
     Matrix4 m(vals);
-    char* output = m.toString();
-    EXPECT_STREQ(output,
+    std::string output = m.to_string();
+    EXPECT_STREQ(output.c_str(),
                  "Matrix4[0.000000, 1.000000, 0.000000, 1.000000]\n"\
                           "       [0.000000, 1.000000, 0.000000, 1.000000]\n"\
                           "       [0.000000, 1.000000, 0.000000, 1.000000]\n"\
                           "       [0.000000, 1.000000, 0.000000, 1.000000]\n");
-    delete[] output;
 }
 
 SPECTRE_TEST(Matrix4, toArray)
@@ -61,7 +60,7 @@ SPECTRE_TEST(Matrix4, toArray)
     float vals[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
     Matrix4 m(vals);
     float res[16];
-    m.toArray(res);
+    m.to_array(res);
     EXPECT_EQ(vals[0], res[0]);
     EXPECT_EQ(vals[1], res[1]);
     EXPECT_EQ(vals[2], res[2]);

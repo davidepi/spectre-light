@@ -110,9 +110,9 @@ SPECTRE_TEST(Vec2, length)
     EXPECT_NEAR(length, 15.1327459504f, 1e-5f);
 
     Vec2 v1(-32, -53);
-    EXPECT_EQ(v1.lengthSquared(), 3833.f);
+    EXPECT_EQ(v1.length2(), 3833.f);
 
-    EXPECT_EQ((float)(int)(v1.length()*v1.length()), v1.lengthSquared());
+    EXPECT_EQ((float)(int)(v1.length()*v1.length()), v1.length2());
 
     Vec2 v2;
     EXPECT_EQ(v2.length(), 0.f);
@@ -143,7 +143,7 @@ SPECTRE_TEST(Vec2, toArray)
 {
     Vec2 v(0, 10);
     float f[3];
-    v.toArray(f);
+    v.to_array(f);
 
     EXPECT_EQ(v.x, f[0]);
     EXPECT_EQ(v.y, f[1]);
@@ -152,9 +152,8 @@ SPECTRE_TEST(Vec2, toArray)
 SPECTRE_TEST(Vec2, toString)
 {
     Vec2 v(0, 1);
-    char* str = v.toString();
-    EXPECT_STREQ(str, "vec2(0.000000, 1.000000)");
-    delete[] str;
+    std::string str = v.to_string();
+    EXPECT_STREQ(str.c_str(), "Vec2[0.000000, 1.000000]");
 }
 
 SPECTRE_TEST(Vec2, sum_vector)
@@ -489,7 +488,7 @@ SPECTRE_TEST(Vec2, distance_noinline)
 {
     Vec2 a(1.5f, -2.f);
     Vec2 b(3.7f, 2.5f);
-    float dist = a.distanceTo(b);
+    float dist = a.distance(b);
     EXPECT_EQ(5.0089919145f, dist);
 }
 

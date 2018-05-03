@@ -60,7 +60,7 @@ SPECTRE_TEST(Point2, distance_noinline)
 {
     Point2 p0(1, 2);
     Point2 p1(4, 5);
-    float distance = p0.distanceTo(p1);
+    float distance = p0.distance(p1);
     EXPECT_NEAR(distance, 4.242641f, 1e-5f);
 }
 

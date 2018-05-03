@@ -63,7 +63,7 @@ float Vec2::length() const
     return std::sqrt((Vec2::x*Vec2::x)+(Vec2::y*Vec2::y));
 }
 
-float Vec2::lengthSquared() const
+float Vec2::length2() const
 {
     return (Vec2::x*Vec2::x)+(Vec2::y*Vec2::y);
 }
@@ -89,25 +89,18 @@ bool Vec2::is_normalized() const
     return len>1-FLT_EPSILON && len<1+FLT_EPSILON;
 }
 
-void Vec2::toArray(float* res) const
+void Vec2::to_array(float* res) const
 {
     res[0] = Vec2::x;
     res[1] = Vec2::y;
 }
 
-char* Vec2::toString() const
+std::string Vec2::to_string() const
 {
-    char val1[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val2[CHAR_ARRAY_SIZE_PER_FLOAT];
-    snprintf(val1, sizeof(val1), "%f", (double)Vec2::x);
-    snprintf(val2, sizeof(val2), "%f", (double)Vec2::y);
-
-    //aperta tonda + chiusa tonda + virgola + '/0' + scritta "vec2" + spazio
-    int res_len = (int)(9+strlen(val1)+strlen(val2));
-    char* res = new char[res_len];
-    snprintf(res, sizeof(res)*res_len, "vec2(%s, %s)", val1, val2);
-
-    return res;
+    std::ostringstream oss;
+    oss << std::fixed;
+    oss << "Vec2[" << x << ", " << y << "]";
+    return oss.str();
 }
 
 void Vec2::clamp(const Vec2& min, const Vec2& max)
@@ -127,7 +120,7 @@ void Vec2::saturate()
     else if(Vec2::y>1.0f) Vec2::y = 1.0f;
 }
 
-float Vec2::distanceTo(const Vec2& target) const
+float Vec2::distance(const Vec2& target) const
 {
     float x = target.x-Vec2::x;
     float y = target.y-Vec2::y;

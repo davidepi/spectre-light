@@ -24,7 +24,7 @@ bool OcclusionTester::is_occluded(const Ray* r, float distance)
     if(scene->k.intersect(r, &removeme))
     {
         OcclusionTester::lasthit[r->ricochet] = removeme.asset_h;
-        newdistance = removeme.point_h.distanceTo(r->origin);
+        newdistance = removeme.point_h.distance(r->origin);
         return newdistance+OCCLUSION_INTERSECT_ERROR<distance;
     }
     else

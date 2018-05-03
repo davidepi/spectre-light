@@ -104,12 +104,12 @@ float Vec3::length() const
     return sqrtf(Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z);
 }
 
-float Vec3::lengthSquared() const
+float Vec3::length2() const
 {
     return Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z;
 }
 
-float Vec3::distanceTo(const Vec3& target) const
+float Vec3::distance(const Vec3& target) const
 {
     float x = target.x-Vec3::x;
     float y = target.y-Vec3::y;
@@ -161,28 +161,19 @@ bool Vec3::is_normalized() const
     return len>1.f-1E-5f && len<1.f+1E-5f;
 }
 
-void Vec3::toArray(float* res) const
+void Vec3::to_array(float* res) const
 {
     res[0] = Vec3::x;
     res[1] = Vec3::y;
     res[2] = Vec3::z;
 }
 
-char* Vec3::toString() const
+std::string Vec3::to_string() const
 {
-    char val1[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val2[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val3[CHAR_ARRAY_SIZE_PER_FLOAT];
-    snprintf(val1, sizeof(val1), "%f", (double)Vec3::x);
-    snprintf(val2, sizeof(val2), "%f", (double)Vec3::y);
-    snprintf(val3, sizeof(val3), "%f", (double)Vec3::z);
-
-    //( + ) + 2 commas + '/0' + "vec3" + 2 space
-    int res_len = (int)(11+strlen(val1)+strlen(val2)+strlen(val3));
-    char* res = new char[res_len];
-    snprintf(res, sizeof(res)*res_len, "vec3(%s, %s, %s)", val1, val2, val3);
-
-    return res;
+    std::ostringstream oss;
+    oss << std::fixed;
+    oss << "Vec3[" << x << ", " << y << ", " << z << "]";
+    return oss.str();
 }
 
 void Vec3::clamp(const Vec3& min, const Vec3& max)
@@ -595,12 +586,12 @@ float Normal::length() const
                      Normal::z*Normal::z);
 }
 
-float Normal::lengthSquared() const
+float Normal::length2() const
 {
     return Normal::x*Normal::x+Normal::y*Normal::y+Normal::z*Normal::z;
 }
 
-float Normal::distanceTo(const Normal& target) const
+float Normal::distance(const Normal& target) const
 {
     float x = target.x-Normal::x;
     float y = target.y-Normal::y;
@@ -637,28 +628,19 @@ bool Normal::is_normalized() const
     return len>1.f-1E-5f && len<1.f+1E-5f;
 }
 
-void Normal::toArray(float* res) const
+void Normal::to_array(float* res) const
 {
     res[0] = Normal::x;
     res[1] = Normal::y;
     res[2] = Normal::z;
 }
 
-char* Normal::toString() const
+std::string Normal::to_string() const
 {
-    char val1[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val2[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val3[CHAR_ARRAY_SIZE_PER_FLOAT];
-    snprintf(val1, sizeof(val1), "%f", (double)Normal::x);
-    snprintf(val2, sizeof(val2), "%f", (double)Normal::y);
-    snprintf(val3, sizeof(val3), "%f", (double)Normal::z);
-
-    //( + ) + 2 comma + '/0' + "Normal" + 2 space
-    int res_len = (int)(13+strlen(val1)+strlen(val2)+strlen(val3));
-    char* res = new char[res_len];
-    snprintf(res, sizeof(res)*res_len, "Normal(%s, %s, %s)", val1, val2, val3);
-
-    return res;
+    std::ostringstream oss;
+    oss << std::fixed;
+    oss << "Normal[" << x << ", " << y << ", " << z << "]";
+    return oss.str();
 }
 
 void Normal::clamp(const Vec3& min, const Vec3& max)

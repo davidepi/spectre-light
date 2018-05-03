@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 21 Jan 2018
+//Last Edit  3 May 2018
 
 /**
  *  \file vec3.hpp
@@ -8,7 +8,7 @@
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      21 Jan 2018
+ *  \date      3 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -21,6 +21,8 @@
 #include "utility/console.hpp"
 #include <cstdio> //snprintf
 #include <cmath> //std::sqrt
+#include <string> //to_string
+#include <sstream> //to_string
 #include <cfloat> //FLT_EPSILON
 
 
@@ -126,7 +128,7 @@ public:
     /** \brief Return the length of the vector
      *
      * \return A float representing the length of this vector
-     * \sa lengthSquared()
+     * \sa length2()
      */
     float length() const;
 
@@ -135,7 +137,7 @@ public:
      * \return A float representing the squared length of this vector
      * \sa length()
      */
-    float lengthSquared() const;
+    float length2() const;
 
     /**  \brief Compute the distance from another vector
      *
@@ -147,7 +149,7 @@ public:
      *             distance should be calculated
      *  \return A float representing the distance from the \p target vector
      */
-    float distanceTo(const Vec3& target) const;
+    float distance(const Vec3& target) const;
 
     /** \brief Normalize this vector
      *
@@ -223,21 +225,19 @@ public:
      *  \param[in] values  An array containing the x value of the vector in the
      *  first position (0-based), the y value in the second and the z value in
      *  the third
-     *  \sa toString()
+     *  \sa to_string()
      */
-    void toArray(float* values) const;
+    void to_array(float* values) const;
 
-    /**  \brief Represent this vector with a C-string
+    /**  \brief Represent this vector with an std::string
      *
-     *  Allocate in the heap a C-string and write the components of the vector
-     *  as a string
+     *  Creates the representation of this vector as an std::string. Note
+     *  that no newline character will be appended at the end
      *
-     *  \return An heap allocated char array containing the values of the
-     *           vector
-     *  \note A char* is allocated on heap and must be deleted
-     *  \sa toArray()
+     *  \return An std::string representing the vector
+     *  \sa to_array()
      */
-    char* toString() const;
+    std::string to_string() const;
 
     /**  \brief Clamp this vector by restricting it between two boundaries
      *
@@ -534,7 +534,7 @@ public:
     /** \brief Returns the length of the normal
      *
      * \return A float representing the length of this normal
-     * \sa lengthSquared()
+     * \sa length2()
      */
     float length() const;
 
@@ -543,7 +543,7 @@ public:
      * \return A float representing the squared length of this normal
      * \sa length()
      */
-    float lengthSquared() const;
+    float length2() const;
 
     /**  \brief Compute the distance to another normal
      *  Compute the euclidean distance between this normal and another one
@@ -554,7 +554,7 @@ public:
      *             distance should be calculated
      *  \return A float representing the distance from the \p target normal
      */
-    float distanceTo(const Normal& target) const;
+    float distance(const Normal& target) const;
 
     /** \brief Normalize this normal
      *  \note Despite the name, a Normal is not guaranteed to be normalized
@@ -580,21 +580,19 @@ public:
      *  \param[in] values An array containing the x value of the normal in the
      *  first position (0-based), the y value in the second and the z value in
      *  the third
-     *  \sa toString()
+     *  \sa to_string()
      */
-    void toArray(float* values) const;
+    void to_array(float* values) const;
 
-    /**  \brief Represent this normal with a C-string
+    /**  \brief Represent this normal as an std::string
      *
-     *  Allocate in the heap a C-string and write the components of the normal
-     *  as a string
+     *  Creates an std::string representing this normal and its values. Note
+     *  that no newline character will be appended at the end
      *
-     *  \return An heap allocated char array containing the values of the
-     *           normal
-     *  \note The returned char* is allocated on heap and MUST be deleted
-     *  \sa toArray()
+     *  \return An std::string representing this normal
+     *  \sa to_array()
      */
-    char* toString() const;
+    std::string to_string() const;
 
     /**  \brief Clamp this normal by restricting it between two boundaries
      *

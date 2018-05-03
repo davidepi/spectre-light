@@ -109,9 +109,9 @@ SPECTRE_TEST(Normal, length)
     EXPECT_NEAR(length, 41.833f, 1e-5f);
 
     Normal v1(-32, -53, 23);
-    EXPECT_EQ(v1.lengthSquared(), 4362.f);
+    EXPECT_EQ(v1.length2(), 4362.f);
 
-    EXPECT_NEAR(v1.length()*v1.length(), v1.lengthSquared(), 1e-5f);
+    EXPECT_NEAR(v1.length()*v1.length(), v1.length2(), 1e-5f);
 
     Normal v2;
     EXPECT_EQ(v2.length(), 0.f);
@@ -148,7 +148,7 @@ SPECTRE_TEST(Normal, toArray)
 {
     Normal v(0, 10, -1);
     float f[3];
-    v.toArray(f);
+    v.to_array(f);
 
     EXPECT_EQ(v.x, f[0]);
     EXPECT_EQ(v.y, f[1]);
@@ -158,9 +158,8 @@ SPECTRE_TEST(Normal, toArray)
 SPECTRE_TEST(Normal, toString)
 {
     Normal v(0, 1, 0);
-    char* str = v.toString();
-    EXPECT_STREQ(str, "Normal(0.000000, 1.000000, 0.000000)");
-    delete[] str;
+    std::string str = v.to_string();
+    EXPECT_STREQ(str.c_str(), "Normal[0.000000, 1.000000, 0.000000]");
 }
 
 SPECTRE_TEST(Normal, sum_vector)
@@ -616,7 +615,7 @@ SPECTRE_TEST(Normal, distanceTo)
 {
     Normal a(1.5f, -2.f, 1.7f);
     Normal b(3.7f, 2.5f, -4.6f);
-    float dist = a.distanceTo(b);
+    float dist = a.distance(b);
     EXPECT_EQ(8.0486023631f, dist);
 }
 

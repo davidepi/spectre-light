@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit  8 Apr 2017
+//Last Edit  3 May 2018
 
 /**
  *  \file vec2.hpp
@@ -7,7 +7,7 @@
  *  \details   A two components vector class
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 April 2017
+ *  \date      3 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -19,7 +19,8 @@
 #include "utility/console.hpp"
 #include <cmath> //std::sqrt
 #include <cfloat> //FLT_EPSILON
-#include <cstring>
+#include <string>
+#include <sstream> //to_string
 #include <cstdio> //snprintf
 
 
@@ -95,7 +96,7 @@ public:
      * \brief Returns the length of the vector
      *
      * \return A float representing the length of this vector
-     * \sa lengthSquared()
+     * \sa length2()
      */
     float length() const;
 
@@ -105,7 +106,7 @@ public:
      * \return A float representing the squared length of this vector
      * \sa length()
      */
-    float lengthSquared() const;
+    float length2() const;
 
     /** \brief Normalize this vector
      *
@@ -132,20 +133,18 @@ public:
      *           one
      *  \sa toString()
      */
-    void toArray(float* values) const;
+    void to_array(float* values) const;
 
     /**
-     *  \brief Represent this vector with a C-string
+     *  \brief Represent this vector with an std::string
      *
-     *  Allocate in the heap a C-string and write the components of the vector
-     *  as a string
+     *  Write a representation of this vector in form of an std::string. No
+     *  newline character will be added
      *
-     *  \return An heap allocated char array containing the values of the
-     *           vector
-     *  \note A char* is allocated on heap and MUST be deleted
-     *  \sa toArray()
+     *  \return The std::string representing this vector
+     *  \sa to_array()
      */
-    char* toString() const;
+    std::string to_string() const;
 
     /**
      *  \brief Clamp this vector by restricting it between two boundaries
@@ -174,7 +173,7 @@ public:
      *             distance should be calculated
      *  \return A float representing the distance from the \p target vector
      */
-    float distanceTo(const Vec2& target) const;
+    float distance(const Vec2& target) const;
 
     /**
      *  \brief Compute the dot product

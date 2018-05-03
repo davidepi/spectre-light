@@ -36,60 +36,22 @@ Matrix4::Matrix4(const float* v)
 #endif
 }
 
-char* Matrix4::toString() const
+std::string Matrix4::to_string() const
 {
-    char val1[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val2[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val3[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val4[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val5[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val6[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val7[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val8[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val9[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val10[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val11[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val12[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val13[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val14[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val15[CHAR_ARRAY_SIZE_PER_FLOAT];
-    char val16[CHAR_ARRAY_SIZE_PER_FLOAT];
-    snprintf(val1, sizeof(val1), "%f", (double)Matrix4::m00);
-    snprintf(val2, sizeof(val2), "%f", (double)Matrix4::m01);
-    snprintf(val3, sizeof(val3), "%f", (double)Matrix4::m02);
-    snprintf(val4, sizeof(val4), "%f", (double)Matrix4::m03);
-    snprintf(val5, sizeof(val5), "%f", (double)Matrix4::m10);
-    snprintf(val6, sizeof(val6), "%f", (double)Matrix4::m11);
-    snprintf(val7, sizeof(val7), "%f", (double)Matrix4::m12);
-    snprintf(val8, sizeof(val8), "%f", (double)Matrix4::m13);
-    snprintf(val9, sizeof(val9), "%f", (double)Matrix4::m20);
-    snprintf(val10, sizeof(val10), "%f", (double)Matrix4::m21);
-    snprintf(val11, sizeof(val11), "%f", (double)Matrix4::m22);
-    snprintf(val12, sizeof(val12), "%f", (double)Matrix4::m23);
-    snprintf(val13, sizeof(val13), "%f", (double)Matrix4::m30);
-    snprintf(val14, sizeof(val14), "%f", (double)Matrix4::m31);
-    snprintf(val15, sizeof(val15), "%f", (double)Matrix4::m32);
-    snprintf(val16, sizeof(val16), "%f", (double)Matrix4::m33);
-
-    int res_len = (int)(16*4+strlen(val1)+strlen(val2)+strlen(val3)+
-                        strlen(val4)+strlen(val5)+strlen(val6)+
-                        strlen(val7)+strlen(val8)+strlen(val9)+
-                        strlen(val10)+strlen(val11)+strlen(val12)+
-                        strlen(val13)+strlen(val14)+strlen(val15)+
-                        strlen(val16));  //Matrix4 [ .. , .. , .. , ..]
-    char* res = new char[res_len];
-    snprintf(res, sizeof(res)*res_len, "Matrix4[%s, %s, %s, %s]\n"
-                                       "       [%s, %s, %s, %s]\n"
-                                       "       [%s, %s, %s, %s]\n"
-                                       "       [%s, %s, %s, %s]\n",
-             val1, val2, val3, val4,
-             val5, val6, val7, val8,
-             val9, val10, val11, val12,
-             val13, val14, val15, val16);
-    return res;
+    std::ostringstream oss;
+    oss << std::fixed;
+    oss << "Matrix4[" << m00 << ", " << m01 << ", " << m02 << ", " << m03 <<
+        "]\n";
+    oss << "       [" << m10 << ", " << m11 << ", " << m12 << ", " << m13 <<
+        "]\n";
+    oss << "       [" << m20 << ", " << m21 << ", " << m22 << ", " << m23 <<
+        "]\n";
+    oss << "       [" << m30 << ", " << m31 << ", " << m32 << ", " << m33 <<
+        "]\n";
+    return oss.str();
 }
 
-void Matrix4::toArray(float* res) const
+void Matrix4::to_array(float* res) const
 {
     res[0] = Matrix4::m00;
     res[1] = Matrix4::m01;

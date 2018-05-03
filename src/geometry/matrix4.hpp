@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 12 Dec 2017
+//Last Edit  3 May 2018
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      12 Dec 2017
+ *  \date      3 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -22,7 +22,8 @@
 #include "geometry/ray.hpp"
 #include "utility/console.hpp"
 #include <cmath>
-#include <cstring>
+#include <string>
+#include <sstream> //to_string
 #include <cstdio>
 
 /**
@@ -96,17 +97,15 @@ public:
     ///Default destructor
     ~Matrix4() = default;
 
-    /**  \brief Represent the matrix with a C-string
+    /**  \brief Represent the matrix with a std::string
      *
-     *  Allocate in the heap a C-string and write the components of the matrix
-     *  as a string
+     *  Represents this matrix as a string. Note that the output string will
+     *  contain multiple lines and end with a \n character
      *
-     *  \return An heap allocated char array containing the values of the
-     *           matrix
-     *  \note A char* is allocated on heap and must be deleted
-     *  \sa toArray()
+     *  \return An std::string containing the values of the matrix
+     *  \sa to_array()
      */
-    char* toString() const;
+    std::string to_string() const;
 
     /**  \brief Represent this matrix with an array
      *
@@ -115,9 +114,9 @@ public:
      *
      *  \param[out] values An array of 16 elements containing the values of the
      *              matrix in row major order
-     *  \sa toString()
+     *  \sa to_string()
      */
-    void toArray(float* values) const;
+    void to_array(float* values) const;
 
     /** \brief Set this matrix to a zero-matrix
      *

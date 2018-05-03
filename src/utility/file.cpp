@@ -331,7 +331,7 @@ bool File::mkdirs()
 void File::ls(std::vector<File>* retval) const
 {
     unsigned int len = (unsigned int)strlen(absolute);
-    unsigned int allocated = len + 255;
+    unsigned int allocated = len+255;
     //temp buffer for absolute files
     char* element_name = (char*)malloc(sizeof(char)*allocated);
 #ifdef _WIN32
