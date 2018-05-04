@@ -2,16 +2,16 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Spectrum_tests)
 
 #include "utility/spectrum.hpp"
 #include <climits>
+
+SPECTRE_TEST_INIT(Spectrum_tests)
 
 SPECTRE_TEST(Spectrum, constructor_blackbody)
 {
@@ -177,7 +177,7 @@ SPECTRE_TEST(Spectrum, sum_this_spectrum)
 
     //invalid
     sp_res = sp;
-    ASSERT_ANY_THROW(sp_res += invalid;);
+    ASSERT_ANY_THROW(sp_res += invalid);
     ASSERT_ANY_THROW(invalid += sp);
 }
 
@@ -215,7 +215,7 @@ SPECTRE_TEST(Spectrum, sub_this_spectrum)
 
     //invalid
     sp_res = sp;
-    ASSERT_ANY_THROW(sp_res -= invalid;);
+    ASSERT_ANY_THROW(sp_res -= invalid);
     ASSERT_ANY_THROW(invalid -= sp);
 }
 
@@ -253,7 +253,7 @@ SPECTRE_TEST(Spectrum, mul_this_spectrum)
 
     //invalid
     sp_res = sp;
-    ASSERT_ANY_THROW(sp_res *= invalid;);
+    ASSERT_ANY_THROW(sp_res *= invalid);
     ASSERT_ANY_THROW(invalid *= sp);
 }
 
@@ -291,7 +291,7 @@ SPECTRE_TEST(Spectrum, div_this_spectrum)
 
     //invalid
     sp_res = sp;
-    ASSERT_ANY_THROW(sp_res /= invalid;);
+    ASSERT_ANY_THROW(sp_res /= invalid);
     ASSERT_ANY_THROW(invalid /= sp);
 }
 
@@ -328,7 +328,7 @@ SPECTRE_TEST(Spectrum, sum_this_float)
 
     //invalid
     sp_res = sp;
-    ASSERT_ANY_THROW(sp_res += invalid_float;);
+    ASSERT_ANY_THROW(sp_res += invalid_float);
     sp.w[0] = NAN;
     ASSERT_ANY_THROW(sp += 0.1f);
 }
@@ -366,7 +366,7 @@ SPECTRE_TEST(Spectrum, sub_this_float)
 
     //invalid
     sp_res = sp;
-    ASSERT_ANY_THROW(sp_res -= invalid_float;);
+    ASSERT_ANY_THROW(sp_res -= invalid_float);
     sp.w[0] = NAN;
     ASSERT_ANY_THROW(sp -= 0.1f);
 }
@@ -404,7 +404,7 @@ SPECTRE_TEST(Spectrum, mul_this_float)
 
     //invalid
     sp_res = sp;
-    ASSERT_ANY_THROW(sp_res *= invalid_float;);
+    ASSERT_ANY_THROW(sp_res *= invalid_float);
     sp.w[0] = NAN;
     ASSERT_ANY_THROW(sp *= 0.1f);
 }

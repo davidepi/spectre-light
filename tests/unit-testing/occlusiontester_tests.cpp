@@ -2,19 +2,19 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(OcclusionTester_tests)
 
 #include "primitives/sphere.hpp"
 #include "materials/lambertian.hpp"
 #include "utility/occlusion_tester.hpp"
 #include "utility/utility.hpp"
 #include <climits>
+
+SPECTRE_TEST_INIT(OcclusionTester_tests)
 
 SPECTRE_TEST(OcclusionTester, is_occluded)
 {

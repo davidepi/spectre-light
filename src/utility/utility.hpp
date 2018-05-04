@@ -28,14 +28,14 @@
 #define EPSILON 1E-5f
 
 ///Maximum amount of writable data for the format_seconds function
-#define MAX_TIME_FORMAT_LENGTH 16
+#define MAX_TIME_FORMAT_LENGTH 17
 
 /** \brief Convert from seconds to a better readable time format
  *
  *  Given a sequence of seconds as input, in the output there will be a string
  *  with the number of days, hours, minutes, and seconds
  *
- *  \note This will write up to 15 characters, so out must be at least 16 bytes
+ *  \note This will write up to 16 characters, so out must be at least 17 bytes
  *  long
  *
  *  \param[in] secs The number of seconds to format

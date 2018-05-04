@@ -132,6 +132,7 @@
     <ClCompile Include="..\tests\unit-testing\aabb_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\asset_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\box_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\color_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\console_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\filter_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\light_tests.cpp" />
@@ -141,13 +142,17 @@
     <ClCompile Include="..\tests\unit-testing\mesh_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\microfacets_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\normal_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\occlusiontester_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\point2_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\point3_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\ray_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\sampler_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\scene_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\spectrum_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\sphere_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\texturelibrary_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\triangle_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\utility_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\vec2_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\vec3_tests.cpp" />
   </ItemGroup>

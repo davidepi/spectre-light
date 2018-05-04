@@ -23,12 +23,12 @@ void format_seconds(unsigned int secs, char* out)
 
         //not the most efficient sol, but this is used once in the whole program
         if(days>0)
-            sprintf(out, "%dd ", days);
+            snprintf(out, MAX_TIME_FORMAT_LENGTH, "%dd ", days);
         if(hours>0)
-            sprintf(out, "%s%dh ", out, hours);
+            snprintf(out, MAX_TIME_FORMAT_LENGTH, "%s%dh ", out, hours);
         if(mins>0)
-            sprintf(out, "%s%dm ", out, mins);
+            snprintf(out, MAX_TIME_FORMAT_LENGTH, "%s%dm ", out, mins);
         if(s>0)
-            sprintf(out, "%s%ds ", out, s);
+            snprintf(out, MAX_TIME_FORMAT_LENGTH, "%s%ds ", out, s);
     }
 }

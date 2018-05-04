@@ -58,7 +58,7 @@ namespace tests \
 #define ASSERT_FALSE(X) if(X){FAIL();}
 #define ASSERT_EQ(x,y) if(x!=y){FAIL();}
 #define ASSERT_PTR_EQ(x,y) if(x!=y){FAIL();}
-#define ASSERT_ANY_THROW(x); Assert::ExpectException(x)
+#define ASSERT_ANY_THROW(x) try{x;Assert::Fail();}catch(const char* m){}
 #else
 #define SPECTRE_TEST_INIT(CLASSNAME)
 #define SPECTRE_TEST_END(CLASSNAME)

@@ -204,6 +204,21 @@
     <ClCompile Include="..\src\accelerators\kdtree.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\color_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\occlusiontester_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\scene_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\spectrum_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\utility_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\unit-testing\spectre_tests.h">

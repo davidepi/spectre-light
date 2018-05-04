@@ -130,7 +130,7 @@ int Renderer::render(Scene* s)
     //all these things to print the elapsed time!
     //sizeof because MSVC cannot resolve strlen a compile time
     char endmsg[sizeof(MESSAGE_RENDERTIME)/sizeof(char)+MAX_TIME_FORMAT_LENGTH];
-    char elapsed_formatted[16];
+    char elapsed_formatted[MAX_TIME_FORMAT_LENGTH];
     format_seconds((int)duration_cast<seconds>(b-a).count(),elapsed_formatted);
     sprintf(endmsg, MESSAGE_RENDERTIME,elapsed_formatted);
     Console.log(endmsg,NULL);
