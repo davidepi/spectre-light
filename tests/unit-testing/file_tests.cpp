@@ -212,7 +212,6 @@ SPECTRE_TEST(File, filename)
 #endif
 }
 
-#ifndef _WIN32
 SPECTRE_TEST(File, exists)
 {
     //not existent
@@ -295,7 +294,35 @@ SPECTRE_TEST(File, get_parent)
     EXPECT_STREQ(f3.extension(), f1.extension());
     EXPECT_STREQ(f3.filename(), f1.filename());
     EXPECT_STREQ(f3.absolute_path(), f1.absolute_path());
+#ifdef _WIN32
+    //1 folder over root
+    File f4("C:\\folder");
+    File f5 = f4.get_parent();
+    EXPECT_STREQ(f5.extension(), "");
+    EXPECT_STREQ(f5.filename(), "C:\\");
+    EXPECT_STREQ(f5.absolute_path(), "C:\\");
 
+    //root
+    File f6("C:\\");
+    File f7 = f6.get_parent();
+    EXPECT_STREQ(f7.extension(), "");
+    EXPECT_STREQ(f7.filename(), "C:\\");
+    EXPECT_STREQ(f7.absolute_path(), "C:\\");
+
+    //1 folder over root
+    File f4unc("\\\\folder");
+    File f5unc = f4unc.get_parent();
+    EXPECT_STREQ(f5unc.extension(), "");
+    EXPECT_STREQ(f5unc.filename(), "\\\\");
+    EXPECT_STREQ(f5unc.absolute_path(), "\\\\");
+
+    //root
+    File f6unc("\\\\");
+    File f7unc = f6unc.get_parent();
+    EXPECT_STREQ(f7unc.extension(), "");
+    EXPECT_STREQ(f7unc.filename(), "\\\\");
+    EXPECT_STREQ(f7unc.absolute_path(), "\\\\");
+#else
     //1 folder over root
     File f4("/folder");
     File f5 = f4.get_parent();
@@ -309,6 +336,7 @@ SPECTRE_TEST(File, get_parent)
     EXPECT_STREQ(f7.extension(), "");
     EXPECT_STREQ(f7.filename(), "/");
     EXPECT_STREQ(f7.absolute_path(), "/");
+#endif
 }
 
 SPECTRE_TEST(File, assignment_operator)
@@ -333,56 +361,59 @@ SPECTRE_TEST(File, mkdir)
     File f2(foldername);
     EXPECT_FALSE(f2.exists());
     res = f2.mkdir();
-    EXPECT_TRUE(res);
-    EXPECT_TRUE(f2.exists());
+    ASSERT_TRUE(res);
+    ASSERT_TRUE(f2.exists());
 
-    rmdir(foldername);
+#ifdef _WIN32
+    EXPECT_TRUE(RemoveDirectoryA(foldername));
+#else
+    EXPECT_EQ(rmdir(foldername), 0);
+#endif
+    
 }
 
 SPECTRE_TEST(File, mkdirs)
 {
     bool res;
     //not enough permissions
+#ifdef _WIN32
+    File f1("C:\\Windows");
+#else
     File f1("/root/impossible");
+#endif
     res = f1.mkdirs();
     EXPECT_FALSE(res);
-
     //already existing
     File f2(TEST_ASSETS);
     res = f2.mkdirs();
     EXPECT_FALSE(res);
-
     //quick execution
     File f3(TEST_ASSETS "testfolder1");
     res = f3.mkdirs();
-    EXPECT_TRUE(res);
+    ASSERT_TRUE(res);
+    ASSERT_TRUE(f3.exists());
+#ifdef _WIN32
+    EXPECT_TRUE(RemoveDirectoryA(TEST_ASSETS "testfolder1"));
+#else
     EXPECT_EQ(rmdir(TEST_ASSETS
                       "testfolder1"), 0);
-
+#endif
     //multiple creations
     File f4(TEST_ASSETS "testfolder1/testfolder2");
     res = f4.mkdir();
     EXPECT_FALSE(res);
     res = f4.mkdirs();
-    EXPECT_TRUE(res);
+    ASSERT_TRUE(res);
+    ASSERT_TRUE(f4.exists());
+#ifdef _WIN32
+    EXPECT_TRUE(RemoveDirectoryA(TEST_ASSETS "testfolder1\\testfolder2"));
+    EXPECT_TRUE(RemoveDirectoryA(TEST_ASSETS "testfolder1"));
+#else
     EXPECT_EQ(rmdir(TEST_ASSETS
                       "testfolder1/testfolder2"), 0);
     EXPECT_EQ(rmdir(TEST_ASSETS
                       "testfolder1"), 0);
-}
-
-SPECTRE_TEST(File, ls)
-{
-    std::vector<File> res;
-
-    //non existent
-    File f1("/root/kjhgufydt");
-    f1.ls(&res);
-    EXPECT_TRUE(res.empty());
-
-    File f2(TEST_ASSETS);
-    f2.ls(&res);
-    EXPECT_EQ(res.size(), 3);
+#endif
 }
 
 SPECTRE_TEST(File, append)
@@ -400,12 +431,44 @@ SPECTRE_TEST(File, append)
     EXPECT_TRUE(f2.is_folder());
     f2.append(".bashrc");
     EXPECT_STREQ(f2.extension(), "");
+
+    File fwin(TEST_ASSETS);
+    fwin.append("parser\\..\\\\.\\images\\.\\correct.bmp");
+    EXPECT_TRUE(fwin.exists());
+    fwin.append("..\\");
+    EXPECT_TRUE(fwin.is_folder());
+    fwin.append(".bashrc");
+    EXPECT_STREQ(fwin.extension(), "");
+    
 }
 
-SPECTRE_TEST(File, is_absolute)
+SPECTRE_TEST(File, list_files)
 {
-    EXPECT_TRUE(is_absolute("/path"));
-    EXPECT_FALSE(is_absolute("../path"));
+    std::vector<File> res;
+
+    //non existent
+    File f1("/root/kjhgufydt");
+    f1.ls(&res);
+    EXPECT_TRUE(res.empty());
+
+    File f2(TEST_ASSETS);
+    f2.ls(&res);
+    EXPECT_EQ(res.size(), (size_t)3);
 }
+
+SPECTRE_TEST(File, is_absolute_inline)
+{
+#ifdef _WIN32
+    EXPECT_TRUE(is_absolute("C:\\path"));
+    EXPECT_TRUE(is_absolute("\\\\path"));
+    EXPECT_FALSE(is_absolute("/path"));
+    EXPECT_FALSE(is_absolute("../path"));
+#else
+    EXPECT_TRUE(is_absolute("/path"));
+    EXPECT_FALSE(is_absolute("C:\\path"));
+    EXPECT_FALSE(is_absolute("\\\\path"));
+    EXPECT_FALSE(is_absolute("../path"));
 #endif
+}
+
 SPECTRE_TEST_END(File_tests)

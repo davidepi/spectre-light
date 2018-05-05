@@ -23,9 +23,9 @@ static void append_relative(const char* abs, const char* relative, char* out)
     //always 0 on *nix because the absolute need to start with /
     //on windows this can vary, could be 0 for UNC path, 2 for C:\ paths
     int min_abs_index = 0;
+    int i = 0;
 #ifdef _WIN32
     // replace all / with \ 
-    int i = 0;
     while(relative[i] != '\0')
     {
         if(relative[i] == '/')
@@ -41,7 +41,7 @@ static void append_relative(const char* abs, const char* relative, char* out)
         else
             min_abs_index = 1; //UNC path starting with \\ chars
     }
-    else //absolute path is "" and relative is C:\\ 
+    else //absolute path is "" and relative is C:\ or \\ 
     {
         if (rel[0] != File::PATH_SEPARATOR)
             min_abs_index = 2;
@@ -255,7 +255,8 @@ bool File::is_folder() const
 {
 #ifdef _WIN32
     DWORD attr = GetFileAttributesA(absolute);
-    return (attr & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    return attr!=INVALID_FILE_ATTRIBUTES &&
+           (attr & FILE_ATTRIBUTE_DIRECTORY) != 0;
 #else
     return statres && S_ISDIR(fileinfo.st_mode);
 #endif
@@ -265,7 +266,8 @@ bool File::is_file() const
 {
 #ifdef _WIN32
     DWORD attr = GetFileAttributesA(absolute);
-    return (attr & FILE_ATTRIBUTE_DIRECTORY) == 0;
+    return attr != INVALID_FILE_ATTRIBUTES && 
+           (attr & FILE_ATTRIBUTE_DIRECTORY) == 0;
 #else
     return statres && S_ISREG(fileinfo.st_mode);
 #endif
@@ -311,21 +313,38 @@ File& File::append(const char* path)
 File File::get_parent() const
 {
     File retval(*this);
-    if(retval.file[0] != '/') //not root
+    if(!is_absolute(retval.file)) //not root
     {
         int i = -1;
         //starts from -1 up to - max_decrement
         int max_decrement = (int)(absolute-file);
         //root folder is the parent
+#ifdef _WIN32
+        //absolute path (non UNC) is the parent
+        if(max_decrement == -3 && absolute[1] == ':' && absolute[2] == '\\')
+        {
+            retval.absolute[3] = 0;
+            retval.file = retval.absolute;
+            retval.ext = retval.absolute + 3;
+        }
+        //absolute path UNC is the parent
+        else if(max_decrement == -2 && absolute[0] == '\\' && absolute[1] == '\\')
+        {
+            retval.absolute[2] = 0;
+            retval.file = retval.absolute;
+            retval.ext = retval.absolute + 2;
+        }
+#else
         if(max_decrement == -1)
         {
             retval.absolute[1] = 0;
             retval.file = retval.absolute;
             retval.ext = retval.absolute+1;
         }
-            //replace the / right before the filename with 0
+#endif
         else
         {
+            //replace the / right before the filename with 0
             retval.absolute[(retval.file-retval.absolute)-1] = 0;
             //update the extension to be "" -> point to the newly inserted 0
             retval.ext = retval.file-1;
@@ -378,9 +397,15 @@ bool File::mkdirs()
             }
             //resume searching
             absolute[index] = File::PATH_SEPARATOR;
-            if(!res)
-                return false;
+            if (!res)
+            {
+                //override previously created folder result, 'cause one failed
+                created = false;
+                //avoid continuing the creation
+                break;
+            }
         }
+        absolute[len] = 0; //otherwise last char will become path separator
     }
     else
         created = true;
@@ -397,7 +422,9 @@ void File::ls(std::vector<File>* retval) const
 #ifdef _WIN32
     WIN32_FIND_DATAA element;
     HANDLE current_dir = INVALID_HANDLE_VALUE;
-    FindFirstFileA(absolute, &element);
+    strcpy(element_name, absolute);
+    strcat(element_name, "\\*"); //use element_name as support
+    current_dir = FindFirstFileA(element_name, &element);
     if(is_folder() && current_dir != INVALID_HANDLE_VALUE)
     {
         do

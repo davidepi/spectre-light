@@ -39,11 +39,11 @@ namespace tests \
     public:
 #define SPECTRE_TEST_END(CLASSNAME) };}
 #define SPECTRE_TEST(SUITE_NAME,TEST_NAME) TEST_METHOD(TEST_NAME)
-#define EXPECT_NEAR(x,y,z) Assert::AreEqual(x,y,z)
+#define EXPECT_NEAR(x,y,z) Assert::AreEqual(y,x,z)
 #define EXPECT_TRUE(x) Assert::IsTrue(x)
 #define EXPECT_FALSE(x) Assert::IsFalse(x)
-#define EXPECT_EQ(x,y) Assert::AreEqual(x,y)
-#define EXPECT_NE(x,y) Assert::AreNotEqual(x,y)
+#define EXPECT_EQ(x,y) Assert::AreEqual(y,x)
+#define EXPECT_NE(x,y) Assert::AreNotEqual(y,x)
 #define EXPECT_GT(x,y) Assert::IsTrue(x>y)
 #define EXPECT_GE(x,y) Assert::IsTrue(x>=y)
 #define EXPECT_LT(x,y) Assert::IsTrue(x<y)
