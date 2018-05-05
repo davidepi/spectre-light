@@ -2,19 +2,19 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Camera_tests)
 
 #include "cameras/camera.hpp"
 #include "cameras/camera_perspective.hpp"
 #include "cameras/camera_orthographic.hpp"
 #include "cameras/camera360.hpp"
 #include "samplers/sampler_stratified.hpp"
+
+SPECTRE_TEST_INIT(Camera_tests)
 
 SPECTRE_TEST(Camera, Orthographic_create_ray)
 {
@@ -45,14 +45,30 @@ SPECTRE_TEST(Camera, Orthographic_create_ray)
     Point3 r3origin(-0.0777702333f, 0.0454626679f, -10.f);
     Vec3 direction(0.f, 0.f, 1.f);
 
-    EXPECT_EQ(r0.origin, r0origin);
-    EXPECT_EQ(r1.origin, r1origin);
-    EXPECT_EQ(r2.origin, r2origin);
-    EXPECT_EQ(r3.origin, r3origin);
-    EXPECT_EQ(r0.direction, direction);
-    EXPECT_EQ(r1.direction, direction);
-    EXPECT_EQ(r2.direction, direction);
-    EXPECT_EQ(r3.direction, direction);
+    EXPECT_NEAR(r0.origin.x, r0origin.x, 1e-5f);
+    EXPECT_NEAR(r0.origin.y, r0origin.y, 1e-5f);
+    EXPECT_NEAR(r0.origin.z, r0origin.z, 1e-5f);
+    EXPECT_NEAR(r1.origin.x, r1origin.x, 1e-5f);
+    EXPECT_NEAR(r1.origin.y, r1origin.y, 1e-5f);
+    EXPECT_NEAR(r1.origin.z, r1origin.z, 1e-5f);
+    EXPECT_NEAR(r2.origin.x, r2origin.x, 1e-5f);
+    EXPECT_NEAR(r2.origin.y, r2origin.y, 1e-5f);
+    EXPECT_NEAR(r2.origin.z, r2origin.z, 1e-5f);
+    EXPECT_NEAR(r3.origin.x, r3origin.x, 1e-5f);
+    EXPECT_NEAR(r3.origin.y, r3origin.y, 1e-5f);
+    EXPECT_NEAR(r3.origin.z, r3origin.z, 1e-5f);
+    EXPECT_NEAR(r0.direction.x, direction.x, 1e-5f);
+    EXPECT_NEAR(r0.direction.y, direction.y, 1e-5f);
+    EXPECT_NEAR(r0.direction.z, direction.z, 1e-5f);
+    EXPECT_NEAR(r1.direction.x, direction.x, 1e-5f);
+    EXPECT_NEAR(r1.direction.y, direction.y, 1e-5f);
+    EXPECT_NEAR(r1.direction.z, direction.z, 1e-5f);
+    EXPECT_NEAR(r2.direction.x, direction.x, 1e-5f);
+    EXPECT_NEAR(r2.direction.y, direction.y, 1e-5f);
+    EXPECT_NEAR(r2.direction.z, direction.z, 1e-5f);
+    EXPECT_NEAR(r3.direction.x, direction.x, 1e-5f);
+    EXPECT_NEAR(r3.direction.y, direction.y, 1e-5f);
+    EXPECT_NEAR(r3.direction.z, direction.z, 1e-5f);
 
     //horizontal image
     camera = CameraOrthographic(&pos, &target, &up, 2, 1);
@@ -65,14 +81,30 @@ SPECTRE_TEST(Camera, Orthographic_create_ray)
     r2origin = Point3(-1.64591336f, -0.060670197f, -10.f);
     r3origin = Point3(-0.155540466f, -0.909074604f, -10.f);
 
-    EXPECT_EQ(r0.origin, r0origin);
-    EXPECT_EQ(r1.origin, r1origin);
-    EXPECT_EQ(r2.origin, r2origin);
-    EXPECT_EQ(r3.origin, r3origin);
-    EXPECT_EQ(r0.direction, direction);
-    EXPECT_EQ(r1.direction, direction);
-    EXPECT_EQ(r2.direction, direction);
-    EXPECT_EQ(r3.direction, direction);
+    EXPECT_NEAR(r0.origin.x, r0origin.x, 1e-5f);
+    EXPECT_NEAR(r0.origin.y, r0origin.y, 1e-5f);
+    EXPECT_NEAR(r0.origin.z, r0origin.z, 1e-5f);
+    EXPECT_NEAR(r1.origin.x, r1origin.x, 1e-5f);
+    EXPECT_NEAR(r1.origin.y, r1origin.y, 1e-5f);
+    EXPECT_NEAR(r1.origin.z, r1origin.z, 1e-5f);
+    EXPECT_NEAR(r2.origin.x, r2origin.x, 1e-5f);
+    EXPECT_NEAR(r2.origin.y, r2origin.y, 1e-5f);
+    EXPECT_NEAR(r2.origin.z, r2origin.z, 1e-5f);
+    EXPECT_NEAR(r3.origin.x, r3origin.x, 1e-5f);
+    EXPECT_NEAR(r3.origin.y, r3origin.y, 1e-5f);
+    EXPECT_NEAR(r3.origin.z, r3origin.z, 1e-5f);
+    EXPECT_NEAR(r0.direction.x, direction.x, 1e-5f);
+    EXPECT_NEAR(r0.direction.y, direction.y, 1e-5f);
+    EXPECT_NEAR(r0.direction.z, direction.z, 1e-5f);
+    EXPECT_NEAR(r1.direction.x, direction.x, 1e-5f);
+    EXPECT_NEAR(r1.direction.y, direction.y, 1e-5f);
+    EXPECT_NEAR(r1.direction.z, direction.z, 1e-5f);
+    EXPECT_NEAR(r2.direction.x, direction.x, 1e-5f);
+    EXPECT_NEAR(r2.direction.y, direction.y, 1e-5f);
+    EXPECT_NEAR(r2.direction.z, direction.z, 1e-5f);
+    EXPECT_NEAR(r3.direction.x, direction.x, 1e-5f);
+    EXPECT_NEAR(r3.direction.y, direction.y, 1e-5f);
+    EXPECT_NEAR(r3.direction.z, direction.z, 1e-5f);
 }
 
 SPECTRE_TEST(Camera, Perspective_create_ray)
@@ -104,14 +136,30 @@ SPECTRE_TEST(Camera, Perspective_create_ray)
     Vec3 r2direction(-0.416835636f, 0.237889841f, 0.87730062f);
     Vec3 r3direction(-0.0448400453f, 0.0262124259f, 0.998650133f);
 
-    EXPECT_EQ(r0.origin, origin);
-    EXPECT_EQ(r1.origin, origin);
-    EXPECT_EQ(r2.origin, origin);
-    EXPECT_EQ(r3.origin, origin);
-    EXPECT_EQ(r0.direction, r0direction);
-    EXPECT_EQ(r1.direction, r1direction);
-    EXPECT_EQ(r2.direction, r2direction);
-    EXPECT_EQ(r3.direction, r3direction);
+    EXPECT_NEAR(r0.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r0.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r0.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r1.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r1.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r1.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r2.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r2.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r2.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r3.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r3.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r3.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r0.direction.x, r0direction.x, 1e-5f);
+    EXPECT_NEAR(r0.direction.y, r0direction.y, 1e-5f);
+    EXPECT_NEAR(r0.direction.z, r0direction.z, 1e-5f);
+    EXPECT_NEAR(r1.direction.x, r1direction.x, 1e-5f);
+    EXPECT_NEAR(r1.direction.y, r1direction.y, 1e-5f);
+    EXPECT_NEAR(r1.direction.z, r1direction.z, 1e-5f);
+    EXPECT_NEAR(r2.direction.x, r2direction.x, 1e-5f);
+    EXPECT_NEAR(r2.direction.y, r2direction.y, 1e-5f);
+    EXPECT_NEAR(r2.direction.z, r2direction.z, 1e-5f);
+    EXPECT_NEAR(r3.direction.x, r3direction.x, 1e-5f);
+    EXPECT_NEAR(r3.direction.y, r3direction.y, 1e-5f);
+    EXPECT_NEAR(r3.direction.z, r3direction.z, 1e-5f);
 
     //horizontal image
     camera = CameraPerspective(&pos, &target, &up, 2, 1, radians(60));
@@ -124,14 +172,30 @@ SPECTRE_TEST(Camera, Perspective_create_ray)
     r2direction = Vec3(-0.688629866f, -0.0253836755f, 0.724668562f);
     r3direction = Vec3(-0.0792644619f, -0.463270664f, 0.882664859f);
 
-    EXPECT_EQ(r0.origin, origin);
-    EXPECT_EQ(r1.origin, origin);
-    EXPECT_EQ(r2.origin, origin);
-    EXPECT_EQ(r3.origin, origin);
-    EXPECT_EQ(r0.direction, r0direction);
-    EXPECT_EQ(r1.direction, r1direction);
-    EXPECT_EQ(r2.direction, r2direction);
-    EXPECT_EQ(r3.direction, r3direction);
+    EXPECT_NEAR(r0.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r0.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r0.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r1.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r1.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r1.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r2.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r2.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r2.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r3.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r3.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r3.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r0.direction.x, r0direction.x, 1e-5f);
+    EXPECT_NEAR(r0.direction.y, r0direction.y, 1e-5f);
+    EXPECT_NEAR(r0.direction.z, r0direction.z, 1e-5f);
+    EXPECT_NEAR(r1.direction.x, r1direction.x, 1e-5f);
+    EXPECT_NEAR(r1.direction.y, r1direction.y, 1e-5f);
+    EXPECT_NEAR(r1.direction.z, r1direction.z, 1e-5f);
+    EXPECT_NEAR(r2.direction.x, r2direction.x, 1e-5f);
+    EXPECT_NEAR(r2.direction.y, r2direction.y, 1e-5f);
+    EXPECT_NEAR(r2.direction.z, r2direction.z, 1e-5f);
+    EXPECT_NEAR(r3.direction.x, r3direction.x, 1e-5f);
+    EXPECT_NEAR(r3.direction.y, r3direction.y, 1e-5f);
+    EXPECT_NEAR(r3.direction.z, r3direction.z, 1e-5f);
 }
 
 SPECTRE_TEST(Camera, Camera360_create_ray)
@@ -162,30 +226,30 @@ SPECTRE_TEST(Camera, Camera360_create_ray)
     Vec3 r2direction(0.628446341f, 0.672623038f, 0.390683413f);
     Vec3 r3direction(-0.967828512f, 0.0713518411f, 0.24128218f);
 
-    EXPECT_NEAR(r0.origin.x, origin.x, 1e-5);
-    EXPECT_NEAR(r0.origin.y, origin.y, 1e-5);
-    EXPECT_NEAR(r0.origin.z, origin.z, 1e-5);
-    EXPECT_NEAR(r1.origin.x, origin.x, 1e-5);
-    EXPECT_NEAR(r1.origin.y, origin.y, 1e-5);
-    EXPECT_NEAR(r1.origin.z, origin.z, 1e-5);
-    EXPECT_NEAR(r2.origin.x, origin.x, 1e-5);
-    EXPECT_NEAR(r2.origin.y, origin.y, 1e-5);
-    EXPECT_NEAR(r2.origin.z, origin.z, 1e-5);
-    EXPECT_NEAR(r3.origin.x, origin.x, 1e-5);
-    EXPECT_NEAR(r3.origin.y, origin.y, 1e-5);
-    EXPECT_NEAR(r3.origin.z, origin.z, 1e-5);
-    EXPECT_NEAR(r0.direction.x, r0direction.x, 1e-5);
-    EXPECT_NEAR(r0.direction.y, r0direction.y, 1e-5);
-    EXPECT_NEAR(r0.direction.z, r0direction.z, 1e-5);
-    EXPECT_NEAR(r1.direction.x, r1direction.x, 1e-5);
-    EXPECT_NEAR(r1.direction.y, r1direction.y, 1e-5);
-    EXPECT_NEAR(r1.direction.z, r1direction.z, 1e-5);
-    EXPECT_NEAR(r2.direction.x, r2direction.x, 1e-5);
-    EXPECT_NEAR(r2.direction.y, r2direction.y, 1e-5);
-    EXPECT_NEAR(r2.direction.z, r2direction.z, 1e-5);
-    EXPECT_NEAR(r3.direction.x, r3direction.x, 1e-5);
-    EXPECT_NEAR(r3.direction.y, r3direction.y, 1e-5);
-    EXPECT_NEAR(r3.direction.z, r3direction.z, 1e-5);
+    EXPECT_NEAR(r0.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r0.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r0.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r1.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r1.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r1.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r2.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r2.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r2.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r3.origin.x, origin.x, 1e-5f);
+    EXPECT_NEAR(r3.origin.y, origin.y, 1e-5f);
+    EXPECT_NEAR(r3.origin.z, origin.z, 1e-5f);
+    EXPECT_NEAR(r0.direction.x, r0direction.x, 1e-5f);
+    EXPECT_NEAR(r0.direction.y, r0direction.y, 1e-5f);
+    EXPECT_NEAR(r0.direction.z, r0direction.z, 1e-5f);
+    EXPECT_NEAR(r1.direction.x, r1direction.x, 1e-5f);
+    EXPECT_NEAR(r1.direction.y, r1direction.y, 1e-5f);
+    EXPECT_NEAR(r1.direction.z, r1direction.z, 1e-5f);
+    EXPECT_NEAR(r2.direction.x, r2direction.x, 1e-5f);
+    EXPECT_NEAR(r2.direction.y, r2direction.y, 1e-5f);
+    EXPECT_NEAR(r2.direction.z, r2direction.z, 1e-5f);
+    EXPECT_NEAR(r3.direction.x, r3direction.x, 1e-5f);
+    EXPECT_NEAR(r3.direction.y, r3direction.y, 1e-5f);
+    EXPECT_NEAR(r3.direction.z, r3direction.z, 1e-5f);
 }
 
 SPECTRE_TEST_END(Camera_tests)

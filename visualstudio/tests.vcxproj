@@ -87,6 +87,11 @@
   <ItemGroup>
     <ClCompile Include="..\src\accelerators\bvh.cpp" />
     <ClCompile Include="..\src\accelerators\kdtree.cpp" />
+    <ClCompile Include="..\src\cameras\camera.cpp" />
+    <ClCompile Include="..\src\cameras\camera360.cpp" />
+    <ClCompile Include="..\src\cameras\camera_orthographic.cpp" />
+    <ClCompile Include="..\src\cameras\camera_perspective.cpp" />
+    <ClCompile Include="..\src\cameras\image_film.cpp" />
     <ClCompile Include="..\src\geometry\AABB.cpp" />
     <ClCompile Include="..\src\geometry\matrix4.cpp" />
     <ClCompile Include="..\src\geometry\point2.cpp" />
@@ -133,10 +138,13 @@
     <ClCompile Include="..\tests\unit-testing\aabb_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\asset_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\box_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\camera_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\color_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\console_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\file_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\filter_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\imagefilm_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\imageio_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\light_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\materiallibrary_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\materials_tests.cpp" />
@@ -161,6 +169,11 @@
   <ItemGroup>
     <ClInclude Include="..\src\accelerators\bvh.hpp" />
     <ClInclude Include="..\src\accelerators\kdtree.hpp" />
+    <ClInclude Include="..\src\cameras\camera.hpp" />
+    <ClInclude Include="..\src\cameras\camera360.hpp" />
+    <ClInclude Include="..\src\cameras\camera_orthographic.hpp" />
+    <ClInclude Include="..\src\cameras\camera_perspective.hpp" />
+    <ClInclude Include="..\src\cameras\image_film.hpp" />
     <ClInclude Include="..\src\geometry\AABB.hpp" />
     <ClInclude Include="..\src\geometry\matrix4.hpp" />
     <ClInclude Include="..\src\geometry\point2.hpp" />

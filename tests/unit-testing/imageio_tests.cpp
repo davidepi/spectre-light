@@ -2,20 +2,22 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
+#include <io.h>
+#define unlink _unlink
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(ImageIO_tests)
 
 #include "utility/imageIO.hpp"
 #include "utility/utility.hpp"
 #include <cstdio>
 #include <climits>
 
-SPECTRE_TEST(ImageIO, save_ppm)
+SPECTRE_TEST_INIT(ImageIO_tests)
+
+SPECTRE_TEST(ImageIO, save_ppm_func)
 {
     char file_stat[64];
 
@@ -24,12 +26,13 @@ SPECTRE_TEST(ImageIO, save_ppm)
         image_sample[i] = i/3;
     bool res = save_ppm("test.ppm", 16, 10, image_sample);
     ASSERT_TRUE(res);
-
+#ifndef _WIN32
     //check if saved image is actually a .ppm
     FILE* fp = popen("file -b --mime test.ppm", "r");
     fgets(file_stat, 64, fp);
     pclose(fp);
     EXPECT_STREQ(file_stat, "image/x-portable-pixmap; charset=binary\n");
+#endif
     EXPECT_EQ(unlink("test.ppm"), 0);
 
     //non existent folder
@@ -37,7 +40,7 @@ SPECTRE_TEST(ImageIO, save_ppm)
     EXPECT_FALSE(res);
 }
 
-SPECTRE_TEST(ImageIO, dimensions_ppm)
+SPECTRE_TEST(ImageIO, dimensions_ppm_func)
 {
     int width;
     int height;
@@ -73,7 +76,7 @@ SPECTRE_TEST(ImageIO, dimensions_ppm)
     height = 0;
 }
 
-SPECTRE_TEST(ImageIO, read_ppm)
+SPECTRE_TEST(ImageIO, read_ppm_func)
 {
     int res;
     //+1 is used later to check stack overflows
@@ -102,7 +105,7 @@ SPECTRE_TEST(ImageIO, read_ppm)
     EXPECT_NEAR(data[10], 0.f, 1e-5f);
     EXPECT_NEAR(data[11], 0.f, 1e-5f);
     EXPECT_EQ(res, IMAGE_OK);
-    bzero(data, 12);
+    memset(data, 0, 12);
     //read image with high depth (ASCII)
     res = read_ppm(TEST_ASSETS "images/p3_high_depth.ppm", data);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
@@ -118,7 +121,7 @@ SPECTRE_TEST(ImageIO, read_ppm)
     EXPECT_NEAR(data[10], 1.f, 1e-5f);
     EXPECT_NEAR(data[11], 1.f, 1e-5f);
     EXPECT_EQ(res, IMAGE_OK);
-    bzero(data, 12);
+    memset(data, 0, 12);
     //read image with normal depth (binary) no stack_overflow
     res = read_ppm(TEST_ASSETS "images/binary.ppm", data);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
@@ -134,7 +137,7 @@ SPECTRE_TEST(ImageIO, read_ppm)
     EXPECT_NEAR(data[10], 0.f, 1e-5f);
     EXPECT_NEAR(data[11], 0.f, 1e-5f);
     EXPECT_EQ(res, IMAGE_OK);
-    bzero(data, 12);
+    memset(data, 0, 12);
     //read image that claims to be 2x2 but contains a lot more
     //bytes
     data[4*3] = (float)0x2B; //random val, check that this is unchanged
@@ -153,7 +156,7 @@ SPECTRE_TEST(ImageIO, read_ppm)
     EXPECT_NEAR(data[11], 1.f, 1e-5f);
     EXPECT_NEAR(data[12], (float)0x2B, 1e-5f); //assert no stack overflow
     EXPECT_EQ(res, IMAGE_OK);
-    bzero(data, 12);
+    memset(data, 0, 12);
     //read image with high depth (binary) no stack_overflow
     res = read_ppm(TEST_ASSETS "images/p6_high_depth.ppm", data);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
@@ -169,7 +172,7 @@ SPECTRE_TEST(ImageIO, read_ppm)
     EXPECT_NEAR(data[10], 1.f, 1e-5f);
     EXPECT_NEAR(data[11], 1.f, 1e-5f);
     EXPECT_EQ(res, IMAGE_OK);
-    bzero(data, 12);
+    memset(data, 0, 12);
     //read image with high depth (binary), stack_overflow
     res = read_ppm(TEST_ASSETS "images/p6_high_depth_stack_overflow.ppm", data);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
@@ -186,10 +189,10 @@ SPECTRE_TEST(ImageIO, read_ppm)
     EXPECT_NEAR(data[11], 1.f, 1e-5f);
     EXPECT_NEAR(data[12], (float)0x2B, 1e-5f); //assert no stack overflow
     EXPECT_EQ(res, IMAGE_OK);
-    bzero(data, 12);
+    memset(data, 0, 12);
 }
 
-SPECTRE_TEST(ImageIO, save_bmp)
+SPECTRE_TEST(ImageIO, save_bmp_func)
 {
     char file_stat[64];
 
@@ -198,13 +201,14 @@ SPECTRE_TEST(ImageIO, save_bmp)
         image_sample[i] = i/3;
     bool res = save_bmp("test.bmp", 16, 10, image_sample);
     ASSERT_TRUE(res);
-
+#ifndef _WIN32
     //check if saved image is actually a .bmp
     FILE* fp = popen("file -b --mime test.bmp", "r");
     fgets(file_stat, 64, fp);
     pclose(fp);
     EXPECT_STREQ(file_stat,
                  "image/x-ms-bmp; charset=binary\n");
+#endif
     EXPECT_EQ(unlink("test.bmp"), 0);
 
     //non existent folder
@@ -212,7 +216,7 @@ SPECTRE_TEST(ImageIO, save_bmp)
     EXPECT_FALSE(res);
 }
 
-SPECTRE_TEST(ImageIO, dimensions_bmp)
+SPECTRE_TEST(ImageIO, dimensions_bmp_func)
 {
     int width;
     int height;
@@ -260,7 +264,7 @@ SPECTRE_TEST(ImageIO, dimensions_bmp)
     height = 0;
 }
 
-SPECTRE_TEST(ImageIO, read_bmp)
+SPECTRE_TEST(ImageIO, read_bmp_func)
 {
     int res;
     float values[4*3];
@@ -311,7 +315,7 @@ SPECTRE_TEST(ImageIO, read_bmp)
     EXPECT_EQ(res, IMAGE_OK);
 }
 
-SPECTRE_TEST(ImageIO, save_rgb)
+SPECTRE_TEST(ImageIO, save_rgb_func)
 {
     bool res;
     uint8_t image_sample[17*10*3];
@@ -383,7 +387,7 @@ SPECTRE_TEST(ImageIO, save_rgb)
 #endif
 }
 
-SPECTRE_TEST(ImageIO, dimensions_rgb)
+SPECTRE_TEST(ImageIO, dimensions_rgb_func)
 {
     int width;
     int height;
@@ -441,7 +445,7 @@ SPECTRE_TEST(ImageIO, dimensions_rgb)
 #endif
 }
 
-SPECTRE_TEST(ImageIO, read_rgb)
+SPECTRE_TEST(ImageIO, read_rgb_func)
 {
     int res;
     float values[2*3*3];
@@ -567,9 +571,9 @@ SPECTRE_TEST(ImageIO, read_rgb)
 #endif
 }
 
-SPECTRE_TEST(ImageIO, image_supported)
+SPECTRE_TEST(ImageIO, image_supported_func)
 {
-    char res;
+    int res;
     //null pointer
     res = image_supported(NULL);
     EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);

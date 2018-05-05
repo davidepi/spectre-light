@@ -2,18 +2,25 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#include <unistd.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
+#include <io.h>
+#include <direct.h>
+#define unlink _unlink
+#define access _access
+#define rmdir _rmdir
+#define F_OK 0x0
 #else
-
 #include <gtest/gtest.h>
-
+#include <unistd.h>
 #endif
-
-SPECTRE_TEST_INIT(ImageFilm_tests)
 
 #include "cameras/image_film.hpp"
 #include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
-#include <unistd.h>
+
+SPECTRE_TEST_INIT(ImageFilm_tests)
 
 SPECTRE_TEST(ImageFIlm, constructor)
 {
@@ -55,7 +62,7 @@ SPECTRE_TEST(ImageFIlm, constructor)
     ImageFilm img5(2, 2, "folder");
     EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
     errors_count[CRITICAL_INDEX] = 0;
-    rmdir(folder.absolute_path());
+    EXPECT_EQ(rmdir(folder.absolute_path()),0);
 
     //almost similar extensions
     errors_count[WARNING_INDEX] = 0;
