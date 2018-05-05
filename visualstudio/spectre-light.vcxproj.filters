@@ -266,9 +266,6 @@
     <ClInclude Include="..\src\parsers\config_parser.tab.hh">
       <Filter>src\parsers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\localization.h">
-      <Filter>src\parsers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\parsers\location.hh">
       <Filter>src\parsers</Filter>
     </ClInclude>
@@ -362,6 +359,7 @@
     <ClInclude Include="..\src\utility\wellrng.hpp">
       <Filter>src\utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\localization.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -400,5 +398,10 @@
     <Filter Include="src\utility">
       <UniqueIdentifier>{5377c1a1-da99-40c9-b54d-c2dca2c0c40b}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\parsers\README.md">
+      <Filter>src\parsers</Filter>
+    </None>
   </ItemGroup>
 </Project>

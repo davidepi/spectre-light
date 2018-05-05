@@ -1,12 +1,12 @@
 //Created,   4 Apr 2018
-//Last Edit 29 Apr 2018
+//Last Edit  5 May 2018
 
 /**
  *  \file file.hpp
  *  \brief Utilities involving the filesystem
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  29 Apr 2018
+ *  \date  5 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -224,13 +224,26 @@ private:
 #endif
 };
 
-///Determine if a path is absolute or not
+///Determines if a path is absolute or not
 inline bool is_absolute(const char* path)
 {
 #ifdef _WIN32
-    return path[1] == ':' && path[2] == File::PATH_SEPARATOR;
+    bool res = false;
+    res = path[1] == ':' && path[2] == File::PATH_SEPARATOR;
+    res |= path[0] == File::PATH_SEPARATOR && path[1] == File::PATH_SEPARATOR;
+    return res;
 #else
     return path[0] == File::PATH_SEPARATOR;
+#endif
+}
+
+///Determines absolute path for wrong architecture
+inline bool wrong_absolute(const char* path)
+{
+#ifdef _WIN32
+    return path[0] == '/';
+#else
+    return path[1] == ':' && path[2] == '\\';
 #endif
 }
 

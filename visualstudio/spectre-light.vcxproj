@@ -145,6 +145,9 @@
     <ClInclude Include="..\src\utility\wellrng.hpp" />
     <ClInclude Include="..\src\validator.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\parsers\README.md" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{5C8E05B9-1CFA-4670-A065-F0DD0FE19F78}</ProjectGuid>

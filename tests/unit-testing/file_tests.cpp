@@ -2,24 +2,35 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "windows.h"
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(File_tests)
 
 #include "utility/file.hpp"
 #include <cstring>
 
+SPECTRE_TEST_INIT(File_tests)
+
 SPECTRE_TEST(File, absolute_path)
 {
-    const char* cur_dir = realpath(".", NULL);
-    char* path = (char*)malloc(sizeof(char)*(strlen(cur_dir)+64+1));
+    char* cur_dir;
+    int cur_dir_len;
+#ifdef _WIN32
+    cur_dir_len = GetFullPathNameA(".", 0, NULL, NULL);
+    cur_dir = (char*)malloc(sizeof(char)*(cur_dir_len + 1));
+    GetFullPathNameA(".", cur_dir_len + 1, cur_dir, NULL);
+#else
+    cur_dir = realpath(".", NULL);
+    cur_dir_len = (int)strlen(current_dir);
+#endif
+    char* path = (char*)malloc(sizeof(char)*(strlen(cur_dir) + 64 + 1));
     //normal file appended
     strcpy(path, cur_dir);
-    strcat(path, "/file.jpg");
+    strcat(path, File::PATH_SEPARATOR_STRING);
+    strcat(path, "file.jpg");
     File f0("file.jpg");
     EXPECT_STREQ(f0.absolute_path(), path);
     //file starting with ./
@@ -36,32 +47,67 @@ SPECTRE_TEST(File, absolute_path)
     EXPECT_STREQ(f4.absolute_path(), path);
     //too many ../
     File f5("../../../../../../../../../../../file.jpg");
+#ifdef _WIN32
+    EXPECT_STREQ(f5.absolute_path(), "C:\\file.jpg");
+#else
     EXPECT_STREQ(f5.absolute_path(), "/file.jpg");
+#endif
     //double slash used
     strcpy(path, cur_dir);
-    strcat(path, "/folder/file.jpg");
+    strcat(path, File::PATH_SEPARATOR_STRING);
+    strcat(path, "folder");
+    strcat(path, File::PATH_SEPARATOR_STRING);
+    strcat(path, "file.jpg");
     File f6("folder//file.jpg");
     EXPECT_STREQ(f6.absolute_path(), path);
     // /./ in the path
     File f7("folder/./file.jpg");
     EXPECT_STREQ(f7.absolute_path(), path);
     //absolute path
+#ifdef _WIN32
+    strcpy(path, "C:\\file\\var\\file.jpg");
+#else
     strcpy(path, "/var/tmp/values");
+#endif
     File f8(path);
     EXPECT_STREQ(f8.absolute_path(), path);
     //absolute path with double slash
-    strcpy(path, "/var/tmp/values");
+#ifdef _WIN32
+    File f9("C:\\\\file\\\\var\\\\file.jpg");
+#else
     File f9("//var/tmp//values/");
+#endif
     EXPECT_STREQ(f9.absolute_path(), path);
     //root
+#ifdef _WIN32
+    File f10("C:\\");
+    EXPECT_STREQ(f10.absolute_path(), "C:\\");
+    //f8 f9 and f10 with UNC absolute paths
+    strcpy(path, "\\\\file\\var\\file.jpg");
+    File f8unc("\\\\file\\var\\file.jpg");
+    EXPECT_STREQ(f8unc.absolute_path(), path);
+    File f9unc("\\\\\\\\file\\\\var\\\\file.jpg");
+    EXPECT_STREQ(f9unc.absolute_path(), path);
+    File f10unc("\\\\");
+    EXPECT_STREQ(f10unc.absolute_path(), "\\\\");
+#else
     File f10("/");
     EXPECT_STREQ(f10.absolute_path(), "/");
+#endif
     //ending with /.
     File f11("./.");
     EXPECT_STREQ(f11.absolute_path(), cur_dir);
     //ending with /..
     File f12("folder/..");
     EXPECT_STREQ(f12.absolute_path(), cur_dir);
+    //windows path, run also on *nix
+    strcpy(path,cur_dir);
+    strcat(path, File::PATH_SEPARATOR_STRING);
+    strcat(path, "folder");
+    strcat(path, File::PATH_SEPARATOR_STRING);
+    strcat(path,"file.jpg");
+    File f13("folder\\file.jpg");
+    EXPECT_STREQ(f13.absolute_path(), path);
     free(path);
     free((void*)cur_dir);
 }
@@ -83,6 +129,26 @@ SPECTRE_TEST(File, extension)
     //ending with point
     File f4(".a.out.");
     EXPECT_STREQ(f4.extension(), "");
+    //windows path for everyone
+    File fwin("folder\\.a.out");
+    EXPECT_STREQ(fwin.extension(), "out");
+#ifdef _WIN32
+    //folder
+    File f5("C:\\absolute/folder/file.ext");
+    EXPECT_STREQ(f5.extension(), "ext");
+    File f5unc("\\\\absolute/folder/file.ext");
+    EXPECT_STREQ(f5unc.extension(), "ext");
+    //folder with separator
+    File f6("C:\\absolute/folder/");
+    EXPECT_STREQ(f6.extension(), "");
+    File f6unc("\\\\absolute/folder/");
+    EXPECT_STREQ(f6unc.extension(), "");
+    //root
+    File f7("C:\\");
+    EXPECT_STREQ(f7.extension(), "");
+    File f7unc("\\\\");
+    EXPECT_STREQ(f7unc.extension(), "");
+#else
     //folder
     File f5("/absolute/folder/file.ext");
     EXPECT_STREQ(f5.extension(), "ext");
@@ -92,6 +158,7 @@ SPECTRE_TEST(File, extension)
     //root
     File f7("/");
     EXPECT_STREQ(f7.extension(), "");
+#endif
 }
 
 SPECTRE_TEST(File, filename)
@@ -102,6 +169,32 @@ SPECTRE_TEST(File, filename)
     //relative folder
     File f1("./file.jpg");
     EXPECT_STREQ(f1.filename(), "file.jpg");
+#ifdef _WIN32
+    //absolute folder
+    File f2("C:\\root/file.jpg");
+    EXPECT_STREQ(f2.filename(), "file.jpg");
+    File f2unc("\\\\root/file.jpg");
+    EXPECT_STREQ(f2unc.filename(), "file.jpg");
+    //folder only
+    File f3("C:\\root/folder");
+    EXPECT_STREQ(f3.filename(), "folder");
+    File f3unc("\\\\root/folder");
+    EXPECT_STREQ(f3unc.filename(), "folder");
+    //folder only with separator
+    File f4("C:\\root/folder/");
+    EXPECT_STREQ(f4.filename(), "folder");
+    File f4unc("\\\\root/folder/");
+    EXPECT_STREQ(f4unc.filename(), "folder");
+    //root
+    File f5("C:\\");
+    EXPECT_STREQ(f5.filename(), "C:\\");
+    File f5unc("\\\\");
+    EXPECT_STREQ(f5unc.filename(), "\\\\");
+    File f6("C:\\file");
+    EXPECT_STREQ(f6.filename(), "file");
+    File f6unc("\\\\file");
+    EXPECT_STREQ(f6unc.filename(), "file");
+#else
     //absolute folder
     File f2("/root/file.jpg");
     EXPECT_STREQ(f2.filename(), "file.jpg");
@@ -116,8 +209,10 @@ SPECTRE_TEST(File, filename)
     EXPECT_STREQ(f5.filename(), "/");
     File f6("/file");
     EXPECT_STREQ(f6.filename(), "file");
+#endif
 }
 
+#ifndef _WIN32
 SPECTRE_TEST(File, exists)
 {
     //not existent
@@ -312,5 +407,5 @@ SPECTRE_TEST(File, is_absolute)
     EXPECT_TRUE(is_absolute("/path"));
     EXPECT_FALSE(is_absolute("../path"));
 }
-
+#endif
 SPECTRE_TEST_END(File_tests)

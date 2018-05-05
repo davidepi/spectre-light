@@ -123,6 +123,7 @@
     <ClCompile Include="..\src\textures\uniform.cpp" />
     <ClCompile Include="..\src\utility\color.cpp" />
     <ClCompile Include="..\src\utility\console.cpp" />
+    <ClCompile Include="..\src\utility\file.cpp" />
     <ClCompile Include="..\src\utility\imageIO.cpp" />
     <ClCompile Include="..\src\utility\occlusion_tester.cpp" />
     <ClCompile Include="..\src\utility\scene.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="..\tests\unit-testing\box_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\color_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\console_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\file_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\filter_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\light_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\materiallibrary_tests.cpp" />
@@ -197,6 +199,7 @@
     <ClInclude Include="..\src\textures\uniform.hpp" />
     <ClInclude Include="..\src\utility\color.hpp" />
     <ClInclude Include="..\src\utility\console.hpp" />
+    <ClInclude Include="..\src\utility\file.hpp" />
     <ClInclude Include="..\src\utility\imageIO.hpp" />
     <ClInclude Include="..\src\utility\occlusion_tester.hpp" />
     <ClInclude Include="..\src\utility\scene.hpp" />

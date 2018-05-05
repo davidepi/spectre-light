@@ -161,6 +161,14 @@
 
 #define MESSAGE_MISSING_MATERIAL_OVERRIDE MESSAGE_MISSING_MATERIAL " while "\
 "overriding its materials"
+
+#ifdef _WIN32
+#define MESSAGE_WRONG_ABS_FILE_ARCH "Expected an absolute path for " \
+"Windows but found an absolute path for Linux/MacOS (%s)"
+#else
+#define MESSAGE_WRONG_ABS_FILE_ARCH "Expected an absolute path for " \
+"Linux/MacOS but found an absolute path for Windows (%s)"
+#endif
 #endif
 
 /**

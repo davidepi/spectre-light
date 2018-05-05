@@ -219,6 +219,12 @@
     <ClCompile Include="..\tests\unit-testing\utility_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\file_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\file.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\unit-testing\spectre_tests.h">
@@ -360,6 +366,9 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\accelerators\kdtree.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\file.hpp">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>
