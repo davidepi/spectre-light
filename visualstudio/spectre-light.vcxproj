@@ -36,7 +36,9 @@
     <ClCompile Include="..\src\integrators\path_tracer.cpp" />
     <ClCompile Include="..\src\integrators\ray_tracer.cpp" />
     <ClCompile Include="..\src\lights\area_light.cpp" />
-    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\main.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release-rgb|x64'">NotSet</EnableEnhancedInstructionSet>
+    </ClCompile>
     <ClCompile Include="..\src\materials\bdf.cpp" />
     <ClCompile Include="..\src\materials\fresnel_conditions.cpp" />
     <ClCompile Include="..\src\materials\lambertian.cpp" />
@@ -289,8 +291,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
-      <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
       <AdditionalIncludeDirectories>$(SolutionDir)..\src</AdditionalIncludeDirectories>
@@ -302,8 +303,9 @@
       <DebugInformationFormat>None</DebugInformationFormat>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <CallingConvention>VectorCall</CallingConvention>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -324,8 +326,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
-      <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
       <AdditionalIncludeDirectories>$(SolutionDir)..\src</AdditionalIncludeDirectories>
@@ -337,8 +338,9 @@
       <DebugInformationFormat>None</DebugInformationFormat>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <CallingConvention>VectorCall</CallingConvention>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

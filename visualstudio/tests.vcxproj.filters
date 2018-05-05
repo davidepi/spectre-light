@@ -249,6 +249,33 @@
     <ClCompile Include="..\tests\unit-testing\imageio_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\parsers\parser_obj.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\parser_obj_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\config_driver.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\parser_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\config_parser.tab.cc">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\renderer.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\integrators\path_tracer.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\integrators\ray_tracer.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\lex.yy.cc">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\unit-testing\spectre_tests.h">
@@ -408,6 +435,15 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cameras\image_film.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\parser_obj.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\config_driver.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\location.hh">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>

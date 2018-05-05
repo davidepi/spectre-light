@@ -99,6 +99,8 @@
     <ClCompile Include="..\src\geometry\ray.cpp" />
     <ClCompile Include="..\src\geometry\vec2.cpp" />
     <ClCompile Include="..\src\geometry\vec3.cpp" />
+    <ClCompile Include="..\src\integrators\path_tracer.cpp" />
+    <ClCompile Include="..\src\integrators\ray_tracer.cpp" />
     <ClCompile Include="..\src\lights\area_light.cpp" />
     <ClCompile Include="..\src\materials\bdf.cpp" />
     <ClCompile Include="..\src\materials\fresnel_conditions.cpp" />
@@ -109,12 +111,17 @@
     <ClCompile Include="..\src\materials\oren_nayar.cpp" />
     <ClCompile Include="..\src\materials\reflection.cpp" />
     <ClCompile Include="..\src\materials\refraction.cpp" />
+    <ClCompile Include="..\src\parsers\config_driver.cpp" />
+    <ClCompile Include="..\src\parsers\config_parser.tab.cc" />
+    <ClCompile Include="..\src\parsers\lex.yy.cc" />
+    <ClCompile Include="..\src\parsers\parser_obj.cpp" />
     <ClCompile Include="..\src\primitives\asset.cpp" />
     <ClCompile Include="..\src\primitives\box.cpp" />
     <ClCompile Include="..\src\primitives\mesh.cpp" />
     <ClCompile Include="..\src\primitives\shape.cpp" />
     <ClCompile Include="..\src\primitives\sphere.cpp" />
     <ClCompile Include="..\src\primitives\triangle.cpp" />
+    <ClCompile Include="..\src\renderer.cpp" />
     <ClCompile Include="..\src\samplers\filter_box.cpp" />
     <ClCompile Include="..\src\samplers\filter_gaussian.cpp" />
     <ClCompile Include="..\src\samplers\filter_lanczos.cpp" />
@@ -153,6 +160,8 @@
     <ClCompile Include="..\tests\unit-testing\microfacets_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\normal_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\occlusiontester_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\parser_obj_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\parser_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\point2_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\point3_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\ray_tests.cpp" />
@@ -192,6 +201,9 @@
     <ClInclude Include="..\src\materials\oren_nayar.hpp" />
     <ClInclude Include="..\src\materials\reflection.hpp" />
     <ClInclude Include="..\src\materials\refraction.hpp" />
+    <ClInclude Include="..\src\parsers\config_driver.hpp" />
+    <ClInclude Include="..\src\parsers\location.hh" />
+    <ClInclude Include="..\src\parsers\parser_obj.hpp" />
     <ClInclude Include="..\src\primitives\asset.hpp" />
     <ClInclude Include="..\src\primitives\box.hpp" />
     <ClInclude Include="..\src\primitives\mesh.hpp" />

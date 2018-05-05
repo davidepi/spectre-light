@@ -18,5 +18,10 @@ int main(int argc, char* argv[])
     delete parser;
     int retval = renderer->render(&scene);
     delete renderer;
+#ifdef _WIN32
+    //avoid autoclosing cmd
+    std::cout << "Pres any key to exit" << std::endl;
+    getchar();
+#endif
     return retval;
 }

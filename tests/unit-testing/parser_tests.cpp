@@ -2,18 +2,18 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Parser_tests)
 
 #include "parsers/config_driver.hpp"
 #include "primitives/asset.hpp"
 #include "primitives/sphere.hpp"
 #include "renderer.hpp"
+
+SPECTRE_TEST_INIT(Parser_tests)
 
 SPECTRE_TEST(Parser, out)
 {
@@ -88,18 +88,18 @@ SPECTRE_TEST(Parser, sampler)
     //unset
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
-    EXPECT_EQ(driver0.sampler_type, SPECTRE_SAMPLER_STRATIFIED);
+    EXPECT_EQ(driver0.sampler_type, (char)SPECTRE_SAMPLER_STRATIFIED);
     delete r0;
     //stratified
     ConfigDriver driver1;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/sampler_stratified.txt",
                                  &s);
-    EXPECT_EQ(driver1.sampler_type, SPECTRE_SAMPLER_STRATIFIED);
+    EXPECT_EQ(driver1.sampler_type, (char)SPECTRE_SAMPLER_STRATIFIED);
     delete r1;
     //random
     ConfigDriver driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/sampler_random.txt", &s);
-    EXPECT_EQ(driver2.sampler_type, SPECTRE_SAMPLER_RANDOM);
+    EXPECT_EQ(driver2.sampler_type, (char)SPECTRE_SAMPLER_RANDOM);
     delete r2;
 }
 
@@ -161,25 +161,25 @@ SPECTRE_TEST(Parser, filter)
     //box
     ConfigDriver driver1;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/filter_box.txt", &s);
-    EXPECT_EQ(driver1.filter_type, SPECTRE_FILTER_BOX);
+    EXPECT_EQ(driver1.filter_type, (char)SPECTRE_FILTER_BOX);
     delete r1;
     //tent
     ConfigDriver driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/filter_tent.txt", &s);
-    EXPECT_EQ(driver2.filter_type, SPECTRE_FILTER_TENT);
+    EXPECT_EQ(driver2.filter_type, (char)SPECTRE_FILTER_TENT);
     delete r2;
     //gaussian
     ConfigDriver driver3;
     Renderer* r3 = driver3.parse(TEST_ASSETS "parser/filter_gaussian_set.txt",
                                  &s);
-    EXPECT_EQ(driver3.filter_type, SPECTRE_FILTER_GAUSS);
+    EXPECT_EQ(driver3.filter_type, (char)SPECTRE_FILTER_GAUSS);
     EXPECT_EQ(driver3.value0, 2.5f);
     delete r3;
     //mitchell
     ConfigDriver driver4;
     Renderer* r4 = driver4.parse(TEST_ASSETS "parser/filter_mitchell_set.txt",
                                  &s);
-    EXPECT_EQ(driver4.filter_type, SPECTRE_FILTER_MITCHELL);
+    EXPECT_EQ(driver4.filter_type, (char)SPECTRE_FILTER_MITCHELL);
     EXPECT_EQ(driver4.value0, 3.f);
     EXPECT_EQ(driver4.value1, 0.f);
     delete r4;
@@ -187,7 +187,7 @@ SPECTRE_TEST(Parser, filter)
     ConfigDriver driver5;
     Renderer* r5 = driver5.parse(TEST_ASSETS "parser/filter_lanczos_set.txt",
                                  &s);
-    EXPECT_EQ(driver5.filter_type, SPECTRE_FILTER_LANCZOS);
+    EXPECT_EQ(driver5.filter_type, (char)SPECTRE_FILTER_LANCZOS);
     EXPECT_EQ(driver5.value0, 2.f);
     delete r5;
 }
@@ -198,62 +198,62 @@ SPECTRE_TEST(Parser, camera)
     //unset
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
-    EXPECT_EQ(driver0.camera_pos.x, 0);
-    EXPECT_EQ(driver0.camera_pos.y, 0);
-    EXPECT_EQ(driver0.camera_pos.z, 0);
-    EXPECT_EQ(driver0.camera_tar.x, 0);
-    EXPECT_EQ(driver0.camera_tar.y, 0);
-    EXPECT_EQ(driver0.camera_tar.z, 1);
-    EXPECT_EQ(driver0.camera_up.x, 0);
-    EXPECT_EQ(driver0.camera_up.y, 1);
-    EXPECT_EQ(driver0.camera_up.z, 0);
-    EXPECT_EQ(driver0.camera_type, SPECTRE_CAMERA_PERSPECTIVE);
+    EXPECT_EQ(driver0.camera_pos.x, 0.f);
+    EXPECT_EQ(driver0.camera_pos.y, 0.f);
+    EXPECT_EQ(driver0.camera_pos.z, 0.f);
+    EXPECT_EQ(driver0.camera_tar.x, 0.f);
+    EXPECT_EQ(driver0.camera_tar.y, 0.f);
+    EXPECT_EQ(driver0.camera_tar.z, 1.f);
+    EXPECT_EQ(driver0.camera_up.x, 0.f);
+    EXPECT_EQ(driver0.camera_up.y, 1.f);
+    EXPECT_EQ(driver0.camera_up.z, 0.f);
+    EXPECT_EQ(driver0.camera_type, (char)SPECTRE_CAMERA_PERSPECTIVE);
     EXPECT_EQ(driver0.fov, 55.f);
     delete r0;
     //orthographic
     ConfigDriver driver1;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/camera_orthographic.txt",
                                  &s);
-    EXPECT_EQ(driver1.camera_pos.x, 1);
-    EXPECT_EQ(driver1.camera_pos.y, 0);
-    EXPECT_EQ(driver1.camera_pos.z, 0);
-    EXPECT_EQ(driver1.camera_tar.x, 0);
-    EXPECT_EQ(driver1.camera_tar.y, 0);
-    EXPECT_EQ(driver1.camera_tar.z, -1);
-    EXPECT_EQ(driver1.camera_up.x, -1);
-    EXPECT_EQ(driver1.camera_up.y, 0);
-    EXPECT_EQ(driver1.camera_up.z, 0);
-    EXPECT_EQ(driver1.camera_type, SPECTRE_CAMERA_ORTHOGRAPHIC);
+    EXPECT_EQ(driver1.camera_pos.x, 1.f);
+    EXPECT_EQ(driver1.camera_pos.y, 0.f);
+    EXPECT_EQ(driver1.camera_pos.z, 0.f);
+    EXPECT_EQ(driver1.camera_tar.x, 0.f);
+    EXPECT_EQ(driver1.camera_tar.y, 0.f);
+    EXPECT_EQ(driver1.camera_tar.z, -1.f);
+    EXPECT_EQ(driver1.camera_up.x, -1.f);
+    EXPECT_EQ(driver1.camera_up.y, 0.f);
+    EXPECT_EQ(driver1.camera_up.z, 0.f);
+    EXPECT_EQ(driver1.camera_type, (char)SPECTRE_CAMERA_ORTHOGRAPHIC);
     delete r1;
     //perspective
     ConfigDriver driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/camera_perspective.txt",
                                  &s);
-    EXPECT_EQ(driver2.camera_pos.x, 1);
-    EXPECT_EQ(driver2.camera_pos.y, 2);
-    EXPECT_EQ(driver2.camera_pos.z, 3);
-    EXPECT_EQ(driver2.camera_tar.x, 4);
-    EXPECT_EQ(driver2.camera_tar.y, 5);
-    EXPECT_EQ(driver2.camera_tar.z, 6);
-    EXPECT_EQ(driver2.camera_up.x, 0);
-    EXPECT_EQ(driver2.camera_up.y, 0);
-    EXPECT_EQ(driver2.camera_up.z, 1);
-    EXPECT_EQ(driver2.camera_type, SPECTRE_CAMERA_PERSPECTIVE);
-    EXPECT_EQ(driver2.fov, 90);
+    EXPECT_EQ(driver2.camera_pos.x, 1.f);
+    EXPECT_EQ(driver2.camera_pos.y, 2.f);
+    EXPECT_EQ(driver2.camera_pos.z, 3.f);
+    EXPECT_EQ(driver2.camera_tar.x, 4.f);
+    EXPECT_EQ(driver2.camera_tar.y, 5.f);
+    EXPECT_EQ(driver2.camera_tar.z, 6.f);
+    EXPECT_EQ(driver2.camera_up.x, 0.f);
+    EXPECT_EQ(driver2.camera_up.y, 0.f);
+    EXPECT_EQ(driver2.camera_up.z, 1.f);
+    EXPECT_EQ(driver2.camera_type, (char)SPECTRE_CAMERA_PERSPECTIVE);
+    EXPECT_EQ(driver2.fov, 90.f);
     delete r2;
     //panorama
     ConfigDriver driver3;
     Renderer* r3 = driver3.parse(TEST_ASSETS "parser/camera_panorama.txt", &s);
-    EXPECT_EQ(driver3.camera_pos.x, 6);
-    EXPECT_EQ(driver3.camera_pos.y, 5);
-    EXPECT_EQ(driver3.camera_pos.z, 4);
-    EXPECT_EQ(driver3.camera_tar.x, 3);
-    EXPECT_EQ(driver3.camera_tar.y, 2);
-    EXPECT_EQ(driver3.camera_tar.z, 1);
-    EXPECT_EQ(driver3.camera_up.x, 0);
-    EXPECT_EQ(driver3.camera_up.y, 0);
-    EXPECT_EQ(driver3.camera_up.z, 1);
-    EXPECT_EQ(driver3.camera_type, SPECTRE_CAMERA_PANORAMA);
+    EXPECT_EQ(driver3.camera_pos.x, 6.f);
+    EXPECT_EQ(driver3.camera_pos.y, 5.f);
+    EXPECT_EQ(driver3.camera_pos.z, 4.f);
+    EXPECT_EQ(driver3.camera_tar.x, 3.f);
+    EXPECT_EQ(driver3.camera_tar.y, 2.f);
+    EXPECT_EQ(driver3.camera_tar.z, 1.f);
+    EXPECT_EQ(driver3.camera_up.x, 0.f);
+    EXPECT_EQ(driver3.camera_up.y, 0.f);
+    EXPECT_EQ(driver3.camera_up.z, 1.f);
+    EXPECT_EQ(driver3.camera_type, (char)SPECTRE_CAMERA_PANORAMA);
     delete r3;
 }
 
@@ -703,33 +703,33 @@ SPECTRE_TEST(Parser, shape)
     Scene s2;
     //existing relative path + non existing absolute path
     ConfigDriver driver0;
-    EXPECT_EQ(s0.size_shapes(), 0);
+    EXPECT_EQ(s0.size_shapes(), 0U);
     errors_count[ERROR_INDEX] = 0; //for the non-existing root folder obj
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt", &s0);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
-    EXPECT_EQ(s0.size_shapes(), 1); //only sphere should be added
+    EXPECT_EQ(s0.size_shapes(), 1U); //only sphere should be added
     errors_count[ERROR_INDEX] = 0;
     delete r0;
 
     //wrong extension
     ConfigDriver driver1;
     errors_count[ERROR_INDEX] = 0;
-    EXPECT_EQ(s1.size_shapes(), 0);
+    EXPECT_EQ(s1.size_shapes(), 0U);
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt", &s1);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
-    EXPECT_EQ(driver1.shapes.find("SquarePyr"), driver1.shapes.end());
-    EXPECT_EQ(s1.size_shapes(), 1); //only sphere should be added
+    EXPECT_TRUE(driver1.shapes.find("SquarePyr") == driver1.shapes.end());
+    EXPECT_EQ(s1.size_shapes(), 1U); //only sphere should be added
     delete r1;
 
     //duplicate
     ConfigDriver driver2;
     errors_count[WARNING_INDEX] = 0;
-    EXPECT_EQ(s2.size_shapes(), 0);
+    EXPECT_EQ(s2.size_shapes(), 0U);
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/shape_duplicate.txt", &s2);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
-    EXPECT_EQ(s2.size_shapes(), 1); //only sphere should be added
+    EXPECT_EQ(s2.size_shapes(), 1U); //only sphere should be added
     delete r2;
 }
 
@@ -747,9 +747,9 @@ SPECTRE_TEST(Parser, world)
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/world.txt", &s0);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);//material not found
     errors_count[WARNING_INDEX] = 0;
-    EXPECT_EQ(s0.size_shapes(), 2);
-    EXPECT_EQ(s0.size_assets(), 5);
-    EXPECT_EQ(driver0.deferred_meshes.size(), 0);
+    EXPECT_EQ(s0.size_shapes(), 2U);
+    EXPECT_EQ(s0.size_assets(), 5U);
+    EXPECT_EQ(driver0.deferred_meshes.size(), (size_t)0);
     s0.k.buildTree();
 
     //test position changed for last sphere
@@ -758,40 +758,40 @@ SPECTRE_TEST(Parser, world)
     ASSERT_TRUE(res);
     // only way to get private info about position
     box = hp.asset_h->get_AABB();
-    EXPECT_EQ(box->bounds[0].x, 4);
-    EXPECT_EQ(box->bounds[0].y, 4);
-    EXPECT_EQ(box->bounds[0].z, 4);
-    EXPECT_EQ(box->bounds[1].x, 6);
-    EXPECT_EQ(box->bounds[1].y, 6);
-    EXPECT_EQ(box->bounds[1].z, 6);
+    EXPECT_EQ(box->bounds[0].x, 4.f);
+    EXPECT_EQ(box->bounds[0].y, 4.f);
+    EXPECT_EQ(box->bounds[0].z, 4.f);
+    EXPECT_EQ(box->bounds[1].x, 6.f);
+    EXPECT_EQ(box->bounds[1].y, 6.f);
+    EXPECT_EQ(box->bounds[1].z, 6.f);
 
     //test scale changed for last sphere
     ray = Ray(Point3(15, -15, 15), Vec3(0, 0, 1));
     res = s0.k.intersect(&ray, &hp);
     ASSERT_TRUE(res);
     box = hp.asset_h->get_AABB();
-    EXPECT_EQ(box->bounds[0].x, 13);
-    EXPECT_EQ(box->bounds[0].y, -17);
-    EXPECT_EQ(box->bounds[0].z, 13);
-    EXPECT_EQ(box->bounds[1].x, 17);
-    EXPECT_EQ(box->bounds[1].y, -13);
-    EXPECT_EQ(box->bounds[1].z, 17);
+    EXPECT_EQ(box->bounds[0].x, 13.f);
+    EXPECT_EQ(box->bounds[0].y, -17.f);
+    EXPECT_EQ(box->bounds[0].z, 13.f);
+    EXPECT_EQ(box->bounds[1].x, 17.f);
+    EXPECT_EQ(box->bounds[1].y, -13.f);
+    EXPECT_EQ(box->bounds[1].z, 17.f);
 
     //test material overriden for second sphere
     ray = Ray(Point3(-10, -10, -9.5), Vec3(0, 0, 1));
     res = s0.k.intersect(&ray, &hp);
     ASSERT_TRUE(res);
     material = hp.asset_h->get_material(hp.index);
-    EXPECT_NE(material, MtlLib.get_default()); //overridden
-    EXPECT_EQ(material, MtlLib.get("Red Oren-Nayar"));
+    EXPECT_PTR_NE(material, MtlLib.get_default()); //overridden
+    EXPECT_PTR_EQ(material, MtlLib.get("Red Oren-Nayar"));
 
     //test material default when not found
     ray = Ray(Point3(5, 5, 5), Vec3(0, 0, 1));
     res = s0.k.intersect(&ray, &hp);
     ASSERT_TRUE(res);
     material = hp.asset_h->get_material(hp.index);
-    EXPECT_NE(material, MtlLib.get("Blue"));
-    EXPECT_EQ(material, MtlLib.get_default());
+    EXPECT_PTR_NE(material, MtlLib.get("Blue"));
+    EXPECT_PTR_EQ(material, MtlLib.get_default());
     delete r0;
 
     //not found
@@ -814,9 +814,9 @@ SPECTRE_TEST(Parser, light)
     Scene s0;
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/light.txt", &s0);
-    EXPECT_EQ(s0.size_shapes(), 2);
-    EXPECT_EQ(s0.size_assets(), 4);
-    EXPECT_EQ(driver0.deferred_meshes.size(), 0);
+    EXPECT_EQ(s0.size_shapes(), 2U);
+    EXPECT_EQ(s0.size_assets(), 4U);
+    EXPECT_EQ(driver0.deferred_meshes.size(), (size_t)0);
     s0.k.buildTree();
 
     //test position changed for last sphere
@@ -825,27 +825,27 @@ SPECTRE_TEST(Parser, light)
     ASSERT_TRUE(res);
     ASSERT_TRUE(hp.asset_h->is_light());
     emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
-    EXPECT_NEAR(emitted.w[0], 0.95047003, 1e-5);
-    EXPECT_NEAR(emitted.w[1], 1.00000012, 1e-5);
-    EXPECT_NEAR(emitted.w[2], 1.08882999, 1e-5);
+    EXPECT_NEAR(emitted.w[0], 0.95047003f, 1e-5f);
+    EXPECT_NEAR(emitted.w[1], 1.00000012f, 1e-5f);
+    EXPECT_NEAR(emitted.w[2], 1.08882999f, 1e-5f);
 
     ray = Ray(Point3(5, 5, 5), Vec3(0, 0, 1));
     res = s0.k.intersect(&ray, &hp);
     ASSERT_TRUE(res);
     ASSERT_TRUE(hp.asset_h->is_light());
     emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
-    EXPECT_NEAR(emitted.w[0], 0.92846781, 1e-5);
-    EXPECT_NEAR(emitted.w[1], 0.940558672, 1e-5);
-    EXPECT_NEAR(emitted.w[2], 0.694520294, 1e-5);
+    EXPECT_NEAR(emitted.w[0], 0.92846781f, 1e-5f);
+    EXPECT_NEAR(emitted.w[1], 0.940558672f, 1e-5f);
+    EXPECT_NEAR(emitted.w[2], 0.694520294f, 1e-5f);
 
     ray = Ray(Point3(10, 10, 10), Vec3(0, 0, 1));
     res = s0.k.intersect(&ray, &hp);
     ASSERT_TRUE(res);
     ASSERT_TRUE(hp.asset_h->is_light());
     emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
-    EXPECT_NEAR(emitted.w[0], 0.359375685, 1e-5);
-    EXPECT_NEAR(emitted.w[1], 0.716016769, 1e-5);
-    EXPECT_NEAR(emitted.w[2], 0.12213511, 1e-5);
+    EXPECT_NEAR(emitted.w[0], 0.359375685f, 1e-5f);
+    EXPECT_NEAR(emitted.w[1], 0.716016769f, 1e-5f);
+    EXPECT_NEAR(emitted.w[2], 0.12213511f, 1e-5f);
     delete r0;
 
     //not found

@@ -441,3 +441,6 @@ __pycache__/
 loc.sh
 TODO.txt
 .DS_Store
+/output.bmp
+visualstudio/Debug*
+visualstudio/Release*
