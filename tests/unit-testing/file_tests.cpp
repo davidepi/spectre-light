@@ -24,9 +24,9 @@ SPECTRE_TEST(File, absolute_path)
     GetFullPathNameA(".", cur_dir_len + 1, cur_dir, NULL);
 #else
     cur_dir = realpath(".", NULL);
-    cur_dir_len = (int)strlen(current_dir);
+    cur_dir_len = (int)strlen(cur_dir);
 #endif
-    char* path = (char*)malloc(sizeof(char)*(strlen(cur_dir) + 64 + 1));
+    char* path = (char*)malloc(sizeof(char)*(strlen(cur_dir)+64+1));
     //normal file appended
     strcpy(path, cur_dir);
     strcat(path, File::PATH_SEPARATOR_STRING);
@@ -101,11 +101,11 @@ SPECTRE_TEST(File, absolute_path)
     File f12("folder/..");
     EXPECT_STREQ(f12.absolute_path(), cur_dir);
     //windows path, run also on *nix
-    strcpy(path,cur_dir);
+    strcpy(path, cur_dir);
     strcat(path, File::PATH_SEPARATOR_STRING);
     strcat(path, "folder");
     strcat(path, File::PATH_SEPARATOR_STRING);
-    strcat(path,"file.jpg");
+    strcat(path, "file.jpg");
     File f13("folder\\file.jpg");
     EXPECT_STREQ(f13.absolute_path(), path);
     free(path);
@@ -369,7 +369,7 @@ SPECTRE_TEST(File, mkdir)
 #else
     EXPECT_EQ(rmdir(foldername), 0);
 #endif
-    
+
 }
 
 SPECTRE_TEST(File, mkdirs)
@@ -439,7 +439,7 @@ SPECTRE_TEST(File, append)
     EXPECT_TRUE(fwin.is_folder());
     fwin.append(".bashrc");
     EXPECT_STREQ(fwin.extension(), "");
-    
+
 }
 
 SPECTRE_TEST(File, list_files)

@@ -20,15 +20,16 @@ void format_seconds(unsigned int secs, char* out)
         mins %= 60;
         int days = hours/24;
         hours %= 24;
-
+        char* tmp = out;
         //not the most efficient sol, but this is used once in the whole program
         if(days>0)
-            snprintf(out, MAX_TIME_FORMAT_LENGTH, "%dd ", days);
+            out += snprintf(out, MAX_TIME_FORMAT_LENGTH, "%dd ", days);
         if(hours>0)
-            snprintf(out, MAX_TIME_FORMAT_LENGTH, "%s%dh ", out, hours);
+            out += snprintf(out, MAX_TIME_FORMAT_LENGTH, "%dh ", hours);
         if(mins>0)
-            snprintf(out, MAX_TIME_FORMAT_LENGTH, "%s%dm ", out, mins);
+            out += snprintf(out, MAX_TIME_FORMAT_LENGTH, "%dm ", mins);
         if(s>0)
-            snprintf(out, MAX_TIME_FORMAT_LENGTH, "%s%ds ", out, s);
+            out += snprintf(out, MAX_TIME_FORMAT_LENGTH, "%ds ", s);
+        out = tmp;
     }
 }

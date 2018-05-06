@@ -62,7 +62,8 @@ It is possible to load additional configuration files with the following syntax
 
 ## Primitives
 
-For every key described in the [keyword](#keywords) section, the following values can be used where specified
+For every key described in the [keyword](#key(word)s) section, the following values 
+can be used where specified
 
 Value | Description | Examples
 ---|---|---
@@ -71,7 +72,7 @@ int+ | A positive integer number | 2147483647
 float | A floating point number | 1.5   .5  1e18    .1E-3  E10
 quoted string | A string delimited by a pair of " or '. Escaping is not supported | "Hello world"   'Hello world'
 float[n] | An array of n floats delimited by [ ] | [1.5,0.5,0]
-object | An object containing `key:values` pair delimited by { }. The possible keys are described in the [Keywords](#keywords) section | {type:perspective, fov:55.0}
+object | An object containing `key:values` pair delimited by { }. The possible keys are described in the [Keywords](#key(word)s) section | {type:perspective, fov:55.0}
 enum | A keyword used as an enum. The keywords change from object to object, so for a complete list refer to the object description where the enum is required | perspective  lanczos
 
 ## Key(word)s
@@ -95,7 +96,8 @@ shape | quoted string | A path to an obj file containing mesh descriptions. The 
 light | [object](#light) | Description of a light positioned into the scene | -
 world | [object](#world) | Description of a shape positioned into the scene | -
 texture | [object](#texture) or quoted string | Path to the texture on disk that will be added to the Texture Library. If the quoted string version is used, the filename with extension will be also the name of the texture. **Be aware of naming conflicts!** If a folder is specified, every image inside the folder will be loaded | -
-material | [object](#material) or quoted string | Description of a material that will be put in the Material Library. The quoted string will chain another file to this one to be parsed, see section [Chained Files](#chained-children-files) for more information | -
+material | [object](#material) or quoted string | Description of a material 
+that will be put in the Material Library. The quoted string will chain another file to this one to be parsed, see section [Chained Files](#chained-(children)-files) for more information | -
 
 ### Objects
 These are the various keys that can be used for objects described in the previous section. These objects must be enclosed in curly braces

@@ -114,10 +114,10 @@
 #define MESSAGE_IM_NOFLOAT "Quantum type of ImageMagick is not a float. "\
 "Read images will probably have wrong values"
 
-//max 15 char, otherwise change comments in the utility.hpp, format_seconds func
+//max 16 char, otherwise change comments in the utility.hpp, format_seconds func
 #define MESSAGE_MORE_THAN_100_DAYS "more than 100d"
 
-//max 15 char, otherwise change comments in the utility.hpp, format_seconds func
+//max 16 char, otherwise change comments in the utility.hpp, format_seconds func
 #define MESSAGE_LESS_THAN_1_SECOND "less than 1s"
 
 #define MESSAGE_SINGLE_BRDF_WRONG "Added a BTDF where a BRDF was expected in "\

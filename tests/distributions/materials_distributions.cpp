@@ -11,13 +11,13 @@
 
 static void gen_data(const char* out_path, const char* filename, Bdf* mat)
 {
-    //+12 for data_***_val.csv
+    //+13 for data_***_val.csv
     //+1 because path could be missing the trailing slash
     //+1 obviously for \0
     char* full_path = (char*) malloc (sizeof(char)*
-            (strlen(out_path)+strlen(filename)+12+1+1));
+            (strlen(out_path)+strlen(filename)+13+1+1));
     char* full_path_pdf = (char*)malloc(sizeof(char)*
-            (strlen(out_path)+strlen(filename)+12+1+1));
+            (strlen(out_path)+strlen(filename)+13+1+1));
     strcpy(full_path,out_path);
     if(full_path[strlen(full_path)-1]!='/') //append / if not present
     {

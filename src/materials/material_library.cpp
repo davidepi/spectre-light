@@ -66,10 +66,7 @@ bool MaterialLibrary::contains(const std::string& name) const
 {
     std::unordered_map<std::string, const Bsdf*>::const_iterator got =
             lib.find(name);
-    if(got != lib.end())
-        return true;
-    else
-        return false;
+    return got!=lib.end();
 }
 
 const Bsdf* MaterialLibrary::get_default() const
