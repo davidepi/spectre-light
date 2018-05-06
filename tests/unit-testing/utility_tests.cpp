@@ -20,15 +20,15 @@ SPECTRE_TEST(Utility, format_secs)
     //more than 100d
     format_seconds(8640000, out);
     EXPECT_STREQ(out, MESSAGE_MORE_THAN_100_DAYS);
-    
+
     //less than 1s
     format_seconds(0, out);
     EXPECT_STREQ(out, MESSAGE_LESS_THAN_1_SECOND);
-    
+
     //max length for days, hours, mins and s
     format_seconds(8639999, out);
     EXPECT_STREQ(out, "99d 23h 59m 59s ");
-    /*
+
     //only some seconds
     format_seconds(41, out);
     EXPECT_STREQ(out, "41s ");
@@ -36,7 +36,6 @@ SPECTRE_TEST(Utility, format_secs)
     //five minutes
     format_seconds(300, out);
     EXPECT_STREQ(out, "5m ");
-    */
 }
 
 SPECTRE_TEST(Utility, swap_float)

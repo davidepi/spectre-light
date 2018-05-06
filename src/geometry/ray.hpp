@@ -124,12 +124,9 @@ public:
         RayProperties::inverseX = 1.f/v.direction.x;
         RayProperties::inverseY = 1.f/v.direction.y;
         RayProperties::inverseZ = 1.f/v.direction.z;
-        RayProperties::isXInvNeg = RayProperties::inverseX<
-        0;
-        RayProperties::isYInvNeg = RayProperties::inverseY<
-        0;
-        RayProperties::isZInvNeg = RayProperties::inverseZ<
-        0;
+        RayProperties::isXInvNeg = RayProperties::inverseX<0;
+        RayProperties::isYInvNeg = RayProperties::inverseY<0;
+        RayProperties::isZInvNeg = RayProperties::inverseZ<0;
     }
 
     ///The inverse of the \a x component of the ray's direction
