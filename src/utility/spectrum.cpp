@@ -385,7 +385,7 @@ Spectrum::Spectrum(int t)
         float values[16];
 #endif
         //TODO: this must be changed if not vacuum
-        constexpr const float c = 299792458;
+        constexpr const float c = 299792458.f;
         constexpr const float c2 = c*c;
         ///first radiation constant: 2hc^2
         constexpr float frc = 2.f*PLANCK_H*c2;

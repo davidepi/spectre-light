@@ -20,6 +20,9 @@
 #include <string> //std::wstring, std::string
 #include <iostream> //std::wcout, std::cout
 #include <cstdarg> //va_start, va_end
+#ifdef _WIN32
+#include <conio.h> //_getch()
+#endif
 
 ///Version of the software
 #define SPECTRE_VERSION "0.1.2 (dev)"

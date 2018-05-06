@@ -286,7 +286,7 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
         created += traverseTree(tris, p, offs, part-offs, bit, &left);
         created += traverseTree(tris, p, part, offs+len-part, bit, &right);
         left.insert(left.end(), right.begin(), right.end());
-        created += combineCluster(&left, (int)AAC_F(len), axis);
+        created += combineCluster(&left, (int)AAC_F((float)len), axis);
         c->insert(c->end(), left.begin(), left.end());
     }
     return created;

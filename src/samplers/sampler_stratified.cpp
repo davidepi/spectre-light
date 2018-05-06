@@ -11,7 +11,7 @@ SamplerStratified::SamplerStratified(int startx, int endx, int starty, int endy,
     SamplerStratified::nextx = startx;
     SamplerStratified::nexty = starty;
     SamplerStratified::randomized = rand;
-    SamplerStratified::strata_x = (int)sqrtf(spp);
+    SamplerStratified::strata_x = (int)sqrtf((float)spp);
     SamplerStratified::strata_y = SamplerStratified::strata_x;
 }
 

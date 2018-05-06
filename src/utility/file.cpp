@@ -25,7 +25,7 @@ static void append_relative(const char* abs, const char* relative, char* out)
     int min_abs_index = 0;
     int i = 0;
 #ifdef _WIN32
-    // replace all / with \ 
+    // replace with \ every /
     while(relative[i] != '\0')
     {
         if(relative[i] == '/')
@@ -174,10 +174,10 @@ File::File(const char* path)
     if(*(file+1) != 0)
         File::file++;
 #ifdef _WIN32
-    else //additional checks to avoid refering \ in C:\ 
+    else //additional checks to avoid refering \ in C:\  .
     {
-        if(file==absolute+2 || file==absolute+1)
-            file = absolute;
+        if(File::file==absolute+2 || File::file==absolute+1)
+            File::file = absolute;
     }
 #endif
     File::ext = strrchr(file, '.');

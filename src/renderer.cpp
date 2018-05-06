@@ -279,7 +279,7 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
                        remaining);
         //avoid garbage values... it is useless, but it runs once per second...
         if(eta>0)
-            Console.progress_bar(done,eta);
+            Console.progress_bar(done,(float)eta);
         std::this_thread::sleep_for
         (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }

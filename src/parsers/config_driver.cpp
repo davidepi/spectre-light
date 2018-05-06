@@ -121,7 +121,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
 
 void ConfigDriver::check_resolution()
 {
-    float rem = width%SPLIT_SIZE;
+    int rem = width%SPLIT_SIZE;
     if(rem != 0)
     {
         float aspect_ratio = (float)width/(float)height;
@@ -137,7 +137,7 @@ void ConfigDriver::check_spp()
 {
     if(sampler_type == SPECTRE_SAMPLER_STRATIFIED)
     {
-        float root = sqrtf(spp);
+        float root = sqrtf((float)spp);
         if((int)root*(int)root != spp)
         {
             spp = static_cast<int>(static_cast<float>(root+.5f));

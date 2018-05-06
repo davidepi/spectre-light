@@ -4,6 +4,9 @@
 #include "utility/console.hpp"
 #include "parsers/config_driver.hpp"
 #include "renderer.hpp"
+#ifdef _WIN32
+#include <conio.h>
+#endif
 
 int main(int argc, char* argv[])
 {
@@ -21,7 +24,7 @@ int main(int argc, char* argv[])
 #ifdef _WIN32
     //avoid autoclosing cmd
     std::cout << "Pres any key to exit" << std::endl;
-    getchar();
+    _getch();
 #endif
     return retval;
 }

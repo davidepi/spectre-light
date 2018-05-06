@@ -116,7 +116,7 @@ bool Box::intersect(const Ray* r, float* distance, HitPoint* h) const
         *distance = tmpdistance;
     h->point_h = r->apply(*distance);
     h->normal_h = Normal();
-    h->normal_h[axis] = -sign(r->direction[axis]);
+    h->normal_h[axis] = (float)(-sign(r->direction[axis]));
     if(inside)
         h->normal_h[axis] *= -1;
     if(h->normal_h.z != 0)

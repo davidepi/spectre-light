@@ -126,6 +126,10 @@ void Console::critical(const char* format, ...)
     va_end(args);
     fprintf(stderr,"\n");
     fflush(stderr);
+#ifdef _WIN32
+    std::cout << "Pres any key to exit" << std::endl;
+    _getch(); //avoid automatic closing the window
+#endif
     exit(EXIT_FAILURE);
 #else
     UNUSED(format);
