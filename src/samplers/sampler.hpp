@@ -30,7 +30,7 @@ struct Sample
 {
     ///The x position of the sample, from (0,0) to (max_pixel,max_pixel)
     float posx;
-    
+
     ///The y position of the sample, from (0,0) to (max_pixel,max_pixel)
     float posy;
 };
@@ -47,7 +47,7 @@ struct Sample
 class Sampler
 {
 public:
-    
+
     /** \brief Constructor
      *
      *  Construct a sampler instance responsible for generating samples in a
@@ -64,7 +64,7 @@ public:
      */
     Sampler(int startx, int endx, int starty, int endy, int spp,
             const unsigned int* seed);
-    
+
     ///Default destructor
     virtual ~Sampler() = default;
 
@@ -87,24 +87,24 @@ public:
      *  \param[in]  size The amount of numbers that will be generated
      */
     void get_random_numbers(float* container, int size);
-    
+
 protected:
 
     ///The random number generator
     WELLrng rng;
-    
+
     ///The starting pixel (x-coordinate)
     int startx;
-    
+
     ///The starting pixel (y-coordinate)
     int starty;
-    
+
     ///The ending pixel (x-coordinate)
     int endx;
-    
+
     ///The ending pixel (y-coordinate)
     int endy;
-    
+
     ///The number of samples per pixel
     int spp;
 };

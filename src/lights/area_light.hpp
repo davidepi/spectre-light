@@ -1,12 +1,12 @@
 //Created,  13 Jun 2017
-//Last Edit 23 Jan 2018
+//Last Edit 30 Mar 2018
 
 /**
  *  \file area_light.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      23 Jan 2018
+ *  \date      30 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -62,7 +62,7 @@ public:
      *  \sa pdf(const Ray* ray)const
      */
     Spectrum sample_surface(float r0, float r1, float r2, float r3,
-                            Ray* out, float* pdf)const;
+                            Ray* out, float* pdf) const;
 
     /** \brief Generate the incident vector and return the radiance
      *
@@ -86,18 +86,19 @@ public:
      *  \sa pdf(const Point3* p, const Vec3* wi)const
      */
     Spectrum sample_visible_surface(float r0, float r1, const Point3* position,
-                                    Vec3* wi, float* pdf, float* distance)const;
+                                    Vec3* wi, float* pdf,
+                                    float* distance) const;
 
     /** \brief Return the emitted light spectrum
      *  \return The emitted light spectrum
      */
-    Spectrum emissive_spectrum()const;
+    Spectrum emissive_spectrum() const;
 
     /** \brief Return true if this asset is a light
      *
      *  \return true
      */
-    bool is_light()const;
+    bool is_light() const;
 
     /** \brief Return the probability density function for this light
      *
@@ -108,7 +109,7 @@ public:
      *  \return The pdf for this light
      *  \sa sample_surface()
      */
-    float pdf(const Ray* ray)const;
+    float pdf(const Ray* ray) const;
 
     /** \brief Return the probability density function for this light
      *
@@ -122,7 +123,7 @@ public:
      *  \return The pdf for this light
      *  \sa sample_visible_surface()
      */
-    float pdf(const Point3* p, const Vec3* wi)const;
+    float pdf(const Point3* p, const Vec3* wi) const;
 
 private:
 

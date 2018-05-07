@@ -18,11 +18,11 @@
 ### V0.2 ###
 - [x] unit testing
 - [x] extended image support (.jpg/.tiff support)
-- [ ] -> **lex/yacc parser (.3ds parsing, .mtl parsing, quad/ngon parsing)** <-
-- [ ] diffuse texture mapping
+- [x] lex/yacc parser
+- [ ] **-> diffuse texture mapping<-**
 - [ ] bump/normal textures
-- [ ] environment (sky) system
 - [ ] sun position and sunlight
+- [ ] environment (sky) system
 - [ ] camera lenses
 - [ ] depth of field
 - [ ] bidirectional path tracer

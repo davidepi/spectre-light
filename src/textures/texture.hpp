@@ -15,6 +15,7 @@
 #ifndef __TEXTURE_HPP_
 #define __TEXTURE_HPP_
 
+#include "geometry/point2.hpp"
 #include "utility/spectrum.hpp"
 
 /**
@@ -28,25 +29,25 @@
 class Texture
 {
 public:
-    
+
     ///Default constructor
     Texture() = default;
-    
+
     ///Default destructor
     virtual ~Texture() = default;
-    
+
     /** \brief Maps an (u,v) coordinate to a texture value
      *
      *  Given the coordinates \p u and \p v of a point, this method finds the
      *  Spectrum value associated with these coordinates by looking at the
      *  underlying image
      *
-     *  \param[in] u The x value of the mapped point in image space
-     *  \param[in] v The y value of the mapped point in image space
+     *  \param[in] uv A Point2 representing the value of the mapped point in
+     *  image space
      *  \return The Spectrum value of the mesh with this texture applied at the
      *  coordinates (u,v)
      */
-    virtual Spectrum map(float u,float v)const = 0;
+    virtual Spectrum map(Point2 uv) const = 0;
 };
 
 #endif

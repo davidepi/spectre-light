@@ -34,10 +34,10 @@
 class AABB
 {
 public:
-    
+
     ///brief The front bottom left and back top right corner of the box
     Point3 bounds[2];
-    
+
     /** \brief Default Constructor
      *
      *  Construct a bounding box with the bottom left pointing to Infinity
@@ -45,7 +45,7 @@ public:
      *  box is degenerated thus it works exactly as an empty box
      */
     AABB();
-    
+
     /** \brief Constructor, given a Point
      *
      *  Construct a bounding box surrounding exactly one point
@@ -53,7 +53,7 @@ public:
      *  \param[in] p The only point that will be surrounded by the bounding box
      */
     AABB(const Point3& p);
-    
+
     /** \brief Constructor, given bottom left and top right points
      *
      *  Construct a bounding box given, in order the bottom left and the top
@@ -83,7 +83,7 @@ public:
      *                 of the box
      */
     AABB(const Point3& min, const Point3& max);
-    
+
     /** \brief Expand the bounding box by a fixed amount
      *
      *  Expands the bounding box by a constant factor
@@ -91,7 +91,7 @@ public:
      *  \param[in] value The magnitude of the expansion, in world-space units
      */
     void expand(float value);
-    
+
     /** \brief Expand the bounding box until the new value is enclosed
      *
      *  Expands the bounding box until it encloses the new point. If the new
@@ -109,7 +109,7 @@ public:
      *  \param[in] p1 The point that will be enclosed
      */
     void engulf(const Point3& p1);
-    
+
     /** \brief Expand the bounding box until the new bounding box is enclosed
      *
      *  Simply performs an union of the two bounding boxes. The new bounding box
@@ -129,28 +129,28 @@ public:
      *  \param[in] aabb The bounding box that will be used to perform the union
      */
     void engulf(const AABB& aabb);
-    
+
     /** \brief Check if a point is inside the bounding box
      *
      *  \param[in] p A pointer to the point that will be checked
      *  \return A true value if the point is inside the bounding box
      */
-    bool inside(const Point3* p)const;
-    
+    bool inside(const Point3* p) const;
+
     /** \brief Calculate the surface of the bounding box
      *
      *  \return A float representing the surface of the bounding box in world
      *  space units
      */
-    float surface()const;
-    
+    float surface() const;
+
     /** \brief Calculate the volume of the bounding box
      *
      *  \return A float representing the volume of the bounding box in world
      *  space units
      */
-    float volume()const;
-    
+    float volume() const;
+
     /** \brief Calculate the longest axis of the bouding box
      *
      *  Determine which axis belonging to the bounding box, whether \a x, \a y
@@ -159,7 +159,7 @@ public:
      *  \return An integer value, 0 if the \a x axis is the longest, 1 if it is
      *  the \a y axis or 2 if it is the \a z axis
      */
-    char longest_axis()const;
+    char longest_axis() const;
 
     /** \brief Calculate the centroid of this AABB
      *
@@ -170,8 +170,8 @@ public:
      *
      *  \return The centroid of the AABB
      */
-    Point3 center()const;
-    
+    Point3 center() const;
+
     /** \brief Intersection of a Ray and this AABB
      *
      *  This method tries to intersect a ray passed as a parameter with the
@@ -192,8 +192,8 @@ public:
      *  \return true if the ray intersects the AABB, even if the origin is
      *   greater than the box
      */
-    bool intersect(const Ray* r, float* p1, float* p2)const;
-    
+    bool intersect(const Ray* r, float* p1, float* p2) const;
+
     /** \brief Faster Intersection of a Ray and this AABB
      *
      *  This function has the same purpose of
@@ -216,27 +216,36 @@ public:
     const;
 
     //------ Operators ---------------------------------------------------------
-    
+
     ///Return a new AABB including the old one and the input point
-    AABB operator+(const Point3& p)const;
+    AABB operator+(const Point3& p) const;
+
     ///Include the input point in the AABB
     void operator+=(const Point3& p);
+
     ///Return a new AABB including the old one and the input AABB
-    AABB operator+(const AABB& aabb)const;
+    AABB operator+(const AABB& aabb) const;
+
     ///Computes the union of the two AABBs
     void operator+=(const AABB& aabb);
+
     ///Determine which AABB has the lowest surface
-    bool operator<(const AABB& a)const;
+    bool operator<(const AABB& a) const;
+
     ///Determine which AABB has the greatest surface
-    bool operator>(const AABB& a)const;
+    bool operator>(const AABB& a) const;
+
     ///Determine if the AABB has lower or equal surface than the input one
-    bool operator<=(const AABB& b)const;
+    bool operator<=(const AABB& b) const;
+
     ///Determine if the AABB has higher or equal surface than the input one
-    bool operator>=(const AABB& b)const;
+    bool operator>=(const AABB& b) const;
+
     ///Determine if the two AABBs have the same surface
-    bool operator==(const AABB& a)const;
+    bool operator==(const AABB& a) const;
+
     ///Determine if the two AABBs have different surfaces
-    bool operator!=(const AABB& b)const;
+    bool operator!=(const AABB& b) const;
 
     //--------------------------------------------------------------------------
 };

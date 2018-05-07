@@ -1,0 +1,9 @@
+#with texture, oren nayar
+texture: {name: "Red", color: [255,0,0]}
+material: {
+  name: "Red Oren-Nayar"
+  type: matte
+  diffuse: "Red"
+  roughness: 0.2
+}
+

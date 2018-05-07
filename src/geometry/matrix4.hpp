@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 12 Dec 2017
+//Last Edit  3 May 2018
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      12 Dec 2017
+ *  \date      3 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -22,7 +22,8 @@
 #include "geometry/ray.hpp"
 #include "utility/console.hpp"
 #include <cmath>
-#include <cstring>
+#include <string>
+#include <sstream> //to_string
 #include <cstdio>
 
 /**
@@ -96,17 +97,15 @@ public:
     ///Default destructor
     ~Matrix4() = default;
 
-    /**  \brief Represent the matrix with a C-string
+    /**  \brief Represent the matrix with a std::string
      *
-     *  Allocate in the heap a C-string and write the components of the matrix
-     *  as a string
+     *  Represents this matrix as a string. Note that the output string will
+     *  contain multiple lines and end with a \n character
      *
-     *  \return An heap allocated char array containing the values of the
-     *           matrix
-     *  \note A char* is allocated on heap and must be deleted
-     *  \sa toArray()
+     *  \return An std::string containing the values of the matrix
+     *  \sa to_array()
      */
-    char* toString()const;
+    std::string to_string() const;
 
     /**  \brief Represent this matrix with an array
      *
@@ -115,9 +114,9 @@ public:
      *
      *  \param[out] values An array of 16 elements containing the values of the
      *              matrix in row major order
-     *  \sa toString()
+     *  \sa to_string()
      */
-    void toArray(float* values)const;
+    void to_array(float* values) const;
 
     /** \brief Set this matrix to a zero-matrix
      *
@@ -220,7 +219,7 @@ public:
      *  \param[in] up A vector representing the direction poiting upside the
      *  camera. With the camera parallel to the terrain, this will be (0,1,0)
      */
-    void set_lookAt_inverse(const Point3& pos,const Point3& target,
+    void set_lookAt_inverse(const Point3& pos, const Point3& target,
                             const Vec3& up);
 
     /**  \brief Returns a new matrix that is the transpose of the current matrix
@@ -228,7 +227,7 @@ public:
      *  \param[out] output A pointer to the allocated area where the new matrix
      *                     will be written
      */
-    void transpose(Matrix4* output)const;
+    void transpose(Matrix4* output) const;
 
     /**  \brief Returns a new matrix that is the inverse of the current matrix
      *
@@ -241,7 +240,7 @@ public:
      *  \return A boolean value indicating if the matrix has been inverted or
      *          not
      */
-    bool inverse(Matrix4* output)const;
+    bool inverse(Matrix4* output) const;
 
     /** \brief Extract the translation component from the matrix
      *
@@ -250,7 +249,7 @@ public:
      *
      *  \return A Vec3 representing the translation component of the matrix
      */
-    Vec3 get_translation()const;
+    Vec3 get_translation() const;
 
     /** \brief Extract the scale component from the matrix
      *
@@ -259,34 +258,43 @@ public:
      *
      *  \return A Vec3 representing the scale component of the matrix
      */
-    Vec3 get_scale()const;
+    Vec3 get_scale() const;
 
 
     //------ Operators ---------------------------------------------------------
 
     ///The addition operation between two matrices
-    Matrix4 operator+(const Matrix4&)const;
+    Matrix4 operator+(const Matrix4&) const;
+
     ///The subtraction operation between two matrices
-    Matrix4 operator-(const Matrix4&)const;
+    Matrix4 operator-(const Matrix4&) const;
+
     ///The multiplication operation between two matrices
-    Matrix4 operator*(const Matrix4&)const;
+    Matrix4 operator*(const Matrix4&) const;
+
     ///The addition operation between two matrices
     void operator+=(const Matrix4&);
+
     ///The subtraction operation between two matrices
     void operator-=(const Matrix4&);
+
     ///The multiplication operation between two matrices
     void operator*=(const Matrix4&);
+
     ///Checks if two matrices are equal
-    bool operator==(const Matrix4&)const;
+    bool operator==(const Matrix4&) const;
+
     ///Checks if two matrices are different
-    bool operator!=(const Matrix4&)const;
+    bool operator!=(const Matrix4&) const;
 
     ///Apply the transformation matrix to the Point
-    Point3 operator*(const Point3&)const;
+    Point3 operator*(const Point3&) const;
+
     ///Apply the transformation matrix to the Vector
-    Vec3 operator*(const Vec3&)const;
+    Vec3 operator*(const Vec3&) const;
+
     ///Apply the transformation matrix to the Ray
-    Ray operator*(const Ray&)const;
+    Ray operator*(const Ray&) const;
 
 
     //--------------------------------------------------------------------------

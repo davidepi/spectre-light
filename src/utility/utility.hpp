@@ -1,12 +1,12 @@
 //Created,   8 Mar 2016
-//Last Edit 26 Nov 2017
+//Last Edit  3 Apr 2018
 
 /**
  *  \file utility.hpp
  *  \brief Utility functions, such as swaps, logs, etc...
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  26 Nov 2017
+ *  \date  3 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -28,14 +28,14 @@
 #define EPSILON 1E-5f
 
 ///Maximum amount of writable data for the format_seconds function
-#define MAX_TIME_FORMAT_LENGTH 16
+#define MAX_TIME_FORMAT_LENGTH 17
 
 /** \brief Convert from seconds to a better readable time format
  *
  *  Given a sequence of seconds as input, in the output there will be a string
  *  with the number of days, hours, minutes, and seconds
  *
- *  \note This will write up to 15 characters, so out must be at least 16 bytes
+ *  \note This will write up to 16 characters, so out must be at least 17 bytes
  *  long
  *
  *  \param[in] secs The number of seconds to format
@@ -51,7 +51,7 @@ void format_seconds(unsigned int secs, char* out);
  *  \param[in,out] f1 A pointer to the first float
  *  \param[in,out] f2 A pointer to the second float
  */
-inline void swap(float *f1, float *f2)
+inline void swap(float* f1, float* f2)
 {
     float tmp;
     tmp = *f1;
@@ -67,7 +67,7 @@ inline void swap(float *f1, float *f2)
  *  \param[in,out] u1 A pointer to the first value
  *  \param[in,out] u2 A pointer to the second value
  */
-inline void swap(uint8_t *u1, uint8_t *u2)
+inline void swap(uint8_t* u1, uint8_t* u2)
 {
     uint8_t tmp;
     tmp = *u1;
@@ -86,7 +86,7 @@ inline void swap(uint8_t *u1, uint8_t *u2)
  */
 inline float radians(const float deg)
 {
-    return (ONE_PI/180.f) * deg;
+    return (ONE_PI/180.f)*deg;
 }
 
 /** \brief Convert radians to degrees
@@ -100,7 +100,7 @@ inline float radians(const float deg)
  */
 inline float degrees(const float rad)
 {
-    return (180.f/ONE_PI) * rad;
+    return (180.f/ONE_PI)*rad;
 }
 
 /**
@@ -171,9 +171,9 @@ inline int max(const int i1, const int i2)
  */
 inline float clamp(const float value, const float min, const float max)
 {
-    if(value < min)
+    if(value<min)
         return min;
-    else if (value > max)
+    else if(value>max)
         return max;
     else
         return value;
@@ -191,7 +191,7 @@ inline float clamp(const float value, const float min, const float max)
  */
 inline float lerp(const float value, const float min, const float max)
 {
-    return (1 - value) * min + value * max;
+    return (1-value)*min+value*max;
 }
 
 /** \brief Perform the inverse of a linear interpolation
@@ -206,7 +206,7 @@ inline float lerp(const float value, const float min, const float max)
  */
 inline float inverse_lerp(float value, float min, float max)
 {
-    return (value - min) / (max - min);
+    return (value-min)/(max-min);
 }
 
 /**
@@ -221,7 +221,7 @@ inline float inverse_lerp(float value, float min, float max)
  */
 inline bool flt_equal(const float val1, const float val2)
 {
-    return std::fabs(val1-val2) <= EPSILON;
+    return std::fabs(val1-val2)<=EPSILON;
 }
 
 /** \brief Determine the sign of the given number
@@ -237,6 +237,23 @@ inline int sign(float a)
     return (a>=0)?1:-1;
 }
 
+/** \brief Round up to the nearest multiple
+ *
+ *  Return the nearest multiple of the input value. Only unsigned integers.
+ *
+ *  \warning it is not checked neither if the multiple is 0 (division by zero)
+ *  nor if the function causes an overflow
+ *
+ *  \param[in] num The input value
+ *  \param[in] multiple The multiple that will be searched
+ *  \return The nearest multiple
+ */
+inline unsigned int nearest_uint(unsigned int num, unsigned int multiple)
+{
+    int res = num+multiple/2;
+    return res-res%multiple;
+}
+
 /** \brief Solve a linear equation
  *
  *  Solve a linear equation in form \f$ax+b=0\f$
@@ -249,7 +266,7 @@ inline int sign(float a)
 inline float equation1(const float a, const float b)
 {
 #ifdef DEBUG
-    if(a==0)
+    if(a == 0)
     {
         Console.severe(MESSAGE_LINEAR_EQUATION_IMPOSSIBLE);
         return b;
@@ -303,8 +320,8 @@ inline bool equation2(const float a, const float b, const float c,
  */
 inline uint32_t swap_endianness(uint32_t num)
 {
-   return ((num & 0x000000FF) << 24) | ((num & 0x0000FF00) << 8) |
-          ((num & 0x00FF0000) >>  8) | ((num & 0xFF000000) >> 24);
+    return ((num & 0x000000FF) << 24) | ((num & 0x0000FF00) << 8) |
+           ((num & 0x00FF0000) >> 8) | ((num & 0xFF000000) >> 24);
 }
 
 /** \brief Swap endianness (16-bit)

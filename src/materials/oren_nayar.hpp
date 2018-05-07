@@ -1,12 +1,12 @@
 //Created,   9 Jun 2017
-//Last Edit 25 Jan 2018
+//Last Edit 11 Apr 2018
 
 /**
  *  \file oren_nayar.hpp
  *  \brief     Oren-Nayar microfacet BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      15 Jan 2018
+ *  \date      11 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -35,11 +35,10 @@ public:
      *
      *  Construct an Oren-Nayar distribution with the given colour and roughness
      *
-     *  \param[in] diffuse The scattered portion of light
      *  \param[in] sigma The value of roughness, where 0 is equal to the
      *  Lambertian model
      */
-    OrenNayar(const Spectrum& diffuse, float sigma);
+    OrenNayar(float sigma);
 
     /** \brief Return the value of the BRDF
      *
@@ -51,12 +50,11 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the BxDF
      */
-    Spectrum value(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi) const;
 
 private:
 
-    //Scattered portion of light
-    const Spectrum diffuse;
+    const static Spectrum DIFFUSE;
 
     //Pre-computed A term
     float A;

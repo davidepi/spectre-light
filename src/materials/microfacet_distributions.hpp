@@ -31,13 +31,13 @@
 class MicrofacetDist
 {
 public:
-    
+
     ///Default constructor
     MicrofacetDist() = default;
-    
+
     ///Default destructor
     virtual ~MicrofacetDist() = default;
-    
+
     /** \brief The distribution term
      *
      *  Following the Torrance-Sparrow model and notation, this function 
@@ -50,8 +50,8 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    virtual float D(const Vec3* h)const = 0;
-    
+    virtual float D(const Vec3* h) const = 0;
+
     /** \brief The geometric attenuation G
      *
      *  Calculates the value of the geometric attenuation term, accounting the
@@ -61,8 +61,8 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    virtual float G(const Vec3* wo, const Vec3* wi)const = 0;
-    
+    virtual float G(const Vec3* wo, const Vec3* wi) const = 0;
+
     /** \brief Find a random half vector
      *
      *  Given the outgoing direction and two random numbers, this method
@@ -75,8 +75,8 @@ public:
      *  \param[out] wh The randomly chosen half vector
      */
     virtual void sample_wh(const Vec3* wo, float r0, float r1,
-                          Vec3* wh)const = 0;
-    
+                           Vec3* wh) const = 0;
+
     /** \brief Find the pdf of two pairs of directions
      *
      *  Given an outgoing direction, and the half vector finds the probability
@@ -86,8 +86,11 @@ public:
      *  \param[in] wh The half vector between wi and wo
      *  \return The pdf
      */
-    virtual float pdf(const Vec3* wo, const Vec3* wh)const;
+    virtual float pdf(const Vec3* wo, const Vec3* wh) const;
 };
+
+///Value used by the parser to know the distirbution type is `blinn`
+#define SPECTRE_DIST_BLINN 0
 
 /**
  *  \class Blinn microfacet_distributions.hpp
@@ -104,16 +107,16 @@ public:
 class Blinn : public MicrofacetDist
 {
 public:
-    
+
     /** Default constructor
      *  
      *  \param[in] exponent Exponential falloff of the blinn microfacet model
      */
     Blinn(float exponent);
-    
+
     ///Default destructor
     ~Blinn() = default;
-    
+
     /** \brief The distribution term
      *
      *  Following the Torrance-Sparrow model and notation, this function
@@ -126,8 +129,8 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    float D(const Vec3* h)const;
-    
+    float D(const Vec3* h) const;
+
     /** \brief The geometric attenuation G
      *
      *  Calculates the value of the geometric attenuation term, by means of
@@ -141,8 +144,8 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi)const;
-    
+    float G(const Vec3* wo, const Vec3* wi) const;
+
     /** \brief Find a random half vector
      *
      *  Given the outgoing direction and two random numbers, this method
@@ -154,8 +157,8 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
-    
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const;
+
     /** \brief Find the pdf of two pairs of directions
      *
      *  Given an outgoing direction and the half vector finds the probability
@@ -165,15 +168,18 @@ public:
      *  \param[in] wh The half vector between wi and wo
      *  \return The pdf
      */
-    float pdf(const Vec3* wo, const Vec3* wh)const;
-    
+    float pdf(const Vec3* wo, const Vec3* wh) const;
+
 private:
-    
-    float G1(const Vec3* v)const;
-    
+
+    float G1(const Vec3* v) const;
+
     //exponent for the specular highlight
     float exponent;
 };
+
+///Value used by the parser to know the distirbution type is `blinn`
+#define SPECTRE_DIST_BECKMANN 1
 
 /**
  *  \class Beckmann microfacet_distributions.hpp
@@ -187,16 +193,16 @@ private:
 class Beckmann : public MicrofacetDist
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  \param[in] roughness The roughness of the surface
      */
     Beckmann(float roughness);
-    
+
     ///Default destructor
     ~Beckmann() = default;
-    
+
     /** \brief The distribution term
      *
      *  Following the Torrance-Sparrow model and notation, this function
@@ -209,8 +215,8 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    float D(const Vec3* h)const;
-    
+    float D(const Vec3* h) const;
+
     /** \brief The geometric attenuation G
      *
      *  Calculates the value of the geometric attenuation term, by means of
@@ -220,8 +226,8 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi)const;
-    
+    float G(const Vec3* wo, const Vec3* wi) const;
+
     /** \brief Find a random half vector
      *
      *  Given the outgoing direction and two random numbers, this method
@@ -233,15 +239,18 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
-    
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const;
+
 private:
-    
-    float G1(const Vec3* v)const;
-    
+
+    float G1(const Vec3* v) const;
+
     //alpha x
     float a;
 };
+
+///Value used by the parser to know the distirbution type is `blinn`
+#define SPECTRE_DIST_GGX 2
 
 /**
  *  \class GGXiso microfacet_distributions.hpp
@@ -256,16 +265,16 @@ private:
 class GGXiso : public MicrofacetDist
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  \param[in] roughness The roughness of the surface
      */
     GGXiso(float roughness);
-    
+
     ///Default destructor
     ~GGXiso() = default;
-    
+
     /** \brief The distribution term
      *
      *  Following the Torrance-Sparrow model and notation, this function
@@ -278,8 +287,8 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    float D(const Vec3* h)const;
-    
+    float D(const Vec3* h) const;
+
     /** \brief The geometric attenuation G
      *
      *  Calculates the value of the geometric attenuation term, by means of
@@ -289,8 +298,8 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi)const;
-    
+    float G(const Vec3* wo, const Vec3* wi) const;
+
     /** \brief Find a random half vector
      *
      *  Given the outgoing direction and two random numbers, this method
@@ -302,12 +311,12 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
-    
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const;
+
 private:
-    
-    float G1(const Vec3* v)const;
-    
+
+    float G1(const Vec3* v) const;
+
     //squared roughness
     float a2;
 };
@@ -321,17 +330,17 @@ private:
 class GGXaniso : public MicrofacetDist
 {
 public:
-    
+
     /** \brief Default constructor
      *
      *  \param[in] ax Alpha x value for the anisotropy
      *  \param[in] ay Alpha y value for the anisotropy
      */
     GGXaniso(float ax, float ay);
-    
+
     ///Default destructor
     ~GGXaniso() = default;
-    
+
     /** \brief The distribution term
      *
      *  Following the Torrance-Sparrow model and notation, this function
@@ -344,16 +353,16 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    float D(const Vec3* h)const;
-    
+    float D(const Vec3* h) const;
+
     /** \brief The geometric attenuation G
      *
      *  \param[in] wo The outgoing direction
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi)const;
-    
+    float G(const Vec3* wo, const Vec3* wi) const;
+
     /** \brief Find a random half vector
      *
      *  Given the outgoing direction and two random numbers, this method
@@ -365,13 +374,13 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh)const;
-    
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const;
+
 private:
-    
+
     //inverse of the alpha x
     float ax;
-    
+
     //inverse of the alpha y
     float ay;
 };

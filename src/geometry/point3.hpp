@@ -6,7 +6,7 @@
  *  \brief     Point3 class definition and its inline
  *             functions
  *  \details   Definition and implementation of a point in a three dimensional
- *             and its interaction with the Vec3 class
+ *             space and its interaction with the Vec3 class
  *  \author    Davide Pizzolotto
  *  \version   0.2
  *  \date      7 Dec 2017
@@ -14,8 +14,8 @@
  */
 
 
-#ifndef __POINT_HPP__
-#define __POINT_HPP__
+#ifndef __POINT3_HPP__
+#define __POINT3_HPP__
 
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
@@ -98,7 +98,7 @@ public:
      *  \param[in] p A Point3 representing the point to which the
      *             distance should be calculated
      */
-    float distanceTo(const Point3& p)const;
+    float distance(const Point3& p) const;
 
     /**  \brief Compute the maxium value between this point and another one
      *
@@ -123,27 +123,35 @@ public:
     //------ Operators ---------------------------------------------------------
 
     ///Offsets the point along a direction
-    Point3 operator+ (const Vec3&  v)const;
+    Point3 operator+(const Vec3& v) const;
+
     ///Offsets the point along a direction
-    void  operator+= (const Vec3&  v);
+    void operator+=(const Vec3& v);
+
     ///Returns the segment between two points
-    Vec3  operator-  (const Point3& p)const;
+    Vec3 operator-(const Point3& p) const;
+
     ///Offsets the point in the opposite of the given direction
-    Point3 operator- (const Vec3&  v)const;
+    Point3 operator-(const Vec3& v) const;
+
     ///Offsets the point in the opposite of the given direction
-    void operator-= (const Vec3&  v);
+    void operator-=(const Vec3& v);
+
     ///Check if two points are in the same spot
-    bool operator==  (const Point3&)const;
+    bool operator==(const Point3&) const;
+
     ///Check if two points are in different places
-    bool operator!=  (const Point3&)const;
+    bool operator!=(const Point3&) const;
+
     ///Access a component of the point
-    float operator[] (int)const;
+    float operator[](int) const;
+
     ///Access a component of the point, non-const version
     float& operator[](int);
 
     /* Useless operations.
      i.e.: Cannot offset a point by a point
-     But if I remove these, I will surely forgot why
+     But if I remove these, I will surely forget why
      //Point3 operator+ (const Point3& p)const;
      //void  operator+=(const Point3&  v);
      //Point3 operator* (const float f)const;
@@ -170,14 +178,14 @@ public:
  */
 inline float distance(const Point3& p1, const Point3& p2)
 {
-    float x = p1.x - p2.x;
-    float y = p1.y - p2.y;
-    float z = p1.z - p2.z;
+    float x = p1.x-p2.x;
+    float y = p1.y-p2.y;
+    float z = p1.z-p2.z;
 
-    return std::sqrt((x * x) + (y * y) + (z*z));
+    return std::sqrt((x*x)+(y*y)+(z*z));
 }
 
-/**  \brief Compute the min value between two vectors
+/**  \brief Compute the min value between two points
  *
  *  Return a new Point3 where the x, y and z coordinate are the minimum value
  *  between the first and the second point passed in input
@@ -190,10 +198,10 @@ inline float distance(const Point3& p1, const Point3& p2)
 inline Point3 min(const Point3& p1, const Point3& p2)
 {
     return
-    Point3(min(p1.x,p2.x),min(p1.y,p2.y),min(p1.z,p2.z));
+            Point3(min(p1.x, p2.x), min(p1.y, p2.y), min(p1.z, p2.z));
 }
 
-/**  \brief Compute the max value between two vectors
+/**  \brief Compute the max value between two points
  *
  *  Return a new Point3 where the x, y and z coordinate are the maximum value
  *  between the first and the second point passed in input
@@ -206,7 +214,7 @@ inline Point3 min(const Point3& p1, const Point3& p2)
 inline Point3 max(const Point3& p1, const Point3& p2)
 {
     return
-    Point3(max(p1.x,p2.x),max(p1.y,p2.y),max(p1.z,p2.z));
+            Point3(max(p1.x, p2.x), max(p1.y, p2.y), max(p1.z, p2.z));
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//

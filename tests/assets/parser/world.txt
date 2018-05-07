@@ -1,0 +1,9 @@
+texture: {name: "Red", color: [255,0,0]}
+material: {name: "Red Oren-Nayar" type: matte, diffuse: "Red", roughness: 0.2}
+shape: "../parser_obj/pyramid.obj"
+world: {name: "Sphere"}
+world: {name: "SquarePyr", position: [10,10,10], scale: 1.5}
+world: {name: "Sphere", position: [-10,-10,-10], material: "Red Oren-Nayar"}
+world: {name: "Sphere", position: [5,5,5], material: "Blue"}
+world: {name: "Sphere", position: [15,-15,15], scale: 2.0}
+

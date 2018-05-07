@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 19 Dec 2017
+//Last Edit 23 Apr 2018
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      19 Dec 2017
+ *  \date      23 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -47,7 +47,7 @@ class Scene
 public:
 
     ///Default constructor
-    Scene();
+    Scene() = default;
 
     ///Default destructor
     ~Scene();
@@ -63,78 +63,69 @@ public:
 
     /** \brief Add a Shape to the scene
      *
-     *  Given a pointer to a shape, the scene inherits its ownership and use it
-     *  for subsequent add_asset calls
+     *  Given a pointer to a shape, the scene inherits its ownership. This
+     *  method is useless because the inherited shapes are not used directly
+     *  by the Scene, however, ensures that they are deleted by this class
+     *  along with the assets when rendering is over
      *
      *  \param[in] addme The shape that will be added to the Scene
-     *  \return The added shape id
      */
-    unsigned int inherit_shape(Shape* addme);
+    void inherit_shape(const Shape* addme);
 
     /** \brief Return the number of shapes in the scene
      * \return The number of shapes in the scene
      */
-    unsigned int shapes_size()const;
+    unsigned int size_shapes() const;
 
-    /** \brief Given a shape id and a matrix, create an asset with those
+    /** \brief Add an Asset to the scene
      *
-     *  \param[in] shapeid The id of the shape, already inherited by the scene
-     *  \param[in] transform The transform matrix for the asset
-     *  \param[in] material The material for the asset. If NULL the material
-     *  will remain the default one
-     *  \return the added assets id. 0 if nothing was added
+     *  Given a pointer to an asset, the scene inherits its ownership.
+     *  If possible, use shapes already inside this class by calling the
+     *  Scene::add_asset function. Use this function only if the Shape wrapped
+     *  by the Asset was already added to the scene
+     *
+     *  \param[in] addme The asset that will be added
      */
-    unsigned int add_asset(unsigned int shapeid, const Matrix4& transform,
-                          const Bsdf* material = NULL);
+    void inherit_asset(const Asset* addme);
 
     /** \brief Return the number of assets in the scene
      * \return The number of assets in the scene
      */
-    unsigned int assets_size()const;
+    unsigned int size_assets() const;
 
-    /** \brief Given a shapeid and a matrix, create a light with those
+    /** \brief Add a Light to the scene
      *
-     *  \param[in] shapeid The id of the shape, already inherited by the scene
-     *  \param[in] transform The transform matrix for the light
-     *  \param[in] c The emissive spectrum of the light
-     *  \return the added light id. Since a light is essentially an asset, this
-     *  is an asset id. 0 if nothing was added
+     *  Given a pointer to a Light, the scene inherits its ownership.
+     *  If possible, use shapes already inside this class by calling the
+     *  Scene::add_light function. Use this function only if the Shape wrapped
+     *  by the Light was already added to the scene
+     *
+     *  \param[in] addme The light that will be added
      */
-    unsigned int add_light(unsigned int shapeid, const Matrix4& transform,
-                          const Spectrum& c);
+    void inherit_light(const AreaLight* addme);
 
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene
      */
-    unsigned int lights_size()const;
+    unsigned int size_lights() const;
 
-    /** \brief  Return the array of lights in the scene
+    /** \brief  Return the ith light of the scene
+     *
+     *  \param[in] index The index of the light in the light array
      * \return The array of lights in the scene
      */
-    const AreaLight* const* get_lights()const;
+    const AreaLight* get_light(int index) const;
 
 private:
 
-    //map of shapes
-    std::unordered_map<unsigned int,const Shape*> shapes;
+    ///map of shapes
+    std::unordered_map<unsigned int, const Shape*> shapes;
 
-    //Array of asset pointers
-    Asset** assets;
+    ///map of assets and lights
+    std::unordered_map<unsigned int, const Asset*> assets;
 
-    //size of asset pointers array
-    unsigned int assets_allocated;
-
-    //next insertion index in the asset pointers array
-    unsigned int asset_index;
-
-    //Array of light pointers
-    AreaLight** lights;
-
-    //size of light pointers array
-    unsigned int lights_allocated;
-
-    //next insertion index in the asset pointers array
-    unsigned int light_index;
+    ///array of lights, allocated version is stored inside Scene::assets
+    std::vector<const AreaLight*> lights;
 
 };
 

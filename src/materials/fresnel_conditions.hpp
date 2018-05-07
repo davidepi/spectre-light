@@ -36,7 +36,7 @@ public:
      *  \param[in] cosin The angle between the two rays
      *  \return The amount of light reflected or transmitted
      */
-    virtual Spectrum eval(float cosin)const = 0;
+    virtual Spectrum eval(float cosin) const = 0;
 
     //No need for virtual destructor...
     ///Default destructor
@@ -74,7 +74,7 @@ public:
      *  \param[in] cosin The angle between the two rays
      *  \return The amount of light reflected
      */
-    Spectrum eval(float cosin)const;
+    Spectrum eval(float cosin) const;
 
 private:
 
@@ -119,19 +119,19 @@ public:
      *  \param[in] cosin The angle between the two rays
      *  \return The amount of light reflected, depending on the angle
      */
-    Spectrum eval(float cosin)const;
+    Spectrum eval(float cosin) const;
 
     /** \brief Return the incident ior
      *
      *  \return the incident index of refraction
      */
-    float get_eta_incident()const;
+    float get_eta_incident() const;
 
     /** \brief Return the transmitted ior
      *
      *  \return the transmitted index of refraction
      */
-    float get_eta_transmitted()const;
+    float get_eta_transmitted() const;
 
 private:
 

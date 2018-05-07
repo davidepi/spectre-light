@@ -1,0 +1,7 @@
+material: {
+  name: "DNF"
+  type: glossy
+  roughness: 0.2
+  anisotropy: 0.3
+  diffuse: "cftyjgvhj"
+}

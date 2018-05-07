@@ -1,5 +1,5 @@
 //Created,   3 Jul 2017
-//Last Edit 22 Nov 2017
+//Last Edit  2 Apr 2018
 
 /**
  *  \file renderer.hpp
@@ -7,7 +7,7 @@
  *  \details   Given a camera, a filter and a scene performs the rendering
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      22 Nov 2017
+ *  \date      2 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -18,22 +18,13 @@
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
 #include "utility/console.hpp"
-#include "cameras/perspective_camera.hpp"
-#include "cameras/orthographic_camera.hpp"
-#include "cameras/camera360.hpp"
 #include "cameras/image_film.hpp"
-#include "samplers/box_filter.hpp"
-#include "samplers/tent_filter.hpp"
-#include "samplers/gaussian_filter.hpp"
-#include "samplers/mitchell_filter.hpp"
-#include "samplers/lanczos_filter.hpp"
 #include "utility/scene.hpp"
+#include "cameras/camera.hpp"
 #include "samplers/sampler.hpp"
-#include "samplers/random_sampler.hpp"
-#include "samplers/stratified_sampler.hpp"
+#include "samplers/sampler_random.hpp"
+#include "samplers/sampler_stratified.hpp"
 #include "integrators/light_integrator.hpp"
-#include "integrators/ray_tracer.hpp"
-#include "integrators/path_tracer.hpp"
 #include "settings.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
@@ -124,107 +115,54 @@ public:
     ///Default destructor
     ~Renderer();
 
-    /** \brief Create a perspective camera for this renderer
+    /** \brief Set a Camera for this renderer
      *
-     *  More info in the perspective_camera.hpp file
+     *  Inherit the pointer of a Camera passed as input and used it as the
+     *  default camera for rendering the scene. As the name implies, the
+     *  ownership of the pointer is transfered to the Renderer that will take
+     *  care of the Camera deallocation
      *
-     *  \param[in] position The position of the camera
-     *  \param[in] target The target of the camera
-     *  \param[in] up A vector representing the up direction for the camera
-     *  \param[in] fov The field of view, in radians
+     *  \param[in] camera A Camera that will be inherited by the renderer
      */
-    void setPerspective(Point3 position, Point3 target, Vec3 up, float fov);
-
-    /** \brief Create an orthographic camera for this renderer
+    void inherit_camera(Camera* camera);
+    
+    /** \brief Set a Sampler for this renderer
      *
-     *  More info in the orthographic_camera.hpp file
+     *  This method differs from the others like Renderer::inherit_camera or
+     *  Renderer::inherit_filter because multiple sampler are allocated and
+     *  deallocated by the renderer while rendering a scene. Thus this method
+     *  expects an integer corresponding to the type of sampler that will be
+     *  allocated internally by the renderer. The various samplers are defined
+     *  in the samplers/sampler.hpp file
      *
-     *  \param[in] position The position of the camera
-     *  \param[in] target The target of the camera
-     *  \param[in] up A vector representing the up direction for the camera
+     *  \param[in] sampler An integer defining the type of sampler that will be
+     *  used by the renderer
      */
-    void setOrthographic(Point3 position, Point3 target, Vec3 up);
-
-    /** \brief Create a 360 panorama camaera for this renderer
+    void set_sampler(int sampler);
+    
+    /** \brief Set a Filter for this renderer
      *
-     *  More info in the camera360.hpp file
+     *  Inherit the pointer of a Filter passed as input and used it as the
+     *  filter for filtering the various sampled points. As the name implies,
+     *  the ownership of the pointer is transfered to the Renderer that will
+     *  take care of the Filter deallocation
      *
-     *  \param[in] position The position of the camera
-     *  \param[in] target The target of the camera
-     *  \param[in] up A vector representing the up direction for the camera
+     *  \param[in] filter A Filter that will be inherited by the renderer
      */
-    void setPanorama(Point3 position, Point3 target, Vec3 up);
-
-    /** \brief Set a naive, and terrible, sampler
+    void inherit_filter(Filter* filter);
+    
+    /** \brief Set a LightIntegrator for this renderer
      *
-     *  More info in the random_sampler.hpp file
+     *  Inherit the pointer of a LightIntegrator passed as input and used it as
+     *  the surface integrator to solve the rendering equation. As the name
+     *  implies, the ownership of the pointer is transfered to the Renderer that
+     *  will take care of the LightIntegrator deallocation
+     *
+     *  \param[in] integrator A LightIntegrator that will be inherited by the
+     *  renderer
      */
-    void setRandomSampler();
-
-    /** \brief Set a sampler that uses stratified subregions
-     *
-     *  More info in the stratified_sampler.hpp file
-     */
-    void setStratifiedSampler();
-
-    /** \brief Set a box filter for the computed radiance values
-     *
-     *  More info in the box_filter.hpp file. The used filter extents are
-     *  defined in settings.h
-     */
-    void setBoxFilter();
-
-    /** \brief Set a tent filter for the computed radiance values
-     *
-     *  More info in the tent_filter.hpp file. The used filter extents are
-     *  defined in settings.h
-     */
-    void setTentFilter();
-
-    /** \brief Set a gaussian filter for the computed radiance values
-     *
-     *  More info in the gaussian_filter.hpp file. The used filter extents are
-     *  defined in settings.h
-     *
-     *  \param[in] falloff The falloff for the gaussian filter
-     */
-    void setGaussianFilter(float falloff);
-
-    /** \brief Set a Mitchell-Netravali filter for the computed radiance values
-     *
-     *  More info in the mitchell_filter.hpp file. The used filter extents are
-     *  defined in settings.h
-     *
-     *  \param[in] b The B parameter for the mitchell filter equations
-     *  \param[in] c The C parameter for the mitchell filter equations
-     */
-    void setMitchellFilter(float b, float c);
-
-    /** \brief Set a sinc filter for the computed radiance values
-     *
-     *  More info in the lanczos_filter.hpp file. The used filter extents are
-     *  defined in settings.h
-     *
-     *  \param[in] tau The tau value for the sinc filter
-     */
-    void setLanczosSincFilter(float tau);
-
-    /** \brief Solve the light transport equation using the ray-tracer
-     *
-     *  Set the ray tracer as the integrator used for solving the light
-     *  transport equation. This integrator accounts only for direct lighting
-     *  and thus does not compute global illumination
-     */
-    void setRayTracer();
-
-    /** \brief Solve the light transport equation using the path-tracer
-     *
-     *  Set the path tracer as the integrator used for solving the light
-     *  transport equation. This integrator is based on the Path tracing
-     *  algorithm and accounts for direct and indirect illumination
-     */
-    void setPathTracer();
-
+    void inherit_integrator(LightIntegrator* integrator);
+    
     /** \brief Render the scene
      *
      *  This method, given an input scene, sets up the rendering threads and

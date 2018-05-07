@@ -1,0 +1,8 @@
+material: "children.txt"
+texture: {name: "Red", color: [255,0,0]}
+material: {
+  name: "Red mat"
+  type: matte
+  diffuse: "Red"
+  roughness: 0.2
+}

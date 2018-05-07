@@ -2,78 +2,79 @@
 //license: GNU GPLv3
 
 #include "spectrum.hpp"
+
 //lookup tables for spectrum to XYZ
 //taken from http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html
 //EDIT: later changed with values from pbrt, however the results are similar
 const float X[SPECTRUM_SAMPLES] =
-{
-    0.048547909657160444f,
-    0.24864331478873888f,
-    0.33913105790813763f,
-    0.23759311571717262f,
-    0.068513086394717301f,
-    0.0074335845497747266f,
-    0.08596576422452927f,
-    0.30151855826377871f,
-    0.58514208267132439f,
-    0.88403650492429731f,
-    1.0476295638084412f,
-    0.91729557037353515f,
-    0.55824810008207959f,
-    0.24846323480208715f,
-    0.082662385882188882f,
-    0.023565863414357107f
-};
+        {
+                0.048547909657160444f,
+                0.24864331478873888f,
+                0.33913105790813763f,
+                0.23759311571717262f,
+                0.068513086394717301f,
+                0.0074335845497747266f,
+                0.08596576422452927f,
+                0.30151855826377871f,
+                0.58514208267132439f,
+                0.88403650492429731f,
+                1.0476295638084412f,
+                0.91729557037353515f,
+                0.55824810008207959f,
+                0.24846323480208715f,
+                0.082662385882188882f,
+                0.023565863414357107f
+        };
 
 const float Y[SPECTRUM_SAMPLES] =
-{
-    0.0013634899475922187f,
-    0.010440415943351884f,
-    0.033597446996718648f,
-    0.077808559965342278f,
-    0.16970793592433134f,
-    0.38263264827430249f,
-    0.73335171341896055f,
-    0.95049857179323827f,
-    0.98971243401368458f,
-    0.88304891208807623f,
-    0.67035055945316946f,
-    0.43439004709323248f,
-    0.22639957609275976f,
-    0.093565923050045963f,
-    0.030277141408684354f,
-    0.0085307513410225518f
-};
+        {
+                0.0013634899475922187f,
+                0.010440415943351884f,
+                0.033597446996718648f,
+                0.077808559965342278f,
+                0.16970793592433134f,
+                0.38263264827430249f,
+                0.73335171341896055f,
+                0.95049857179323827f,
+                0.98971243401368458f,
+                0.88304891208807623f,
+                0.67035055945316946f,
+                0.43439004709323248f,
+                0.22639957609275976f,
+                0.093565923050045963f,
+                0.030277141408684354f,
+                0.0085307513410225518f
+        };
 
 const float Z[SPECTRUM_SAMPLES] =
-{
-    0.23185277074575425f,
-    1.2145957302053769f,
-    1.7617404375473658f,
-    1.4557389440139135f,
-    0.66370667571822806f,
-    0.24021451229850452f,
-    0.075098564475774759f,
-    0.020824563254912696f,
-    0.0045391401535986612f,
-    0.0017035374639090151f,
-    0.00090068979518643274f,
-    0.00025727244249234595f,
-    3.9191220954914268E-05f,
-    1.964333174934533E-06f,
-    0.f,
-    0.f
-};
+        {
+                0.23185277074575425f,
+                1.2145957302053769f,
+                1.7617404375473658f,
+                1.4557389440139135f,
+                0.66370667571822806f,
+                0.24021451229850452f,
+                0.075098564475774759f,
+                0.020824563254912696f,
+                0.0045391401535986612f,
+                0.0017035374639090151f,
+                0.00090068979518643274f,
+                0.00025727244249234595f,
+                3.9191220954914268E-05f,
+                1.964333174934533E-06f,
+                0.f,
+                0.f
+        };
 
 const float INVY_SUM = 0.17546832144055843f;
 
 const Spectrum SPECTRUM_ONE(
-{
-    1.f, 1.f, 1.f, 1.f,
-    1.f, 1.f, 1.f, 1.f,
-    1.f, 1.f, 1.f, 1.f,
-    1.f, 1.f, 1.f, 1.f
-});
+        {
+                1.f, 1.f, 1.f, 1.f,
+                1.f, 1.f, 1.f, 1.f,
+                1.f, 1.f, 1.f, 1.f,
+                1.f, 1.f, 1.f, 1.f
+        });
 
 const Spectrum SPECTRUM_BLACK(0);
 
@@ -366,7 +367,7 @@ const Spectrum SPECTRUM_WHITE = SPECTRUM_ONE;
 
 Spectrum::Spectrum(int t)
 {
-    if(t==0) //black
+    if(t == 0) //black
     {
 #ifdef SPECTRAL
         memset(Spectrum::w,0,sizeof(float)*SPECTRUM_SAMPLES);
@@ -384,7 +385,7 @@ Spectrum::Spectrum(int t)
         float values[16];
 #endif
         //TODO: this must be changed if not vacuum
-        constexpr const float c = 299792458;
+        constexpr const float c = 299792458.f;
         constexpr const float c2 = c*c;
         ///first radiation constant: 2hc^2
         constexpr float frc = 2.f*PLANCK_H*c2;
@@ -392,27 +393,27 @@ Spectrum::Spectrum(int t)
         constexpr float src = PLANCK_H*c/BOLTZMANN_K;
         float current_wavelength = SPECTRUM_START*1E-9f;
         float maxval = FLT_MIN;
-        for(int i=0;i<SPECTRUM_SAMPLES;i++)
+        for(int i = 0; i<SPECTRUM_SAMPLES; i++)
         {
-            values[i]=frc/powf(current_wavelength,5);
-            values[i]*=1.f/(expf(src/(t*current_wavelength))+1.f);
+            values[i] = frc/powf(current_wavelength, 5);
+            values[i] *= 1.f/(expf(src/(t*current_wavelength))+1.f);
             if(values[i]>maxval)
                 maxval = values[i];
-            current_wavelength+=SPECTRUM_INTERVAL*1E-9f;
+            current_wavelength += SPECTRUM_INTERVAL*1E-9f;
         }
-        for(int i=0;i<SPECTRUM_SAMPLES;i++)
-            values[i]/=maxval;
+        for(int i = 0; i<SPECTRUM_SAMPLES; i++)
+            values[i] /= maxval;
 #ifndef SPECTRAL
         //convert to XYZ, cannot use the Spectrum method beacuse without
         //the #define SPECTRAL it would have only 3 component
         float x = 0;
         float y = 0;
         float z = 0;
-        for(int i=0;i<SPECTRUM_SAMPLES;i++)
+        for(int i = 0; i<SPECTRUM_SAMPLES; i++)
         {
-            x+=values[i]*X[i];
-            y+=values[i]*Y[i];
-            z+=values[i]*Z[i];
+            x += values[i]*X[i];
+            y += values[i]*Y[i];
+            z += values[i]*Z[i];
         }
         Spectrum::w[0] = x*INVY_SUM;
         Spectrum::w[1] = y*INVY_SUM;
@@ -423,9 +424,9 @@ Spectrum::Spectrum(int t)
 
 Spectrum::Spectrum(const std::initializer_list<float> vals)
 {
-    if(vals.size()!=16)
+    if(vals.size() != 16)
         throw "Incorrect sized spectrum";
-    int i=0;
+    int i = 0;
 #ifdef SPECTRAL
     for(float val:vals)
         Spectrum::w[i++] = val;
@@ -434,6 +435,9 @@ Spectrum::Spectrum(const std::initializer_list<float> vals)
     //spectrum rendering is almost required so the result won't be precise
     //anyway (referring to Conductor reflection)
     //TODO: maybe change it later but with lower priority
+    Spectrum::w[0] = 0;
+    Spectrum::w[1] = 0;
+    Spectrum::w[2] = 0;
     for(float val:vals)
     {
         if(i<5)
@@ -444,9 +448,9 @@ Spectrum::Spectrum(const std::initializer_list<float> vals)
             Spectrum::w[2] += val;
         i++;
     }
-    Spectrum::w[0]/=5;
-    Spectrum::w[1]/=6;
-    Spectrum::w[2]/=5;
+    Spectrum::w[0] /= 5;
+    Spectrum::w[1] /= 6;
+    Spectrum::w[2] /= 5;
 #endif
 }
 
@@ -579,7 +583,7 @@ Spectrum::Spectrum(ColorRGB c, bool l)
 #endif
 }
 
-ColorXYZ Spectrum::to_xyz()const
+ColorXYZ Spectrum::to_xyz() const
 {
 #ifdef SPECTRAL
     float x = 0;
@@ -640,11 +644,11 @@ ColorXYZ Spectrum::to_xyz()const
     z*=INVY_SUM;
     return ColorXYZ(x,y,z);
 #else
-    return ColorXYZ(w[0],w[1],w[2]);
+    return ColorXYZ(w[0], w[1], w[2]);
 #endif
 }
 
-float Spectrum::luminance()const
+float Spectrum::luminance() const
 {
 #ifdef SPECTRAL
     float y = 0;
@@ -670,7 +674,7 @@ float Spectrum::luminance()const
 #endif
 }
 
-bool Spectrum::is_black()const
+bool Spectrum::is_black() const
 {
 #ifdef SPECTRAL
     for(int i=0;i<SPECTRUM_SAMPLES;i++)
@@ -678,11 +682,11 @@ bool Spectrum::is_black()const
             return false;
     return true;
 #else
-    return w[0]==0 && w[1]==0 && w[2]==0;
+    return w[0] == 0 && w[1] == 0 && w[2] == 0;
 #endif
 }
 
-bool Spectrum::is_valid()const
+bool Spectrum::is_valid() const
 {
     bool retval = true;
     using std::isnan;
@@ -705,12 +709,12 @@ bool Spectrum::is_valid()const
         retval = false;
     }
 #else
-    if(isnan(w[0]) || isnan(w[1]) || isnan (w[2]))
+    if(isnan(w[0]) || isnan(w[1]) || isnan(w[2]))
     {
         Console.severe(MESSAGE_SPECTRUM_NAN);
         retval = false;
     }
-    if(isinf(w[0]) || isinf(w[1]) || isinf (w[2]))
+    if(isinf(w[0]) || isinf(w[1]) || isinf(w[2]))
     {
         Console.severe(MESSAGE_SPECTRUM_INF);
         retval = false;
@@ -719,12 +723,12 @@ bool Spectrum::is_valid()const
     return retval;
 }
 
-Spectrum Spectrum::operator+(const Spectrum& s)const
+Spectrum Spectrum::operator+(const Spectrum& s) const
 {
     Spectrum retval;
-    retval.w[0] = Spectrum::w[0] + s.w[0];
-    retval.w[1] = Spectrum::w[1] + s.w[1];
-    retval.w[2] = Spectrum::w[2] + s.w[2];
+    retval.w[0] = Spectrum::w[0]+s.w[0];
+    retval.w[1] = Spectrum::w[1]+s.w[1];
+    retval.w[2] = Spectrum::w[2]+s.w[2];
 #ifdef SPECTRAL
     retval.w[3] = Spectrum::w[3] + s.w[3];
     retval.w[4] = Spectrum::w[4] + s.w[4];
@@ -773,12 +777,12 @@ void Spectrum::operator+=(const Spectrum& s)
 #endif
 }
 
-Spectrum Spectrum::operator-(const Spectrum& s)const
+Spectrum Spectrum::operator-(const Spectrum& s) const
 {
     Spectrum retval;
-    retval.w[0] = Spectrum::w[0] - s.w[0];
-    retval.w[1] = Spectrum::w[1] - s.w[1];
-    retval.w[2] = Spectrum::w[2] - s.w[2];
+    retval.w[0] = Spectrum::w[0]-s.w[0];
+    retval.w[1] = Spectrum::w[1]-s.w[1];
+    retval.w[2] = Spectrum::w[2]-s.w[2];
 #ifdef SPECTRAL
     retval.w[3] = Spectrum::w[3] - s.w[3];
     retval.w[4] = Spectrum::w[4] - s.w[4];
@@ -828,12 +832,12 @@ void Spectrum::operator-=(const Spectrum& s)
 #endif
 }
 
-Spectrum Spectrum::operator*(const Spectrum& s)const
+Spectrum Spectrum::operator*(const Spectrum& s) const
 {
     Spectrum retval;
-    retval.w[0] = Spectrum::w[0] * s.w[0];
-    retval.w[1] = Spectrum::w[1] * s.w[1];
-    retval.w[2] = Spectrum::w[2] * s.w[2];
+    retval.w[0] = Spectrum::w[0]*s.w[0];
+    retval.w[1] = Spectrum::w[1]*s.w[1];
+    retval.w[2] = Spectrum::w[2]*s.w[2];
 #ifdef SPECTRAL
     retval.w[3] = Spectrum::w[3] * s.w[3];
     retval.w[4] = Spectrum::w[4] * s.w[4];
@@ -883,12 +887,12 @@ void Spectrum::operator*=(const Spectrum& s)
 #endif
 }
 
-Spectrum Spectrum::operator/(const Spectrum& s)const
+Spectrum Spectrum::operator/(const Spectrum& s) const
 {
     Spectrum retval;
-    retval.w[0] = Spectrum::w[0] / s.w[0];
-    retval.w[1] = Spectrum::w[1] / s.w[1];
-    retval.w[2] = Spectrum::w[2] / s.w[2];
+    retval.w[0] = Spectrum::w[0]/s.w[0];
+    retval.w[1] = Spectrum::w[1]/s.w[1];
+    retval.w[2] = Spectrum::w[2]/s.w[2];
 #ifdef SPECTRAL
     retval.w[3] = Spectrum::w[3] / s.w[3];
     retval.w[4] = Spectrum::w[4] / s.w[4];
@@ -937,12 +941,12 @@ void Spectrum::operator/=(const Spectrum& s)
 #endif
 }
 
-Spectrum Spectrum::operator+(float v)const
+Spectrum Spectrum::operator+(float v) const
 {
     Spectrum retval;
-    retval.w[0] = Spectrum::w[0] + v;
-    retval.w[1] = Spectrum::w[1] + v;
-    retval.w[2] = Spectrum::w[2] + v;
+    retval.w[0] = Spectrum::w[0]+v;
+    retval.w[1] = Spectrum::w[1]+v;
+    retval.w[2] = Spectrum::w[2]+v;
 #ifdef SPECTRAL
     retval.w[3] = Spectrum::w[3] + v;
     retval.w[4] = Spectrum::w[4] + v;
@@ -991,12 +995,12 @@ void Spectrum::operator+=(float v)
 #endif
 }
 
-Spectrum Spectrum::operator-(float v)const
+Spectrum Spectrum::operator-(float v) const
 {
     Spectrum retval;
-    retval.w[0] = Spectrum::w[0] - v;
-    retval.w[1] = Spectrum::w[1] - v;
-    retval.w[2] = Spectrum::w[2] - v;
+    retval.w[0] = Spectrum::w[0]-v;
+    retval.w[1] = Spectrum::w[1]-v;
+    retval.w[2] = Spectrum::w[2]-v;
 #ifdef SPECTRAL
     retval.w[3] = Spectrum::w[3] - v;
     retval.w[4] = Spectrum::w[4] - v;
@@ -1045,12 +1049,12 @@ void Spectrum::operator-=(float v)
 #endif
 }
 
-Spectrum Spectrum::operator*(float v)const
+Spectrum Spectrum::operator*(float v) const
 {
     Spectrum retval;
-    retval.w[0] = Spectrum::w[0] * v;
-    retval.w[1] = Spectrum::w[1] * v;
-    retval.w[2] = Spectrum::w[2] * v;
+    retval.w[0] = Spectrum::w[0]*v;
+    retval.w[1] = Spectrum::w[1]*v;
+    retval.w[2] = Spectrum::w[2]*v;
 #ifdef SPECTRAL
     retval.w[3] = Spectrum::w[3] * v;
     retval.w[4] = Spectrum::w[4] * v;
@@ -1099,12 +1103,12 @@ void Spectrum::operator*=(float v)
 #endif
 }
 
-Spectrum Spectrum::operator/(float v)const
+Spectrum Spectrum::operator/(float v) const
 {
     Spectrum retval;
-    retval.w[0] = Spectrum::w[0] / v;
-    retval.w[1] = Spectrum::w[1] / v;
-    retval.w[2] = Spectrum::w[2] / v;
+    retval.w[0] = Spectrum::w[0]/v;
+    retval.w[1] = Spectrum::w[1]/v;
+    retval.w[2] = Spectrum::w[2]/v;
 #ifdef SPECTRAL
     retval.w[3] = Spectrum::w[3] / v;
     retval.w[4] = Spectrum::w[4] / v;

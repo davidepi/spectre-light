@@ -1,11 +1,10 @@
-### Three executables
+### Two executables
 
-The main renderer is composed by three applications: spectre, spectre-rgb and spectre-full.
+The main renderer is composed by two applications: spectre-rgb and spectre-full.
 As explained in the [spectrum.hpp](./utility/spectrum.hpp) file, this is due to the fact that
 spectrum class needs to be fast since it is used in a lot of basic calculations. Subclassing
 it in order to have an RGB spectrum and a full spectrum comes with an high price and for
-this reason this specialization is decided at compile time. The `spectre` executable, after
-parsing the input file, decides whether to call `spectre-rgb` or `spectre-full`
+this reason this specialization is decided at compile time
 
 ### Main and renderer
 
@@ -14,7 +13,7 @@ the parameters of this class based on the results of the parsing and finally sta
 by calling the `render(Scene*)` method.
 
 The renderer class creates the various threads and divides the image in sub-images (in order
-to maximize the caching). The size of these sub-images is defined in the file [settings.h](./settings.h)
+to maximize caching). The size of these sub-images is defined in the file [settings.h](./settings.h)
 with the name `SPLIT_SIZE`. Then the rendering pipeline is called for every sub-image
 
 ### Rendering pipeline
@@ -40,8 +39,6 @@ When every sub-image has been processed the image is saved onto the disk
 
 ### Other files
 Here is an explanation of the other files not mentioned in the previous sections
-- [application_starter.cpp](./application_starter.cpp)
-The main file for the `spectre` executable, that will forward the request to `spectre-rgb` or `spectre-full`
 - [localization.h](./localization.h) contains the strings for every message that will be printed by the console
 - [settings.h](./settings.h) contains several defines and global settings used throughout the whole project
 - [validator.h](./validator.h) this file is automatically included by the file settings.h and contains the definition of

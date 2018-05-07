@@ -1,12 +1,12 @@
 //Created,   7 Jul 2017
-//Last Edit 14 Jan 2018
+//Last Edit 14 Apr 2018
 
 /**
  *  \file material_library.hpp
  *  \brief MaterialLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  14 Jan 2018
+ *  \date  14 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -28,8 +28,8 @@
  *  the various shape at creation time. The library must be unique and
  *  accessible everywhere.
  *
- *  The library contains a default material that represents a white matte
- *  surface
+ *  The library contains a default material called "Default" that represents a
+ *  white matte surface
  *
  *  A define grants access to this singleton just by writing "MtlLib"
  *
@@ -40,7 +40,7 @@ class MaterialLibrary
 public:
 
     ///Get an instance of the material library
-    static MaterialLibrary& getInstance()
+    static MaterialLibrary& instance()
     {
         static MaterialLibrary instance;
         return instance;
@@ -73,19 +73,11 @@ public:
      * \param[in] name The material to retrieve
      * \return The material, if it is stored in the library, NULL otherwise
      */
-    const Bsdf* get(const std::string& name)const;
-
-    /** \brief Retrieve a material from the library
-     *
-     *  Retrieve a material from the library for editing.
-     *  If the material can not be found the returned value will be NULL
-     *
-     * \param[in] name The material to retrieve
-     * \return The material, if it is stored in the library, NULL otherwise
-     */
-    Bsdf* edit(const std::string& name)const;
+    const Bsdf* get(const std::string& name) const;
 
     /** \brief Remove and deallocate a material from the library
+     *
+     *  Note that it is not possible to erase the default material
      *
      * \param[in] name The material that will be removed and deallocated
      */
@@ -95,6 +87,8 @@ public:
      *
      *  This method will clear and thus deallocate every material stored in the
      *  library. It is the same as calling erase for every stored material
+     *  Note, however, that the default material will not be erased for
+     *  integrity reasons.
      */
     void clear();
 
@@ -106,16 +100,30 @@ public:
      *  \param[in] name The name of the material that will be checked
      *  \return true if the material is already inside the library
      */
-    bool contains(const std::string& name)const;
+    bool contains(const std::string& name) const;
+
+    /** \brief Returns the "Default" material
+     *
+     *  This method returns the "Default" material. It performs the same action
+     *  as calling MaterialLibrary::get() with "Default" as parameter. However,
+     *  since "Default" is a system material, it is cached inside this class
+     *  and by using this method a call to the underlying hash map is avoided
+     *
+     *  \return The "Default" material
+     */
+    const Bsdf* get_default() const;
 
 private:
 
     MaterialLibrary();
+
     ~MaterialLibrary();
-    std::unordered_map<std::string,Bsdf*> lib;
+
+    std::unordered_map<std::string, const Bsdf*> lib;
+    Bsdf* default_material;
 };
 
 ///Access the material library just by writing "MtlLib"
-#define MtlLib MaterialLibrary::getInstance()
+#define MtlLib MaterialLibrary::instance()
 
 #endif

@@ -1,12 +1,12 @@
 //Created,  10 Jun 2017
-//Last Edit 15 Sep 2017
+//Last Edit 11 Apr 2018
 
 /**
  *  \file reflection.hpp
  *  \brief Specular reflective BRDF
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      15 Sep 2017
+ *  \date      11 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -34,9 +34,8 @@ public:
 
     /** \brief Default Constructor for perfectly specular reflective material
      *
-     *  \param[in] specular The spectrum of light reflected back
      */
-    explicit Reflection(const Spectrum& specular);
+    explicit Reflection();
 
     /** \brief NOOP
      *
@@ -47,7 +46,7 @@ public:
      *  \param[in] wi incident ray
      *  \return 0
      */
-    Spectrum value(const Vec3* wo, const Vec3* wi)const;
+    Spectrum value(const Vec3* wo, const Vec3* wi) const;
 
     /** \brief Returns the value of the BRDF
      *
@@ -63,8 +62,8 @@ public:
      *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
-    virtual Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const = 0;
+    virtual Spectrum sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
+                                  float* pdf) const = 0;
 
     /** \brief Return the probability density function for this bdf
      *
@@ -77,12 +76,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return 0
      */
-    float pdf(const Vec3* wo, const Vec3* wi)const;
-
-protected:
-
-    ///Scattered light
-    const Spectrum specular;
+    float pdf(const Vec3* wo, const Vec3* wi) const;
 };
 
 /**
@@ -98,13 +92,11 @@ public:
 
     /** \brief Default Constructor for metallic material
      *
-     *  \param[in] specular The spectrum of light reflected back
      *  \param[in] refraction The index of refraction of the material if isMetal
      *  is true. The incident index of refraction otherwise.
      *  \param[in] absorption The amount of light absorbed by the material if
      */
-    ConductorReflection(const Spectrum& specular, const Spectrum& refraction,
-                        const Spectrum& absorption);
+    ConductorReflection(const Spectrum& refraction, const Spectrum& absorption);
 
     /** \brief Returns the value of the BRDF
      *
@@ -120,8 +112,9 @@ public:
      *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
-    Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const;
+    Spectrum sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
+                          float* pdf) const;
+
 private:
     const Spectrum ior;
     const Spectrum fresnel;
@@ -139,12 +132,10 @@ class DielectricReflection : public Reflection
 public:
     /** \brief Default Constructor for dielectric material
      *
-     *  \param[in] specular The spectrum of light reflected back
      *  \param[in] ior_i The incident index of refraction
      *  \param[in] ior_t The transmitted index of refraction
      */
-    DielectricReflection(const Spectrum& specular, const Spectrum& ior_i,
-                         const Spectrum& ior_t);
+    DielectricReflection(const Spectrum& ior_i, const Spectrum& ior_t);
 
     /** \brief Returns the value of the BRDF
      *
@@ -160,8 +151,9 @@ public:
      *  generates the only possible pair of directions, so the pdf is 1.0
      *  \return The value of the BRDF for the pair of directions
      */
-    Spectrum sample_value(const Vec3 *wo, Vec3 *wi, float r0, float r1,
-                  float* pdf)const;
+    Spectrum sample_value(const Vec3* wo, Vec3* wi, float r0, float r1,
+                          float* pdf) const;
+
 private:
     float eta_i;
     float eta_t;

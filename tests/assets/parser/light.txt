@@ -1,0 +1,6 @@
+shape: "../parser_obj/pyramid.obj"
+light: {name: "Sphere"}
+light: {name: "Sphere", position: [5,5,5], temperature: 4500}
+light: {name: "SquarePyr", position: [-10,-10,-10]}
+light: {name: "Sphere", position: [10,10,10], color: [10,255,10]}
+

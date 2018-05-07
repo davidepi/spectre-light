@@ -64,7 +64,7 @@ public:
      *  \param[out] hp The HitPoint structure containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r,float* distance, HitPoint* hp)const;
+    bool intersect(const Ray* r, float* distance, HitPoint* hp) const;
 
     /** \brief Recalculate the AABB
      *
@@ -74,7 +74,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB compute_AABB()const;
+    AABB compute_AABB() const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -86,7 +86,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB compute_AABB(const Matrix4* transform)const;
+    AABB compute_AABB(const Matrix4* transform) const;
 
     /** \brief Return the number of face of the box
      *
@@ -96,7 +96,7 @@ public:
      *
      *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
      */
-    int get_faces_number()const;
+    int get_faces_number() const;
 
     /** \brief Return the surface of the box
      *
@@ -105,7 +105,7 @@ public:
      *
      *  \return A float representing the area of the box in objects-space units
      */
-    float surface()const;
+    float surface() const;
 
     /** \brief Return the surface of the box accounting for the scaling factor
      *
@@ -115,7 +115,7 @@ public:
      *
      *  \return A float representing the area of the box in world-space units
      */
-    float surface(const Matrix4* transform)const;
+    float surface(const Matrix4* transform) const;
 
     /** \brief Populate the array of cumulative densities
      *
@@ -128,7 +128,7 @@ public:
      *  \param[in] transform The object to world space matrix
      *  \param[out] array The array of cumulative densities
      */
-    void get_densities_array(const Matrix4* transform,float* array)const;
+    void get_densities_array(const Matrix4* transform, float* array) const;
 
     /** \brief Returns a random point on the surface of the box
      *
@@ -145,7 +145,7 @@ public:
      *  \param[out] n The normal of the computed point
      */
     void sample_point(float r0, float r1, const float* densities, Point3* p,
-                        Normal* n)const;
+                      Normal* n) const;
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include "utility/utility.hpp"
 #include "primitives/shape.hpp"
 #include "geometry/point3.hpp"
+#include "geometry/point2.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/AABB.hpp"
@@ -34,6 +35,9 @@ struct Vertex
 
     ///The normal of the vertex
     Normal n;
+
+    ///The texture coordinates of the vertex
+    Point2 t;
 };
 
 /**
@@ -62,7 +66,8 @@ public:
 
     /** \brief Constructor, given the vertices.
      *
-     *  Construct a triangle in object space with the given vertices
+     *  Construct a triangle in object space with the given vertices.
+     *  The material of this triangle is set as Default material
      *
      *  \param[in] v0 The first vertex of the triangle
      *  \param[in] v1 The second vertex of the triangle
@@ -87,7 +92,7 @@ public:
      *  \param[out] h an HitPoint class containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r,float* distance, HitPoint* h)const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
 
     /** \brief Calculate the AABB
      *
@@ -95,7 +100,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB compute_AABB()const;
+    AABB compute_AABB() const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -107,7 +112,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB compute_AABB(const Matrix4* transform)const;
+    AABB compute_AABB(const Matrix4* transform) const;
 
     /** \brief Returns the surface of the triangle
      *
@@ -117,7 +122,7 @@ public:
      *  \return A float representing the area of the triangle in object-space
      *  units
      */
-    float surface()const;
+    float surface() const;
 
     /** \brief Return the surface of the triangle considering the scaling factor
      *
@@ -131,7 +136,7 @@ public:
      *  \return A float representing the area of the triangle in world-space
      *  units
      */
-    float surface(const Matrix4* transform)const;
+    float surface(const Matrix4* transform) const;
 
     /** \brief Returns a random point on the surface of the triangle
      *
@@ -145,7 +150,7 @@ public:
      *  \param[out] n The normal of the computed point
      */
     void sample_point(float r0, float r1, const float* densities, Point3* p,
-                        Normal* n)const;
+                      Normal* n) const;
 
     ///First vertex of the triangle
     Vertex a;

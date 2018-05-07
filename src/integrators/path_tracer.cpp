@@ -7,12 +7,11 @@ Spectrum PathTracer::radiance(const Scene* sc, const HitPoint* hp, const Ray* r,
                               Sampler* sam, OcclusionTester *ot)const
 {
     Spectrum power = SPECTRUM_ONE;
-    BdfFlags last = DIFFUSE;
-    return l_rec(sc,hp,r,sam,&power,last,ot);
+    return l_rec(sc,hp,r,sam,&power,false,ot);
 }
 
 Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
-                           Sampler *sam, Spectrum *power, BdfFlags last,
+                           Sampler *sam, Spectrum *power, bool last_spec,
                            OcclusionTester *ot) const
 {
     float rrprob = 1.f;
@@ -20,12 +19,12 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Vec3 wo = -r->direction;
     wo.normalize();
     //if first hit is light or specular, use its emission
-    if((r->ricochet==0 || (last&SPECULAR))
+    if((r->ricochet==0 || last_spec)
        && hp->asset_h->is_light() && dot(hp->normal_h,wo)>0)
         retval+=*power*((AreaLight *)hp->asset_h)->emissive_spectrum();
     
     //calculate direct lighting at point
-    const Bsdf* mat = hp->asset_h->get_material();
+    const Bsdf* mat = hp->asset_h->get_material(hp->index);
     Spectrum direct = direct_l(sc,hp,r,sam,ot);
     retval+=*power*direct;
     
@@ -48,13 +47,12 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     //sample next hit point
     Vec3 wi;
     float pdf;
-    BdfFlags matched;
+    bool matchedSpec;
     Spectrum f = mat->sample_value(rand[1],rand[2],rand[3],&wo,hp,&wi,&pdf,
-                                   BdfFlags(ALL), &matched);
-    float adot = absdot(wi,hp->normal_h);
+                                   true, &matchedSpec);
     if(pdf==0 || f.is_black())
         return retval;
-    
+    float adot = absdot(wi,hp->normal_h);
     //calculate new power, new ray and new intersection point
     *power *= f*adot/pdf*rrprob;
     Ray r2(hp->point_h,wi);
@@ -64,7 +62,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
         return retval; //ray out of scene, return now
     
     //recursive step
-    Spectrum rec = l_rec(sc,&h2,&r2,sam,power,matched,ot);
+    Spectrum rec = l_rec(sc,&h2,&r2,sam,power,matchedSpec,ot);
     retval += rec;
     return retval;
 }

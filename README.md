@@ -23,26 +23,23 @@ list of features that will be implemented during the way
 These instruction will get you a running copy of *spectre-light* in your machine in the fastest
 possible way.
 
-*spectre-light* uses [cmake](https://cmake.org "cmake homepage") as a build system, so this
-is the only mandatory dependency. This tool is available in almost every package manager
-if you are running a Linux distribution, as well as in `brew` if you are running macOS.
-Furthermore, you can download the Windows or macOS installer of cmake from the official
-site
+Under Linux, *spectre-light* uses [cmake](https://cmake.org "cmake homepage") as a build system, so this
+is the only mandatory dependency. Under Windows or macOS it is necessary to 
+have installed Visual Studio with C++ support and Xcode respectively.
 
 ### Dependencies
 
-Although no dependency is strictly required, with the exception of [cmake](https://cmake.org "cmake homepage"),
-having the Magick++ library is stronly suggested (API version 7.0 or newer). The Magick++ lib is part of the
+Although no dependency is strictly required, with the exception of [cmake](https://cmake.org "cmake homepage") under Linux,
+having the Magick++ library is strongly suggested (API version 7.0 or newer). The Magick++ lib is part of the
 [ImageMagick](https://www.imagemagick.org/script/index.php) suite and can be easily installed
-in any OS. WIthout Magick++, *spectre-light* is limited to read and write only NetPBM and
+in any OS. Without Magick++, *spectre-light* is limited to read and write only NetPBM and
 Windows Bitmap V3.0 files.
 
 ### Building
 
-Building *spectre-light* works exactly like any other cmake project.
-Here are the instructions step by step, assuming cmake 3.1+ and the build tools (build-essential, Xcode command line tools or Visual Studio) are already installed
+Here are the build instructions for *spectre-light*, assuming the build tools are already installed
 
-#### Linux and macOS
+#### Linux
 ```
 mkdir build/
 cd build
@@ -50,40 +47,33 @@ cmake -DCMAKE_BUILD_TYPE="Release" ..
 make
 ```
 
-#### Windows
-```
-md build\
-cd build
-cmake -G "Visual Studio XX 20XX Win64" ..
-```
-where the visual studio values can be
-- `Visual Studio 10 2010 Win64` for Visual Studio 2010
-- `Visual Studio 11 2012 Win64` for Visual Studio 2012
-- `Visual Studio 12 2013 Win64` for Visual Studio 2013
-- `Visual Studio 14 2015 Win64` for Visual Studio 2015
-- `Visual Studio 15 2017 Win64` for Visual Studio 2017
-
-At this point you need to open the generated solution and compile all targets with visual
-studio. Be sure to use a Release configuration for 64 bit
+#### Windows and macOS
+Although macOS can use `cmake` aswell, the Xcode project has been provided 
+with the build already configured. The same applies for Windows which has its
+own Visual Studio project under the `visualstudio/` folder
 
 ### Running
 
-After building *spectre-light* you can run it with the following command on Linux/macOS
+After building *spectre-light* it is possible to run it with the following command
 ```
-spectre input.txt
+spectre-rgb input.txt
 ```
 or with
 ```
-spectre-full.exe input.txt
+spectre-full input.txt
 ```
-on Windows
 
-`input.txt` is an ASCII file containing the description of the scene that will be
-rendered and where the output file will be saved. More information about the input file can be
-found in the [input_example.txt](./input_example.txt) file
+`input.txt` is an ASCII file containing the description of the scene that will be rendered.
 
-The output file can be a `.ppm` or a `.bmp` image. If the extension is omitted, the default will
-be the `.ppm`
+Under Windows drag-dropping the input file over the executable works aswell.
+
+## Input
+
+The input file format is explained [here](./src/parsers/README.md).
+
+*spectre-light* supports `.obj` files for scene and models,  `.ppm` and `.bmp` for textures. As already said, if Magick++ is
+available, additional image formats such as `.jpg`, `.tiff`, `.tga`, `.dds` and `.png` are available.
+`.mtl` is not available as an obj companion file for materials due to its tremendous binding with the Phong illumination model. Check the section *Missing .mtl* of the aforementioned input readme for more information.
 
  ## Documentation
 
@@ -97,7 +87,7 @@ be the `.ppm`
 
  ## Tests
 
- Unit testing is done with [Google Test](https://github.com/google/googletest) and
+ Unit testing is done with [Google Test](https://github.com/google/googletest) under Linux and
  thus it is required as additional dependency. In order to run the tests the following
  commands have to be issued
  ```
@@ -110,11 +100,13 @@ be the `.ppm`
  Then, running the newly created executable `runTests` will run every test
  in the suite.
 
- If [gnuplot](http://www.gnuplot.info/) is also installed, the target `make distributions`
+ If [gnuplot](http://www.gnuplot.info/) is also installed and the project is 
+ built with cmake, the target `make distributions`
  will generate some pdfs with the distributions of the various sampling routines.
 
 
- Unfortunately, for now, tests work only on Linux and macOS
+ Under macOS and Windows, testing is done with the default testing suite, 
+ and tests are already configured in the provided .sln/.xcproj file
  ## License
  
  *spectre-light* is released under the terms of the GNU GPLv3 License. You may find the
