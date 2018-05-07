@@ -1,5 +1,5 @@
 //Created,   6 Aug 2017
-//Last Edit 15 Dec 2017
+//Last Edit 30 Mar 2018
 
 /**
  *  \file mesh.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle mesh in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      15 Dec 2017
+ *  \date      30 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -24,6 +24,8 @@
 #include "geometry/AABB.hpp"
 #include "utility/console.hpp"
 #include "accelerators/bvh.hpp"
+#include "materials/bdf.hpp"
+#include "materials/material_library.hpp"
 
 
 /**
@@ -75,7 +77,7 @@ public:
      *  \sa add_triangle(const Vertex* a, const Vertex* b, const Vertex* c);
      */
     void add_triangle(const Point3& a, const Point3& b, const Point3& c,
-                     const Normal& n);
+                      const Normal& n);
 
     /** \brief Finalize the mesh
      *
@@ -102,7 +104,7 @@ public:
      *  \param[out] h an HitPoint class containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r,float* distance, HitPoint* h)const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
 
     /** \brief Calculate the AABB
      *
@@ -111,7 +113,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    AABB compute_AABB()const;
+    AABB compute_AABB() const;
 
     /** \brief Calculate the AABB in world space
      *
@@ -124,7 +126,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    AABB compute_AABB(const Matrix4* trans)const;
+    AABB compute_AABB(const Matrix4* trans) const;
 
     /** \brief Returns the surface of the mesh
      *
@@ -134,7 +136,7 @@ public:
      *  \return A float representing the area of the mesh in obbject-space
      *  units
      */
-    float surface()const;
+    float surface() const;
 
     /** \brief Return the surface of the mesh considering the scaling factor
      *
@@ -146,7 +148,7 @@ public:
      *
      *  \return A float representing the area of the mesh in world-space units
      */
-    float surface(const Matrix4* transform)const;
+    float surface(const Matrix4* transform) const;
 
     /** \brief Return the number of face of the mesh
      *
@@ -154,7 +156,7 @@ public:
      *
      *  \return The number of faces in a Mesh
      */
-    int get_faces_number()const;
+    int get_faces_number() const;
 
     /** \brief Populate the array of cumulative densities
      *
@@ -167,7 +169,7 @@ public:
      *  \param[in] transform The object to world space matrix
      *  \param[out] array The array of cumulative densities
      */
-    void get_densities_array(const Matrix4* transform, float* array)const;
+    void get_densities_array(const Matrix4* transform, float* array) const;
 
     /** \brief Returns a random point on the surface of the mesh
      *
@@ -186,7 +188,7 @@ public:
      *  \param[out] n The normal of the computed point
      */
     void sample_point(float r, float r1, const float* densities, Point3* p,
-                        Normal* n)const;
+                      Normal* n) const;
 
 private:
 

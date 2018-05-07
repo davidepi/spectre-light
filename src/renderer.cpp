@@ -12,17 +12,12 @@ static void executor(Camera* camera,ImageFilm* film,std::mutex* lock,int spp,
 static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
                         bool& alive);
 
-#define SPECTRE_USE_RANDOM_SAMPLER 0
-#define SPECTRE_USE_STRATIFIED_SAMPLER 1
-
 Renderer::Renderer(int width, int height, int spp, const char* out,
                    int thread_number) : film(width,height,out)
 {
     if(width%SPLIT_SIZE)
     {
-        char errmsg[256];
-        snprintf(errmsg,256,MESSAGE_WIDTH_MULTIPLE,SPLIT_SIZE);
-        Console.severe(errmsg);
+        Console.severe(MESSAGE_WIDTH_MULTIPLE,SPLIT_SIZE);
         //set w and h as 0 so no image will be rendered
         Renderer::width = 0;
         Renderer::height = 0;
@@ -60,93 +55,25 @@ Renderer::~Renderer()
     delete[] Renderer::workers;
 }
 
-void Renderer::setPerspective(Point3 pos, Point3 target, Vec3 up, float fov)
+void Renderer::inherit_camera(Camera* camera)
 {
-    delete camera;
-    camera = new PerspectiveCamera(&pos,&target,&up,width,height,fov);
+    Renderer::camera = camera;
 }
 
-void Renderer::setOrthographic(Point3 pos, Point3 target, Vec3 up)
+void Renderer::set_sampler(int sampler)
 {
-    delete camera;
-    camera = new OrthographicCamera(&pos,&target,&up,width,height);
+    Renderer::sampler_t = sampler;
 }
 
-void Renderer::setPanorama(Point3 pos, Point3 target, Vec3 up)
+void Renderer::inherit_filter(Filter* filter)
 {
-    delete camera;
-    camera = new Camera360(&pos,&target,&up,width,height);
+    Renderer::filter = filter;
+    Renderer::film.set_filter(filter);
 }
 
-void Renderer::setRandomSampler()
+void Renderer::inherit_integrator(LightIntegrator* integrator)
 {
-    Renderer::sampler_t = SPECTRE_USE_RANDOM_SAMPLER;
-}
-
-void Renderer::setStratifiedSampler()
-{
-    int old_spp = Renderer::spp;
-    //spp must be a perfect square
-    Renderer::spp = (int)sqrtf(old_spp);
-    Renderer::spp*=Renderer::spp;
-    if(Renderer::spp!=old_spp)
-    {
-        char errmsg[256];
-        snprintf(errmsg,256,MESSAGE_CHANGED_SPP,Renderer::spp);
-        Console.notice(errmsg);
-    }
-    Renderer::sampler_t = SPECTRE_USE_STRATIFIED_SAMPLER;
-}
-
-void Renderer::setBoxFilter()
-{
-    
-    delete filter;
-    filter = new BoxFilter(BOX_FILTER_EXTENT,BOX_FILTER_EXTENT);
-    film.set_filter(filter);
-}
-
-void Renderer::setTentFilter()
-{
-    delete filter;
-    filter = new TentFilter(TENT_FILTER_EXTENT,TENT_FILTER_EXTENT);
-    film.set_filter(filter);
-}
-
-void Renderer::setGaussianFilter(float sigma)
-{
-    delete filter;
-    filter = new GaussianFilter(GAUSSIAN_FILTER_EXTENT,GAUSSIAN_FILTER_EXTENT,
-                                sigma);
-    film.set_filter(filter);
-}
-
-void Renderer::setMitchellFilter(float b, float c)
-{
-    delete filter;
-    filter = new MitchellFilter(MITCHELL_FILTER_EXTENT,MITCHELL_FILTER_EXTENT,
-                                b,c);
-    film.set_filter(filter);
-}
-
-void Renderer::setLanczosSincFilter(float tau)
-{
-    delete filter;
-    filter = new LanczosFilter(LANCZOS_FILTER_EXTENT,LANCZOS_FILTER_EXTENT,
-                               tau);
-    film.set_filter(filter);
-}
-
-void Renderer::setRayTracer()
-{
-    delete mc_solver;
-    mc_solver = new RayTracer();
-}
-
-void Renderer::setPathTracer()
-{
-    delete mc_solver;
-    mc_solver = new PathTracer();
+    Renderer::mc_solver = integrator;
 }
 
 int Renderer::render(Scene* s)
@@ -203,7 +130,7 @@ int Renderer::render(Scene* s)
     //all these things to print the elapsed time!
     //sizeof because MSVC cannot resolve strlen a compile time
     char endmsg[sizeof(MESSAGE_RENDERTIME)/sizeof(char)+MAX_TIME_FORMAT_LENGTH];
-    char elapsed_formatted[16];
+    char elapsed_formatted[MAX_TIME_FORMAT_LENGTH];
     format_seconds((int)duration_cast<seconds>(b-a).count(),elapsed_formatted);
     sprintf(endmsg, MESSAGE_RENDERTIME,elapsed_formatted);
     Console.log(endmsg,NULL);
@@ -274,13 +201,13 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
         
         switch(sampler_type)
         {
-            case SPECTRE_USE_RANDOM_SAMPLER:
-                sam = new RandomSampler(todo.startx, todo.endx, todo.starty,
+            case SPECTRE_SAMPLER_RANDOM:
+                sam = new SamplerRandom(todo.startx, todo.endx, todo.starty,
                                         todo.endy, spp, WELLseed);
                 break;
-            case SPECTRE_USE_STRATIFIED_SAMPLER:
+            case SPECTRE_SAMPLER_STRATIFIED:
             default:
-                sam = new StratifiedSampler(todo.startx, todo.endx, todo.starty,
+                sam = new SamplerStratified(todo.startx, todo.endx, todo.starty,
                                             todo.endy, spp, WELLseed,
                                             JITTERED_SAMPLER);
                 break;
@@ -352,7 +279,7 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
                        remaining);
         //avoid garbage values... it is useless, but it runs once per second...
         if(eta>0)
-            Console.progress_bar(done,eta);
+            Console.progress_bar(done,(float)eta);
         std::this_thread::sleep_for
         (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }

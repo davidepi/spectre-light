@@ -2,8 +2,9 @@
 //license: GNU GPLv3
 
 #include "kdtree.hpp"
+
 #define KDNODE_ALLOC 1 //AT LEAST 1!!! otherwise when doubling the array size
-                       //0 * 2 = guess what :^)
+//0 * 2 = guess what :^)
 
 //KdTreeNode member description
 // union{ float split; uint32_t primitive_offset;}
@@ -21,9 +22,9 @@ KdTreeNode::KdTreeNode(float split, int axis, unsigned int other_child)
 {
     KdTreeNode::data = other_child;
     if(axis == 1) // could have been done also with a shift... nvm
-    /* This line goes bad if there is already something in the two most
-     significant bits. However if they are not zero, the other_child
-     variable would be too high and the application doomed anyway */
+        /* This line goes bad if there is already something in the two most
+         significant bits. However if they are not zero, the other_child
+         variable would be too high and the application doomed anyway */
         KdTreeNode::data |= 0x20000000;
     else if(axis == 2)
         KdTreeNode::data |= 0x40000000;
@@ -39,32 +40,32 @@ KdTreeNode::KdTreeNode(unsigned int primitive_offset, unsigned int p_number)
 
 KdTreeNode::~KdTreeNode() = default;
 
-bool KdTreeNode::isLeaf()const
+bool KdTreeNode::isLeaf() const
 {
     return KdTreeNode::data & 0x80000000;
 }
 
-char KdTreeNode::getAxis()const
+char KdTreeNode::getAxis() const
 {
     return (KdTreeNode::data & 0x60000000) >> 29;
 }
 
-float KdTreeNode::getSplit()const
+float KdTreeNode::getSplit() const
 {
     return split;
 }
 
-unsigned int KdTreeNode::getOtherChildOffset()const
+unsigned int KdTreeNode::getOtherChildOffset() const
 {
     return KdTreeNode::data & 0x1FFFFFFF;
 }
 
-unsigned int KdTreeNode::getAssetOffset()const
+unsigned int KdTreeNode::getAssetOffset() const
 {
     return KdTreeNode::asset_offset;
 }
 
-unsigned int KdTreeNode::getAssetsNumber()const
+unsigned int KdTreeNode::getAssetsNumber() const
 {
     return KdTreeNode::data & 0x7FFFFFFF;
 }
@@ -82,12 +83,8 @@ namespace KdHelpers
     //Like the KdTreeNode, but with extra variables.
     //This is used to build the tree in a 'canonical' way. Then, when ready,
     //everything is flattened into the KdTreeNode array
-    class KdTreeBuildNode
+    struct KdTreeBuildNode
     {
-    public:
-        KdTreeBuildNode() = default;
-        ~KdTreeBuildNode() = default;
-
         //where the assets are stored
         unsigned int offset_start;
         bool isLeaf;
@@ -115,7 +112,7 @@ namespace KdHelpers
     //used to sort the splicandidate in the kdtree build
     bool compare_sc(const SplitCandidate s1, const SplitCandidate s2)
     {
-        return s1.pos < s2.pos;
+        return s1.pos<s2.pos;
     }
 
     //helper structure for kd tree traversal
@@ -139,7 +136,7 @@ KdTree::KdTree()
     KdTree::assets_number = 0;
     KdTree::assets_allocated = KDNODE_ALLOC;
 
-    KdTree::nodesList=(KdTreeNode*)malloc(sizeof(KdTreeNode)* KDNODE_ALLOC);
+    KdTree::nodesList = (KdTreeNode*)malloc(sizeof(KdTreeNode)*KDNODE_ALLOC);
     KdTree::nodes_index = 0;
     KdTree::nodes_allocated = KDNODE_ALLOC;
 
@@ -153,18 +150,18 @@ KdTree::~KdTree()
     free(nodesList);
 }
 
-void KdTree::addAsset(const Asset *addme)
+void KdTree::addAsset(const Asset* addme)
 {
     if(assets_number == _MAX_ASSETS_)
         Console.severe(MESSAGE_MAXASSETNUMBER);
     if(assets_number == assets_allocated)
     {
-        int allocNo = min(assets_allocated<<1,_MAX_ASSETS_);
+        int allocNo = min(assets_allocated << 1, _MAX_ASSETS_);
         const Asset** tmp = (const Asset**)malloc(sizeof(Asset*)*(allocNo));
         if(tmp)
         {
-            memcpy(tmp,assetsList,assets_allocated*sizeof(Asset*));
-            assets_allocated=allocNo;
+            memcpy(tmp, assetsList, assets_allocated*sizeof(Asset*));
+            assets_allocated = allocNo;
             free(KdTree::assetsList);
             KdTree::assetsList = tmp;
         }
@@ -180,12 +177,12 @@ void KdTree::finalize(void* n)
     KdTreeBuildNode* node = (KdTreeBuildNode*)n;
     if(nodes_index == nodes_allocated)
     {
-        unsigned int allocNo = nodes_allocated<<1;
+        unsigned int allocNo = nodes_allocated << 1;
         KdTreeNode* tmp = (KdTreeNode*)malloc(sizeof(KdTreeNode)*(allocNo));
         if(tmp)
         {
-            memcpy(tmp,nodesList,nodes_allocated*sizeof(KdTreeNode));
-            nodes_allocated=allocNo;
+            memcpy(tmp, nodesList, nodes_allocated*sizeof(KdTreeNode));
+            nodes_allocated = allocNo;
             free(KdTree::nodesList);
             KdTree::nodesList = tmp;
         }
@@ -207,11 +204,11 @@ void KdTree::finalize(void* n)
         finalize(node->left);
 
         //I processed all the left nodes, so now I know the right node position
-        nodesList[myindex] = KdTreeNode(node->split_position,node->split_axis,
+        nodesList[myindex] = KdTreeNode(node->split_position, node->split_axis,
                                         nodes_index);
         finalize(node->right);
     }
-    delete(node);
+    free(node);
 }
 
 void KdTree::buildTree()
@@ -221,11 +218,11 @@ void KdTree::buildTree()
 
     if(assets_number == 0)
         return;
-    KdTreeBuildNode* node = new KdTreeBuildNode();
+    KdTreeBuildNode* node = (KdTreeBuildNode*)malloc(sizeof(KdTreeBuildNode));
 
     //get the aabb for the whole scene
     scene_aabb = AABB(*(assetsList[0]->get_AABB)());
-    for(int i=1;i<assets_number;i++)
+    for(int i = 1; i<assets_number; i++)
         scene_aabb.engulf(assetsList[i]->get_AABB());
 
     //copy the assets, since the original array will be rewritten in a
@@ -234,7 +231,7 @@ void KdTree::buildTree()
     memcpy(alcopy, KdTree::assetsList, sizeof(Asset*)*KdTree::assets_number);
     unsigned int a_n = KdTree::assets_number; //assets_number will be set to 0
     KdTree::assets_number = 0;//and assets will be reinserted in order during
-                              //building of the kd-tree
+    //building of the kd-tree
 
     //allocate the array of possible candidates. sc[axis][candidate]
     SplitCandidate** sc = (SplitCandidate**)malloc(sizeof(SplitCandidate*)*3);
@@ -242,7 +239,7 @@ void KdTree::buildTree()
     sc[1] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
     sc[2] = (SplitCandidate*)malloc(sizeof(SplitCandidate)*2*a_n);
 
-    build(node,0,sc,alcopy,a_n,scene_aabb);
+    build(node, 0, sc, alcopy, a_n, scene_aabb);
 
     free(alcopy);
     free(sc[0]);
@@ -268,7 +265,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     KdTreeBuildNode* node = (KdTreeBuildNode*)n;
 
     //terminate recursion if max depth or too few assets
-    if(depth==KD_MAX_DEPTH || a_n <= _LEAF_ASSETS_)
+    if(depth == KD_MAX_DEPTH || a_n<=_LEAF_ASSETS_)
     {
         node->offset_start = KdTree::assets_number;
         node->assets_number = a_n;
@@ -276,7 +273,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
         //assets are added in order to the Class assets array
         //now i can reference them with a pointer to the first and the number
         //of assets for the leaf
-        for(unsigned int i=0;i<a_n;i++)
+        for(unsigned int i = 0; i<a_n; i++)
             KdTree::addAsset(a_l[i]);
         node->isLeaf = true;
         node->left = NULL;
@@ -291,61 +288,63 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     float best_cost = INFINITY;
     float old_cost = SAH_INTERSECT*(float)a_n;
     float total_area = area.surface();
-    Vec3 aabb_diagonal = area.bounds[1] - area.bounds[0];
+    Vec3 aabb_diagonal = area.bounds[1]-area.bounds[0];
     float inv_area = 1.f/total_area;
 
     //usually this is the best split candidate, being the longest axis
     unsigned char axis = area.longest_axis();
     int isSearching = 3; //number of axis attemped. In the worst case
-                         //bail out of the while at 0
+    //bail out of the while at 0
 
     //repeat for every axis, to find best splitting pane
     while(isSearching)
     {
         //for each asset add left and right side of the aabbs as split panes
-        for(unsigned int i=0;i<a_n;i++)
+        for(unsigned int i = 0; i<a_n; i++)
         {
-            sc[axis][i<<1].pos = a_l[i]->get_AABB()->bounds[0][axis];
-            sc[axis][i<<1].whoami = a_l[i];
-            sc[axis][i<<1].isLeftSide = true;
-            sc[axis][(i<<1)+1].pos = a_l[i]->get_AABB()->bounds[1][axis];
-            sc[axis][(i<<1)+1].whoami = a_l[i];
-            sc[axis][(i<<1)+1].isLeftSide = false;
+            sc[axis][i << 1].pos = a_l[i]->get_AABB()->bounds[0][axis];
+            sc[axis][i << 1].whoami = a_l[i];
+            sc[axis][i << 1].isLeftSide = true;
+            sc[axis][(i << 1)+1].pos = a_l[i]->get_AABB()->bounds[1][axis];
+            sc[axis][(i << 1)+1].whoami = a_l[i];
+            sc[axis][(i << 1)+1].isLeftSide = false;
         }
 
         //sort them asc
-        std::sort(&(sc[axis][0]),&(sc[axis][2*a_n]),KdHelpers::compare_sc);
+        std::sort(&(sc[axis][0]), &(sc[axis][2*a_n]), KdHelpers::compare_sc);
 
         //count of the assets on both sides of every candidate split
-        unsigned int left_a = 0,right_a = a_n;
-        for(unsigned int i=0;i<2*a_n;i++)
+        unsigned int left_a = 0, right_a = a_n;
+        for(unsigned int i = 0; i<2*a_n; i++)
         {
             bool isAABBRightSide = !(sc[axis][i].isLeftSide);
             if(isAABBRightSide) //update assets count
                 right_a--;
-            if(sc[axis][i].pos > area.bounds[0][axis] &&
-               sc[axis][i].pos < area.bounds[1][axis]) //if inside aabb
+            if(sc[axis][i].pos>area.bounds[0][axis] &&
+               sc[axis][i].pos<area.bounds[1][axis]) //if inside aabb
             {
                 char otheraxis1 = (axis+1)%3;
                 char otheraxis2 = (axis+2)%3;
 
                 float area_candidate_left =
-                2*(aabb_diagonal[otheraxis1]* aabb_diagonal[otheraxis2]
-                   +(sc[axis][i].pos-area.bounds[0][axis])*
-                   (aabb_diagonal[otheraxis1]+aabb_diagonal[otheraxis2]));
+                        2*(aabb_diagonal[otheraxis1]*aabb_diagonal[otheraxis2]
+                           +(sc[axis][i].pos-area.bounds[0][axis])*
+                            (aabb_diagonal[otheraxis1]+
+                             aabb_diagonal[otheraxis2]));
 
                 float area_candidate_right =
-                2*(aabb_diagonal[otheraxis1]*aabb_diagonal[otheraxis2]
-                   +(area.bounds[1][axis]-sc[axis][i].pos)*
-                   (aabb_diagonal[otheraxis1]+aabb_diagonal[otheraxis2]));
+                        2*(aabb_diagonal[otheraxis1]*aabb_diagonal[otheraxis2]
+                           +(area.bounds[1][axis]-sc[axis][i].pos)*
+                            (aabb_diagonal[otheraxis1]+
+                             aabb_diagonal[otheraxis2]));
 
-                float al = area_candidate_left * inv_area;
-                float ar = area_candidate_right * inv_area;
+                float al = area_candidate_left*inv_area;
+                float ar = area_candidate_right*inv_area;
                 //bonus is used to prefer nodes with 0 assets -> discard rays
-                float bonus = (left_a == 0 || right_a == 0) ? 1.0f : 0.0f;
-                float cost =  SAH_DESCEND + //search Surface Area Heuristic
-                SAH_INTERSECT * (1.0f - bonus) * (al * left_a + ar * right_a);
-                if(cost < best_cost)
+                float bonus = (left_a == 0 || right_a == 0)?1.0f:0.0f;
+                float cost = SAH_DESCEND+ //search Surface Area Heuristic
+                             SAH_INTERSECT*(1.0f-bonus)*(al*left_a+ar*right_a);
+                if(cost<best_cost)
                 {
                     best_cost = cost;
                     best_axis = axis;
@@ -365,11 +364,11 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     }
 
     //best cost sucks, better not to split at all -> make a leaf
-    if((best_cost > 4.f * old_cost && a_n < 16) || best_axis == 0xFF)
+    if((best_cost>4.f*old_cost && a_n<16) || best_axis == 0xFF)
     {
         node->offset_start = KdTree::assets_number;
         node->assets_number = a_n;
-        for(unsigned int i=0;i<a_n;i++)
+        for(unsigned int i = 0; i<a_n; i++)
             KdTree::addAsset(a_l[i]);
         node->isLeaf = true;
         node->left = NULL;
@@ -388,10 +387,10 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     //assign the assets to the right array, depending if left/right of plane
     unsigned int as_left_index = 0;
     unsigned int as_right_index = 0;
-    for(int i=0;i<best_split;i++)
+    for(int i = 0; i<best_split; i++)
         if(sc[best_axis][i].isLeftSide)
             as_left[as_left_index++] = sc[best_axis][i].whoami;
-    for(unsigned int i=best_split+1;i<2*a_n;i++)
+    for(unsigned int i = best_split+1; i<2*a_n; i++)
         if(!(sc[best_axis][i].isLeftSide))
             as_right[as_right_index++] = sc[best_axis][i].whoami;
 
@@ -415,7 +414,7 @@ void KdTree::build(void* n, char depth, void* s_c, Asset** a_l,
     free(as_right);
 }
 
-bool KdTree::intersect(const Ray* r, HitPoint* h)const
+bool KdTree::intersect(const Ray* r, HitPoint* h) const
 {
     using KdHelpers::KdTravNode;
 
@@ -435,7 +434,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
     const KdTreeNode* n = nodesList;
     while(n != NULL)
     {
-        if(bestdistance < mint) //a closer intersection has been found
+        if(bestdistance<mint) //a closer intersection has been found
             break;
 
         if(!n->isLeaf()) //if internal node
@@ -443,14 +442,14 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
             char axis = n->getAxis();
             //get plane distance
             float planet = (n->getSplit()-r->origin[axis]);
-            planet*=*(&(rp.inverseX)+axis);
+            planet *= *(&(rp.inverseX)+axis);
             const KdTreeNode* left;
             const KdTreeNode* right;
 
             //find the order in which the ray encounters the children
-            bool leftBelow = (r->origin[axis] < n->getSplit()) ||
+            bool leftBelow = (r->origin[axis]<n->getSplit()) ||
                              (r->origin[axis] == n->getSplit() &&
-                              r->direction[axis] <= 0);
+                              r->direction[axis]<=0);
             if(leftBelow)
             {
                 left = n+1;
@@ -463,16 +462,16 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
             }
 
             //special cases, only 1 node needs to be processed
-            if (planet > maxt || planet <= 0)
+            if(planet>maxt || planet<=0)
                 n = left;
-            else if (planet < mint)
+            else if(planet<mint)
                 n = right;
             else //put the right node in the todo list, process the left one
             {
                 jobs[jobs_stack_top].node = right;
                 jobs[jobs_stack_top].mint = planet;
                 jobs[jobs_stack_top++].maxt = maxt;
-                n =   left;
+                n = left;
                 maxt = planet;
             }
         }
@@ -484,7 +483,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
             float res1, res2;
 
             //try to intersect every asset
-            for(unsigned int i=0;i<a_n;i++)
+            for(unsigned int i = 0; i<a_n; i++)
             {
                 current_asset = assetsList[n->getAssetOffset()+i];
 
@@ -493,7 +492,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h)const
                 {
                     //then try with the actual asset
                     if(res1<bestdistance && //don't try if AABB > best distance
-                       current_asset->intersect(r,&bestdistance,h))
+                       current_asset->intersect(r, &bestdistance, h))
                     {
                         found = true; //record current intersection
                         h->asset_h = current_asset;

@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\renderer.cpp" />
+    <ClCompile Include="..\src\accelerators\kdtree.cpp">
+      <Filter>src\accelerators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\accelerators\bvh.cpp">
+      <Filter>src\accelerators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cameras\camera_orthographic.cpp">
+      <Filter>src\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cameras\camera_perspective.cpp">
+      <Filter>src\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cameras\camera360.cpp">
+      <Filter>src\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cameras\image_film.cpp">
+      <Filter>src\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\geometry\AABB.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\geometry\matrix4.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\geometry\point2.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\geometry\point3.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\geometry\ray.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\geometry\vec2.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\geometry\vec3.cpp">
+      <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\integrators\ray_tracer.cpp">
+      <Filter>src\integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\integrators\path_tracer.cpp">
+      <Filter>src\integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\area_light.cpp">
+      <Filter>src\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\bdf.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\fresnel_conditions.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\lambertian.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\material_library.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\microfacet.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\microfacet_distributions.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\oren_nayar.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\reflection.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\refraction.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\config_driver.cpp">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\config_parser.tab.cc">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\lex.yy.cc">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\parser_obj.cpp">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cameras\camera.cpp">
+      <Filter>src\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\asset.cpp">
+      <Filter>src\primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\box.cpp">
+      <Filter>src\primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\mesh.cpp">
+      <Filter>src\primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\shape.cpp">
+      <Filter>src\primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\sphere.cpp">
+      <Filter>src\primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\triangle.cpp">
+      <Filter>src\primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_box.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_gaussian.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_lanczos.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_mitchell.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\filter_tent.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\sampler.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\sampler_random.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\sampler_stratified.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture.cpp">
+      <Filter>src\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture_library.cpp">
+      <Filter>src\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\uniform.cpp">
+      <Filter>src\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\color.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\console.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\file.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageIO.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\occlusion_tester.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\scene.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\spectrum.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\utility.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\wellrng.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\renderer.hpp" />
+    <ClInclude Include="..\src\settings.h" />
+    <ClInclude Include="..\src\validator.h" />
+    <ClInclude Include="..\src\accelerators\kdtree.hpp">
+      <Filter>src\accelerators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\accelerators\bvh.hpp">
+      <Filter>src\accelerators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cameras\camera.hpp">
+      <Filter>src\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cameras\camera_orthographic.hpp">
+      <Filter>src\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cameras\camera_perspective.hpp">
+      <Filter>src\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cameras\camera360.hpp">
+      <Filter>src\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cameras\image_film.hpp">
+      <Filter>src\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\geometry\AABB.hpp">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\geometry\matrix4.hpp">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\geometry\point2.hpp">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\geometry\point3.hpp">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\geometry\ray.hpp">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\geometry\vec2.hpp">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\geometry\vec3.hpp">
+      <Filter>src\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\integrators\ray_tracer.hpp">
+      <Filter>src\integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\integrators\path_tracer.hpp">
+      <Filter>src\integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\integrators\light_integrator.hpp">
+      <Filter>src\integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\area_light.hpp">
+      <Filter>src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\bdf.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\fresnel_conditions.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\lambertian.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\material_library.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\metals.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\microfacet.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\microfacet_distributions.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\oren_nayar.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\reflection.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\refraction.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\config_driver.hpp">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\config_parser.tab.hh">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\location.hh">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\parser_obj.hpp">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\position.hh">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\stack.hh">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\asset.hpp">
+      <Filter>src\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\box.hpp">
+      <Filter>src\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\mesh.hpp">
+      <Filter>src\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\shape.hpp">
+      <Filter>src\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\sphere.hpp">
+      <Filter>src\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\triangle.hpp">
+      <Filter>src\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_box.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_gaussian.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_lanczos.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_mitchell.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\filter_tent.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\sampler.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\sampler_random.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\sampler_stratified.hpp">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture.hpp">
+      <Filter>src\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture_library.hpp">
+      <Filter>src\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\uniform.hpp">
+      <Filter>src\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\color.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\console.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\file.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageIO.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\occlusion_tester.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\scene.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\spectrum.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\utility.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\wellrng.hpp">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\localization.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{b9162bb3-b48f-4288-b0af-79a48ea729ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\accelerators">
+      <UniqueIdentifier>{00beb312-3492-4c33-8037-11638e052957}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cameras">
+      <UniqueIdentifier>{7470dbe1-9e4d-429f-80b7-fc0bacf64b77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\geometry">
+      <UniqueIdentifier>{a732d169-fba6-4ef0-8d61-7a93f5e83ce8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\integrators">
+      <UniqueIdentifier>{4d911ff2-cb4d-4ffc-9d57-90663c2603f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\lights">
+      <UniqueIdentifier>{5cf15496-ae62-4090-bfa7-48639676f8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\materials">
+      <UniqueIdentifier>{33b9f97c-ff86-48e7-8bf0-3788aa1b01b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\parsers">
+      <UniqueIdentifier>{fc16177e-bfb1-4899-a579-86d0fa59ca1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\primitives">
+      <UniqueIdentifier>{ae8a9699-4262-4ff7-8a8f-355138da0caa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\samplers">
+      <UniqueIdentifier>{9598ed1d-c60c-4531-9c6d-4e9c0b561350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\textures">
+      <UniqueIdentifier>{c86ab8ca-73dd-428b-88a2-b4e50586477d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility">
+      <UniqueIdentifier>{5377c1a1-da99-40c9-b54d-c2dca2c0c40b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\parsers\README.md">
+      <Filter>src\parsers</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,12 +1,12 @@
 //Created,  15 Jul 2017
-//Last Edit 13 Sep 2017
+//Last Edit 18 Mar 2018
 
 /**
  *  \file path_tracer.hpp
  *  \brief     LTE integrator
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      13 Sep 2017
+ *  \date      18 Mar 2018
  *  \copyright GNU GPLv3
  */
 
@@ -63,7 +63,7 @@ private:
 
     //recursive function for the radiance computation
     Spectrum l_rec(const Scene* sc, const HitPoint* hp,
-                   const Ray* r, Sampler* sam, Spectrum* power, BdfFlags last,
+                   const Ray* r, Sampler* sam, Spectrum* power, bool last_spec,
                    OcclusionTester *ot)const;
 };
 

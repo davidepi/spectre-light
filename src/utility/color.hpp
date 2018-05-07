@@ -66,7 +66,7 @@ public:
     /** \brief Return true if the color is black
      *  \return true if every component is zero
      */
-    bool is_black()const;
+    bool is_black() const;
 
     ///Red or x component
     float r;
@@ -80,35 +80,50 @@ public:
     //------ Operators ---------------------------------------------------------
 
     ///The addition operation between two colours
-    Color operator+(const Color& c)const;
+    Color operator+(const Color& c) const;
+
     ///The addition operation between two colours
     void operator+=(const Color& c);
+
     ///The subtraction operation between two colours
-    Color operator-(const Color& c)const;
+    Color operator-(const Color& c) const;
+
     ///The subtraction operation between two colours
     void operator-=(const Color& c);
+
     ///The multiplication operation between two colours
-    Color operator*(const Color& c)const;
+    Color operator*(const Color& c) const;
+
     ///The multiplication operation between two colours
     void operator*=(const Color& c);
+
     ///The division operation between two colours
-    Color operator/(const Color& c)const;
+    Color operator/(const Color& c) const;
+
     ///The division operation between two colours
     void operator/=(const Color& c);
+
     ///The addition operation between a value and a colour
-    Color operator+(float c)const;
+    Color operator+(float c) const;
+
     ///The addition operation between a value and a colour
     void operator+=(float c);
+
     ///The subtraction operation between a value and a colour
-    Color operator-(float c)const;
+    Color operator-(float c) const;
+
     ///The subtraction operation between a value and a colour
     void operator-=(float c);
+
     ///The multiplication operation between a value and a colour
-    Color operator*(float c)const;
+    Color operator*(float c) const;
+
     ///The multiplication operation between a value and a colour
     void operator*=(float c);
+
     ///The division operation between a value and a colour
-    Color operator/(float c)const;
+    Color operator/(float c) const;
+
     ///The division operation between a value and a colour
     void operator/=(float c);
 
@@ -170,7 +185,7 @@ public:
      *  to CIE 1931 XYZ. The Standard illuminant (D65) is also assumed to be the
      *  white colour
      */
-    ColorXYZ to_XYZ()const;
+    ColorXYZ to_XYZ() const;
 };
 
 /** \brief Representation of an XYZ colour
@@ -212,14 +227,14 @@ public:
      *  Convert the color representation from CIE 1931 XYZ to sRGB, assuming
      *  a D65 Illuminant as white
      */
-    ColorRGB to_sRGB()const;
+    ColorRGB to_sRGB() const;
 
     /** \brief Convert this XYZ to the Adobe RGB representation
      *
      *  Convert the color representation from CIE 1931 XYZ to Adobe RGB, 
      *  assuming a D65 Illuminant as white
      */
-    ColorRGB to_AdobeRGB()const;
+    ColorRGB to_AdobeRGB() const;
 };
 
 #endif

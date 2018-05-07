@@ -2,100 +2,29 @@
 //license: GNU GPLv3
 
 #include "utility/console.hpp"
-#include "parsers/parser.hpp"
+#include "parsers/config_driver.hpp"
 #include "renderer.hpp"
+#ifdef _WIN32
+#include <conio.h>
+#endif
 
 int main(int argc, char* argv[])
 {
-    Parser parser;
-    Settings settings;
+    ImageIO_init();
+    Renderer* renderer = NULL;
+    ConfigDriver* parser = new ConfigDriver();
+    Scene scene;
     if(argc < 2)
         Console.critical("Input should be in the form: executable input_file");
     else
-        parser.parse(argv[1],&settings);
-#ifndef DEBUG
-    Renderer renderer(settings.resolution[0],settings.resolution[1],
-                      settings.spp,settings.output);
-#else
-    Renderer renderer(settings.resolution[0], settings.resolution[1],
-                      settings.spp,settings.output,1);
+        renderer = parser->parse(argv[1],&scene);
+    delete parser;
+    int retval = renderer->render(&scene);
+    delete renderer;
+#ifdef _WIN32
+    //avoid autoclosing cmd
+    std::cout << "Pres any key to exit" << std::endl;
+    _getch();
 #endif
-
-    switch(settings.type_camera)
-    {
-        case ORTHOGRAPHIC:
-        {
-            renderer.setOrthographic(settings.camera_pos,settings.camera_target,
-                                     settings.camera_up);
-            break;
-        }
-        case PERSPECTIVE:
-        {
-            renderer.setPerspective(settings.camera_pos, settings.camera_target,
-                                    settings.camera_up, settings.camera_fov);
-            break;
-        }
-        case PANORAMA:
-        {
-            renderer.setPanorama(settings.camera_pos,settings.camera_target,
-                                 settings.camera_up);
-            break;
-        }
-    }
-    switch(settings.type_sampler)
-    {
-        case RANDOM:
-        {
-            renderer.setRandomSampler();
-            break;
-        }
-        case STRATIFIED:
-        {
-            renderer.setStratifiedSampler();
-            break;
-        }
-    }
-    switch(settings.type_filter)
-    {
-        case BOX:
-        {
-            renderer.setBoxFilter();
-            break;
-        }
-        case TENT:
-        {
-            renderer.setTentFilter();
-            break;
-        }
-        case GAUSSIAN:
-        {
-            renderer.setGaussianFilter(settings.f_val[0]);
-            break;
-        }
-        case MITCHELL:
-        {
-            renderer.setMitchellFilter(settings.f_val[0],settings.f_val[1]);
-            break;
-        }
-        case LANCZOS:
-        {
-            renderer.setLanczosSincFilter(settings.f_val[0]);
-            break;
-        }
-    }
-    switch(settings.type_integrator)
-    {
-        case DIRECT_LIGHT:
-        {
-            renderer.setRayTracer();
-            break;
-        }
-        case PATH_TRACE:
-        {
-            renderer.setPathTracer();
-            break;
-        }
-    }
-
-    return renderer.render(settings.scene);
+    return retval;
 }

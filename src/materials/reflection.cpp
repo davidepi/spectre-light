@@ -3,8 +3,7 @@
 
 #include "reflection.hpp"
 
-Reflection::Reflection(const Spectrum& specular)
-    : Bdf(BdfFlags(BRDF|SPECULAR)),specular(specular)
+Reflection::Reflection():Bdf(FLAG_BRDF | FLAG_SPEC)
 {
 
 }
@@ -14,23 +13,19 @@ Spectrum Reflection::value(const Vec3*, const Vec3*) const
     return SPECTRUM_BLACK;
 }
 
-float Reflection::pdf(const Vec3*, const Vec3*)const
+float Reflection::pdf(const Vec3*, const Vec3*) const
 {
     return 0.f;
 }
 
-ConductorReflection::ConductorReflection(const Spectrum& specular,
-                                         const Spectrum& refraction,
+ConductorReflection::ConductorReflection(const Spectrum& refraction,
                                          const Spectrum& absorption)
-: Reflection(specular),ior(refraction),
-  fresnel((ior*ior)+(absorption*absorption))
+        :ior(refraction), fresnel((ior*ior)+(absorption*absorption))
 {
 }
 
-DielectricReflection::DielectricReflection(const Spectrum& specular,
-                                           const Spectrum& ior_i,
+DielectricReflection::DielectricReflection(const Spectrum& ior_i,
                                            const Spectrum& ior_t)
-: Reflection(specular)
 {
 #ifdef SPECTRAL
     DielectricReflection::eta_i = 0;
@@ -48,8 +43,8 @@ DielectricReflection::DielectricReflection(const Spectrum& specular,
 #endif
 }
 
-Spectrum ConductorReflection::sample_value(const Vec3 *wo, Vec3 *wi,
-                                           float, float, float* pdf)const
+Spectrum ConductorReflection::sample_value(const Vec3* wo, Vec3* wi,
+                                           float, float, float* pdf) const
 {
     //wi = wo * [-1 0 0 0]
     //          [0 -1 0 0]
@@ -65,12 +60,12 @@ Spectrum ConductorReflection::sample_value(const Vec3 *wo, Vec3 *wi,
     Spectrum tmp = fresnel*cosinsq;
     Spectrum rparsq = (tmp-etacosin2+1)/(tmp+etacosin2+1);
     eval = (rperpsq+rparsq)/2.f;
-    *pdf=1.f;
-    return eval*specular/fabsf(wo->z);
+    *pdf = 1.f;
+    return eval/fabsf(wo->z);
 }
 
-Spectrum DielectricReflection::sample_value(const Vec3 *wo, Vec3 *wi,
-                                            float, float, float* pdf)const
+Spectrum DielectricReflection::sample_value(const Vec3* wo, Vec3* wi,
+                                            float, float, float* pdf) const
 {
     wi->x = -wo->x;
     wi->y = -wo->y;
@@ -79,7 +74,7 @@ Spectrum DielectricReflection::sample_value(const Vec3 *wo, Vec3 *wi,
     float ei;
     float et;
     float abscosthetai = wo->z;
-    if (wo->z < 0) //exiting ray
+    if(wo->z<0) //exiting ray
     {
         ei = eta_t;
         et = eta_i;
@@ -90,23 +85,23 @@ Spectrum DielectricReflection::sample_value(const Vec3 *wo, Vec3 *wi,
         ei = eta_i;
         et = eta_t;
     }
-    float sinthetat = (ei/et)* sqrtf(max(0.f, 1.f - abscosthetai*abscosthetai));
+    float sinthetat = (ei/et)*sqrtf(max(0.f, 1.f-abscosthetai*abscosthetai));
     float eval;
     if(sinthetat>1.f)
         eval = 1.f;
     else
     {
-        float costhetat = sqrtf(max(0.f, 1.f - sinthetat * sinthetat));
-        float etatcosi = et * abscosthetai;
-        float etaicosi = ei * abscosthetai;
-        float etatcost = et * costhetat;
-        float etaicost = ei * costhetat;
+        float costhetat = sqrtf(max(0.f, 1.f-sinthetat*sinthetat));
+        float etatcosi = et*abscosthetai;
+        float etaicosi = ei*abscosthetai;
+        float etatcost = et*costhetat;
+        float etaicost = ei*costhetat;
 
-        float rperp = (etaicosi - etatcost) / (etaicosi + etatcost);
-        float rpar = (etatcosi - etaicost) / (etatcosi + etaicost);
-        eval = (rpar * rpar + rperp * rperp) / 2.f;
+        float rperp = (etaicosi-etatcost)/(etaicosi+etatcost);
+        float rpar = (etatcosi-etaicost)/(etatcosi+etaicost);
+        eval = (rpar*rpar+rperp*rperp)/2.f;
         eval /= fabsf(wo->z);
     }
-    return specular*eval;
+    return eval;
 }
 

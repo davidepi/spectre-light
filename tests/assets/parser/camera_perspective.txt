@@ -1,0 +1,1 @@
+camera: { type:perspective, position:[1,2,3], target:[4,5,6] up:[0,0,1] fov:90}

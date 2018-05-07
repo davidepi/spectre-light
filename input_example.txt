@@ -1,87 +1,83 @@
-#first line should be #RGB in order to use rgb renderer, anything else
-#will default to the better and slower spectral renderer
+out: "output.bmp"
+resolution: {width:800, height:600}
+camera: {type: perspective position:[0,4,2] target:[0,0,-4] up:[0,1,0], fov:70}
+sampler: stratified
+spp: 121
+texture: { name: "Red", color:[255,0,0] }
+texture: { name: "Green", color:[0,255,0] }
+texture: { name: "White", color:[255,255,255] }
+texture: { name: "Blue", color:[0,0,255] }
+material: {name: "Red Matte", type: matte, diffuse: "Red"}
+material: {name: "Green Matte", type: matte, diffuse: "Green"}
+material: {name: "White Matte", type: matte, diffuse: "White"}
+light: { name: "Sphere", position:[0,5,0], temperature:3500 }
 
-#Input file example. The parser is still a temp version, just for debugging
-#Misplaced colon or spaces will break everything
+material: {name: "matte 0.0", type: matte, diffuse: "White", roughness:0.0}
+material: {name: "matte 0.2", type: matte, diffuse: "White", roughness:0.2}
+material: {name: "matte 0.4", type: matte, diffuse: "White", roughness:0.4}
+material: {name: "matte 0.6", type: matte, diffuse: "White", roughness:0.6}
+material: {name: "matte 0.8", type: matte, diffuse: "White", roughness:0.8}
+material: {name: "matte 1.0", type: matte, diffuse: "White", roughness:1.0}
 
-#Output file, absolute or relative to the executable
-#supported .ppm and .bmp files
-out: /home/user/Desktop/test.ppm
+material: {name: "glossy 0.0", type: glossy, diffuse: "Blue", roughness: 0.0}
+material: {name: "glossy 0.2", type: glossy, diffuse: "Blue", roughness: 0.2}
+material: {name: "glossy 0.4", type: glossy, diffuse: "Blue", roughness: 0.4}
+material: {name: "glossy 0.6", type: glossy, diffuse: "Blue", roughness: 0.6}
+material: {name: "glossy 0.8", type: glossy, diffuse: "Blue", roughness: 0.8}
+material: {name: "glossy 1.0", type: glossy, diffuse: "Blue", roughness: 1.0}
 
-#Resolution width height (width = 2x height suggested with panorama camera)
-#width MUST be a multiple of 32
-resolution: 800 600
+material: {name: "metal 0.0", type: metal, element: Au, roughness: 0.0}
+material: {name: "metal 0.2", type: metal, element: Au, roughness: 0.2}
+material: {name: "metal 0.4", type: metal, element: Au, roughness: 0.4}
+material: {name: "metal 0.6", type: metal, element: Au, roughness: 0.6}
+material: {name: "metal 0.8", type: metal, element: Au, roughness: 0.8}
+material: {name: "metal 1.0", type: metal, element: Au, roughness: 1.0}
+material: {name: "mirror", type:metal, element: Al}
 
-#camera type (pos.x,pos.y,pos.z) (target.x,target.y,target.z) (up.x,up.y,up.z) fov
-#type can be perspective, orthographic or panorama
-#fov is in degrees and used only with perspective camera
-camera: perspective (0,2,3.5) (0,1.5,1) (0,1,0) 57.29
+material: {name: "glass 1.2", type: glass, ior:1.2 }
+material: {name: "glass 1.3", type: glass, ior:1.3 }
+material: {name: "glass 1.4", type: glass, ior:1.4 }
+material: {name: "glass 1.5", type: glass, ior:1.5 }
+material: {name: "glass 1.6", type: glass, ior:1.6 }
+material: {name: "glass 1.7", type: glass, ior:1.7 }
 
-#sampler type samples_per_pixel
-#type can be random or stratified
-#sampels_per_pixel is the quality of the image, higher is better
-sampler: stratified 25
+#world bounds
+world: { name: "Sphere", material: "Red Matte",   position:[-100003,0,0], scale:[1e5,1e5,1e5]}
+world: { name: "Sphere", material: "Green Matte", position:[100003,0,0],  scale:[1e5,1e5,1e5]}
+world: { name: "Sphere", material: "White Matte", position:[0,-100000,0], scale:[1e5,1e5,1e5]}
+world: { name: "Sphere", material: "White Matte", position:[0,100005,0],  scale:[1e5,1e5,1e5]}
+world: { name: "Sphere", material: "White Matte", position:[0,0,100005],  scale:[1e5,1e5,1e5]}
+world: { name: "Sphere", material: "White Matte", position:[0,0,-100005], scale:[1e5,1e5,1e5]}
 
-#filter type optional_values
-#type can be box, tent, gaussian, mitchell and lanczos
-#gaussian requires a sigma parameter, the falloff speed. Suggested a value of 2
-#mitchell requires the B and C parameters, suggested values are 0.33 and 0.33
-#lanczos requires the tau parameter, the suggested value is 3
-filter: mitchell 0.33 0.33
+#matte spheres
+world: {name: "Sphere", material: "matte 0.0", position: [-2.5,0.5,-4], scale:0.5}
+world: {name: "Sphere", material: "matte 0.2", position: [-1.5,0.5,-4], scale:0.5}
+world: {name: "Sphere", material: "matte 0.4", position: [-0.5,0.5,-4], scale:0.5}
+world: {name: "Sphere", material: "matte 0.6", position: [0.5,0.5,-4], scale:0.5}
+world: {name: "Sphere", material: "matte 0.8", position: [1.5,0.5,-4], scale:0.5}
+world: {name: "Sphere", material: "matte 1.0", position: [2.5,0.5,-4], scale:0.5}
 
-#integrator type
-#type can be direct or pt (path trace)
-integrator: pt
+#glossy spheres
+world: {name: "Sphere", material: "glossy 0.0", position: [-2.5,0.5,-3], scale:0.5}
+world: {name: "Sphere", material: "glossy 0.2", position: [-1.5,0.5,-3], scale:0.5}
+world: {name: "Sphere", material: "glossy 0.4", position: [-0.5,0.5,-3], scale:0.5}
+world: {name: "Sphere", material: "glossy 0.6", position: [0.5,0.5,-3], scale:0.5}
+world: {name: "Sphere", material: "glossy 0.8", position: [1.5,0.5,-3], scale:0.5}
+world: {name: "Sphere", material: "glossy 1.0", position: [2.5,0.5,-3], scale:0.5}
 
-#material name_without_spaces type optional_values
-#types:
-#diffuse (r,g,b) roughness
-#reflection (r,g,b) material where material is Au, Ag, Al, Cu, Fe, Hg, Pb, Pt or W
-#reflection (r,g,b) ior ior where ior is the index of refraction of the incident and transmitted material
-#refraction (r,g,b) ior ior where ior is the index of refraction of the incident and transmitted material
-#any ior can be in the form [val,val,val] or {val,val,val,val,val,val}
-#the first one will use Cauchy equation to determine wavelength-dependent ior, the other will use Sellmeier equation
-#if only 1 ior is available use [ior,0,0]. Rgb renderer also expects wavelength dependent iors
-#
-#glossy reflection_t (r,g,b) metal|ior distribution intensity
-#reflection_t is the type of reflection: reflection or refraction
-#metal can be Au, Ag...etc. if the material is a conductor, otherwise use ior
-#ior is the index of refraction, with cauchy [...] or sellemeier {...} equations like before.
-#distirbution can be blinn, beckmann or ggx
-#blinn intensity ranges from 0.0 (maximum roughness) to 100000 (maximum specularity)
-#beckmann intensity ranges from 0.0(minimum roughness) to 1.0(maximum roughness)
-#ggx intensity is like beckmann one, but an optional second parameter can be used for anisotropic reflections
-material: Red diffuse (200,70,70) 10
-material: Green diffuse (70,200,70) 10
-material: White diffuse (200,200,200) 10
-material: Glass reflection (255,255,255) [1,0,0] [1.5046,0.00420,0]
-material: Glass refraction (255,255,255) [1,0,0] [1.5046,0.00420,0]
-material: Polished_gold reflection (255,255,255) Au
-material: Polished_copper reflection (255,255,255) Cu
-material: Brushed_aluminium glossy reflection (255,255,255) Al ggx 0.1 0.05
-material: Plastic glossy reflection (30,30,255) [1.0,0,0] [1.5,0,0] beckmann 0.1
-material: Plastic diffuse (30,30,255) 0
+#metal spheres
+world: {name: "Sphere", material: "metal 0.0", position: [-2.5,0.5,-2], scale:0.5}
+world: {name: "Sphere", material: "metal 0.2", position: [-1.5,0.5,-2], scale:0.5}
+world: {name: "Sphere", material: "metal 0.4", position: [-0.5,0.5,-2], scale:0.5}
+world: {name: "Sphere", material: "metal 0.6", position: [0.5,0.5,-2], scale:0.5}
+world: {name: "Sphere", material: "metal 0.8", position: [1.5,0.5,-2], scale:0.5}
+world: {name: "Sphere", material: "metal 1.0", position: [2.5,0.5,-2], scale:0.5}
 
-#asset name_without_spaces obj_file_path
-#asset name sphere
-#asset name box (x_edge_length,y_edge_length,z_edge_length)
-#path is absolute or relative to the executable
-#WARNING!!!! Input meshes: only tris, v, and vn are REQUIRED otherwise segfault is waiting for you
-#asset: Ico /home/user/Desktop/test.obj
-asset: Default_sphere sphere
+#glass spheres
+world: {name: "Sphere", material: "glass 1.2", position: [-2.5,0.5,-1], scale:0.5}
+world: {name: "Sphere", material: "glass 1.3", position: [-1.5,0.5,-1], scale:0.5}
+world: {name: "Sphere", material: "glass 1.4", position: [-0.5,0.5,-1], scale:0.5}
+world: {name: "Sphere", material: "glass 1.5", position: [0.5,0.5,-1], scale:0.5}
+world: {name: "Sphere", material: "glass 1.6", position: [1.5,0.5,-1], scale:0.5}
+world: {name: "Sphere", material: "glass 1.7", position: [2.5,0.5,-1], scale:0.5}
 
-#light asset_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z) (r,g,b)
-#instead of (r,g,b) it is possible to insert a temperature in Kelvin degrees (6000K = white)
-#rotation in sexagesimal degrees
-#using asset with high polycount can dramatically increase rendering time
-light: Default_sphere (0,5,0) (0,0,0) (1,1,1) 4500K
-
-#world asset_name material_name (pos.x,pos.y,pos.z) (rot.x,rot.y,rot.z) (scale.x,scale.y,scale.z)
-#rotation in degrees
-world: Default_sphere Red (-100003,0,0) (0,0,0) (100000,100000,100000)
-world: Default_sphere Green (100003,0,0) (0,0,0) (100000,100000,100000)
-world: Default_sphere Default (0,-100000,0) (0,0,0) (100000,100000,100000)
-world: Default_sphere White (0,0,100005) (0,0,0) (100000,100000,100000)
-world: Default_sphere White (0,100005,0) (0,0,0) (100000,100000,100000)
-world: Default_sphere White (0,0,-100010) (0,0,0) (100000,100000,100000)
-world: Default_sphere Polished_copper (0,1,0) (0,0,0) (1,1,1)

@@ -1,0 +1,2 @@
+shape: "../parser_obj/pyramid.obj"
+shape: "/i/do/not/exists.obj"

@@ -4,8 +4,10 @@
 #include "console.hpp"
 
 #ifdef TESTS
-int errors_count[5] = {0,0,0,0,0};
+int errors_count[5] = {0, 0, 0, 0, 0};
+#ifndef UNUSED
 #define UNUSED(x) (void)x;
+#endif
 #endif
 
 #undef Console
@@ -42,13 +44,15 @@ Console::Console()
 void Console::motd()
 {
 #ifndef SUPPRESS_MOTD
-    fprintf(stdout,"Spectre version %s\nReleased on %s, compiled on %s\n",
-            SPECTRE_VERSION,SPECTRE_RELEASE,__DATE__);
-
+    fprintf(stdout, "Spectre version %s\nReleased on %s, compiled on %s\n",
+            SPECTRE_VERSION, SPECTRE_RELEASE, __DATE__);
+#ifdef DEBUG
+    fprintf(stdout, MESSAGE_DEBUG "\n");
+#endif
 #ifdef SPECTRAL
     fprintf(stdout,"Using full-spectrum renderer\n");
 #else
-    fprintf(stdout,"Using " SPRED "r" SPGRN "g" SPBLU "b" SPNRM " renderer\n");
+    fprintf(stdout, "Using " SPRED "r" SPGRN "g" SPBLU "b" SPNRM " renderer\n");
 #endif
 #endif
 }
@@ -67,136 +71,92 @@ void Console::log(const char* m, const char* v)
 #endif
 }
 
-void Console::notice(const char* s)
+void Console::notice(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stdout,"[" NOTICE "] %s\n",s);
+    fprintf(stdout,"[" NOTICE "] ");
+    va_list args;
+    va_start(args,format);
+    vfprintf(stdout, format, args);
+    va_end(args);
+    fprintf(stdout,"\n");
 #else
-    UNUSED(s);
+    UNUSED(format);
     errors_count[NOTICE_INDEX]++;
 #endif
 }
 
-void Console::warning(const char* s)
+void Console::warning(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" WARNING "] %s\n",s);
+    fprintf(stderr,"[" WARNING "] ");
+    va_list args;
+    va_start(args,format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fprintf(stderr,"\n");
 #else
-    UNUSED(s);
+    UNUSED(format);
     errors_count[WARNING_INDEX]++;
 #endif
 }
 
-void Console::severe(const char* s)
+void Console::severe(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" ERROR "] %s\n",s);
+    fprintf(stderr,"[" ERROR "] ");
+    va_list args;
+    va_start(args,format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fprintf(stderr,"\n");
 #else
-    UNUSED(s);
+    UNUSED(format);
     errors_count[ERROR_INDEX]++;
 #endif
 }
 
-void Console::critical(const char* s)
+void Console::critical(const char* format, ...)
 {
 #ifndef TESTS
-    fprintf(stderr,"[" CRITICAL "] %s\n",s);
+    fprintf(stderr,"[" CRITICAL "] ");
+    va_list args;
+    va_start(args,format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fprintf(stderr,"\n");
+    fflush(stderr);
+#ifdef _WIN32
+    std::cout << "Pres any key to exit" << std::endl;
+    _getch(); //avoid automatic closing the window
+#endif
     exit(EXIT_FAILURE);
 #else
-    UNUSED(s);
+    UNUSED(format);
     errors_count[CRITICAL_INDEX]++;
 #endif
 }
 
-void Console::log(bool b, const char* m, const char* v)
+void Console::progress_bar_done() const
 {
-    if(b)
-    {
-#ifndef TESTS
-        if(v == NULL) //TODO or program not launched with verbose flag
-            fprintf(stdout,"%s\n",m);
-        else
-            fprintf(stdout,"%s\n",v);
-#else
-        UNUSED(m);
-        UNUSED(v);
-        errors_count[LOG_INDEX]++;
-#endif
-    }
-}
-
-void Console::notice(bool b, const char* s)
-{
-    if(b)
-    {
-#ifndef TESTS
-        fprintf(stdout,"[" NOTICE "] %s\n",s);
-#else
-        UNUSED(s);
-        errors_count[NOTICE_INDEX]++;
-#endif
-    }
-}
-
-void Console::warning(bool b, const char* s)
-{
-    if(b)
-    {
-#ifndef TESTS
-        fprintf(stderr,"[" WARNING "] %s\n",s);
-#else
-        UNUSED(s);
-        errors_count[WARNING_INDEX]++;
-#endif
-    }
-}
-
-void Console::severe(bool b, const char* s)
-{
-    if(b)
-    {
-#ifndef TESTS
-        fprintf(stderr,"[" ERROR "] %s\n",s);
-#else
-        UNUSED(s);
-        errors_count[ERROR_INDEX]++;
-#endif
-    }
-}
-
-void Console::critical(bool b, const char* s)
-{
-    if(b)
-    {
-#ifndef TESTS
-        fprintf(stderr,"[" CRITICAL "] %s\n",s);
-        exit(EXIT_FAILURE);
-#else
-        UNUSED(s);
-        errors_count[CRITICAL_INDEX]++;
-#endif
-    }
-}
-
-void Console::progress_bar_done()const
-{
-#ifdef WIN32
+#ifdef _WIN32
     std::cout<<"\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
               <<std::endl;
 #else
-    std::cout<<"\33[2K\r(####################) "<<SPGRN<< "100% Done!"<<SPNRM
-             <<std::endl;
+    std::cout << "\33[2K\r(####################) " << SPGRN << "100% Done!"
+              << SPNRM
+              << std::endl;
 #endif
 }
 
-void Console::progress_bar(float done, float eta)const
+void Console::progress_bar(float done, float eta) const
 {
-    done*=20;
+    done *= 20;
     const char fullblock = '#';
     const char emptyblock = '-';
     std::string progress;
 
-    int i=0;
+    int i = 0;
     while(i<(int)done)
     {
         progress.push_back(fullblock);
@@ -207,10 +167,11 @@ void Console::progress_bar(float done, float eta)const
         progress.push_back(emptyblock);
         i++;
     }
-#ifdef WIN32
+#ifdef _WIN32
     std::cout<<"("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s\r";
 #else
-    std::cout<<"\33[2K\r("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s";
+    std::cout << "\33[2K\r(" << progress << ") " << (int)(done*5) << "%\tETA:"
+              << eta << " s";
 #endif
     fflush(stdout);
 }

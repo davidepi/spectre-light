@@ -1,12 +1,12 @@
 //Created,  23 Sep 2017
-//Last Edit 19 Jan 2018
+//Last Edit 11 Apr 2018
 
 /**
  *  \file microfacet.hpp
  *  \brief Microfacet models
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 19 Jan 2018
+ *  \date 11 Apr 2018
  *  \copyright GNU GPLv3
  */
 
@@ -35,14 +35,12 @@ public:
 
     /** \brief Default constructor
      *
-     *  \param[in] spe The reflected spectrum
      *  \param[in] distribution The class used to know how the microfacets are
      *  distributed
      *  \param[in] fresnel The fresnel term (Dielectric or Conductor) of this
      *  material
      */
-    MicrofacetR(const Spectrum& spe, const MicrofacetDist* distribution,
-                const Fresnel* fresnel);
+    MicrofacetR(const MicrofacetDist* distribution, const Fresnel* fresnel);
 
     ///Default destructor
     ~MicrofacetR();
@@ -57,7 +55,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The value of the BRDF
      */
-    Spectrum value(const Vec3* woS, const Vec3* wiS)const;
+    Spectrum value(const Vec3* woS, const Vec3* wiS) const;
 
     /** \brief Returns the value of the BRDF
      *
@@ -75,7 +73,7 @@ public:
      *  \return The value of the BRDF
      */
     Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                  float* pdf)const;
+                          float* pdf) const;
 
     /** \brief Return the probability density function for this BRDF
      *
@@ -87,7 +85,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* woS, const Vec3* wiS)const;
+    float pdf(const Vec3* woS, const Vec3* wiS) const;
 
 private:
 
@@ -96,9 +94,6 @@ private:
 
     //microfacet distribution
     const MicrofacetDist* distribution;
-
-    //reflected spectrum
-    const Spectrum specular;
 };
 
 /**
@@ -121,14 +116,13 @@ public:
 
     /** \brief Default constructor
      *
-     *  \param[in] spectrum The reflected spectrum
      *  \param[in] distribution The class used to know how the microfacets are
      *  distributed
      *  \param[in] etai The index of refraction of the material outside the
      *  object
      *  \param[in] etat The index of refraction of the microfacets
      */
-    MicrofacetT(const Spectrum& spectrum, const MicrofacetDist* distribution,
+    MicrofacetT(const MicrofacetDist* distribution,
                 const Spectrum& etai, const Spectrum& etat);
 
     ///Default destructor
@@ -144,7 +138,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The value of the BTDF
      */
-    Spectrum value(const Vec3* woS, const Vec3* wiS)const;
+    Spectrum value(const Vec3* woS, const Vec3* wiS) const;
 
     /** \brief Returns the value of the BTDF
      *
@@ -162,7 +156,7 @@ public:
      *  \return The value of the BTDF
      */
     Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                  float* pdf)const;
+                          float* pdf) const;
 
     /** \brief Return the probability density function for this BRDF
      *
@@ -174,12 +168,9 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* woS, const Vec3* wiS)const;
+    float pdf(const Vec3* woS, const Vec3* wiS) const;
 
 private:
-
-    //refracted spectrum
-    const Spectrum specular;
 
     //fresnel term
     const Dielectric fresnel_diel;
