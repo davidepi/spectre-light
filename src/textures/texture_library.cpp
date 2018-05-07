@@ -4,7 +4,7 @@
 #include "texture_library.hpp"
 
 TextureLibrary::TextureLibrary()
-        :default_texture(new UniformTexture(SPECTRUM_ONE))
+        :default_texture(new TextureUniform(SPECTRUM_ONE))
 {
     lib.insert(std::make_pair("Default", default_texture));
 }

@@ -9,7 +9,7 @@
 #endif
 
 #include "textures/texture_library.hpp"
-#include "textures/uniform.hpp"
+#include "textures/texture_uniform.hpp"
 #include "utility/spectrum.hpp"
 
 SPECTRE_TEST_INIT(TextureLibrary_tests)
@@ -20,7 +20,7 @@ SPECTRE_TEST(TextureLibrary, add)
     const Spectrum color2(4500);
     Spectrum res;
 
-    Texture* tex = new UniformTexture(color1);
+    Texture* tex = new TextureUniform(color1);
     TexLib.add_inherit("New", tex);
     const Texture* got = TexLib.get("New");
     ASSERT_EQ(got, tex);
@@ -30,7 +30,7 @@ SPECTRE_TEST(TextureLibrary, add)
     EXPECT_EQ(color1.w[2], res.w[2]);
 
     //add different with same name, should be refused
-    Texture* tex2 = new UniformTexture(color2);
+    Texture* tex2 = new TextureUniform(color2);
     TexLib.add_inherit("New", tex2);
     const Texture* got2 = TexLib.get("New");
     res = got2->map(Point2());
@@ -45,7 +45,7 @@ SPECTRE_TEST(TextureLibrary, add)
 
 SPECTRE_TEST(TextureLibrary, remove)
 {
-    Texture* tex = new UniformTexture(SPECTRUM_WHITE);
+    Texture* tex = new TextureUniform(SPECTRUM_WHITE);
     TexLib.add_inherit("Removeme", tex);
     const Texture* got = TexLib.get("Removeme");
     ASSERT_PTR_EQ(got,tex);
@@ -68,7 +68,7 @@ SPECTRE_TEST(TextureLibrary, remove)
 
 SPECTRE_TEST(TextureLibrary, contains)
 {
-    Texture* tex = new UniformTexture(SPECTRUM_WHITE);
+    Texture* tex = new TextureUniform(SPECTRUM_WHITE);
     TexLib.add_inherit("Contained", tex);
     bool res = TexLib.contains("Contained");
     EXPECT_TRUE(res);
@@ -79,11 +79,11 @@ SPECTRE_TEST(TextureLibrary, contains)
 
 SPECTRE_TEST(TextureLibrary, clear)
 {
-    Texture* tex = new UniformTexture(SPECTRUM_WHITE);
+    Texture* tex = new TextureUniform(SPECTRUM_WHITE);
     TexLib.add_inherit("Removeme", tex);
-    Texture* tex2 = new UniformTexture(SPECTRUM_WHITE);
+    Texture* tex2 = new TextureUniform(SPECTRUM_WHITE);
     TexLib.add_inherit("Removeme2", tex2);
-    Texture* tex3 = new UniformTexture(SPECTRUM_WHITE);
+    Texture* tex3 = new TextureUniform(SPECTRUM_WHITE);
     TexLib.add_inherit("Removeme3", tex3);
 
     const Texture* got;

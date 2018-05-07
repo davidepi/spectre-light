@@ -256,7 +256,7 @@ static void load_texture_rec(File& src)
                 printf("load texture %s\n", src.filename());
                 //TODO: placeholder because the texture class is not ready
                 //TOOD: check texture not already loaded
-                Texture* addme = new UniformTexture(SPECTRUM_WHITE);
+                Texture* addme = new TextureUniform(SPECTRUM_WHITE);
                 TexLib.add_inherit(src.filename(), addme);
             }
             /*else silently skip unsupported texture */
@@ -287,7 +287,7 @@ void ConfigDriver::load_texture_uniform()
                      (unsigned char)tex_color.y,
                      (unsigned char)tex_color.z);
         Spectrum color(rgb, false);
-        TexLib.add_inherit(tex_name, new UniformTexture(color));
+        TexLib.add_inherit(tex_name, new TextureUniform(color));
         tex_name.clear();
     }
 }
@@ -308,7 +308,7 @@ void ConfigDriver::load_texture_single()
         //TODO: check texture not already loaded (MESSAGE_DUPLICATE_TEXTURE)
         if(tex_name.empty())
             tex_name = cur_file.filename();
-        Texture* addme = new UniformTexture(SPECTRUM_WHITE);
+        Texture* addme = new TextureUniform(SPECTRUM_WHITE);
         TexLib.add_inherit(tex_name, addme);
         tex_name.clear(); //reset name for next texture
     }

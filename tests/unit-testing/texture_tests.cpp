@@ -12,11 +12,11 @@ SPECTRE_TEST_INIT(Texture_tests)
 
 #include "utility/spectrum.hpp"
 #include "textures/texture.hpp"
-#include "textures/uniform.hpp"
+#include "textures/texture_uniform.hpp"
 
 SPECTRE_TEST(Texture, UniformTexture_map)
 {
-    UniformTexture tex(SPECTRUM_WHITE);
+    TextureUniform tex(SPECTRUM_WHITE);
     Spectrum res;
     res = tex.map(Point2());
     EXPECT_EQ(res.w[0], SPECTRUM_WHITE.w[0]);

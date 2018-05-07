@@ -19,7 +19,7 @@
 #include "primitives/asset.hpp"
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
-#include "textures/uniform.hpp"
+#include "textures/texture_uniform.hpp"
 #include "utility/spectrum.hpp"
 
 SPECTRE_TEST_INIT(Material_tests)
@@ -713,7 +713,7 @@ SPECTRE_TEST(Material, Bsdf_value)
     Bsdf materialWtexture;
     unsigned char associations = 0;
     ColorRGB red((unsigned char)255, 0, 0);
-    Texture* ut = new UniformTexture(Spectrum(red, false));
+    Texture* ut = new TextureUniform(Spectrum(red, false));
     Sphere s;
     Matrix4 m;
     Vec3 wi;
@@ -828,7 +828,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     //textured material
     Bsdf materialWtexture;
     ColorRGB red((unsigned char)255, 0, 0);
-    Texture* ut = new UniformTexture(Spectrum(red, false));
+    Texture* ut = new TextureUniform(Spectrum(red, false));
     materialWtexture.inherit_bdf(new Lambertian(), ut);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                         &wi, &pdf, false, &matched_spec);
@@ -986,7 +986,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     SingleBRDF metal;
     unsigned char associations = 0;
     ColorRGB red((unsigned char)255, 0, 0);
-    Texture* ut = new UniformTexture(Spectrum(red, false));
+    Texture* ut = new TextureUniform(Spectrum(red, false));
     Bsdf material_t;
     Sphere s;
     Matrix4 m;
@@ -1120,7 +1120,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     //textured material
     Bsdf materialWtexture;
     ColorRGB red((unsigned char)255, 0, 0);
-    Texture* ut = new UniformTexture(Spectrum(red, false));
+    Texture* ut = new TextureUniform(Spectrum(red, false));
     materialWtexture.inherit_bdf(new Lambertian(), ut);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                         &wi, &pdf, false, &matched_spec);

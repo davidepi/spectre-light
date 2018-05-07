@@ -15,7 +15,7 @@
 #define __TEXTURE_LIBRARY_HPP__
 
 #include "textures/texture.hpp"
-#include "textures/uniform.hpp"
+#include "textures/texture_uniform.hpp"
 #include <unordered_map>
 #include <string>
 

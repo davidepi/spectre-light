@@ -2,31 +2,31 @@
 //Last Edit 14 Mar 2018
 
 /**
- *  \file texture.hpp
+ *  \file texture_uniform.hpp
  *  \brief     Texture returning a single value
  *  \details   A texture mapping evey u,v coordinate to the same Spectrum value
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      14 Mar 2018
  *  \copyright GNU GPLv3
  */
 
 
-#ifndef __UNIFORM_TEXTURE_HPP_
-#define __UNIFORM_TEXTURE_HPP_
+#ifndef __UNIFORM_HPP_
+#define __UNIFORM_HPP_
 
 #include "textures/texture.hpp"
 #include "utility/spectrum.hpp"
 
 /**
- *  \class UniformTexture uniform.hpp textures/uniform.hpp
+ *  \class TextureUniform uniform.hpp textures/texture_uniform.hpp
  *  \brief A Texture class returning always the same value
  *
- *  UniformTexture that maps every (u,v) coordinate to the same Spectrum value
+ *  TextureUniform that maps every (u,v) coordinate to the same Spectrum value
  *  passed at construction time. Although this seems an unnecessary wrapping, it
  *  it used to set a sort of default implementation of the texture class.
  */
-class UniformTexture : public Texture
+class TextureUniform : public Texture
 {
 public:
 
@@ -35,10 +35,10 @@ public:
      *  \param[in] value The spectrum value that will be returned by the map()
      *  function
      */
-    UniformTexture(const Spectrum& value);
+    TextureUniform(const Spectrum& value);
 
     ///Default destructor
-    ~UniformTexture() = default;
+    ~TextureUniform() = default;
 
     /** \brief Maps an (u,v) coordinate to a texture value
      *

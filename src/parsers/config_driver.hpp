@@ -314,7 +314,7 @@ public:
     ///Temp val for the location on disk of the current texture being parsed
     std::string tex_src;
 
-    ///Temp val, the RGB color of the UniformTexture currently being parsed
+    ///Temp val, the RGB color of the TextureUniform currently being parsed
     Vec3 tex_color;
 
     ///Load a single texture file
@@ -323,7 +323,7 @@ public:
     ///Load recursively a texture folder
     void load_texture_folder();
 
-    ///Put an UniformTexture inside the library
+    ///Put a TextureUniform inside the library
     void load_texture_uniform();
 
     /*--------------.
