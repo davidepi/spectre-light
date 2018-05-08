@@ -17,18 +17,17 @@ class ImageMap
 {
 public:
     ImageMap();
-    ImageMap(const unsigned char* source, int width, int height);
+    ImageMap(int side);
+    ImageMap(const unsigned char* source, int side);
+    ImageMap(const float* source, int side);
     ImageMap(const ImageMap &old);
     ImageMap(const ImageMap &old, bool halves);
     ~ImageMap();
     
     bool is_valid()const {return values!=NULL;}
     
-private:
-    
-    const static FilterLanczos downsample_filter;
-    unsigned short width;
-    unsigned short height;
+//private:
+    unsigned short size;
     Texel* values;
 };
 
