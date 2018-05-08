@@ -98,6 +98,11 @@ struct ExecutorData
  *  affected pixels depends by the chosen filter.
  *  This class provides also a method for saving the image on the disk after
  *  the render.
+ *
+ *  This class is different from the ImageMap one: this class is specialized on
+ *  the multithreaded addition, filtering of samples and image saving, while the
+ *  ImageMap assumes a power of 2 side for the image and is used for texture
+ *  reading and their memory storage
  */
 class ImageFilm
 {

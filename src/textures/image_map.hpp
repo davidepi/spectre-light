@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit  7 May 2018
+//Last Edit  8 May 2018
 
 /**
  *  \file image_map.hpp
@@ -7,7 +7,7 @@
  *  \details   A square, power of 2, image used inside TextureImage as a MIPMap
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      7 May 2018
+ *  \date      8 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,7 @@
 #define __IMAGE_MAP_HPP__
 
 #include "textures/texture.hpp"
+#include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
 
 ///Pixel component of a texture, 24-bit version
@@ -54,6 +55,11 @@ struct Texel32
  *  this is done to save space on memory. For this reason if the high dpi
  *  constructor is used but every value could be represented by a normal dpi
  *  image this one will be used.
+ *
+ *  This class is different from ImageFilm: this one is specialized in texture
+ *  reading and texture storage on memory, while ImageFilm class is used for the
+ *  final image buffer and the multithreaded addition and filtering of samples
+ *  aswell as image saving onto disk
  */
 class ImageMap
 {
@@ -61,6 +67,17 @@ public:
     
     ///Default constructor, allocates an empy image of size 0x0
     ImageMap();
+    
+    /** \brief Creates an image with the given size
+     *
+     *  Creates an image of size side*side without allocating anything.
+     *  Pretty useless constructor since there is no way to allocate values
+     *  after construction time. However it is used in the TextureImage class to
+     *  store the size of the image before allocation
+     *
+     *  \param[in] side The width and height of the image
+     */
+    ImageMap(int side);
     
     /** \brief Allocates an image with the given values
      *
@@ -92,18 +109,29 @@ public:
      *
      *  Copy the input ImageMap, and, if the halves parameter is true, halves
      *  its size. This kind of copy constructor is very useful to create the
-     *  various MIP Maps
+     *  various MIP Maps. If the third parameter is true, an high quality
+     *  filter (Lanczos-Sinc) will be used to perform the downscale. Note that
+     *  this will increase dramatically the computation time and generally is
+     *  not worth it
      *
      *  \param[in] old The ImageMap that will be copied
      *  \param[in] halves true if the copied ImageMap will be half the size of
      *  the old one
+     *  \param[in] hqfilter true if the downscale should use a lanczos filter.
+     *  Defaulted to false
      */
-    ImageMap(const ImageMap &old, bool halves);
+    ImageMap(const ImageMap &old, bool halves, bool hqfilter = false);
+    
+    ///Check if the allocation of the map was succesfull (no memory errors)
+    bool is_valid()const { return values!=NULL;}
+    
+    ///Deallocate the image data
+    void dealloc();
     
     ///Default destructor
     ~ImageMap();
     
-private:
+//private:
     
     ///width or height
     unsigned short size;

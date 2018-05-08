@@ -3,14 +3,22 @@
 
 #include "textures/image_map.hpp"
 
-const FilterLanczos downsample_filter = FilterLanczos(2.f);
-static void downsample(const Texel* in, Texel* out, unsigned short insize);
-static void downsample(const Texel32* in, Texel32* out, unsigned short insize);
+const FilterLanczos lowpass_filter = FilterLanczos(3.f);
+static void downsample(const Texel* in, Texel* out, unsigned short insize,
+                       bool hqfilter);
+static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
+                       bool hqfilter);
 
 ImageMap::ImageMap()
 {
     ImageMap::size = 0;
     ImageMap::high_depth = false;
+    ImageMap::values = NULL;
+}
+
+ImageMap::ImageMap(int side)
+{
+    ImageMap::size = (unsigned short)side;
     ImageMap::values = NULL;
 }
 
@@ -79,7 +87,7 @@ ImageMap::ImageMap(const ImageMap &old)
     }
 }
 
-ImageMap::ImageMap(const ImageMap &old, bool halves)
+ImageMap::ImageMap(const ImageMap &old, bool halves, bool hqfilter)
 {
     if(!halves)
     {
@@ -93,15 +101,21 @@ ImageMap::ImageMap(const ImageMap &old, bool halves)
         {
             ImageMap::values_high = (Texel32*)malloc(sizeof(Texel32)*size*size);
             if(values_high!=NULL)
-                downsample(old.values_high, values_high, old.size);
+                downsample(old.values_high, values_high, old.size, hqfilter);
         }
         else
         {
             ImageMap::values = (Texel*)malloc(sizeof(Texel)*size*size);
             if(values!=NULL)
-                downsample(old.values, values, old.size);
+                downsample(old.values, values, old.size, hqfilter);
         }
     }
+}
+
+void ImageMap::dealloc()
+{
+    free(ImageMap::values);
+    ImageMap::values = NULL;
 }
 
 ImageMap::~ImageMap()
@@ -110,13 +124,19 @@ ImageMap::~ImageMap()
         free(ImageMap::values);
 }
 
-static void downsample(const Texel32* in, Texel32* out, unsigned short insize)
+static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
+                       bool hqfilter)
 {
     unsigned short outsize = insize/2;
-    int range_x = downsample_filter.range_x;
-    int range_y = downsample_filter.range_y;
-    float* weights = (float*)malloc(sizeof(float)*outsize*outsize);
-    memset(out, 0, sizeof(Texel32)*outsize*outsize);
+    int range_x = lowpass_filter.range_x;
+    int range_y = lowpass_filter.range_y;
+    float* weights;
+    if(hqfilter)
+    {
+        memset(out, 0, sizeof(Texel32)*outsize*outsize);
+        weights = (float*)malloc(sizeof(float)*outsize*outsize);
+        memset(weights, 0, sizeof(float)*outsize*outsize);
+    }
     for(int y=0;y<outsize;y++)
     {
         for(int x=0;x<outsize;x++)
@@ -125,7 +145,15 @@ static void downsample(const Texel32* in, Texel32* out, unsigned short insize)
             Texel32 t1 = in[(2*y+1)*insize+2*x];
             Texel32 t2 = in[2*y*insize+(2*x+1)];
             Texel32 t3 = in[(2*y+1)*insize+(2*x+1)];
-            //filter neighbours
+            if(!hqfilter) //single pixel (no filter)
+            {
+                int pixel = y*outsize+x;
+                out[pixel].r = 0.25f*(t0.r+t1.r+t2.r+t3.r);
+                out[pixel].g = 0.25f*(t0.g+t1.g+t2.g+t3.g);
+                out[pixel].b = 0.25f*(t0.b+t1.b+t2.b+t3.b);
+            }
+            else //filter also neighbours (lanczos filter)
+            {
             for(int oy = -range_y; oy<=range_y; oy++)
                 for(int ox = -range_x; ox<=range_x; ox++)
                 {
@@ -136,34 +164,44 @@ static void downsample(const Texel32* in, Texel32* out, unsigned short insize)
                     if(val_x<0 || val_x>=outsize || val_y<0 || val_y>=outsize)
                         continue;
                     int pixel = val_y*outsize+val_x;
-                    float weight = downsample_filter.weight((float)ox,
-                                                            (float)oy);
+                    float weight = lowpass_filter.weight((float)ox,(float)oy);
                     out[pixel].r += 0.25f*(t0.r+t1.r+t2.r+t3.r)*weight;
                     out[pixel].g += 0.25f*(t0.g+t1.g+t2.g+t3.g)*weight;
                     out[pixel].b += 0.25f*(t0.b+t1.b+t2.b+t3.b)*weight;
                     weights[pixel] += weight;
                 }
+            }
         }
     }
-    //reweights samples
-    for(int i=0;i<outsize*outsize;i++)
+    if(hqfilter)
     {
-        float weight = 1.f/weights[i];
-        out[i].r = max(out[i].r,0.f)*weight;
-        out[i].g = max(out[i].g,0.f)*weight;
-        out[i].b = max(out[i].b,0.f)*weight;
+        //reweights samples
+        for(int i=0;i<outsize*outsize;i++)
+        {
+            float weight = 1.f/weights[i];
+            out[i].r = max(out[i].r,0.f)*weight;
+            out[i].g = max(out[i].g,0.f)*weight;
+            out[i].b = max(out[i].b,0.f)*weight;
+        }
+        free(weights);
     }
-    free(weights);
 }
 
-static void downsample(const Texel* in, Texel* out, unsigned short insize)
+static void downsample(const Texel* in, Texel* out, unsigned short insize,
+                       bool hqfilter)
 {
     unsigned short outsize = insize/2;
-    int range_x = downsample_filter.range_x;
-    int range_y = downsample_filter.range_y;
-    float* weights = (float*)malloc(sizeof(float)*outsize*outsize);
-    Texel32* tmpout = (Texel32*)malloc(sizeof(Texel32)*outsize*outsize);
-    memset(tmpout,0,sizeof(Texel32)*outsize*outsize);
+    int range_x = lowpass_filter.range_x;
+    int range_y = lowpass_filter.range_y;
+    Texel32* tmpout;
+    float* weights;
+    if(hqfilter)
+    {
+        weights = (float*)malloc(sizeof(float)*outsize*outsize);
+        tmpout = (Texel32*)malloc(sizeof(Texel32)*outsize*outsize);
+        memset(tmpout,0,sizeof(Texel32)*outsize*outsize);
+        memset(weights,0,sizeof(float)*outsize*outsize);
+    }
     for(int y=0;y<outsize;y++)
     {
         for(int x=0;x<outsize;x++)
@@ -172,7 +210,15 @@ static void downsample(const Texel* in, Texel* out, unsigned short insize)
             Texel t1 = in[(2*y+1)*insize+2*x];
             Texel t2 = in[2*y*insize+(2*x+1)];
             Texel t3 = in[(2*y+1)*insize+(2*x+1)];
-            //filter neighbours
+            if(!hqfilter) //single pixel (no filter)
+            {
+                int pixel = y*outsize+x;
+                out[pixel].r = 0.25f*(t0.r+t1.r+t2.r+t3.r);
+                out[pixel].g = 0.25f*(t0.g+t1.g+t2.g+t3.g);
+                out[pixel].b = 0.25f*(t0.b+t1.b+t2.b+t3.b);
+            }
+            else //filter also neighbours (lanczos filter)
+            {
             for(int oy = -range_y; oy<=range_y; oy++)
                 for(int ox = -range_x; ox<=range_x; ox++)
                 {
@@ -183,23 +229,26 @@ static void downsample(const Texel* in, Texel* out, unsigned short insize)
                     if(val_x<0 || val_x>=outsize || val_y<0 || val_y>=outsize)
                         continue;
                     int pixel = val_y*outsize+val_x;
-                    float weight = downsample_filter.weight((float)ox,
-                                                            (float)oy);
+                    float weight = lowpass_filter.weight((float)ox,(float)oy);
                     tmpout[pixel].r += 0.25f*(t0.r+t1.r+t2.r+t3.r)*weight;
                     tmpout[pixel].g += 0.25f*(t0.g+t1.g+t2.g+t3.g)*weight;
                     tmpout[pixel].b += 0.25f*(t0.b+t1.b+t2.b+t3.b)*weight;
                     weights[pixel] += weight;
                 }
+            }
         }
     }
-    //reweights samples
-    for(int i=0;i<outsize*outsize;i++)
+    if(hqfilter)
     {
-        float weight = 1.f/weights[i];
-        out[i].r = (uint8_t)clamp(tmpout[i].r*weight,0.f,255.f);
-        out[i].g = (uint8_t)clamp(tmpout[i].g*weight,0.f,255.f);
-        out[i].b = (uint8_t)clamp(tmpout[i].b*weight,0.f,255.f);
+        //reweights samples
+        for(int i=0;i<outsize*outsize;i++)
+        {
+            float weight = 1.f/weights[i];
+            out[i].r = (uint8_t)clamp(tmpout[i].r*weight,0.f,255.f);
+            out[i].g = (uint8_t)clamp(tmpout[i].g*weight,0.f,255.f);
+            out[i].b = (uint8_t)clamp(tmpout[i].b*weight,0.f,255.f);
+        }
+        free(tmpout);
+        free(weights);
     }
-    free(tmpout);
-    free(weights);
 }
