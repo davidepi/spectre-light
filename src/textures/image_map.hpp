@@ -8,9 +8,16 @@
 
 struct Texel
 {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+};
+
+struct Texel32
+{
+    float r;
+    float g;
+    float b;
 };
 
 class ImageMap
@@ -18,17 +25,20 @@ class ImageMap
 public:
     ImageMap();
     ImageMap(int side);
-    ImageMap(const unsigned char* source, int side);
+    ImageMap(const uint8_t* source, int side);
     ImageMap(const float* source, int side);
     ImageMap(const ImageMap &old);
     ImageMap(const ImageMap &old, bool halves);
     ~ImageMap();
     
-    bool is_valid()const {return values!=NULL;}
-    
 //private:
     unsigned short size;
-    Texel* values;
+    bool high_depth;
+    union
+    {
+        Texel* values;
+        Texel32* values_high;
+    };
 };
 
 #endif
