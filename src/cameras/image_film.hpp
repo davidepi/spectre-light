@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit  8 Apr 2018
+//Last Edit  8 May 2018
 
 /**
  *  \file image_film.hpp
  *  \brief     Buffer storing and saving an image
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 Apr 2018
+ *  \date      8 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -207,9 +207,6 @@ private:
 
     //output image
     File output;
-
-    //int used to know which function of ImageIO should be called
-    char extension;
 
     //mutex for concurrent write
     std::mutex mtx;

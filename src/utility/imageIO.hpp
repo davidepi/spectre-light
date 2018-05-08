@@ -1,12 +1,12 @@
 //Created,  27 Nov 2017
-//Last Edit  4 Apr 2018
+//Last Edit  8 May 2018
 
 /**
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      4 Apr 2018
+ *  \date      8 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -16,12 +16,6 @@
 
 ///Image read succesfully
 #define IMAGE_OK 0
-///The image type is .ppm
-#define IMAGE_PPM 1
-///The image type is .bmp
-#define IMAGE_BMP 2
-///The image will be written/saved with ImageMagick
-#define IMAGE_RGB 3
 ///Error code used when the image is not found or not readable
 #define IMAGE_NOT_READABLE -1
 ///Error code used when the image extension does not match the magic number
@@ -150,14 +144,18 @@ int read_bmp(const char* name, float* data);
  *  filename extension. The quality is set to be the highest possible given the
  *  requested output format. The image depth is 8 bit per pixel and no alpha
  *  channel is supported.
+ *  Note that if ImageMagick is not supported, but the image is a .ppm or .bmp
+ *  this method will invoke save_ppm() or save_bmp() respectively
  *
  *  \param[in] name The name of the output file
+ *  \param[in] ext The extension of the image
  *  \param[in] width The width of the image
  *  \param[in] height The height of the image
  *  \param[in] data An array of RGB values containing the pixel values in range
  *  0-255
  */
-bool save_RGB(const char* name, int width, int height, const uint8_t* data);
+bool save_RGB(const char* name, const char* ext, int width, int height,
+              const uint8_t* data);
 
 /** \brief Determine width, height and opacity of an image in a generic format
  *
@@ -168,14 +166,17 @@ bool save_RGB(const char* name, int width, int height, const uint8_t* data);
  *  The list of error codes can be found at the beginning of the imageIO.hpp
  *  file. The functions returns a value indicating wether an alpha channel is
  *  present or not.
+ *  Note that if ImageMagick is not supported, but the image is a .ppm or .bmp
+ *  this method will invoke dimensions_ppm() or dimensions_bmp() respectively
  *
  *  \param[in] name The path of the image
+ *  \param[in] ext The extension of the image
  *  \param[out] width The width of the image, error code if something went wrong
  *  \param[out] height The height of the image, error code if something went
  *  wrong
  *  \return True if the image has an alpha channel
  */
-bool dimensions_RGB(const char* name, int* width, int* height);
+bool dimensions_RGB(const char* name, const char* ext, int* width, int* height);
 
 /** \brief Read an image in a generic format
  *
@@ -188,27 +189,29 @@ bool dimensions_RGB(const char* name, int* width, int* height);
  *  these values are in the range [0, 255]; multiple alpha channels will exhibit
  *  undefined behaviour. Images with less than three channels or in CYMK format
  *  are also not supported.
+ *  Note that if ImageMagick is not supported, but the image is a .ppm or .bmp
+ *  this method will invoke read_ppm() or read_bmp() respectively
  *
  *  \param[in] name The path of the image
+ *  \param[in] ext The extension of the image
  *  \param[out] data An array of size width*height*3 that will hold the values
  *  of the image
  *  \param[out] alpha An array of size width*height that will hold the values
  *  of the alpha channel
  *  \return IMAGE_OK if everything was ok, otherwise a proper error code
  */
-int read_RGB(const char* name, float* data, uint8_t* alpha);
+int read_RGB(const char* name, const char* ext, float* data, uint8_t* alpha);
 
 /** \brief Checks if an image is supported
  *
  *  Since image support is defined at compile time depending on ImageMagick,
- *  this method is used to know throughout the code if a file on possibly
- *  another machine is compatible (r/w). Usually if the file is an image and
- *  ImageMagick was installed at compile time, this function will return a
- *  positive number indicating the type of image. The various types can be found
- *  as defines at the beginning of this file
+ *  this method is used at runtime to know throughout the code if the input file
+ *  provided by the user is compatible (r/w). Usually if the file is an image
+ *  and ImageMagick was installed at compile time, this function will return
+ *  true.
  *
  *  \param[in] extension The extension of the image
- *  \retun A positive number if the image is supported, a negative one otherwise
+ *  \retun true if the image is supported, false otherwise
  */
 char image_supported(const char* extension);
 

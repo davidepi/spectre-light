@@ -326,7 +326,7 @@ SPECTRE_TEST(ImageIO, save_rgb_func)
     FILE* fp;
 
     //save jpg
-    res = save_RGB("test.jpg", 16, 10, image_sample);
+    res = save_RGB("test.jpg",  "jpg", 16, 10, image_sample);
     ASSERT_TRUE(res);
     //check if saved image is actually a .ppm
     fp = popen("file -b --mime test.jpg", "r");
@@ -336,7 +336,7 @@ SPECTRE_TEST(ImageIO, save_rgb_func)
     EXPECT_EQ(unlink("test.jpg"), 0);
 
     //save tiff
-    res = save_RGB("test.tiff", 16, 10, image_sample);
+    res = save_RGB("test.tiff", "tiff", 16, 10, image_sample);
     ASSERT_TRUE(res);
     //check if saved image is actually a .ppm
     fp = popen("file -b --mime test.tiff", "r");
@@ -346,7 +346,7 @@ SPECTRE_TEST(ImageIO, save_rgb_func)
     EXPECT_EQ(unlink("test.tiff"), 0);
 
     //save targa
-    res = save_RGB("test.tga", 16, 10, image_sample);
+    res = save_RGB("test.tga", "tga", 16, 10, image_sample);
     ASSERT_TRUE(res);
     //check if saved image is actually a .ppm
     fp = popen("file -b --mime test.tga", "r");
@@ -356,7 +356,7 @@ SPECTRE_TEST(ImageIO, save_rgb_func)
     EXPECT_EQ(unlink("test.tga"), 0);
 
     //save png
-    res = save_RGB("test.png", 16, 10, image_sample);
+    res = save_RGB("test.png", "png", 16, 10, image_sample);
     ASSERT_TRUE(res);
     //check if saved image is actually a .ppm
     fp = popen("file -b --mime test.png", "r");
@@ -366,7 +366,7 @@ SPECTRE_TEST(ImageIO, save_rgb_func)
     EXPECT_EQ(unlink("test.png"), 0);
 
     //save dds
-    res = save_RGB("test.dds", 16, 10, image_sample);
+    res = save_RGB("test.dds", "dds", 16, 10, image_sample);
     ASSERT_TRUE(res);
     //check if saved image is actually a .ppm
     fp = popen("file -b --mime test.dds", "r");
@@ -374,16 +374,32 @@ SPECTRE_TEST(ImageIO, save_rgb_func)
     pclose(fp);
     EXPECT_STREQ(file_stat, "application/octet-stream; charset=binary\n");
     EXPECT_EQ(unlink("test.dds"), 0);
+    
+    //bmp
+    res = save_RGB("test.bmp","bmp",16,10,image_sample);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.bmp"), 0);
+    //ppm
+    res = save_RGB("test.ppm","ppm",16,10,image_sample);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.ppm"), 0);
 
     //non existent folder
     errors_count[ERROR_INDEX] = 0;
-    res = save_RGB("/root/nonexistent/test.jpg", 16, 10, image_sample);
+    res = save_RGB("/root/nonexistent/test.jpg", "jpg", 16, 10, image_sample);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
     EXPECT_FALSE(res);
 #else
-    res = save_RGB("test.jpg",16,10,image_sample);
+    res = save_RGB("test.jpg","jpg",16,10,image_sample);
     EXPECT_FALSE(res);
+    //ensures calls are forwarded to save_ppm and save_bmp
+    res = save_RGB("test.bmp","bmp",16,10,image_sample);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.bmp"), 0);
+    res = save_RGB("test.ppm","ppm",16,10,image_sample);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.ppm"), 0);
 #endif
 }
 
@@ -395,53 +411,90 @@ SPECTRE_TEST(ImageIO, dimensions_rgb_func)
 #ifdef IMAGEMAGICK
 
     //non existent
-    res = dimensions_RGB("nonexistent.bmp", &width, &height);
+    res = dimensions_RGB("nonexistent.bmp", "bmp", &width, &height);
     EXPECT_EQ(width, IMAGE_NOT_READABLE);
     EXPECT_EQ(height, IMAGE_NOT_READABLE);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //jpg
-    res = dimensions_RGB(TEST_ASSETS "images/generic.jpg", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "images/generic.jpg", "jpg",
+                         &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //png
-    res = dimensions_RGB(TEST_ASSETS "images/generic.png", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "images/generic.png", "png",
+                         &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //tiff
-    res = dimensions_RGB(TEST_ASSETS "images/generic.tiff", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "images/generic.tiff", "tiff",
+                         &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //targa
-    res = dimensions_RGB(TEST_ASSETS "images/generic.tga", &width, &height);
+    res = dimensions_RGB(TEST_ASSETS "images/generic.tga", "tga",
+                         &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
     EXPECT_EQ(res, false);
     width = 0;
     height = 0;
     //alpha channel
-    res = dimensions_RGB(TEST_ASSETS "images/generic_alpha.tiff",
+    res = dimensions_RGB(TEST_ASSETS "images/generic_alpha.tiff", "tiff",
                          &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     EXPECT_EQ(res, true);
     width = 0;
     height = 0;
+    //bmp
+    res = dimensions_RGB(TEST_ASSETS "images/correct.bmp", "bmp",
+                         &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    EXPECT_TRUE(res);
+    width = 0;
+    height = 0;
+    //ppm
+    res = dimensions_RGB(TEST_ASSETS "images/binary.ppm", "ppm",
+                         &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    EXPECT_TRUE(res);
+    width = 0;
+    height = 0;
 #else
-    res = dimensions_RGB("test.jpg",&width,&height);
+    res = dimensions_RGB("test.jpg", "jpg", &width, &height);
     EXPECT_EQ(width, IMAGE_NOT_SUPPORTED);
     EXPECT_EQ(height, IMAGE_NOT_SUPPORTED);
     EXPECT_FALSE(res);
+    //correctly forwared calls to dimensions_ppm and dimensions_bmp
+    width = 0;
+    height = 0;
+    res = dimensions_RGB(TEST_ASSETS "images/correct.bmp", "bmp",
+                         &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    EXPECT_FALSE(res);
+    width = 0;
+    height = 0;
+    res = dimensions_RGB(TEST_ASSETS "images/binary.ppm", "ppm",
+                         &width, &height);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    EXPECT_FALSE(res);
+    width = 0;
+    height = 0;
 #endif
 }
 
@@ -452,18 +505,19 @@ SPECTRE_TEST(ImageIO, read_rgb_func)
     uint8_t alpha[2*3];
 #ifdef IMAGEMAGICK
     //non existent
-    res = read_RGB("nonexistent.bmp", values, alpha);
+    res = read_RGB("nonexistent.bmp", "bmp", values, alpha);
     EXPECT_EQ(res, IMAGE_NOT_READABLE);
     //too many channels
-#ifndef IMAGEMAGICK6
     errors_count[ERROR_INDEX] = 0;
-    res = read_RGB(TEST_ASSETS "images/singlechannel.tiff", values, alpha);
+    res = read_RGB(TEST_ASSETS "images/singlechannel.tiff", "tiff",
+                   values, alpha);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
     EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
-#endif
+    
     //jpg
-    res = read_RGB(TEST_ASSETS "images/generic.jpg", values, alpha);
+    res = read_RGB(TEST_ASSETS "images/generic.jpg", "jpg",
+                   values, alpha);
     EXPECT_NEAR(values[0], 1.f, .1f);
     EXPECT_NEAR(values[1], 0.f, .1f);
     EXPECT_NEAR(values[2], 0.f, .1f);
@@ -484,7 +538,8 @@ SPECTRE_TEST(ImageIO, read_rgb_func)
     EXPECT_NEAR(values[17], 0.f, .1f);
     EXPECT_EQ(res, IMAGE_OK);
     //png
-    res = read_RGB(TEST_ASSETS "images/generic.png", values, alpha);
+    res = read_RGB(TEST_ASSETS "images/generic.png", "png",
+                   values, alpha);
     EXPECT_NEAR(values[0], 1.f, .1f);
     EXPECT_NEAR(values[1], 0.f, .1f);
     EXPECT_NEAR(values[2], 0.f, .1f);
@@ -505,7 +560,8 @@ SPECTRE_TEST(ImageIO, read_rgb_func)
     EXPECT_NEAR(values[17], 0.f, .1f);
     EXPECT_EQ(res, IMAGE_OK);
     //tiff
-    res = read_RGB(TEST_ASSETS "images/generic.tiff", values, alpha);
+    res = read_RGB(TEST_ASSETS "images/generic.tiff", "tiff",
+                   values, alpha);
     EXPECT_NEAR(values[0], 1.f, .1f);
     EXPECT_NEAR(values[1], 0.f, .1f);
     EXPECT_NEAR(values[2], 0.f, .1f);
@@ -526,7 +582,8 @@ SPECTRE_TEST(ImageIO, read_rgb_func)
     EXPECT_NEAR(values[17], 0.f, .1f);
     EXPECT_EQ(res, IMAGE_OK);
     //targa
-    res = read_RGB(TEST_ASSETS "images/generic.tga", values, alpha);
+    res = read_RGB(TEST_ASSETS "images/generic.tga", "tga",
+                   values, alpha);
     EXPECT_NEAR(values[0], 1.f, .1f);
     EXPECT_NEAR(values[1], 0.f, .1f);
     EXPECT_NEAR(values[2], 0.f, .1f);
@@ -547,7 +604,8 @@ SPECTRE_TEST(ImageIO, read_rgb_func)
     EXPECT_NEAR(values[17], 0.f, .1f);
     EXPECT_EQ(res, IMAGE_OK);
     //tiff with alpha
-    res = read_RGB(TEST_ASSETS "images/generic_alpha.tiff", values, alpha);
+    res = read_RGB(TEST_ASSETS "images/generic_alpha.tiff", "tiff",
+                   values, alpha);
     EXPECT_NEAR(values[0], 1.f, .1f);
     EXPECT_NEAR(values[1], 0.f, .1f);
     EXPECT_NEAR(values[2], 0.f, .1f);
@@ -565,9 +623,68 @@ SPECTRE_TEST(ImageIO, read_rgb_func)
     EXPECT_EQ(alpha[2], 0);
     EXPECT_EQ(alpha[3], 255);
     EXPECT_EQ(res, IMAGE_OK);
+    //ppm
+    res = read_RGB(TEST_ASSETS "images/binary.ppm", "ppm", values, NULL);
+    EXPECT_NEAR(values[0], 1.f, 1e-5f);
+    EXPECT_NEAR(values[1], 0.f, 1e-5f);
+    EXPECT_NEAR(values[2], 0.f, 1e-5f);
+    EXPECT_NEAR(values[3], 0.f, 1e-5f);
+    EXPECT_NEAR(values[4], 1.f, 1e-5f);
+    EXPECT_NEAR(values[5], 0.f, 1e-5f);
+    EXPECT_NEAR(values[6], 0.f, 1e-5f);
+    EXPECT_NEAR(values[7], 0.f, 1e-5f);
+    EXPECT_NEAR(values[8], 1.f, 1e-5f);
+    EXPECT_NEAR(values[9], 0.f, 1e-5f);
+    EXPECT_NEAR(values[10], 0.f, 1e-5f);
+    EXPECT_NEAR(values[11], 0.f, 1e-5f);
+    EXPECT_EQ(res, IMAGE_OK);
+    //bmp
+    res = read_RGB(TEST_ASSETS "images/correct.bmp", "bmp", values, NULL);
+    EXPECT_NEAR(values[0], 1.f, 1e-5f);
+    EXPECT_NEAR(values[1], 0.f, 1e-5f);
+    EXPECT_NEAR(values[2], 0.f, 1e-5f);
+    EXPECT_NEAR(values[3], 0.f, 1e-5f);
+    EXPECT_NEAR(values[4], 1.f, 1e-5f);
+    EXPECT_NEAR(values[5], 0.f, 1e-5f);
+    EXPECT_NEAR(values[6], 0.f, 1e-5f);
+    EXPECT_NEAR(values[7], 0.f, 1e-5f);
+    EXPECT_NEAR(values[8], 1.f, 1e-5f);
+    EXPECT_NEAR(values[9], 0.f, 1e-5f);
+    EXPECT_NEAR(values[10], 0.f, 1e-5f);
+    EXPECT_NEAR(values[11], 0.f, 1e-5f);
+    EXPECT_EQ(res, IMAGE_OK);
 #else
-    res = read_RGB(TEST_ASSETS "generic.jpg", values, alpha);
+    res = read_RGB(TEST_ASSETS "generic.jpg", "jpg", values, alpha);
     EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    //forwarded calls
+    res = read_RGB(TEST_ASSETS "images/binary.ppm", "ppm", values, NULL);
+    EXPECT_NEAR(values[0], 1.f, 1e-5f);
+    EXPECT_NEAR(values[1], 0.f, 1e-5f);
+    EXPECT_NEAR(values[2], 0.f, 1e-5f);
+    EXPECT_NEAR(values[3], 0.f, 1e-5f);
+    EXPECT_NEAR(values[4], 1.f, 1e-5f);
+    EXPECT_NEAR(values[5], 0.f, 1e-5f);
+    EXPECT_NEAR(values[6], 0.f, 1e-5f);
+    EXPECT_NEAR(values[7], 0.f, 1e-5f);
+    EXPECT_NEAR(values[8], 1.f, 1e-5f);
+    EXPECT_NEAR(values[9], 0.f, 1e-5f);
+    EXPECT_NEAR(values[10], 0.f, 1e-5f);
+    EXPECT_NEAR(values[11], 0.f, 1e-5f);
+    EXPECT_EQ(res, IMAGE_OK);
+    res = read_RGB(TEST_ASSETS "images/correct.bmp", "bmp", values, NULL);
+    EXPECT_NEAR(values[0], 1.f, 1e-5f);
+    EXPECT_NEAR(values[1], 0.f, 1e-5f);
+    EXPECT_NEAR(values[2], 0.f, 1e-5f);
+    EXPECT_NEAR(values[3], 0.f, 1e-5f);
+    EXPECT_NEAR(values[4], 1.f, 1e-5f);
+    EXPECT_NEAR(values[5], 0.f, 1e-5f);
+    EXPECT_NEAR(values[6], 0.f, 1e-5f);
+    EXPECT_NEAR(values[7], 0.f, 1e-5f);
+    EXPECT_NEAR(values[8], 1.f, 1e-5f);
+    EXPECT_NEAR(values[9], 0.f, 1e-5f);
+    EXPECT_NEAR(values[10], 0.f, 1e-5f);
+    EXPECT_NEAR(values[11], 0.f, 1e-5f);
+    EXPECT_EQ(res, IMAGE_OK);
 #endif
 }
 
@@ -576,37 +693,33 @@ SPECTRE_TEST(ImageIO, image_supported_func)
     int res;
     //null pointer
     res = image_supported(NULL);
-    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    EXPECT_FALSE(res);
     //empty extension
     res = image_supported("");
-    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    EXPECT_FALSE(res);
     //ppm
     res = image_supported("ppm");
-    EXPECT_EQ(res, IMAGE_PPM);
+    EXPECT_TRUE(res);
     //not ppm but letter p
     res = image_supported("png");
 #ifdef IMAGEMAGICK
-    EXPECT_EQ(res, IMAGE_RGB);
+    EXPECT_TRUE(res);
 #else
-    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    EXPECT_FALSE(res);
 #endif
     //bmp
     res = image_supported("bmp");
-    EXPECT_EQ(res, IMAGE_BMP);
-    //not bmp but letter b
-    //bmp
-    res = image_supported("blob");
-    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    EXPECT_TRUE(res);
     //jpg
     res = image_supported("jpg");
 #ifdef IMAGEMAGICK
-    EXPECT_EQ(res, IMAGE_RGB);
+    EXPECT_TRUE(res);
 #else
-    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    EXPECT_FALSE(res);
 #endif
     //totally random extension
     res = image_supported("ok");
-    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    EXPECT_FALSE(res);
 }
 
 SPECTRE_TEST_END(ImageIO)

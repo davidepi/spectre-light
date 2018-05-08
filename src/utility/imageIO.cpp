@@ -371,17 +371,17 @@ int read_bmp(const char* name, float* data)
     return retval;
 }
 
-bool save_RGB(const char* name, int width, int height, const uint8_t* data)
+bool save_RGB(const char* name, const char* ext, int width, int height,
+              const uint8_t* data)
 {
 #ifdef IMAGEMAGICK
-    const char* extension = strrchr(name, '.');
     Magick::Blob blob;
     //can't use updateNoCopy because Blob::~Blob() deallocates the memory
     blob.update(data, width*height*3);
     Magick::Image img(blob, Magick::Geometry(width, height), 8, "RGB");
     try
     {
-        img.magick(extension+1);
+        img.magick(ext);
         img.quality(100);
         img.write(name);
     }
@@ -392,15 +392,16 @@ bool save_RGB(const char* name, int width, int height, const uint8_t* data)
     }
     return true;
 #else
-    UNUSED(name);
-    UNUSED(width);
-    UNUSED(height);
-    UNUSED(data);
-    return false;
+    if(strcmp(ext,"ppm")==0)
+        return save_ppm(name, width, height, data);
+    else if(strcmp(ext,"bmp")==0)
+        return save_bmp(name, width, height, data);
+    else
+        return false;
 #endif
 }
 
-bool dimensions_RGB(const char* name, int* width, int* height)
+bool dimensions_RGB(const char* name, const char* ext, int* width, int* height)
 {
 #ifdef IMAGEMAGICK
     Magick::Image img;
@@ -424,14 +425,21 @@ bool dimensions_RGB(const char* name, int* width, int* height)
         return false;
     }
 #else
-    UNUSED(name);
-    *width = IMAGE_NOT_SUPPORTED;
-    *height = IMAGE_NOT_SUPPORTED;
+    if(strcmp(ext,"ppm")==0)
+        dimensions_ppm(name, width, height);
+    else if(strcmp(ext,"bmp")==0)
+        dimensions_bmp(name, width, height);
+    else
+    {
+        *width = IMAGE_NOT_SUPPORTED;
+        *height = IMAGE_NOT_SUPPORTED;
+    }
+    //always return false since there is no alpha channel support w/o imgmagick
     return false;
 #endif
 }
 
-int read_RGB(const char* name, float* data, uint8_t* alpha)
+int read_RGB(const char* name, const char* ext, float* data, uint8_t* alpha)
 {
 #ifdef IMAGEMAGICK
     constexpr const float inv_depth = 1.f/QuantumRange;
@@ -479,50 +487,46 @@ int read_RGB(const char* name, float* data, uint8_t* alpha)
     }
     return IMAGE_OK;
 #else
-    UNUSED(name);
-    UNUSED(data);
-    UNUSED(alpha);
-    return IMAGE_NOT_SUPPORTED;
+    if(strcmp(ext,"ppm")==0)
+        return read_ppm(name, data);
+    else if(strcmp(ext,"bmp")==0)
+        return read_bmp(name, data);
+    else
+        return IMAGE_NOT_SUPPORTED;
 #endif
 }
 
 char image_supported(const char* extension)
 {
+    bool retval;
     //pos less than 4 chr expected for an extension
-    if(extension == NULL || strcmp(extension, "") == 0)
+    if(extension != NULL && strcmp(extension, "") != 0)
     {
-        return IMAGE_NOT_SUPPORTED; //missing extension, avoid checking magic numbers
+#ifdef IMAGEMAGICK
+        try
+        {
+            Magick::CoderInfo info(extension);
+            if(info.isWritable() && info.isReadable())
+                retval = true;
+            else
+                retval = false;
+        }
+        catch(Magick::Exception e)
+        {
+            //probably not an image
+            retval = false;
+        }
+#else
+        if(strcmp(extension,"ppm")==0)
+            retval = true;
+        else if(strcmp(extension,"bmp")==0)
+            retval = true;
+        else
+            retval = false;
+#endif
     }
     else
-    {
-        switch(extension[0])
-        {
-            case 'p':
-                if(strcmp("ppm", extension) == 0)
-                    return IMAGE_PPM;
-            case 'b':
-                if(strcmp("bmp", extension) == 0)
-                    return IMAGE_BMP;
-            default:
-            {
-#ifdef IMAGEMAGICK
-                try
-                {
-                    Magick::CoderInfo info(extension);
-                    if(info.isWritable() && info.isReadable())
-                        return IMAGE_RGB;
-                    else
-                        return IMAGE_NOT_SUPPORTED;
-                }
-                catch(Magick::Exception e)
-                {
-                    //probably not an image
-                    return IMAGE_NOT_SUPPORTED;
-                }
-#endif
-                return IMAGE_NOT_SUPPORTED;
-            }
-        }
-    }
+        retval = false; //missing extension, avoid checking magic numbers
+    return retval;
 }
 

@@ -20,10 +20,10 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
     if(parent_folder.writable())
     {
         //check extension, add .ppm if not supported
-        ImageFilm::extension = image_supported(output.extension());
+        bool img_supported = image_supported(output.extension());
         int path_len = (int)strlen(fullpath)+1;
         //to add the .ppm at the end, if necessary
-        if(ImageFilm::extension<0)
+        if(!img_supported)
         {
             char* tmp_buf = (char*)malloc(sizeof(char)*path_len+4);
             strcpy(tmp_buf, fullpath);
@@ -31,7 +31,6 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
             output = File(tmp_buf);
             free(tmp_buf);
             Console.warning(MESSAGE_IM_OUT, output.absolute_path());
-            ImageFilm::extension = IMAGE_PPM;
             //check again the folder, since the extension changed it
             if(output.exists() && output.is_folder())
             {
@@ -173,26 +172,8 @@ bool ImageFilm::save_image()
     }
     free(ImageFilm::buffer);
     ImageFilm::buffer = NULL;
-    bool retval;
-    switch(ImageFilm::extension)
-    {
-        case IMAGE_BMP:
-        {
-            retval = save_bmp(output.absolute_path(), width, height,
-                              rgb_buffer);
-            break;
-        }
-        case IMAGE_RGB:
-        {
-            retval = save_RGB(output.absolute_path(), width, height,
-                              rgb_buffer);
-            break;
-        }
-        case IMAGE_PPM:
-        default:
-            retval = save_ppm(output.absolute_path(), width, height,
-                              rgb_buffer);
-    }
+    bool retval = save_RGB(output.absolute_path(), output.extension(),
+                           width, height,rgb_buffer);
     free(rgb_buffer);
     return retval;
 }

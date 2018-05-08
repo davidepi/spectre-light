@@ -175,6 +175,8 @@
 		6BCDDF6C1FE09B6E007536FF /* shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BBF2B8B1EB8F6A8004589AA /* shape.cpp */; };
 		6BCDDF6D1FE09B6E007536FF /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BB9EBDC1EBA592800485ECE /* sphere.cpp */; };
 		6BCDDF6E1FE09B6E007536FF /* triangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494D11F5224BE00691CE3 /* triangle.cpp */; };
+		6BCEE5F520A1C5DC00E3B530 /* texture_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */; };
+		6BCEE5F620A1C5DC00E3B530 /* texture_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */; };
 		6BD89FBC2059951200CE5B05 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FB92059951200CE5B05 /* texture.cpp */; };
 		6BD89FBD2059951200CE5B05 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FB92059951200CE5B05 /* texture.cpp */; };
 		6BD89FBE2059951200CE5B05 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FB92059951200CE5B05 /* texture.cpp */; };
@@ -432,6 +434,8 @@
 		6BC368F91FCC0AD4001F9DE3 /* imageIO.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = imageIO.cpp; path = src/utility/imageIO.cpp; sourceTree = "<group>"; };
 		6BC368FA1FCC0AD4001F9DE3 /* imageIO.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = imageIO.hpp; path = src/utility/imageIO.hpp; sourceTree = "<group>"; };
 		6BCE8BBF1FAFCC8C0056854A /* input_example.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = input_example.txt; sourceTree = "<group>"; };
+		6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_image.cpp; path = src/textures/texture_image.cpp; sourceTree = "<group>"; };
+		6BCEE5F420A1C5DC00E3B530 /* texture_image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = texture_image.hpp; path = src/textures/texture_image.hpp; sourceTree = "<group>"; };
 		6BD89FB92059951200CE5B05 /* texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture.cpp; path = src/textures/texture.cpp; sourceTree = "<group>"; };
 		6BD89FBA2059951200CE5B05 /* texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = texture.hpp; path = src/textures/texture.hpp; sourceTree = "<group>"; };
 		6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_uniform.cpp; path = src/textures/texture_uniform.cpp; sourceTree = "<group>"; };
@@ -904,6 +908,8 @@
 				6B09101920A0AEFC008BB048 /* image_map.hpp */,
 				6BD89FB92059951200CE5B05 /* texture.cpp */,
 				6BD89FBA2059951200CE5B05 /* texture.hpp */,
+				6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */,
+				6BCEE5F420A1C5DC00E3B530 /* texture_image.hpp */,
 				6BD89FCB2059A8EF00CE5B05 /* texture_library.cpp */,
 				6BD89FCC2059A8EF00CE5B05 /* texture_library.hpp */,
 				6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */,
@@ -1098,6 +1104,7 @@
 				6BA65C081F70421D00183E94 /* sampler_stratified.cpp in Sources */,
 				6BA65C091F70421D00183E94 /* filter_tent.cpp in Sources */,
 				6BA07CB520719F11009139ED /* config_driver.cpp in Sources */,
+				6BCEE5F520A1C5DC00E3B530 /* texture_image.cpp in Sources */,
 				6BA65C0A1F70421D00183E94 /* color.cpp in Sources */,
 				6BA65C0B1F70421D00183E94 /* console.cpp in Sources */,
 				6BA65C0C1F70421D00183E94 /* occlusion_tester.cpp in Sources */,
@@ -1164,6 +1171,7 @@
 				6BA65C381F70424E00183E94 /* sampler.cpp in Sources */,
 				6BA65C391F70424E00183E94 /* sampler_stratified.cpp in Sources */,
 				6BA65C3A1F70424E00183E94 /* filter_tent.cpp in Sources */,
+				6BCEE5F620A1C5DC00E3B530 /* texture_image.cpp in Sources */,
 				6BA07CB620719F11009139ED /* config_driver.cpp in Sources */,
 				6BA65C3B1F70424E00183E94 /* color.cpp in Sources */,
 				6BA65C3C1F70424E00183E94 /* console.cpp in Sources */,

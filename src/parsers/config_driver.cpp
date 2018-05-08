@@ -251,7 +251,7 @@ static void load_texture_rec(File& src)
         }
         else
         {
-            if(image_supported(src.extension())>=0) //check extension
+            if(image_supported(src.extension())) //check extension
             {
                 printf("load texture %s\n", src.filename());
                 //TODO: placeholder because the texture class is not ready
@@ -302,7 +302,7 @@ void ConfigDriver::load_texture_single()
     else
         cur_file.append(tex_src.c_str());
     if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
-       image_supported(cur_file.extension())>=0)
+       image_supported(cur_file.extension()))
     {
         //TODO: placeholder because the texture class is not ready
         //TODO: check texture not already loaded (MESSAGE_DUPLICATE_TEXTURE)
