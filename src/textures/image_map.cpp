@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "textures/image_map.hpp"
 
 const FilterLanczos downsample_filter = FilterLanczos(2.f);
@@ -7,13 +10,6 @@ static void downsample(const Texel32* in, Texel32* out, unsigned short insize);
 ImageMap::ImageMap()
 {
     ImageMap::size = 0;
-    ImageMap::high_depth = false;
-    ImageMap::values = NULL;
-}
-
-ImageMap::ImageMap(int side)
-{
-    ImageMap::size = side;
     ImageMap::high_depth = false;
     ImageMap::values = NULL;
 }
