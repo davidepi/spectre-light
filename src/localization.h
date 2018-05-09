@@ -131,8 +131,14 @@
 
 #define MESSAGE_TEXTURE_ERROR "Unable to load texture %s"
 
+#define MESSAGE_TEXTURE_ERROR_2ND MESSAGE_TEXTURE_ERROR ". But the texture "\
+"was readable when parsed"
+
 #define MESSAGE_TEXTURE_NOT_FOUND_MTL "Texture %s not found in library; to be "\
 "used in material %s"
+
+#define MESSAGE_TEXTURE_POWER2 "Loaded texture %s width and height are not "\
+"equal or not a power of two"
 
 #define MESSAGE_METAL_NOT_SUPPORTED "Metal %c%c is not supported."\
 " Using the default Au"
