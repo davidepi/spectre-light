@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit  9 May 2018
+//Last Edit 10 May 2018
 
 #ifndef __TEXTURE_IMAGE_HPP__
 #define __TEXTURE_IMAGE_HPP__
@@ -16,6 +16,7 @@ class TextureImage : public Texture
 {
 public:
     TextureImage(const char* input);
+    TextureImage(const File& input);
 
     TextureImage(const TextureImage& old) = delete;
 
@@ -24,6 +25,7 @@ public:
     Spectrum map(Point2 uv) const;
 
 private:
+    void init();
     void alloc() const;
 
     File path;

@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 24 Apr 2018
+//Last Edit 10 May 2018
 
 /**
  *  \file      config_driver.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      24 Apr 2018
+ *  \date      10 May 2018
  *  \copyright GNU GPLv3
  */
 

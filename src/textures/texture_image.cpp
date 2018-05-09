@@ -2,6 +2,16 @@
 
 TextureImage::TextureImage(const char* input):path(input)
 {
+    init();
+}
+
+TextureImage::TextureImage(const File& input):path(input)
+{
+    init();
+}
+
+void TextureImage::init()
+{
     allocated = false;
     if(path.readable())
     {
@@ -69,8 +79,9 @@ Spectrum TextureImage::map(Point2 uv) const
 {
     if(!allocated)
         alloc();
-    //TODO: bogus implementation, waiting for filter
-    return Spectrum(mapchain[0].val((unsigned short)uv.x, (unsigned short)uv.y),
+    //TODO: bogus hardcoded for 1024*1024 implementation, waiting for filter
+    return Spectrum(mapchain[0].val((unsigned short)(uv.x*1024), (unsigned
+                    short)(uv.y*1024)),
                     false);
 }
 

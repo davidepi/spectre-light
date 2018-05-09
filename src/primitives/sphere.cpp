@@ -79,6 +79,13 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit) const
         }
         hit->right = Vec3(-TWO_PI*hit->point_h.y, TWO_PI*hit->point_h.x, 0);
         hit->index = 0;
+        float phi = atan2f(hit->point_h.y,hit->point_h.x);
+        if(phi<0)phi+=TWO_PI;
+        float theta = acosf(clamp(hit->point_h.z,-1.f,1.f));
+        constexpr const float thetamin = acosf(-1.f);
+        constexpr const float thetamax = acosf(1.f);
+        constexpr const float denom = 1.f/(thetamax-thetamin);
+        hit->uv = Point2(phi*INV_TWOPI, (theta-thetamin)*denom);
         return true;
     }
     else

@@ -107,6 +107,8 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.right.x, 1.f);
     EXPECT_EQ(h.right.y, 0.f);
     EXPECT_EQ(h.right.z, 0.f);
+    EXPECT_EQ(h.uv.x, 0.75f);
+    EXPECT_EQ(h.uv.y, 0.5f);
 
     //hit origin inside the sphere
     r = Ray(Point3(0, 0, 0), Vec3(1, 0, 0));
@@ -124,6 +126,8 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.right.x, 0.f);
     EXPECT_EQ(h.right.y, 1.f);
     EXPECT_EQ(h.right.z, 0.f);
+    EXPECT_EQ(h.uv.x, 0.f);
+    EXPECT_EQ(h.uv.y, 0.5f);
 
     //hit but origin after the sphere (= miss)
     r = Ray(Point3(0, 10, 0), Vec3(0, 1, 0));
@@ -147,7 +151,8 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.right.x, 0.f);
     EXPECT_EQ(h.right.y, 1.f);
     EXPECT_EQ(h.right.z, 0.f);
-
+    EXPECT_EQ(h.uv.x, 0.f);
+    EXPECT_EQ(h.uv.y, 1.f);
     //complete miss
     r = Ray(Point3(-2, -2, -10), Vec3(0, 0, 1));
     distance = FLT_MAX;

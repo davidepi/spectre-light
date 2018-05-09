@@ -1,6 +1,7 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
+#include <textures/texture_image.hpp>
 #include "config_driver.hpp"
 
 ///minimum value for ParsedMaterial::rough_x when the material is not specular
@@ -253,10 +254,7 @@ static void load_texture_rec(File& src)
         {
             if(image_supported(src.extension())) //check extension
             {
-                printf("load texture %s\n", src.filename());
-                //TODO: placeholder because the texture class is not ready
-                //TOOD: check texture not already loaded
-                Texture* addme = new TextureUniform(SPECTRUM_WHITE);
+                Texture* addme = new TextureImage(src);
                 TexLib.add_inherit(src.filename(), addme);
             }
             /*else silently skip unsupported texture */
@@ -304,11 +302,9 @@ void ConfigDriver::load_texture_single()
     if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
        image_supported(cur_file.extension()))
     {
-        //TODO: placeholder because the texture class is not ready
-        //TODO: check texture not already loaded (MESSAGE_DUPLICATE_TEXTURE)
         if(tex_name.empty())
             tex_name = cur_file.filename();
-        Texture* addme = new TextureUniform(SPECTRUM_WHITE);
+        Texture* addme = new TextureImage(tex_src.c_str());
         TexLib.add_inherit(tex_name, addme);
         tex_name.clear(); //reset name for next texture
     }
@@ -606,7 +602,7 @@ void ConfigDriver::build_meshes()
         rotx_matrix.set_rotate_x(mesh_w.rotation.x);
         roty_matrix.set_rotate_y(mesh_w.rotation.y);
         rotz_matrix.set_rotate_z(mesh_w.rotation.z);
-        rotation_matrix = rotx_matrix*roty_matrix*rotz_matrix;
+        rotation_matrix = rotz_matrix*roty_matrix*rotx_matrix;
         scale_matrix.set_scale(mesh_w.scale);
         //watchout the order!!!
         transform = position_matrix*rotation_matrix*scale_matrix;
