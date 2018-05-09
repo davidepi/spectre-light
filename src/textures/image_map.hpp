@@ -72,16 +72,8 @@ public:
     ///Default constructor, allocates an empy image of size 0x0
     ImageMap();
 
-    /** \brief Creates an image with the given size
-     *
-     *  Creates an image of size side*side without allocating anything.
-     *  Pretty useless constructor since there is no way to allocate values
-     *  after construction time. However it is used in the TextureImage class to
-     *  store the size of the image before allocation
-     *
-     *  \param[in] side The width and height of the image
-     */
-    ImageMap(int side);
+    ///Copy constructor
+    ImageMap(const ImageMap& old);
 
     /** \brief Allocates an image with the given values
      *
@@ -91,7 +83,7 @@ public:
      *  \param[in] source The values used for the image, in range [0-255]
      *  \param[in] side The width and height of the image
      */
-    ImageMap(const uint8_t* source, int side);
+    void alloc(const uint8_t* source, int side);
 
     /** \brief Allocates an image with the given values (high dpi version)
      *
@@ -104,10 +96,7 @@ public:
      *  \param[in] source The values used for the image, in range [0.0-1.0]
      *  \param[in] side The width and height of the image
      */
-    ImageMap(const float* source, int side);
-
-    ///Copy constructor
-    ImageMap(const ImageMap& old);
+    void alloc(const float* source, int side);
 
     /** \brief Creates a mipmap
      *
@@ -121,7 +110,7 @@ public:
      *  \param[in] hqfilter true if the downscale should use a lanczos filter.
      *  Defaulted to false
      */
-    void init_mipmap(const ImageMap& old, bool hqfilter = false);
+    void alloc_mipmap(const ImageMap& old, bool hqfilter = false);
 
     ColorRGB val(unsigned short x, unsigned short y) const;
 

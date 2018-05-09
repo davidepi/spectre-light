@@ -40,20 +40,14 @@ void TextureImage::alloc() const
             return;
         }
         //allocate original texture
-        mapchain[0] = ImageMap(values, (int)pow(2, maps_no-1));
+        mapchain[0].alloc(values, (int)pow(2, maps_no-1));
         free(values);
-        if(!mapchain[0].is_valid())
-        {
-            //dealloc
-            for(int j = 0; j<maps_no; j++)
-                mapchain[j].dealloc();
-        }
-        else //allocate MIP maps
+        if(mapchain[0].is_valid())
         {
             allocated = true;
             for(int i = 1; i<maps_no; i++)
             {
-                mapchain[i].init_mipmap(mapchain[i-1], false);
+                mapchain[i].alloc_mipmap(mapchain[i-1], false);
                 if(!mapchain[i].is_valid())
                 {
                     //dealloc

@@ -18,13 +18,7 @@ ImageMap::ImageMap()
     ImageMap::values = NULL;
 }
 
-ImageMap::ImageMap(int side)
-{
-    ImageMap::size = (unsigned short)side;
-    ImageMap::values = NULL;
-}
-
-ImageMap::ImageMap(const uint8_t* source, int side)
+void ImageMap::alloc(const uint8_t* source, int side)
 {
     ImageMap::size = (unsigned short)side;
     ImageMap::high_depth = false;
@@ -33,7 +27,7 @@ ImageMap::ImageMap(const uint8_t* source, int side)
         values = (Texel*)memcpy(values, source, sizeof(Texel)*size*size);
 }
 
-ImageMap::ImageMap(const float* source, int side)
+void ImageMap::alloc(const float* source, int side)
 {
     ImageMap::size = (unsigned short)side;
     float min_val = 0.f;
@@ -89,7 +83,7 @@ ImageMap::ImageMap(const ImageMap& old)
     }
 }
 
-void ImageMap::init_mipmap(const ImageMap& old, bool hqfilter)
+void ImageMap::alloc_mipmap(const ImageMap& old, bool hqfilter)
 {
     ImageMap::size = (unsigned short)(old.size/2);
     ImageMap::high_depth = old.high_depth;
