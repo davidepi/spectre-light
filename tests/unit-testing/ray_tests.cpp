@@ -67,6 +67,15 @@ SPECTRE_TEST(Ray, apply)
     EXPECT_NEAR(point.z, 2.0412425f, 1e-5f);
 }
 
+SPECTRE_TEST(Ray, diff)
+{
+    Ray r;
+    RayDiff rd;
+
+    EXPECT_FALSE(r.diff());
+    EXPECT_TRUE(rd.diff());
+}
+
 SPECTRE_TEST(Ray, RayProperties_constructor)
 {
     //dir x+

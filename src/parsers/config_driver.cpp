@@ -1,7 +1,6 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
-#include <textures/texture_image.hpp>
 #include "config_driver.hpp"
 
 ///minimum value for ParsedMaterial::rough_x when the material is not specular

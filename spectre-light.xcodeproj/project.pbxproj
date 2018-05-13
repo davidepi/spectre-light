@@ -37,6 +37,8 @@
 		6B457F87200765BD0031EA09 /* image_film.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B771A351ED3AED400EEF79B /* image_film.cpp */; };
 		6B457F88200765BD0031EA09 /* camera_orthographic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B50361D1ED714A2001E2A5A /* camera_orthographic.cpp */; };
 		6B457F89200765BD0031EA09 /* camera_perspective.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D188E1EDD705600EB720C /* camera_perspective.cpp */; };
+		6B495EAA20A8E86E0075D7EE /* texture_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */; };
+		6B495EAB20A8E9240075D7EE /* image_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B09101820A0AEFC008BB048 /* image_map.cpp */; };
 		6B4CA47420767AA800709064 /* file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA55D9620753EA500F869C2 /* file.cpp */; };
 		6B59C5CF1FE3F7E700A08B7A /* bdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7A41F116466000943A3 /* bdf.cpp */; };
 		6B59C5D01FE3F7E700A08B7A /* material_library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7AA1F116466000943A3 /* material_library.cpp */; };
@@ -1195,6 +1197,7 @@
 				6BDC3C87207C397300D49570 /* ray_tracer.cpp in Sources */,
 				6BDC3C85207C395400D49570 /* renderer.cpp in Sources */,
 				6BDC3C82207C384700D49570 /* config_parser.tab.cc in Sources */,
+				6B495EAB20A8E9240075D7EE /* image_map.cpp in Sources */,
 				6B94261A20928CA5007551AE /* parser_obj_tests.cpp in Sources */,
 				6BDC3C83207C384700D49570 /* lex.yy.cc in Sources */,
 				6BDC3C84207C384700D49570 /* config_driver.cpp in Sources */,
@@ -1233,6 +1236,7 @@
 				6B2165A41FEA7B9A008E5C2E /* sampler_stratified.cpp in Sources */,
 				6B2165A51FEA7B9A008E5C2E /* filter_tent.cpp in Sources */,
 				6B06546E1FE9690B00A47B62 /* occlusion_tester.cpp in Sources */,
+				6B495EAA20A8E86E0075D7EE /* texture_image.cpp in Sources */,
 				6BBAA6761FE73E6E00C13844 /* area_light.cpp in Sources */,
 				6BBAA6751FE73E5300C13844 /* kdtree.cpp in Sources */,
 				6B94261B20928D63007551AE /* parser_tests.cpp in Sources */,

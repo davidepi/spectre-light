@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  9 Dec 2017
+//Last Edit 13 May 2018
 
 /**
  *  \file ray.hpp
@@ -7,7 +7,7 @@
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 9 Dec 2017
+ *  \date 13 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -89,16 +89,48 @@ public:
      */
     Ray(float ox, float oy, float oz, float dx, float dy, float dz);
 
+    ///Returns false if this class is an instance of Ray
+    virtual bool diff() const;
 
     /** \brief Find a point along a ray
      *
-     * Find a point at a particular position along a ray, at distance \a t from
-     * the origin of the ray
+     *  Find a point at a particular position along a ray, at distance \a t from
+     *  the origin of the ray
      *
      *  \param[in] t the distance of the point from the origin
      */
     Point3 apply(float t) const;
+};
 
+/**
+ *  \class RayDiff ray.hpp "geometry/ray.hpp"
+ *  \brief A ray and its differentials
+ *
+ *  RayDiff class extends the Ray class by adding rays offsetted by 1 pixel in
+ *  the X and Y directions. This class is used mainly in texture filtering
+ *  and unused everywhere else
+ */
+class RayDiff : public Ray
+{
+public:
+
+    ///Inherit Ray constructor
+    using Ray::Ray;
+
+    ///Origin of the ray ofsetted by 1 pixel in the X axis
+    Point3 originX;
+
+    ///Direction of the ray ofsetted by 1 pixel in the X axis
+    Vec3 directionX;
+
+    ///Origin of the ray ofsetted by 1 pixel in the Y axis
+    Point3 originY;
+
+    ///Direction of the ray ofsetted by 1 pixel in the Y axis
+    Vec3 directionY;
+
+    ///Returns true if this class is an instance of RayDiff
+    bool diff() const;
 };
 
 /**
@@ -124,9 +156,12 @@ public:
         RayProperties::inverseX = 1.f/v.direction.x;
         RayProperties::inverseY = 1.f/v.direction.y;
         RayProperties::inverseZ = 1.f/v.direction.z;
-        RayProperties::isXInvNeg = RayProperties::inverseX<0;
-        RayProperties::isYInvNeg = RayProperties::inverseY<0;
-        RayProperties::isZInvNeg = RayProperties::inverseZ<0;
+        RayProperties::isXInvNeg = RayProperties::inverseX<
+        0;
+        RayProperties::isYInvNeg = RayProperties::inverseY<
+        0;
+        RayProperties::isZInvNeg = RayProperties::inverseZ<
+        0;
     }
 
     ///The inverse of the \a x component of the ray's direction

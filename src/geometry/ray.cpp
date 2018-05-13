@@ -26,3 +26,13 @@ Point3 Ray::apply(float t) const
     return Point3(origin.x+direction.x*t, origin.y+direction.y*t,
                   origin.z+direction.z*t);
 }
+
+bool Ray::diff() const
+{
+    return false;
+}
+
+bool RayDiff::diff() const
+{
+    return true;
+}

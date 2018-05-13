@@ -37,6 +37,7 @@
 #include "integrators/path_tracer.hpp"
 #include "parsers/config_parser.tab.hh"
 #include "textures/texture_library.hpp"
+#include "textures/texture_image.hpp"
 #include "materials/bdf.hpp"
 #include "materials/metals.hpp"
 #include "materials/lambertian.hpp"

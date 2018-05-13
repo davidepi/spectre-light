@@ -82,8 +82,8 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit) const
         float phi = atan2f(hit->point_h.y,hit->point_h.x);
         if(phi<0)phi+=TWO_PI;
         float theta = acosf(clamp(hit->point_h.z,-1.f,1.f));
-        constexpr const float thetamin = acosf(-1.f);
-        constexpr const float thetamax = acosf(1.f);
+        constexpr const float thetamin = ONE_PI; //arccos(-1);
+        constexpr const float thetamax = 0.f; //arccos(1);
         constexpr const float denom = 1.f/(thetamax-thetamin);
         hit->uv = Point2(phi*INV_TWOPI, (theta-thetamin)*denom);
         return true;
