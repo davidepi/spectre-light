@@ -176,7 +176,7 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
     Renderer_task todo;
     Sampler* sam;
     Sample* samples = new Sample[spp];
-    RayDiff r;
+    Ray r;
     ExecutorData ex;
     Spectrum radiance;
     HitPoint h;

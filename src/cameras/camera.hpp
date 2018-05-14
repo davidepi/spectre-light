@@ -60,14 +60,14 @@ public:
      *  \param[in] sample The given sample
      *  \param[out] ray The output ray
      */
-    void create_ray(const Sample* sample, RayDiff* ray) const;
+    void create_ray(const Sample* sample, Ray* ray) const;
 
 protected:
 
     /**  \brief Create a ray from a sample
      *
      *  Exactly like the create_ray method, but instead of initializing a
-     *  ray and its differentials, this method generates the origin and
+     *  ray and its offsetted values, this method generates the origin and
      *  direction for the ray in the single point. The create_ray() method will
      *  call this one to generate rays for the specific camera types
      */

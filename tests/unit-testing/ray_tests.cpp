@@ -24,6 +24,18 @@ SPECTRE_TEST(Ray, default_constructor)
     EXPECT_EQ(r.direction.x, 0.f);
     EXPECT_EQ(r.direction.y, 0.f);
     EXPECT_EQ(r.direction.z, 0.f);
+    EXPECT_EQ(r.originX.x, 0.f);
+    EXPECT_EQ(r.originX.y, 0.f);
+    EXPECT_EQ(r.originX.z, 0.f);
+    EXPECT_EQ(r.directionX.x, 0.f);
+    EXPECT_EQ(r.directionX.y, 0.f);
+    EXPECT_EQ(r.directionX.z, 0.f);
+    EXPECT_EQ(r.originY.x, 0.f);
+    EXPECT_EQ(r.originY.y, 0.f);
+    EXPECT_EQ(r.originY.z, 0.f);
+    EXPECT_EQ(r.directionY.x, 0.f);
+    EXPECT_EQ(r.directionY.y, 0.f);
+    EXPECT_EQ(r.directionY.z, 0.f);
     EXPECT_EQ(r.ricochet, (unsigned char)0);
 }
 
@@ -65,15 +77,6 @@ SPECTRE_TEST(Ray, apply)
     EXPECT_NEAR(point.x, 1.02062f, 1e-5f);
     EXPECT_NEAR(point.y, 1.02062f, 1e-5f);
     EXPECT_NEAR(point.z, 2.0412425f, 1e-5f);
-}
-
-SPECTRE_TEST(Ray, diff)
-{
-    Ray r;
-    RayDiff rd;
-
-    EXPECT_FALSE(r.diff());
-    EXPECT_TRUE(rd.diff());
 }
 
 SPECTRE_TEST(Ray, RayProperties_constructor)
@@ -139,11 +142,11 @@ SPECTRE_TEST(Ray, RayProperties_constructor)
     EXPECT_TRUE(rp.isZInvNeg);
 }
 
-SPECTRE_TEST(RayDiff,constructor_no_differentials)
+SPECTRE_TEST(Ray,constructor_no_differentials)
 {
     Point3 origin(-1.f, 2.4, 5.f);
     Vec3 direction(-8.f, -3.5f, 0.1f);
-    RayDiff r(origin,direction);
+    Ray r(origin,direction);
     EXPECT_EQ(r.origin.x, origin.x);
     EXPECT_EQ(r.origin.y, origin.y);
     EXPECT_EQ(r.origin.z, origin.z);
@@ -165,7 +168,7 @@ SPECTRE_TEST(RayDiff,constructor_no_differentials)
     EXPECT_EQ(r.ricochet, (unsigned char)0);
 }
 
-SPECTRE_TEST(RayDiff, constructor)
+SPECTRE_TEST(Ray, constructor)
 {
     Point3 origin(-1.f, 2.4, 5.f);
     Point3 originX(-1.1f, 2.5, 5.1f);
@@ -173,7 +176,7 @@ SPECTRE_TEST(RayDiff, constructor)
     Vec3 direction(-8.f, -3.5f, 0.1f);
     Vec3 directionX(-8.1f, -3.6f, 0.2f);
     Vec3 directionY(-8.2f, -3.7f, 0.3f);
-    RayDiff r(origin,direction,originX,directionX,originY,directionY);
+    Ray r(origin,direction,originX,directionX,originY,directionY);
     EXPECT_EQ(r.origin.x, origin.x);
     EXPECT_EQ(r.origin.y, origin.y);
     EXPECT_EQ(r.origin.z, origin.z);

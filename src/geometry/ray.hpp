@@ -26,12 +26,15 @@
  *  Ray class represents a semi-infinite line. A Ray is denoted by a Point o,
  *  its origin and a Vec3 d, its direction.
  *
+ *  Additionally a Ray contains also the origin and direction offsetted by one
+ *  pixel on the x coordinate and y coordinate. These value are used for
+ *  antialiasing purposes in the ImageMap and TextureImage classes
+ *
  *   Ricochet is the "Time-to-Live" of the ray. At every bounce it is increased
  *   by one and when it reaches a determined amount, the ray is destroyed.
  */
 class Ray
 {
-private:
 public:
 
     /** \brief origin
@@ -46,6 +49,18 @@ public:
      *  space
      */
     Vec3 direction;
+    
+    ///Origin of the ray ofsetted by 1 pixel in the X axis
+    Point3 originX;
+    
+    ///Direction of the ray ofsetted by 1 pixel in the X axis
+    Vec3 directionX;
+    
+    ///Origin of the ray ofsetted by 1 pixel in the Y axis
+    Point3 originY;
+    
+    ///Direction of the ray ofsetted by 1 pixel in the Y axis
+    Vec3 directionY;
 
     /** \brief Maximum number of bounces for this ray
      *
@@ -88,46 +103,6 @@ public:
      *  \param[in] dz a float representing the z component of the direction
      */
     Ray(float ox, float oy, float oz, float dx, float dy, float dz);
-
-    ///Returns false if this class is an instance of Ray
-    virtual bool diff() const;
-
-    /** \brief Find a point along a ray
-     *
-     *  Find a point at a particular position along a ray, at distance \a t from
-     *  the origin of the ray
-     *
-     *  \param[in] t the distance of the point from the origin
-     */
-    Point3 apply(float t) const;
-};
-
-/**
- *  \class RayDiff ray.hpp "geometry/ray.hpp"
- *  \brief A ray and its differentials
- *
- *  RayDiff class extends the Ray class by adding rays offsetted by 1 pixel in
- *  the X and Y directions. This class is used mainly in texture filtering
- *  and unused everywhere else
- */
-class RayDiff : public Ray
-{
-public:
-    
-    ///Default constructor
-    RayDiff() = default;
-    
-    /** \brief Constructor, given origin and direction
-     *
-     *  Construct a RayDiff given a Point3 representing the starting point and a
-     *  Vec3 representing the direction of the Ray. The offseted components are
-     *  not set and thus will be assumed equal to the original point and
-     *  direction
-     *
-     *  \param[in] origin a Point3 representing the starting point of the Ray
-     *  \param[in] direction a Vec3 representing the direction of the Ray
-     */
-    RayDiff(const Point3& origin, const Vec3& direction);
     
     /** \brief Constructor, given origins and directions
      *
@@ -146,24 +121,17 @@ public:
      *  \param[in] dy a Vec3 representing the direction of the Ray offsetted by
      *  1 pixel in the y direction
      */
-    RayDiff(const Point3& o, const Vec3& d,
-            const Point3& ox, const Vec3& dx,
-            const Point3& oy, const Vec3& dy);
+    Ray(const Point3& o, const Vec3& d, const Point3& ox, const Vec3& dx,
+        const Point3& oy, const Vec3& dy);
 
-    ///Origin of the ray ofsetted by 1 pixel in the X axis
-    Point3 originX;
-
-    ///Direction of the ray ofsetted by 1 pixel in the X axis
-    Vec3 directionX;
-
-    ///Origin of the ray ofsetted by 1 pixel in the Y axis
-    Point3 originY;
-
-    ///Direction of the ray ofsetted by 1 pixel in the Y axis
-    Vec3 directionY;
-
-    ///Returns true if this class is an instance of RayDiff
-    bool diff() const;
+    /** \brief Find a point along a ray
+     *
+     *  Find a point at a particular position along a ray, at distance \a t from
+     *  the origin of the ray
+     *
+     *  \param[in] t the distance of the point from the origin
+     */
+    Point3 apply(float t) const;
 };
 
 /**

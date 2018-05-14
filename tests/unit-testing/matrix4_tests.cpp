@@ -794,24 +794,7 @@ SPECTRE_TEST(Matrix4, transform_vec3)
     EXPECT_EQ(p.z, 1.f);
 }
 
-SPECTRE_TEST(Matrix4, transform_ray)
-{
-    Point3 p = Point3(0, 0, 0);
-    Vec3 v = Vec3(0, 1, 0);
-    Ray r(p, v);
-    Matrix4 m;
-    m.set_translation(Vec3(0, -1, 2.5));
-
-    p = m*p;
-    v = m*v;
-    r = m*r;
-    //assert that transforming a ray is exactly like transforming origin and
-    //direction separately
-    EXPECT_TRUE(r.origin == p);
-    EXPECT_TRUE(r.direction == v);
-}
-
-SPECTRE_TEST(Matrix4, trasnform_ray_diff)
+SPECTRE_TEST(Matrix4, trasnform_ray)
 {
     Point3 p = Point3(0, 0, 0);
     Vec3 v = Vec3(0, 1, 0);
@@ -819,7 +802,7 @@ SPECTRE_TEST(Matrix4, trasnform_ray_diff)
     Vec3 vx = Vec3(1,0,0);
     Point3 py = Point3(0,1,0);
     Vec3 vy = Vec3(0,1,0);
-    RayDiff r(p, v, px, vx, py, vy);
+    Ray r(p, v, px, vx, py, vy);
     Matrix4 m;
     m.set_translation(Vec3(0, -1, 2.5));
     
