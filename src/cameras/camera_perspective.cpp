@@ -60,9 +60,10 @@ CameraPerspective::CameraPerspective(const Point3* pos, const Point3* target,
     raster2camera *= raster2screen;
 }
 
-void CameraPerspective::create_ray(Sample* sample, Ray* ray) const
+void CameraPerspective::create_single_ray(const Sample* sample, Point3* origin,
+                                          Vec3* direction) const
 {
-    ray->origin = camera2world*Point3(0, 0, 0);
+    *origin = camera2world*Point3(0, 0, 0);
     Point3 dir = raster2camera*Point3(sample->posx, sample->posy, 0);
-    ray->direction = camera2world*normalize(Vec3(dir.x, dir.y, dir.z));
+    *direction = camera2world*normalize(Vec3(dir.x, dir.y, dir.z));
 }

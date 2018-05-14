@@ -4,7 +4,7 @@
 #include "renderer.hpp"
 
 //st = sampler type
-static void executor(Camera* camera,ImageFilm* film,std::mutex* lock,int spp,
+static void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
                      int sampler_type, std::stack<Renderer_task>* jobs,
                      Scene* scene, LightIntegrator* mc_solver);
 
@@ -13,11 +13,11 @@ static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
                         bool& alive);
 
 Renderer::Renderer(int width, int height, int spp, const char* out,
-                   int thread_number) : film(width,height,out)
+                   int thread_number):film(width, height, out)
 {
     if(width%SPLIT_SIZE)
     {
-        Console.severe(MESSAGE_WIDTH_MULTIPLE,SPLIT_SIZE);
+        Console.severe(MESSAGE_WIDTH_MULTIPLE, SPLIT_SIZE);
         //set w and h as 0 so no image will be rendered
         Renderer::width = 0;
         Renderer::height = 0;
@@ -27,24 +27,24 @@ Renderer::Renderer(int width, int height, int spp, const char* out,
         Renderer::width = width;
         Renderer::height = height;
     }
-    
+
     if(thread_number<1)
         Renderer::numthreads = (int)std::thread::hardware_concurrency();
     else
         Renderer::numthreads = thread_number;
-    numthreads = numthreads > 0 ? numthreads : 1;
-    
+    numthreads = numthreads>0?numthreads:1;
+
     //print number of rendering threads
     char threads[256];
-    sprintf(threads,MESSAGE_NUMTHREADS,numthreads);
-    Console.log(threads,threads);
-    
+    sprintf(threads, MESSAGE_NUMTHREADS, numthreads);
+    Console.log(threads, threads);
+
     Renderer::spp = spp;
     Renderer::camera = NULL;
     Renderer::filter = NULL;
     Renderer::mc_solver = NULL;
     Renderer::sampler_t = -1;
-    Renderer::workers=new std::thread[numthreads];//dflt ctor won't start thread
+    Renderer::workers = new std::thread[numthreads];//dflt ctor won't start thread
 }
 
 Renderer::~Renderer()
@@ -80,13 +80,13 @@ int Renderer::render(Scene* s)
 {
     //too verbose otherwise
     using namespace std::chrono;
-    
+
     //used just for seed generation, WELLrng will be the actual prng
     srand((unsigned int)time(NULL));
-    
+
     //build the kd-tree, or rebuild it, just to be sure
     s->k.buildTree();
-    
+
     //checks if the settings are ok
     if(Renderer::camera == NULL)
         Console.critical(MESSAGE_MISSING_CAMERA);
@@ -96,14 +96,14 @@ int Renderer::render(Scene* s)
         Console.critical(MESSAGE_MISSING_INTEGRATOR);
     if(Renderer::sampler_t == -1)
         Console.critical(MESSAGE_MISSING_SAMPLER);
-    
+
     //add part of the image as renderer_tasks
     Renderer_task task;
-    for(int y=0;y<height;y+=SPLIT_SIZE)
+    for(int y = 0; y<height; y += SPLIT_SIZE)
     {
         task.starty = y;
         task.endy = y+SPLIT_SIZE<height?y+SPLIT_SIZE:height;
-        for(int x=0;x<width;x+=SPLIT_SIZE)
+        for(int x = 0; x<width; x += SPLIT_SIZE)
         {
             task.startx = x;
             task.endx = x+SPLIT_SIZE;
@@ -113,33 +113,35 @@ int Renderer::render(Scene* s)
     steady_clock::time_point a = steady_clock::now();
     RendererProgressBar progress_bar(&jobs);
     //create threads
-    for(int i=0;i<Renderer::numthreads;i++)
+    for(int i = 0; i<Renderer::numthreads; i++)
     {
-        Renderer::workers[i]=std::thread(executor,camera,&film,&jobs_mtx,spp,
-                                         sampler_t,&jobs,s,Renderer::mc_solver);
+        Renderer::workers[i] = std::thread(executor, camera, &film, &jobs_mtx,
+                                           spp,
+                                           sampler_t, &jobs, s,
+                                           Renderer::mc_solver);
     }
-    
+
     //wait for them to finish
-    for(int i=0;i<Renderer::numthreads;i++)
+    for(int i = 0; i<Renderer::numthreads; i++)
     {
         Renderer::workers[i].join();
     }
     progress_bar.kill();
     steady_clock::time_point b = steady_clock::now();
-    
+
     //all these things to print the elapsed time!
     //sizeof because MSVC cannot resolve strlen a compile time
     char endmsg[sizeof(MESSAGE_RENDERTIME)/sizeof(char)+MAX_TIME_FORMAT_LENGTH];
     char elapsed_formatted[MAX_TIME_FORMAT_LENGTH];
-    format_seconds((int)duration_cast<seconds>(b-a).count(),elapsed_formatted);
-    sprintf(endmsg, MESSAGE_RENDERTIME,elapsed_formatted);
-    Console.log(endmsg,NULL);
-    
-    Console.log(MESSAGE_IMAGEO,NULL);
+    format_seconds((int)duration_cast<seconds>(b-a).count(), elapsed_formatted);
+    sprintf(endmsg, MESSAGE_RENDERTIME, elapsed_formatted);
+    Console.log(endmsg, NULL);
+
+    Console.log(MESSAGE_IMAGEO, NULL);
     //save the image
     Renderer::film.save_image();
-    Console.log(MESSAGE_BYE,NULL);
-    
+    Console.log(MESSAGE_BYE, NULL);
+
     return 0;
 }
 
@@ -162,19 +164,19 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
 #else
     int debug_seed = (int)rand();
     char seedstr[128];
-    snprintf(seedstr, 128, "Seed is %d",debug_seed);
-    Console.log(seedstr,NULL);
-    for(int i=0;i<WELL_R;i++)
+    snprintf(seedstr, 128, "Seed is %d", debug_seed);
+    Console.log(seedstr, NULL);
+    for(int i = 0; i<WELL_R; i++)
         //debug seed is easier to replicate, but really predictable
         WELLseed[i] = debug_seed;
 #endif
 #endif
-    
+
     bool done = false;
     Renderer_task todo;
     Sampler* sam;
     Sample* samples = new Sample[spp];
-    Ray r;
+    RayDiff r;
     ExecutorData ex;
     Spectrum radiance;
     HitPoint h;
@@ -195,10 +197,10 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
             jobs->pop();
             lock->unlock();
         }
-        
-        for(int i=0;i<WELL_R;i++) //alterate the seed
+
+        for(int i = 0; i<WELL_R; i++) //alterate the seed
             WELLseed[i]++; //Predictable, but it is only a seed
-        
+
         switch(sampler_type)
         {
             case SPECTRE_SAMPLER_RANDOM:
@@ -218,14 +220,14 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
         ex.endy = todo.endy;
         while(sam->get_samples(samples))
         {
-            for(int i=0;i<spp;i++)
+            for(int i = 0; i<spp; i++)
             {
                 camera->create_ray(&(samples[i]), &r);
-                if (scene->k.intersect(&r, &h))
+                if(scene->k.intersect(&r, &h))
                     radiance = mc_solver->radiance(scene, &h, &r, sam, &ot);
                 else
                     radiance = SPECTRUM_BLACK;
-                
+
                 ColorXYZ cx = radiance.to_xyz();
                 film->add_pixel(&(samples[i]), cx, &ex);
             }
@@ -237,12 +239,12 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
     film->add_pixel_forced(&ex);
 }
 
-RendererProgressBar::RendererProgressBar(std::stack<Renderer_task> *jobs)
+RendererProgressBar::RendererProgressBar(std::stack<Renderer_task>* jobs)
 {
     RendererProgressBar::jobs = jobs;
     RendererProgressBar::alive = true;
-    RendererProgressBar::listener=std::thread(progressBar,jobs,jobs->size(),
-                                              std::ref(alive));
+    RendererProgressBar::listener = std::thread(progressBar, jobs, jobs->size(),
+                                                std::ref(alive));
 }
 
 RendererProgressBar::~RendererProgressBar()
@@ -256,7 +258,7 @@ void RendererProgressBar::kill()
     RendererProgressBar::alive = false;
     //if alive variable is set when the thread is not sleeping it will print
     //some garbage.
-    
+
     //However this is fine, no point in setting a mutex every time just to
     //avoid a bad print
     Console.progress_bar_done();
@@ -279,8 +281,8 @@ void progressBar(std::stack<Renderer_task>* jobs, unsigned long jobs_no,
                        remaining);
         //avoid garbage values... it is useless, but it runs once per second...
         if(eta>0)
-            Console.progress_bar(done,(float)eta);
+            Console.progress_bar(done, (float)eta);
         std::this_thread::sleep_for
-        (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
+                (std::chrono::seconds(PROGRESS_BAR_UPDATE_SECONDS));
     }
 }

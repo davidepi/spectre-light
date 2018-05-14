@@ -295,7 +295,7 @@ public:
 
     ///Apply the transformation matrix to the Ray
     Ray operator*(const Ray&) const;
-    
+
     ///Apply the transformation matrix to the RayDiff
     RayDiff operator*(const RayDiff&) const;
 

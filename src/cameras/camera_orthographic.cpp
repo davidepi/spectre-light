@@ -60,9 +60,10 @@ CameraOrthographic::CameraOrthographic(const Point3* pos, const Point3* target,
     raster2world *= raster2screen;
 }
 
-void CameraOrthographic::create_ray(Sample* sample, Ray* ray) const
+void CameraOrthographic::create_single_ray(const Sample* sample, Point3* origin,
+                                           Vec3* direction) const
 {
-    ray->origin = raster2world*Point3(sample->posx, sample->posy, 0);
-    ray->direction = camera2world*Vec3(0, 0, 1);
-    ray->direction.normalize();
+    *origin = raster2world*Point3(sample->posx, sample->posy, 0);
+    *direction = camera2world*Vec3(0, 0, 1);
+    direction->normalize();
 }
