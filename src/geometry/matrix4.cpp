@@ -795,6 +795,17 @@ Ray Matrix4::operator*(const Ray& r) const
     return Ray(origin, direction);
 }
 
+RayDiff Matrix4::operator*(const RayDiff& r) const
+{
+    Point3 o = (*this)*r.origin;
+    Vec3 d = (*this)*r.direction;
+    Point3 ox = (*this)*r.originX;
+    Point3 oy = (*this)*r.originY;
+    Vec3 dx = (*this)*r.directionX;
+    Vec3 dy = (*this)*r.directionY;
+    return RayDiff(o, d, ox, dx, oy, dy);
+}
+
 //------------------------------------------------------------------------------
 
 Normal transform_normal(const Normal& n, const Matrix4* inv)

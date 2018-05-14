@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 13 May 2018
+//Last Edit 14 May 2018
 
 /**
  *  \file ray.hpp
@@ -7,7 +7,7 @@
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 13 May 2018
+ *  \date 14 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -113,9 +113,42 @@ public:
 class RayDiff : public Ray
 {
 public:
-
-    ///Inherit Ray constructor
-    using Ray::Ray;
+    
+    ///Default constructor
+    RayDiff() = default;
+    
+    /** \brief Constructor, given origin and direction
+     *
+     *  Construct a RayDiff given a Point3 representing the starting point and a
+     *  Vec3 representing the direction of the Ray. The offseted components are
+     *  not set and thus will be assumed equal to the original point and
+     *  direction
+     *
+     *  \param[in] origin a Point3 representing the starting point of the Ray
+     *  \param[in] direction a Vec3 representing the direction of the Ray
+     */
+    RayDiff(const Point3& origin, const Vec3& direction);
+    
+    /** \brief Constructor, given origins and directions
+     *
+     *  Construct a RayDiff given a Point3 representing the starting point and a
+     *  Vec3 representing the direction of the Ray. These components are given
+     *  also for the offsetted rays
+     *
+     *  \param[in] o a Point3 representing the starting point of the Ray
+     *  \param[in] d a Vec3 representing the direction of the Ray
+     *  \param[in] ox a Point3 representing the starting point of the Ray
+     *  offsetted by 1 pixel in the x direction
+     *  \param[in] dx a Vec3 representing the direction of the Ray offsetted by
+     *  1 pixel in the x direction
+     *  \param[in] oy a Point3 representing the starting point of the Ray
+     *  offsetted by 1 pixel in the y direction
+     *  \param[in] dy a Vec3 representing the direction of the Ray offsetted by
+     *  1 pixel in the y direction
+     */
+    RayDiff(const Point3& o, const Vec3& d,
+            const Point3& ox, const Vec3& dx,
+            const Point3& oy, const Vec3& dy);
 
     ///Origin of the ray ofsetted by 1 pixel in the X axis
     Point3 originX;
@@ -156,12 +189,9 @@ public:
         RayProperties::inverseX = 1.f/v.direction.x;
         RayProperties::inverseY = 1.f/v.direction.y;
         RayProperties::inverseZ = 1.f/v.direction.z;
-        RayProperties::isXInvNeg = RayProperties::inverseX<
-        0;
-        RayProperties::isYInvNeg = RayProperties::inverseY<
-        0;
-        RayProperties::isZInvNeg = RayProperties::inverseZ<
-        0;
+        RayProperties::isXInvNeg = RayProperties::inverseX<0;
+        RayProperties::isYInvNeg = RayProperties::inverseY<0;
+        RayProperties::isZInvNeg = RayProperties::inverseZ<0;
     }
 
     ///The inverse of the \a x component of the ray's direction

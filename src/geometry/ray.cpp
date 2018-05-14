@@ -36,3 +36,13 @@ bool RayDiff::diff() const
 {
     return true;
 }
+
+RayDiff::RayDiff(const Point3& o, const Vec3& d)
+:Ray(o, d), originX(o), directionX(d), originY(o), directionY(d)
+{}
+
+RayDiff::RayDiff(const Point3& o, const Vec3& d,
+                 const Point3& ox, const Vec3& dx,
+                 const Point3& oy, const Vec3& dy)
+:Ray(o,d), originX(ox), directionX(dx), originY(oy), directionY(dy)
+{}

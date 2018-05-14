@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit  3 May 2018
+//Last Edit 14 May 2018
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      3 May 2018
+ *  \date      14 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -295,6 +295,9 @@ public:
 
     ///Apply the transformation matrix to the Ray
     Ray operator*(const Ray&) const;
+    
+    ///Apply the transformation matrix to the RayDiff
+    RayDiff operator*(const RayDiff&) const;
 
 
     //--------------------------------------------------------------------------
