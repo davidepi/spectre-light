@@ -1,12 +1,12 @@
 //Created,  27 Nov 2017
-//Last Edit  8 May 2018
+//Last Edit 16 May 2018
 
 /**
  *  \file imageIO.hpp
  *  \brief     Functions to save an array of pixel in different formats
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 May 2018
+ *  \date      16 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -27,16 +27,13 @@
 #include "utility.hpp"
 #include <cstdio>
 #include <cstdlib>
-
 #ifdef IMAGEMAGICK
-
 #include <cstring>
 #include <Magick++.h>
 #include <type_traits> //std::is_floating_point
-
 #endif
 
-///Initialized ImageMagick routines
+///Initializes ImageMagick routines
 void ImageIO_init();
 
 /** \brief Save an image in the PPM format
@@ -214,5 +211,24 @@ int read_RGB(const char* name, const char* ext, float* data, uint8_t* alpha);
  *  \retun true if the image is supported, false otherwise
  */
 char image_supported(const char* extension);
+
+/**
+ *  \brief Checks wheter an image has a depth higher than 8 bit per pixel or not
+ *
+ *  This function checks the image depth of the file passed as input. If the
+ *  file has a depth higher than 8 bit per pixel it returns true, otherwise
+ *  it returns false. It is not checked if the file exist, this should be
+ *  handled somewhere else.
+ *  If the function encounters any kind of errors (unable to open the file or
+ *  unsupported extension) false is returned by default. (Again, errors
+ *  should be checked by the read function)
+ *
+ *  \param[in] name Path to the image that will be checked
+ *  \param[in] extension Extesion, without the dot, of the image that will be
+ *  checked
+ *  \return true if an image has a depth higher than 8 bit per pixel, false
+ *  otherwise
+ */
+bool high_depth(const char* name, const char* extension);
 
 #endif

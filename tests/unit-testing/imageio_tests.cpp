@@ -391,13 +391,13 @@ SPECTRE_TEST(ImageIO, save_rgb_func)
     errors_count[ERROR_INDEX] = 0;
     EXPECT_FALSE(res);
 #else
-    res = save_RGB("test.jpg","jpg",16,10,image_sample);
+    res = save_RGB("test.jpg", "jpg", 16, 10, image_sample);
     EXPECT_FALSE(res);
     //ensures calls are forwarded to save_ppm and save_bmp
-    res = save_RGB("test.bmp","bmp",16,10,image_sample);
+    res = save_RGB("test.bmp", "bmp", 16, 10, image_sample);
     ASSERT_TRUE(res);
     EXPECT_EQ(unlink("test.bmp"), 0);
-    res = save_RGB("test.ppm","ppm",16,10,image_sample);
+    res = save_RGB("test.ppm", "ppm", 16, 10, image_sample);
     ASSERT_TRUE(res);
     EXPECT_EQ(unlink("test.ppm"), 0);
 #endif
@@ -719,6 +719,30 @@ SPECTRE_TEST(ImageIO, image_supported_func)
 #endif
     //totally random extension
     res = image_supported("ok");
+    EXPECT_FALSE(res);
+}
+
+SPECTRE_TEST(ImageIO, high_depth_func)
+{
+    bool res;
+    //normal depth ppm
+    res = high_depth(TEST_ASSETS "images/binary.ppm", "ppm");
+    EXPECT_FALSE(res);
+    //high depth
+    res = high_depth(TEST_ASSETS "images/p3_high_depth.ppm", "ppm");
+    EXPECT_TRUE(res);
+    //unable to read ppm
+    res = high_depth(TEST_ASSETS "images/test-non-existent.ppm", "ppm");
+    EXPECT_FALSE(res);
+    //normal depth bmp
+    res = high_depth(TEST_ASSETS "images/32bit.bmp", "bmp");
+    EXPECT_FALSE(res);
+    //high depth bmp
+    //should return false since it is not supported -> hence a read error
+    res = high_depth(TEST_ASSETS "images/correct.bmp", "bmp");
+    EXPECT_FALSE(res);
+    //unsupported image
+    res = high_depth(TEST_ASSETS "images/generic.jpg", "jpg");
     EXPECT_FALSE(res);
 }
 
