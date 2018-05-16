@@ -11,148 +11,118 @@ static void downsample(const Texel* in, Texel* out, unsigned short insize,
 static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
                        bool hqfilter);
 
-ImageMap::ImageMap()
+ImageMap::ImageMap(const char* src): path(src)
 {
-    ImageMap::size = 0;
-    ImageMap::high_depth = false;
-    ImageMap::values = NULL;
+    init();
 }
 
-void ImageMap::alloc(const uint8_t* source, int side)
+ImageMap::ImageMap(const File& src): path(src)
 {
-    ImageMap::size = (unsigned short)side;
-    ImageMap::high_depth = false;
-    ImageMap::values = (Texel*)malloc(sizeof(Texel)*size*size);
-    if(values != NULL)
-        values = (Texel*)memcpy(values, source, sizeof(Texel)*size*size);
+    init();
 }
 
-void ImageMap::alloc(const float* source, int side)
+void ImageMap::init()
 {
-    ImageMap::size = (unsigned short)side;
-    float min_val = 0.f;
-    float max_val = 1.f;
-
-    //checks if the image could fit in a 24 bit representation
-    for(int i = 0; i<side*side*3; i++)
+    if(path.readable())
     {
-        min_val = min(min_val, source[i]);
-        max_val = max(max_val, source[i]);
-    }
-    if(min_val == 0.f && max_val == 1.f)
-    {
-        ImageMap::high_depth = false;
-        ImageMap::values = (Texel*)malloc(sizeof(Texel)*size*size);
-        //convert every value to 24 bit depth
-        if(values != NULL)
+        int width;
+        int height;
+        dimensions_RGB(path.absolute_path(), path.extension(), &width, &height);
+        if(width == height && (width & (width-1)) == 0)
         {
-            for(int i = 0; i<side*side*3; i += 3)
+            int res;
+            maps_no = (unsigned char)(1+(int)log2f(width));
+            values = (Texel**)malloc(sizeof(void*)*maps_no);
+            float* data = (float*)malloc(sizeof(width*height*3*sizeof(float)));
+            res = read_RGB(path.absolute_path(), path.extension(), data, NULL);
+            if(res<0)
+                Console.critical(MESSAGE_TEXTURE_ERROR, path.absolute_path());
+            else
             {
-                values[i/3].r = (unsigned char)(source[i+0]*255.f);
-                values[i/3].g = (unsigned char)(source[i+1]*255.f);
-                values[i/3].b = (unsigned char)(source[i+2]*255.f);
+                float max = 1.f;
+                float min = 1.f;
+                //check if image fits in 8bit per pixel
+                for(int i=0;i<width*height*3;i++)
+                    if(data[i]>max)
+                        max = data[i];
+                    else if(data[i]<min)
+                        min = data[i];
+                if(max>1.f || min<0.f) //does not fit
+                {
+                    high_depth = true;
+                    //exploits the fact that Texel32 is equal to an array of flt
+                    values_high[0] = (Texel32*)data;
+                    //calculate pyramid
+                    for(int i=1;i<maps_no;i++)
+                    {
+                        unsigned short side = powf(width,1/(int)exp2f(i));
+                        values_high[i] = (Texel32*)malloc(sizeof(Texel32)*
+                                                          side*side);
+                        downsample(values_high[i-1], values_high[i], side,
+                                   false);
+                    }
+                }
+                else
+                {
+                    //recalculate every value
+                    values[0] = (Texel*)malloc(sizeof(Texel)*width*height);
+                    int j = 0;
+                    for(int i=0;i<width*height;i++)
+                    {
+                        values[0][i].r = (unsigned char)(data[j++]*255.f);
+                        values[0][i].g = (unsigned char)(data[j++]*255.f);
+                        values[0][i].b = (unsigned char)(data[j++]*255.f);
+                    }
+                    //calculate pyramid
+                    for(int i=1;i<maps_no;i++)
+                    {
+                        unsigned short side = powf(width,1/(int)exp2f(i));
+                        values[i] = (Texel*)malloc(sizeof(Texel)*side*side);
+                        downsample(values[i-1], values[i], side, false);
+                    }
+                    free(data);
+                }
             }
         }
+        else
+            Console.critical(MESSAGE_TEXTURE_POWER2, path.absolute_path());
     }
     else
-    {
-        ImageMap::high_depth = true;
-        ImageMap::values_high = (Texel32*)malloc(sizeof(Texel32)*size*size);
-        if(values_high != NULL)
-            memcpy(values_high, source, sizeof(Texel32)*size*size);
-    }
-}
-
-ImageMap::ImageMap(const ImageMap& old)
-{
-    ImageMap::size = old.size;
-    ImageMap::high_depth = old.high_depth;
-    if(high_depth)
-    {
-        ImageMap::values_high = (Texel32*)malloc(sizeof(Texel32)*size*size);
-        if(values_high != NULL)
-            values_high = (Texel32*)memcpy(values, old.values,
-                                           sizeof(Texel32)*size*size);
-    }
-    else
-    {
-        ImageMap::values = (Texel*)malloc(sizeof(Texel)*size*size);
-        if(values != NULL)
-            values = (Texel*)memcpy(values, old.values,
-                                    sizeof(Texel)*size*size);
-    }
-}
-
-void ImageMap::alloc_mipmap(const ImageMap& old, bool hqfilter)
-{
-    ImageMap::size = (unsigned short)(old.size/2);
-    ImageMap::high_depth = old.high_depth;
-    if(high_depth)
-    {
-        ImageMap::values_high = (Texel32*)malloc(sizeof(Texel32)*size*size);
-        if(values_high != NULL)
-            downsample(old.values_high, values_high, old.size, hqfilter);
-    }
-    else
-    {
-        ImageMap::values = (Texel*)malloc(sizeof(Texel)*size*size);
-        if(values != NULL)
-            downsample(old.values, values, old.size, hqfilter);
-    }
-}
-
-void ImageMap::dealloc()
-{
-    if(ImageMap::values == NULL)
-        free(ImageMap::values);
-    ImageMap::values = NULL;
+        //should be checked by parser, but an error at construction time is ok
+        Console.critical(MESSAGE_TEXTURE_ERROR, path.absolute_path());
 }
 
 ImageMap::~ImageMap()
 {
-    if(ImageMap::values != NULL)
-        free(ImageMap::values);
+    for(int i=0;i<maps_no;i++)
+        free(values[i]);
+    free(values);
 }
 
-ColorRGB ImageMap::val(unsigned short x, unsigned short y) const
+static void downsample(const Texel32* in, Texel32* out,
+                       unsigned short input_side, bool hqfilter)
 {
-    int pixel = y*size+x;
-    ColorRGB retval;
-    if(!high_depth)
-        retval = ColorRGB(values[pixel].r,
-                          values[pixel].g,
-                          values[pixel].b);
-    else
-        retval = ColorRGB(values_high[pixel].r,
-                          values_high[pixel].g,
-                          values_high[pixel].b);
-    return retval;
-}
-
-static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
-                       bool hqfilter)
-{
-    unsigned short outsize = (unsigned short)(insize/2);
+    unsigned short output_side = (unsigned short)(input_side/2);
     int range_x = (int)lowpass_filter.range_x;
     int range_y = (int)lowpass_filter.range_y;
     float* weights;
     if(hqfilter)
     {
-        memset(out, 0, sizeof(Texel32)*outsize*outsize);
-        weights = (float*)malloc(sizeof(float)*outsize*outsize);
-        memset(weights, 0, sizeof(float)*outsize*outsize);
+        memset(out, 0, sizeof(Texel32)*output_side*output_side);
+        weights = (float*)malloc(sizeof(float)*output_side*output_side);
+        memset(weights, 0, sizeof(float)*output_side*output_side);
     }
-    for(int y = 0; y<outsize; y++)
+    for(int y = 0; y<output_side; y++)
     {
-        for(int x = 0; x<outsize; x++)
+        for(int x = 0; x<output_side; x++)
         {
-            Texel32 t0 = in[2*y*insize+2*x];
-            Texel32 t1 = in[(2*y+1)*insize+2*x];
-            Texel32 t2 = in[2*y*insize+(2*x+1)];
-            Texel32 t3 = in[(2*y+1)*insize+(2*x+1)];
+            Texel32 t0 = in[2*y*input_side+2*x];
+            Texel32 t1 = in[(2*y+1)*input_side+2*x];
+            Texel32 t2 = in[2*y*input_side+(2*x+1)];
+            Texel32 t3 = in[(2*y+1)*input_side+(2*x+1)];
             if(!hqfilter) //single pixel (no filter)
             {
-                int pixel = y*outsize+x;
+                int pixel = y*output_side+x;
                 out[pixel].r = 0.25f*(t0.r+t1.r+t2.r+t3.r);
                 out[pixel].g = 0.25f*(t0.g+t1.g+t2.g+t3.g);
                 out[pixel].b = 0.25f*(t0.b+t1.b+t2.b+t3.b);
@@ -166,10 +136,10 @@ static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
                         int val_x = x+ox;
                         int val_y = y+oy;
                         //if they are outside the image, skip this pixel
-                        if(val_x<0 || val_x>=outsize || val_y<0 ||
-                           val_y>=outsize)
+                        if(val_x<0 || val_x>=output_side || val_y<0 ||
+                           val_y>=output_side)
                             continue;
-                        int pixel = val_y*outsize+val_x;
+                        int pixel = val_y*output_side+val_x;
                         float weight = lowpass_filter.weight((float)ox,
                                                              (float)oy);
                         out[pixel].r += 0.25f*(t0.r+t1.r+t2.r+t3.r)*weight;
@@ -183,7 +153,7 @@ static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
     if(hqfilter)
     {
         //reweights samples
-        for(int i = 0; i<outsize*outsize; i++)
+        for(int i = 0; i<output_side*output_side; i++)
         {
             float weight = 1.f/weights[i];
             out[i].r = max(out[i].r, 0.f)*weight;
@@ -194,32 +164,32 @@ static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
     }
 }
 
-static void downsample(const Texel* in, Texel* out, unsigned short insize,
-                       bool hqfilter)
+static void downsample(const Texel* in, Texel* out,
+                       unsigned short input_side, bool hqfilter)
 {
-    unsigned short outsize = (unsigned short)(insize/2);
+    unsigned short output_side = (unsigned short)(input_side/2);
     int range_x = (int)lowpass_filter.range_x;
     int range_y = (int)lowpass_filter.range_y;
     Texel32* tmpout;
     float* weights;
     if(hqfilter)
     {
-        weights = (float*)malloc(sizeof(float)*outsize*outsize);
-        tmpout = (Texel32*)malloc(sizeof(Texel32)*outsize*outsize);
-        memset(tmpout, 0, sizeof(Texel32)*outsize*outsize);
-        memset(weights, 0, sizeof(float)*outsize*outsize);
+        weights = (float*)malloc(sizeof(float)*output_side*output_side);
+        tmpout = (Texel32*)malloc(sizeof(Texel32)*output_side*output_side);
+        memset(tmpout, 0, sizeof(Texel32)*output_side*output_side);
+        memset(weights, 0, sizeof(float)*output_side*output_side);
     }
-    for(int y = 0; y<outsize; y++)
+    for(int y = 0; y<output_side; y++)
     {
-        for(int x = 0; x<outsize; x++)
+        for(int x = 0; x<output_side; x++)
         {
-            Texel t0 = in[2*y*insize+2*x];
-            Texel t1 = in[(2*y+1)*insize+2*x];
-            Texel t2 = in[2*y*insize+(2*x+1)];
-            Texel t3 = in[(2*y+1)*insize+(2*x+1)];
+            Texel t0 = in[2*y*input_side+2*x];
+            Texel t1 = in[(2*y+1)*input_side+2*x];
+            Texel t2 = in[2*y*input_side+(2*x+1)];
+            Texel t3 = in[(2*y+1)*input_side+(2*x+1)];
             if(!hqfilter) //single pixel (no filter)
             {
-                int pixel = y*outsize+x;
+                int pixel = y*output_side+x;
                 out[pixel].r = (uint8_t)(0.25f*(t0.r+t1.r+t2.r+t3.r));
                 out[pixel].g = (uint8_t)(0.25f*(t0.g+t1.g+t2.g+t3.g));
                 out[pixel].b = (uint8_t)(0.25f*(t0.b+t1.b+t2.b+t3.b));
@@ -233,10 +203,10 @@ static void downsample(const Texel* in, Texel* out, unsigned short insize,
                         int val_x = x+ox;
                         int val_y = y+oy;
                         //if they are outside the image, skip this pixel
-                        if(val_x<0 || val_x>=outsize || val_y<0 ||
-                           val_y>=outsize)
+                        if(val_x<0 || val_x>=output_side || val_y<0 ||
+                           val_y>=output_side)
                             continue;
-                        int pixel = val_y*outsize+val_x;
+                        int pixel = val_y*output_side+val_x;
                         float weight = lowpass_filter.weight((float)ox,
                                                              (float)oy);
                         tmpout[pixel].r += 0.25f*(t0.r+t1.r+t2.r+t3.r)*weight;
@@ -250,7 +220,7 @@ static void downsample(const Texel* in, Texel* out, unsigned short insize,
     if(hqfilter)
     {
         //reweights samples
-        for(int i = 0; i<outsize*outsize; i++)
+        for(int i = 0; i<output_side*output_side; i++)
         {
             float weight = 1.f/weights[i];
             out[i].r = (uint8_t)clamp(tmpout[i].r*weight, 0.f, 255.f);
