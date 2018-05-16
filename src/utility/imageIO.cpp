@@ -392,9 +392,9 @@ bool save_RGB(const char* name, const char* ext, int width, int height,
     }
     return true;
 #else
-    if(strcmp(ext,"ppm")==0)
+    if(strcmp(ext, "ppm") == 0)
         return save_ppm(name, width, height, data);
-    else if(strcmp(ext,"bmp")==0)
+    else if(strcmp(ext, "bmp") == 0)
         return save_bmp(name, width, height, data);
     else
         return false;
@@ -425,9 +425,9 @@ bool dimensions_RGB(const char* name, const char* ext, int* width, int* height)
         return false;
     }
 #else
-    if(strcmp(ext,"ppm")==0)
+    if(strcmp(ext, "ppm") == 0)
         dimensions_ppm(name, width, height);
-    else if(strcmp(ext,"bmp")==0)
+    else if(strcmp(ext, "bmp") == 0)
         dimensions_bmp(name, width, height);
     else
     {
@@ -487,9 +487,9 @@ int read_RGB(const char* name, const char* ext, float* data, uint8_t* alpha)
     }
     return IMAGE_OK;
 #else
-    if(strcmp(ext,"ppm")==0)
+    if(strcmp(ext, "ppm") == 0)
         return read_ppm(name, data);
-    else if(strcmp(ext,"bmp")==0)
+    else if(strcmp(ext, "bmp") == 0)
         return read_bmp(name, data);
     else
         return IMAGE_NOT_SUPPORTED;
@@ -517,9 +517,9 @@ char image_supported(const char* extension)
             retval = false;
         }
 #else
-        if(strcmp(extension,"ppm")==0)
+        if(strcmp(extension, "ppm") == 0)
             retval = true;
-        else if(strcmp(extension,"bmp")==0)
+        else if(strcmp(extension, "bmp") == 0)
             retval = true;
         else
             retval = false;
@@ -528,5 +528,43 @@ char image_supported(const char* extension)
     else
         retval = false; //missing extension, avoid checking magic numbers
     return retval;
+}
+
+bool high_depth(const char* name, const char* extension)
+{
+#ifdef IMAGEMAGICK
+    Magick::Image img;
+    try
+    {
+        //suppress warning that would trigger the exception
+        img.quiet(true);
+        img.read(name);
+        retval = img.depth>8;
+    }
+    catch(Magick::Exception e)
+    {
+        retval = false;
+    }
+#else
+    bool retval;
+    if(strcmp(extension, "bmp") == 0)
+        retval = false; //only 24 bit supported
+    else if(strcmp(extension, "ppm") == 0)
+    {
+        FILE* fin = fopen(name, "rb");
+        if(fin != NULL)
+        {
+            uint16_t depth;
+            fscanf(fin, "%*c%*c%*u%*u%hu", &depth);
+            retval = depth>255;
+            fclose(fin);
+        }
+        else
+            retval = false;
+    }
+    else
+        retval = false;
+    return retval;
+#endif
 }
 
