@@ -31,6 +31,7 @@ void ImageMap::init()
         if(width == height && (width & (width-1)) == 0)
         {
             int res;
+            size = (unsigned short)width;
             maps_no = (unsigned char)(1+(int)log2f(width));
             values = (Texel**)malloc(sizeof(void*)*maps_no);
             float* data = (float*)malloc(sizeof(width*height*3*sizeof(float)));

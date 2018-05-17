@@ -262,6 +262,8 @@ SPECTRE_TEST(Parser, texture)
     Scene s;
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/textures.txt", &s);
+    HitPoint h;
+    
     //check that contains is not broken and returning always true
     EXPECT_FALSE(TexLib.contains_texture("bogus"));
     //check the single texture was added
@@ -273,7 +275,7 @@ SPECTRE_TEST(Parser, texture)
     if(TexLib.contains_texture("Red"))
     {
         const Texture* tex = TexLib.get_texture("Red");
-        Spectrum spectrum = tex->map(Point2());
+        Spectrum spectrum = tex->map(&h);
         ColorRGB res = spectrum.to_xyz().to_sRGB();
         EXPECT_NEAR(res.r, 1.f, 1e-3f);
         EXPECT_NEAR(res.g, 0.f, 1e-3f);
@@ -284,7 +286,7 @@ SPECTRE_TEST(Parser, texture)
     if(TexLib.contains_texture("Grey"))
     {
         const Texture* tex = TexLib.get_texture("Grey");
-        Spectrum spectrum = tex->map(Point2());
+        Spectrum spectrum = tex->map(&h);
         ColorRGB res = spectrum.to_xyz().to_sRGB();
         EXPECT_NEAR(res.r, 0.501960814f, 1e-3f);
         EXPECT_NEAR(res.g, 0.501960814f, 1e-3f);
