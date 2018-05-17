@@ -263,16 +263,16 @@ SPECTRE_TEST(Parser, texture)
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/textures.txt", &s);
     //check that contains is not broken and returning always true
-    EXPECT_FALSE(TexLib.contains("bogus"));
+    EXPECT_FALSE(TexLib.contains_texture("bogus"));
     //check the single texture was added
-    EXPECT_TRUE(TexLib.contains("Manually written name"));
+    EXPECT_TRUE(TexLib.contains_texture("Manually written name"));
     //nameless addition
-    EXPECT_TRUE(TexLib.contains("correct.bmp"));
+    EXPECT_TRUE(TexLib.contains_texture("correct.bmp"));
     //check the recursive file was added
-    EXPECT_TRUE(TexLib.contains("recursive_load.bmp"));
-    if(TexLib.contains("Red"))
+    EXPECT_TRUE(TexLib.contains_texture("recursive_load.bmp"));
+    if(TexLib.contains_texture("Red"))
     {
-        const Texture* tex = TexLib.get("Red");
+        const Texture* tex = TexLib.get_texture("Red");
         Spectrum spectrum = tex->map(Point2());
         ColorRGB res = spectrum.to_xyz().to_sRGB();
         EXPECT_NEAR(res.r, 1.f, 1e-3f);
@@ -281,9 +281,9 @@ SPECTRE_TEST(Parser, texture)
     }
     else
         FAIL();
-    if(TexLib.contains("Grey"))
+    if(TexLib.contains_texture("Grey"))
     {
-        const Texture* tex = TexLib.get("Grey");
+        const Texture* tex = TexLib.get_texture("Grey");
         Spectrum spectrum = tex->map(Point2());
         ColorRGB res = spectrum.to_xyz().to_sRGB();
         EXPECT_NEAR(res.r, 0.501960814f, 1e-3f);
@@ -299,7 +299,7 @@ SPECTRE_TEST(Parser, texture)
                                  &s);
     EXPECT_EQ(errors_count[WARNING_INDEX], 3);
     errors_count[WARNING_INDEX] = 0;
-    EXPECT_FALSE(TexLib.contains("I do not exist"));
+    EXPECT_FALSE(TexLib.contains_texture("I do not exist"));
     delete r1;
     TexLib.clear();
 }
@@ -324,7 +324,7 @@ SPECTRE_TEST(Parser, material_matte)
 
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt", &s);
-    EXPECT_TRUE(TexLib.contains("Red"));
+    EXPECT_TRUE(TexLib.contains_texture("Red"));
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     //TODO: maybe RTTI to get class info?
     const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
@@ -400,9 +400,9 @@ SPECTRE_TEST(Parser, material_glossy)
 
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glossy.txt", &s);
-    EXPECT_TRUE(TexLib.contains("Red"));
-    EXPECT_TRUE(TexLib.contains("Green"));
-    EXPECT_TRUE(TexLib.contains("Blue"));
+    EXPECT_TRUE(TexLib.contains_texture("Red"));
+    EXPECT_TRUE(TexLib.contains_texture("Green"));
+    EXPECT_TRUE(TexLib.contains_texture("Blue"));
     ASSERT_TRUE(MtlLib.contains("Anisotropic"));
     ASSERT_TRUE(MtlLib.contains("Blinn"));
     ASSERT_TRUE(MtlLib.contains("Beckmann"));
@@ -494,9 +494,9 @@ SPECTRE_TEST(Parser, material_glass)
 
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glass.txt", &s);
-    EXPECT_TRUE(TexLib.contains("Red"));
-    EXPECT_TRUE(TexLib.contains("Green"));
-    EXPECT_TRUE(TexLib.contains("Blue"));
+    EXPECT_TRUE(TexLib.contains_texture("Red"));
+    EXPECT_TRUE(TexLib.contains_texture("Green"));
+    EXPECT_TRUE(TexLib.contains_texture("Blue"));
     ASSERT_TRUE(MtlLib.contains("spec"));
     ASSERT_TRUE(MtlLib.contains("aniso"));
     ASSERT_TRUE(MtlLib.contains("blinn"));

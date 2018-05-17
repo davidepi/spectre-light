@@ -1,12 +1,12 @@
 //Created,  14 Mar 2018
-//Last Edit 14 Apr 2018
+//Last Edit 17 May 2018
 
 /**
  *  \file texture_library.hpp
  *  \brief TextureLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  14 Apr 2018
+ *  \date  17 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -16,7 +16,9 @@
 
 #include "textures/texture.hpp"
 #include "textures/texture_uniform.hpp"
+#include "textures/image_map.hpp"
 #include <unordered_map>
+#include <vector>
 #include <string>
 
 /**
@@ -60,7 +62,33 @@ public:
      *  \param[in] name The name of the texture
      *  \param[in] texture The texture that will be added
      */
-    void add_inherit(const std::string& name, Texture* texture);
+    void inherit_texture(const std::string& name, const Texture* texture);
+    
+    /** \brief Add a texture to the library
+     *
+     *  Inherit an anonymous texture and add it to the library. This texture
+     *  will be impossible to retrieve, but the TextureLibrary will ensure its
+     *  deallocation. (Just to keep the code clean. TexLib is a singleton
+     *  so the anonymous texture is deleted at program teardown in any case)
+     *
+     *  \warning adding the same texture twice will cause a double free error
+     *
+     *  \param[in] texture The texture that will be added
+     */
+    void inherit_texture(const Texture* texture);
+    
+    /** \brief Add an image to the library
+     *
+     *  Inherit an ImageMap and add it to the library. The library will ensure
+     *  its deallocation.
+     *
+     *  \warning Adding the same image with different names will cause a
+     *  double free error
+     *
+     *  \param[in] name The name of the texture
+     *  \param[in] map The ImageMap that will be added
+     */
+    void inherit_map(const std::string& name, const ImageMap* map);
 
     /** \brief Retrieve a texture from the library
      *
@@ -70,20 +98,37 @@ public:
      * \param[in] name The texture to retrieve
      * \return The texture, if it is stored in the library, NULL otherwise
      */
-    const Texture* get(const std::string& name) const;
-
+    const Texture* get_texture(const std::string& name) const;
+    
+    /** \brief Retrieve a map from the library
+     *
+     *  Retrieve an ImageMap from the library. If the ImageMap can not be found
+     *  the returned value will be NULL
+     *
+     * \param[in] name The ImageMap to retrieve
+     * \return The ImageMap, if it is stored in the library, NULL otherwise
+     */
+    const ImageMap* get_map(const std::string& name) const;
+    
     /** \brief Remove and deallocate a texture from the library
      *
      *  Note that it is not possible to erase the "Default" texture
      *
      * \param[in] name The texture that will be removed and deallocated
      */
-    void erase(const std::string& name);
+    void erase_texture(const std::string& name);
+    
+    /** \brief Remove and deallocate a map from the library
+     *
+     * \param[in] name The name of the ImageMap that will be removed and
+     *  deallocated
+     */
+    void erase_map(const std::string& name);
 
     /** \brief Erase and deallocate everything inside the texture library
      *
      *  This method will clear and thus deallocate every texture stored in the
-     *  library. It is the same as calling erase for every stored texture.
+     *  library, included maps and anonymous textures
      *  Note, however, that the "Default" texture will not be removed for
      *  integrity reasons
      */
@@ -97,7 +142,17 @@ public:
      *  \param[in] name The name of the texture that will be checked
      *  \return true if the texture is already inside the library
      */
-    bool contains(const std::string& name) const;
+    bool contains_texture(const std::string& name) const;
+    
+    /** \brief Check if the texture library already contains a map
+     *
+     *  This method only checks if an ImageMap with the input name is already
+     *  inside the texture library
+     *
+     *  \param[in] name The name of the ImageMap that will be checked
+     *  \return true if the ImageMap is already inside the library
+     */
+    bool contains_map(const std::string& name) const;
 
     /** \brief Returns the "Default" texture
      *
@@ -116,7 +171,9 @@ private:
 
     ~TextureLibrary();
 
-    std::unordered_map<std::string, const Texture*> lib;
+    std::unordered_map<std::string, const Texture*> texlib;
+    std::unordered_map<std::string, const ImageMap*> maplib;
+    std::vector<const Texture*> unreferenced;
     const Texture* default_texture;
 };
 

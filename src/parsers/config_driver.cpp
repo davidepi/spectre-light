@@ -254,7 +254,7 @@ static void load_texture_rec(File& src)
             if(image_supported(src.extension())) //check extension
             {
                 Texture* addme = new TextureImage(&src);
-                TexLib.add_inherit(src.filename(), addme);
+                TexLib.inherit_texture(src.filename(), addme);
             }
             /*else silently skip unsupported texture */
         }
@@ -284,7 +284,7 @@ void ConfigDriver::load_texture_uniform()
                      (unsigned char)tex_color.y,
                      (unsigned char)tex_color.z);
         Spectrum color(rgb, false);
-        TexLib.add_inherit(tex_name, new TextureUniform(color));
+        TexLib.inherit_texture(tex_name, new TextureUniform(color));
         tex_name.clear();
     }
 }
@@ -304,7 +304,7 @@ void ConfigDriver::load_texture_single()
         if(tex_name.empty())
             tex_name = cur_file.filename();
         Texture* addme = new TextureImage(tex_src.c_str());
-        TexLib.add_inherit(tex_name, addme);
+        TexLib.inherit_texture(tex_name, addme);
         tex_name.clear(); //reset name for next texture
     }
     else
@@ -335,8 +335,8 @@ void ConfigDriver::build_materials()
             case MATTE:
             {
                 material = new SingleBRDF();
-                if(TexLib.contains(mat->diffuse))
-                    diffuse = TexLib.get(mat->diffuse);
+                if(TexLib.contains_texture(mat->diffuse))
+                    diffuse = TexLib.get_texture(mat->diffuse);
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
@@ -358,16 +358,16 @@ void ConfigDriver::build_materials()
                 Fresnel* fresnel = new Dielectric(cauchy(1.f, 0),
                                                   cauchy(1.5f, 0));
                 MicrofacetDist* dist;
-                if(TexLib.contains(mat->diffuse))
-                    diffuse = TexLib.get(mat->diffuse);
+                if(TexLib.contains_texture(mat->diffuse))
+                    diffuse = TexLib.get_texture(mat->diffuse);
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->diffuse.c_str(), mat->name.c_str());
                     diffuse = TexLib.get_default();
                 }
-                if(TexLib.contains(mat->specular))
-                    specular = TexLib.get(mat->specular);
+                if(TexLib.contains_texture(mat->specular))
+                    specular = TexLib.get_texture(mat->specular);
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
@@ -394,16 +394,16 @@ void ConfigDriver::build_materials()
             }
             case GLASS:
             {
-                if(TexLib.contains(mat->diffuse))
-                    diffuse = TexLib.get(mat->diffuse);
+                if(TexLib.contains_texture(mat->diffuse))
+                    diffuse = TexLib.get_texture(mat->diffuse);
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
                                     mat->diffuse.c_str(), mat->name.c_str());
                     diffuse = TexLib.get_default();
                 }
-                if(TexLib.contains(mat->specular))
-                    specular = TexLib.get(mat->specular);
+                if(TexLib.contains_texture(mat->specular))
+                    specular = TexLib.get_texture(mat->specular);
                 else
                 {
                     Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
