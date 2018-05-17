@@ -253,7 +253,7 @@ static void load_texture_rec(File& src)
         {
             if(image_supported(src.extension())) //check extension
             {
-                Texture* addme = new TextureImage(src);
+                Texture* addme = new TextureImage(&src);
                 TexLib.add_inherit(src.filename(), addme);
             }
             /*else silently skip unsupported texture */

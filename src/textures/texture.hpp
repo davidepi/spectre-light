@@ -15,7 +15,7 @@
 #ifndef __TEXTURE_HPP_
 #define __TEXTURE_HPP_
 
-#include "geometry/point2.hpp"
+#include "primitives/shape.hpp"
 #include "utility/spectrum.hpp"
 
 /**
@@ -42,12 +42,11 @@ public:
      *  Spectrum value associated with these coordinates by looking at the
      *  underlying image
      *
-     *  \param[in] uv A Point2 representing the value of the mapped point in
-     *  image space
+     *  \param[in] hp The data of the hit point
      *  \return The Spectrum value of the mesh with this texture applied at the
      *  coordinates (u,v)
      */
-    virtual Spectrum map(Point2 uv) const = 0;
+    virtual Spectrum map(const HitPoint* hp) const = 0;
 };
 
 #endif

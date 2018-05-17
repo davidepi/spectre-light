@@ -9,7 +9,7 @@ TextureUniform::TextureUniform(const Spectrum& color)
 
 }
 
-Spectrum TextureUniform::map(Point2) const
+Spectrum TextureUniform::map(const HitPoint*) const
 {
     return TextureUniform::value;
 }

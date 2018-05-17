@@ -7,6 +7,7 @@
 #include "textures/texture.hpp"
 #include "textures/texture_image.hpp"
 #include "textures/image_map.hpp"
+#include "primitives/shape.hpp"
 #include "utility/file.hpp"
 #include "utility/imageIO.hpp"
 #include <mutex>
@@ -15,24 +16,20 @@
 class TextureImage : public Texture
 {
 public:
-    TextureImage(const char* input);
-    TextureImage(const File& input);
+    TextureImage(const char* path);
+    TextureImage(const File* path);
 
     TextureImage(const TextureImage& old) = delete;
 
     ~TextureImage();
 
-    Spectrum map(Point2 uv) const;
+    Spectrum map(const HitPoint* hp) const;
 
 private:
-    void init();
-    void alloc() const;
-
-    File path;
-    unsigned char maps_no;
-    mutable std::mutex mtx;
-    mutable bool allocated;
-    mutable ImageMap* mapchain;
+    
+    float scale_x;
+    float scale_y;
+    
 };
 
 #endif

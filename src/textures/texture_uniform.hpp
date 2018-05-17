@@ -16,6 +16,7 @@
 #define __UNIFORM_HPP_
 
 #include "textures/texture.hpp"
+#include "primitives/shape.hpp"
 #include "utility/spectrum.hpp"
 
 /**
@@ -46,10 +47,9 @@ public:
      *  Spectrum value associated with these coordinates by looking at the
      *  underlying image
      *
-     *  \param[in] uv A Point2 representing the value of the mapped point in
-     *  image space
+     *  \param[in] hp The data of the hit point
      */
-    Spectrum map(Point2 uv) const;
+    Spectrum map(const HitPoint* hp) const;
 
 private:
     const Spectrum value;
