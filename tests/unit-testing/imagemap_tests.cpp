@@ -42,6 +42,8 @@ SPECTRE_TEST(ImageMap, init_normal_depth)
     ImageMap map0(TEST_ASSETS "images/correct.bmp");
     ASSERT_EQ(errors_count[CRITICAL_INDEX], 0);
     EXPECT_EQ(map0.maps_no,2);
+    EXPECT_EQ(map0.side[0],2);
+    EXPECT_EQ(map0.side[1],1);
     EXPECT_EQ(map0.values[0][0].r,255);
     EXPECT_EQ(map0.values[0][0].g,0);
     EXPECT_EQ(map0.values[0][0].b,0);

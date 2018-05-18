@@ -7,6 +7,7 @@
 #include "textures/texture.hpp"
 #include "textures/texture_image.hpp"
 #include "textures/image_map.hpp"
+#include "textures/texture_library.hpp"
 #include "primitives/shape.hpp"
 #include "utility/file.hpp"
 #include "utility/imageIO.hpp"
@@ -21,14 +22,15 @@ public:
 
     TextureImage(const TextureImage& old) = delete;
 
-    ~TextureImage();
+    ~TextureImage() override = default;
 
-    Spectrum map(const HitPoint* hp) const;
+    Spectrum map(const HitPoint* hp) const override;
 
 private:
     
     float scale_x;
     float scale_y;
+    const ImageMap* imagemap;
     
 };
 

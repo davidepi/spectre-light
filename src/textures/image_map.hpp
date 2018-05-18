@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit 17 May 2018
+//Last Edit 19 May 2018
 
 /**
  *  \file image_map.hpp
@@ -7,7 +7,7 @@
  *  \details   A square, power of 2, image used inside TextureImage as a MIPMap
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      17 May 2018
+ *  \date      19 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -19,6 +19,7 @@
 #include "utility/imageIO.hpp"
 #include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
+#include "utility/spectrum.hpp"
 
 ///Pixel component of a texture, 24-bit version
 struct Texel
@@ -95,6 +96,8 @@ public:
     ///Default destructor
     ~ImageMap();
 
+    Spectrum trilinear(float u, float v, float width);
+
     //this class is mostly hidden behind the scenes, and an error should be
     //detected as soon as possible during testing
 #ifndef TESTS
@@ -108,7 +111,7 @@ private:
     const File path;
 
     ///width or height
-    unsigned short size;
+    unsigned short* side;
     
     ///number of MIPmaps
     unsigned char maps_no;
