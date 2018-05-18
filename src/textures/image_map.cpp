@@ -23,34 +23,35 @@ ImageMap::ImageMap(const File& src): path(src)
 
 void ImageMap::init()
 {
+    maps_no = 0;
+    values = NULL;
+    high_depth = false;
     if(path.readable())
     {
         int width;
         int height;
         dimensions_RGB(path.absolute_path(), path.extension(), &width, &height);
-        if(width == height && (width & (width-1)) == 0)
+        if(width == height && (height & (height-1)) == 0)
         {
             int res;
             size = (unsigned short)width;
             maps_no = (unsigned char)(1+(int)log2f(width));
             values = (Texel**)malloc(sizeof(void*)*maps_no);
-            float* data = (float*)malloc(sizeof(width*height*3*sizeof(float)));
+            float* data = (float*)malloc(width*height*3*sizeof(float));
             res = read_RGB(path.absolute_path(), path.extension(), data, NULL);
             if(res<0)
                 Console.critical(MESSAGE_TEXTURE_ERROR, path.absolute_path());
             else
             {
-                float max = 1.f;
-                float min = 1.f;
                 //check if image fits in 8bit per pixel
                 for(int i=0;i<width*height*3;i++)
-                    if(data[i]>max)
-                        max = data[i];
-                    else if(data[i]<min)
-                        min = data[i];
-                if(max>1.f || min<0.f) //does not fit
+                    if(data[i]>1.f || data[i]<0.f)
+                    {
+                        high_depth = true;
+                        break; //no point in continuing
+                    }
+                if(high_depth)
                 {
-                    high_depth = true;
                     //exploits the fact that Texel32 is equal to an array of flt
                     values_high[0] = (Texel32*)data;
                     //calculate pyramid
@@ -59,8 +60,9 @@ void ImageMap::init()
                         unsigned short side = powf(width,1/(int)exp2f(i));
                         values_high[i] = (Texel32*)malloc(sizeof(Texel32)*
                                                           side*side);
-                        downsample(values_high[i-1], values_high[i], side,
-                                   false);
+                        //side *2 because downsample wants the INPUT size
+                        downsample(values_high[i-1], values_high[i],
+                                   side<<1, false);
                     }
                 }
                 else
@@ -79,7 +81,8 @@ void ImageMap::init()
                     {
                         unsigned short side = powf(width,1/(int)exp2f(i));
                         values[i] = (Texel*)malloc(sizeof(Texel)*side*side);
-                        downsample(values[i-1], values[i], side, false);
+                        //side *2 because downsample wants the INPUT size
+                        downsample(values[i-1], values[i], side<<1, false);
                     }
                     free(data);
                 }
@@ -89,7 +92,7 @@ void ImageMap::init()
             Console.critical(MESSAGE_TEXTURE_POWER2, path.absolute_path());
     }
     else
-        //should be checked by parser, but an error at construction time is ok
+        //should be checked by parser, but a check at construction time is ok
         Console.critical(MESSAGE_TEXTURE_ERROR, path.absolute_path());
 }
 
@@ -97,7 +100,10 @@ ImageMap::~ImageMap()
 {
     for(int i=0;i<maps_no;i++)
         free(values[i]);
-    free(values);
+    //used only in testing, where a critical error does not initialize anything
+    //but also does not kill the program
+    if(values!=NULL)
+        free(values);
 }
 
 static void downsample(const Texel32* in, Texel32* out,

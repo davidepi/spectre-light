@@ -68,8 +68,8 @@ SPECTRE_TEST(Parser, resolution)
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/resolution_even.txt", &s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
     errors_count[NOTICE_INDEX] = 0;
-    EXPECT_EQ(driver2.width, 6016);
-    EXPECT_EQ(driver2.height, 3008);
+    EXPECT_EQ(driver2.width, 3008);
+    EXPECT_EQ(driver2.height, 1504);
     delete r2;
     //not multiple of 32, but height odd
     ConfigDriver driver3;

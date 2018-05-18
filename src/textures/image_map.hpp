@@ -95,7 +95,11 @@ public:
     ///Default destructor
     ~ImageMap();
 
+    //this class is mostly hidden behind the scenes, and an error should be
+    //detected as soon as possible during testing
+#ifndef TESTS
 private:
+#endif
     
     ///actual constructor, the others will initialize path and call this one
     void init();

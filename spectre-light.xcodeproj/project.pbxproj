@@ -56,6 +56,7 @@
 		6B76AAB32084F079008E234B /* point2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B76AAB12084F079008E234B /* point2.cpp */; };
 		6B76AAB42084F08B008E234B /* point2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B76AAB12084F079008E234B /* point2.cpp */; };
 		6B76AAB52084F098008E234B /* point2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B76AAB12084F079008E234B /* point2.cpp */; };
+		6B779D9D20AF00D900D0C52A /* imagemap_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B779D9C20AF00D900D0C52A /* imagemap_tests.cpp */; };
 		6B94261A20928CA5007551AE /* parser_obj_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D7926209285620039AA8B /* parser_obj_tests.cpp */; };
 		6B94261B20928D63007551AE /* parser_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D7929209285620039AA8B /* parser_tests.cpp */; };
 		6B94261C20929048007551AE /* point3_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D792A209285620039AA8B /* point3_tests.cpp */; };
@@ -395,6 +396,7 @@
 		6B771A321ED3A72500EEF79B /* color.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = color.hpp; path = src/utility/color.hpp; sourceTree = "<group>"; };
 		6B771A351ED3AED400EEF79B /* image_film.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = image_film.cpp; path = src/cameras/image_film.cpp; sourceTree = "<group>"; };
 		6B771A361ED3AED400EEF79B /* image_film.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = image_film.hpp; path = src/cameras/image_film.hpp; sourceTree = "<group>"; };
+		6B779D9C20AF00D900D0C52A /* imagemap_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = imagemap_tests.cpp; sourceTree = "<group>"; };
 		6B7E5036206FFE6700AE307C /* config_driver.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = config_driver.hpp; path = src/parsers/config_driver.hpp; sourceTree = "<group>"; };
 		6B86F7171F55E5DD00057F1C /* spectrum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = spectrum.cpp; path = src/utility/spectrum.cpp; sourceTree = "<group>"; };
 		6B86F7181F55E5DD00057F1C /* spectrum.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = spectrum.hpp; path = src/utility/spectrum.hpp; sourceTree = "<group>"; };
@@ -781,6 +783,7 @@
 				6BEB857020921D5C00B7CA30 /* filter_tests.cpp */,
 				6BEB857120921D5C00B7CA30 /* imagefilm_tests.cpp */,
 				6BEB857220921D5C00B7CA30 /* imageio_tests.cpp */,
+				6B779D9C20AF00D900D0C52A /* imagemap_tests.cpp */,
 				6BEB857420921D5D00B7CA30 /* light_tests.cpp */,
 				6BF800172092351B00150BE3 /* materiallibrary_tests.cpp */,
 				6BF800152092351A00150BE3 /* materials_tests.cpp */,
@@ -1283,6 +1286,7 @@
 				6BE113CF1FD4C80900D01A38 /* console.cpp in Sources */,
 				6BE113D01FD4C80900D01A38 /* utility.cpp in Sources */,
 				6BE113CD1FD4C7CE00D01A38 /* vec3.cpp in Sources */,
+				6B779D9D20AF00D900D0C52A /* imagemap_tests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

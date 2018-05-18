@@ -1,1 +1,1 @@
-resolution: {width: 6000, height: 3000}
+resolution: {width: 3000, height: 1500}

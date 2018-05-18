@@ -746,4 +746,4 @@ SPECTRE_TEST(ImageIO, high_depth_func)
     EXPECT_FALSE(res);
 }
 
-SPECTRE_TEST_END(ImageIO)
+SPECTRE_TEST_END(ImageIO_tests)
