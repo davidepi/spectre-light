@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 14 May 2018
+//Last Edit  9 Dec 2017
 
 /**
  *  \file ray.hpp
@@ -7,7 +7,7 @@
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 14 May 2018
+ *  \date 9 Dec 2017
  *  \copyright GNU GPLv3
  */
 
@@ -25,10 +25,6 @@
  *
  *  Ray class represents a semi-infinite line. A Ray is denoted by a Point o,
  *  its origin and a Vec3 d, its direction.
- *
- *  Additionally a Ray contains also the origin and direction offsetted by one
- *  pixel on the x coordinate and y coordinate. These value are used for
- *  antialiasing purposes in the ImageMap and TextureImage classes
  *
  *   Ricochet is the "Time-to-Live" of the ray. At every bounce it is increased
  *   by one and when it reaches a determined amount, the ray is destroyed.
@@ -49,18 +45,6 @@ public:
      *  space
      */
     Vec3 direction;
-    
-    ///Origin of the ray ofsetted by 1 pixel in the X axis
-    Point3 originX;
-    
-    ///Direction of the ray ofsetted by 1 pixel in the X axis
-    Vec3 directionX;
-    
-    ///Origin of the ray ofsetted by 1 pixel in the Y axis
-    Point3 originY;
-    
-    ///Direction of the ray ofsetted by 1 pixel in the Y axis
-    Vec3 directionY;
 
     /** \brief Maximum number of bounces for this ray
      *
@@ -103,26 +87,6 @@ public:
      *  \param[in] dz a float representing the z component of the direction
      */
     Ray(float ox, float oy, float oz, float dx, float dy, float dz);
-    
-    /** \brief Constructor, given origins and directions
-     *
-     *  Construct a RayDiff given a Point3 representing the starting point and a
-     *  Vec3 representing the direction of the Ray. These components are given
-     *  also for the offsetted rays
-     *
-     *  \param[in] o a Point3 representing the starting point of the Ray
-     *  \param[in] d a Vec3 representing the direction of the Ray
-     *  \param[in] ox a Point3 representing the starting point of the Ray
-     *  offsetted by 1 pixel in the x direction
-     *  \param[in] dx a Vec3 representing the direction of the Ray offsetted by
-     *  1 pixel in the x direction
-     *  \param[in] oy a Point3 representing the starting point of the Ray
-     *  offsetted by 1 pixel in the y direction
-     *  \param[in] dy a Vec3 representing the direction of the Ray offsetted by
-     *  1 pixel in the y direction
-     */
-    Ray(const Point3& o, const Vec3& d, const Point3& ox, const Vec3& dx,
-        const Point3& oy, const Vec3& dy);
 
     /** \brief Find a point along a ray
      *

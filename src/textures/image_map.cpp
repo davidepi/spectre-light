@@ -195,7 +195,7 @@ static Spectrum bilinear(float u, float v, unsigned short side, Texel32* vals)
               (t2.r*rem_u+t3.r*decimal_u)*decimal_v;
     float g = (t0.g*rem_u+t1.g*decimal_u)*rem_v+
               (t2.g*rem_u+t3.g*decimal_u)*decimal_v;
-    float b = ((t0.b*rem_u+t1.b*decimal_u)*rem_v+
+    float b = (t0.b*rem_u+t1.b*decimal_u)*rem_v+
                (t2.b*rem_u+t3.b*decimal_u)*decimal_v;
     return Spectrum(ColorRGB(r, g, b), false);
 }

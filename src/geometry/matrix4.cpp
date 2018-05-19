@@ -792,13 +792,7 @@ Ray Matrix4::operator*(const Ray& r) const
 {
     Point3 origin = (*this)*r.origin;
     Vec3 direction = (*this)*r.direction;
-    Point3 originX = (*this)*r.originX;
-    Vec3 directionX = (*this)*r.directionX;
-    Point3 originY = (*this)*r.originY;
-    Vec3 directionY = (*this)*r.directionY;
-    return Ray(origin, direction,
-               originX,directionX,
-               originY,directionY);
+    return Ray(origin, direction);
 }
 
 //------------------------------------------------------------------------------
