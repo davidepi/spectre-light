@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit 10 May 2018
+//Last Edit 20 May 2018
 
 #ifndef __TEXTURE_IMAGE_HPP__
 #define __TEXTURE_IMAGE_HPP__
@@ -17,8 +17,7 @@
 class TextureImage : public Texture
 {
 public:
-    TextureImage(const char* path);
-    TextureImage(const File* path);
+    TextureImage(const ImageMap* map);
 
     TextureImage(const TextureImage& old) = delete;
 

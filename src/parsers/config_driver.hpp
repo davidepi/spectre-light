@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 10 May 2018
+//Last Edit 20 May 2018
 
 /**
  *  \file      config_driver.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      10 May 2018
+ *  \date      20 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -90,8 +90,14 @@ public:
     ///Name of the diffuse texture, as it can be found in the TextureLibrary
     std::string diffuse;
 
+    ///Uniform texture if the material is going to use an uniform value
+    const TextureUniform* diffuse_uniform;
+
     ///Name of the specular texture, as it can be found in the TextureLibrary
     std::string specular;
+
+    ///Uniform texture if the material is going to use an uniform value
+    const TextureUniform* specular_uniform;
 
     ///Initialize the class with default values for materials
     ParsedMaterial();
@@ -318,14 +324,20 @@ public:
     ///Temp val, the RGB color of the TextureUniform currently being parsed
     Vec3 tex_color;
 
-    ///Load a single texture file
-    void load_texture_single();
+    ///Load a texture and the corresponding map given the path on disk
+    const Texture* load_texture(std::string& path);
 
-    ///Load recursively a texture folder
-    void load_texture_folder();
-
-    ///Put a TextureUniform inside the library
-    void load_texture_uniform();
+    /**
+     * \brief Creates and returns a TextureUniform
+     *
+     * This texture will be added as anonymous texture since UniformTexture
+     * won't be reused (no point in doing that since they are so small). This
+     * method is added as anonymous texture to ensure its deallocation when
+     * the program is terminated
+     *
+     * \return The newly created TextureUniform
+     */
+    const TextureUniform* load_texture_uniform();
 
     /*--------------.
     |   Materials   |

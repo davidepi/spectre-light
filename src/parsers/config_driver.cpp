@@ -15,7 +15,9 @@ ParsedMaterial::ParsedMaterial()
     rough_y = -1;
     dist = SPECTRE_DIST_BECKMANN;
     diffuse = "Default";
+    diffuse_uniform = NULL;
     specular = "Default";
+    specular_uniform = NULL;
 }
 
 ConfigDriver::ConfigDriver()
@@ -237,78 +239,50 @@ Camera* ConfigDriver::build_camera()
     return camera;
 }
 
-//recursive step of the load_texture_folder
-static void load_texture_rec(File& src)
+const TextureUniform* ConfigDriver::load_texture_uniform()
 {
-    if(src.exists() && src.readable())
-    {
-        if(src.is_folder()) //recursive call if folder
-        {
-            std::vector<File> res;
-            src.ls(&res);
-            for(int i = 0; i<(int)res.size(); i++)
-                load_texture_rec(res.at(i));
-        }
-        else
-        {
-            if(image_supported(src.extension())) //check extension
-            {
-                Texture* addme = new TextureImage(&src);
-                TexLib.inherit_texture(src.filename(), addme);
-            }
-            /*else silently skip unsupported texture */
-        }
-    }
-}
-
-void ConfigDriver::load_texture_folder()
-{
-    File current_file = current_dir;
-    if(!is_absolute(tex_src.c_str()))
-        current_file.append(tex_src.c_str());
-    else
-        current_file = File(tex_src.c_str());
-    if(current_file.exists())
-        load_texture_rec(current_file);
-    else
-        //error just for the first specified folder
-        Console.warning(MESSAGE_TEXTURE_ERROR, current_file.absolute_path());
-}
-
-void ConfigDriver::load_texture_uniform()
-{
-    if(!tex_name.empty())
-    {
         tex_color.clamp(Vec3(0, 0, 0), Vec3(255, 255, 255));
         ColorRGB rgb((unsigned char)tex_color.x,
                      (unsigned char)tex_color.y,
                      (unsigned char)tex_color.z);
         Spectrum color(rgb, false);
-        TexLib.inherit_texture(tex_name, new TextureUniform(color));
-        tex_name.clear();
-    }
+        TextureUniform* val = new TextureUniform(color);
+        TexLib.inherit_texture(val);
+        return val;
 }
 
-void ConfigDriver::load_texture_single()
+const Texture* ConfigDriver::load_texture(std::string& path)
 {
     File cur_file = current_dir;
-    if(is_absolute(tex_src.c_str()))
-        //recreates the File clas... but absolute path should be a rare case
+    const Texture* addme;
+    if(is_absolute(path.c_str()))
+        //recreates the File class... but absolute path should be a rare case
         //File does not have a dflt constructor. Should I make one?
-        cur_file = File(tex_src.c_str());
+        cur_file = File(path.c_str());
     else
-        cur_file.append(tex_src.c_str());
+        cur_file.append(path.c_str());
     if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
        image_supported(cur_file.extension()))
     {
         if(tex_name.empty())
             tex_name = cur_file.filename();
-        Texture* addme = new TextureImage(tex_src.c_str());
+        //if the library does not contain the map it is loaded here
+        const ImageMap* map = TexLib.get_map(cur_file.absolute_path());
+        if(map == NULL)
+        {
+            map = new ImageMap(cur_file);
+            TexLib.inherit_map(cur_file.absolute_path(), map);
+        }
+        addme = new TextureImage(map);
         TexLib.inherit_texture(tex_name, addme);
         tex_name.clear(); //reset name for next texture
     }
     else
+    {
         Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
+        addme = TexLib.get_default();
+    }
+    return addme;
 }
 
 void ConfigDriver::build_materials()
@@ -320,6 +294,37 @@ void ConfigDriver::build_materials()
     for(int i = 0; i<(int)deferred_materials.size(); i++)
     {
         mat = &deferred_materials[i];
+
+        //avoid processing if material already exists
+        if(MtlLib.contains(mat->name))
+        {
+            Console.warning(MESSAGE_DUPLICATE_MATERIAL, mat->name.c_str());
+            continue;
+        }
+
+        //resolve textures
+        //diffuse
+        if(mat->diffuse_uniform==NULL) //use non uniform texture
+        {
+            if(TexLib.contains_texture(mat->diffuse))
+                diffuse = TexLib.get_texture(mat->diffuse);
+            else
+                diffuse = load_texture(mat->diffuse);
+        }
+        else
+            diffuse = mat->diffuse_uniform;
+
+        //specular
+        if(mat->specular_uniform==NULL) //use non uniform texture
+        {
+            if(TexLib.contains_texture(mat->specular))
+                specular = TexLib.get_texture(mat->specular);
+            else
+                specular = load_texture(mat->specular);
+        }
+        else
+            specular = mat->specular_uniform;
+
         //isotropic element, no point in using anisotropic one
         mat->rough_x = clamp(mat->rough_x, 0.f, 1.f);
         if(mat->rough_y == mat->rough_x)
@@ -330,19 +335,12 @@ void ConfigDriver::build_materials()
             mat->rough_x = clamp(mat->rough_x, MIN_ROUGHNESS, 1.f);
             mat->rough_y = clamp(mat->rough_y, MIN_ROUGHNESS, 1.f);
         }
+
         switch(mat->type)
         {
             case MATTE:
             {
                 material = new SingleBRDF();
-                if(TexLib.contains_texture(mat->diffuse))
-                    diffuse = TexLib.get_texture(mat->diffuse);
-                else
-                {
-                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->diffuse.c_str(), mat->name.c_str());
-                    diffuse = TexLib.get_default();
-                }
                 if(mat->rough_x != 0)
                 {
                     float roughness = lerp(mat->rough_x, 0.f, 100.f);
@@ -358,22 +356,6 @@ void ConfigDriver::build_materials()
                 Fresnel* fresnel = new Dielectric(cauchy(1.f, 0),
                                                   cauchy(1.5f, 0));
                 MicrofacetDist* dist;
-                if(TexLib.contains_texture(mat->diffuse))
-                    diffuse = TexLib.get_texture(mat->diffuse);
-                else
-                {
-                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->diffuse.c_str(), mat->name.c_str());
-                    diffuse = TexLib.get_default();
-                }
-                if(TexLib.contains_texture(mat->specular))
-                    specular = TexLib.get_texture(mat->specular);
-                else
-                {
-                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->specular.c_str(), mat->name.c_str());
-                    specular = TexLib.get_default();
-                }
                 material->inherit_bdf(new Lambertian(), diffuse);
                 //no specular in glossy, avoid division by zero
                 if(mat->rough_x == 0)
@@ -394,22 +376,6 @@ void ConfigDriver::build_materials()
             }
             case GLASS:
             {
-                if(TexLib.contains_texture(mat->diffuse))
-                    diffuse = TexLib.get_texture(mat->diffuse);
-                else
-                {
-                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->diffuse.c_str(), mat->name.c_str());
-                    diffuse = TexLib.get_default();
-                }
-                if(TexLib.contains_texture(mat->specular))
-                    specular = TexLib.get_texture(mat->specular);
-                else
-                {
-                    Console.warning(MESSAGE_TEXTURE_NOT_FOUND,
-                                    mat->specular.c_str(), mat->name.c_str());
-                    specular = TexLib.get_default();
-                }
                 material = new Bsdf();
                 Bdf* reflective;
                 Bdf* refractive;
@@ -490,13 +456,7 @@ void ConfigDriver::build_materials()
                 break;
             }
         }
-        if(!MtlLib.contains(mat->name))
-            MtlLib.add_inherit(mat->name, material);
-        else
-        {
-            Console.warning(MESSAGE_DUPLICATE_MATERIAL, mat->name.c_str());
-            delete material; //already existent, prevents memory leaks
-        }
+        MtlLib.add_inherit(mat->name, material);
     }
 }
 

@@ -151,7 +151,6 @@ stmt
 | SHAPE COLON STRING {driver.deferred_shapes.push_back($3.substr(1,$3.size()-2));}
 | WORLD COLON OPEN_CU world_obj CLOSE_CU {driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
 | LIGHT COLON OPEN_CU light_obj CLOSE_CU {driver.cur_mesh.is_light=true;driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
-| TEXTURE COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_folder();}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON STRING {driver.children.push_back($3.substr(1,$3.size()-2));}
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU {driver.deferred_materials.push_back(driver.cur_mat);driver.cur_mat=ParsedMaterial();}
@@ -209,12 +208,8 @@ light_stmt
 ;
 
 texture_obj /* name is already known at this point */
-: SRC COLON STRING texture_rec {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture_single();}
-| texture_rec SRC COLON STRING {driver.tex_src=$4.substr(1,$4.size()-2);driver.load_texture_single();}
-| SRC COLON STRING {driver.tex_src = $3.substr(1,$3.size()-2);driver.load_texture_single();} //no comma nor name
-| COLOR COLON vector texture_rec {driver.tex_color=$3;driver.load_texture_uniform();}
-| texture_rec COLOR COLON vector {driver.tex_color=$4;driver.load_texture_uniform();}
-| COLOR COLON vector {driver.tex_color=$3;driver.load_texture_uniform();}
+: SRC COLON STRING texture_rec {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture(driver.tex_src);}
+| texture_rec SRC COLON STRING {driver.tex_src=$4.substr(1,$4.size()-2);driver.load_texture(driver.tex_src);}
 ;
 
 texture_rec:texture_rec texture_stmt|texture_stmt;
@@ -247,7 +242,9 @@ material_stmt
 | DISTRIBUTION COLON BECKMANN {driver.cur_mat.dist = SPECTRE_DIST_BECKMANN;}
 | DISTRIBUTION COLON GGX {driver.cur_mat.dist = SPECTRE_DIST_GGX;}
 | DIFFUSE COLON STRING {driver.cur_mat.diffuse = $3.substr(1,$3.size()-2);}
+| DIFFUSE COLON vector {driver.tex_color = $3; driver.cur_mat.diffuse_uniform = driver.load_texture_uniform();}
 | SPECULAR COLON STRING {driver.cur_mat.specular = $3.substr(1,$3.size()-2);}
+| SPECULAR COLON vector {driver.tex_color = $3; driver.cur_mat.specular_uniform = driver.load_texture_uniform();}
 | ELEM COLON element {driver.cur_mat.elem = $3;}
 | COMMA
 ;

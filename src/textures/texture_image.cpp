@@ -1,15 +1,8 @@
 #include "texture_image.hpp"
 
-TextureImage::TextureImage(const char* input)
+TextureImage::TextureImage(const ImageMap* map)
 {
-    imagemap = TexLib.get_map(input);
-    //no checks if imagemap is not found, shouldn't be user's fault
-    //ImageMap constructor already checks if it is user's fault
-}
-
-TextureImage::TextureImage(const File* input)
-{
-    imagemap = TexLib.get_map(input->absolute_path());
+    imagemap = map;
 }
 
 Spectrum TextureImage::map(const HitPoint*) const

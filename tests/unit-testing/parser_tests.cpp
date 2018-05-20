@@ -268,41 +268,116 @@ SPECTRE_TEST(Parser, texture)
     EXPECT_FALSE(TexLib.contains_texture("bogus"));
     //check the single texture was added
     EXPECT_TRUE(TexLib.contains_texture("Manually written name"));
-    //nameless addition
-    EXPECT_TRUE(TexLib.contains_texture("correct.bmp"));
-    //check the recursive file was added
-    EXPECT_TRUE(TexLib.contains_texture("recursive_load.bmp"));
-    if(TexLib.contains_texture("Red"))
-    {
-        const Texture* tex = TexLib.get_texture("Red");
-        Spectrum spectrum = tex->map(&h);
-        ColorRGB res = spectrum.to_xyz().to_sRGB();
-        EXPECT_NEAR(res.r, 1.f, 1e-3f);
-        EXPECT_NEAR(res.g, 0.f, 1e-3f);
-        EXPECT_NEAR(res.b, 0.f, 1e-3f);
-    }
-    else
-        FAIL();
-    if(TexLib.contains_texture("Grey"))
-    {
-        const Texture* tex = TexLib.get_texture("Grey");
-        Spectrum spectrum = tex->map(&h);
-        ColorRGB res = spectrum.to_xyz().to_sRGB();
-        EXPECT_NEAR(res.r, 0.501960814f, 1e-3f);
-        EXPECT_NEAR(res.g, 0.501960814f, 1e-3f);
-        EXPECT_NEAR(res.b, 0.501960814f, 1e-3f);
-    }
-    else
-        FAIL();
+    //check that the map is actually added
+    EXPECT_TRUE(TexLib.contains_map(TEST_ASSETS "images/correct.bmp"));
+
     delete r0;
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/texture_non_existent.txt",
                                  &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 3);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 2);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_FALSE(TexLib.contains_texture("I do not exist"));
     delete r1;
+    TexLib.clear();
+}
+
+SPECTRE_TEST(Parser, material_textures)
+{
+    Scene s;
+    Bsdf material_t;
+    Sphere sphere;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    unsigned char association = 0;
+    m.set_translation(Vec3(-2, 0, 0));
+    Asset a(&sphere, m, 1);
+    Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    wi = Vec3(0.f, 1.f, 0.f);
+    wi.normalize();
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+
+    ConfigDriver driver0;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS
+                                 "parser/material_texture.txt",
+                                 &s);
+    EXPECT_EQ(errors_count[WARNING_INDEX],1);
+    errors_count[WARNING_INDEX] = 0;
+    ASSERT_TRUE(MtlLib.contains("Diffuse color"));
+    ASSERT_TRUE(MtlLib.contains("Specular color"));
+    ASSERT_TRUE(MtlLib.contains("Not found diffuse"));
+    const Bsdf* mat0 = MtlLib.get("Diffuse color");
+    const Bsdf* mat1 = MtlLib.get("Specular color");
+    const Bsdf* mat2 = MtlLib.get("Not found diffuse");
+
+    a.set_materials((const Bsdf**)&mat0, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.0656985715f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.00307962182f, 1e-5f);
+
+    a.set_materials((const Bsdf**)&mat1, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.319684714f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.319018781f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.318374306f, 1e-5f);
+
+    a.set_materials((const Bsdf**)&mat2, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.159286112f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159286112f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.159286112f, 1e-5f);
+
+    //TODO: missing tests with actual imagemaps
+}
+
+SPECTRE_TEST(Parser, material_duplicate)
+{
+    Scene s;
+    Bsdf material_t;
+    Sphere sphere;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    unsigned char association = 0;
+    m.set_translation(Vec3(-2, 0, 0));
+    Asset a(&sphere, m, 1);
+    Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
+    HitPoint hit;
+    float distance = FLT_MAX;
+    wi = Vec3(0.f, 1.f, 0.f);
+    wi.normalize();
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+
+    ConfigDriver driver0;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS
+                                 "parser/material_duplicate.txt", &s);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
+    const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
+    a.set_materials((const Bsdf**)&mat0, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.0656985715f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.00307962182f, 1e-5f);
+
+    delete r0;
+    MtlLib.clear();
     TexLib.clear();
 }
 
@@ -326,7 +401,6 @@ SPECTRE_TEST(Parser, material_matte)
 
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt", &s);
-    EXPECT_TRUE(TexLib.contains_texture("Red"));
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     //TODO: maybe RTTI to get class info?
     const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
@@ -339,47 +413,9 @@ SPECTRE_TEST(Parser, material_matte)
     EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00307962182f, 1e-5f);
 
-    ConfigDriver driver1;
-    errors_count[WARNING_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS
-                                 "parser/material_matte_diffuse_not_found.txt",
-                                 &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
-    ASSERT_TRUE(MtlLib.contains("Like default"));
-    const Bsdf* mat1 = MtlLib.get("Like default");
-
-    a.set_materials((const Bsdf**)&mat1, 1, &association);
-    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
-    EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.318309873f, 1e-5f);
-
-    //check duplicates
-    MtlLib.clear();
-    ConfigDriver driver2;
-    errors_count[WARNING_INDEX] = 0;
-    Renderer* r2 = driver2.parse(TEST_ASSETS
-                                 "parser/material_duplicate.txt", &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
-    ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
-    const Bsdf* mat2 = MtlLib.get("Red Oren-Nayar");
-    a.set_materials((const Bsdf**)&mat2, 1, &association);
-    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
-    EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.0656985715f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.00307962182f, 1e-5f);
-
     delete r0;
-    delete r1;
-    delete r2;
-    MtlLib.clear();
     TexLib.clear();
+    MtlLib.clear();
 }
 
 SPECTRE_TEST(Parser, material_glossy)
@@ -402,9 +438,6 @@ SPECTRE_TEST(Parser, material_glossy)
 
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glossy.txt", &s);
-    EXPECT_TRUE(TexLib.contains_texture("Red"));
-    EXPECT_TRUE(TexLib.contains_texture("Green"));
-    EXPECT_TRUE(TexLib.contains_texture("Blue"));
     ASSERT_TRUE(MtlLib.contains("Anisotropic"));
     ASSERT_TRUE(MtlLib.contains("Blinn"));
     ASSERT_TRUE(MtlLib.contains("Beckmann"));
@@ -449,27 +482,7 @@ SPECTRE_TEST(Parser, material_glossy)
     EXPECT_NEAR(res.w[1], 0.0261571147f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.305674285f, 1e-5f);
 
-    ConfigDriver driver1;
-    errors_count[WARNING_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS
-                                 "parser/material_glossy_diffuse_not_found.txt",
-                                 &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
-    EXPECT_TRUE(MtlLib.contains("DNF"));
-
-    ConfigDriver driver2;
-    errors_count[WARNING_INDEX] = 0;
-    Renderer* r2 = driver2.parse(TEST_ASSETS
-                                 "parser/material_glossy_specular_not_found.txt",
-                                 &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
-    EXPECT_TRUE(MtlLib.contains("SNF"));
-
     delete r0;
-    delete r1;
-    delete r2;
     MtlLib.clear();
     TexLib.clear();
 }
@@ -496,9 +509,6 @@ SPECTRE_TEST(Parser, material_glass)
 
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glass.txt", &s);
-    EXPECT_TRUE(TexLib.contains_texture("Red"));
-    EXPECT_TRUE(TexLib.contains_texture("Green"));
-    EXPECT_TRUE(TexLib.contains_texture("Blue"));
     ASSERT_TRUE(MtlLib.contains("spec"));
     ASSERT_TRUE(MtlLib.contains("aniso"));
     ASSERT_TRUE(MtlLib.contains("blinn"));
@@ -543,27 +553,7 @@ SPECTRE_TEST(Parser, material_glass)
     EXPECT_NEAR(res.w[1], 0.0132096251f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.0132096251f, 1e-5f);
 
-    ConfigDriver driver1;
-    errors_count[WARNING_INDEX] = 0;
-    Renderer* r1 = driver1.parse(TEST_ASSETS
-                                 "parser/material_glass_diffuse_not_found.txt",
-                                 &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
-    EXPECT_TRUE(MtlLib.contains("DNF"));
-
-    ConfigDriver driver2;
-    errors_count[WARNING_INDEX] = 0;
-    Renderer* r2 = driver2.parse(TEST_ASSETS
-                                 "parser/material_glass_specular_not_found.txt",
-                                 &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
-    EXPECT_TRUE(MtlLib.contains("SNF"));
-
     delete r0;
-    delete r1;
-    delete r2;
     MtlLib.clear();
     TexLib.clear();
 }

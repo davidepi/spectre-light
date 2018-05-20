@@ -40,8 +40,14 @@ world: {
     scale: 1.5
 }
 
-texture: "folder/containing/textures"
 texture:{name:'Wall',src:"folder/wall.tga"}
+material: {
+  name: "Red Oren-Nayar"
+  type: matte
+  diffuse: "Wall"
+  specular: [255,255,255]
+  roughness: 0.2
+}
 material: "another_file.txt"
 material: "another_file2.txt"
 
@@ -95,7 +101,7 @@ camera | [object](#camera) | A description of the camera used to render the curr
 shape | quoted string | A path to an obj file containing mesh descriptions. The actual mesh/es are not used in the scene until positioned with the `world` keyword | -
 light | [object](#light) | Description of a light positioned into the scene | -
 world | [object](#world) | Description of a shape positioned into the scene | -
-texture | [object](#texture) or quoted string | Path to the texture on disk that will be added to the Texture Library. If the quoted string version is used, the filename with extension will be also the name of the texture. **Be aware of naming conflicts!** If a folder is specified, every image inside the folder will be loaded | -
+texture | [object](#texture) | Texture that will be loaded into the library | -
 material | [object](#material) or quoted string | Description of a material that will be put in the Material Library. The quoted string will chain another file to this one to be parsed, see section [Chained Files](#chained-children-files) for more information | -
 
 ### Objects
@@ -158,8 +164,7 @@ Keys for Texture objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the texture as it will appear in the Texture Library | filename without extension
-src | quoted string | The path to the texture on the disk that will be stored in the Texture Library. To load everything inside a folder do not use this object but directly the `texture:"folder"` at toplevel. This value is mutually exclusive with `color` | Syntax error
-color | float[3] | The RGB color of the uniform texture, in range [0-255]. This value is mutually exclusive with `src` | Syntax error
+src | quoted string | The path to the texture on the disk that will be stored in the Texture Library | Syntax error
 
 #### Material
 Keys for Material objects
@@ -173,8 +178,8 @@ element | enum | For `metal` typed materials, this will specify a metal from the
 roughness | float | single value in range [0-1] used to calculate the roughness of a material | 0
 anisotropy | float | single value in range [0-1] used to calcualte the y roughness of a material for surfaces that exhibit anisotropic reflections like hairs or brushed steel. If this equals the roughness value or is unset, the surface is assumed isotropic | roughness value
 distribution | enum | If the material has a roughness higher than 0, the distribution that will be used to simulate the roughness. Possible values are `blinn`, `beckmann`, `ggx`. If the anisotropy value is set and is different from the roughness, the distribution value will always be `ggx` since it is the only distribution implemented for anisotropic materials | beckmann
-diffuse | quoted string | The texture map that will be used for the spectrum. A texture must be added also for uniform colours. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | "Default" (white texture)
-specular | quoted string | The texture map that will be used for the spectrum. A texture must be added also for uniform colours. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| "Default" (white texture)
+diffuse | quoted string or float[3] | The texture map that will be used for the spectrum. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the "Default" texture is used. If an array of values is given an uniform coloured texture is created with the given values, expected as RGB values in range [0-255]. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | "Default" (white texture)
+specular | quoted string or float[3] | Same input of the diffuse component. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| "Default" (white texture)
 
 ##### Metals
 Possible values for materials with the `metal` keyword. These should be passed as keywords (case insensitive) to the `element` key of the material object. Note that these will override the `diffuse` and `specular`  parameters which are not supported for metals. Roughness, distribution and anisotropy can still be used

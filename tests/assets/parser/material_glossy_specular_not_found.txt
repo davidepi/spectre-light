@@ -1,7 +1,0 @@
-material: {
-  name: "SNF"
-  type: glossy
-  roughness: 0.2
-  anisotropy: 0.3
-  specular: "cftyjgvhj"
-}
