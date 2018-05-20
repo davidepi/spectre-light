@@ -7,6 +7,7 @@ TextureLibrary::TextureLibrary()
         :default_texture(new TextureUniform(SPECTRUM_ONE))
 {
     texlib.insert(std::make_pair("Default", default_texture));
+    unfiltered = false;
 }
 
 TextureLibrary::~TextureLibrary()
@@ -121,4 +122,14 @@ bool TextureLibrary::contains_map(const std::string& name) const
 const Texture* TextureLibrary::get_default() const
 {
     return TextureLibrary::default_texture;
+}
+
+void TextureLibrary::has_filtered(bool val)
+{
+    TextureLibrary::unfiltered = !val;
+}
+
+bool TextureLibrary::is_unfiltered() const
+{
+    return unfiltered;
 }

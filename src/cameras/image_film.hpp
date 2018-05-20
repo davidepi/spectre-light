@@ -27,7 +27,7 @@
 #include <stack>
 #include <cstdio>
 
-///Used to store the weigthed average for every pixel
+///Used to store the weighted average for every pixel
 struct Pixel
 {
 
@@ -127,7 +127,7 @@ public:
      *  After rendering the image for every Sample there will be a resulting
      *  Color.
      *  However, Sample and Color are part of a continuous function, whereas the
-     *  pixel are discrete. This method maps these continuous values to the
+     *  pixels are discrete. This method maps these continuous values to the
      *  discrete values of the pixels, updating every affected pixel in a
      *  weighted way. The weight is defined by the filter.
      *
@@ -169,6 +169,8 @@ public:
      *  When using the add_pixel method, every pixel that could be influenced by
      *  samples of other rendering threads is saved on the ExecutorData struct.
      *  This method force the addition of these values in a thread safe way.
+     *  If the mutex is already locked, the thread is forced to wait until it
+     *  gains the access
      *
      *  \param[in] data The struct containing all the pixel values that will be
      *  updated

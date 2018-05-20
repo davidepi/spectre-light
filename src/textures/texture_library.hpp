@@ -1,12 +1,12 @@
 //Created,  14 Mar 2018
-//Last Edit 17 May 2018
+//Last Edit 21 May 2018
 
 /**
  *  \file texture_library.hpp
  *  \brief TextureLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  17 May 2018
+ *  \date  21 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -63,7 +63,7 @@ public:
      *  \param[in] texture The texture that will be added
      */
     void inherit_texture(const std::string& name, const Texture* texture);
-    
+
     /** \brief Add a texture to the library
      *
      *  Inherit an anonymous texture and add it to the library. This texture
@@ -76,7 +76,7 @@ public:
      *  \param[in] texture The texture that will be added
      */
     void inherit_texture(const Texture* texture);
-    
+
     /** \brief Add an image to the library
      *
      *  Inherit an ImageMap and add it to the library. The library will ensure
@@ -99,7 +99,7 @@ public:
      * \return The texture, if it is stored in the library, NULL otherwise
      */
     const Texture* get_texture(const std::string& name) const;
-    
+
     /** \brief Retrieve a map from the library
      *
      *  Retrieve an ImageMap from the library. If the ImageMap can not be found
@@ -109,7 +109,7 @@ public:
      * \return The ImageMap, if it is stored in the library, NULL otherwise
      */
     const ImageMap* get_map(const std::string& name) const;
-    
+
     /** \brief Remove and deallocate a texture from the library
      *
      *  Note that it is not possible to erase the "Default" texture
@@ -117,7 +117,7 @@ public:
      * \param[in] name The texture that will be removed and deallocated
      */
     void erase_texture(const std::string& name);
-    
+
     /** \brief Remove and deallocate a map from the library
      *
      * \param[in] name The name of the ImageMap that will be removed and
@@ -143,7 +143,7 @@ public:
      *  \return true if the texture is already inside the library
      */
     bool contains_texture(const std::string& name) const;
-    
+
     /** \brief Check if the texture library already contains a map
      *
      *  This method only checks if an ImageMap with the input name is already
@@ -165,6 +165,33 @@ public:
      */
     const Texture* get_default() const;
 
+    /**
+     *  \brief Returns true if every ImageMap returns unfiltered values
+     *
+     *  If every map uses unfiltered values, several optimization (such as
+     *  avoiding the creation of Ray differentials and uv differentials) are
+     *  possible. This method returns true if EVERY map inside the library
+     *  does not perform filtering.
+     *
+     *  \note This value is not checked by the TextureLibrary and must be
+     *  explicitly set with the TextureLibrary::has_filtered() method
+     *
+     *  \return true if every map does not need filtering
+     */
+    bool is_unfiltered() const;
+
+    /**
+     *  \brief Sets if some of the ImageMap use some kind of filtering
+     *
+     *  Used to set the parameter that will be returned by the
+     *  TextureLibrary::is_unfiltered() method. A conservative approach implies
+     *  passing true to this function. However, if false is passed, but
+     *  some maps use filtering, the behaviour is undefined (likely a segfault)
+     *
+     *  \param[in] val true if some ImageMap use filtering
+     */
+    void has_filtered(bool val);
+
 private:
 
     TextureLibrary();
@@ -175,6 +202,7 @@ private:
     std::unordered_map<std::string, const ImageMap*> maplib;
     std::vector<const Texture*> unreferenced;
     const Texture* default_texture;
+    bool unfiltered;
 };
 
 ///Access the texture library just by writing "TexLib"

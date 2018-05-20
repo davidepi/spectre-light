@@ -212,7 +212,6 @@ ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx, float dud
 
 static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals)
 {
-    Texel res;
     u = u*side-0.5f;
     v = v*side-0.5f;
     unsigned short x = (unsigned short)u;
@@ -236,7 +235,6 @@ static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals)
 
 static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals)
 {
-    Texel res;
     u = u*side-0.5f;
     v = v*side-0.5f;
     unsigned short x = (unsigned short)u;

@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "textures/texture_library.hpp"
@@ -62,23 +64,23 @@ SPECTRE_TEST(TextureLibrary, add_map)
     ImageMap* map0 = new ImageMap(TEST_ASSETS "images/correct.bmp");
     ImageMap* map1 = new ImageMap(TEST_ASSETS "images/binary.ppm");
     //assert no construction error of imagemaps
-    ASSERT_EQ(errors_count[CRITICAL_INDEX],0);
-    
+    ASSERT_EQ(errors_count[CRITICAL_INDEX], 0);
+
     //insert and retrieve first map
     TexLib.inherit_map("test map", map0);
     got = TexLib.get_map("test map");
-    EXPECT_PTR_EQ(got,map0);
+    EXPECT_PTR_EQ(got, map0);
     got = TexLib.get_map("test map2");
     EXPECT_PTR_NULL(got);
-    
+
     //try with already inserted name
     TexLib.inherit_map("test map", map1);
     got = TexLib.get_map("test map");
-    EXPECT_PTR_NE(got,map1);
-    EXPECT_PTR_EQ(got,map0);
+    EXPECT_PTR_NE(got, map1);
+    EXPECT_PTR_EQ(got, map0);
     TexLib.inherit_map("test map1", map1);
     got = TexLib.get_map("test map1");
-    EXPECT_PTR_EQ(got,map1);
+    EXPECT_PTR_EQ(got, map1);
 }
 
 SPECTRE_TEST(TextureLibrary, remove_texture)
@@ -86,7 +88,7 @@ SPECTRE_TEST(TextureLibrary, remove_texture)
     Texture* tex = new TextureUniform(SPECTRUM_WHITE);
     TexLib.inherit_texture("Removeme", tex);
     const Texture* got = TexLib.get_texture("Removeme");
-    ASSERT_PTR_EQ(got,tex);
+    ASSERT_PTR_EQ(got, tex);
 
     TexLib.erase_texture("Removeme");
     got = TexLib.get_texture("Removeme");
@@ -109,12 +111,12 @@ SPECTRE_TEST(TextureLibrary, remove_map)
     ImageMap* map0 = new ImageMap(TEST_ASSETS "images/correct.bmp");
     TexLib.inherit_map("Removeme", map0);
     const ImageMap* got = TexLib.get_map("Removeme");
-    ASSERT_PTR_EQ(got,map0);
-    
+    ASSERT_PTR_EQ(got, map0);
+
     TexLib.erase_map("Removeme");
     got = TexLib.get_map("Removeme");
     EXPECT_PTR_NULL(got);
-    
+
     got = map0;
     TexLib.erase_map("Removeme");
     got = TexLib.get_map("Removeme");
@@ -152,9 +154,9 @@ SPECTRE_TEST(TextureLibrary, clear)
     Texture* tex3 = new TextureUniform(SPECTRUM_WHITE);
     TexLib.inherit_texture("Removeme3", tex3);
     ImageMap* map0 = new ImageMap(TEST_ASSETS "images/correct.bmp");
-    TexLib.inherit_map("Removeme4",map0);
+    TexLib.inherit_map("Removeme4", map0);
     ImageMap* map1 = new ImageMap(TEST_ASSETS "binary.ppm");
-    TexLib.inherit_map("Removeme5",map1);
+    TexLib.inherit_map("Removeme5", map1);
 
     const Texture* got;
     const ImageMap* gotm;
@@ -192,6 +194,17 @@ SPECTRE_TEST(TextureLibrary, get_default)
     const Texture* tex0 = TexLib.get_default();
     const Texture* tex1 = TexLib.get_texture("Default");
     EXPECT_PTR_EQ(tex0, tex1); //assert that they point to the same value
+}
+
+SPECTRE_TEST(TextureLibrary, filtering)
+{
+    bool res;
+    TexLib.has_filtered(true);
+    res = TexLib.is_unfiltered();
+    EXPECT_EQ(res, false);
+    TexLib.has_filtered(false);
+    res = TexLib.is_unfiltered();
+    EXPECT_EQ(res, true);
 }
 
 SPECTRE_TEST_END(TextureLibrary)

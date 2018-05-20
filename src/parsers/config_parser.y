@@ -61,6 +61,8 @@
 %token GAUSS "`gauss` keyword"
 %token MITCHELL "`mitchell` keyword"
 %token LANCZOS "`lanczos` keyword"
+%token UNFILTERED "`unfiltered` keyword"
+%token TRILINEAR "`trilinear` keyword"
 %token VAL_0 "`value0` keyword"
 %token VAL_1 "`value1` keyword"
 %token SHAPE "`shape` keyword"
@@ -173,6 +175,8 @@ filter_stmt
 | TYPE COLON LANCZOS {driver.filter_type = SPECTRE_FILTER_LANCZOS;}
 | VAL_0 COLON number {driver.value0 = $3;}
 | VAL_1 COLON number {driver.value1 = $3;}
+| TEXTURE COLON UNFILTERED {driver.tex_filter = UNFILTERED;}
+| TEXTURE COLON TRILINEAR {driver.tex_filter = TRILINEAR;}
 | COMMA
 ;
 

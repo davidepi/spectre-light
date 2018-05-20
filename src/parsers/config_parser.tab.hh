@@ -368,67 +368,69 @@ namespace yy {
         CONFIG_GAUSS = 286,
         CONFIG_MITCHELL = 287,
         CONFIG_LANCZOS = 288,
-        CONFIG_VAL_0 = 289,
-        CONFIG_VAL_1 = 290,
-        CONFIG_SHAPE = 291,
-        CONFIG_WORLD = 292,
-        CONFIG_LIGHT = 293,
-        CONFIG_TEMPERATURE = 294,
-        CONFIG_NAME = 295,
-        CONFIG_ROTATION = 296,
-        CONFIG_SCALE = 297,
-        CONFIG_COLOR = 298,
-        CONFIG_MATERIAL = 299,
-        CONFIG_TEXTURE = 300,
-        CONFIG_ANISOTROPY = 301,
-        CONFIG_BECKMANN = 302,
-        CONFIG_BLINN = 303,
-        CONFIG_DIFFUSE = 304,
-        CONFIG_DISTRIBUTION = 305,
-        CONFIG_ELEM = 306,
-        CONFIG_GGX = 307,
-        CONFIG_GLASS = 308,
-        CONFIG_GLOSSY = 309,
-        CONFIG_IOR = 310,
-        CONFIG_MATTE = 311,
-        CONFIG_METAL = 312,
-        CONFIG_ROUGHNESS = 313,
-        CONFIG_SPECULAR = 314,
-        CONFIG_SRC = 315,
-        CONFIG_PATH_TRACE = 316,
-        CONFIG_SILVER = 317,
-        CONFIG_ALUMINIUM = 318,
-        CONFIG_GOLD = 319,
-        CONFIG_COPPER = 320,
-        CONFIG_IRON = 321,
-        CONFIG_MERCURY = 322,
-        CONFIG_LEAD = 323,
-        CONFIG_PLATINUM = 324,
-        CONFIG_TUNGSTEN = 325,
-        CONFIG_BERYLLIUM = 326,
-        CONFIG_BISMUTH = 327,
-        CONFIG_COBALT = 328,
-        CONFIG_CHROMIUM = 329,
-        CONFIG_GERMANIUM = 330,
-        CONFIG_POTASSIUM = 331,
-        CONFIG_LITHIUM = 332,
-        CONFIG_MAGNESIUM = 333,
-        CONFIG_MANGANESE = 334,
-        CONFIG_MOLYBDENUM = 335,
-        CONFIG_SODIUM = 336,
-        CONFIG_NIOBIUM = 337,
-        CONFIG_NICKEL = 338,
-        CONFIG_PALLADIUM = 339,
-        CONFIG_RHODIUM = 340,
-        CONFIG_TANTALUM = 341,
-        CONFIG_TITANIUM = 342,
-        CONFIG_VANADIUM = 343,
-        CONFIG_ZINC = 344,
-        CONFIG_ZIRCONIUM = 345,
-        CONFIG_UINT = 346,
-        CONFIG_INT = 347,
-        CONFIG_FLOAT = 348,
-        CONFIG_STRING = 349
+        CONFIG_UNFILTERED = 289,
+        CONFIG_TRILINEAR = 290,
+        CONFIG_VAL_0 = 291,
+        CONFIG_VAL_1 = 292,
+        CONFIG_SHAPE = 293,
+        CONFIG_WORLD = 294,
+        CONFIG_LIGHT = 295,
+        CONFIG_TEMPERATURE = 296,
+        CONFIG_NAME = 297,
+        CONFIG_ROTATION = 298,
+        CONFIG_SCALE = 299,
+        CONFIG_COLOR = 300,
+        CONFIG_MATERIAL = 301,
+        CONFIG_TEXTURE = 302,
+        CONFIG_ANISOTROPY = 303,
+        CONFIG_BECKMANN = 304,
+        CONFIG_BLINN = 305,
+        CONFIG_DIFFUSE = 306,
+        CONFIG_DISTRIBUTION = 307,
+        CONFIG_ELEM = 308,
+        CONFIG_GGX = 309,
+        CONFIG_GLASS = 310,
+        CONFIG_GLOSSY = 311,
+        CONFIG_IOR = 312,
+        CONFIG_MATTE = 313,
+        CONFIG_METAL = 314,
+        CONFIG_ROUGHNESS = 315,
+        CONFIG_SPECULAR = 316,
+        CONFIG_SRC = 317,
+        CONFIG_PATH_TRACE = 318,
+        CONFIG_SILVER = 319,
+        CONFIG_ALUMINIUM = 320,
+        CONFIG_GOLD = 321,
+        CONFIG_COPPER = 322,
+        CONFIG_IRON = 323,
+        CONFIG_MERCURY = 324,
+        CONFIG_LEAD = 325,
+        CONFIG_PLATINUM = 326,
+        CONFIG_TUNGSTEN = 327,
+        CONFIG_BERYLLIUM = 328,
+        CONFIG_BISMUTH = 329,
+        CONFIG_COBALT = 330,
+        CONFIG_CHROMIUM = 331,
+        CONFIG_GERMANIUM = 332,
+        CONFIG_POTASSIUM = 333,
+        CONFIG_LITHIUM = 334,
+        CONFIG_MAGNESIUM = 335,
+        CONFIG_MANGANESE = 336,
+        CONFIG_MOLYBDENUM = 337,
+        CONFIG_SODIUM = 338,
+        CONFIG_NIOBIUM = 339,
+        CONFIG_NICKEL = 340,
+        CONFIG_PALLADIUM = 341,
+        CONFIG_RHODIUM = 342,
+        CONFIG_TANTALUM = 343,
+        CONFIG_TITANIUM = 344,
+        CONFIG_VANADIUM = 345,
+        CONFIG_ZINC = 346,
+        CONFIG_ZIRCONIUM = 347,
+        CONFIG_UINT = 348,
+        CONFIG_INT = 349,
+        CONFIG_FLOAT = 350,
+        CONFIG_STRING = 351
       };
     };
 
@@ -674,6 +676,14 @@ namespace yy {
     static inline
     symbol_type
     make_LANCZOS (const location_type& l);
+
+    static inline
+    symbol_type
+    make_UNFILTERED (const location_type& l);
+
+    static inline
+    symbol_type
+    make_TRILINEAR (const location_type& l);
 
     static inline
     symbol_type
@@ -1004,7 +1014,7 @@ namespace yy {
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const unsigned char yytable_[];
 
-  static const short int yycheck_[];
+  static const unsigned char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -1124,12 +1134,12 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 279,     ///< Last index in yytable_.
+      yylast_ = 278,     ///< Last index in yytable_.
       yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 28, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 95  ///< Number of tokens.
+      yyntokens_ = 97  ///< Number of tokens.
     };
 
 
@@ -1180,9 +1190,10 @@ namespace yy {
       55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87,    88,    89,    90,    91,    92,    93,    94
+      85,    86,    87,    88,    89,    90,    91,    92,    93,    94,
+      95,    96
     };
-    const unsigned int user_token_number_max_ = 349;
+    const unsigned int user_token_number_max_ = 351;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int>(t) <= yyeof_)
@@ -1215,33 +1226,33 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 119: // vector2
+      case 121: // vector2
         value.copy< Vec2 > (other.value);
         break;
 
-      case 118: // vector
+      case 120: // vector
         value.copy< Vec3 > (other.value);
         break;
 
-      case 93: // "floating point value"
-      case 120: // number
+      case 95: // "floating point value"
+      case 122: // number
         value.copy< float > (other.value);
         break;
 
-      case 92: // "integer value"
-      case 121: // integer
+      case 94: // "integer value"
+      case 123: // integer
         value.copy< int > (other.value);
         break;
 
-      case 117: // element
+      case 119: // element
         value.copy< metal_t > (other.value);
         break;
 
-      case 94: // "quoted string"
+      case 96: // "quoted string"
         value.copy< std::string > (other.value);
         break;
 
-      case 91: // "positive integer value"
+      case 93: // "positive integer value"
         value.copy< unsigned int > (other.value);
         break;
 
@@ -1262,33 +1273,33 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 119: // vector2
+      case 121: // vector2
         value.copy< Vec2 > (v);
         break;
 
-      case 118: // vector
+      case 120: // vector
         value.copy< Vec3 > (v);
         break;
 
-      case 93: // "floating point value"
-      case 120: // number
+      case 95: // "floating point value"
+      case 122: // number
         value.copy< float > (v);
         break;
 
-      case 92: // "integer value"
-      case 121: // integer
+      case 94: // "integer value"
+      case 123: // integer
         value.copy< int > (v);
         break;
 
-      case 117: // element
+      case 119: // element
         value.copy< metal_t > (v);
         break;
 
-      case 94: // "quoted string"
+      case 96: // "quoted string"
         value.copy< std::string > (v);
         break;
 
-      case 91: // "positive integer value"
+      case 93: // "positive integer value"
         value.copy< unsigned int > (v);
         break;
 
@@ -1382,33 +1393,33 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 119: // vector2
+      case 121: // vector2
         value.template destroy< Vec2 > ();
         break;
 
-      case 118: // vector
+      case 120: // vector
         value.template destroy< Vec3 > ();
         break;
 
-      case 93: // "floating point value"
-      case 120: // number
+      case 95: // "floating point value"
+      case 122: // number
         value.template destroy< float > ();
         break;
 
-      case 92: // "integer value"
-      case 121: // integer
+      case 94: // "integer value"
+      case 123: // integer
         value.template destroy< int > ();
         break;
 
-      case 117: // element
+      case 119: // element
         value.template destroy< metal_t > ();
         break;
 
-      case 94: // "quoted string"
+      case 96: // "quoted string"
         value.template destroy< std::string > ();
         break;
 
-      case 91: // "positive integer value"
+      case 93: // "positive integer value"
         value.template destroy< unsigned int > ();
         break;
 
@@ -1435,33 +1446,33 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 119: // vector2
+      case 121: // vector2
         value.move< Vec2 > (s.value);
         break;
 
-      case 118: // vector
+      case 120: // vector
         value.move< Vec3 > (s.value);
         break;
 
-      case 93: // "floating point value"
-      case 120: // number
+      case 95: // "floating point value"
+      case 122: // number
         value.move< float > (s.value);
         break;
 
-      case 92: // "integer value"
-      case 121: // integer
+      case 94: // "integer value"
+      case 123: // integer
         value.move< int > (s.value);
         break;
 
-      case 117: // element
+      case 119: // element
         value.move< metal_t > (s.value);
         break;
 
-      case 94: // "quoted string"
+      case 96: // "quoted string"
         value.move< std::string > (s.value);
         break;
 
-      case 91: // "positive integer value"
+      case 93: // "positive integer value"
         value.move< unsigned int > (s.value);
         break;
 
@@ -1529,7 +1540,7 @@ namespace yy {
      315,   316,   317,   318,   319,   320,   321,   322,   323,   324,
      325,   326,   327,   328,   329,   330,   331,   332,   333,   334,
      335,   336,   337,   338,   339,   340,   341,   342,   343,   344,
-     345,   346,   347,   348,   349
+     345,   346,   347,   348,   349,   350,   351
     };
     return static_cast<token_type> (yytoken_number_[type]);
   }
@@ -1724,6 +1735,18 @@ namespace yy {
   ConfigParser::make_LANCZOS (const location_type& l)
   {
     return symbol_type (token::CONFIG_LANCZOS, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_UNFILTERED (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_UNFILTERED, l);
+  }
+
+  ConfigParser::symbol_type
+  ConfigParser::make_TRILINEAR (const location_type& l)
+  {
+    return symbol_type (token::CONFIG_TRILINEAR, l);
   }
 
   ConfigParser::symbol_type
@@ -2095,7 +2118,7 @@ namespace yy {
 
 
 } // yy
-#line 2099 "config_parser.tab.hh" // lalr1.cc:377
+#line 2122 "config_parser.tab.hh" // lalr1.cc:377
 
 
 

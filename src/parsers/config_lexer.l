@@ -92,6 +92,8 @@ gauss { UPDATE_POS; return yy::ConfigParser::make_GAUSS(loc); }
 gaussian { UPDATE_POS; return yy::ConfigParser::make_GAUSS(loc); }
 mitchell { UPDATE_POS; return yy::ConfigParser::make_MITCHELL(loc); }
 lanczos { UPDATE_POS; return yy::ConfigParser::make_LANCZOS(loc); }
+unfiltered { UPDATE_POS; return yy::ConfigParser::make_UNFILTERED(loc); }
+trilinear { UPDATE_POS; return yy::ConfigParser::make_TRILINEAR(loc); }
 camera {UPDATE_POS; return yy::ConfigParser::make_CAMERA(loc); }
 perspective { UPDATE_POS; return yy::ConfigParser::make_PERSPECTIVE(loc); }
 panorama {UPDATE_POS; return yy::ConfigParser::make_PANORAMA(loc); }

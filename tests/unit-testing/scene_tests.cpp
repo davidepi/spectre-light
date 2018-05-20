@@ -98,7 +98,7 @@ SPECTRE_TEST(Scene, get_lights)
         values[i] = new AreaLight(sphere, transform, Spectrum(1500));
         scene.inherit_light(values[i]);
     }
-    for(int i = 0; i<scene.size_lights(); i++)
+    for(unsigned int i = 0; i<scene.size_lights(); i++)
         EXPECT_PTR_EQ(scene.get_light(i), values[i]);
 }
 

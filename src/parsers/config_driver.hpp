@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 20 May 2018
+//Last Edit 21 May 2018
 
 /**
  *  \file      config_driver.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      20 May 2018
+ *  \date      21 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -326,6 +326,12 @@ public:
 
     ///Load a texture and the corresponding map given the path on disk
     const Texture* load_texture(std::string& path);
+
+    ///Hold all the maps, used to set them the filter after parsing
+    std::vector<ImageMap*> all_textures;
+
+    ///Type of filtering that will be used on the textures
+    TextureFilter_t tex_filter;
 
     /**
      * \brief Creates and returns a TextureUniform

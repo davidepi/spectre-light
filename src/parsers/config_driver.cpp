@@ -31,6 +31,7 @@ ConfigDriver::ConfigDriver()
     sampler_type = SPECTRE_SAMPLER_STRATIFIED;
     camera_type = SPECTRE_CAMERA_PERSPECTIVE;
     filter_type = SPECTRE_FILTER_MITCHELL;
+    tex_filter = TRILINEAR;
     fov = 55.f;
     value0 = 0.33f;
     value1 = 0.33f;
@@ -110,7 +111,13 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
         shape_it++;
     }
 
+    //set filter for every TextureImage
+    for(unsigned int i = 0; i<all_textures.size(); i++)
+        all_textures[i]->set_filter(tex_filter);
+    TexLib.has_filtered(tex_filter!=UNFILTERED);
+
     //delete everything else used for parsing
+    all_textures.clear();
     children.clear();
     deferred_materials.clear();
     shapes.clear();
@@ -241,14 +248,14 @@ Camera* ConfigDriver::build_camera()
 
 const TextureUniform* ConfigDriver::load_texture_uniform()
 {
-        tex_color.clamp(Vec3(0, 0, 0), Vec3(255, 255, 255));
-        ColorRGB rgb((unsigned char)tex_color.x,
-                     (unsigned char)tex_color.y,
-                     (unsigned char)tex_color.z);
-        Spectrum color(rgb, false);
-        TextureUniform* val = new TextureUniform(color);
-        TexLib.inherit_texture(val);
-        return val;
+    tex_color.clamp(Vec3(0, 0, 0), Vec3(255, 255, 255));
+    ColorRGB rgb((unsigned char)tex_color.x,
+                 (unsigned char)tex_color.y,
+                 (unsigned char)tex_color.z);
+    Spectrum color(rgb, false);
+    TextureUniform* val = new TextureUniform(color);
+    TexLib.inherit_texture(val);
+    return val;
 }
 
 const Texture* ConfigDriver::load_texture(std::string& path)
@@ -270,8 +277,10 @@ const Texture* ConfigDriver::load_texture(std::string& path)
         const ImageMap* map = TexLib.get_map(cur_file.absolute_path());
         if(map == NULL)
         {
-            map = new ImageMap(cur_file);
+            ImageMap* editable_map = new ImageMap(cur_file);
             TexLib.inherit_map(cur_file.absolute_path(), map);
+            all_textures.push_back(editable_map);
+            map = editable_map;
         }
         addme = new TextureImage(map);
         TexLib.inherit_texture(tex_name, addme);
@@ -304,7 +313,7 @@ void ConfigDriver::build_materials()
 
         //resolve textures
         //diffuse
-        if(mat->diffuse_uniform==NULL) //use non uniform texture
+        if(mat->diffuse_uniform == NULL) //use non uniform texture
         {
             if(TexLib.contains_texture(mat->diffuse))
                 diffuse = TexLib.get_texture(mat->diffuse);
@@ -315,7 +324,7 @@ void ConfigDriver::build_materials()
             diffuse = mat->diffuse_uniform;
 
         //specular
-        if(mat->specular_uniform==NULL) //use non uniform texture
+        if(mat->specular_uniform == NULL) //use non uniform texture
         {
             if(TexLib.contains_texture(mat->specular))
                 specular = TexLib.get_texture(mat->specular);

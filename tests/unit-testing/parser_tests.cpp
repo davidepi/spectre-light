@@ -157,16 +157,22 @@ SPECTRE_TEST(Parser, filter)
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
     EXPECT_EQ(driver0.value0, 0.33f);
     EXPECT_EQ(driver0.value1, 0.33f);
+    EXPECT_EQ(driver0.tex_filter,TRILINEAR);
+    EXPECT_FALSE(TexLib.is_unfiltered());
     delete r0;
     //box
     ConfigDriver driver1;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/filter_box.txt", &s);
     EXPECT_EQ(driver1.filter_type, (char)SPECTRE_FILTER_BOX);
+    EXPECT_EQ(driver1.tex_filter,UNFILTERED);
+    EXPECT_TRUE(TexLib.is_unfiltered());
     delete r1;
     //tent
     ConfigDriver driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/filter_tent.txt", &s);
     EXPECT_EQ(driver2.filter_type, (char)SPECTRE_FILTER_TENT);
+    EXPECT_EQ(driver2.tex_filter,TRILINEAR);
+    EXPECT_FALSE(TexLib.is_unfiltered());
     delete r2;
     //gaussian
     ConfigDriver driver3;
@@ -340,6 +346,8 @@ SPECTRE_TEST(Parser, material_textures)
     EXPECT_NEAR(res.w[2], 0.159286112f, 1e-5f);
 
     //TODO: missing tests with actual imagemaps
+
+    delete r0;
 }
 
 SPECTRE_TEST(Parser, material_duplicate)
