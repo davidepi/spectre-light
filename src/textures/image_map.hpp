@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit 19 May 2018
+//Last Edit 20 May 2018
 
 /**
  *  \file image_map.hpp
@@ -7,7 +7,7 @@
  *  \details   A square, power of 2, image used inside TextureImage as a MIPMap
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      19 May 2018
+ *  \date      20 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -20,6 +20,12 @@
 #include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
 #include "utility/spectrum.hpp"
+
+enum TextureFilter_t
+{
+    UNFILTERED,
+    TRILINEAR
+};
 
 ///Pixel component of a texture, 24-bit version
 struct Texel
@@ -96,13 +102,47 @@ public:
     ///Default destructor
     ~ImageMap();
 
-    Spectrum trilinear(float u, float v, float width);
+    /**
+     *  \brief Performs filtering over the texture
+     *
+     *  The filter function is a function pointer that will be used to setup
+     *  a filtering function for this ImageMap. At every call of this function
+     *  the filtered value will be retrieved from the texture
+     *
+     *  \param[in] u u value of the texture mapping
+     *  \param[in] v v value of the texture mapping
+     *  \param[in] dudx differential for the u value, when the ray is shifted
+     *  on the x axis
+     *  \param[in] dvdx differential for the u value, when the ray is shifted
+     *  on the y axis
+     *  \param[in] dudy differential for the v value, when the ray is shifted
+     *  on the x axis
+     *  \param[in] dvdy differential for the v value, when the ray is shifted
+     *  on the y axis
+     *  \return The filtered pixel value
+     */
+    ColorRGB (ImageMap::*filter)(float u, float v, float dudx, float dvdx,
+                                 float dudy, float dvdy) const;
+
+    /**
+     *  \brief Sets the filtering method for this texture
+     *  \param[in] type The type of filtering that will be used on this texture
+     */
+    void set_filter(TextureFilter_t type);
 
     //this class is mostly hidden behind the scenes, and an error should be
     //detected as soon as possible during testing
 #ifndef TESTS
 private:
 #endif
+
+    ///Do not perform any filtering
+    ColorRGB unfiltered(float u, float v, float dudx, float dvdx, float dudy,
+                        float dvdy)const;
+
+///Performs trilinear interpolation
+    ColorRGB trilinear(float u, float v, float dudx, float dvdx, float dudy,
+                       float dvdy)const;
     
     ///actual constructor, the others will initialize path and call this one
     void init();

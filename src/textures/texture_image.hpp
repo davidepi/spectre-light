@@ -8,11 +8,6 @@
 #include "textures/texture_image.hpp"
 #include "textures/image_map.hpp"
 #include "textures/texture_library.hpp"
-#include "primitives/shape.hpp"
-#include "utility/file.hpp"
-#include "utility/imageIO.hpp"
-#include <mutex>
-#include <cmath>
 
 class TextureImage : public Texture
 {
@@ -29,6 +24,7 @@ private:
     
     float scale_x;
     float scale_y;
+    bool filtered;
     const ImageMap* imagemap;
     
 };

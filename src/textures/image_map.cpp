@@ -11,9 +11,9 @@ static void downsample(const Texel* in, Texel* out, unsigned short insize,
 static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
                        bool hqfilter);
 
-static Spectrum bilinear(float u, float v, unsigned short side, Texel* vals);
+static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals);
 
-static Spectrum bilinear(float u, float v, unsigned short side, Texel32* vals);
+static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals);
 
 ImageMap::ImageMap(const char* src):path(src)
 {
@@ -30,6 +30,7 @@ void ImageMap::init()
     maps_no = 0;
     values = NULL;
     high_depth = false;
+    filter = &ImageMap::unfiltered;
     if(path.readable())
     {
         int width;
@@ -113,8 +114,41 @@ ImageMap::~ImageMap()
         free(values);
 }
 
-Spectrum ImageMap::trilinear(float u, float v, float width)
+void ImageMap::set_filter(TextureFilter_t type)
 {
+    switch(type)
+    {
+        case UNFILTERED: filter = &ImageMap::unfiltered;break;
+        case TRILINEAR: filter = &ImageMap::trilinear;break;
+    }
+}
+
+ColorRGB ImageMap::unfiltered(float u, float v, float, float,
+                              float, float) const
+{
+    unsigned short x = (unsigned short)(u*side[0]-0.5f);
+    unsigned short y = (unsigned short)(v*side[0]-0.5f);
+    ColorRGB res;
+    if(high_depth)
+    {
+
+        Texel32 hit = values_high[0][y*side[0]+x];
+        res = ColorRGB(hit.r,hit.g,hit.b);
+    }
+    else
+    {
+        Texel hit = values[0][y*side[0]+x];
+        res = ColorRGB(hit.r,hit.g,hit.b);
+    }
+    return res;
+}
+
+ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx, float dudy,
+                             float dvdy)const
+{
+    //width is the max of the differentials
+    float width = 2.f*max(max(fabsf(dudx),fabsf(dvdx)),
+                        max(fabsf(dudy), fabsf(dvdy)));
     //ensures that log2 doesn't give unwanted results
     width = max(width, 1e-5f);
     //choose mipmap
@@ -125,34 +159,58 @@ Spectrum ImageMap::trilinear(float u, float v, float width)
     else if(chosen>maps_no-1) //return the single, most distant pixel
     {
         if(high_depth)
-            return Spectrum(ColorRGB(values_high[maps_no-1][0].r,
+            return ColorRGB(values_high[maps_no-1][0].r,
                                      values_high[maps_no-1][0].g,
-                                     values_high[maps_no-1][0].b), false);
+                                     values_high[maps_no-1][0].b);
         else
-            return Spectrum(ColorRGB(values[maps_no-1][0].r,
+            return ColorRGB(values[maps_no-1][0].r,
                                      values[maps_no-1][0].g,
-                                     values[maps_no-1][0].b), false);
+                                     values[maps_no-1][0].b);
     }
     else //perform trilinear interpolation
     {
         uint8_t chosen_below = (uint8_t)chosen;
         float decimal = chosen-chosen_below;
         if(high_depth)
-            return bilinear(u, v,
-                            side[chosen_below], values_high[chosen_below])*
-                   (1.f-decimal)+
-                   bilinear(u, v,
-                            side[chosen_below+1], values_high[chosen_below+1])
-                   *decimal;
+        {
+            ColorRGB p0 = bilinear(u, v, side[chosen_below],
+                                   values_high[chosen_below]);
+            ColorRGB p1 = bilinear(u, v, side[chosen_below+1],
+                                   values_high[chosen_below+1]);
+            const float other_decimal = 1.f-decimal;
+            p0.r *= other_decimal;
+            p0.g *= other_decimal;
+            p0.b *= other_decimal;
+            p1.r *= decimal;
+            p1.g *= decimal;
+            p1.b *= decimal;
+            p0.r += p1.r;
+            p0.g += p1.g;
+            p0.b += p1.b;
+            return p0;
+        }
         else
-            return bilinear(u, v, side[chosen_below], values[chosen_below])*
-                   (1.f-decimal)+
-                   bilinear(u, v, side[chosen_below+1], values[chosen_below+1])
-                   *decimal;
+        {
+            ColorRGB p0 = bilinear(u, v, side[chosen_below],
+                                   values[chosen_below]);
+            ColorRGB p1 = bilinear(u, v, side[chosen_below+1],
+                                   values[chosen_below+1]);
+            const float other_decimal = 1.f-decimal;
+            p0.r *= other_decimal;
+            p0.g *= other_decimal;
+            p0.b *= other_decimal;
+            p1.r *= decimal;
+            p1.g *= decimal;
+            p1.b *= decimal;
+            p0.r += p1.r;
+            p0.g += p1.g;
+            p0.b += p1.b;
+            return p0;
+        }
     }
 }
 
-static Spectrum bilinear(float u, float v, unsigned short side, Texel* vals)
+static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals)
 {
     Texel res;
     u = u*side-0.5f;
@@ -173,10 +231,10 @@ static Spectrum bilinear(float u, float v, unsigned short side, Texel* vals)
                           (t2.g*rem_u+t3.g*decimal_u)*decimal_v);
     uint8_t b = (uint8_t)((t0.b*rem_u+t1.b*decimal_u)*rem_v+
                           (t2.b*rem_u+t3.b*decimal_u)*decimal_v);
-    return Spectrum(ColorRGB(r, g, b), false);
+    return ColorRGB(r, g, b);
 }
 
-static Spectrum bilinear(float u, float v, unsigned short side, Texel32* vals)
+static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals)
 {
     Texel res;
     u = u*side-0.5f;
@@ -197,7 +255,7 @@ static Spectrum bilinear(float u, float v, unsigned short side, Texel32* vals)
               (t2.g*rem_u+t3.g*decimal_u)*decimal_v;
     float b = (t0.b*rem_u+t1.b*decimal_u)*rem_v+
                (t2.b*rem_u+t3.b*decimal_u)*decimal_v;
-    return Spectrum(ColorRGB(r, g, b), false);
+    return ColorRGB(r, g, b);
 }
 
 static void downsample(const Texel32* in, Texel32* out,
