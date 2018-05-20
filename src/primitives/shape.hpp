@@ -1,13 +1,13 @@
 //Created,  25 Feb 2016
-//Last Edit 30 Mar 2018
+//Last Edit 20 May 2018
 
 /**
  *  \file shape.hpp
  *  \brief     Shape abstract class definition
  *  \details   The superclass from which every shape inherits
  *  \author    Davide Pizzolotto
- *  \version   0.1
- *  \date      30 Mar 2018
+ *  \version   0.2
+ *  \date      20 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -44,7 +44,7 @@ public:
     /** \brief Return the ID of this shape
      *  \return A unsigned int representing the ID of this shape
      */
-    unsigned int get_id()const;
+    unsigned int get_id() const;
 
     /** \brief Intersection of a Ray and this shape
      *
@@ -63,7 +63,7 @@ public:
      *  \param[out] distance The distance of the point of intersection
      *  \param[out] h Details on the hit point on the surface
      */
-    virtual bool intersect(const Ray* r,float* distance, HitPoint* h)const=0;
+    virtual bool intersect(const Ray* r, float* distance, HitPoint* h) const =0;
 
     /** \brief Recalculate the AABB
      *
@@ -72,7 +72,7 @@ public:
      *
      *  \return an AABB representing the calculated bounding box
      */
-    virtual AABB compute_AABB()const = 0;
+    virtual AABB compute_AABB() const = 0;
 
     /** \brief Recalculate the AABB, in world space units
      *
@@ -85,7 +85,7 @@ public:
      *
      *  \return an AABB representing the world space bounding box
      */
-    virtual AABB compute_AABB(const Matrix4* trans)const = 0;
+    virtual AABB compute_AABB(const Matrix4* trans) const = 0;
 
     /** \brief Return the surface of the shape
      *
@@ -94,7 +94,7 @@ public:
      *
      *  \return A float representing the area of the shape in object-space units
      */
-    virtual float surface()const = 0;
+    virtual float surface() const = 0;
 
     /** \brief Return the surface of the shape after the transformation
      *
@@ -104,7 +104,7 @@ public:
      *  \return A float representing the area of the shape in world-space units,
      *  considering also the scaling factor of the transform matrix
      */
-    virtual float surface(const Matrix4* transform)const = 0;
+    virtual float surface(const Matrix4* transform) const = 0;
 
     /** \brief Return the number of face of the shape
      *
@@ -114,7 +114,7 @@ public:
      *
      *  \return The number of faces in a Mesh, 1 in an sdl, 6 in a Box
      */
-    virtual int get_faces_number()const;
+    virtual int get_faces_number() const;
 
     /** \brief Populate the cumulative densities array
      *
@@ -123,7 +123,7 @@ public:
      *  \param[in] transf UNUSED
      *  \param[out] array UNUSED
      */
-    virtual void get_densities_array(const Matrix4* transf,float* array)const;
+    virtual void get_densities_array(const Matrix4* transf, float* array) const;
 
     /** \brief Returns a random point on the surface of the shape
      *
@@ -137,7 +137,7 @@ public:
      *  \param[out] n The normal of the computed point
      */
     virtual void sample_point(float r, float r1, const float* densities,
-                                Point3* p, Normal* n)const = 0;
+                              Point3* p, Normal* n) const = 0;
 
 
 private:
@@ -158,20 +158,34 @@ struct HitPoint
     ///The normal of the hit point in world space
     Normal normal_h;
 
-    ///Right direction, perpendicular to the normal, in world space
-    Vec3 right;
+    ///Differential of hit point, varying the x coordinate on the surface
+    Vec3 dpdu;
 
-    ///Cross between normal and right, in world space
+    ///Differential of hit point, varying the y coordinate on the surface
+    Vec3 dpdv;
+
+    ///Cross between normal and dpdu, in world space
     Vec3 cross;
 
     ///Hit asset
     const Asset* asset_h;
-    
+
     ///index of the hit triangle (0 if the asset is not a mesh)
     unsigned int index;
-    
+
     ///Mapping coordinate u of the point, used for texture mapping
     Point2 uv;
+
+    ///Holds values dudx and dudy, differentials of the u parameter
+    Vec2 du;
+
+    ///Holds values dvdx and dvdy, differentials of the v parameter
+    Vec2 dv;
+
+    //true if the values du and dv are set
+    bool differentials;
 };
+
+void calculate_differentials(HitPoint* hp, Ray* rx, Ray* ry);
 
 #endif

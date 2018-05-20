@@ -120,9 +120,9 @@ bool Box::intersect(const Ray* r, float* distance, HitPoint* h) const
     if(inside)
         h->normal_h[axis] *= -1;
     if(h->normal_h.z != 0)
-        h->right = Vec3(h->normal_h.z, 0, 0);
+        h->dpdu = Vec3(h->normal_h.z, 0, 0);
     else
-        h->right = Vec3(-h->normal_h.y, h->normal_h.x, 0);
+        h->dpdu = Vec3(-h->normal_h.y, h->normal_h.x, 0);
     h->index = 0;
     return true;
 }

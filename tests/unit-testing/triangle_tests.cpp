@@ -193,10 +193,10 @@ SPECTRE_TEST(Triangle, intersection)
     EXPECT_EQ(hit.normal_h.x, 0.f);
     EXPECT_EQ(hit.normal_h.y, 0.f);
     EXPECT_EQ(hit.normal_h.z, 1.f);
-    hit.right.normalize();
-    EXPECT_EQ(hit.right.x, -1.f);
-    EXPECT_EQ(hit.right.y, 0.f);
-    EXPECT_EQ(hit.right.z, 0.f);
+    hit.dpdu.normalize();
+    EXPECT_EQ(hit.dpdu.x, -1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 }
 
 SPECTRE_TEST(Triangle, sample_point)

@@ -86,12 +86,12 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h) const
 
     //compute default shading vector
     //TODO: change also this after uv map impl
-    h->right.x = b.p.x-a.p.x;
-    h->right.y = b.p.y-a.p.y;
-    h->right.z = b.p.z-a.p.z;
+    h->dpdu.x = b.p.x-a.p.x;
+    h->dpdu.y = b.p.y-a.p.y;
+    h->dpdu.z = b.p.z-a.p.z;
 
-    h->cross = cross(Vec3(h->normal_h), h->right);
-    h->right = cross(Vec3(h->normal_h), h->cross); //adjust right vector
+    h->cross = cross(Vec3(h->normal_h), h->dpdu);
+    h->dpdu = cross(Vec3(h->normal_h), h->cross); //adjust dpdu vector
     return true;
 }
 

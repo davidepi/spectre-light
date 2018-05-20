@@ -39,10 +39,10 @@ Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
         //normal requires the inverse of the transformation. Since I want a
         //objToWorld, its inverse is a worldToObj
         hit->normal_h = transform_normal(hit->normal_h, &worldToObj);
-        hit->right = objToWorld*hit->right;
+        hit->dpdu = objToWorld*hit->dpdu;
         hit->normal_h.normalize();
-        hit->right.normalize();
-        hit->cross = normalize(cross(Vec3(hit->normal_h), hit->right));
+        hit->dpdu.normalize();
+        hit->cross = normalize(cross(Vec3(hit->normal_h), hit->dpdu));
     }
     return res;
 }

@@ -177,6 +177,8 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
     Sampler* sam;
     Sample* samples = new Sample[spp];
     Ray r;
+    Ray rx;
+    Ray ry;
     ExecutorData ex;
     Spectrum radiance;
     HitPoint h;
@@ -222,9 +224,15 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
         {
             for(int i = 0; i<spp; i++)
             {
-                camera->create_ray(&(samples[i]), &r);
+                camera->create_ray(&(samples[i]), &r, &rx, &ry);
                 if(scene->k.intersect(&r, &h))
+                {
+                    //set differentials for first ray
+                    /*TODO: check on TexLib if the user actually wants a
+                     filtered output*/
+                    calculate_differentials(&h, &rx, &ry);
                     radiance = mc_solver->radiance(scene, &h, &r, sam, &ot);
+                }
                 else
                     radiance = SPECTRUM_BLACK;
 

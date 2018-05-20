@@ -58,6 +58,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     Ray r2(hp->point_h,wi);
     r2.ricochet = (unsigned char)(r->ricochet+1);
     HitPoint h2;
+    h2.differentials = false;
     if(!sc->k.intersect(&r2,&h2))
         return retval; //ray out of scene, return now
     

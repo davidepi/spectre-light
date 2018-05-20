@@ -73,19 +73,27 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit) const
         hit->point_h = r->apply(*distance);
         Vec3 normal(hit->point_h.x, hit->point_h.y, hit->point_h.z);
         hit->normal_h = Normal(normal);
-        if(hit->point_h.x == 0 && hit->point_h.y == 0)//otherwise h->right
+        if(hit->point_h.x == 0 && hit->point_h.y == 0)//otherwise h->dpdu
         {                                             //would be a 0
             hit->point_h.x = SELF_INTERSECT_ERROR; //-length vector
         }
-        hit->right = Vec3(-TWO_PI*hit->point_h.y, TWO_PI*hit->point_h.x, 0);
         hit->index = 0;
-        float phi = atan2f(hit->point_h.y,hit->point_h.x);
-        if(phi<0)phi+=TWO_PI;
-        float theta = acosf(clamp(hit->point_h.z,-1.f,1.f));
+        float phi = atan2f(hit->point_h.y, hit->point_h.x);
+        if(phi<0)phi += TWO_PI;
+        float theta = acosf(clamp(hit->point_h.z, -1.f, 1.f));
         constexpr const float thetamin = ONE_PI; //arccos(-1);
         constexpr const float thetamax = 0.f; //arccos(1);
-        constexpr const float denom = 1.f/(thetamax-thetamin);
+        constexpr const float thetad = (thetamax-thetamin);
+        constexpr const float denom = 1.f/thetad;
+        float invzrad = 1.f/sqrtf(hit->point_h.x*hit->point_h.x+
+                                  hit->point_h.y*hit->point_h.y);
+        float cosphi = hit->point_h.x*invzrad;
+        float sinphi = hit->point_h.y*invzrad;
         hit->uv = Point2(phi*INV_TWOPI, (theta-thetamin)*denom);
+        hit->dpdu = Vec3(-TWO_PI*hit->point_h.y, TWO_PI*hit->point_h.x, 0);
+        hit->dpdv = Vec3(hit->point_h.z*cosphi, hit->point_h.z*sinphi,
+                         -sinf(theta));
+        hit->dpdv *= thetad;
         return true;
     }
     else
