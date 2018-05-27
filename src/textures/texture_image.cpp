@@ -5,7 +5,7 @@ TextureImage::TextureImage(const ImageMap* map)
     imagemap = map;
     scale_x = 1.f;
     scale_y = 1.f;
-    filtered = false;
+    filtered = !TexLib.is_unfiltered();
 }
 
 Spectrum TextureImage::map(const HitPoint* hit) const
@@ -36,7 +36,9 @@ Spectrum TextureImage::map(const HitPoint* hit) const
             res = (imagemap->*(imagemap->filter))(u, v, dudx, dvdx, dudy, dvdy);
         }
         else
+        {
             res = (imagemap->*(imagemap->filter))(u, v, 0, 0, 0, 0);
+        }
     }
     return Spectrum(res, false);
 }

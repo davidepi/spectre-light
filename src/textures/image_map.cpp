@@ -152,10 +152,10 @@ ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx, float dud
     //ensures that log2 doesn't give unwanted results
     width = max(width, 1e-5f);
     //choose mipmap
-    float chosen = maps_no-1+log2f(width);
+    float chosen = maps_no-1+log2(width);
     if(chosen<0.f) //use full size map
-        high_depth?bilinear(u, v, side[0], values_high[0])
-                  :bilinear(u, v, side[0], values[0]);
+        return high_depth?bilinear(u, v, side[0], values_high[0])
+                         :bilinear(u, v, side[0], values[0]);
     else if(chosen>maps_no-1) //return the single, most distant pixel
     {
         if(high_depth)
