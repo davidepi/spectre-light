@@ -1,10 +1,10 @@
 #include "texture_image.hpp"
 
-TextureImage::TextureImage(const ImageMap* map)
+TextureImage::TextureImage(const ImageMap* map, float sx, float sy)
 {
     imagemap = map;
-    scale_x = 1.f;
-    scale_y = 1.f;
+    scale_x = sx;
+    scale_y = sy;
     filtered = !TexLib.is_unfiltered();
 }
 

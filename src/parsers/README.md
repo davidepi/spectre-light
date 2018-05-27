@@ -166,6 +166,7 @@ Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the texture as it will appear in the Texture Library | filename without extension
 src | quoted string | The path to the texture on the disk that will be stored in the Texture Library | Syntax error
+scale | float[2] | Scaling factor of the texture uv coordinates. Note that this factor scales the uv coordinates and not the texture itself. Thus higher numbers will visually produce a smaller texture wrapped on the object | [1,1]
 
 #### Material
 Keys for Material objects

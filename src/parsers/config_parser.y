@@ -219,6 +219,7 @@ texture_obj /* name is already known at this point */
 texture_rec:texture_rec texture_stmt|texture_stmt;
 texture_stmt
 : NAME COLON STRING {driver.tex_name = $3.substr(1,$3.size()-2);}
+| SCALE COLON vector2 {driver.tex_scale = $3;}
 | COMMA
 ;
 

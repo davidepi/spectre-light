@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 21 May 2018
+//Last Edit 27 May 2018
 
 /**
  *  \file      config_driver.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      21 May 2018
+ *  \date      27 May 2018
  *  \copyright GNU GPLv3
  */
 
@@ -323,6 +323,9 @@ public:
 
     ///Temp val, the RGB color of the TextureUniform currently being parsed
     Vec3 tex_color;
+
+    ///Scaling factor of the texture
+    Vec2 tex_scale;
 
     ///Load a texture and the corresponding map given the path on disk
     const Texture* load_texture(std::string& path);
