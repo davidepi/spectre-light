@@ -5,11 +5,11 @@
 
 const FilterLanczos lowpass_filter = FilterLanczos(3.f);
 
-static void downsample(const Texel* in, Texel* out, unsigned short insize,
+static void downsample(const Texel* in, Texel* out, unsigned short input_side,
                        bool hqfilter);
 
-static void downsample(const Texel32* in, Texel32* out, unsigned short insize,
-                       bool hqfilter);
+static void downsample(const Texel32* in, Texel32* out,
+                       unsigned short input_side, bool hqfilter);
 
 static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals);
 
@@ -17,6 +17,9 @@ static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals);
 
 static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
                     float dvdy, unsigned short side, Texel* vals);
+
+static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
+                    float dvdy, unsigned short side, Texel32* vals);
 
 ImageMap::ImageMap(const char* src):path(src)
 {
@@ -121,9 +124,15 @@ void ImageMap::set_filter(TextureFilter_t type)
 {
     switch(type)
     {
-        case UNFILTERED: filter = &ImageMap::unfiltered;break;
-        case TRILINEAR: filter = &ImageMap::trilinear_iso;break;
-        case EWA: filter = &ImageMap::trilinear_ewa;break;
+        case UNFILTERED:
+            filter = &ImageMap::unfiltered;
+            break;
+        case TRILINEAR:
+            filter = &ImageMap::trilinear_iso;
+            break;
+        case EWA:
+            filter = &ImageMap::trilinear_ewa;
+            break;
     }
 }
 
@@ -137,24 +146,24 @@ ColorRGB ImageMap::unfiltered(float u, float v, float, float,
     {
 
         Texel32 hit = values_high[0][y*side[0]+x];
-        res = ColorRGB(hit.r,hit.g,hit.b);
+        res = ColorRGB(hit.r, hit.g, hit.b);
     }
     else
     {
         Texel hit = values[0][y*side[0]+x];
-        res = ColorRGB(hit.r,hit.g,hit.b);
+        res = ColorRGB(hit.r, hit.g, hit.b);
     }
     return res;
 }
 
 ColorRGB ImageMap::trilinear_iso(float u, float v, float dudx, float dvdx,
-                             float dudy, float dvdy)const
+                                 float dudy, float dvdy) const
 {
     float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
     //ensures that log2 doesn't give unwanted results
     width = max(width, 1e-5f);
     //choose mipmap
-    float chosen = max(0.f,maps_no-1+log2f(width));
+    float chosen = max(0.f, maps_no-1+log2f(width));
     if(chosen<=0.f) //use full size map
         return high_depth?bilinear(u, v, side[0], values_high[0])
                          :bilinear(u, v, side[0], values[0]);
@@ -162,12 +171,12 @@ ColorRGB ImageMap::trilinear_iso(float u, float v, float dudx, float dvdx,
     {
         if(high_depth)
             return ColorRGB(values_high[maps_no-1][0].r,
-                                     values_high[maps_no-1][0].g,
-                                     values_high[maps_no-1][0].b);
+                            values_high[maps_no-1][0].g,
+                            values_high[maps_no-1][0].b);
         else
             return ColorRGB(values[maps_no-1][0].r,
-                                     values[maps_no-1][0].g,
-                                     values[maps_no-1][0].b);
+                            values[maps_no-1][0].g,
+                            values[maps_no-1][0].b);
     }
     else //perform trilinear interpolation
     {
@@ -213,32 +222,79 @@ ColorRGB ImageMap::trilinear_iso(float u, float v, float dudx, float dvdx,
 }
 
 ColorRGB ImageMap::trilinear_ewa(float u, float v, float dudx, float dvdx,
-                             float dudy, float dvdy)const
+                                 float dudy, float dvdy) const
 {
     float longer_axis = sqrtf(dudx*dudx+dvdx*dvdx);
     float shorter_axis = sqrtf(dudy*dudy+dvdy*dvdy);
     //keep x as the longer axis
     if(longer_axis<shorter_axis)
     {
-        swap(&longer_axis,&shorter_axis);
-        swap(&dudx,&dudy);
-        swap(&dvdx,&dvdy);
+        swap(&longer_axis, &shorter_axis);
+        swap(&dudx, &dudy);
+        swap(&dvdx, &dvdy);
     }
     //if the minor axis is zero, return trilinear filter
     if(shorter_axis == 0.f)
     {
         return high_depth?bilinear(u, v, side[0], values_high[0]):
-                          bilinear(u, v, side[0], values[0]);
+               bilinear(u, v, side[0], values[0]);
     }
     //if too eccentric increase blurriness and decrease eccentricity by scaling
     //the shorter axis
     else if(shorter_axis*EWA_MAX_ECCENTRICITY<longer_axis)
     {
         float scale = longer_axis/(shorter_axis*EWA_MAX_ECCENTRICITY);
-        dudy*=scale;
-        dvdy*=scale;
-        shorter_axis*=scale;
+        dudy *= scale;
+        dvdy *= scale;
+        shorter_axis *= scale;
     }
+    // shorter axis 0 previously catched in an if
+    float chosen = max(0.f, maps_no-1+log2f(shorter_axis));
+    ColorRGB retval;
+    if(chosen>maps_no-1) //return the single, most distant pixel
+    {
+        if(high_depth)
+            retval = ColorRGB(values_high[maps_no-1][0].r,
+                              values_high[maps_no-1][0].g,
+                              values_high[maps_no-1][0].b);
+        else
+            retval = ColorRGB(values[maps_no-1][0].r,
+                              values[maps_no-1][0].g,
+                              values[maps_no-1][0].b);
+    }
+    else
+    {
+        uint8_t chosen_below = (uint8_t)chosen;
+        float decimal = chosen-chosen_below;
+        ColorRGB p0;
+        ColorRGB p1;
+        if(high_depth)
+        {
+            p0 = ewa(u, v, dudx, dvdx, dudy, dvdy, side[chosen_below],
+                     values_high[chosen_below]);
+            p1 = ewa(u, v, dudx, dvdx, dudy, dvdy, side[chosen_below+1],
+                     values_high[chosen_below+1]);
+        }
+        else
+        {
+            p0 = ewa(u, v, dudx, dvdx, dudy, dvdy, side[chosen_below],
+                     values[chosen_below]);
+            p1 = ewa(u, v, dudx, dvdx, dudy, dvdy, side[chosen_below+1],
+                     values[chosen_below+1]);
+        }
+        const float other_decimal = 1.f-decimal;
+        p0.r *= other_decimal;
+        p0.g *= other_decimal;
+        p0.b *= other_decimal;
+        p1.r *= decimal;
+        p1.g *= decimal;
+        p1.b *= decimal;
+        p0.r += p1.r;
+        p0.g += p1.g;
+        p0.b += p1.b;
+        retval = p0;
+    }
+    return retval;
 }
 
 static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals)
@@ -283,8 +339,124 @@ static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals)
     float g = (t0.g*rem_u+t1.g*decimal_u)*rem_v+
               (t2.g*rem_u+t3.g*decimal_u)*decimal_v;
     float b = (t0.b*rem_u+t1.b*decimal_u)*rem_v+
-               (t2.b*rem_u+t3.b*decimal_u)*decimal_v;
+              (t2.b*rem_u+t3.b*decimal_u)*decimal_v;
     return ColorRGB(r, g, b);
+}
+
+static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
+                    float dvdy, unsigned short side, Texel* vals)
+{
+    //scale values
+    u = u*side-0.5f;
+    v = v*side-0.5f;
+    dudx *= side;
+    dvdx *= side;
+    dudy *= side;
+    dvdy *= side;
+
+    //calulate ellipse coefficients
+    float a = dvdx*dvdx*+dvdy*dvdy+1.f;
+    float b = -2.f*dudx*dvdx+dudy*dvdy;
+    float c = dudx*dudx+dudy*dudy+1.f;
+    const float invf = 1.f/(a*c-b*b*.25f);
+    a *= invf;
+    b *= invf;
+    c *= invf;
+
+    //found the ellipse aabb
+    const float delta = -b*b+4.f*a*c;
+    const float invdelta = 1.f/delta;
+    const float x0 = sqrtf(delta*c);
+    const float x1 = sqrtf(delta*a);
+    int u0 = (int)ceilf(u-2.f*invdelta*x0);
+    int u1 = (int)floorf(u+2.f*invdelta*x0);
+    int v0 = (int)ceilf(v-2.f*invdelta*x1);
+    int v1 = (int)floorf(v+2.f*invdelta*x1);
+
+    //loops over the AABB, if the point is inside the ellipse, filter it
+    float resr = 0.f;
+    float resg = 0.f;
+    float resb = 0.f;
+    float total_weight = 0.f;
+    for(int y = v0; y<=v1; y++)
+    {
+        const float voff = y-v;
+        for(int x = x0; x<=x1; x++)
+        {
+            const float uoff = x-u;
+            const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
+            if(radius2<1.f)
+            {
+                const Texel hit = vals[y+side*x];
+                const float weight = 0.f; //TODO: lookup table
+                resr += hit.r*weight;
+                resg += hit.g*weight;
+                resb += hit.b*weight;
+                total_weight += weight;
+            }
+        }
+    }
+    float invweigth = 1.f/total_weight;
+    return ColorRGB((unsigned char)(resr*invweigth),
+                    (unsigned char)(resg*invweigth),
+                    (unsigned char)(resb*invweigth));
+}
+
+static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
+                    float dvdy, unsigned short side, Texel32* vals)
+{
+    //scale values
+    u = u*side-0.5f;
+    v = v*side-0.5f;
+    dudx *= side;
+    dvdx *= side;
+    dudy *= side;
+    dvdy *= side;
+
+    //calulate ellipse coefficients
+    float a = dvdx*dvdx*+dvdy*dvdy+1.f;
+    float b = -2.f*dudx*dvdx+dudy*dvdy;
+    float c = dudx*dudx+dudy*dudy+1.f;
+    const float invf = 1.f/(a*c-b*b*.25f);
+    a *= invf;
+    b *= invf;
+    c *= invf;
+
+    //found the ellipse aabb
+    const float delta = -b*b+4.f*a*c;
+    const float invdelta = 1.f/delta;
+    const float x0 = sqrtf(delta*c);
+    const float x1 = sqrtf(delta*a);
+    int u0 = (int)ceilf(u-2.f*invdelta*x0);
+    int u1 = (int)floorf(u+2.f*invdelta*x0);
+    int v0 = (int)ceilf(v-2.f*invdelta*x1);
+    int v1 = (int)floorf(v+2.f*invdelta*x1);
+
+    //loops over the AABB, if the point is inside the ellipse, filter it
+    float resr = 0.f;
+    float resg = 0.f;
+    float resb = 0.f;
+    float total_weight = 0.f;
+    for(int y = v0; y<=v1; y++)
+    {
+        const float voff = y-v;
+        for(int x = x0; x<=x1; x++)
+        {
+            const float uoff = x-u;
+            const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
+            if(radius2<1.f)
+            {
+                const Texel32 hit = vals[y+side*x];
+                const float weight = 0.f; //TODO: lookup table
+                resr += hit.r*weight;
+                resg += hit.g*weight;
+                resb += hit.b*weight;
+                total_weight += weight;
+            }
+        }
+    }
+    float invweigth = 1.f/total_weight;
+    return ColorRGB(resr*invweigth, resg*invweigth, resb*invweigth);
 }
 
 static void downsample(const Texel32* in, Texel32* out,
