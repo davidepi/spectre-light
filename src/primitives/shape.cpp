@@ -38,11 +38,11 @@ void calculate_differentials(HitPoint* hit, Ray* rx, Ray* ry)
     tx /= dot(hit->normal_h, rx->direction);
     float ty = -(dot(hit->normal_h, ryv)+d);
     ty /= dot(hit->normal_h, ry->direction);
-    Point3 px = rx->origin+rx->direction*tx;
-    Point3 py = ry->origin+ry->direction*ty;
+    Point3 px = rx->origin+(rx->direction*tx);
+    Point3 py = ry->origin+(ry->direction*ty);
     //points differentials
-    Vec3 dpdx = px-hit->point_h;
-    Vec3 dpdy = py-hit->point_h;
+//    Vec3 dpdx = px-hit->point_h;
+//    Vec3 dpdy = py-hit->point_h;
 
     float nx = fabsf(hit->normal_h.x);
     float ny = fabsf(hit->normal_h.y);

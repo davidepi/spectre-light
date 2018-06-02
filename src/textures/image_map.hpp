@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit 20 May 2018
+//Last Edit  2 Jun 2018
 
 /**
  *  \file image_map.hpp
@@ -20,11 +20,15 @@
 #include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
 #include "utility/spectrum.hpp"
+#include "utility/utility.hpp" //swap
+#include <cstdlib> //malloc/free
+#include <cmath> //sqrtf
 
 enum TextureFilter_t
 {
     UNFILTERED,
-    TRILINEAR
+    TRILINEAR,
+    EWA
 };
 
 ///Pixel component of a texture, 24-bit version
@@ -52,6 +56,9 @@ struct Texel32
     ///Blue component in range [0-1]
     float b;
 };
+
+///Max eccentricity value for EWA filtering ellipse. Bounds EWA to constant time
+#define EWA_MAX_ECCENTRICITY 30.f
 
 /**
  *  \brief ImageMap
@@ -140,9 +147,12 @@ private:
     ColorRGB unfiltered(float u, float v, float dudx, float dvdx, float dudy,
                         float dvdy)const;
 
-///Performs trilinear interpolation
-    ColorRGB trilinear(float u, float v, float dudx, float dvdx, float dudy,
+    ///Performs trilinear interpolation with isotropic filter
+    ColorRGB trilinear_iso(float u, float v, float dudx, float dvdx, float dudy,
                        float dvdy)const;
+    ///Performs trilinear interpolation with EWA filter
+    ColorRGB trilinear_ewa(float u, float v, float dudx, float dvdx, float dudy,
+                           float dvdy)const;
     
     ///actual constructor, the others will initialize path and call this one
     void init();

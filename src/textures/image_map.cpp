@@ -15,6 +15,9 @@ static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals);
 
 static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals);
 
+static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
+                    float dvdy, unsigned short side, Texel* vals);
+
 ImageMap::ImageMap(const char* src):path(src)
 {
     init();
@@ -119,7 +122,8 @@ void ImageMap::set_filter(TextureFilter_t type)
     switch(type)
     {
         case UNFILTERED: filter = &ImageMap::unfiltered;break;
-        case TRILINEAR: filter = &ImageMap::trilinear;break;
+        case TRILINEAR: filter = &ImageMap::trilinear_iso;break;
+        case EWA: filter = &ImageMap::trilinear_ewa;break;
     }
 }
 
@@ -143,17 +147,15 @@ ColorRGB ImageMap::unfiltered(float u, float v, float, float,
     return res;
 }
 
-ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx, float dudy,
-                             float dvdy)const
+ColorRGB ImageMap::trilinear_iso(float u, float v, float dudx, float dvdx,
+                             float dudy, float dvdy)const
 {
-    //width is the max of the differentials
-    float width = 2.f*max(max(fabsf(dudx),fabsf(dvdx)),
-                        max(fabsf(dudy), fabsf(dvdy)));
+    float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
     //ensures that log2 doesn't give unwanted results
     width = max(width, 1e-5f);
     //choose mipmap
-    float chosen = maps_no-1+log2(width);
-    if(chosen<0.f) //use full size map
+    float chosen = max(0.f,maps_no-1+log2f(width));
+    if(chosen<=0.f) //use full size map
         return high_depth?bilinear(u, v, side[0], values_high[0])
                          :bilinear(u, v, side[0], values[0]);
     else if(chosen>maps_no-1) //return the single, most distant pixel
@@ -207,6 +209,35 @@ ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx, float dud
             p0.b += p1.b;
             return p0;
         }
+    }
+}
+
+ColorRGB ImageMap::trilinear_ewa(float u, float v, float dudx, float dvdx,
+                             float dudy, float dvdy)const
+{
+    float longer_axis = sqrtf(dudx*dudx+dvdx*dvdx);
+    float shorter_axis = sqrtf(dudy*dudy+dvdy*dvdy);
+    //keep x as the longer axis
+    if(longer_axis<shorter_axis)
+    {
+        swap(&longer_axis,&shorter_axis);
+        swap(&dudx,&dudy);
+        swap(&dvdx,&dvdy);
+    }
+    //if the minor axis is zero, return trilinear filter
+    if(shorter_axis == 0.f)
+    {
+        return high_depth?bilinear(u, v, side[0], values_high[0]):
+                          bilinear(u, v, side[0], values[0]);
+    }
+    //if too eccentric increase blurriness and decrease eccentricity by scaling
+    //the shorter axis
+    else if(shorter_axis*EWA_MAX_ECCENTRICITY<longer_axis)
+    {
+        float scale = longer_axis/(shorter_axis*EWA_MAX_ECCENTRICITY);
+        dudy*=scale;
+        dvdy*=scale;
+        shorter_axis*=scale;
     }
 }
 
