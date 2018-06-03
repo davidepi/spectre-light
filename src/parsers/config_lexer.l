@@ -94,6 +94,7 @@ mitchell { UPDATE_POS; return yy::ConfigParser::make_MITCHELL(loc); }
 lanczos { UPDATE_POS; return yy::ConfigParser::make_LANCZOS(loc); }
 unfiltered { UPDATE_POS; return yy::ConfigParser::make_UNFILTERED(loc); }
 trilinear { UPDATE_POS; return yy::ConfigParser::make_TRILINEAR(loc); }
+ewa {UPDATE_POS; return yy::ConfigParser::make_EWA(loc); }
 camera {UPDATE_POS; return yy::ConfigParser::make_CAMERA(loc); }
 perspective { UPDATE_POS; return yy::ConfigParser::make_PERSPECTIVE(loc); }
 panorama {UPDATE_POS; return yy::ConfigParser::make_PANORAMA(loc); }

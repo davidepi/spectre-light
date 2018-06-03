@@ -63,6 +63,7 @@
 %token LANCZOS "`lanczos` keyword"
 %token UNFILTERED "`unfiltered` keyword"
 %token TRILINEAR "`trilinear` keyword"
+%token EWA "`ewa` keyword"
 %token VAL_0 "`value0` keyword"
 %token VAL_1 "`value1` keyword"
 %token SHAPE "`shape` keyword"
@@ -177,6 +178,7 @@ filter_stmt
 | VAL_1 COLON number {driver.value1 = $3;}
 | TEXTURE COLON UNFILTERED {driver.tex_filter = UNFILTERED;}
 | TEXTURE COLON TRILINEAR {driver.tex_filter = TRILINEAR;}
+| TEXTURE COLON EWA {driver.tex_filter = EWA;}
 | COMMA
 ;
 

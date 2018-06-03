@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit  2 Jun 2018
+//Last Edit  3 Jun 2018
 
 /**
  *  \file image_map.hpp
@@ -23,6 +23,7 @@
 #include "utility/utility.hpp" //swap
 #include <cstdlib> //malloc/free
 #include <cmath> //sqrtf
+#include <array> //EWA weights allocation
 
 enum TextureFilter_t
 {
@@ -60,6 +61,12 @@ struct Texel32
 ///Max eccentricity value for EWA filtering ellipse. Bounds EWA to constant time
 #define EWA_MAX_ECCENTRICITY 30.f
 
+///Defines the number of entries in the EWA_WEIGHTS lookup table
+#define EWA_WEIGHTS_SIZE 128
+
+///Value used in the EWA_WEIGHTS precomputation
+#define EWA_ALPHA 2.f
+
 /**
  *  \brief ImageMap
  *  Class representing an allocated image used for texture storage.
@@ -93,7 +100,7 @@ public:
      *  \param[in] src A C-string representing the path to the image
      */
     ImageMap(const char* src);
-    
+
     /**
      *  \brief Constructor given path, File version
      *
@@ -105,7 +112,7 @@ public:
 
     ///No copy allowed
     ImageMap(const ImageMap& old) = delete;
-    
+
     ///Default destructor
     ~ImageMap();
 
@@ -137,6 +144,21 @@ public:
      */
     void set_filter(TextureFilter_t type);
 
+    /**
+     *  \brief Table storing precomputed gaussian values
+     *  This table stores the precomputed values of e^-radius*radius*alpha,
+     *  which are used in the EWA filtering method. The value of alpha is
+     *  defined in EWA_ALPHA
+     *
+     *  This is an std::array instead of a float[] so its initialization is
+     *  performed at compile time with the functions found at the beginning
+     *  of the textures/image_map.cpp file. For this reason it is possible to
+     *  modify the values inside this array by just changing the EWA_ALPHA or
+     *  EWA_WEIGHTS_SIZE parameters, instead of having to manually rewrite the
+     *  entire lookup table every time
+     */
+    static const std::array<float, EWA_WEIGHTS_SIZE> EWA_WEIGHTS;
+
     //this class is mostly hidden behind the scenes, and an error should be
     //detected as soon as possible during testing
 #ifndef TESTS
@@ -145,30 +167,31 @@ private:
 
     ///Do not perform any filtering
     ColorRGB unfiltered(float u, float v, float dudx, float dvdx, float dudy,
-                        float dvdy)const;
+                        float dvdy) const;
 
-    ///Performs trilinear interpolation with isotropic filter
-    ColorRGB trilinear_iso(float u, float v, float dudx, float dvdx, float dudy,
-                       float dvdy)const;
-    ///Performs trilinear interpolation with EWA filter
-    ColorRGB trilinear_ewa(float u, float v, float dudx, float dvdx, float dudy,
-                           float dvdy)const;
-    
+    ///Performs linear interpolation with bilinear isotropic filter
+    ColorRGB trilinear(float u, float v, float dudx, float dvdx, float dudy,
+                       float dvdy) const;
+
+    ///Performs linear interpolation with EWA filter
+    ColorRGB linear_ewa(float u, float v, float dudx, float dvdx, float dudy,
+                        float dvdy) const;
+
     ///actual constructor, the others will initialize path and call this one
     void init();
-    
+
     ///Path of the image on disk
     const File path;
 
     ///width or height
     unsigned short* side;
-    
+
     ///number of MIPmaps
     unsigned char maps_no;
-    
+
     ///true if the image uses floats instead of uint8_ts
     bool high_depth;
-    
+
     union
     {
         ///array of uint8_t

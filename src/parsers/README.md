@@ -134,7 +134,7 @@ Key | Type | Usage | Default value
 type | enum | Defines the type of filter. The values can be `box`, `tent`, `gaussian`, `mitchell` and `lanczos` |  mitchell
 value0 | float | The parameter for the filters. Unused in box and tent filter, this value is the σ (falloff) value of the gaussian filter (a value of 2 is suggested), the B parameter of the Mitchell-Netravali and the 𝜏 parameter of the Lanczos-Sinc filter (a value of 3 is suggested) | 0.33
 value1 | float | Used only in the Mitchell-Netravali filter as the C parameter | 0.33
-texture | enum | Defines the type of filter used for texture filtering. The values can be `unfiltered` or `trilinear` | trilinear
+texture | enum | Defines the type of filter used for texture filtering. The values can be `unfiltered`, `trilinear` or `ewa` | trilinear
 
 #### Light
 Keys for Light objects

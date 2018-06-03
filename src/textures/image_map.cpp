@@ -21,6 +21,34 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
 static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
                     float dvdy, unsigned short side, Texel32* vals);
 
+
+constexpr float init_ewa_weight(int step)
+{
+    return expf(-EWA_ALPHA*((float)step/(float)(EWA_WEIGHTS_SIZE-1)))-
+           expf(-EWA_ALPHA);
+}
+
+//black magic to initialize the lookup table at compile time and keep it const
+//while using functions
+//std::index_sequence is used to index the values of the function
+// init_ewa_weight from 0 to EWA_WEIGHT_SIZE-1
+template<std::size_t...I>
+constexpr std::array<float, sizeof...(I)>
+ewa_lookup_init(std::index_sequence<I...>)
+{
+    return std::array<float, sizeof...(I)>{init_ewa_weight(I)...};
+}
+
+template<std::size_t N>
+constexpr std::array<float, N> ewa_lookup_init()
+{
+    return ewa_lookup_init(std::make_index_sequence<N>{});
+}
+
+//actual EWA_WEIGHTS array, initialized using the black magic
+const std::array<float, EWA_WEIGHTS_SIZE> ImageMap::EWA_WEIGHTS =
+        ewa_lookup_init<EWA_WEIGHTS_SIZE>();
+
 ImageMap::ImageMap(const char* src):path(src)
 {
     init();
@@ -124,14 +152,11 @@ void ImageMap::set_filter(TextureFilter_t type)
 {
     switch(type)
     {
-        case UNFILTERED:
-            filter = &ImageMap::unfiltered;
+        case UNFILTERED:filter = &ImageMap::unfiltered;
             break;
-        case TRILINEAR:
-            filter = &ImageMap::trilinear_iso;
+        case TRILINEAR:filter = &ImageMap::trilinear;
             break;
-        case EWA:
-            filter = &ImageMap::trilinear_ewa;
+        case EWA:filter = &ImageMap::linear_ewa;
             break;
     }
 }
@@ -156,73 +181,66 @@ ColorRGB ImageMap::unfiltered(float u, float v, float, float,
     return res;
 }
 
-ColorRGB ImageMap::trilinear_iso(float u, float v, float dudx, float dvdx,
-                                 float dudy, float dvdy) const
+ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx,
+                             float dudy, float dvdy) const
 {
     float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
     //ensures that log2 doesn't give unwanted results
     width = max(width, 1e-5f);
     //choose mipmap
     float chosen = max(0.f, maps_no-1+log2f(width));
+    ColorRGB p0; //retval
     if(chosen<=0.f) //use full size map
-        return high_depth?bilinear(u, v, side[0], values_high[0])
-                         :bilinear(u, v, side[0], values[0]);
+        p0 = high_depth?bilinear(u, v, side[0], values_high[0])
+                       :bilinear(u, v, side[0], values[0]);
     else if(chosen>maps_no-1) //return the single, most distant pixel
     {
         if(high_depth)
-            return ColorRGB(values_high[maps_no-1][0].r,
-                            values_high[maps_no-1][0].g,
-                            values_high[maps_no-1][0].b);
+            p0 = (values_high[maps_no-1][0].r,
+                    values_high[maps_no-1][0].g,
+                    values_high[maps_no-1][0].b);
         else
-            return ColorRGB(values[maps_no-1][0].r,
-                            values[maps_no-1][0].g,
-                            values[maps_no-1][0].b);
+            p0 = (values[maps_no-1][0].r,
+                    values[maps_no-1][0].g,
+                    values[maps_no-1][0].b);
     }
     else //perform trilinear interpolation
     {
+        ColorRGB p1;
         uint8_t chosen_below = (uint8_t)chosen;
         float decimal = chosen-chosen_below;
         if(high_depth)
         {
-            ColorRGB p0 = bilinear(u, v, side[chosen_below],
-                                   values_high[chosen_below]);
-            ColorRGB p1 = bilinear(u, v, side[chosen_below+1],
-                                   values_high[chosen_below+1]);
-            const float other_decimal = 1.f-decimal;
-            p0.r *= other_decimal;
-            p0.g *= other_decimal;
-            p0.b *= other_decimal;
-            p1.r *= decimal;
-            p1.g *= decimal;
-            p1.b *= decimal;
-            p0.r += p1.r;
-            p0.g += p1.g;
-            p0.b += p1.b;
-            return p0;
+            p0 = bilinear(u, v, side[chosen_below],
+                          values_high[chosen_below]);
+            p1 = bilinear(u, v, side[chosen_below+1],
+                          values_high[chosen_below+1]);
         }
         else
         {
-            ColorRGB p0 = bilinear(u, v, side[chosen_below],
-                                   values[chosen_below]);
-            ColorRGB p1 = bilinear(u, v, side[chosen_below+1],
-                                   values[chosen_below+1]);
-            const float other_decimal = 1.f-decimal;
-            p0.r *= other_decimal;
-            p0.g *= other_decimal;
-            p0.b *= other_decimal;
-            p1.r *= decimal;
-            p1.g *= decimal;
-            p1.b *= decimal;
-            p0.r += p1.r;
-            p0.g += p1.g;
-            p0.b += p1.b;
-            return p0;
+            p0 = bilinear(u, v, side[chosen_below],
+                          values[chosen_below]);
+            p1 = bilinear(u, v, side[chosen_below+1],
+                          values[chosen_below+1]);
         }
+        const float other_decimal = 1.f-decimal;
+        p0.r *= other_decimal;
+        p0.g *= other_decimal;
+        p0.b *= other_decimal;
+        p1.r *= decimal;
+        p1.g *= decimal;
+        p1.b *= decimal;
+        p0.r += p1.r;
+        p0.g += p1.g;
+        p0.b += p1.b;
+        return p0;
     }
+    return p0;
 }
 
-ColorRGB ImageMap::trilinear_ewa(float u, float v, float dudx, float dvdx,
-                                 float dudy, float dvdy) const
+
+ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
+                              float dudy, float dvdy) const
 {
     float longer_axis = sqrtf(dudx*dudx+dvdx*dvdx);
     float shorter_axis = sqrtf(dudy*dudy+dvdy*dvdy);
@@ -239,8 +257,8 @@ ColorRGB ImageMap::trilinear_ewa(float u, float v, float dudx, float dvdx,
         return high_depth?bilinear(u, v, side[0], values_high[0]):
                bilinear(u, v, side[0], values[0]);
     }
-    //if too eccentric increase blurriness and decrease eccentricity by scaling
-    //the shorter axis
+        //if too eccentric increase blurriness and decrease eccentricity by scaling
+        //the shorter axis
     else if(shorter_axis*EWA_MAX_ECCENTRICITY<longer_axis)
     {
         float scale = longer_axis/(shorter_axis*EWA_MAX_ECCENTRICITY);
@@ -250,23 +268,22 @@ ColorRGB ImageMap::trilinear_ewa(float u, float v, float dudx, float dvdx,
     }
     // shorter axis 0 previously catched in an if
     float chosen = max(0.f, maps_no-1+log2f(shorter_axis));
-    ColorRGB retval;
+    ColorRGB p0; //retval
     if(chosen>maps_no-1) //return the single, most distant pixel
     {
         if(high_depth)
-            retval = ColorRGB(values_high[maps_no-1][0].r,
-                              values_high[maps_no-1][0].g,
-                              values_high[maps_no-1][0].b);
+            p0 = ColorRGB(values_high[maps_no-1][0].r,
+                          values_high[maps_no-1][0].g,
+                          values_high[maps_no-1][0].b);
         else
-            retval = ColorRGB(values[maps_no-1][0].r,
-                              values[maps_no-1][0].g,
-                              values[maps_no-1][0].b);
+            p0 = ColorRGB(values[maps_no-1][0].r,
+                          values[maps_no-1][0].g,
+                          values[maps_no-1][0].b);
     }
     else
     {
         uint8_t chosen_below = (uint8_t)chosen;
         float decimal = chosen-chosen_below;
-        ColorRGB p0;
         ColorRGB p1;
         if(high_depth)
         {
@@ -292,9 +309,8 @@ ColorRGB ImageMap::trilinear_ewa(float u, float v, float dudx, float dvdx,
         p0.r += p1.r;
         p0.g += p1.g;
         p0.b += p1.b;
-        retval = p0;
     }
-    return retval;
+    return p0;
 }
 
 static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals)
@@ -381,14 +397,18 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
     for(int y = v0; y<=v1; y++)
     {
         const float voff = y-v;
-        for(int x = x0; x<=x1; x++)
+        for(int x = u0; x<=u1; x++)
         {
             const float uoff = x-u;
             const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
             if(radius2<1.f)
             {
-                const Texel hit = vals[y+side*x];
-                const float weight = 0.f; //TODO: lookup table
+                const Texel hit = vals[y*side+x];
+                //found the correct value for the lookup table, or the most
+                // distant one
+                const int index = min((int)(radius2*EWA_WEIGHTS_SIZE),
+                                      EWA_WEIGHTS_SIZE-1);
+                const float weight = ImageMap::EWA_WEIGHTS[index];
                 resr += hit.r*weight;
                 resg += hit.g*weight;
                 resb += hit.b*weight;
@@ -440,14 +460,18 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
     for(int y = v0; y<=v1; y++)
     {
         const float voff = y-v;
-        for(int x = x0; x<=x1; x++)
+        for(int x = u0; x<=u1; x++)
         {
             const float uoff = x-u;
             const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
             if(radius2<1.f)
             {
-                const Texel32 hit = vals[y+side*x];
-                const float weight = 0.f; //TODO: lookup table
+                const Texel32 hit = vals[y*side+x];
+                //found the correct value for the lookup table, or the most
+                // distant one
+                const int index = min((int)(radius2*EWA_WEIGHTS_SIZE),
+                                      EWA_WEIGHTS_SIZE-1);
+                const float weight = ImageMap::EWA_WEIGHTS[index];
                 resr += hit.r*weight;
                 resg += hit.g*weight;
                 resb += hit.b*weight;
