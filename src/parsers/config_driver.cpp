@@ -38,6 +38,7 @@ ConfigDriver::ConfigDriver()
     integrator = new PathTracer();
     tex_name = "";
     tex_scale = Vec2(1.f);
+    tex_shift = Vec2(0.f);
 }
 
 Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
@@ -283,10 +284,11 @@ const Texture* ConfigDriver::load_texture(std::string& path)
             all_textures.push_back(editable_map);
             map = editable_map;
         }
-        addme = new TextureImage(map, tex_scale.x, tex_scale.y);
+        addme = new TextureImage(map, tex_scale, tex_shift);
         TexLib.inherit_texture(tex_name, addme);
         tex_name.clear(); //reset name for next texture
         tex_scale = Vec2(1.f); //reset scaling for next texture
+        tex_shift = Vec2(); //reset shifting for next texture
     }
     else
     {

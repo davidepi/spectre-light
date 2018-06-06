@@ -184,11 +184,13 @@ ColorRGB ImageMap::unfiltered(float u, float v, float, float,
 ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx,
                              float dudy, float dvdy) const
 {
-    float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
+    //float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
+    float width = max(max(fabsf(dudx),fabsf(dvdx)),
+                      max(fabsf(dudy),fabsf(dvdy)));
     //ensures that log2 doesn't give unwanted results
     width = max(width, 1e-5f);
     //choose mipmap
-    float chosen = max(0.f, maps_no-1+log2f(width));
+    float chosen = maps_no-1+log2f(width);
     ColorRGB p0; //retval
     if(chosen<=0.f) //use full size map
         p0 = high_depth?bilinear(u, v, side[0], values_high[0])

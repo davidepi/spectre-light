@@ -109,6 +109,7 @@ light { UPDATE_POS; return yy::ConfigParser::make_LIGHT(loc); }
 name { UPDATE_POS; return yy::ConfigParser::make_NAME(loc); }
 rotation { UPDATE_POS; return yy::ConfigParser::make_ROTATION(loc); }
 scale { UPDATE_POS; return yy::ConfigParser::make_SCALE(loc); }
+shift { UPDATE_POS; return yy::ConfigParser::make_SHIFT(loc); }
 temperature { UPDATE_POS; return yy::ConfigParser::make_TEMPERATURE(loc); }
 material { UPDATE_POS; return yy::ConfigParser::make_MATERIAL(loc); }
 texture { UPDATE_POS; return yy::ConfigParser::make_TEXTURE(loc); }

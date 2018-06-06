@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit 27 May 2018
+//Last Edit  6 Jun 2018
 
 #ifndef __TEXTURE_IMAGE_HPP__
 #define __TEXTURE_IMAGE_HPP__
@@ -12,7 +12,7 @@
 class TextureImage : public Texture
 {
 public:
-    TextureImage(const ImageMap* map, float sx, float sy);
+    TextureImage(const ImageMap* map, Vec2& scale, Vec2& shift);
 
     TextureImage(const TextureImage& old) = delete;
 
@@ -22,8 +22,8 @@ public:
 
 private:
     
-    float scale_x;
-    float scale_y;
+    Vec2 scale;
+    Vec2 shift;
     bool filtered;
     const ImageMap* imagemap;
     

@@ -73,6 +73,7 @@
 %token NAME "`name` keyword"
 %token ROTATION "`rotation` keyword"
 %token SCALE "`scale` keyword"
+%token SHIFT "`shift` keyword"
 %token COLOR "`color` keyword"
 %token MATERIAL "`material` keyword"
 %token TEXTURE "`texture` keyword"
@@ -201,7 +202,7 @@ world_stmt
 : POSITION COLON vector {driver.cur_mesh.position = $3;}
 | ROTATION COLON vector {driver.cur_mesh.rotation = $3;}
 | SCALE COLON vector {driver.cur_mesh.scale = $3;}
-| SCALE COLON FLOAT {driver.cur_mesh.scale = $3;}
+| SCALE COLON number {driver.cur_mesh.scale = $3;}
 | MATERIAL COLON STRING {driver.cur_mesh.material_name = $3.substr(1,$3.size()-2);}
 | COMMA
 ;
@@ -222,6 +223,7 @@ texture_rec:texture_rec texture_stmt|texture_stmt;
 texture_stmt
 : NAME COLON STRING {driver.tex_name = $3.substr(1,$3.size()-2);}
 | SCALE COLON vector2 {driver.tex_scale = $3;}
+| SHIFT COLON vector2 {driver.tex_shift = $3;}
 | COMMA
 ;
 
@@ -239,12 +241,12 @@ material_stmt
 | TYPE COLON GLOSSY {driver.cur_mat.type = GLOSSY;}
 | TYPE COLON METAL {driver.cur_mat.type = METAL;}
 | TYPE COLON GLASS {driver.cur_mat.type = GLASS;}
-| IOR COLON FLOAT {driver.cur_mat.ior = cauchy($3,0);}
+| IOR COLON number {driver.cur_mat.ior = cauchy($3,0);}
 | IOR COLON vector2 {driver.cur_mat.ior = cauchy($3.x,$3.y);}
 | IOR COLON vector {driver.cur_mat.ior = cauchy($3.x,$3.y,$3.z);}
 | IOR COLON vector vector {driver.cur_mat.ior = sellmeier($3.x,$3.y,$3.z,$4.x,$4.y,$4.z);}
-| ROUGHNESS COLON FLOAT {driver.cur_mat.rough_x = $3;}
-| ANISOTROPY COLON FLOAT {driver.cur_mat.rough_y = $3;}
+| ROUGHNESS COLON number {driver.cur_mat.rough_x = $3;}
+| ANISOTROPY COLON number {driver.cur_mat.rough_y = $3;}
 | DISTRIBUTION COLON BLINN {driver.cur_mat.dist = SPECTRE_DIST_BLINN;}
 | DISTRIBUTION COLON BECKMANN {driver.cur_mat.dist = SPECTRE_DIST_BECKMANN;}
 | DISTRIBUTION COLON GGX {driver.cur_mat.dist = SPECTRE_DIST_GGX;}

@@ -1,5 +1,5 @@
 //Created,  31 Mar 2018
-//Last Edit 27 May 2018
+//Last Edit  6 Jun 2018
 
 /**
  *  \file      config_driver.hpp
@@ -326,6 +326,9 @@ public:
 
     ///Scaling factor of the texture
     Vec2 tex_scale;
+
+    ///Shift factor of the texture
+    Vec2 tex_shift;
 
     ///Load a texture and the corresponding map given the path on disk
     const Texture* load_texture(std::string& path);
