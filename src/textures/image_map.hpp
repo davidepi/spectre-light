@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit  3 Jun 2018
+//Last Edit  7 Jun 2018
 
 /**
  *  \file image_map.hpp

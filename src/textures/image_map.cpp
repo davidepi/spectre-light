@@ -185,8 +185,8 @@ ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx,
                              float dudy, float dvdy) const
 {
     //float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
-    float width = max(max(fabsf(dudx),fabsf(dvdx)),
-                      max(fabsf(dudy),fabsf(dvdy)));
+    float width = max(max(fabsf(dudx), fabsf(dvdx)),
+                      max(fabsf(dudy), fabsf(dvdy)));
     //ensures that log2 doesn't give unwanted results
     width = max(width, 1e-5f);
     //choose mipmap
@@ -340,8 +340,8 @@ static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals)
 
 static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals)
 {
-    u = u*side-0.5f;
-    v = v*side-0.5f;
+    u = max(0.f, u*side-0.5f);
+    v = max(0.f, v*side-0.5f);
     unsigned short x = (unsigned short)u;
     unsigned short y = (unsigned short)v;
     float decimal_u = u-x;
@@ -365,8 +365,8 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
                     float dvdy, unsigned short side, Texel* vals)
 {
     //scale values
-    u = u*side-0.5f;
-    v = v*side-0.5f;
+    u = max(0.f, u*side-0.5f);
+    v = max(0.f, v*side-0.5f);
     dudx *= side;
     dvdx *= side;
     dudy *= side;

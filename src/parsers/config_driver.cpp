@@ -116,7 +116,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
     //set filter for every TextureImage
     for(unsigned int i = 0; i<all_textures.size(); i++)
         all_textures[i]->set_filter(tex_filter);
-    TexLib.has_filtered(tex_filter!=UNFILTERED);
+    TexLib.has_filtered(tex_filter != UNFILTERED);
 
     //delete everything else used for parsing
     all_textures.clear();
