@@ -54,20 +54,26 @@ float Triangle::surface(const Matrix4* transform) const
 
 bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h) const
 {
-    Vec3 ba = b.p-a.p;
-    Vec3 ca = c.p-a.p;
-    Vec3 pv = r->direction.cross(ca);
+    //recap since this method has become pretty cryptic
+    // a,b,c = triangle vertices
+    // p,t,n = point, texture coordinate and normal for the vertex
+    //u,v = intersection point uv values
+    //h->uv = intersection point uv values, accounting for the original
+    // user-defined values
+    const Vec3 ba = b.p-a.p;
+    const Vec3 ca = c.p-a.p;
+    const Vec3 pv = r->direction.cross(ca);
     float det = pv.dot(ba);
     if(det == 0) //ray parallel to the triangle
         return false;
 
     float invdet = 1.f/det;
-    Vec3 tv = r->origin-a.p;
+    const Vec3 tv = r->origin-a.p;
     float u = pv.dot(tv)*invdet;
     if(u<0.f || u>1.f) //origin position and dir inclination
         return false; //constraints are u,v>=0 & u+v<=1 so if u>1 I can exit now
 
-    Vec3 qv = tv.cross(ba);
+    const Vec3 qv = tv.cross(ba);
     float v = r->direction.dot(qv)*invdet;
     if(v<0.f || u+v>1.f) //I could hit with this origin, but the direction
         return false;    //betrays me
@@ -76,22 +82,27 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h) const
     if(dist<SELF_INTERSECT_ERROR || dist>*distance)
         return false;
 
+    // -> hit
     *distance = dist;
     float w = 1.f-u-v;
     h->point_h = r->apply(dist); //compute hit point
 
+    //determines UV values
+    const float delta[2][2] = {{a.t[0]-c.t[0], b.t[0]-c.t[0]},
+                               {a.t[1]-c.t[1], b.t[1]-c.t[1]}};
+    const float uvdet = delta[0][0]*delta[1][1]-delta[0][1]*delta[1][0];
+    //TODO: handle degenerate UVs (delta == 0)
+    const float invuvdet = 1.f/uvdet;
+    const Vec3 ac = a.p-c.p;
+    const Vec3 bc = b.p-c.p;
+    h->dpdu = (ac*delta[1][1]-bc*delta[1][0])*invdet;
+    h->dpdv = (bc*delta[0][0]-ac*delta[0][1])*invdet;
+    h->uv.x = w*a.t.x+u*b.t.x+v*c.t.x;
+    h->uv.y = w*a.t.y+u*b.t.y+v*c.t.y;
+
     //compute normal in the point, given normals in the vertices
-    //TODO: change this after uv mapping implementation
     h->normal_h = a.n*w+b.n*u+c.n*v;
-
-    //compute default shading vector
-    //TODO: change also this after uv map impl
-    h->dpdu.x = b.p.x-a.p.x;
-    h->dpdu.y = b.p.y-a.p.y;
-    h->dpdu.z = b.p.z-a.p.z;
-
     h->cross = cross(Vec3(h->normal_h), h->dpdu);
-    h->dpdu = cross(Vec3(h->normal_h), h->cross); //adjust dpdu vector
     return true;
 }
 

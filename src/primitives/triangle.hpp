@@ -1,5 +1,5 @@
 //Created,   4 Aug 2017
-//Last Edit 14 Dec 2017
+//Last Edit  8 Jun 2017
 
 /**
  *  \file triangle.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle in the space
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      14 Dec 2017
+ *  \date      8 Jun 2017
  *  \copyright GNU GPLv3
  */
 

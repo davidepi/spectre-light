@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 23 Apr 2018
+//Last Edit  8 Jun 2018
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      23 Apr 2018
+ *  \date      8 Jun 2018
  *  \copyright GNU GPLv3
  */
 
