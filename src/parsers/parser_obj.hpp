@@ -1,12 +1,12 @@
 //Created,  18 Aug 2017
-//Last Edit 18 Apr 2018
+//Last Edit  8 Jun 2018
 
 /**
  *  \file      parser_obj.hpp
  *  \brief     Class definition of a .obj parser
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      18 Apr 2018
+ *  \date      8 Jun 2018
  *  \copyright GNU GPLv3
  */
 

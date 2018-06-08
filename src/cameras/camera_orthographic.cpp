@@ -58,6 +58,12 @@ CameraOrthographic::CameraOrthographic(const Point3* pos, const Point3* target,
     Matrix4 raster2screen(values);
     raster2world *= screen2camera;
     raster2world *= raster2screen;
+    Matrix4 raster2camera;
+    raster2camera.set_identity();
+    raster2camera*=screen2camera;
+    raster2camera*=raster2screen;
+    dx = raster2camera*Vec3(1,0,0);
+    dy = raster2camera*Vec3(0,1,0);
 }
 
 void CameraOrthographic::create_ray(const Sample* spl, Ray* ray, Ray* rx,

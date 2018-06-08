@@ -222,6 +222,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
             case 'f': //process face
             {
                 bool recreate_normals = false;
+                bool recreate_textures = false;
                 while(*buffer == ' ') //load every component of the face
                 {
                     get_next_token(&buffer, token, TOKEN_SIZE,
@@ -274,6 +275,10 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                         }
                         res.t = textures.at((unsigned long)text_idx);
                     }
+                    else
+                    {
+                        recreate_textures = true;
+                    }
                     if(norm_idx != 0)
                     {
                         int norm_size = (int)normals.size();
@@ -318,24 +323,42 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                 }
                 if(face_tmp.size() == 3)//triangle
                 {
+                    if(recreate_textures)
+                    {
+                        face_tmp[0].t = Point2(0, 0);
+                        face_tmp[1].t = Point2(1, 0);
+                        face_tmp[2].t = Point2(1, 1);
+                    }
                     retval = true; //case for no-name but >1 triangle added
-                    obj->add_triangle(&face_tmp.at(0), &face_tmp.at(1),
-                                      &face_tmp.at(2));
+                    obj->add_triangle(&face_tmp[0], &face_tmp[1], &face_tmp[2]);
                     material_association.push_back(current_material);
                     face_no++;
                 }
                 else if(face_tmp.size()>3)//quad or n-gon
                 {
                     retval = true; //case for no-name but >1 triangle added
-                    obj->add_triangle(&face_tmp.at(0), &face_tmp.at(1),
-                                      &face_tmp.at(2));
+                    if(recreate_textures)
+                    {
+                        face_tmp[0].t = Point2(0, 0);
+                        face_tmp[1].t = Point2(1, 0);
+                        face_tmp[2].t = Point2(1, 1);
+                    }
+                    obj->add_triangle(&face_tmp[0], &face_tmp[1], &face_tmp[2]);
                     material_association.push_back(current_material);
                     face_no++;
                     for(unsigned long i = 3; i<face_tmp.size(); i++)
                     {
-                        obj->add_triangle(&face_tmp.at(0),
-                                          &face_tmp.at(i-1),
-                                          &face_tmp.at(i));
+                        //gcc do your job with the loop invariants moving
+                        if(recreate_textures)
+                        {
+                            //i-1 has already been set, however the uv changes
+                            //in this case
+                            face_tmp[i-1].t = Point2(1, 0);
+                            face_tmp[i].t = Point2(1, 1);
+                        }
+                        obj->add_triangle(&face_tmp[0],
+                                          &face_tmp[i-1],
+                                          &face_tmp[i]);
                         material_association.push_back(current_material);
                         face_no++;
                     }
