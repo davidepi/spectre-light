@@ -95,8 +95,8 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h) const
     const float invuvdet = 1.f/uvdet;
     const Vec3 ac = a.p-c.p;
     const Vec3 bc = b.p-c.p;
-    h->dpdu = (ac*delta[1][1]-bc*delta[1][0])*invdet;
-    h->dpdv = (bc*delta[0][0]-ac*delta[0][1])*invdet;
+    h->dpdu = (ac*delta[1][1]-bc*delta[1][0])*invuvdet;
+    h->dpdv = (bc*delta[0][0]-ac*delta[0][1])*invuvdet;
     h->uv.x = w*a.t.x+u*b.t.x+v*c.t.x;
     h->uv.y = w*a.t.y+u*b.t.y+v*c.t.y;
 

@@ -34,10 +34,10 @@ SPECTRE_TEST(Camera, Orthographic_create_ray)
     Sample samples[4];
     sam.get_samples(samples);
     Ray r0, r1, r2, r3;
-    camera.create_ray(samples, &r0);
-    camera.create_ray(samples+1, &r1);
-    camera.create_ray(samples+2, &r2);
-    camera.create_ray(samples+3, &r3);
+    ((Camera*)&camera)->create_ray(samples, &r0);
+    ((Camera*)&camera)->create_ray(samples+1, &r1);
+    ((Camera*)&camera)->create_ray(samples+2, &r2);
+    ((Camera*)&camera)->create_ray(samples+3, &r3);
 
     Point3 r0origin(-0.842283427f, 0.764850139f, -10);
     Point3 r1origin(-0.480320871f, 0.82242161f, -10.f);
@@ -72,10 +72,10 @@ SPECTRE_TEST(Camera, Orthographic_create_ray)
 
     //horizontal image
     camera = CameraOrthographic(&pos, &target, &up, 2, 1);
-    camera.create_ray(samples, &r0);
-    camera.create_ray(samples+1, &r1);
-    camera.create_ray(samples+2, &r2);
-    camera.create_ray(samples+3, &r3);
+    ((Camera*)&camera)->create_ray(samples, &r0);
+    ((Camera*)&camera)->create_ray(samples+1, &r1);
+    ((Camera*)&camera)->create_ray(samples+2, &r2);
+    ((Camera*)&camera)->create_ray(samples+3, &r3);
     r0origin = Point3(-1.68456686f, 0.529700279f, -10);
     r1origin = Point3(-0.960641741f, 0.64484334f, -10.f);
     r2origin = Point3(-1.64591336f, -0.060670197f, -10.f);
@@ -125,10 +125,9 @@ SPECTRE_TEST(Camera, Perspective_create_ray)
     Sample samples[4];
     sam.get_samples(samples);
     Ray r0, r1, r2, r3;
-    camera.create_ray(samples, &r0);
-    camera.create_ray(samples+1, &r1);
-    camera.create_ray(samples+2, &r2);
-    camera.create_ray(samples+3, &r3);
+    ((Camera*)&camera)->create_ray(samples, &r0);
+    ((Camera*)&camera)->create_ray(samples+2, &r2);
+    ((Camera*)&camera)->create_ray(samples+3, &r3);
 
     Point3 origin(0.f, 0.f, -10);
     Vec3 r0direction(-0.406448096f, 0.369082272f, 0.835809767f);
@@ -163,10 +162,10 @@ SPECTRE_TEST(Camera, Perspective_create_ray)
 
     //horizontal image
     camera = CameraPerspective(&pos, &target, &up, 2, 1, radians(60));
-    camera.create_ray(samples, &r0);
-    camera.create_ray(samples+1, &r1);
-    camera.create_ray(samples+2, &r2);
-    camera.create_ray(samples+3, &r3);
+    ((Camera*)&camera)->create_ray(samples, &r0);
+    ((Camera*)&camera)->create_ray(samples+1, &r1);
+    ((Camera*)&camera)->create_ray(samples+2, &r2);
+    ((Camera*)&camera)->create_ray(samples+3, &r3);
     r0direction = Vec3(-0.681037724f, 0.214147553f, 0.700234532f);
     r1direction = Vec3(-0.461194247f, 0.309582621f, 0.83153975f);
     r2direction = Vec3(-0.688629866f, -0.0253836755f, 0.724668562f);

@@ -65,7 +65,8 @@ struct Texel32
 #define EWA_WEIGHTS_SIZE 128
 
 ///Value used in the EWA_WEIGHTS precomputation
-#define EWA_ALPHA 2.f
+//TODO: removed because macOS does not support constexpr expf(). Harcoded table
+//#define EWA_ALPHA 2.f
 
 /**
  *  \brief ImageMap
