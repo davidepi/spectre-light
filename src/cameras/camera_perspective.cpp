@@ -58,18 +58,18 @@ CameraPerspective::CameraPerspective(const Point3* pos, const Point3* target,
     raster2camera.set_identity();
     raster2camera *= screen2camera;
     raster2camera *= raster2screen;
-    dx = raster2camera*Point3(1,0,0)-raster2camera*Point3(0,0,0);
-    dy = raster2camera*Point3(0,1,0)-raster2camera*Point3(0,0,0);
+    dx = raster2camera*Point3(1, 0, 0)-raster2camera*Point3(0, 0, 0);
+    dy = raster2camera*Point3(0, 1, 0)-raster2camera*Point3(0, 0, 0);
 }
 
 void CameraPerspective::create_ray(const Sample* sample, Ray* ray, Ray* rx,
                                    Ray* ry) const
 {
-    ray->origin = camera2world*Point3(0,0,0);
+    ray->origin = camera2world*Point3(0, 0, 0);
     rx->origin = ray->origin;
     ry->origin = ray->origin;
     const Point3 dir = raster2camera*Point3(sample->posx, sample->posy, 0);
-    const Vec3 direction = Vec3(dir.x,dir.y,dir.z);
+    const Vec3 direction = Vec3(dir.x, dir.y, dir.z);
     ray->direction = camera2world*normalize(direction);
     rx->direction = camera2world*normalize(direction+dx);
     ry->direction = camera2world*normalize(direction+dy);
@@ -80,5 +80,6 @@ void CameraPerspective::create_single_ray(const Sample* sample, Point3* origin,
 {
     *origin = camera2world*Point3(0, 0, 0);
     const Point3 dir = raster2camera*Point3(sample->posx, sample->posy, 0);
-    *direction = camera2world*normalize(Vec3(dir.x, dir.y, dir.z));
+    const Vec3 v3dir = Vec3(dir.x, dir.y, dir.z);
+    *direction = camera2world*normalize(v3dir);
 }

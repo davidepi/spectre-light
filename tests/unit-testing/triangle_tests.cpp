@@ -5,12 +5,12 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "primitives/triangle.hpp"
-#include "utility/utility.hpp"
-#include <climits>
 
 SPECTRE_TEST_INIT(Triangle_tests)
 
@@ -129,6 +129,9 @@ SPECTRE_TEST(Triangle, intersection)
     v0.n = Normal(0, 0, 1);
     v1.n = Normal(0, 0, 1);
     v2.n = Normal(0, 0, 1);
+    v0.t = Point2(0, 0);
+    v1.t = Point2(1, 0);
+    v2.t = Point2(1, 1);
     Triangle t(v0, v1, v2);
     Ray r;
     float distance;
@@ -194,7 +197,7 @@ SPECTRE_TEST(Triangle, intersection)
     EXPECT_EQ(hit.normal_h.y, 0.f);
     EXPECT_EQ(hit.normal_h.z, 1.f);
     hit.dpdu.normalize();
-    EXPECT_EQ(hit.dpdu.x, -1.f);
+    EXPECT_EQ(hit.dpdu.x, 1.f);
     EXPECT_EQ(hit.dpdu.y, 0.f);
     EXPECT_EQ(hit.dpdu.z, 0.f);
 }

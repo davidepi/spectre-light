@@ -91,7 +91,7 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h) const
     const float delta[2][2] = {{a.t[0]-c.t[0], b.t[0]-c.t[0]},
                                {a.t[1]-c.t[1], b.t[1]-c.t[1]}};
     const float uvdet = delta[0][0]*delta[1][1]-delta[0][1]*delta[1][0];
-    //TODO: handle degenerate UVs (delta == 0)
+    //TODO: handle degenerate UVs (uvdet == 0)
     const float invuvdet = 1.f/uvdet;
     const Vec3 ac = a.p-c.p;
     const Vec3 bc = b.p-c.p;

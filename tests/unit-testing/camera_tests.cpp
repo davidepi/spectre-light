@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "cameras/camera.hpp"
@@ -126,6 +128,7 @@ SPECTRE_TEST(Camera, Perspective_create_ray)
     sam.get_samples(samples);
     Ray r0, r1, r2, r3;
     ((Camera*)&camera)->create_ray(samples, &r0);
+    ((Camera*)&camera)->create_ray(samples+1, &r1);
     ((Camera*)&camera)->create_ray(samples+2, &r2);
     ((Camera*)&camera)->create_ray(samples+3, &r3);
 
