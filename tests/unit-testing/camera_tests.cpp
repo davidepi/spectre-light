@@ -356,4 +356,55 @@ SPECTRE_TEST(Camera, Camera360_create_ray)
     EXPECT_NEAR(r3.direction.z, r3direction.z, 1e-5f);
 }
 
+SPECTRE_TEST(Camera, Camera360_create_ray_diff)
+{
+    Ray r0, rx, ry;
+    Ray compare, rxcompare, rycompare;
+    //create sampler
+    unsigned int seed[32];
+    for(int i = 0; i<32; i++)
+        seed[i] = i;
+    SamplerStratified sam(0, 2, 0, 2, 4, seed, true);
+
+    //create camera
+    Point3 pos(0.f, 0.f, -10.f);
+    Point3 target(0.f, 0.f, 100.f);
+    Vec3 up(0.f, 1.f, 0.f);
+
+    //square image
+    Camera360 camera(&pos, &target, &up, 2, 2);
+    Sample samples[4];
+    sam.get_samples(samples);
+
+    Sample test = samples[0];
+    Sample testdx = samples[0];
+    testdx.posx++;
+    Sample testdy = samples[0];
+    testdy.posy++;
+
+    camera.create_ray(&test, &r0, &rx, &ry);
+    ((Camera*)&camera)->create_ray(&test, &compare);
+    ((Camera*)&camera)->create_ray(&testdx, &rxcompare);
+    ((Camera*)&camera)->create_ray(&testdy, &rycompare);
+
+    EXPECT_NEAR(r0.origin.x, compare.origin.x, 1e-5f);
+    EXPECT_NEAR(r0.origin.y, compare.origin.y, 1e-5f);
+    EXPECT_NEAR(r0.origin.z, compare.origin.z, 1e-5f);
+    EXPECT_NEAR(r0.direction.x, compare.direction.x, 1e-5f);
+    EXPECT_NEAR(r0.direction.y, compare.direction.y, 1e-5f);
+    EXPECT_NEAR(r0.direction.z, compare.direction.z, 1e-5f);
+    EXPECT_NEAR(rx.origin.x, rxcompare.origin.x, 1e-5f);
+    EXPECT_NEAR(rx.origin.y, rxcompare.origin.y, 1e-5f);
+    EXPECT_NEAR(rx.origin.z, rxcompare.origin.z, 1e-5f);
+    EXPECT_NEAR(rx.direction.x, rxcompare.direction.x, 1e-5f);
+    EXPECT_NEAR(rx.direction.y, rxcompare.direction.y, 1e-5f);
+    EXPECT_NEAR(rx.direction.z, rxcompare.direction.z, 1e-5f);
+    EXPECT_NEAR(ry.origin.x, rycompare.origin.x, 1e-5f);
+    EXPECT_NEAR(ry.origin.y, rycompare.origin.y, 1e-5f);
+    EXPECT_NEAR(ry.origin.z, rycompare.origin.z, 1e-5f);
+    EXPECT_NEAR(ry.direction.x, rycompare.direction.x, 1e-5f);
+    EXPECT_NEAR(ry.direction.y, rycompare.direction.y, 1e-5f);
+    EXPECT_NEAR(ry.direction.z, rycompare.direction.z, 1e-5f);
+}
+
 SPECTRE_TEST_END(Camera_tests)

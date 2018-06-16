@@ -410,7 +410,6 @@ SPECTRE_TEST(Parser, material_matte)
     ConfigDriver driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt", &s);
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
-    //TODO: maybe RTTI to get class info?
     const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
 
     a.set_materials((const Bsdf**)&mat0, 1, &association);

@@ -63,14 +63,13 @@ CameraOrthographic::CameraOrthographic(const Point3* pos, const Point3* target,
     raster2camera *= screen2camera;
     raster2camera *= raster2screen;
     dx = raster2camera*Vec3(1, 0, 0);
-    dy = raster2camera*Vec3(0, 1, 0);
+    dy = raster2camera*Vec3(0, -1, 0);
 }
 
 void CameraOrthographic::create_ray(const Sample* spl, Ray* ray, Ray* rx,
                                     Ray* ry) const
 {
     ray->origin = raster2world*Point3(spl->posx, spl->posy, 0);
-    //TODO: check this, probably raster 2 world is not correct
     rx->origin = raster2world*Point3(spl->posx+dx.x, spl->posy+dx.y, dx.z);
     ry->origin = raster2world*Point3(spl->posx+dy.x, spl->posy+dy.y, dy.z);
     ray->direction = camera2world*Vec3(0, 0, 1);
