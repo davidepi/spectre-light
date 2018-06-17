@@ -1,8 +1,0 @@
-texture: {
-  name: "Manually written name"
-  src: "../images/correct.bmp"
-}
-
-texture: {
-src: "nameless",
-}

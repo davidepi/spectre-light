@@ -42,4 +42,12 @@ Spectrum TextureImage::map(const HitPoint* hit) const
     return Spectrum(res, false);
 }
 
+Vec2 TextureImage::get_shift() const
+{
+    return TextureImage::shift;
+}
 
+Vec2 TextureImage::get_scale() const
+{
+    return TextureImage::scale;
+}

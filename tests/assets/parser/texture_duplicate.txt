@@ -1,0 +1,9 @@
+texture: {
+  src: "../images/correct.bmp"
+  name: "Manually written name"
+}
+
+texture: {
+  name: "Manually written name"
+  src: "../images/correct.bmp",
+}

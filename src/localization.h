@@ -131,6 +131,9 @@
 
 #define MESSAGE_TEXTURE_ERROR "Unable to load texture %s"
 
+#define MESSAGE_TEXTURE_DUPLICATE "Texture %s is already in library and won't"\
+" be added"
+
 #define MESSAGE_TEXTURE_ERROR_2ND MESSAGE_TEXTURE_ERROR ". But the texture "\
 "was readable when parsed"
 

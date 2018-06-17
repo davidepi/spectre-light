@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit  6 Jun 2018
+//Last Edit 17 Jun 2018
 
 /**
  *  \file      config_driver.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      27 May 2018
+ *  \date      17 Jun 2018
  *  \copyright GNU GPLv3
  */
 
@@ -222,7 +222,7 @@ public:
 
 //dirty hack because this class is impossible to test otherwise
 #ifndef TESTS
-private:
+    private:
 #endif
 
     ///The name of the output image that will be created by the renderer

@@ -215,14 +215,17 @@ light_stmt
 ;
 
 texture_obj /* name is already known at this point */
-: SRC COLON STRING texture_rec {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture(driver.tex_src);}
+: SRC COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture(driver.tex_src);}
+| SRC COLON STRING texture_rec {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture(driver.tex_src);}
 | texture_rec SRC COLON STRING {driver.tex_src=$4.substr(1,$4.size()-2);driver.load_texture(driver.tex_src);}
+| texture_rec SRC COLON STRING texture_rec {driver.tex_src=$4.substr(1,$4.size()-2);driver.load_texture(driver.tex_src);}
 ;
 
 texture_rec:texture_rec texture_stmt|texture_stmt;
 texture_stmt
 : NAME COLON STRING {driver.tex_name = $3.substr(1,$3.size()-2);}
 | SCALE COLON vector2 {driver.tex_scale = $3;}
+| SCALE COLON number {driver.tex_scale = Vec2($3);}
 | SHIFT COLON vector2 {driver.tex_shift = $3;}
 | COMMA
 ;

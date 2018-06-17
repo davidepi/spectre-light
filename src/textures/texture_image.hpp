@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit  6 Jun 2018
+//Last Edit 17 Jun 2018
 
 #ifndef __TEXTURE_IMAGE_HPP__
 #define __TEXTURE_IMAGE_HPP__
@@ -18,15 +18,18 @@ public:
 
     ~TextureImage() override = default;
 
+    Vec2 get_shift() const;
+
+    Vec2 get_scale() const;
+
     Spectrum map(const HitPoint* hp) const override;
 
 private:
-    
     Vec2 scale;
     Vec2 shift;
     bool filtered;
     const ImageMap* imagemap;
-    
+
 };
 
 #endif

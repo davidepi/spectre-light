@@ -262,8 +262,9 @@ const TextureUniform* ConfigDriver::load_texture_uniform()
 
 const Texture* ConfigDriver::load_texture(std::string& path)
 {
+
     File cur_file = current_dir;
-    const Texture* addme;
+    const Texture* addme = TexLib.get_default();
     if(is_absolute(path.c_str()))
         //recreates the File class... but absolute path should be a rare case
         //File does not have a dflt constructor. Should I make one?
@@ -275,26 +276,33 @@ const Texture* ConfigDriver::load_texture(std::string& path)
     {
         if(tex_name.empty())
             tex_name = cur_file.filename();
-        //if the library does not contain the map it is loaded here
-        const ImageMap* map = TexLib.get_map(cur_file.absolute_path());
-        if(map == NULL)
+        if(!TexLib.contains_texture(tex_name))
         {
-            ImageMap* editable_map = new ImageMap(cur_file);
-            TexLib.inherit_map(cur_file.absolute_path(), map);
-            all_textures.push_back(editable_map);
-            map = editable_map;
+            //if the library does not contain the map it is loaded here
+            const ImageMap* map = TexLib.get_map(cur_file.absolute_path());
+            if(map == NULL)
+            {
+                ImageMap* editable_map = new ImageMap(cur_file);
+                TexLib.inherit_map(cur_file.absolute_path(), map);
+                all_textures.push_back(editable_map);
+                map = editable_map;
+            }
+            addme = new TextureImage(map, tex_scale, tex_shift);
+            TexLib.inherit_texture(tex_name, addme);
         }
-        addme = new TextureImage(map, tex_scale, tex_shift);
-        TexLib.inherit_texture(tex_name, addme);
-        tex_name.clear(); //reset name for next texture
-        tex_scale = Vec2(1.f); //reset scaling for next texture
-        tex_shift = Vec2(); //reset shifting for next texture
+        else //duplicate texture
+        {
+            Console.warning(MESSAGE_TEXTURE_DUPLICATE,tex_name.c_str());
+        }
     }
     else
     {
         Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
         addme = TexLib.get_default();
     }
+    tex_name.clear(); //reset name for next texture
+    tex_scale = Vec2(1.f); //reset scaling for next texture
+    tex_shift = Vec2(); //reset shifting for next texture
     return addme;
 }
 

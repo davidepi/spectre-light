@@ -40,7 +40,7 @@
 #ifndef YY_YY_CONFIG_PARSER_TAB_HH_INCLUDED
 # define YY_YY_CONFIG_PARSER_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 12 "config_parser.y" // lalr1.cc:377
+
 
     #include <string>
     #include "geometry/vec3.hpp"
@@ -48,7 +48,7 @@
     #include "materials/metals.hpp"
     class ConfigDriver;
 
-#line 52 "config_parser.tab.hh" // lalr1.cc:377
+
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -125,7 +125,7 @@
 
 
 namespace yy {
-#line 129 "config_parser.tab.hh" // lalr1.cc:377
+
 
 
 
@@ -1022,9 +1022,9 @@ namespace yy {
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const unsigned char yytable_[];
+  static const unsigned short int yytable_[];
 
-  static const unsigned char yycheck_[];
+  static const short int yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -1144,7 +1144,7 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 300,     ///< Last index in yytable_.
+      yylast_ = 310,     ///< Last index in yytable_.
       yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 28, ///< Termination state number.
       yyterror_ = 1,
@@ -2140,7 +2140,7 @@ namespace yy {
 
 
 } // yy
-#line 2144 "config_parser.tab.hh" // lalr1.cc:377
+
 
 
 

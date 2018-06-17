@@ -5,13 +5,12 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "parsers/config_driver.hpp"
-#include "primitives/asset.hpp"
-#include "primitives/sphere.hpp"
-#include "renderer.hpp"
 
 SPECTRE_TEST_INIT(Parser_tests)
 
@@ -157,21 +156,21 @@ SPECTRE_TEST(Parser, filter)
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
     EXPECT_EQ(driver0.value0, 0.33f);
     EXPECT_EQ(driver0.value1, 0.33f);
-    EXPECT_EQ(driver0.tex_filter,TRILINEAR);
+    EXPECT_EQ(driver0.tex_filter, TRILINEAR);
     EXPECT_FALSE(TexLib.is_unfiltered());
     delete r0;
     //box
     ConfigDriver driver1;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/filter_box.txt", &s);
     EXPECT_EQ(driver1.filter_type, (char)SPECTRE_FILTER_BOX);
-    EXPECT_EQ(driver1.tex_filter,UNFILTERED);
+    EXPECT_EQ(driver1.tex_filter, UNFILTERED);
     EXPECT_TRUE(TexLib.is_unfiltered());
     delete r1;
     //tent
     ConfigDriver driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/filter_tent.txt", &s);
     EXPECT_EQ(driver2.filter_type, (char)SPECTRE_FILTER_TENT);
-    EXPECT_EQ(driver2.tex_filter,TRILINEAR);
+    EXPECT_EQ(driver2.tex_filter, TRILINEAR);
     EXPECT_FALSE(TexLib.is_unfiltered());
     delete r2;
     //gaussian
@@ -267,17 +266,42 @@ SPECTRE_TEST(Parser, texture)
 {
     Scene s;
     ConfigDriver driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/textures.txt", &s);
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/texture.txt", &s);
     HitPoint h;
-    
+
     //check that contains is not broken and returning always true
     EXPECT_FALSE(TexLib.contains_texture("bogus"));
     //check the single texture was added
-    EXPECT_TRUE(TexLib.contains_texture("Manually written name"));
+    ASSERT_TRUE(TexLib.contains_texture("Manually written name"));
+    EXPECT_TRUE(TexLib.contains_texture("correct.bmp"));
     //check that the map is actually added
-    EXPECT_TRUE(TexLib.contains_map(TEST_ASSETS "images/correct.bmp"));
+    EXPECT_TRUE(TexLib.contains_map(TEST_ASSETS
+                        "images/correct.bmp"));
+    const Texture* got = TexLib.get_texture("Manually written name");
+    const TextureImage* img = dynamic_cast<const TextureImage*>(got);
+    //check default values
+    EXPECT_STREQ(driver0.tex_name.c_str(), "");
+    EXPECT_EQ(img->get_shift().x, 0.f);
+    EXPECT_EQ(img->get_shift().y, 0.f);
+    EXPECT_EQ(img->get_scale().x, 1.f);
+    EXPECT_EQ(img->get_scale().y, 1.f);
 
+    //check additional values
+    got = TexLib.get_texture("Additional values");
+    img = dynamic_cast<const TextureImage*>(got);
+    EXPECT_EQ(img->get_shift().x, 1.f);
+    EXPECT_EQ(img->get_shift().y, 1.4f);
+    EXPECT_EQ(img->get_scale().x, .5f);
+    EXPECT_EQ(img->get_scale().y, .5f);
+    got = TexLib.get_texture("Uniform scale");
+    img = dynamic_cast<const TextureImage*>(got);
+    EXPECT_EQ(img->get_shift().x, 0.f);
+    EXPECT_EQ(img->get_shift().y, 0.f);
+    EXPECT_EQ(img->get_scale().x, 4.f);
+    EXPECT_EQ(img->get_scale().y, 4.f);
     delete r0;
+
+    //non existent
     ConfigDriver driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/texture_non_existent.txt",
@@ -286,7 +310,17 @@ SPECTRE_TEST(Parser, texture)
     errors_count[WARNING_INDEX] = 0;
     EXPECT_FALSE(TexLib.contains_texture("I do not exist"));
     delete r1;
+
+    //duplicate
     TexLib.clear();
+    ConfigDriver driver2;
+    errors_count[WARNING_INDEX] = 0;
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture_duplicate.txt",
+                                 &s);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(TexLib.contains_texture("Manually written name"));
+    delete r2;
 }
 
 SPECTRE_TEST(Parser, material_textures)
@@ -312,7 +346,7 @@ SPECTRE_TEST(Parser, material_textures)
     Renderer* r0 = driver0.parse(TEST_ASSETS
                                  "parser/material_texture.txt",
                                  &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX],1);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     ASSERT_TRUE(MtlLib.contains("Diffuse color"));
     ASSERT_TRUE(MtlLib.contains("Specular color"));
