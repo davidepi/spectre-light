@@ -117,6 +117,7 @@ void ImageMap::init()
             float* data = (float*)malloc(width*height*3*sizeof(float));
             res = read_RGB(path.absolute_path(), path.extension(), data, NULL);
             if(res<0)
+                //almost impossible to fall here
                 Console.critical(MESSAGE_TEXTURE_ERROR, path.absolute_path());
             else
             {
