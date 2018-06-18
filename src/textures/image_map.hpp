@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit  7 Jun 2018
+//Last Edit 18 Jun 2018
 
 /**
  *  \file image_map.hpp
@@ -7,7 +7,7 @@
  *  \details   A square, power of 2, image used inside TextureImage as a MIPMap
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      20 May 2018
+ *  \date      18 Jun 2018
  *  \copyright GNU GPLv3
  */
 
@@ -158,7 +158,7 @@ public:
      *  EWA_WEIGHTS_SIZE parameters, instead of having to manually rewrite the
      *  entire lookup table every time
      */
-    static const std::array<float, EWA_WEIGHTS_SIZE> EWA_WEIGHTS;
+    static const float EWA_WEIGHTS[EWA_WEIGHTS_SIZE];
 
     //this class is mostly hidden behind the scenes, and an error should be
     //detected as soon as possible during testing

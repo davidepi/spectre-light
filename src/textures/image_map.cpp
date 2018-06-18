@@ -22,7 +22,7 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
                     float dvdy, unsigned short side, Texel32* vals);
 
 
-//TODO: removed because expf not constexpr in macOS
+//------------------------ removed because expf not constexpr in macOS ---------
 //constexpr float init_ewa_weight(int step)
 //{
 //    return expf(-EWA_ALPHA*((float)step/(float)(EWA_WEIGHTS_SIZE-1)))-
@@ -47,8 +47,10 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
 //}
 
 //actual EWA_WEIGHTS array
-const std::array<float, EWA_WEIGHTS_SIZE> ImageMap::EWA_WEIGHTS =
+//const std::array<float, EWA_WEIGHTS_SIZE> ImageMap::EWA_WEIGHTS =
 //        ewa_lookup_init<EWA_WEIGHTS_SIZE>();
+// -----------------------------------------------------------------------------
+const float ImageMap::EWA_WEIGHTS[EWA_WEIGHTS_SIZE] =
         {
                 0.864664733f, 0.849040031f, 0.83365953f, 0.818519294f,
                 0.80361563f, 0.788944781f, 0.774503231f, 0.760287285f,
@@ -81,8 +83,8 @@ const std::array<float, EWA_WEIGHTS_SIZE> ImageMap::EWA_WEIGHTS =
                 0.0360605568f, 0.0333825648f, 0.0307464004f, 0.0281514227f,
                 0.0255970061f, 0.0230824798f, 0.0206072628f, 0.0181707144f,
                 0.0157722086f, 0.013411209f, 0.0110870898f, 0.0087992847f,
-                0.0065472275f, 0.00433036685f, 0.0021481365f, 0.f,
-};
+                0.0065472275f, 0.00433036685f, 0.0021481365f, 0.f
+        };
 
 ImageMap::ImageMap(const char* src):path(src)
 {
@@ -294,8 +296,8 @@ ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
         return high_depth?bilinear(u, v, side[0], values_high[0]):
                bilinear(u, v, side[0], values[0]);
     }
-        //if too eccentric increase blurriness and decrease eccentricity by scaling
-        //the shorter axis
+    //if too eccentric increase blurriness and decrease eccentricity by scaling
+    //the shorter axis
     else if(shorter_axis*EWA_MAX_ECCENTRICITY<longer_axis)
     {
         float scale = longer_axis/(shorter_axis*EWA_MAX_ECCENTRICITY);
@@ -521,18 +523,11 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
 }
 
 static void downsample(const Texel32* in, Texel32* out,
-                       unsigned short input_side, bool hqfilter)
+                       unsigned short input_side, bool)
 {
+    //lanczos filter implementation removed after
+    //commit d1790761d1a09c87155eb06acdf374b7c887f09f
     unsigned short output_side = (unsigned short)(input_side/2);
-    int range_x = (int)lowpass_filter.range_x;
-    int range_y = (int)lowpass_filter.range_y;
-    float* weights;
-    if(hqfilter)
-    {
-        memset(out, 0, sizeof(Texel32)*output_side*output_side);
-        weights = (float*)malloc(sizeof(float)*output_side*output_side);
-        memset(weights, 0, sizeof(float)*output_side*output_side);
-    }
     for(int y = 0; y<output_side; y++)
     {
         for(int x = 0; x<output_side; x++)
@@ -541,65 +536,20 @@ static void downsample(const Texel32* in, Texel32* out,
             Texel32 t1 = in[(2*y+1)*input_side+2*x];
             Texel32 t2 = in[2*y*input_side+(2*x+1)];
             Texel32 t3 = in[(2*y+1)*input_side+(2*x+1)];
-            if(!hqfilter) //single pixel (no filter)
-            {
-                int pixel = y*output_side+x;
-                out[pixel].r = 0.25f*(t0.r+t1.r+t2.r+t3.r);
-                out[pixel].g = 0.25f*(t0.g+t1.g+t2.g+t3.g);
-                out[pixel].b = 0.25f*(t0.b+t1.b+t2.b+t3.b);
-            }
-            else //filter also neighbours (lanczos filter)
-            {
-                for(int oy = -range_y; oy<=range_y; oy++)
-                    for(int ox = -range_x; ox<=range_x; ox++)
-                    {
-                        //compute values of x and y
-                        int val_x = x+ox;
-                        int val_y = y+oy;
-                        //if they are outside the image, skip this pixel
-                        if(val_x<0 || val_x>=output_side || val_y<0 ||
-                           val_y>=output_side)
-                            continue;
-                        int pixel = val_y*output_side+val_x;
-                        float weight = lowpass_filter.weight((float)ox,
-                                                             (float)oy);
-                        out[pixel].r += 0.25f*(t0.r+t1.r+t2.r+t3.r)*weight;
-                        out[pixel].g += 0.25f*(t0.g+t1.g+t2.g+t3.g)*weight;
-                        out[pixel].b += 0.25f*(t0.b+t1.b+t2.b+t3.b)*weight;
-                        weights[pixel] += weight;
-                    }
-            }
+            int pixel = y*output_side+x;
+            out[pixel].r = 0.25f*(t0.r+t1.r+t2.r+t3.r);
+            out[pixel].g = 0.25f*(t0.g+t1.g+t2.g+t3.g);
+            out[pixel].b = 0.25f*(t0.b+t1.b+t2.b+t3.b);
         }
-    }
-    if(hqfilter)
-    {
-        //reweights samples
-        for(int i = 0; i<output_side*output_side; i++)
-        {
-            float weight = 1.f/weights[i];
-            out[i].r = max(out[i].r, 0.f)*weight;
-            out[i].g = max(out[i].g, 0.f)*weight;
-            out[i].b = max(out[i].b, 0.f)*weight;
-        }
-        free(weights);
     }
 }
 
 static void downsample(const Texel* in, Texel* out,
-                       unsigned short input_side, bool hqfilter)
+                       unsigned short input_side, bool)
 {
+    //lanczos filter implementation removed after
+    //commit d1790761d1a09c87155eb06acdf374b7c887f09f
     unsigned short output_side = (unsigned short)(input_side/2);
-    int range_x = (int)lowpass_filter.range_x;
-    int range_y = (int)lowpass_filter.range_y;
-    Texel32* tmpout;
-    float* weights;
-    if(hqfilter)
-    {
-        weights = (float*)malloc(sizeof(float)*output_side*output_side);
-        tmpout = (Texel32*)malloc(sizeof(Texel32)*output_side*output_side);
-        memset(tmpout, 0, sizeof(Texel32)*output_side*output_side);
-        memset(weights, 0, sizeof(float)*output_side*output_side);
-    }
     for(int y = 0; y<output_side; y++)
     {
         for(int x = 0; x<output_side; x++)
@@ -608,47 +558,11 @@ static void downsample(const Texel* in, Texel* out,
             Texel t1 = in[(2*y+1)*input_side+2*x];
             Texel t2 = in[2*y*input_side+(2*x+1)];
             Texel t3 = in[(2*y+1)*input_side+(2*x+1)];
-            if(!hqfilter) //single pixel (no filter)
-            {
-                int pixel = y*output_side+x;
-                out[pixel].r = (uint8_t)(0.25f*(t0.r+t1.r+t2.r+t3.r));
-                out[pixel].g = (uint8_t)(0.25f*(t0.g+t1.g+t2.g+t3.g));
-                out[pixel].b = (uint8_t)(0.25f*(t0.b+t1.b+t2.b+t3.b));
-            }
-            else //filter also neighbours (lanczos filter)
-            {
-                for(int oy = -range_y; oy<=range_y; oy++)
-                    for(int ox = -range_x; ox<=range_x; ox++)
-                    {
-                        //compute values of x and y
-                        int val_x = x+ox;
-                        int val_y = y+oy;
-                        //if they are outside the image, skip this pixel
-                        if(val_x<0 || val_x>=output_side || val_y<0 ||
-                           val_y>=output_side)
-                            continue;
-                        int pixel = val_y*output_side+val_x;
-                        float weight = lowpass_filter.weight((float)ox,
-                                                             (float)oy);
-                        tmpout[pixel].r += 0.25f*(t0.r+t1.r+t2.r+t3.r)*weight;
-                        tmpout[pixel].g += 0.25f*(t0.g+t1.g+t2.g+t3.g)*weight;
-                        tmpout[pixel].b += 0.25f*(t0.b+t1.b+t2.b+t3.b)*weight;
-                        weights[pixel] += weight;
-                    }
-            }
+            //Removed lanczos filter downsampling. No noticeable effects
+            int pixel = y*output_side+x;
+            out[pixel].r = (uint8_t)(0.25f*(t0.r+t1.r+t2.r+t3.r));
+            out[pixel].g = (uint8_t)(0.25f*(t0.g+t1.g+t2.g+t3.g));
+            out[pixel].b = (uint8_t)(0.25f*(t0.b+t1.b+t2.b+t3.b));
         }
-    }
-    if(hqfilter)
-    {
-        //reweights samples
-        for(int i = 0; i<output_side*output_side; i++)
-        {
-            float weight = 1.f/weights[i];
-            out[i].r = (uint8_t)clamp(tmpout[i].r*weight, 0.f, 255.f);
-            out[i].g = (uint8_t)clamp(tmpout[i].g*weight, 0.f, 255.f);
-            out[i].b = (uint8_t)clamp(tmpout[i].b*weight, 0.f, 255.f);
-        }
-        free(tmpout);
-        free(weights);
     }
 }
