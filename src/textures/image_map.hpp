@@ -163,7 +163,7 @@ public:
     //this class is mostly hidden behind the scenes, and an error should be
     //detected as soon as possible during testing
 #ifndef TESTS
-private:
+    private:
 #endif
 
     ///Do not perform any filtering

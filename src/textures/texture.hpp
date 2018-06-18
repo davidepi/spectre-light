@@ -39,8 +39,7 @@ public:
     /** \brief Maps an (u,v) coordinate to a texture value
      *
      *  Given the coordinates \p u and \p v of a point, this method finds the
-     *  Spectrum value associated with these coordinates by looking at the
-     *  underlying image
+     *  Spectrum value associated with these coordinates.
      *
      *  \param[in] hp The data of the hit point
      *  \return The Spectrum value of the mesh with this texture applied at the

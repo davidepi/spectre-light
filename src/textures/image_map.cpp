@@ -297,8 +297,8 @@ ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
         return high_depth?bilinear(u, v, side[0], values_high[0]):
                bilinear(u, v, side[0], values[0]);
     }
-    //if too eccentric increase blurriness and decrease eccentricity by scaling
-    //the shorter axis
+        //if too eccentric increase blurriness and decrease eccentricity by scaling
+        //the shorter axis
     else if(shorter_axis*EWA_MAX_ECCENTRICITY<longer_axis)
     {
         float scale = longer_axis/(shorter_axis*EWA_MAX_ECCENTRICITY);
