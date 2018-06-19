@@ -355,24 +355,24 @@ ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
 
 static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals)
 {
-    u = u*side-0.5f;
-    v = v*side-0.5f;
+    u = max(0.f,u*side-0.5f); //avoid negative values that breaks corner
+    v = max(0.f,v*side-0.5f); //cases
     unsigned short x = (unsigned short)u;
     unsigned short y = (unsigned short)v;
     float decimal_u = u-x;
     float decimal_v = v-y;
-    float rem_u = 1.f-decimal_u;
-    float rem_v = 1.f-decimal_v;
+    float int_u = 1.f-decimal_u;
+    float int_v = 1.f-decimal_v;
     Texel t0 = vals[y*side+x];
     Texel t1 = vals[y*side+x+1];
     Texel t2 = vals[(y+1)*side+x];
     Texel t3 = vals[(y+1)*side+x+1];
-    uint8_t r = (uint8_t)((t0.r*rem_u+t1.r*decimal_u)*rem_v+
-                          (t2.r*rem_u+t3.r*decimal_u)*decimal_v);
-    uint8_t g = (uint8_t)((t0.g*rem_u+t1.g*decimal_u)*rem_v+
-                          (t2.g*rem_u+t3.g*decimal_u)*decimal_v);
-    uint8_t b = (uint8_t)((t0.b*rem_u+t1.b*decimal_u)*rem_v+
-                          (t2.b*rem_u+t3.b*decimal_u)*decimal_v);
+    uint8_t r = (uint8_t)((t0.r*int_u+t1.r*decimal_u)*int_v+
+                          (t2.r*int_u+t3.r*decimal_u)*decimal_v);
+    uint8_t g = (uint8_t)((t0.g*int_u+t1.g*decimal_u)*int_v+
+                          (t2.g*int_u+t3.g*decimal_u)*decimal_v);
+    uint8_t b = (uint8_t)((t0.b*int_u+t1.b*decimal_u)*int_v+
+                          (t2.b*int_u+t3.b*decimal_u)*decimal_v);
     return ColorRGB(r, g, b);
 }
 
@@ -384,18 +384,18 @@ static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals)
     unsigned short y = (unsigned short)v;
     float decimal_u = u-x;
     float decimal_v = v-y;
-    float rem_u = 1.f-decimal_u;
-    float rem_v = 1.f-decimal_v;
+    float int_u = 1.f-decimal_u;
+    float int_v = 1.f-decimal_v;
     Texel32 t0 = vals[y*side+x];
     Texel32 t1 = vals[y*side+x+1];
     Texel32 t2 = vals[(y+1)*side+x];
     Texel32 t3 = vals[(y+1)*side+x+1];
-    float r = (t0.r*rem_u+t1.r*decimal_u)*rem_v+
-              (t2.r*rem_u+t3.r*decimal_u)*decimal_v;
-    float g = (t0.g*rem_u+t1.g*decimal_u)*rem_v+
-              (t2.g*rem_u+t3.g*decimal_u)*decimal_v;
-    float b = (t0.b*rem_u+t1.b*decimal_u)*rem_v+
-              (t2.b*rem_u+t3.b*decimal_u)*decimal_v;
+    float r = (t0.r*int_u+t1.r*decimal_u)*int_v+
+              (t2.r*int_u+t3.r*decimal_u)*decimal_v;
+    float g = (t0.g*int_u+t1.g*decimal_u)*int_v+
+              (t2.g*int_u+t3.g*decimal_u)*decimal_v;
+    float b = (t0.b*int_u+t1.b*decimal_u)*int_v+
+              (t2.b*int_u+t3.b*decimal_u)*decimal_v;
     return ColorRGB(r, g, b);
 }
 
