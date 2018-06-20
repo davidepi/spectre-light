@@ -2,13 +2,11 @@
 
 #ifdef __XCODE__
 #import <XCTest/XCTest.h>
+#elif defined(__VS__)
+#include "CppUnitTest.h"
 #else
-
 #include <gtest/gtest.h>
-
 #endif
-
-SPECTRE_TEST_INIT(Texture_tests)
 
 #include "utility/spectrum.hpp"
 #include "textures/texture.hpp"
@@ -17,6 +15,8 @@ SPECTRE_TEST_INIT(Texture_tests)
 #include "textures/texture_image.hpp"
 #include "samplers/sampler_stratified.hpp"
 #include "cameras/camera_orthographic.hpp"
+
+SPECTRE_TEST_INIT(Texture_tests)
 
 SPECTRE_TEST(Texture, UniformTexture_map)
 {

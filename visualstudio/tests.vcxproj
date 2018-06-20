@@ -99,9 +99,11 @@
     <ClCompile Include="..\src\samplers\sampler.cpp" />
     <ClCompile Include="..\src\samplers\sampler_random.cpp" />
     <ClCompile Include="..\src\samplers\sampler_stratified.cpp" />
+    <ClCompile Include="..\src\textures\image_map.cpp" />
     <ClCompile Include="..\src\textures\texture.cpp" />
+    <ClCompile Include="..\src\textures\texture_image.cpp" />
     <ClCompile Include="..\src\textures\texture_library.cpp" />
-    <ClCompile Include="..\src\textures\uniform.cpp" />
+    <ClCompile Include="..\src\textures\texture_uniform.cpp" />
     <ClCompile Include="..\src\utility\color.cpp" />
     <ClCompile Include="..\src\utility\console.cpp" />
     <ClCompile Include="..\src\utility\file.cpp" />
@@ -121,6 +123,7 @@
     <ClCompile Include="..\tests\unit-testing\filter_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\imagefilm_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\imageio_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\imagemap_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\light_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\materiallibrary_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\materials_tests.cpp" />
@@ -139,6 +142,7 @@
     <ClCompile Include="..\tests\unit-testing\spectrum_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\sphere_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\texturelibrary_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\texture_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\triangle_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\utility_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\vec2_tests.cpp" />
@@ -188,9 +192,11 @@
     <ClInclude Include="..\src\samplers\sampler.hpp" />
     <ClInclude Include="..\src\samplers\sampler_random.hpp" />
     <ClInclude Include="..\src\samplers\sampler_stratified.hpp" />
+    <ClInclude Include="..\src\textures\image_map.hpp" />
     <ClInclude Include="..\src\textures\texture.hpp" />
+    <ClInclude Include="..\src\textures\texture_image.hpp" />
     <ClInclude Include="..\src\textures\texture_library.hpp" />
-    <ClInclude Include="..\src\textures\uniform.hpp" />
+    <ClInclude Include="..\src\textures\texture_uniform.hpp" />
     <ClInclude Include="..\src\utility\color.hpp" />
     <ClInclude Include="..\src\utility\console.hpp" />
     <ClInclude Include="..\src\utility\file.hpp" />

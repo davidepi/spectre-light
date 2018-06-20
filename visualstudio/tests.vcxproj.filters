@@ -156,9 +156,6 @@
     <ClCompile Include="..\src\textures\texture_library.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\textures\uniform.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\primitives\asset.cpp">
       <Filter>sources</Filter>
     </ClCompile>
@@ -276,6 +273,21 @@
     <ClCompile Include="..\src\parsers\lex.yy.cc">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\textures\image_map.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture_image.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture_uniform.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\imagemap_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\texture_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\unit-testing\spectre_tests.h">
@@ -389,9 +401,6 @@
     <ClInclude Include="..\src\textures\texture_library.hpp">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\textures\uniform.hpp">
-      <Filter>sources</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\primitives\asset.hpp">
       <Filter>sources</Filter>
     </ClInclude>
@@ -444,6 +453,15 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\parsers\location.hh">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\image_map.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture_image.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture_uniform.hpp">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>
