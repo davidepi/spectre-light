@@ -273,7 +273,6 @@ ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx,
         p0.r += p1.r;
         p0.g += p1.g;
         p0.b += p1.b;
-        return p0;
     }
     return p0;
 }
