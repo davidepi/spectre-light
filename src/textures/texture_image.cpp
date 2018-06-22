@@ -1,10 +1,69 @@
 #include "texture_image.hpp"
 
-TextureImage::TextureImage(const ImageMap* map, Vec2& scale, Vec2& shift)
-        :scale(scale), shift(shift)
+TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
+                           TextureFilter_t filter):scale(scale),shift(shift)
 {
-    imagemap = map;
-    filtered = !TexLib.is_unfiltered();
+    unfiltered = filter==UNFILTERED;
+    if(TexLib.contains_map(src.absolute_path())) //imagemap already parsed
+    {
+        imagemap = TexLib.get_map(src.absolute_path());
+    }
+    else //create imagemap
+    {
+        if(src.readable())
+        {
+            int width;
+            int height;
+            dimensions_RGB(src.absolute_path(), src.extension(),
+                           &width, &height);
+            if(width == height && (height & (height-1)) == 0) //power of 2
+            {
+                bool high_depth = false;
+                float* data = (float*)malloc(width*height*3*sizeof(float));
+                read_RGB(src.absolute_path(), src.extension(), data, NULL);
+                //check if image fits in 8bit per pixel
+                for(int i = 0; i<width*height*3; i++)
+                {
+                    if(data[i]>1.f || data[i]<0.f)
+                    {
+                        high_depth = true;
+                        break; //no point in continuing
+                    }
+                }
+                if(high_depth)
+                {
+                    ImageMap* map = new ImageMap(data, width);
+                    map->set_filter(filter);
+                    imagemap = map;
+                    free(data);
+                }
+                else
+                {
+                    uint8_t* data2 = (uint8_t*)malloc(width*height*3*
+                                                      sizeof(uint8_t));
+                    for(int i = 0; i<width*height; i++) //convert to uint8_t
+                        data2[i] = (unsigned char)(data[i]*255.f);
+                    free(data);
+                    ImageMap* map = new ImageMap(data2, width);
+                    map->set_filter(filter);
+                    imagemap = map;
+                    free(data2);
+                }
+                TexLib.inherit_map(src.absolute_path(), imagemap);
+            }
+            else
+            {
+                Console.warning(MESSAGE_TEXTURE_POWER2, src.absolute_path());
+                imagemap = TexLib.get_map("Default");
+            }
+        }
+        else
+        {
+            //should be checked by parser
+            Console.warning(MESSAGE_TEXTURE_ERROR, src.absolute_path());
+            imagemap = TexLib.get_map("Default");
+        }
+    }
 }
 
 Spectrum TextureImage::map(const HitPoint* hit) const
@@ -19,7 +78,7 @@ Spectrum TextureImage::map(const HitPoint* hit) const
         v = v-(int)v;
 
     ColorRGB res;
-    if(!filtered)
+    if(unfiltered)
     {
         res = (imagemap->*(imagemap->filter))(u, v, 0, 0, 0, 0);
     }

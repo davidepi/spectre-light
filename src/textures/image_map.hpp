@@ -68,6 +68,27 @@ struct Texel32
 //TODO: removed because macOS does not support constexpr expf(). Harcoded table
 //#define EWA_ALPHA 2.f
 
+struct TexelMap
+{
+public:
+    void** values;
+    virtual void get_texel(unsigned char lvl0, int lvl1, Texel32* out)const;
+    virtual void get_color(Texel32& in, ColorRGB* out)const;
+    virtual void get_color(unsigned char lvl0, int lvl1, ColorRGB* out)const;
+    virtual void set_color(unsigned char lvl0, int lvl1,
+                           const ColorRGB& val)const;
+};
+
+struct TexelMapHigh : TexelMap
+{
+public:
+    void get_texel(unsigned char lvl0, int lvl1, Texel32* out)const override;
+    void get_color(Texel32& in, ColorRGB* out)const override;
+    void get_color(unsigned char lvl0, int lvl1, ColorRGB* out)const override;
+    void set_color(unsigned char lvl0, int lvl1,
+                   const ColorRGB& val)const override;
+};
+
 /**
  *  \brief ImageMap
  *  Class representing an allocated image used for texture storage.
@@ -92,24 +113,10 @@ class ImageMap
 {
 
 public:
-
-    /**
-     *  \brief Constructor given path, C-string version
-     *
-     *  Allocates an Image Map giving the input file as a C-string
-     *
-     *  \param[in] src A C-string representing the path to the image
-     */
-    ImageMap(const char* src);
-
-    /**
-     *  \brief Constructor given path, File version
-     *
-     * Allocates an ImageMap giving the input file as a File class
-     *
-     *  \param[in] src a File class representing the path to the image on disk
-     */
-    ImageMap(const File& src);
+    
+    ImageMap(const uint8_t* values, uint16_t side);
+    
+    ImageMap(const float* values, uint16_t side);
 
     ///No copy allowed
     ImageMap(const ImageMap& old) = delete;
@@ -171,36 +178,30 @@ public:
                         float dvdy) const;
 
     ///Performs linear interpolation with bilinear isotropic filter
-    ColorRGB trilinear(float u, float v, float dudx, float dvdx, float dudy,
+    ColorRGB linear_iso(float u, float v, float dudx, float dvdx, float dudy,
                        float dvdy) const;
+    
+    ColorRGB bilinear(float u, float v, uint8_t level)const;
 
     ///Performs linear interpolation with EWA filter
     ColorRGB linear_ewa(float u, float v, float dudx, float dvdx, float dudy,
                         float dvdy) const;
-
-    ///actual constructor, the others will initialize path and call this one
-    void init();
-
-    ///Path of the image on disk
-    const File path;
+    
+    ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
+                 float dvdy, uint8_t level)const;
+    
+    void downsample(uint8_t input_index, uint8_t output_index);
 
     ///width or height
-    unsigned short* side;
+    uint16_t* side;
 
     ///number of MIPmaps
-    unsigned char maps_no;
+    uint8_t maps_no;
 
     ///true if the image uses floats instead of uint8_ts
     bool high_depth;
 
-    union
-    {
-        ///array of uint8_t
-        Texel** values;
-
-        ///array of float
-        Texel32** values_high;
-    };
+    TexelMap MIPmap;
 };
 
 #endif

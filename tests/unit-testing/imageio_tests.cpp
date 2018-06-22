@@ -722,28 +722,4 @@ SPECTRE_TEST(ImageIO, image_supported_func)
     EXPECT_FALSE(res);
 }
 
-SPECTRE_TEST(ImageIO, high_depth_func)
-{
-    bool res;
-    //normal depth ppm
-    res = high_depth(TEST_ASSETS "images/binary.ppm", "ppm");
-    EXPECT_FALSE(res);
-    //high depth
-    res = high_depth(TEST_ASSETS "images/p3_high_depth.ppm", "ppm");
-    EXPECT_TRUE(res);
-    //unable to read ppm
-    res = high_depth(TEST_ASSETS "images/test-non-existent.ppm", "ppm");
-    EXPECT_FALSE(res);
-    //normal depth bmp
-    res = high_depth(TEST_ASSETS "images/32bit.bmp", "bmp");
-    EXPECT_FALSE(res);
-    //high depth bmp
-    //should return false since it is not supported -> hence a read error
-    res = high_depth(TEST_ASSETS "images/correct.bmp", "bmp");
-    EXPECT_FALSE(res);
-    //unsupported image
-    res = high_depth(TEST_ASSETS "images/generic.jpg", "jpg");
-    EXPECT_FALSE(res);
-}
-
 SPECTRE_TEST_END(ImageIO_tests)

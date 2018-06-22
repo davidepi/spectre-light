@@ -3,25 +3,6 @@
 
 #include "textures/image_map.hpp"
 
-const FilterLanczos lowpass_filter = FilterLanczos(3.f);
-
-static void downsample(const Texel* in, Texel* out, unsigned short input_side,
-                       bool hqfilter);
-
-static void downsample(const Texel32* in, Texel32* out,
-                       unsigned short input_side, bool hqfilter);
-
-static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals);
-
-static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals);
-
-static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
-                    float dvdy, unsigned short side, Texel* vals);
-
-static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
-                    float dvdy, unsigned short side, Texel32* vals);
-
-
 //------------------------ removed because expf not constexpr in macOS ---------
 //constexpr float init_ewa_weight(int step)
 //{
@@ -86,104 +67,106 @@ const float ImageMap::EWA_WEIGHTS[EWA_WEIGHTS_SIZE] =
                 0.0065472275f, 0.00433036685f, 0.0021481365f, 0.f
         };
 
-ImageMap::ImageMap(const char* src):path(src)
+void TexelMap::get_texel(unsigned char lvl0, int lvl1, Texel32 *out)const
 {
-    init();
+    out->r = ((Texel**)values)[lvl0][lvl1].r;
+    out->g = ((Texel**)values)[lvl0][lvl1].g;
+    out->b = ((Texel**)values)[lvl0][lvl1].b;
 }
 
-ImageMap::ImageMap(const File& src):path(src)
+void TexelMap::get_color(Texel32& in, ColorRGB* out)const
 {
-    init();
+    *out = ColorRGB((unsigned char)in.r,
+                    (unsigned char)in.g,
+                    (unsigned char)in.b);
 }
 
-void ImageMap::init()
+void TexelMap::get_color(unsigned char lvl0, int lvl1, ColorRGB *out)const
 {
-    maps_no = 0;
-    values = NULL;
-    high_depth = false;
-    filter = &ImageMap::unfiltered;
-    if(path.readable())
+    *out = ColorRGB(((Texel**)values)[lvl0][lvl1].r,
+                    ((Texel**)values)[lvl0][lvl1].g,
+                    ((Texel**)values)[lvl0][lvl1].b);
+}
+
+void TexelMap::set_color(unsigned char lvl0, int lvl1, const ColorRGB& val)const
+{
+    ((Texel**)values)[lvl0][lvl1].r = (uint8_t)(val.r*255);
+    ((Texel**)values)[lvl0][lvl1].g = (uint8_t)(val.g*255);
+    ((Texel**)values)[lvl0][lvl1].b = (uint8_t)(val.b*255);
+}
+
+void TexelMapHigh::get_texel(unsigned char lvl0, int lvl1, Texel32 *out)const
+{
+    out->r = ((Texel32**)values)[lvl0][lvl1].r;
+    out->g = ((Texel32**)values)[lvl0][lvl1].g;
+    out->b = ((Texel32**)values)[lvl0][lvl1].b;
+}
+
+void TexelMapHigh::get_color(Texel32& in, ColorRGB* out)const
+{
+    *out = ColorRGB(in.r, in.g, in.b);
+}
+
+void TexelMapHigh::get_color(unsigned char lvl0, int lvl1, ColorRGB *out)const
+{
+    *out = ColorRGB(((Texel32**)values)[lvl0][lvl1].r,
+                    ((Texel32**)values)[lvl0][lvl1].g,
+                    ((Texel32**)values)[lvl0][lvl1].b);
+}
+
+void TexelMapHigh::set_color(unsigned char lvl0, int lvl1,
+                             const ColorRGB& val)const
+{
+    ((Texel32**)values)[lvl0][lvl1].r = val.r*255;
+    ((Texel32**)values)[lvl0][lvl1].g = val.g*255;
+    ((Texel32**)values)[lvl0][lvl1].b = val.b*255;
+}
+
+ImageMap::ImageMap(const uint8_t* values, uint16_t side)
+{
+    maps_no = (uint8_t)(1+(int)log2f(side));
+    ImageMap::side = (uint16_t*)malloc(sizeof(uint16_t)*maps_no);
+    MIPmap = TexelMap();
+    MIPmap.values = (void**)malloc(sizeof(uint8_t*)*maps_no);
+    MIPmap.values[0] = malloc(sizeof(uint8_t)*side*side*3);
+    ImageMap::side[0] = side;
+    memcpy(MIPmap.values[0],values,sizeof(uint8_t)*side*side*3);
+    for(int i=1;i<maps_no;i++)
     {
-        int width;
-        int height;
-        dimensions_RGB(path.absolute_path(), path.extension(), &width, &height);
-        if(width == height && (height & (height-1)) == 0)
-        {
-            int res;
-            maps_no = (unsigned char)(1+(int)log2f(width));
-            side = (unsigned short*)malloc(sizeof(unsigned short*)*maps_no);
-            side[0] = (unsigned short)width;
-            values = (Texel**)malloc(sizeof(void*)*maps_no);
-            float* data = (float*)malloc(width*height*3*sizeof(float));
-            res = read_RGB(path.absolute_path(), path.extension(), data, NULL);
-            if(res<0)
-                //almost impossible to fall here
-                Console.critical(MESSAGE_TEXTURE_ERROR, path.absolute_path());
-            else
-            {
-                //check if image fits in 8bit per pixel
-                for(int i = 0; i<width*height*3; i++)
-                    if(data[i]>1.f || data[i]<0.f)
-                    {
-                        high_depth = true;
-                        break; //no point in continuing
-                    }
-                if(high_depth)
-                {
-                    //exploits the fact that Texel32 is equal to an array of flt
-                    values_high[0] = (Texel32*)data;
-                    //calculate pyramid
-                    for(int i = 1; i<maps_no; i++)
-                    {
-                        unsigned short c_side = side[i-1] >> 1;
-                        side[i] = c_side;
-                        values_high[i] = (Texel32*)malloc(sizeof(Texel32)*
-                                                          c_side*c_side);
-                        //side *2 because downsample wants the INPUT size
-                        downsample(values_high[i-1], values_high[i],
-                                   side[i-1], false);
-                    }
-                }
-                else
-                {
-                    //recalculate every value
-                    values[0] = (Texel*)malloc(sizeof(Texel)*width*height);
-                    int j = 0;
-                    for(int i = 0; i<width*height; i++)
-                    {
-                        values[0][i].r = (unsigned char)(data[j++]*255.f);
-                        values[0][i].g = (unsigned char)(data[j++]*255.f);
-                        values[0][i].b = (unsigned char)(data[j++]*255.f);
-                    }
-                    //calculate pyramid
-                    for(int i = 1; i<maps_no; i++)
-                    {
-                        unsigned short c_side = side[i-1] >> 1;
-                        side[i] = c_side;
-                        values[i] = (Texel*)malloc(sizeof(Texel)*c_side*c_side);
-                        //side *2 because downsample wants the INPUT size
-                        downsample(values[i-1], values[i], side[i-1], false);
-                    }
-                    free(data);
-                }
-            }
-        }
-        else
-            Console.critical(MESSAGE_TEXTURE_POWER2, path.absolute_path());
+        ImageMap::side[i] = ImageMap::side[i-1] >> 1;
+        MIPmap.values[i] = malloc(sizeof(uint8_t)*
+                                  ImageMap::side[i]*
+                                  ImageMap::side[i]*3);
+        downsample(i-1, i);
     }
-    else
-        //should be checked by parser, but a check at construction time is ok
-        Console.critical(MESSAGE_TEXTURE_ERROR, path.absolute_path());
+    set_filter(UNFILTERED);
+}
+
+ImageMap::ImageMap(const float* values, uint16_t side)
+{
+    maps_no = (uint8_t)(1+(int)log2f(side));
+    ImageMap::side = (uint16_t*)malloc(sizeof(uint16_t)*maps_no);
+    MIPmap = TexelMapHigh();
+    MIPmap.values = (void**)malloc(sizeof(float*)*maps_no);
+    MIPmap.values[0] = malloc(sizeof(float)*side*side*3);
+    ImageMap::side[0] = side;
+    memcpy(MIPmap.values[0],values,sizeof(float)*side*side*3);
+    for(int i=1;i<maps_no;i++)
+    {
+        ImageMap::side[i] = ImageMap::side[i-1] >> 1;
+        MIPmap.values[i] = malloc(sizeof(float)*
+                                  ImageMap::side[i]*
+                                  ImageMap::side[i]*3);
+        downsample(i-1, i);
+    }
+    set_filter(UNFILTERED);
 }
 
 ImageMap::~ImageMap()
 {
     for(int i = 0; i<maps_no; i++)
-        free(values[i]);
-    //used only in testing, where a critical error does not initialize anything
-    //but also does not kill the program
-    if(values != NULL)
-        free(values);
+        free(MIPmap.values[i]);
+    free(MIPmap.values);
 }
 
 void ImageMap::set_filter(TextureFilter_t type)
@@ -192,7 +175,7 @@ void ImageMap::set_filter(TextureFilter_t type)
     {
         case UNFILTERED:filter = &ImageMap::unfiltered;
             break;
-        case TRILINEAR:filter = &ImageMap::trilinear;
+        case TRILINEAR:filter = &ImageMap::linear_iso;
             break;
         case EWA:filter = &ImageMap::linear_ewa;
             break;
@@ -205,21 +188,11 @@ ColorRGB ImageMap::unfiltered(float u, float v, float, float,
     unsigned short x = (unsigned short)(u*side[0]-0.5f);
     unsigned short y = (unsigned short)(v*side[0]-0.5f);
     ColorRGB res;
-    if(high_depth)
-    {
-
-        Texel32 hit = values_high[0][y*side[0]+x];
-        res = ColorRGB(hit.r, hit.g, hit.b);
-    }
-    else
-    {
-        Texel hit = values[0][y*side[0]+x];
-        res = ColorRGB(hit.r, hit.g, hit.b);
-    }
+    MIPmap.get_color(0, y*side[0]+x, &res);
     return res;
 }
 
-ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx,
+ColorRGB ImageMap::linear_iso(float u, float v, float dudx, float dvdx,
                              float dudy, float dvdy) const
 {
     //float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
@@ -231,38 +204,16 @@ ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx,
     float chosen = maps_no-1+log2f(width);
     ColorRGB p0; //retval
     if(chosen<=0.f) //use full size map
-        p0 = high_depth?bilinear(u, v, side[0], values_high[0])
-                       :bilinear(u, v, side[0], values[0]);
+        p0 = bilinear(u, v, 0);
     else if(chosen>maps_no-1) //return the single, most distant pixel
-    {
-        if(high_depth)
-            p0 = ColorRGB(values_high[maps_no-1][0].r,
-                          values_high[maps_no-1][0].g,
-                          values_high[maps_no-1][0].b);
-        else
-            p0 = ColorRGB(values[maps_no-1][0].r,
-                          values[maps_no-1][0].g,
-                          values[maps_no-1][0].b);
-    }
+        MIPmap.get_color(maps_no-1, 0, &p0);
     else //perform trilinear interpolation
     {
         ColorRGB p1;
         uint8_t chosen_below = (uint8_t)chosen;
         float decimal = chosen-chosen_below;
-        if(high_depth)
-        {
-            p0 = bilinear(u, v, side[chosen_below],
-                          values_high[chosen_below]);
-            p1 = bilinear(u, v, side[chosen_below+1],
-                          values_high[chosen_below+1]);
-        }
-        else
-        {
-            p0 = bilinear(u, v, side[chosen_below],
-                          values[chosen_below]);
-            p1 = bilinear(u, v, side[chosen_below+1],
-                          values[chosen_below+1]);
-        }
+        p0 = bilinear(u, v, chosen_below);
+        p1 = bilinear(u, v, chosen_below+1);
         const float other_decimal = 1.f-decimal;
         p0.r *= other_decimal;
         p0.g *= other_decimal;
@@ -276,7 +227,6 @@ ColorRGB ImageMap::trilinear(float u, float v, float dudx, float dvdx,
     }
     return p0;
 }
-
 
 ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
                               float dudy, float dvdy) const
@@ -293,11 +243,10 @@ ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
     //if the minor axis is zero, return trilinear filter
     if(shorter_axis == 0.f)
     {
-        return high_depth?bilinear(u, v, side[0], values_high[0]):
-               bilinear(u, v, side[0], values[0]);
+        return bilinear(u,v,0);
     }
-        //if too eccentric increase blurriness and decrease eccentricity by scaling
-        //the shorter axis
+    //if too eccentric increase blurriness and decrease eccentricity by scaling
+    //the shorter axis
     else if(shorter_axis*EWA_MAX_ECCENTRICITY<longer_axis)
     {
         float scale = longer_axis/(shorter_axis*EWA_MAX_ECCENTRICITY);
@@ -309,35 +258,13 @@ ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
     float chosen = max(0.f, maps_no-1+log2f(shorter_axis));
     ColorRGB p0; //retval
     if(chosen>maps_no-1) //return the single, most distant pixel
-    {
-        if(high_depth)
-            p0 = ColorRGB(values_high[maps_no-1][0].r,
-                          values_high[maps_no-1][0].g,
-                          values_high[maps_no-1][0].b);
-        else
-            p0 = ColorRGB(values[maps_no-1][0].r,
-                          values[maps_no-1][0].g,
-                          values[maps_no-1][0].b);
-    }
+        MIPmap.get_color(maps_no-1, 0, &p0);
     else
     {
         uint8_t chosen_below = (uint8_t)chosen;
         float decimal = chosen-chosen_below;
-        ColorRGB p1;
-        if(high_depth)
-        {
-            p0 = ewa(u, v, dudx, dvdx, dudy, dvdy, side[chosen_below],
-                     values_high[chosen_below]);
-            p1 = ewa(u, v, dudx, dvdx, dudy, dvdy, side[chosen_below+1],
-                     values_high[chosen_below+1]);
-        }
-        else
-        {
-            p0 = ewa(u, v, dudx, dvdx, dudy, dvdy, side[chosen_below],
-                     values[chosen_below]);
-            p1 = ewa(u, v, dudx, dvdx, dudy, dvdy, side[chosen_below+1],
-                     values[chosen_below+1]);
-        }
+        p0 = ewa(u,v,dudx,dvdx,dudy,dvdy,chosen_below);
+        ColorRGB p1 = ewa(u,v,dudx,dvdx,dudy,dvdy,chosen_below+1);
         const float other_decimal = 1.f-decimal;
         p0.r *= other_decimal;
         p0.g *= other_decimal;
@@ -352,63 +279,48 @@ ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
     return p0;
 }
 
-static ColorRGB bilinear(float u, float v, unsigned short side, Texel* vals)
+ColorRGB ImageMap::bilinear(float u, float v, uint8_t level)const
 {
-    u = max(0.f,u*side-0.5f); //avoid negative values that breaks corner
-    v = max(0.f,v*side-0.5f); //cases
+    u = max(0.f, u*side[level]-0.5f);
+    v = max(0.f, v*side[level]-0.5f);
     unsigned short x = (unsigned short)u;
     unsigned short y = (unsigned short)v;
     float decimal_u = u-x;
     float decimal_v = v-y;
     float int_u = 1.f-decimal_u;
     float int_v = 1.f-decimal_v;
-    Texel t0 = vals[y*side+x];
-    Texel t1 = vals[y*side+x+1];
-    Texel t2 = vals[(y+1)*side+x];
-    Texel t3 = vals[(y+1)*side+x+1];
-    uint8_t r = (uint8_t)((t0.r*int_u+t1.r*decimal_u)*int_v+
-                          (t2.r*int_u+t3.r*decimal_u)*decimal_v);
-    uint8_t g = (uint8_t)((t0.g*int_u+t1.g*decimal_u)*int_v+
-                          (t2.g*int_u+t3.g*decimal_u)*decimal_v);
-    uint8_t b = (uint8_t)((t0.b*int_u+t1.b*decimal_u)*int_v+
-                          (t2.b*int_u+t3.b*decimal_u)*decimal_v);
-    return ColorRGB(r, g, b);
+    Texel32 t0;
+    Texel32 t1;
+    Texel32 t2;
+    Texel32 t3;
+    Texel32 out;
+    MIPmap.get_texel(level, y*side[level]+x, &t0);
+    MIPmap.get_texel(level, y*side[level]+x+1, &t1);
+    MIPmap.get_texel(level, (y+1)*side[level]+x, &t2);
+    MIPmap.get_texel(level, (y+1)*side[level]+x+1, &t3);
+    ColorRGB retval;
+    out.r = (t0.r*int_u+t1.r*decimal_u)*int_v+
+            (t2.r*int_u+t3.r*decimal_u)*decimal_v;
+    out.g = (t0.g*int_u+t1.g*decimal_u)*int_v+
+            (t2.g*int_u+t3.g*decimal_u)*decimal_v;
+    out.b = (t0.b*int_u+t1.b*decimal_u)*int_v+
+            (t2.b*int_u+t3.b*decimal_u)*decimal_v;
+    //out could be either in [0-1] range or [0-255] range, this steps aligns it
+    MIPmap.get_color(out, &retval);
+    return retval;
 }
 
-static ColorRGB bilinear(float u, float v, unsigned short side, Texel32* vals)
-{
-    u = max(0.f, u*side-0.5f);
-    v = max(0.f, v*side-0.5f);
-    unsigned short x = (unsigned short)u;
-    unsigned short y = (unsigned short)v;
-    float decimal_u = u-x;
-    float decimal_v = v-y;
-    float int_u = 1.f-decimal_u;
-    float int_v = 1.f-decimal_v;
-    Texel32 t0 = vals[y*side+x];
-    Texel32 t1 = vals[y*side+x+1];
-    Texel32 t2 = vals[(y+1)*side+x];
-    Texel32 t3 = vals[(y+1)*side+x+1];
-    float r = (t0.r*int_u+t1.r*decimal_u)*int_v+
-              (t2.r*int_u+t3.r*decimal_u)*decimal_v;
-    float g = (t0.g*int_u+t1.g*decimal_u)*int_v+
-              (t2.g*int_u+t3.g*decimal_u)*decimal_v;
-    float b = (t0.b*int_u+t1.b*decimal_u)*int_v+
-              (t2.b*int_u+t3.b*decimal_u)*decimal_v;
-    return ColorRGB(r, g, b);
-}
-
-static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
-                    float dvdy, unsigned short side, Texel* vals)
+ColorRGB ImageMap::ewa(float u, float v, float dudx, float dvdx, float dudy,
+                       float dvdy, uint8_t level)const
 {
     //scale values
-    u = max(0.f, u*side-0.5f);
-    v = max(0.f, v*side-0.5f);
-    dudx *= side;
-    dvdx *= side;
-    dudy *= side;
-    dvdy *= side;
-
+    u = max(0.f, u*side[level]-0.5f);
+    v = max(0.f, v*side[level]-0.5f);
+    dudx *= side[level];
+    dvdx *= side[level];
+    dudy *= side[level];
+    dvdy *= side[level];
+    
     //calulate ellipse coefficients
     float a = dvdx*dvdx*+dvdy*dvdy+1.f;
     float b = -2.f*dudx*dvdx+dudy*dvdy;
@@ -417,7 +329,7 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
     a *= invf;
     b *= invf;
     c *= invf;
-
+    
     //found the ellipse aabb
     const float delta = -b*b+4.f*a*c;
     const float invdelta = 1.f/delta;
@@ -427,7 +339,7 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
     int u1 = (int)floorf(u+2.f*invdelta*x0);
     int v0 = (int)ceilf(v-2.f*invdelta*x1);
     int v1 = (int)floorf(v+2.f*invdelta*x1);
-
+    
     //loops over the AABB, if the point is inside the ellipse, filter it
     float resr = 0.f;
     float resg = 0.f;
@@ -442,7 +354,8 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
             const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
             if(radius2<1.f)
             {
-                const Texel hit = vals[y*side+x];
+                ColorRGB hit;
+                MIPmap.get_color(level, y*side[level]+x, &hit);
                 //found the correct value for the lookup table, or the most
                 // distant one
                 const int index = min((int)(radius2*EWA_WEIGHTS_SIZE),
@@ -456,113 +369,27 @@ static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
         }
     }
     float invweigth = 1.f/total_weight;
-    return ColorRGB((unsigned char)(resr*invweigth),
-                    (unsigned char)(resg*invweigth),
-                    (unsigned char)(resb*invweigth));
+    return ColorRGB(resr*invweigth,resg*invweigth,resb*invweigth);
 }
 
-static ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
-                    float dvdy, unsigned short side, Texel32* vals)
+void ImageMap::downsample(uint8_t input_idx, uint8_t output_idx)
 {
-    //scale values
-    u = u*side-0.5f;
-    v = v*side-0.5f;
-    dudx *= side;
-    dvdx *= side;
-    dudy *= side;
-    dvdy *= side;
-
-    //calulate ellipse coefficients
-    float a = dvdx*dvdx*+dvdy*dvdy+1.f;
-    float b = -2.f*dudx*dvdx+dudy*dvdy;
-    float c = dudx*dudx+dudy*dudy+1.f;
-    const float invf = 1.f/(a*c-b*b*.25f);
-    a *= invf;
-    b *= invf;
-    c *= invf;
-
-    //found the ellipse aabb
-    const float delta = -b*b+4.f*a*c;
-    const float invdelta = 1.f/delta;
-    const float x0 = sqrtf(delta*c);
-    const float x1 = sqrtf(delta*a);
-    int u0 = (int)ceilf(u-2.f*invdelta*x0);
-    int u1 = (int)floorf(u+2.f*invdelta*x0);
-    int v0 = (int)ceilf(v-2.f*invdelta*x1);
-    int v1 = (int)floorf(v+2.f*invdelta*x1);
-
-    //loops over the AABB, if the point is inside the ellipse, filter it
-    float resr = 0.f;
-    float resg = 0.f;
-    float resb = 0.f;
-    float total_weight = 0.f;
-    for(int y = v0; y<=v1; y++)
+    for(int y=0;y<side[output_idx];y++)
     {
-        const float voff = y-v;
-        for(int x = u0; x<=u1; x++)
+        for(int x = 0;x<side[output_idx];x++)
         {
-            const float uoff = x-u;
-            const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
-            if(radius2<1.f)
-            {
-                const Texel32 hit = vals[y*side+x];
-                //found the correct value for the lookup table, or the most
-                // distant one
-                const int index = min((int)(radius2*EWA_WEIGHTS_SIZE),
-                                      EWA_WEIGHTS_SIZE-1);
-                const float weight = ImageMap::EWA_WEIGHTS[index];
-                resr += hit.r*weight;
-                resg += hit.g*weight;
-                resb += hit.b*weight;
-                total_weight += weight;
-            }
-        }
-    }
-    float invweigth = 1.f/total_weight;
-    return ColorRGB(resr*invweigth, resg*invweigth, resb*invweigth);
-}
-
-static void downsample(const Texel32* in, Texel32* out,
-                       unsigned short input_side, bool)
-{
-    //lanczos filter implementation removed after
-    //commit d1790761d1a09c87155eb06acdf374b7c887f09f
-    unsigned short output_side = (unsigned short)(input_side/2);
-    for(int y = 0; y<output_side; y++)
-    {
-        for(int x = 0; x<output_side; x++)
-        {
-            Texel32 t0 = in[2*y*input_side+2*x];
-            Texel32 t1 = in[(2*y+1)*input_side+2*x];
-            Texel32 t2 = in[2*y*input_side+(2*x+1)];
-            Texel32 t3 = in[(2*y+1)*input_side+(2*x+1)];
-            int pixel = y*output_side+x;
-            out[pixel].r = 0.25f*(t0.r+t1.r+t2.r+t3.r);
-            out[pixel].g = 0.25f*(t0.g+t1.g+t2.g+t3.g);
-            out[pixel].b = 0.25f*(t0.b+t1.b+t2.b+t3.b);
-        }
-    }
-}
-
-static void downsample(const Texel* in, Texel* out,
-                       unsigned short input_side, bool)
-{
-    //lanczos filter implementation removed after
-    //commit d1790761d1a09c87155eb06acdf374b7c887f09f
-    unsigned short output_side = (unsigned short)(input_side/2);
-    for(int y = 0; y<output_side; y++)
-    {
-        for(int x = 0; x<output_side; x++)
-        {
-            Texel t0 = in[2*y*input_side+2*x];
-            Texel t1 = in[(2*y+1)*input_side+2*x];
-            Texel t2 = in[2*y*input_side+(2*x+1)];
-            Texel t3 = in[(2*y+1)*input_side+(2*x+1)];
-            //Removed lanczos filter downsampling. No noticeable effects
-            int pixel = y*output_side+x;
-            out[pixel].r = (uint8_t)(0.25f*(t0.r+t1.r+t2.r+t3.r));
-            out[pixel].g = (uint8_t)(0.25f*(t0.g+t1.g+t2.g+t3.g));
-            out[pixel].b = (uint8_t)(0.25f*(t0.b+t1.b+t2.b+t3.b));
+            ColorRGB t0;
+            ColorRGB t1;
+            ColorRGB t2;
+            ColorRGB t3;
+            MIPmap.get_color(input_idx, 2*y*side[input_idx]+2*x, &t0);
+            MIPmap.get_color(input_idx, (2*y+1)*side[input_idx]+2*x, &t1);
+            MIPmap.get_color(input_idx, 2*y*side[input_idx]+(2*x+1), &t2);
+            MIPmap.get_color(input_idx, (2*y+1)*side[input_idx]+(2*x+1), &t3);
+            ColorRGB out((0.25f*(t0.r+t1.r+t2.r+t3.r)),
+                         (0.25f*(t0.g+t1.g+t2.g+t3.g)),
+                         (0.25f*(t0.b+t1.b+t2.b+t3.b)));
+            MIPmap.set_color(output_idx, y*side[output_idx]+x, out);
         }
     }
 }

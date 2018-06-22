@@ -33,11 +33,10 @@ SPECTRE_TEST(Texture, UniformTexture_map)
 SPECTRE_TEST(Texture, TextureImage_scale_shift)
 {
     errors_count[CRITICAL_INDEX] = 0;
-    ImageMap map0(TEST_ASSETS "images/correct.bmp");
     ASSERT_EQ(errors_count[CRITICAL_INDEX], 0);
     Vec2 scale(0.5, 3.5);
     Vec2 shift(3, 2.5);
-    TextureImage tex(&map0, scale, shift);
+    TextureImage tex(TEST_ASSETS "images/correct.bmp", scale, shift);
     EXPECT_EQ(tex.get_scale().x, scale.x);
     EXPECT_EQ(tex.get_scale().y, scale.y);
     EXPECT_EQ(tex.get_shift().x, shift.x);
@@ -78,18 +77,16 @@ SPECTRE_TEST(Texture, TextureImage_map)
     hp.differentials = false;
     hp.uv = Point2(0.25f, 0.25f);
     errors_count[CRITICAL_INDEX] = 0;
-    ImageMap map0(TEST_ASSETS "images/correct.bmp");
-    map0.set_filter(UNFILTERED);
     ASSERT_EQ(errors_count[CRITICAL_INDEX], 0);
     Vec2 scale(1.f, 1.f);
     Vec2 shift(0.f, 0.f);
     Spectrum res;
     ColorRGB color;
-    TextureImage tex(&map0, scale, shift);;
+    TextureImage tex(TEST_ASSETS "images/correct.bmp", scale, shift);
 
     //unfiltered, set by TexLib
     TexLib.has_filtered(false);
-    tex = TextureImage(&map0, scale, shift);
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift);
     res = tex.map(&hp);
     color = res.to_xyz().to_sRGB();
     EXPECT_NEAR(color.r, 0.999f, 0.1f);
@@ -98,7 +95,7 @@ SPECTRE_TEST(Texture, TextureImage_map)
 
     //TexLib says filtered but no differentials
     TexLib.has_filtered(true);
-    tex = TextureImage(&map0, scale, shift);
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift);
     res = tex.map(&hp);
     color = res.to_xyz().to_sRGB();
     EXPECT_NEAR(color.r, 0.999f, 0.1f);
@@ -119,7 +116,7 @@ SPECTRE_TEST(Texture, TextureImage_map)
     hp.differentials = false;
     TexLib.has_filtered(false);
     scale = Vec2(3.f, 1.f);
-    tex = TextureImage(&map0, scale, shift);
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift);
     res = tex.map(&hp);
     color = res.to_xyz().to_sRGB();
     EXPECT_NEAR(color.r, 0.f, 0.1f);
@@ -128,7 +125,7 @@ SPECTRE_TEST(Texture, TextureImage_map)
 
     //Scale v component
     scale = Vec2(1.f, 3.f);
-    tex = TextureImage(&map0, scale, shift);
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift);
     res = tex.map(&hp);
     color = res.to_xyz().to_sRGB();
     EXPECT_NEAR(color.r, 0.f, 0.1f);
@@ -137,7 +134,7 @@ SPECTRE_TEST(Texture, TextureImage_map)
 
     //Scale uv component
     scale = Vec2(3.f, 3.f);
-    tex = TextureImage(&map0, scale, shift);
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift);
     res = tex.map(&hp);
     color = res.to_xyz().to_sRGB();
     EXPECT_NEAR(color.r, 0.f, 0.1f);
@@ -147,7 +144,7 @@ SPECTRE_TEST(Texture, TextureImage_map)
     //shift u component
     scale = Vec2(1.f, 1.f);
     shift = Vec2(1.5f, 0.f);
-    tex = TextureImage(&map0, scale, shift);
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift);
     res = tex.map(&hp);
     color = res.to_xyz().to_sRGB();
     EXPECT_NEAR(color.r, 0.f, 0.1f);
@@ -157,7 +154,7 @@ SPECTRE_TEST(Texture, TextureImage_map)
     //shift v component
     scale = Vec2(1.f, 1.f);
     shift = Vec2(0.f, 1.5f);
-    tex = TextureImage(&map0, scale, shift);
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift);
     res = tex.map(&hp);
     color = res.to_xyz().to_sRGB();
     EXPECT_NEAR(color.r, 0.f, 0.1f);
@@ -167,7 +164,7 @@ SPECTRE_TEST(Texture, TextureImage_map)
     //shift uv component
     scale = Vec2(1.f, 1.f);
     shift = Vec2(1.5f, 1.5f);
-    tex = TextureImage(&map0, scale, shift);
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift);
     res = tex.map(&hp);
     color = res.to_xyz().to_sRGB();
     EXPECT_NEAR(color.r, 0.f, 0.1f);

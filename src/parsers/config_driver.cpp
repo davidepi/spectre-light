@@ -276,24 +276,9 @@ const Texture* ConfigDriver::load_texture(std::string& path)
     {
         if(tex_name.empty())
             tex_name = cur_file.filename();
-        if(!TexLib.contains_texture(tex_name))
-        {
-            //if the library does not contain the map it is loaded here
-            const ImageMap* map = TexLib.get_map(cur_file.absolute_path());
-            if(map == NULL)
-            {
-                ImageMap* editable_map = new ImageMap(cur_file);
-                TexLib.inherit_map(cur_file.absolute_path(), map);
-                all_textures.push_back(editable_map);
-                map = editable_map;
-            }
-            addme = new TextureImage(map, tex_scale, tex_shift);
-            TexLib.inherit_texture(tex_name, addme);
-        }
-        else //duplicate texture
-        {
-            Console.warning(MESSAGE_TEXTURE_DUPLICATE,tex_name.c_str());
-        }
+        
+        addme = new TextureImage(cur_file, tex_scale, tex_shift);
+        TexLib.inherit_texture(tex_name, addme);
     }
     else
     {

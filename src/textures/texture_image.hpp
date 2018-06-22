@@ -39,13 +39,16 @@ public:
      *  Given the underlying ImageMap and its shift and scale values, construct
      *  this class
      *
-     *  \param[in] map A pointer to the underlying ImageMap
+     *  \param[in] src The path to the underlying ImageMap
      *  \param[in] scale The value used to scale the UV values before performing
      *  texture mapping
      *  \param[in] shift The value used to shift the UV values before performing
      *  texture mapping
+     *  \param[in] filter The type of filter that will be used to filter this
+     *  texture
      */
-    TextureImage(const ImageMap* map, Vec2& scale, Vec2& shift);
+    TextureImage(const File& src, Vec2& scale, Vec2& shift,
+                 TextureFilter_t filter);
 
     ///Default destructor
     ~TextureImage() override = default;
@@ -92,8 +95,8 @@ private:
     ///shift component
     Vec2 shift;
 
-    ///true if the image requires calculating dudx,dudy,dvdx and dvdy values
-    bool filtered;
+    ///Filter used by the underlying imageMap
+    bool unfiltered;
 
     ///The underlying ImageMap
     const ImageMap* imagemap;

@@ -212,23 +212,4 @@ int read_RGB(const char* name, const char* ext, float* data, uint8_t* alpha);
  */
 char image_supported(const char* extension);
 
-/**
- *  \brief Checks wheter an image has a depth higher than 8 bit per pixel or not
- *
- *  This function checks the image depth of the file passed as input. If the
- *  file has a depth higher than 8 bit per pixel it returns true, otherwise
- *  it returns false. It is not checked if the file exist, this should be
- *  handled somewhere else.
- *  If the function encounters any kind of errors (unable to open the file or
- *  unsupported extension) false is returned by default. (Again, errors
- *  should be checked by the read function)
- *
- *  \param[in] name Path to the image that will be checked
- *  \param[in] extension Extesion, without the dot, of the image that will be
- *  checked
- *  \return true if an image has a depth higher than 8 bit per pixel, false
- *  otherwise
- */
-bool high_depth(const char* name, const char* extension);
-
 #endif
