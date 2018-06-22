@@ -227,13 +227,7 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
                 camera->create_ray(&(samples[i]), &r, &rx, &ry);
                 if(scene->k.intersect(&r, &h))
                 {
-                    if(!TexLib.is_unfiltered())
-                    {
-                        //set differentials for first ray
-                        //the creation of rx and ry is wasted if not this case
-                        //but it's not a big deal, just some multiplications
-                        calculate_differentials(&h, &rx, &ry);
-                    }
+                    calculate_differentials(&h, &rx, &ry);
                     radiance = mc_solver->radiance(scene, &h, &r, sam, &ot);
                 }
                 else

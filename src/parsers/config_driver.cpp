@@ -113,11 +113,6 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
         shape_it++;
     }
 
-    //set filter for every TextureImage
-    for(unsigned int i = 0; i<all_textures.size(); i++)
-        all_textures[i]->set_filter(tex_filter);
-    TexLib.has_filtered(tex_filter != UNFILTERED);
-
     //delete everything else used for parsing
     all_textures.clear();
     children.clear();
@@ -277,7 +272,7 @@ const Texture* ConfigDriver::load_texture(std::string& path)
         if(tex_name.empty())
             tex_name = cur_file.filename();
         
-        addme = new TextureImage(cur_file, tex_scale, tex_shift);
+        addme = new TextureImage(cur_file, tex_scale, tex_shift, tex_filter);
         TexLib.inherit_texture(tex_name, addme);
     }
     else

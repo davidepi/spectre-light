@@ -1,9 +1,9 @@
 #include "texture_image.hpp"
 
 TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
-                           TextureFilter_t filter):scale(scale),shift(shift)
+                           TextureFilter_t filter):scale(scale), shift(shift)
 {
-    unfiltered = filter==UNFILTERED;
+    unfiltered = filter == UNFILTERED;
     if(TexLib.contains_map(src.absolute_path())) //imagemap already parsed
     {
         imagemap = TexLib.get_map(src.absolute_path());
@@ -32,9 +32,16 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                 }
                 if(high_depth)
                 {
-                    ImageMap* map = new ImageMap(data, width);
-                    map->set_filter(filter);
-                    imagemap = map;
+                    switch(filter)
+                    {
+                        case UNFILTERED:
+                            imagemap = new ImageMapUnfiltered(data, width);
+                            break;
+                        case TRILINEAR:
+                            imagemap = new ImageMapTrilinear(data, width);
+                            break;
+                        case EWA:imagemap = new ImageMapEWA(data, width);
+                    }
                     free(data);
                 }
                 else
@@ -44,9 +51,16 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                     for(int i = 0; i<width*height; i++) //convert to uint8_t
                         data2[i] = (unsigned char)(data[i]*255.f);
                     free(data);
-                    ImageMap* map = new ImageMap(data2, width);
-                    map->set_filter(filter);
-                    imagemap = map;
+                    switch(filter)
+                    {
+                        case UNFILTERED:
+                            imagemap = new ImageMapUnfiltered(data2, width);
+                            break;
+                        case TRILINEAR:
+                            imagemap = new ImageMapTrilinear(data2, width);
+                            break;
+                        case EWA:imagemap = new ImageMapEWA(data2, width);
+                    }
                     free(data2);
                 }
                 TexLib.inherit_map(src.absolute_path(), imagemap);
@@ -80,7 +94,7 @@ Spectrum TextureImage::map(const HitPoint* hit) const
     ColorRGB res;
     if(unfiltered)
     {
-        res = (imagemap->*(imagemap->filter))(u, v, 0, 0, 0, 0);
+        res = imagemap->filter(u, v, 0, 0, 0, 0);
     }
     else
     {
@@ -91,11 +105,11 @@ Spectrum TextureImage::map(const HitPoint* hit) const
             float dudy = hit->du.y*scale.y;
             float dvdx = hit->dv.x*scale.x;
             float dvdy = hit->dv.y*scale.y;
-            res = (imagemap->*(imagemap->filter))(u, v, dudx, dvdx, dudy, dvdy);
+            res = imagemap->filter(u, v, dudx, dvdx, dudy, dvdy);
         }
         else
         {
-            res = (imagemap->*(imagemap->filter))(u, v, 0, 0, 0, 0);
+            res = imagemap->filter(u, v, 0, 0, 0, 0);
         }
     }
     return Spectrum(res, false);

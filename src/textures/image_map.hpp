@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit 19 Jun 2018
+//Last Edit 22 Jun 2018
 
 /**
  *  \file image_map.hpp
@@ -7,7 +7,7 @@
  *  \details   A square, power of 2, image used inside TextureImage as a MIPMap
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      19 Jun 2018
+ *  \date      22 Jun 2018
  *  \copyright GNU GPLv3
  */
 
@@ -72,21 +72,28 @@ struct TexelMap
 {
 public:
     void** values;
-    virtual void get_texel(unsigned char lvl0, int lvl1, Texel32* out)const;
-    virtual void get_color(Texel32& in, ColorRGB* out)const;
-    virtual void get_color(unsigned char lvl0, int lvl1, ColorRGB* out)const;
+
+    virtual void get_texel(unsigned char lvl0, int lvl1, Texel32* out) const;
+
+    virtual void get_color(Texel32& in, ColorRGB* out) const;
+
+    virtual void get_color(unsigned char lvl0, int lvl1, ColorRGB* out) const;
+
     virtual void set_color(unsigned char lvl0, int lvl1,
-                           const ColorRGB& val)const;
+                           const ColorRGB& val) const;
 };
 
 struct TexelMapHigh : TexelMap
 {
 public:
-    void get_texel(unsigned char lvl0, int lvl1, Texel32* out)const override;
-    void get_color(Texel32& in, ColorRGB* out)const override;
-    void get_color(unsigned char lvl0, int lvl1, ColorRGB* out)const override;
+    void get_texel(unsigned char lvl0, int lvl1, Texel32* out) const override;
+
+    void get_color(Texel32& in, ColorRGB* out) const override;
+
+    void get_color(unsigned char lvl0, int lvl1, ColorRGB* out) const override;
+
     void set_color(unsigned char lvl0, int lvl1,
-                   const ColorRGB& val)const override;
+                   const ColorRGB& val) const override;
 };
 
 /**
@@ -113,9 +120,9 @@ class ImageMap
 {
 
 public:
-    
+
     ImageMap(const uint8_t* values, uint16_t side);
-    
+
     ImageMap(const float* values, uint16_t side);
 
     ///No copy allowed
@@ -143,54 +150,11 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    ColorRGB (ImageMap::*filter)(float u, float v, float dudx, float dvdx,
-                                 float dudy, float dvdy) const;
+    virtual ColorRGB filter(float u, float v, float dudx, float dvdx,
+                            float dudy, float dvdy) const = 0;
 
-    /**
-     *  \brief Sets the filtering method for this texture
-     *  \param[in] type The type of filtering that will be used on this texture
-     */
-    void set_filter(TextureFilter_t type);
-
-    /**
-     *  \brief Table storing precomputed gaussian values
-     *  This table stores the precomputed values of e^-radius*radius*alpha,
-     *  which are used in the EWA filtering method. The value of alpha is
-     *  defined in EWA_ALPHA
-     *
-     *  This is an std::array instead of a float[] so its initialization is
-     *  performed at compile time with the functions found at the beginning
-     *  of the textures/image_map.cpp file. For this reason it is possible to
-     *  modify the values inside this array by just changing the EWA_ALPHA or
-     *  EWA_WEIGHTS_SIZE parameters, instead of having to manually rewrite the
-     *  entire lookup table every time
-     */
-    static const float EWA_WEIGHTS[EWA_WEIGHTS_SIZE];
-
-    //this class is mostly hidden behind the scenes, and an error should be
-    //detected as soon as possible during testing
-#ifndef TESTS
-    private:
-#endif
-
-    ///Do not perform any filtering
-    ColorRGB unfiltered(float u, float v, float dudx, float dvdx, float dudy,
-                        float dvdy) const;
-
-    ///Performs linear interpolation with bilinear isotropic filter
-    ColorRGB linear_iso(float u, float v, float dudx, float dvdx, float dudy,
-                       float dvdy) const;
-    
-    ColorRGB bilinear(float u, float v, uint8_t level)const;
-
-    ///Performs linear interpolation with EWA filter
-    ColorRGB linear_ewa(float u, float v, float dudx, float dvdx, float dudy,
-                        float dvdy) const;
-    
-    ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
-                 float dvdy, uint8_t level)const;
-    
-    void downsample(uint8_t input_index, uint8_t output_index);
+protected:
+    ColorRGB bilinear(float u, float v, uint8_t level) const;
 
     ///width or height
     uint16_t* side;
@@ -198,10 +162,49 @@ public:
     ///number of MIPmaps
     uint8_t maps_no;
 
-    ///true if the image uses floats instead of uint8_ts
-    bool high_depth;
-
     TexelMap MIPmap;
+
+private:
+    void downsample(uint8_t input_index, uint8_t output_index);
+};
+
+class ImageMapUnfiltered : public ImageMap
+{
+public:
+    using ImageMap::ImageMap;
+
+    ColorRGB filter(float u, float v, float dudx, float dvdx,
+                    float dudy, float dvdy) const override;
+};
+
+class ImageMapTrilinear : public ImageMap
+{
+public:
+    using ImageMap::ImageMap;
+
+    ColorRGB filter(float u, float v, float dudx, float dvdx,
+                    float dudy, float dvdy) const override;
+};
+
+class ImageMapEWA : public ImageMap
+{
+public:
+    using ImageMap::ImageMap;
+
+    ColorRGB filter(float u, float v, float dudx, float dvdx,
+                    float dudy, float dvdy) const override;
+
+private:
+
+    /**
+     *  \brief Table storing precomputed gaussian values
+     *  This table stores the precomputed values of e^-radius*radius*alpha,
+     *  which are used in the EWA filtering method. The value of alpha is 2.0
+     */
+    static const float EWA_WEIGHTS[EWA_WEIGHTS_SIZE];
+
+    ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
+                 float dvdy, uint8_t level) const;
 };
 
 #endif

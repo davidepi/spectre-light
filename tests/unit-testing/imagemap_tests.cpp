@@ -77,19 +77,19 @@ SPECTRE_TEST(ImageMap, trilinear_normal_depth)
 {
     ImageMap map0(TEST_ASSETS "images/correct.bmp");
     ColorRGB color;
-    
+
     //large filter
     color = map0.trilinear(0.25f, 0.25f, 5.f, 5.f, 5.f, 5.f);
     EXPECT_NEAR(color.r, 0.2470588235f, 1e-3f);
     EXPECT_NEAR(color.g, 0.2470588235f, 1e-3f);
     EXPECT_NEAR(color.b, 0.2470588235f, 1e-3f);
-    
+
     //small filter
     color = map0.trilinear(0.25f, 0.25f, 0.f, 0.f, 0.f, 0.f);
     EXPECT_NEAR(color.r, 1.f, 1e-3f);
     EXPECT_NEAR(color.g, 0.f, 1e-3f);
     EXPECT_NEAR(color.b, 0.f, 1e-3f);
-    
+
     //in between, no bilinear filter, only interpolation
     color = map0.trilinear(0.05f, 0.05f, 0.2f, 0.6f, 0.2f, 0.2f);
     float component1 = 1+log2f(0.6f); //chosen mipmap
@@ -101,7 +101,7 @@ SPECTRE_TEST(ImageMap, trilinear_normal_depth)
     EXPECT_NEAR(color.r, expected_r, 1e-3f);
     EXPECT_NEAR(color.g, expected_g, 1e-3f);
     EXPECT_NEAR(color.b, expected_b, 1e-3f);
-    
+
     //in between, also with bilinear filter
     color = map0.trilinear(0.45f, 0.45f, 0.2f, 0.6f, 0.2f, 0.2f);
     component1 = 1+log2f(0.6f); //chosen mipmap
@@ -119,25 +119,25 @@ SPECTRE_TEST(ImageMap, ewa_normal_depth)
 {
     ImageMap map0(TEST_ASSETS "images/correct.bmp");
     ColorRGB color;
-    
+
     //large filter
     color = map0.linear_ewa(0.25f, 0.25f, 5.f, 5.f, 5.f, 5.f);
     EXPECT_NEAR(color.r, 0.2470588235f, 1e-3f);
     EXPECT_NEAR(color.g, 0.2470588235f, 1e-3f);
     EXPECT_NEAR(color.b, 0.2470588235f, 1e-3f);
-    
+
     //small filter
     color = map0.linear_ewa(0.25f, 0.25f, 0.25f, 0.25f, 0.f, 0.f);
     EXPECT_NEAR(color.r, 1.f, 1e-3f);
     EXPECT_NEAR(color.g, 0.f, 1e-3f);
     EXPECT_NEAR(color.b, 0.f, 1e-3f);
-    
+
     //small filter, axis swap
     color = map0.linear_ewa(0.25f, 0.25f, 0.f, 0.f, 0.25f, 0.25f);
     EXPECT_NEAR(color.r, 1.f, 1e-3f);
     EXPECT_NEAR(color.g, 0.f, 1e-3f);
     EXPECT_NEAR(color.b, 0.f, 1e-3f);
-    
+
     //in between, no ewa filter, only interpolation
     color = map0.linear_ewa(0.05f, 0.05f, 0.2f, 0.6f, 0.55f, 0.55f);
     float component1 = 1+log2f(0.632455527f); //chosen mipmap

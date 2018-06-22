@@ -165,33 +165,6 @@ public:
      */
     const Texture* get_default() const;
 
-    /**
-     *  \brief Returns true if every ImageMap returns unfiltered values
-     *
-     *  If every map uses unfiltered values, several optimization (such as
-     *  avoiding the creation of Ray differentials and uv differentials) are
-     *  possible. This method returns true if EVERY map inside the library
-     *  does not perform filtering.
-     *
-     *  \note This value is not checked by the TextureLibrary and must be
-     *  explicitly set with the TextureLibrary::has_filtered() method
-     *
-     *  \return true if every map does not need filtering
-     */
-    bool is_unfiltered() const;
-
-    /**
-     *  \brief Sets if some of the ImageMap use some kind of filtering
-     *
-     *  Used to set the parameter that will be returned by the
-     *  TextureLibrary::is_unfiltered() method. A conservative approach implies
-     *  passing true to this function. However, if false is passed, but
-     *  some maps use filtering, the behaviour is undefined (likely a segfault)
-     *
-     *  \param[in] val true if some ImageMap use filtering
-     */
-    void has_filtered(bool val);
-
 private:
 
     TextureLibrary();

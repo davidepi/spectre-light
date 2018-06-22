@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit 18 Jun 2018
+//Last Edit 22 Jun 2018
 
 /**
  *  \file texture_image.hpp
@@ -7,7 +7,7 @@
  *  \details   Class holding an image map that can be shifted and scaled
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      18 Jun 2018
+ *  \date      22 Jun 2018
  *  \copyright GNU GPLv3
  */
 

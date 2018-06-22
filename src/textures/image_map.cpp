@@ -31,7 +31,7 @@
 //const std::array<float, EWA_WEIGHTS_SIZE> ImageMap::EWA_WEIGHTS =
 //        ewa_lookup_init<EWA_WEIGHTS_SIZE>();
 // -----------------------------------------------------------------------------
-const float ImageMap::EWA_WEIGHTS[EWA_WEIGHTS_SIZE] =
+const float ImageMapEWA::EWA_WEIGHTS[EWA_WEIGHTS_SIZE] =
         {
                 0.864664733f, 0.849040031f, 0.83365953f, 0.818519294f,
                 0.80361563f, 0.788944781f, 0.774503231f, 0.760287285f,
@@ -139,7 +139,6 @@ ImageMap::ImageMap(const uint8_t* values, uint16_t side)
                                   ImageMap::side[i]*3);
         downsample(i-1, i);
     }
-    set_filter(UNFILTERED);
 }
 
 ImageMap::ImageMap(const float* values, uint16_t side)
@@ -159,7 +158,6 @@ ImageMap::ImageMap(const float* values, uint16_t side)
                                   ImageMap::side[i]*3);
         downsample(i-1, i);
     }
-    set_filter(UNFILTERED);
 }
 
 ImageMap::~ImageMap()
@@ -169,21 +167,8 @@ ImageMap::~ImageMap()
     free(MIPmap.values);
 }
 
-void ImageMap::set_filter(TextureFilter_t type)
-{
-    switch(type)
-    {
-        case UNFILTERED:filter = &ImageMap::unfiltered;
-            break;
-        case TRILINEAR:filter = &ImageMap::linear_iso;
-            break;
-        case EWA:filter = &ImageMap::linear_ewa;
-            break;
-    }
-}
-
-ColorRGB ImageMap::unfiltered(float u, float v, float, float,
-                              float, float) const
+ColorRGB ImageMapUnfiltered::filter(float u, float v, float, float,
+                                    float, float) const
 {
     unsigned short x = (unsigned short)(u*side[0]-0.5f);
     unsigned short y = (unsigned short)(v*side[0]-0.5f);
@@ -192,8 +177,8 @@ ColorRGB ImageMap::unfiltered(float u, float v, float, float,
     return res;
 }
 
-ColorRGB ImageMap::linear_iso(float u, float v, float dudx, float dvdx,
-                             float dudy, float dvdy) const
+ColorRGB ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
+                                   float dudy, float dvdy) const
 {
     //float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
     float width = max(max(fabsf(dudx), fabsf(dvdx)),
@@ -228,7 +213,7 @@ ColorRGB ImageMap::linear_iso(float u, float v, float dudx, float dvdx,
     return p0;
 }
 
-ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
+ColorRGB ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
                               float dudy, float dvdy) const
 {
     float longer_axis = sqrtf(dudx*dudx+dvdx*dvdx);
@@ -243,7 +228,7 @@ ColorRGB ImageMap::linear_ewa(float u, float v, float dudx, float dvdx,
     //if the minor axis is zero, return trilinear filter
     if(shorter_axis == 0.f)
     {
-        return bilinear(u,v,0);
+        return ImageMap::bilinear(u,v,0);
     }
     //if too eccentric increase blurriness and decrease eccentricity by scaling
     //the shorter axis
@@ -310,7 +295,7 @@ ColorRGB ImageMap::bilinear(float u, float v, uint8_t level)const
     return retval;
 }
 
-ColorRGB ImageMap::ewa(float u, float v, float dudx, float dvdx, float dudy,
+ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
                        float dvdy, uint8_t level)const
 {
     //scale values
@@ -360,7 +345,7 @@ ColorRGB ImageMap::ewa(float u, float v, float dudx, float dvdx, float dudy,
                 // distant one
                 const int index = min((int)(radius2*EWA_WEIGHTS_SIZE),
                                       EWA_WEIGHTS_SIZE-1);
-                const float weight = ImageMap::EWA_WEIGHTS[index];
+                const float weight = ImageMapEWA::EWA_WEIGHTS[index];
                 resr += hit.r*weight;
                 resg += hit.g*weight;
                 resb += hit.b*weight;

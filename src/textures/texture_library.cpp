@@ -47,7 +47,7 @@ const ImageMap* TextureLibrary::get_map(const std::string& name) const
 {
     const ImageMap* retval;
     std::unordered_map<std::string, const ImageMap*>::const_iterator got =
-    maplib.find(name);
+            maplib.find(name);
     if(got != maplib.end())
         retval = got->second;
     else
@@ -72,7 +72,7 @@ void TextureLibrary::erase_texture(const std::string& name)
 void TextureLibrary::erase_map(const std::string& name)
 {
     std::unordered_map<std::string, const ImageMap*>::const_iterator it =
-    maplib.find(name);
+            maplib.find(name);
     if(it != maplib.end())
     {
         delete it->second;
@@ -84,19 +84,19 @@ void TextureLibrary::clear()
 {
     //remove Default to avoid deallocation
     std::unordered_map<std::string, const Texture*>::const_iterator got =
-    texlib.find("Default");
-    
+            texlib.find("Default");
+
     const Texture* dflt = got->second;
     texlib.erase(got);
 
     for(std::pair<std::string, const Texture*> element:TextureLibrary::texlib)
         delete element.second;
     TextureLibrary::texlib.clear();
-    
+
     for(std::pair<std::string, const ImageMap*> element:TextureLibrary::maplib)
         delete element.second;
     TextureLibrary::maplib.clear();
-    
+
     for(const Texture* element:TextureLibrary::unreferenced)
         delete element;
     unreferenced.clear();
@@ -115,21 +115,11 @@ bool TextureLibrary::contains_texture(const std::string& name) const
 bool TextureLibrary::contains_map(const std::string& name) const
 {
     std::unordered_map<std::string, const ImageMap*>::const_iterator got =
-    maplib.find(name);
+            maplib.find(name);
     return got != maplib.end();
 }
 
 const Texture* TextureLibrary::get_default() const
 {
     return TextureLibrary::default_texture;
-}
-
-void TextureLibrary::has_filtered(bool val)
-{
-    TextureLibrary::unfiltered = !val;
-}
-
-bool TextureLibrary::is_unfiltered() const
-{
-    return unfiltered;
 }
