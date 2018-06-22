@@ -43,25 +43,25 @@ SPECTRE_TEST(ImageMap, init_normal_depth)
     errors_count[CRITICAL_INDEX] = 0;
     ImageMap map0(TEST_ASSETS "images/correct.bmp");
     ASSERT_EQ(errors_count[CRITICAL_INDEX], 0);
-    EXPECT_EQ(map0.maps_no, 2);
-    EXPECT_EQ(map0.side[0], 2);
-    EXPECT_EQ(map0.side[1], 1);
-    EXPECT_EQ(map0.values[0][0].r, 255);
-    EXPECT_EQ(map0.values[0][0].g, 0);
-    EXPECT_EQ(map0.values[0][0].b, 0);
-    EXPECT_EQ(map0.values[0][1].r, 0);
-    EXPECT_EQ(map0.values[0][1].g, 255);
-    EXPECT_EQ(map0.values[0][1].b, 0);
-    EXPECT_EQ(map0.values[0][2].r, 0);
-    EXPECT_EQ(map0.values[0][2].g, 0);
-    EXPECT_EQ(map0.values[0][2].b, 255);
-    EXPECT_EQ(map0.values[0][3].r, 0);
-    EXPECT_EQ(map0.values[0][3].g, 0);
-    EXPECT_EQ(map0.values[0][3].b, 0);
+    EXPECT_EQ(map0.maps_no,(unsigned char)2);
+    EXPECT_TRUE(map0.side[0]==(unsigned short)2);
+    EXPECT_TRUE(map0.side[1]==(unsigned short)1);
+    EXPECT_EQ(map0.values[0][0].r,(uint8_t)255);
+    EXPECT_EQ(map0.values[0][0].g, (uint8_t)0);
+    EXPECT_EQ(map0.values[0][0].b, (uint8_t)0);
+    EXPECT_EQ(map0.values[0][1].r, (uint8_t)0);
+    EXPECT_EQ(map0.values[0][1].g, (uint8_t)255);
+    EXPECT_EQ(map0.values[0][1].b, (uint8_t)0);
+    EXPECT_EQ(map0.values[0][2].r, (uint8_t)0);
+    EXPECT_EQ(map0.values[0][2].g, (uint8_t)0);
+    EXPECT_EQ(map0.values[0][2].b, (uint8_t)255);
+    EXPECT_EQ(map0.values[0][3].r, (uint8_t)0);
+    EXPECT_EQ(map0.values[0][3].g, (uint8_t)0);
+    EXPECT_EQ(map0.values[0][3].b, (uint8_t)0);
     //check mipmap
-    EXPECT_EQ(map0.values[1][0].r, 63);
-    EXPECT_EQ(map0.values[1][0].g, 63);
-    EXPECT_EQ(map0.values[1][0].b, 63);
+    EXPECT_EQ(map0.values[1][0].r, (uint8_t)63);
+    EXPECT_EQ(map0.values[1][0].g, (uint8_t)63);
+    EXPECT_EQ(map0.values[1][0].b, (uint8_t)63);
 }
 
 SPECTRE_TEST(ImageMap, unfiltered_normal_depth)
@@ -152,4 +152,3 @@ SPECTRE_TEST(ImageMap, ewa_normal_depth)
 }
 
 SPECTRE_TEST_END(ImageMap_tests)
-

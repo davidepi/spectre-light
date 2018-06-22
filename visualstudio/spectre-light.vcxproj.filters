@@ -141,9 +141,6 @@
     <ClCompile Include="..\src\textures\texture_library.cpp">
       <Filter>src\textures</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\textures\uniform.cpp">
-      <Filter>src\textures</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\utility\color.cpp">
       <Filter>src\utility</Filter>
     </ClCompile>
@@ -170,6 +167,15 @@
     </ClCompile>
     <ClCompile Include="..\src\utility\wellrng.cpp">
       <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\image_map.cpp">
+      <Filter>src\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture_image.cpp">
+      <Filter>src\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture_uniform.cpp">
+      <Filter>src\textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -329,9 +335,6 @@
     <ClInclude Include="..\src\textures\texture_library.hpp">
       <Filter>src\textures</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\textures\uniform.hpp">
-      <Filter>src\textures</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\utility\color.hpp">
       <Filter>src\utility</Filter>
     </ClInclude>
@@ -360,6 +363,15 @@
       <Filter>src\utility</Filter>
     </ClInclude>
     <ClInclude Include="..\src\localization.h" />
+    <ClInclude Include="..\src\textures\image_map.hpp">
+      <Filter>src\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture_image.hpp">
+      <Filter>src\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture_uniform.hpp">
+      <Filter>src\textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
