@@ -25,6 +25,9 @@
 #include <cmath> //sqrtf
 #include <array> //EWA weights allocation
 
+//forward declaration to be used in TexelMap
+class ImageMap;
+
 enum TextureFilter_t
 {
     UNFILTERED,
@@ -71,29 +74,52 @@ struct Texel32
 struct TexelMap
 {
 public:
-    void** values;
+    virtual ~TexelMap();
+    
+    virtual void get_texel(int lvl1, Texel32* out) const = 0;
 
-    virtual void get_texel(unsigned char lvl0, int lvl1, Texel32* out) const;
+    virtual void get_color(Texel32& in, ColorRGB* out) const = 0;
 
+    virtual void get_color(int lvl1, ColorRGB* out) const = 0;
+
+    virtual void set_color(int lvl1, const ColorRGB& val) const = 0;
+};
+
+struct TexelMapLow : TexelMap
+{
+public:
+    
+    TexelMapLow(const uint8_t* values, uint16_t side);
+    
+    ~TexelMapLow();
+    
+    virtual void get_texel(int lvl1, Texel32* out) const;
+    
     virtual void get_color(Texel32& in, ColorRGB* out) const;
-
-    virtual void get_color(unsigned char lvl0, int lvl1, ColorRGB* out) const;
-
-    virtual void set_color(unsigned char lvl0, int lvl1,
-                           const ColorRGB& val) const;
+    
+    virtual void get_color(int lvl1, ColorRGB* out) const;
+    
+    virtual void set_color(int lvl1, const ColorRGB& val) const;
+private:
+    Texel* values;
 };
 
 struct TexelMapHigh : TexelMap
 {
 public:
-    void get_texel(unsigned char lvl0, int lvl1, Texel32* out) const override;
+    
+    TexelMapHigh(const float* values, uint16_t side);
+    ~TexelMapHigh();
+    
+    void get_texel(int lvl1, Texel32* out) const override;
 
     void get_color(Texel32& in, ColorRGB* out) const override;
 
-    void get_color(unsigned char lvl0, int lvl1, ColorRGB* out) const override;
+    void get_color(int lvl1, ColorRGB* out) const override;
 
-    void set_color(unsigned char lvl0, int lvl1,
-                   const ColorRGB& val) const override;
+    void set_color(int lvl1, const ColorRGB& val) const override;
+private:
+    Texel32* values;
 };
 
 /**
@@ -162,10 +188,7 @@ protected:
     ///number of MIPmaps
     uint8_t maps_no;
 
-    TexelMap MIPmap;
-
-private:
-    void downsample(uint8_t input_index, uint8_t output_index);
+    TexelMap** MIPmap;
 };
 
 class ImageMapUnfiltered : public ImageMap
