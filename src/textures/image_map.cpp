@@ -116,7 +116,7 @@ void TexelMapLow::get_color(int lvl1, ColorRGB *out)const
                     values[lvl1].b);
 }
 
-void TexelMapLow::set_color(int lvl1, const ColorRGB& val)const
+void TexelMapLow::set_color(int lvl1, const ColorRGB& val)
 {
     values[lvl1].r = (uint8_t)(val.r*255);
     values[lvl1].g = (uint8_t)(val.g*255);
@@ -142,7 +142,7 @@ void TexelMapHigh::get_color(int lvl1, ColorRGB *out)const
                     values[lvl1].b);
 }
 
-void TexelMapHigh::set_color(int lvl1,const ColorRGB& val)const
+void TexelMapHigh::set_color(int lvl1,const ColorRGB& val)
 {
     values[lvl1].r = val.r*255;
     values[lvl1].g = val.g*255;
