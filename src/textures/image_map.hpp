@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit 22 Jun 2018
+//Last Edit 13 Jul 2018
 
 /**
  *  \file image_map.hpp
@@ -7,7 +7,7 @@
  *  \details   A square, power of 2, image used inside TextureImage as a MIPMap
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      22 Jun 2018
+ *  \date      13 Jul 2018
  *  \copyright GNU GPLv3
  */
 
@@ -91,15 +91,15 @@ public:
     
     TexelMapLow(const uint8_t* values, uint16_t side);
     
-    ~TexelMapLow();
+    ~TexelMapLow() override;
     
-    virtual void get_texel(int lvl1, Texel32* out) const;
+    void get_texel(int lvl1, Texel32* out) const override;
     
-    virtual void get_color(Texel32& in, ColorRGB* out) const;
+    void get_color(Texel32& in, ColorRGB* out) const override;
     
-    virtual void get_color(int lvl1, ColorRGB* out) const;
+    void get_color(int lvl1, ColorRGB* out) const override;
     
-    virtual void set_color(int lvl1, const ColorRGB& val) const;
+    void set_color(int lvl1, const ColorRGB& val) const override;
 private:
     Texel* values;
 };
@@ -109,7 +109,7 @@ struct TexelMapHigh : TexelMap
 public:
     
     TexelMapHigh(const float* values, uint16_t side);
-    ~TexelMapHigh();
+    ~TexelMapHigh() override;
     
     void get_texel(int lvl1, Texel32* out) const override;
 

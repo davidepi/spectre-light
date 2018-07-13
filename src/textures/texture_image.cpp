@@ -48,7 +48,7 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                 {
                     uint8_t* data2 = (uint8_t*)malloc(width*height*3*
                                                       sizeof(uint8_t));
-                    for(int i = 0; i<width*height; i++) //convert to uint8_t
+                    for(int i = 0; i<width*height*3; i++) //convert to uint8_t
                         data2[i] = (unsigned char)(data[i]*255.f);
                     free(data);
                     switch(filter)
@@ -59,7 +59,9 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                         case TRILINEAR:
                             imagemap = new ImageMapTrilinear(data2, width);
                             break;
-                        case EWA:imagemap = new ImageMapEWA(data2, width);
+                        case EWA:
+                            imagemap = new ImageMapEWA(data2, width);
+                            break;
                     }
                     free(data2);
                 }
