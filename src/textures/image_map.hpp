@@ -183,7 +183,7 @@ public:
      *  \param[in] lvl1 The texel that will be changed
      *  \param[in] val ColorRGB class holding the new value for the texel
      */
-    void set_color(int lvl1, const ColorRGB& val)override;
+    void set_color(int lvl1, const ColorRGB& val) override;
 
 private:
 
@@ -248,7 +248,7 @@ public:
      *  \param[in] lvl1 The texel that will be changed
      *  \param[in] val ColorRGB class holding the new value for the texel
      */
-    void set_color(int lvl1, const ColorRGB& val)override;
+    void set_color(int lvl1, const ColorRGB& val) override;
 
 private:
 

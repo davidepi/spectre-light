@@ -2,8 +2,10 @@
 //license: GNU GPLv3
 
 #include "textures/image_map.hpp"
+
 static void downsample(const uint8_t* in, uint8_t* out,
                        unsigned short input_side);
+
 static void downsample(const float* in, float* out,
                        unsigned short input_side);
 
@@ -71,7 +73,8 @@ const float ImageMapEWA::EWA_WEIGHTS[EWA_WEIGHTS_SIZE] =
                 0.0065472275f, 0.00433036685f, 0.0021481365f, 0.f
         };
 
-TexelMap::~TexelMap(){}
+TexelMap::~TexelMap()
+{}
 
 TexelMapLow::TexelMapLow(const uint8_t* values, uint16_t side)
 {
@@ -95,21 +98,21 @@ TexelMapHigh::~TexelMapHigh()
     free(values);
 }
 
-void TexelMapLow::get_texel(int lvl1, Texel32 *out)const
+void TexelMapLow::get_texel(int lvl1, Texel32* out) const
 {
     out->r = values[lvl1].r;
     out->g = values[lvl1].g;
     out->b = values[lvl1].b;
 }
 
-void TexelMapLow::get_color(Texel32& in, ColorRGB* out)const
+void TexelMapLow::get_color(Texel32& in, ColorRGB* out) const
 {
     *out = ColorRGB((unsigned char)in.r,
                     (unsigned char)in.g,
                     (unsigned char)in.b);
 }
 
-void TexelMapLow::get_color(int lvl1, ColorRGB *out)const
+void TexelMapLow::get_color(int lvl1, ColorRGB* out) const
 {
     *out = ColorRGB(values[lvl1].r,
                     values[lvl1].g,
@@ -123,26 +126,26 @@ void TexelMapLow::set_color(int lvl1, const ColorRGB& val)
     values[lvl1].b = (uint8_t)(val.b*255);
 }
 
-void TexelMapHigh::get_texel(int lvl1, Texel32 *out)const
+void TexelMapHigh::get_texel(int lvl1, Texel32* out) const
 {
     out->r = values[lvl1].r;
     out->g = values[lvl1].g;
     out->b = values[lvl1].b;
 }
 
-void TexelMapHigh::get_color(Texel32& in, ColorRGB* out)const
+void TexelMapHigh::get_color(Texel32& in, ColorRGB* out) const
 {
     *out = ColorRGB(in.r, in.g, in.b);
 }
 
-void TexelMapHigh::get_color(int lvl1, ColorRGB *out)const
+void TexelMapHigh::get_color(int lvl1, ColorRGB* out) const
 {
     *out = ColorRGB(values[lvl1].r,
                     values[lvl1].g,
                     values[lvl1].b);
 }
 
-void TexelMapHigh::set_color(int lvl1,const ColorRGB& val)
+void TexelMapHigh::set_color(int lvl1, const ColorRGB& val)
 {
     values[lvl1].r = val.r*255;
     values[lvl1].g = val.g*255;
@@ -155,13 +158,13 @@ ImageMap::ImageMap(const uint8_t* values, uint16_t side)
     uint8_t* original = (uint8_t*)malloc(sizeof(uint8_t)*side*side*3);
     uint8_t* reduced = (uint8_t*)malloc(sizeof(uint8_t)*side*side*3);
     memcpy(original, values, sizeof(uint8_t)*side*side*3);
-    
+
     maps_no = (uint8_t)(1+(int)log2f(side));
     ImageMap::side = (uint16_t*)malloc(sizeof(uint16_t)*maps_no);
-    MIPmap = new TexelMap*[maps_no];
+    MIPmap = new TexelMap* [maps_no];
     MIPmap[0] = new TexelMapLow(values, side);
     ImageMap::side[0] = side;
-    for(int i=1;i<maps_no;i++)
+    for(int i = 1; i<maps_no; i++)
     {
         ImageMap::side[i] = ImageMap::side[i-1] >> 1;
         downsample(original, reduced, ImageMap::side[i-1]);
@@ -181,13 +184,13 @@ ImageMap::ImageMap(const float* values, uint16_t side)
     float* original = (float*)malloc(sizeof(float)*side*side*3);
     float* reduced = (float*)malloc(sizeof(float)*side*side*3);
     memcpy(original, values, sizeof(float)*side*side*3);
-    
+
     maps_no = (uint8_t)(1+(int)log2f(side));
     ImageMap::side = (uint16_t*)malloc(sizeof(uint16_t)*maps_no);
-    MIPmap = new TexelMap*[maps_no];
+    MIPmap = new TexelMap* [maps_no];
     MIPmap[0] = new TexelMapHigh(values, side);
     ImageMap::side[0] = side;
-    for(int i=1;i<maps_no;i++)
+    for(int i = 1; i<maps_no; i++)
     {
         ImageMap::side[i] = ImageMap::side[i-1] >> 1;
         downsample(original, reduced, ImageMap::side[i-1]);
@@ -255,7 +258,7 @@ ColorRGB ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
 }
 
 ColorRGB ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
-                              float dudy, float dvdy) const
+                             float dudy, float dvdy) const
 {
     float longer_axis = sqrtf(dudx*dudx+dvdx*dvdx);
     float shorter_axis = sqrtf(dudy*dudy+dvdy*dvdy);
@@ -269,10 +272,10 @@ ColorRGB ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
     //if the minor axis is zero, return trilinear filter
     if(shorter_axis == 0.f)
     {
-        return ImageMap::bilinear(u,v,0);
+        return ImageMap::bilinear(u, v, 0);
     }
-    //if too eccentric increase blurriness and decrease eccentricity by scaling
-    //the shorter axis
+        //if too eccentric increase blurriness and decrease eccentricity by scaling
+        //the shorter axis
     else if(shorter_axis*EWA_MAX_ECCENTRICITY<longer_axis)
     {
         float scale = longer_axis/(shorter_axis*EWA_MAX_ECCENTRICITY);
@@ -289,8 +292,8 @@ ColorRGB ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
     {
         uint8_t chosen_below = (uint8_t)chosen;
         float decimal = chosen-chosen_below;
-        p0 = ewa(u,v,dudx,dvdx,dudy,dvdy,chosen_below);
-        ColorRGB p1 = ewa(u,v,dudx,dvdx,dudy,dvdy,chosen_below+1);
+        p0 = ewa(u, v, dudx, dvdx, dudy, dvdy, chosen_below);
+        ColorRGB p1 = ewa(u, v, dudx, dvdx, dudy, dvdy, chosen_below+1);
         const float other_decimal = 1.f-decimal;
         p0.r *= other_decimal;
         p0.g *= other_decimal;
@@ -305,7 +308,7 @@ ColorRGB ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
     return p0;
 }
 
-ColorRGB ImageMap::bilinear(float u, float v, uint8_t level)const
+ColorRGB ImageMap::bilinear(float u, float v, uint8_t level) const
 {
     u = u*side[level]-0.5f;
     v = v*side[level]-0.5f;
@@ -342,7 +345,7 @@ ColorRGB ImageMap::bilinear(float u, float v, uint8_t level)const
 }
 
 ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
-                       float dvdy, uint8_t level)const
+                          float dvdy, uint8_t level) const
 {
     //scale values
     u = max(0.f, u*side[level]-0.5f);
@@ -351,7 +354,7 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
     dvdx *= side[level];
     dudy *= side[level];
     dvdy *= side[level];
-    
+
     //calulate ellipse coefficients
     float a = dvdx*dvdx*+dvdy*dvdy+1.f;
     float b = -2.f*dudx*dvdx+dudy*dvdy;
@@ -360,7 +363,7 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
     a *= invf;
     b *= invf;
     c *= invf;
-    
+
     //found the ellipse aabb
     const float delta = -b*b+4.f*a*c;
     const float invdelta = 1.f/delta;
@@ -370,7 +373,7 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
     int u1 = (int)floorf(u+2.f*invdelta*x0);
     int v0 = (int)ceilf(v-2.f*invdelta*x1);
     int v1 = (int)floorf(v+2.f*invdelta*x1);
-    
+
     //loops over the AABB, if the point is inside the ellipse, filter it
     float resr = 0.f;
     float resg = 0.f;
@@ -400,7 +403,7 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
         }
     }
     float invweigth = 1.f/total_weight;
-    return ColorRGB(resr*invweigth,resg*invweigth,resb*invweigth);
+    return ColorRGB(resr*invweigth, resg*invweigth, resb*invweigth);
 }
 
 static void downsample(const uint8_t* in, uint8_t* out,
