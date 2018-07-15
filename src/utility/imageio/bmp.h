@@ -18,7 +18,7 @@ struct bmp_header
     uint32_t data_offset;
 };
 
-struct bmp_dib_header
+struct bmp_dib_v3
 {
     uint32_t header_size;
     int32_t width;
@@ -35,7 +35,6 @@ struct bmp_dib_header
 
 int bmp_save(const char* name, int width, int height, const uint8_t* data);
 int bmp_read(const char* name, uint8_t* values, uint8_t* alpha);
-size_t bmp_size(int width, int height, short bpp);
 int bmp_dimensions(const char* name, int* width, int* height);
 
 #endif

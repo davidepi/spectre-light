@@ -12,7 +12,14 @@
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ || SYSTEM_IS_WINDOWS
 #define ENDIANNESS_LITTLE16(value) value
 #define ENDIANNESS_LITTLE32(value) value
+#define ENDIANNESS_BIG16(value) ((value & 0xFF) >> 8) | (value << 8)
+#define ENDIANNESS_BIG32(value) ((value & 0xFF000000) >> 24) | \
+                                       ((value & 0x00FF0000) >> 8) | \
+                                       ((value & 0x0000FF00) << 8) | \
+                                        (value << 24)
 #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#define ENDIANNESS_BIG16(value) value
+#define ENDIANNESS_BIG32(value) value
 #define ENDIANNESS_LITTLE16(value) ((value & 0xFF) >> 8) | (value << 8)
 #define ENDIANNESS_LITTLE32(value) ((value & 0xFF000000) >> 24) | \
                                        ((value & 0x00FF0000) >> 8) | \

@@ -5,7 +5,7 @@
 size_t bmp_size(int width, int height, short bpp)
 {
     return sizeof(struct bmp_header)+
-           sizeof(struct bmp_header_dib)+
+           sizeof(struct bmp_dib_v3)+
            4*(((1 << bpp) & 0xFFFF)+height*((width*bpp+31)/32));
 }
 
@@ -13,13 +13,13 @@ int bmp_dimensions(const char* name, int* width, int* height)
 {
     FILE* fin = fopen(name, "rb");
     struct bmp_header header;
-    struct bmp_dib_header dib;
+    struct bmp_dib_v3 dib;
     size_t res = fread(&header, sizeof(struct bmp_header), 1, fin);
     int retval;
     if(res == sizeof(struct bmp_header))
     {
-        res = fread(&dib, sizeof(struct bmp_dib_header), 1, fin);
-        if(res == sizeof(struct bmp_dib_header))
+        res = fread(&dib, sizeof(struct bmp_dib_v3), 1, fin);
+        if(res == sizeof(struct bmp_dib_v3))
         {
             *width = ENDIANNESS_LITTLE32(dib.width);
             *height = ENDIANNESS_LITTLE32(dib.height);
@@ -40,12 +40,13 @@ static void create_bmp_header(int width, int height,
                               struct bmp_header_dib* dib)
 {
     memset(&header, 0, sizeof(struct bmp_header));
-    memset(&dib, 0, sizeof(struct bmp_dib_header));
+    memset(&dib, 0, sizeof(struct bmp_dib_v3));
     header->signature = ENDIANNESS_LITTLE16(16973);
     header->file_size = ENDIANNESS_LITTLE32(bmp_size(width, height, 24));
     header->data_offset = ENDIANNESS_LITTLE32(
-            sizeof(struct bmp_header)+sizeof(struct bmp_dib_header));
-    dib->header_size = sizeof(struct bmp_dib_header);
+                                  sizeof(struct bmp_header)+
+                                  sizeof(struct bmp_dib_v3));
+    dib->header_size = sizeof(struct bmp_dib_v3);
     dib->width = ENDIANNESS_LITTLE32(width);
     dib->heigh = ENDIANNESS_LITTLE32(-height);
     dib->color_planes = 1;
@@ -87,20 +88,20 @@ int bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
     if(fin == NULL)
         return -1;
     struct bmp_header header;
-    struct bmp_dib_header dib;
+    struct bmp_dib_v3 dib;
     size_t res = fread(&header, sizeof(struct bmp_header), 1, fin);
     int retval = -1;
     if(res != sizeof(struct bmp_header) ||
-            ENDIANNESS_LITTLE16(header.signature) != 16973)
+       ENDIANNESS_LITTLE16(header.signature) != 16973)
         goto end;
-    res = fread(&dib, sizeof(struct bmp_dib_header), 1, fin);
-    if(res != 40)   //40 is the size of the BITMAP V3 header. Hardcoded because
-        goto end; //different values means a V4 or V5 header
-    if(dib.compression != 0 || dib.palette_no != 0)
-        goto end; //fancy features of V3 not supported
-    int width = ENDIANNESS_LITTLE32(dib.width);
+    res = fread(&dib, sizeof(struct bmp_dib_v3), 1, fin);
+    //not v3 or other fancy features not supported
+    if(res != sizeof(struct bmp_dib_v3) ||
+       ENDIANNESS_LITTLE32(dib.header_size) != 40 ||
+       dib.compression != 0 || dib.palette_no != 0)
+        goto end;   //different values means a V4 or V5 header
     int height = ENDIANNESS_LITTLE32(dib.height);
-    const char has_alpha = dib.bpp == 32;
+    const char has_alpha = dib.bpp == 32 && alpha!=NULL;
     int increment = -1; //from bottom row to top row
     int y0 = height;
     int y1 = 0;
