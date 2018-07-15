@@ -92,7 +92,7 @@ public:
     KdTreeNode(unsigned int asset_offset, unsigned int assets_number);
 
     ///Default destructor
-    ~KdTreeNode();
+    ~KdTreeNode() = default;
 
     /** \brief Check if this node is a leaf
      *

@@ -11,27 +11,26 @@ size_t bmp_size(int width, int height, short bpp)
 
 int bmp_dimensions(const char* name, int* width, int* height)
 {
+    int retval = -1;
     FILE* fin = fopen(name, "rb");
-    struct bmp_header header;
-    struct bmp_dib_v3 dib;
-    size_t res = fread(&header, sizeof(struct bmp_header), 1, fin);
-    int retval;
-    if(res == sizeof(struct bmp_header))
+    if(fin != NULL)
     {
-        res = fread(&dib, sizeof(struct bmp_dib_v3), 1, fin);
-        if(res == sizeof(struct bmp_dib_v3))
+        struct bmp_header header;
+        struct bmp_dib_v3 dib;
+        size_t res = fread(&header, sizeof(struct bmp_header), 1, fin);
+        if(res == sizeof(struct bmp_header))
         {
-            *width = ENDIANNESS_LITTLE32(dib.width);
-            *height = ENDIANNESS_LITTLE32(dib.height);
-            *height = *height>=0?*height:-*height;
-            retval = 0;
+            res = fread(&dib, sizeof(struct bmp_dib_v3), 1, fin);
+            if(res == sizeof(struct bmp_dib_v3))
+            {
+                *width = ENDIANNESS_LITTLE32(dib.width);
+                *height = ENDIANNESS_LITTLE32(dib.height);
+                *height = *height>=0?*height:-*height;
+                retval = 0;
+            }
         }
-        else
-            retval = -1;
+        fclose(fin);
     }
-    else
-        retval = -1;
-    fclose(fin);
     return retval;
 }
 
@@ -55,6 +54,7 @@ static void create_bmp_header(int width, int height,
 
 int bmp_save(const char* name, int width, int height, const uint8_t* data)
 {
+    int retval = -1;
     FILE* fout = fopen(name, "wb");
     if(fout != NULL)
     {
@@ -73,13 +73,13 @@ int bmp_save(const char* name, int width, int height, const uint8_t* data)
                 pixel[0] = data[(y*width+x)*3+2];
                 pixel[1] = data[(y*width+x)*3+1];
                 pixel[2] = data[(y*width+x)*3+0];
+                fwrite(&pixel, sizeof(pixel), 1, fout);
             }
         }
         fclose(fout);
-        return 1;
+        retval = 0;
     }
-    else
-        return -1;
+    return retval;
 }
 
 int bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
@@ -123,7 +123,7 @@ int bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
         y0 += increment;
         rgb_index += 3;
     }
-    retval = 0;
+    retval = has_alpha?1:0;
     end:
     fclose(fin);
     return retval;

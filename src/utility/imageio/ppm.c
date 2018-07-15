@@ -2,6 +2,7 @@
 
 #define READ_BUFFER 4096
 #define CLAMP(x,y,z) x<0?x:x>z?z:x
+#define UNUSED(x) (void)(x)
 
 int ppm_save(const char* name, int width, int height, const uint8_t* array)
 {
@@ -38,8 +39,9 @@ int ppm_dimensions(const char* name, int* width, int* height)
 
 int ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
 {
+    UNUSED(alpha); //no alpha in a PPM image
     FILE* fin = fopen(name, "rb");
-    int retval;
+    int retval = -1;
     if(fin != NULL)
     {
         char magic[2];
@@ -118,14 +120,8 @@ int ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
                 }
                 retval = 0;
             }
-            else
-                retval = -1;
         }
-        else
-            retval = -1;
         fclose(fin);
     }
-    else
-        retval = -1;
     return retval;
 }
