@@ -4,24 +4,24 @@
 #define CLAMP(x,y,z) x<0?x:x>z?z:x
 #define UNUSED(x) (void)(x)
 
-int ppm_save(const char* name, int width, int height, const uint8_t* array)
+char ppm_save(const char* name, int width, int height, const uint8_t* array)
 {
     FILE* fout = fopen(name, "wb");
-    int retval = -1;
+    char retval = 0;
     if(fout != NULL)
     {
         fprintf(fout, "P6 %d %d 255 ", width, height);
         fwrite(array, sizeof(uint8_t), width*height*3, fout);
         fclose(fout);
-        retval = 0;
+        retval = 1;
     }
     return retval;
 }
 
-int ppm_dimensions(const char* name, int* width, int* height)
+char ppm_dimensions(const char* name, int* width, int* height)
 {
     FILE* fin = fopen(name, "rb");
-    int retval = -1;
+    char retval = 0;
     if(fin != NULL)
     {
         char magic[2];
@@ -29,19 +29,18 @@ int ppm_dimensions(const char* name, int* width, int* height)
         if(magic[0] == 'P' && (magic[1] == '3' || magic[1] == '6'))
         {
             fscanf(fin, "%d%d", width, height);
+            retval = 1;
         }
-        else
-            retval = -1;
         fclose(fin);
     }
     return retval;
 }
 
-int ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
+char ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
 {
     UNUSED(alpha); //no alpha in a PPM image
     FILE* fin = fopen(name, "rb");
-    int retval = -1;
+    char retval = 0;
     if(fin != NULL)
     {
         char magic[2];
@@ -66,7 +65,7 @@ int ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
                     sscanf(val, "%hu", &num_val);
                     values[i] = (uint8_t)(CLAMP((num_val/depth),0.f,1.f)*255);
                 }
-                retval = 0;
+                retval = 1;
             }
             else if(magic[1] == '6') //Binary
             {
@@ -118,7 +117,7 @@ int ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
                         }
                     }
                 }
-                retval = 0;
+                retval = 1;
             }
         }
         fclose(fin);

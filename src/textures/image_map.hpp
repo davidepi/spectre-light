@@ -19,7 +19,7 @@
 #define __IMAGE_MAP_HPP__
 
 #include "utility/file.hpp"
-#include "utility/imageIO.hpp"
+#include "utility/imageio/imageio.h"
 #include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
 #include "utility/spectrum.hpp"

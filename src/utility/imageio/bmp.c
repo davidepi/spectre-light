@@ -9,9 +9,9 @@ size_t bmp_size(int width, int height, short bpp)
            4*(((1 << bpp) & 0xFFFF)+height*((width*bpp+31)/32));
 }
 
-int bmp_dimensions(const char* name, int* width, int* height)
+char bmp_dimensions(const char* name, int* width, int* height)
 {
-    int retval = -1;
+    int retval = 0;
     FILE* fin = fopen(name, "rb");
     if(fin != NULL)
     {
@@ -26,7 +26,7 @@ int bmp_dimensions(const char* name, int* width, int* height)
                 *width = ENDIANNESS_LITTLE32(dib.width);
                 *height = ENDIANNESS_LITTLE32(dib.height);
                 *height = *height>=0?*height:-*height;
-                retval = 0;
+                retval = 1;
             }
         }
         fclose(fin);
@@ -36,7 +36,7 @@ int bmp_dimensions(const char* name, int* width, int* height)
 
 static void create_bmp_header(int width, int height,
                               struct bmp_header* header,
-                              struct bmp_header_dib* dib)
+                              struct bmp_dib_v3* dib)
 {
     memset(&header, 0, sizeof(struct bmp_header));
     memset(&dib, 0, sizeof(struct bmp_dib_v3));
@@ -47,22 +47,22 @@ static void create_bmp_header(int width, int height,
                                   sizeof(struct bmp_dib_v3));
     dib->header_size = sizeof(struct bmp_dib_v3);
     dib->width = ENDIANNESS_LITTLE32(width);
-    dib->heigh = ENDIANNESS_LITTLE32(-height);
+    dib->height = ENDIANNESS_LITTLE32(-height);
     dib->color_planes = 1;
     dib->bpp = 24;
 }
 
-int bmp_save(const char* name, int width, int height, const uint8_t* data)
+char bmp_save(const char* name, int width, int height, const uint8_t* data)
 {
-    int retval = -1;
+    int retval = 0;
     FILE* fout = fopen(name, "wb");
     if(fout != NULL)
     {
         struct bmp_header header;
-        struct bmp_header_dib dib;
+        struct bmp_dib_v3 dib;
         create_bmp_header(width, height, &header, &dib);
         fwrite(&header, sizeof(struct bmp_header), 1, fout);
-        fwrite(&dib, sizeof(struct bmp_header_dib), 1, fout);
+        fwrite(&dib, sizeof(struct bmp_dib_v3), 1, fout);
         uint8_t pixel[4];
         pixel[3] = 0x0; //padding
         for(int y = 0; y<height; y++)
@@ -77,20 +77,20 @@ int bmp_save(const char* name, int width, int height, const uint8_t* data)
             }
         }
         fclose(fout);
-        retval = 0;
+        retval = 1;
     }
     return retval;
 }
 
-int bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
+char bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
 {
     FILE* fin = fopen(name, "rb");
     if(fin == NULL)
-        return -1;
+        return 0;
     struct bmp_header header;
     struct bmp_dib_v3 dib;
     size_t res = fread(&header, sizeof(struct bmp_header), 1, fin);
-    int retval = -1;
+    int retval = 0;
     if(res != sizeof(struct bmp_header) ||
        ENDIANNESS_LITTLE16(header.signature) != 16973)
         goto end;
@@ -101,7 +101,7 @@ int bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
        dib.compression != 0 || dib.palette_no != 0)
         goto end;   //different values means a V4 or V5 header
     int height = ENDIANNESS_LITTLE32(dib.height);
-    const char has_alpha = dib.bpp == 32 && alpha!=NULL;
+    const char has_alpha = dib.bpp == 32 && alpha != NULL;
     int increment = -1; //from bottom row to top row
     int y0 = height;
     int y1 = 0;
@@ -123,7 +123,7 @@ int bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
         y0 += increment;
         rgb_index += 3;
     }
-    retval = has_alpha?1:0;
+    retval = has_alpha?2:1;
     end:
     fclose(fin);
     return retval;

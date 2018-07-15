@@ -20,12 +20,15 @@
 #include "utility/color.hpp"
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
-#include "utility/imageIO.hpp"
 #include <cstring>
 #include <cmath>
 #include <mutex>
 #include <stack>
 #include <cstdio>
+extern "C"
+{
+    #include "utility/imageio/imageio.h"
+}
 
 ///Used to store the weighted average for every pixel
 struct Pixel

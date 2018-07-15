@@ -14,13 +14,14 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
         {
             int width;
             int height;
-            dimensions_RGB(src.absolute_path(), src.extension(),
+            img_dimensions(src.absolute_path(), src.extension(),
                            &width, &height);
             if(width == height && (height & (height-1)) == 0) //power of 2
             {
                 bool high_depth = false;
                 float* data = (float*)malloc(width*height*3*sizeof(float));
-                read_RGB(src.absolute_path(), src.extension(), data, NULL);
+                img_read32(src.absolute_path(), src.extension(), width,
+                           height, data, NULL);
                 //check if image fits in 8bit per pixel
                 for(int i = 0; i<width*height*3; i++)
                 {
@@ -59,8 +60,7 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                         case TRILINEAR:
                             imagemap = new ImageMapTrilinear(data2, width);
                             break;
-                        case EWA:
-                            imagemap = new ImageMapEWA(data2, width);
+                        case EWA:imagemap = new ImageMapEWA(data2, width);
                             break;
                     }
                     free(data2);

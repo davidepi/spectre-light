@@ -23,7 +23,6 @@
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
 #include "utility/file.hpp"
-#include "utility/imageIO.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
 #include "cameras/camera_orthographic.hpp"
@@ -49,6 +48,9 @@
 #include "utility/scene.hpp"
 #include "validator.h"
 #include "renderer.hpp"
+extern "C" {
+    #include "utility/imageio/imageio.h"
+}
 
 #define YY_DECL \
 yy::ConfigParser::symbol_type yylex(ConfigDriver& driver)

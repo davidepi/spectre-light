@@ -5,11 +5,9 @@
 #define __ENDIANNESS_H__
 
 #include <stdint.h>
-//assuming windows ALWAYS little endian. Holds for now, I can't predict future
-#define SYSTEM_IS_WINDOWS defined(_WIN32) || defined(_WIN64)
 
 //gcc should generate rol and bswap with these templates in big endian sistems
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ || SYSTEM_IS_WINDOWS
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ || defined(_WIN32)
 #define ENDIANNESS_LITTLE16(value) value
 #define ENDIANNESS_LITTLE32(value) value
 #define ENDIANNESS_BIG16(value) ((value & 0xFF) >> 8) | (value << 8)

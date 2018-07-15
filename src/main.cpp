@@ -10,7 +10,6 @@
 
 int main(int argc, char* argv[])
 {
-    ImageIO_init();
     Renderer* renderer = NULL;
     ConfigDriver* parser = new ConfigDriver();
     Scene scene;

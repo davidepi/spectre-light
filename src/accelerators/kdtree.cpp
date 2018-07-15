@@ -38,8 +38,6 @@ KdTreeNode::KdTreeNode(unsigned int primitive_offset, unsigned int p_number)
     KdTreeNode::data |= 0x80000000;
 }
 
-KdTreeNode::~KdTreeNode() = default;
-
 bool KdTreeNode::isLeaf() const
 {
     return KdTreeNode::data & 0x80000000;

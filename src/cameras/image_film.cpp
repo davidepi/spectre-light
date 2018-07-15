@@ -20,10 +20,10 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
     if(parent_folder.writable())
     {
         //check extension, add .ppm if not supported
-        bool img_supported = image_supported(output.extension());
+        bool supported = img_supported(output.extension());
         int path_len = (int)strlen(fullpath)+1;
         //to add the .ppm at the end, if necessary
-        if(!img_supported)
+        if(!supported)
         {
             char* tmp_buf = (char*)malloc(sizeof(char)*path_len+4);
             strcpy(tmp_buf, fullpath);
@@ -172,8 +172,8 @@ bool ImageFilm::save_image()
     }
     free(ImageFilm::buffer);
     ImageFilm::buffer = NULL;
-    bool retval = save_RGB(output.absolute_path(), output.extension(),
-                           width, height,rgb_buffer);
+    bool retval = img_save(output.absolute_path(), output.extension(),
+                           width, height, rgb_buffer);
     free(rgb_buffer);
     return retval;
 }

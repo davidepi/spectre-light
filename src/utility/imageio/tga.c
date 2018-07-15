@@ -1,9 +1,9 @@
 #include "tga.h"
 
-int tga_dimensions(const char* name, int* width, int* height)
+char tga_dimensions(const char* name, int* width, int* height)
 {
     FILE* fin = fopen(name, "rb");
-    int retval = -1;
+    char retval = 0;
     if(fin != NULL)
     {
         struct tga_header header;
@@ -12,16 +12,16 @@ int tga_dimensions(const char* name, int* width, int* height)
         {
             *width = ENDIANNESS_LITTLE16(header.width);
             *height = ENDIANNESS_LITTLE16(header.height);
-            retval = 0;
+            retval = 1;
         }
         fclose(fin);
     }
     return retval;
 }
 
-int tga_save(const char* name, int width, int height, const uint8_t* data)
+char tga_save(const char* name, int width, int height, const uint8_t* data)
 {
-    int retval = -1;
+    char retval = 0;
     FILE* fout = fopen(name, "wb");
     if(fout != NULL)
     {
@@ -31,7 +31,7 @@ int tga_save(const char* name, int width, int height, const uint8_t* data)
         header.height = ENDIANNESS_LITTLE16((uint16_t)height);
         header.datatypecode = 2; //uncompressed RGB
         header.bpp = 24;
-        fwrite(&header, sizeof(struct bmp_header), 1, fout);
+        fwrite(&header, sizeof(struct tga_header), 1, fout);
         uint8_t pixel[3];
         for(int y = 0; y<height; y++)
         {
@@ -45,17 +45,17 @@ int tga_save(const char* name, int width, int height, const uint8_t* data)
             }
         }
         fclose(fout);
-        retval = 0;
+        retval = 1;
     }
     return retval;
 }
 
-int tga_read(const char* name, uint8_t* values, uint8_t* alpha)
+char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
 {
-    int retval = -1;
+    char retval = 0;
     FILE* fin = fopen(name, "rb");
     if(fin == NULL)
-        return -1;
+        return 0;
     struct tga_header header;
     size_t res = fread(&header, sizeof(struct tga_header), 1, fin);
     //wrong image
@@ -171,7 +171,7 @@ int tga_read(const char* name, uint8_t* values, uint8_t* alpha)
 
         }
     }
-    retval = alpha_index!=0;
+    retval = retval>0?alpha_index!=0+1:0;
     end:
     fclose(fin);
     return retval;
