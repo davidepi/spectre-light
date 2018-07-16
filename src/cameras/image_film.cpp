@@ -20,10 +20,10 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
     if(parent_folder.writable())
     {
         //check extension, add .ppm if not supported
-        bool supported = img_supported(output.extension());
+        bool valid = img_supported(output.absolute_path(), output.extension());
         int path_len = (int)strlen(fullpath)+1;
         //to add the .ppm at the end, if necessary
-        if(!supported)
+        if(!valid)
         {
             char* tmp_buf = (char*)malloc(sizeof(char)*path_len+4);
             strcpy(tmp_buf, fullpath);

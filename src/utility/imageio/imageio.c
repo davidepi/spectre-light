@@ -2,16 +2,18 @@
 
 #define UNUSED(x) (void)(x)
 
-char img_supported(const char* extension)
+char img_supported(const char* name, const char* ext)
 {
     char retval = 0;
-    //pos less than 4 chr expected for an extension
-    if(extension != NULL && strcmp(extension, "") != 0)
+    /* pos less than 4 chr expected for an extension */
+    if(ext != NULL && strcmp(ext, "") != 0)
     {
-        if(strcmp(extension, "ppm") == 0 ||
-           strcmp(extension, "bmp") == 0 ||
-           strcmp(extension, "tga") == 0)
-            retval = 1;
+        if(strcmp(ext, "bmp") == 0)
+            retval = bmp_valid(name);
+        else if(strcmp(ext, "tga") == 0)
+            retval = tga_valid(name);
+        else if(strcmp(ext, "ppm") == 0)
+            retval = ppm_valid(name);
     }
     return retval;
 }
@@ -32,9 +34,9 @@ char img_save(const char* name, const char* ext, int width, int height,
 char img_read8(const char* name, const char* ext, int width, int height,
                uint8_t* values, uint8_t* alpha)
 {
+    char retval = 0;
     UNUSED(width);
     UNUSED(height);
-    char retval = 0;
     if(strcmp(ext, "bmp") == 0)
         retval = bmp_read(name, values, alpha);
     else if(strcmp(ext, "tga") == 0)
@@ -45,7 +47,7 @@ char img_read8(const char* name, const char* ext, int width, int height,
 }
 
 char img_read32(const char* name, const char* ext, int width, int height,
-               float* values, uint8_t* alpha)
+                float* values, uint8_t* alpha)
 {
     uint8_t* tmp = (uint8_t*)malloc(sizeof(uint8_t)*width*height*3);
     char retval = 0;
@@ -57,8 +59,8 @@ char img_read32(const char* name, const char* ext, int width, int height,
         retval = ppm_read(name, tmp, alpha);
     if(retval)
     {
-        //this step is useless unless new formats supporting high DPI are added
-        int i =0;
+        /* this step is useless unless new formats with high DPI are added */
+        int i = 0;
         while(i<width*height*3)
         {
             values[i] = (float)(tmp[i])/255.f;

@@ -48,9 +48,10 @@
 #include "utility/scene.hpp"
 #include "validator.h"
 #include "renderer.hpp"
-extern "C" {
-    #include "utility/imageio/imageio.h"
-}
+extern "C"
+{
+#include "utility/imageio/imageio.h"
+};
 
 #define YY_DECL \
 yy::ConfigParser::symbol_type yylex(ConfigDriver& driver)

@@ -1,12 +1,14 @@
-//7-13-18
-//7-13-18
+/*
+13-7-18
+16-7-18
+ */
 
 #ifndef __ENDIANNESS_H__
 #define __ENDIANNESS_H__
 
 #include <stdint.h>
 
-//gcc should generate rol and bswap with these templates in big endian sistems
+/*gcc should generate rol and bswap with these templates in big endian sistems*/
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ || defined(_WIN32)
 #define ENDIANNESS_LITTLE16(value) value
 #define ENDIANNESS_LITTLE32(value) value

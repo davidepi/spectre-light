@@ -1,5 +1,7 @@
-//13-7-18
-//15-7-18
+/*
+13-7-18
+16-7-18
+ */
 
 #ifndef __BMP_H__
 #define __BMP_H__
@@ -7,6 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "endianness.h"
 
 struct bmp_header
@@ -34,7 +37,11 @@ struct bmp_dib_v3
 };
 
 char bmp_save(const char* name, int width, int height, const uint8_t* data);
+
 char bmp_read(const char* name, uint8_t* values, uint8_t* alpha);
+
 char bmp_dimensions(const char* name, int* width, int* height);
+
+char bmp_valid(const char* name);
 
 #endif

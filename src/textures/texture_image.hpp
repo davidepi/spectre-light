@@ -19,9 +19,10 @@
 #include "textures/texture_image.hpp"
 #include "textures/image_map.hpp"
 #include "textures/texture_library.hpp"
-extern "C" {
-    #include "../utility/imageio/imageio.h"
-}
+extern "C"
+{
+    #include "utility/imageio/imageio.h"
+};
 
 
 /**
