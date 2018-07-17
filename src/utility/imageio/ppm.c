@@ -130,9 +130,8 @@ char ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
                         for(j = 0; j<read; j++)
                         {
                             uint16_t num_val = ENDIANNESS_BIG16(buffer[j]);
-                            values[i++] = (uint8_t)(CLAMP(num_val/depth, 0.f,
-                                                          1.f)
-                                                    *255);
+                            values[i++] = (uint8_t)(CLAMP(num_val/depth,
+                                                          0.f, 1.f)*255);
                         }
                     }
                 }

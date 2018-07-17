@@ -15,14 +15,14 @@
 #ifndef __TEXTURE_IMAGE_HPP__
 #define __TEXTURE_IMAGE_HPP__
 
+//This magnificent bastard must come first, otherwise C++ linking is used anyway
+extern "C" {
+#include "utility/imageio/imageio.h"
+}
 #include "textures/texture.hpp"
 #include "textures/texture_image.hpp"
 #include "textures/image_map.hpp"
 #include "textures/texture_library.hpp"
-extern "C"
-{
-    #include "utility/imageio/imageio.h"
-};
 
 
 /**

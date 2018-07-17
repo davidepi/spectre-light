@@ -14,6 +14,10 @@
 #ifndef __IMAGE_FILM_HPP__
 #define __IMAGE_FILM_HPP__
 
+//This magnificent bastard must come first, otherwise C++ linking is used anyway
+extern "C" {
+#include "utility/imageio/imageio.h"
+}
 #include "samplers/filter.hpp"
 #include "samplers/sampler.hpp"
 #include "utility/file.hpp"
@@ -25,10 +29,6 @@
 #include <mutex>
 #include <stack>
 #include <cstdio>
-extern "C"
-{
-    #include "utility/imageio/imageio.h"
-}
 
 ///Used to store the weighted average for every pixel
 struct Pixel

@@ -14,6 +14,10 @@
 #ifndef __CONFIG_DRIVER_HPP__
 #define __CONFIG_DRIVER_HPP__
 
+//This magnificent bastard must come first, otherwise C++ linking is used anyway
+extern "C" {
+#include "utility/imageio/imageio.h"
+}
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -48,10 +52,6 @@
 #include "utility/scene.hpp"
 #include "validator.h"
 #include "renderer.hpp"
-extern "C"
-{
-#include "utility/imageio/imageio.h"
-};
 
 #define YY_DECL \
 yy::ConfigParser::symbol_type yylex(ConfigDriver& driver)
