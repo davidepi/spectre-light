@@ -267,7 +267,7 @@ const Texture* ConfigDriver::load_texture(std::string& path)
     else
         cur_file.append(path.c_str());
     if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
-            img_supported(cur_file.absolute_path(), cur_file.extension()))
+            img_valid(cur_file.absolute_path(), cur_file.extension()))
     {
         if(tex_name.empty())
             tex_name = cur_file.filename();

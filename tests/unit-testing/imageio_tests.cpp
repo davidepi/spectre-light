@@ -7,24 +7,29 @@
 #include <io.h>
 #define unlink _unlink
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
-#include "utility/imageIO.hpp"
+extern "C" {
+#include "utility/imageio/imageio.h"
+}
+
 #include "utility/utility.hpp"
 #include <cstdio>
 #include <climits>
 
 SPECTRE_TEST_INIT(ImageIO_tests)
 
-SPECTRE_TEST(ImageIO, save_ppm_func)
+SPECTRE_TEST(ImageIO, ppm_save_func)
 {
     char file_stat[64];
 
     uint8_t image_sample[17*10*3];
     for(int i = 0; i<17*10*3; i += 3)
         image_sample[i] = i/3;
-    bool res = save_ppm("test.ppm", 16, 10, image_sample);
+    bool res = img_save("test.ppm", "ppm", 16, 10, image_sample);
     ASSERT_TRUE(res);
 #ifndef _WIN32
     //check if saved image is actually a .ppm
@@ -36,62 +41,82 @@ SPECTRE_TEST(ImageIO, save_ppm_func)
     EXPECT_EQ(unlink("test.ppm"), 0);
 
     //non existent folder
-    res = save_ppm("/root/nonexistent/test.ppm", 16, 10, image_sample);
+    res = img_save("/root/nonexistent/test.ppm", "ppm", 16, 10, image_sample);
     EXPECT_FALSE(res);
 }
 
-SPECTRE_TEST(ImageIO, dimensions_ppm_func)
+SPECTRE_TEST(ImageIO, ppm_valid_func)
+{
+    bool res;
+    res = img_valid("nonexistent.ppm", "ppm");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/wrong_magic1.ppm", "ppm");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/binary.ppm", "ppm");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/multiple_spaces.ppm", "ppm");
+    EXPECT_TRUE(res);
+}
+
+SPECTRE_TEST(ImageIO, ppm_dimensions_func)
 {
     int width;
     int height;
+    int res;
     //non existent
-    dimensions_ppm("nonexistent.ppm", &width, &height);
-    EXPECT_EQ(width, IMAGE_NOT_READABLE);
-    EXPECT_EQ(height, IMAGE_NOT_READABLE);
+    res = img_dimensions("nonexistent.ppm", "ppm", &width, &height);
+    EXPECT_FALSE(res);
     width = 0;
     height = 0;
     //first letter of the magic number is wrong
-    dimensions_ppm(TEST_ASSETS "images/wrong_magic1.ppm", &width, &height);
-    EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
-    EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
+    res = img_dimensions(TEST_ASSETS "images/wrong_magic1.ppm", "ppm",
+                         &width, &height);
+    EXPECT_FALSE(res);
     width = 0;
     height = 0;
     //second letter of the magic number is wrong
-    dimensions_ppm(TEST_ASSETS "images/wrong_magic2.ppm", &width, &height);
-    EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
-    EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
+    res = img_dimensions(TEST_ASSETS "images/wrong_magic2.ppm", "ppm",
+                         &width, &height);
+    EXPECT_FALSE(res);
     width = 0;
     height = 0;
     //multiple spaces in the image
-    dimensions_ppm(TEST_ASSETS "images/multiple_spaces.ppm", &width, &height);
+    res = img_dimensions(TEST_ASSETS "images/multiple_spaces.ppm", "ppm",
+                         &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
+    EXPECT_TRUE(res);
     width = 0;
     height = 0;
     //binary image
-    dimensions_ppm(TEST_ASSETS "images/binary.ppm", &width, &height);
+    res = img_dimensions(TEST_ASSETS "images/binary.ppm", "ppm",
+                         &width, &height);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
+    EXPECT_TRUE(res);
     width = 0;
     height = 0;
 }
 
-SPECTRE_TEST(ImageIO, read_ppm_func)
+SPECTRE_TEST(ImageIO, ppm_read_func)
 {
     int res;
     //+1 is used later to check stack overflows
     float data[4*3+1];
     //non existent
-    res = read_ppm("nonexistent.ppm", data);
-    EXPECT_EQ(res, IMAGE_NOT_READABLE);
+    res = img_read32("nonexistent.ppm", "ppm", 2, 2, data, NULL);
+    EXPECT_FALSE(res);
     //first letter of the magic number is wrong
-    res = read_ppm(TEST_ASSETS "images/wrong_magic1.ppm", data);
-    EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
+    res = img_read32(TEST_ASSETS "images/wrong_magic1.ppm", "ppm", 2, 2, data,
+                     NULL);
+    EXPECT_FALSE(res);
     //second letter of the magic number is wrong
-    res = read_ppm(TEST_ASSETS "images/wrong_magic2.ppm", data);
-    EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
+    res = img_read32(TEST_ASSETS "images/wrong_magic2.ppm", "ppm", 2, 2, data,
+                     NULL);
+    EXPECT_FALSE(res);
     //read image with normal depth (ASCII)
-    res = read_ppm(TEST_ASSETS "images/multiple_spaces.ppm", data);
+    res = img_read32(TEST_ASSETS "images/multiple_spaces.ppm", "ppm", 2, 2,
+                     data, NULL);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
     EXPECT_NEAR(data[1], 0.f, 1e-5f);
     EXPECT_NEAR(data[2], 0.f, 1e-5f);
@@ -104,10 +129,11 @@ SPECTRE_TEST(ImageIO, read_ppm_func)
     EXPECT_NEAR(data[9], 0.f, 1e-5f);
     EXPECT_NEAR(data[10], 0.f, 1e-5f);
     EXPECT_NEAR(data[11], 0.f, 1e-5f);
-    EXPECT_EQ(res, IMAGE_OK);
+    EXPECT_TRUE(res);
     memset(data, 0, 12);
     //read image with high depth (ASCII)
-    res = read_ppm(TEST_ASSETS "images/p3_high_depth.ppm", data);
+    res = img_read32(TEST_ASSETS "images/p3_high_depth.ppm", "ppm", 2, 2, data,
+                     NULL);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
     EXPECT_NEAR(data[1], 1.f, 1e-5f);
     EXPECT_NEAR(data[2], 1.f, 1e-5f);
@@ -120,10 +146,10 @@ SPECTRE_TEST(ImageIO, read_ppm_func)
     EXPECT_NEAR(data[9], 1.f, 1e-5f);
     EXPECT_NEAR(data[10], 1.f, 1e-5f);
     EXPECT_NEAR(data[11], 1.f, 1e-5f);
-    EXPECT_EQ(res, IMAGE_OK);
+    EXPECT_TRUE(res);
     memset(data, 0, 12);
     //read image with normal depth (binary) no stack_overflow
-    res = read_ppm(TEST_ASSETS "images/binary.ppm", data);
+    res = img_read32(TEST_ASSETS "images/binary.ppm", "ppm", 2, 2, data, NULL);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
     EXPECT_NEAR(data[1], 0.f, 1e-5f);
     EXPECT_NEAR(data[2], 0.f, 1e-5f);
@@ -136,12 +162,13 @@ SPECTRE_TEST(ImageIO, read_ppm_func)
     EXPECT_NEAR(data[9], 0.f, 1e-5f);
     EXPECT_NEAR(data[10], 0.f, 1e-5f);
     EXPECT_NEAR(data[11], 0.f, 1e-5f);
-    EXPECT_EQ(res, IMAGE_OK);
+    EXPECT_TRUE(res);
     memset(data, 0, 12);
     //read image that claims to be 2x2 but contains a lot more
     //bytes
     data[4*3] = (float)0x2B; //random val, check that this is unchanged
-    res = read_ppm(TEST_ASSETS "images/binary_stackoverflow.ppm", data);
+    res = img_read32(TEST_ASSETS "images/binary_stackoverflow.ppm", "ppm", 2, 2,
+                     data, NULL);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
     EXPECT_NEAR(data[1], 1.f, 1e-5f);
     EXPECT_NEAR(data[2], 1.f, 1e-5f);
@@ -155,10 +182,11 @@ SPECTRE_TEST(ImageIO, read_ppm_func)
     EXPECT_NEAR(data[10], 1.f, 1e-5f);
     EXPECT_NEAR(data[11], 1.f, 1e-5f);
     EXPECT_NEAR(data[12], (float)0x2B, 1e-5f); //assert no stack overflow
-    EXPECT_EQ(res, IMAGE_OK);
+    EXPECT_TRUE(res);
     memset(data, 0, 12);
     //read image with high depth (binary) no stack_overflow
-    res = read_ppm(TEST_ASSETS "images/p6_high_depth.ppm", data);
+    res = img_read32(TEST_ASSETS "images/p6_high_depth.ppm", "ppm", 2, 2, data,
+                     NULL);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
     EXPECT_NEAR(data[1], 1.f, 1e-5f);
     EXPECT_NEAR(data[2], 1.f, 1e-5f);
@@ -171,10 +199,11 @@ SPECTRE_TEST(ImageIO, read_ppm_func)
     EXPECT_NEAR(data[9], 1.f, 1e-5f);
     EXPECT_NEAR(data[10], 1.f, 1e-5f);
     EXPECT_NEAR(data[11], 1.f, 1e-5f);
-    EXPECT_EQ(res, IMAGE_OK);
+    EXPECT_TRUE(res);
     memset(data, 0, 12);
     //read image with high depth (binary), stack_overflow
-    res = read_ppm(TEST_ASSETS "images/p6_high_depth_stack_overflow.ppm", data);
+    res = img_read32(TEST_ASSETS "images/p6_high_depth_stack_overflow.ppm",
+                     "ppm", 2, 2, data, NULL);
     EXPECT_NEAR(data[0], 1.f, 1e-5f);
     EXPECT_NEAR(data[1], 1.f, 1e-5f);
     EXPECT_NEAR(data[2], 1.f, 1e-5f);
@@ -188,18 +217,18 @@ SPECTRE_TEST(ImageIO, read_ppm_func)
     EXPECT_NEAR(data[10], 1.f, 1e-5f);
     EXPECT_NEAR(data[11], 1.f, 1e-5f);
     EXPECT_NEAR(data[12], (float)0x2B, 1e-5f); //assert no stack overflow
-    EXPECT_EQ(res, IMAGE_OK);
+    EXPECT_TRUE(res);
     memset(data, 0, 12);
 }
 
-SPECTRE_TEST(ImageIO, save_bmp_func)
+SPECTRE_TEST(ImageIO, bmp_save_func)
 {
     char file_stat[64];
 
     uint8_t image_sample[17*10*3];
     for(int i = 0; i<17*10*3; i += 3)
         image_sample[i] = i/3;
-    bool res = save_bmp("test.bmp", 16, 10, image_sample);
+    bool res = img_save("test.bmp", "bmp", 16, 10, image_sample);
     ASSERT_TRUE(res);
 #ifndef _WIN32
     //check if saved image is actually a .bmp
@@ -212,79 +241,83 @@ SPECTRE_TEST(ImageIO, save_bmp_func)
     EXPECT_EQ(unlink("test.bmp"), 0);
 
     //non existent folder
-    res = save_bmp("/root/nonexistent/test.bmp", 16, 10, image_sample);
+    res = img_save("/root/nonexistent/test.bmp", "bmp", 16, 10, image_sample);
     EXPECT_FALSE(res);
 }
 
-SPECTRE_TEST(ImageIO, dimensions_bmp_func)
+SPECTRE_TEST(ImageIO, bmp_dimensions_func)
 {
     int width;
     int height;
+    bool res;
     //non existent
-    dimensions_bmp("nonexistent.bmp", &width, &height);
-    EXPECT_EQ(width, IMAGE_NOT_READABLE);
-    EXPECT_EQ(height, IMAGE_NOT_READABLE);
+    res = img_dimensions("nonexistent.bmp", "bmp", &width, &height);
+    EXPECT_FALSE(res);
     width = 0;
     height = 0;
     //first letter of the magic number is wrong
-    dimensions_bmp(TEST_ASSETS "images/wrong_magic1.bmp", &width, &height);
-    EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
-    EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
+    res = img_dimensions(TEST_ASSETS "images/wrong_magic1.bmp", "bmp", &width,
+                         &height);
+    EXPECT_FALSE(res);
     width = 0;
     height = 0;
     //second letter of the magic number is wrong
-    dimensions_bmp(TEST_ASSETS "images/wrong_magic2.bmp", &width, &height);
-    EXPECT_EQ(width, IMAGE_WRONG_MAGIC);
-    EXPECT_EQ(height, IMAGE_WRONG_MAGIC);
-    width = 0;
-    height = 0;
-    //32bit
-    dimensions_bmp(TEST_ASSETS "images/32bit.bmp", &width, &height);
-    EXPECT_EQ(width, IMAGE_NOT_SUPPORTED);
-    EXPECT_EQ(height, IMAGE_NOT_SUPPORTED);
+    res = img_dimensions(TEST_ASSETS "images/wrong_magic2.bmp", "bmp", &width,
+                         &height);
+    EXPECT_FALSE(res);
     width = 0;
     height = 0;
     //os2
-    dimensions_bmp(TEST_ASSETS "images/os2.bmp", &width, &height);
-    EXPECT_EQ(width, IMAGE_NOT_SUPPORTED);
-    EXPECT_EQ(height, IMAGE_NOT_SUPPORTED);
+    res = img_dimensions(TEST_ASSETS "images/os2.bmp", "bmp", &width, &height);
+    EXPECT_FALSE(res);
     width = 0;
     height = 0;
     //normal image
-    dimensions_bmp(TEST_ASSETS "images/correct.bmp", &width, &height);
+    res = img_dimensions(TEST_ASSETS "images/correct.bmp", "bmp", &width,
+                         &height);
+    EXPECT_TRUE(res);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     width = 0;
     height = 0;
     //flipped (negative) rows
-    dimensions_bmp(TEST_ASSETS "images/flipped.bmp", &width, &height);
+    res = img_dimensions(TEST_ASSETS "images/flipped.bmp", "bmp", &width,
+                         &height);
+    EXPECT_TRUE(res);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 2);
     width = 0;
     height = 0;
+    //32bit
+    res = img_dimensions(TEST_ASSETS "images/32bit.bmp", "bmp", &width,
+                         &height);
+    EXPECT_TRUE(res);
+    width = 2;
+    height = 2;
 }
 
-SPECTRE_TEST(ImageIO, read_bmp_func)
+SPECTRE_TEST(ImageIO, bmp_read_func)
 {
     int res;
     float values[4*3];
+    uint8_t alpha[4];
     //non existent
-    res = read_bmp("nonexistent.bmp", values);
-    EXPECT_EQ(res, IMAGE_NOT_READABLE);
+    res = img_read32("nonexistent.bmp", "bmp", 2, 2, values, NULL);
+    EXPECT_FALSE(res);
     //first letter of the magic number is wrong
-    res = read_bmp(TEST_ASSETS "images/wrong_magic1.bmp", values);
-    EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
+    res = img_read32(TEST_ASSETS "images/wrong_magic1.bmp", "bmp", 2, 2, values,
+                     NULL);
+    EXPECT_FALSE(res);
     //second letter of the magic number is wrong
-    res = read_bmp(TEST_ASSETS "images/wrong_magic2.bmp", values);
-    EXPECT_EQ(res, IMAGE_WRONG_MAGIC);
+    res = img_read32(TEST_ASSETS "images/wrong_magic2.bmp", "bmp", 2, 2, values,
+                     NULL);
+    EXPECT_FALSE(res);
     //os2
-    res = read_bmp(TEST_ASSETS "images/os2.bmp", values);
-    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
-    //32bit
-    res = read_bmp(TEST_ASSETS "images/32bit.bmp", values);
-    EXPECT_EQ(res, IMAGE_NOT_SUPPORTED);
+    res = img_read32(TEST_ASSETS "images/os2.bmp", "bmp", 2, 2, values, NULL);
+    EXPECT_FALSE(res);
     //normal image
-    res = read_bmp(TEST_ASSETS "images/correct.bmp", values);
+    res = img_read32(TEST_ASSETS "images/correct.bmp", "bmp", 2, 2, values,
+                     NULL);
     EXPECT_NEAR(values[0], 1.f, 1e-5f);
     EXPECT_NEAR(values[1], 0.f, 1e-5f);
     EXPECT_NEAR(values[2], 0.f, 1e-5f);
@@ -297,9 +330,10 @@ SPECTRE_TEST(ImageIO, read_bmp_func)
     EXPECT_NEAR(values[9], 0.f, 1e-5f);
     EXPECT_NEAR(values[10], 0.f, 1e-5f);
     EXPECT_NEAR(values[11], 0.f, 1e-5f);
-    EXPECT_EQ(res, IMAGE_OK);
+    EXPECT_TRUE(res);
     //flipped (negative) rows
-    res = read_bmp(TEST_ASSETS "images/flipped.bmp", values);
+    res = img_read32(TEST_ASSETS "images/flipped.bmp", "bmp", 2, 2, values,
+                     NULL);
     EXPECT_NEAR(values[0], 1.f, 1e-5f);
     EXPECT_NEAR(values[1], 0.f, 1e-5f);
     EXPECT_NEAR(values[2], 0.f, 1e-5f);
@@ -312,9 +346,44 @@ SPECTRE_TEST(ImageIO, read_bmp_func)
     EXPECT_NEAR(values[9], 0.f, 1e-5f);
     EXPECT_NEAR(values[10], 0.f, 1e-5f);
     EXPECT_NEAR(values[11], 0.f, 1e-5f);
-    EXPECT_EQ(res, IMAGE_OK);
+    EXPECT_TRUE(res);
+    //32bit - NULL alpha array
+    res = img_read32(TEST_ASSETS "images/32bit.bmp", "bmp", 2, 2, values, NULL);
+    EXPECT_NEAR(values[0], 1.f, 1e-5f);
+    EXPECT_NEAR(values[1], 0.f, 1e-5f);
+    EXPECT_NEAR(values[2], 0.f, 1e-5f);
+    EXPECT_NEAR(values[3], 0.f, 1e-5f);
+    EXPECT_NEAR(values[4], 1.f, 1e-5f);
+    EXPECT_NEAR(values[5], 0.f, 1e-5f);
+    EXPECT_NEAR(values[6], 0.f, 1e-5f);
+    EXPECT_NEAR(values[7], 0.f, 1e-5f);
+    EXPECT_NEAR(values[8], 1.f, 1e-5f);
+    EXPECT_NEAR(values[9], 0.f, 1e-5f);
+    EXPECT_NEAR(values[10], 0.f, 1e-5f);
+    EXPECT_NEAR(values[11], 0.f, 1e-5f);
+    EXPECT_TRUE(res);
+    //32bit - alpha array
+    res = img_read32(TEST_ASSETS "images/32bit.bmp", "bmp", 2, 2, values,
+                     alpha);
+    EXPECT_NEAR(values[0], 1.f, 1e-5f);
+    EXPECT_NEAR(values[1], 0.f, 1e-5f);
+    EXPECT_NEAR(values[2], 0.f, 1e-5f);
+    EXPECT_NEAR(values[3], 0.f, 1e-5f);
+    EXPECT_NEAR(values[4], 1.f, 1e-5f);
+    EXPECT_NEAR(values[5], 0.f, 1e-5f);
+    EXPECT_NEAR(values[6], 0.f, 1e-5f);
+    EXPECT_NEAR(values[7], 0.f, 1e-5f);
+    EXPECT_NEAR(values[8], 1.f, 1e-5f);
+    EXPECT_NEAR(values[9], 0.f, 1e-5f);
+    EXPECT_NEAR(values[10], 0.f, 1e-5f);
+    EXPECT_NEAR(values[11], 0.f, 1e-5f);
+    EXPECT_EQ(alpha[0], 255);
+    EXPECT_EQ(alpha[1], 128);
+    EXPECT_EQ(alpha[2], 66);
+    EXPECT_EQ(alpha[3], 33);
+    EXPECT_TRUE(res);
 }
-
+/*
 SPECTRE_TEST(ImageIO, save_rgb_func)
 {
     bool res;
@@ -721,5 +790,5 @@ SPECTRE_TEST(ImageIO, image_supported_func)
     res = image_supported("ok");
     EXPECT_FALSE(res);
 }
-
+*/
 SPECTRE_TEST_END(ImageIO_tests)

@@ -15,7 +15,7 @@
 #include "utility/spectrum.hpp"
 
 SPECTRE_TEST_INIT(TextureLibrary_tests)
-
+/*
 SPECTRE_TEST(TextureLibrary, add_texture)
 {
     const Spectrum color1 = SPECTRUM_WHITE;
@@ -210,5 +210,5 @@ SPECTRE_TEST(TextureLibrary, filtering)
     res = TexLib.is_unfiltered();
     EXPECT_EQ(res, true);
 }
-
+*/
 SPECTRE_TEST_END(TextureLibrary)

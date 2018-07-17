@@ -2,7 +2,7 @@
 
 #define UNUSED(x) (void)(x)
 
-char img_supported(const char* name, const char* ext)
+char img_valid(const char* name, const char* ext)
 {
     char retval = 0;
     /* pos less than 4 chr expected for an extension */
@@ -63,7 +63,7 @@ char img_read32(const char* name, const char* ext, int width, int height,
         int i = 0;
         while(i<width*height*3)
         {
-            values[i] = (float)(tmp[i])/255.f;
+            values[i] = ((float)(tmp[i]))/255.f;
             i++;
         }
     }

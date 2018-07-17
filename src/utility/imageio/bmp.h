@@ -1,7 +1,7 @@
 /*
 13-7-18
-16-7-18
- */
+17-7-18
+*/
 
 #ifndef __BMP_H__
 #define __BMP_H__
@@ -11,8 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "endianness.h"
+#include "packed_struct.h"
 
-struct bmp_header
+PACKED_STRUCT(bmp_header)
 {
     uint16_t signature;
     uint32_t file_size;
@@ -21,7 +22,7 @@ struct bmp_header
     uint32_t data_offset;
 };
 
-struct bmp_dib_v3
+PACKED_STRUCT(bmp_dib_v3)
 {
     uint32_t header_size;
     int32_t width;

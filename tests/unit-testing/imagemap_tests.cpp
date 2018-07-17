@@ -14,7 +14,7 @@
 #include "utility/console.hpp"
 
 SPECTRE_TEST_INIT(ImageMap_tests)
-
+/*
 SPECTRE_TEST(ImageMap, init_not_readable)
 {
     errors_count[CRITICAL_INDEX] = 0;
@@ -150,5 +150,5 @@ SPECTRE_TEST(ImageMap, ewa_normal_depth)
     EXPECT_NEAR(color.g, expected_g, 1e-3f);
     EXPECT_NEAR(color.b, expected_b, 1e-3f);
 }
-
+*/
 SPECTRE_TEST_END(ImageMap_tests)

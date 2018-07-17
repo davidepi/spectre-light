@@ -65,6 +65,10 @@
 		6B76AAB42084F08B008E234B /* point2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B76AAB12084F079008E234B /* point2.cpp */; };
 		6B76AAB52084F098008E234B /* point2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B76AAB12084F079008E234B /* point2.cpp */; };
 		6B779D9D20AF00D900D0C52A /* imagemap_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B779D9C20AF00D900D0C52A /* imagemap_tests.cpp */; };
+		6B9015D020FDE6000032845E /* bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F6AB120FC950000FB8E0F /* bmp.c */; };
+		6B9015D120FDE6030032845E /* imageio.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F6AB420FC950000FB8E0F /* imageio.c */; };
+		6B9015D220FDE6060032845E /* ppm.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F6AB620FC950000FB8E0F /* ppm.c */; };
+		6B9015D320FDE6080032845E /* tga.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F6AB820FC950000FB8E0F /* tga.c */; };
 		6B94261A20928CA5007551AE /* parser_obj_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D7926209285620039AA8B /* parser_obj_tests.cpp */; };
 		6B94261B20928D63007551AE /* parser_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D7929209285620039AA8B /* parser_tests.cpp */; };
 		6B94261C20929048007551AE /* point3_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D792A209285620039AA8B /* point3_tests.cpp */; };
@@ -428,6 +432,7 @@
 		6B8C0BB91EAE2E4F001DF9C9 /* utility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utility.cpp; path = src/utility/utility.cpp; sourceTree = "<group>"; };
 		6B8C0BBA1EAE2E4F001DF9C9 /* utility.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = utility.hpp; path = src/utility/utility.hpp; sourceTree = "<group>"; };
 		6B8C0BBC1EAE2E57001DF9C9 /* settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = settings.h; path = src/settings.h; sourceTree = "<group>"; };
+		6B9015D420FDF8A50032845E /* packed_struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = packed_struct.h; sourceTree = "<group>"; };
 		6B94C6382067F55500F55A1A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = src/parsers/README.md; sourceTree = "<group>"; };
 		6B9B00561ECA896E00B84E48 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		6B9B00571ECA896E00B84E48 /* .travis.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
@@ -549,6 +554,7 @@
 				6B1F6AB120FC950000FB8E0F /* bmp.c */,
 				6B1F6AB220FC950000FB8E0F /* bmp.h */,
 				6B1F6AB320FC950000FB8E0F /* endianness.h */,
+				6B9015D420FDF8A50032845E /* packed_struct.h */,
 				6B1F6AB420FC950000FB8E0F /* imageio.c */,
 				6B1F6AB520FC950000FB8E0F /* imageio.h */,
 				6B1F6AB620FC950000FB8E0F /* ppm.c */,
@@ -1246,6 +1252,7 @@
 				6BC8C2F0200D1F6900984630 /* oren_nayar.cpp in Sources */,
 				6BC8C2F1200D1F6900984630 /* reflection.cpp in Sources */,
 				6BDCA1082094DC04000725C3 /* scene_tests.cpp in Sources */,
+				6B9015D320FDE6080032845E /* tga.c in Sources */,
 				6BF80020209239A200150BE3 /* materials_tests.cpp in Sources */,
 				6BC8C2F2200D1F6900984630 /* refraction.cpp in Sources */,
 				6B457F85200765BD0031EA09 /* camera.cpp in Sources */,
@@ -1303,6 +1310,7 @@
 				6B604BCE209206640074412F /* asset_tests.cpp in Sources */,
 				6BD89FCF2059A8EF00CE5B05 /* texture_library.cpp in Sources */,
 				6BDCA1092094DCF8000725C3 /* spectrum_tests.cpp in Sources */,
+				6B9015D220FDE6060032845E /* ppm.c in Sources */,
 				6BDCA10C2094DF47000725C3 /* texturelibrary_tests.cpp in Sources */,
 				6BCDDF6E1FE09B6E007536FF /* triangle.cpp in Sources */,
 				6BE25A271FDA9DC000360147 /* AABB.cpp in Sources */,
@@ -1315,11 +1323,13 @@
 				6BDCA10B2094DE8C000725C3 /* texture_tests.cpp in Sources */,
 				6B02B2771FD8BD390014D6CD /* point3.cpp in Sources */,
 				6B02B2761FD8BD1D0014D6CD /* ray.cpp in Sources */,
+				6B9015D020FDE6000032845E /* bmp.c in Sources */,
 				6BE113CE1FD4C80900D01A38 /* vec2.cpp in Sources */,
 				6BE113CF1FD4C80900D01A38 /* console.cpp in Sources */,
 				6BE113D01FD4C80900D01A38 /* utility.cpp in Sources */,
 				6BE113CD1FD4C7CE00D01A38 /* vec3.cpp in Sources */,
 				6B779D9D20AF00D900D0C52A /* imagemap_tests.cpp in Sources */,
+				6B9015D120FDE6030032845E /* imageio.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
