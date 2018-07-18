@@ -9,7 +9,8 @@
 #include <stdint.h>
 
 /*gcc should generate rol and bswap with these templates in big endian sistems*/
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ || defined(_WIN32)
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ || defined(_WIN32) || \
+!defined(IS_BIG_ENDIAN)
 #define ENDIANNESS_LITTLE16(value) value
 #define ENDIANNESS_LITTLE32(value) value
 #define ENDIANNESS_BIG16(value) ((value & 0xFF) >> 8) | (value << 8)

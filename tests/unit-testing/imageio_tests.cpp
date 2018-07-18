@@ -383,6 +383,25 @@ SPECTRE_TEST(ImageIO, bmp_read_func)
     EXPECT_EQ(alpha[3], 33);
     EXPECT_TRUE(res);
 }
+
+SPECTRE_TEST(ImageIO, bmp_valid_func)
+{
+    bool res;
+    res = img_valid("nonexistent.ppm", "bmp");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/wrong_magic1.bmp", "bmp");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/wrong_magic2.bmp", "bmp");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/os2.bmp", "bmp");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/correct.bmp", "bmp");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/flipped.bmp", "bmp");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/32bit.bmp", "bmp");
+    EXPECT_TRUE(res);
+}
 /*
 SPECTRE_TEST(ImageIO, save_rgb_func)
 {

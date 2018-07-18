@@ -14,6 +14,10 @@ char img_valid(const char* name, const char* ext)
             retval = tga_valid(name);
         else if(strcmp(ext, "ppm") == 0)
             retval = ppm_valid(name);
+#ifdef JPEG_FOUND
+        else if(strcmp(ext, "jpg") == 0)
+            retval = jpg_valid(name);
+#endif
     }
     return retval;
 }
@@ -28,6 +32,10 @@ char img_save(const char* name, const char* ext, int width, int height,
         retval = tga_save(name, width, height, data);
     else if(strcmp(ext, "ppm") == 0)
         retval = ppm_save(name, width, height, data);
+#ifdef JPEG_FOUND
+    else if(strcmp(ext, "jpg") == 0)
+        retval = jpg_save(name, width, height, data);
+#endif
     return retval;
 }
 
@@ -43,6 +51,10 @@ char img_read8(const char* name, const char* ext, int width, int height,
         retval = tga_read(name, values, alpha);
     else if(strcmp(ext, "ppm") == 0)
         retval = ppm_read(name, values, alpha);
+#ifdef JPEG_FOUND
+    else if(strcmp(ext, "jpg") == 0)
+        retval = jpg_read(name, values, alpha);
+#endif
     return retval;
 }
 
@@ -57,6 +69,10 @@ char img_read32(const char* name, const char* ext, int width, int height,
         retval = tga_read(name, tmp, alpha);
     else if(strcmp(ext, "ppm") == 0)
         retval = ppm_read(name, tmp, alpha);
+#ifdef JPEG_FOUND
+    else if(strcmp(ext, "jpg") == 0)
+        retval = jpg_read(name, tmp, alpha);
+#endif
     if(retval)
     {
         /* this step is useless unless new formats with high DPI are added */
@@ -81,5 +97,9 @@ char img_dimensions(const char* name, const char* ext,
         retval = tga_dimensions(name, width, height);
     else if(strcmp(ext, "ppm") == 0)
         retval = ppm_dimensions(name, width, height);
+#ifdef JPEG_FOUND
+    else if(strcmp(ext, "jpg") == 0)
+        retval = jpg_dimensions(name, width, height);
+#endif
     return retval;
 }

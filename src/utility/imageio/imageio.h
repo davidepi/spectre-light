@@ -1,6 +1,6 @@
 /*
 16-7-18
-17-7-18
+18-7-18
 */
 
 #ifndef __IMAGEIO_H__
@@ -10,6 +10,9 @@
 #include "ppm.h"
 #include "tga.h"
 #include <stdlib.h>
+#ifdef JPEG_FOUND
+#include "jpg.h"
+#endif
 
 char img_save(const char* name, const char* ext, int width, int height,
               const uint8_t* data);

@@ -128,7 +128,6 @@ char bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
            (ENDIANNESS_LITTLE16(dib.bpp) == 24 ||
             ENDIANNESS_LITTLE16(dib.bpp) == 32))
         {
-            fseek(fin, ENDIANNESS_LITTLE32(header.data_offset), SEEK_SET);
             int height = ENDIANNESS_LITTLE32(dib.height);
             const int width = ENDIANNESS_LITTLE32(dib.width);
             const int bpp = ENDIANNESS_LITTLE16(dib.bpp) >> 3;
@@ -138,6 +137,8 @@ char bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
             int x;
             int increment = -height/abs(height);
             int padding = (width*bpp)%4;
+            int written = 0;
+            uint8_t pixel[4];
             if(increment<0)
             {
                 ymax = -1;
@@ -149,8 +150,7 @@ char bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
                 ymax = height;
                 y = 0;
             }
-            int written = 0;
-            uint8_t pixel[4];
+            fseek(fin, ENDIANNESS_LITTLE32(header.data_offset), SEEK_SET);
             while(y != ymax)
             {
                 x = 0;
