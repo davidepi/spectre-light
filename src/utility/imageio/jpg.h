@@ -12,12 +12,13 @@
 #include <memory.h>
 #include <jpeglib.h>
 
-char jpg_save(const char* name, int width, int height, const uint8_t* data);
+char jpg_write(const char* name, int width, int height, const uint8_t* data);
 
-char jpg_read(const char* name, uint8_t* values, uint8_t* alpha);
+char jpg_valid(const char* name);
 
 char jpg_dimensions(const char* name, int* width, int* height);
 
-char jpg_valid(const char* name);
+char jpg_read(const char* name, uint8_t* values, uint8_t* alpha);
+
 
 #endif

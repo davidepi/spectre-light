@@ -37,12 +37,13 @@ PACKED_STRUCT(bmp_dib_v3)
     uint32_t important_colors_no;
 };
 
-char bmp_save(const char* name, int width, int height, const uint8_t* data);
+char bmp_write(const char* name, int width, int height, const uint8_t* data);
 
-char bmp_read(const char* name, uint8_t* values, uint8_t* alpha);
+char bmp_valid(const char* name);
 
 char bmp_dimensions(const char* name, int* width, int* height);
 
-char bmp_valid(const char* name);
+char bmp_read(const char* name, uint8_t* values, uint8_t* alpha);
+
 
 #endif

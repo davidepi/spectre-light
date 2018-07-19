@@ -27,12 +27,12 @@ struct tga_header
     uint8_t img_descriptor;
 };
 
-char tga_dimensions(const char* name, int* width, int* height);
-
-char tga_save(const char* name, int width, int height, const uint8_t* data);
-
-char tga_read(const char* name, uint8_t* values, uint8_t* alpha);
+char tga_write(const char* name, int width, int height, const uint8_t* data);
 
 char tga_valid(const char* name);
+
+char tga_dimensions(const char* name, int* width, int* height);
+
+char tga_read(const char* name, uint8_t* values, uint8_t* alpha);
 
 #endif

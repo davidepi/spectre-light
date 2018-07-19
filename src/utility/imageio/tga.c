@@ -36,7 +36,7 @@ char tga_valid(const char* name)
     return retval;
 }
 
-char tga_save(const char* name, int width, int height, const uint8_t* data)
+char tga_write(const char* name, int width, int height, const uint8_t* data)
 {
     char retval = 0;
     FILE* fout = fopen(name, "wb");

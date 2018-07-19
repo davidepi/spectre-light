@@ -75,7 +75,7 @@ static void create_bmp_header(int width, int height,
     dib->bpp = 24;
 }
 
-char bmp_save(const char* name, int width, int height, const uint8_t* data)
+char bmp_write(const char* name, int width, int height, const uint8_t* data)
 {
     int retval = 0;
     FILE* fout = fopen(name, "wb");

@@ -4,7 +4,7 @@
 #define CLAMP(x, y, z) x<0?x:x>z?z:x
 #define UNUSED(x) (void)(x)
 
-char ppm_save(const char* name, int width, int height, const uint8_t* array)
+char ppm_write(const char* name, int width, int height, const uint8_t* array)
 {
     FILE* fout = fopen(name, "wb");
     char retval = 0;
