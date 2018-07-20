@@ -5,7 +5,7 @@
 static void jpg_error(j_common_ptr jpg_img)
 {
     UNUSED(jpg_img);
-    //avoid terminating program if jpg error is encountered
+    /* avoid terminating program if jpg error is encountered */
 }
 
 char jpg_write(const char* name, int width, int height, const uint8_t* data)

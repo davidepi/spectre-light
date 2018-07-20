@@ -8,9 +8,9 @@ material: {name: "Red Matte", type: matte, diffuse: [255,0,0]}
 material: {name: "Green Matte", type: matte, diffuse: [0,255,0]}
 material: {name: "White Matte", type: matte, diffuse: [255,255,255]}
 material: {name: "Material", type: matte, diffuse: "Earth" }
-texture: {src:"/Users/davide/Desktop/haumea.bmp", name: "Haumea"}
-texture: {src:"/Users/davide/Desktop/jupiter.bmp", name:"Jupiter"}
-texture: {src:"/Users/davide/Desktop/earth.bmp", name:"Earth"}
+texture: {src:"haumea.bmp", name: "Haumea"}
+texture: {src:"jupiter.bmp", name:"Jupiter"}
+texture: {src:"earth.bmp", name:"Earth"}
 light: { name: "Sphere", position:[0,5,0], temperature:3500 }
 
 

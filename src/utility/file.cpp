@@ -41,7 +41,7 @@ static void append_relative(const char* abs, const char* relative, char* out)
         else
             min_abs_index = 1; //UNC path starting with \\ chars
     }
-    else //absolute path is "" and relative is C:\ or \\ 
+    else /* absolute path is "" and relative is C:\ or \\ */
     {
         if (rel[0] != File::PATH_SEPARATOR)
             min_abs_index = 2;

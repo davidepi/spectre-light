@@ -39,12 +39,10 @@ char img_write(const char* name, const char* ext, int width, int height,
     return retval;
 }
 
-char img_read8(const char* name, const char* ext, int width, int height,
-               uint8_t* values, uint8_t* alpha)
+char img_read8(const char* name, const char* ext, uint8_t* values,
+               uint8_t* alpha)
 {
     char retval = 0;
-    UNUSED(width);
-    UNUSED(height);
     if(strcmp(ext, "bmp") == 0)
         retval = bmp_read(name, values, alpha);
     else if(strcmp(ext, "tga") == 0)
@@ -58,21 +56,53 @@ char img_read8(const char* name, const char* ext, int width, int height,
     return retval;
 }
 
-char img_read32(const char* name, const char* ext, int width, int height,
-                float* values, uint8_t* alpha)
+char img_read32(const char* name, const char* ext, float* values,
+                uint8_t* alpha)
 {
-    uint8_t* tmp = (uint8_t*)malloc(sizeof(uint8_t)*width*height*3);
+    /* Fast explanation:
+     - float array required as output, but some functions returns char array
+     - image width and height are queried and the support char array is created
+     - if the image is not readable the array will have a size of 3 and the
+       call to read will fail
+     - if the image is not readable at all, a bogus malloc(1) is called
+     - the support array is converted to float array if the read was successful
+     - in any case it is deallocated, hence the reason of the bogus malloc(1)
+       and allocation even if width and height are not determined
+     */
+    uint8_t* tmp;
+    int width = 1;
+    int height = 1;
     char retval = 0;
     if(strcmp(ext, "bmp") == 0)
+    {
+        bmp_dimensions(name, &width, &height);
+        tmp = (uint8_t*)malloc(sizeof(float)*width*height*3);
         retval = bmp_read(name, tmp, alpha);
+    }
     else if(strcmp(ext, "tga") == 0)
+    {
+        tga_dimensions(name, &width, &height);
+        tmp = (uint8_t*)malloc(sizeof(float)*width*height*3);
         retval = tga_read(name, tmp, alpha);
+    }
     else if(strcmp(ext, "ppm") == 0)
+    {
+        ppm_dimensions(name, &width, &height);
+        tmp = (uint8_t*)malloc(sizeof(float)*width*height*3);
         retval = ppm_read(name, tmp, alpha);
+    }
 #ifdef JPEG_FOUND
     else if(strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0)
+    {
+        jpg_dimensions(name, &width, &height);
+        tmp = (uint8_t*)malloc(sizeof(float)*width*height*3);
         retval = jpg_read(name, tmp, alpha);
+    }
 #endif
+    else
+    {
+        tmp = malloc(1);
+    }
     if(retval)
     {
         /* this step is useless unless new formats with high DPI are added */

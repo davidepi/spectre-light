@@ -20,8 +20,7 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
             {
                 bool high_depth = false;
                 float* data = (float*)malloc(width*height*3*sizeof(float));
-                img_read32(src.absolute_path(), src.extension(), width,
-                           height, data, NULL);
+                img_read32(src.absolute_path(), src.extension(), data, NULL);
                 //check if image fits in 8bit per pixel
                 for(int i = 0; i<width*height*3; i++)
                 {
