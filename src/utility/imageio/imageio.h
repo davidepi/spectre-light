@@ -16,6 +16,9 @@
 #include "jpg.h"
 
 #endif
+#ifdef PNG_FOUND
+#include "png.h"
+#endif
 
 char img_write(const char* name, const char* ext, int width, int height,
                const uint8_t* data);

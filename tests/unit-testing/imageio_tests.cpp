@@ -15,7 +15,6 @@
 extern "C" {
 #include "utility/imageio/imageio.h"
 }
-
 #include "utility/utility.hpp"
 #include <cstdio>
 #include <climits>
@@ -456,6 +455,8 @@ SPECTRE_TEST(ImageIO, jpg_dimensions_func)
     EXPECT_TRUE(res);
     EXPECT_EQ(width, 2);
     EXPECT_EQ(height, 3);
+    width = 0;
+    height = 0;
     res = img_dimensions(TEST_ASSETS "images/generic.jpeg", "jpeg", &width,
                          &height);
     EXPECT_TRUE(res);
@@ -496,6 +497,99 @@ SPECTRE_TEST(ImageIO, jpg_read_func)
 
     res = img_read32(TEST_ASSETS "images/generic.jpeg", "jpeg", values, NULL);
     EXPECT_TRUE(res);
+    EXPECT_NEAR(values[0], 1.f, 1e-1f);
+    EXPECT_NEAR(values[1], 0.f, 1e-1f);
+    EXPECT_NEAR(values[2], 0.f, 1e-1f);
+    EXPECT_NEAR(values[3], 1.f, 1e-1f);
+    EXPECT_NEAR(values[4], 1.f, 1e-1f);
+    EXPECT_NEAR(values[5], 0.f, 1e-1f);
+    EXPECT_NEAR(values[6], 0.f, 1e-1f);
+    EXPECT_NEAR(values[7], 1.f, 1e-1f);
+    EXPECT_NEAR(values[8], 0.f, 1e-1f);
+    EXPECT_NEAR(values[9], 0.f, 1e-1f);
+    EXPECT_NEAR(values[10], 0.f, 1e-1f);
+    EXPECT_NEAR(values[11], 1.f, 1e-1f);
+    EXPECT_NEAR(values[12], 1.f, 1e-1f);
+    EXPECT_NEAR(values[13], 1.f, 1e-1f);
+    EXPECT_NEAR(values[14], 1.f, 1e-1f);
+    EXPECT_NEAR(values[15], 0.f, 1e-1f);
+    EXPECT_NEAR(values[16], 0.f, 1e-1f);
+    EXPECT_NEAR(values[17], 0.f, 1e-1f);
+}
+
+#endif
+#ifdef PNG_FOUND
+
+SPECTRE_TEST(ImageIO, png_write_func)
+{
+    char file_stat[64];
+
+    uint8_t image_sample[17*10*3];
+    for(int i = 0; i<17*10*3; i += 3)
+        image_sample[i] = i/3;
+    bool res = img_write("test.png", "png", 16, 10,
+            image_sample);
+    ASSERT_TRUE(res);
+#ifndef _WIN32
+    //check if saved image is actually a .ppm
+    FILE* fp = popen("file -b --mime test.png", "r");
+    fgets(file_stat, 64, fp);
+    pclose(fp);
+    EXPECT_STREQ(file_stat, "image/png; charset=binary\n");
+#endif
+    EXPECT_EQ(unlink("test.png"), 0);
+
+    //non existent folder
+    res = img_write("/root/nonexistent/test.png", "png", 16, 10, image_sample);
+    EXPECT_FALSE(res);
+}
+
+SPECTRE_TEST(ImageIO, png_valid_func)
+{
+    bool res;
+    res = img_valid("nonexistent.png", "png");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/bmpaspng.png", "png");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/generic.png", "png");
+    EXPECT_TRUE(res);
+}
+
+SPECTRE_TEST(ImageIO, png_dimensions_func)
+{
+    bool res;
+    int width;
+    int height;
+    width = 0;
+    height = 0;
+    res = img_dimensions("nonexistent.png", "png", &width, &height);
+    EXPECT_FALSE(res);
+    width = 0;
+    height = 0;
+    res = img_dimensions(TEST_ASSETS "images/bmpaspng.png", "png", &width,
+                         &height);
+    EXPECT_FALSE(res);
+    width = 0;
+    height = 0;
+    res = img_dimensions(TEST_ASSETS "images/generic.png", "png", &width,
+                         &height);
+    EXPECT_TRUE(res);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 3);
+}
+
+SPECTRE_TEST(ImageIO, png_read_func)
+{
+    bool res;
+    float values[6*3];
+    uint8_t alpha[4];
+    res = img_read32("nonexistent.png", "png", values, alpha);
+    EXPECT_EQ(res, 0);
+    res = img_read32(TEST_ASSETS "images/bmpaspng.png", "png", values, alpha);
+    EXPECT_EQ(res, 0);
+    res = img_read32(TEST_ASSETS "images/generic.png", "png", values, NULL);
+    EXPECT_EQ(res, 1);
+    //The compression changes the values so I need to put an higher epsilon
     EXPECT_NEAR(values[0], 1.f, 1e-1f);
     EXPECT_NEAR(values[1], 0.f, 1e-1f);
     EXPECT_NEAR(values[2], 0.f, 1e-1f);
