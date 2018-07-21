@@ -1,3 +1,6 @@
+/*  author: Davide Pizzolotto   */
+/*  license: MIT                */
+
 #include "bmp.h"
 
 #define BMP_MAGIC 19778
@@ -11,7 +14,7 @@ uint32_t bmp_size(int width, int height, short bpp)
 
 char bmp_valid(const char* name)
 {
-    int retval = 0;
+    char retval = 0;
     FILE* fin = fopen(name, "rb");
     if(fin != NULL)
     {
@@ -32,7 +35,7 @@ char bmp_valid(const char* name)
 
 char bmp_dimensions(const char* name, int* width, int* height)
 {
-    int retval = 0;
+    char retval = 0;
     FILE* fin = fopen(name, "rb");
     if(fin != NULL)
     {
@@ -70,21 +73,21 @@ static void create_bmp_header(int width, int height,
                                   sizeof(struct bmp_dib_v3));
     dib->header_size = sizeof(struct bmp_dib_v3);
     dib->width = ENDIANNESS_LITTLE32(width);
-    dib->height = ENDIANNESS_LITTLE32(-height);
+    dib->height = ENDIANNESS_LITTLE32(-abs(height));
     dib->color_planes = 1;
     dib->bpp = 24;
 }
 
 char bmp_write(const char* name, int width, int height, const uint8_t* data)
 {
-    int retval = 0;
+    char retval = 0;
     FILE* fout = fopen(name, "wb");
     if(fout != NULL)
     {
         struct bmp_header header;
         struct bmp_dib_v3 dib;
         uint8_t pixel[3];
-        char padding = (width*(ENDIANNESS_LITTLE16(dib.bpp) >> 3))%4;
+        const char padding = (width*(ENDIANNESS_LITTLE16(dib.bpp) >> 3))%4;
         int x;
         int y;
         create_bmp_header(width, height, &header, &dib);
@@ -168,7 +171,7 @@ char bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
                 fread(&pixel, sizeof(uint8_t), padding, fin);
                 y += increment;
             }
-            retval = written == height*width?has_alpha?2:1:0;
+            retval = written == (height*width)?has_alpha?2:1:0;
         }
     }
     fclose(fin);
