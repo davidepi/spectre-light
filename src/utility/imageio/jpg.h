@@ -20,5 +20,4 @@ char jpg_dimensions(const char* name, int* width, int* height);
 
 char jpg_read(const char* name, uint8_t* values, uint8_t* alpha);
 
-
 #endif

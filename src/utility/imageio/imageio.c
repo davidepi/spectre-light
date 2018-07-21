@@ -22,6 +22,10 @@ char img_valid(const char* name, const char* ext)
         else if(strcmp(ext, "png")==0)
             retval = png_valid(name);
 #endif
+#ifdef TIFF_FOUND
+        else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
+            retval = tiff_valid(name);
+#endif
     }
     return retval;
 }
@@ -44,6 +48,10 @@ char img_write(const char* name, const char* ext, int width, int height,
     else if(strcmp(ext, "png") == 0)
         retval = png_write(name, width, height, data);
 #endif
+#ifdef TIFF_FOUND
+    else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
+        retval = tiff_write(name, width, height, data);
+#endif
     return retval;
 }
 
@@ -64,6 +72,10 @@ char img_read8(const char* name, const char* ext, uint8_t* values,
 #ifdef PNG_FOUND
     else if(strcmp(ext, "png") == 0)
         retval = png_read(name, values, alpha);
+#endif
+#ifdef TIFF_FOUND
+    else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
+        retval = tiff_read(name, values, alpha);
 #endif
     return retval;
 }
@@ -119,6 +131,14 @@ char img_read32(const char* name, const char* ext, float* values,
         retval = png_read(name, tmp, alpha);
     }
 #endif
+#ifdef TIFF_FOUND
+    else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
+    {
+        tiff_dimensions(name, &width, &height);
+        tmp = (uint8_t*)malloc(sizeof(float)*width*height*3);
+        retval = tiff_read(name, tmp, alpha);
+    }
+#endif
     else
     {
         tmp = malloc(1);
@@ -154,6 +174,10 @@ char img_dimensions(const char* name, const char* ext,
 #ifdef PNG_FOUND
     else if(strcmp(ext, "png") == 0)
         retval = png_dimensions(name, width, height);
+#endif
+#ifdef JPEG_FOUND
+    else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
+        retval = tiff_dimensions(name, width, height);
 #endif
     return retval;
 }
