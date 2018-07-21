@@ -104,15 +104,8 @@
 #define MESSAGE_COMPARE_INF "Comparing infinite values could lead to "\
 "undefined results"
 
-#define MESSAGE_IM_UNSUPPORTED "Output file format is not supported, the "\
-"result will be a NetPBM image"
-
-#define MESSAGE_IM_OUT "ImageMagick not found, output will be in NetPBM format. The image will be saved as %s"
-
-#define MESSAGE_IM_CHANN "Unsupported number of channels in file %s"
-
-#define MESSAGE_IM_NOFLOAT "Quantum type of ImageMagick is not a float. "\
-"Read images will probably have wrong values"
+#define MESSAGE_UNSUPPORTED_OUT "Output file format is not supported, the "\
+"result will be a NetPBM image. The image will be saved as %s"
 
 //max 16 char, otherwise change comments in the utility.hpp, format_seconds func
 #define MESSAGE_MORE_THAN_100_DAYS "more than 100d"

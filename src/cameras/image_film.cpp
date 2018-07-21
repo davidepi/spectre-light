@@ -20,17 +20,17 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
     if(parent_folder.writable())
     {
         //check extension, add .ppm if not supported
-        bool valid = img_valid(output.absolute_path(), output.extension());
+        bool supported = img_supported(output.extension());
         int path_len = (int)strlen(fullpath)+1;
         //to add the .ppm at the end, if necessary
-        if(!valid)
+        if(!supported)
         {
             char* tmp_buf = (char*)malloc(sizeof(char)*path_len+4);
             strcpy(tmp_buf, fullpath);
             strcat(tmp_buf, ".ppm");
             output = File(tmp_buf);
             free(tmp_buf);
-            Console.warning(MESSAGE_IM_OUT, output.absolute_path());
+            Console.warning(MESSAGE_UNSUPPORTED_OUT, output.absolute_path());
             //check again the folder, since the extension changed it
             if(output.exists() && output.is_folder())
             {

@@ -12,8 +12,10 @@
 #define rmdir _rmdir
 #define F_OK 0x0
 #else
+
 #include <gtest/gtest.h>
 #include <unistd.h>
+
 #endif
 
 #include "cameras/image_film.hpp"
@@ -24,6 +26,9 @@ SPECTRE_TEST_INIT(ImageFilm_tests)
 
 SPECTRE_TEST(ImageFIlm, constructor)
 {
+    //this test was made when the extension was checked by hand letter by letter
+    //now is mostly useless
+
     //another folder, fake file
     errors_count[CRITICAL_INDEX] = 0;
     ImageFilm img(2, 2, "../folder/file.fake");
@@ -62,7 +67,7 @@ SPECTRE_TEST(ImageFIlm, constructor)
     ImageFilm img5(2, 2, "folder");
     EXPECT_EQ(errors_count[CRITICAL_INDEX], 1);
     errors_count[CRITICAL_INDEX] = 0;
-    EXPECT_EQ(rmdir(folder.absolute_path()),0);
+    EXPECT_EQ(rmdir(folder.absolute_path()), 0);
 
     //almost similar extensions
     errors_count[WARNING_INDEX] = 0;
@@ -89,11 +94,15 @@ SPECTRE_TEST(ImageFIlm, constructor)
     EXPECT_EQ(unlink("out.bmm.ppm"), 0);
 
     //jpg correctly saved
-#ifdef IMAGEMAGICK
+#ifdef JPEG_FOUND
     ImageFilm img9(2, 2, "out.jpg");
     EXPECT_TRUE(img9.save_image());
     EXPECT_EQ(access("out.jpg", F_OK), 0);
     EXPECT_EQ(unlink("out.jpg"), 0);
+    ImageFilm img10(2, 2, "out.jpeg");
+    EXPECT_TRUE(img10.save_image());
+    EXPECT_EQ(access("out.jpeg", F_OK), 0);
+    EXPECT_EQ(unlink("out.jpeg"), 0);
 #else
     errors_count[WARNING_INDEX] = 0;
     ImageFilm img9(2,2,"out.jpg");
@@ -102,6 +111,54 @@ SPECTRE_TEST(ImageFIlm, constructor)
     EXPECT_TRUE(img9.save_image());
     EXPECT_EQ(access("out.jpg.ppm",F_OK),0);
     EXPECT_EQ(unlink("out.jpg.ppm"),0);
+    errors_count[WARNING_INDEX] = 0;
+    ImageFilm img10(2,2,"out.jpeg");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(img10.save_image());
+    EXPECT_EQ(access("out.jpeg.ppm",F_OK),0);
+    EXPECT_EQ(unlink("out.jpeg.ppm"),0);
+#endif
+    //png correctly saved
+#ifdef PNG_FOUND
+    ImageFilm img11(2, 2, "out.png");
+    EXPECT_TRUE(img11.save_image());
+    EXPECT_EQ(access("out.png", F_OK), 0);
+    EXPECT_EQ(unlink("out.png"), 0);
+#else
+    errors_count[WARNING_INDEX] = 0;
+    ImageFilm img11(2,2,"out.png");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(img11.save_image());
+    EXPECT_EQ(access("out.png.ppm",F_OK),0);
+    EXPECT_EQ(unlink("out.png.ppm"),0);
+#endif
+    //tiff correctly saved
+#ifdef TIFF_FOUND
+    ImageFilm img12(2, 2, "out.tif");
+    EXPECT_TRUE(img12.save_image());
+    EXPECT_EQ(access("out.tif", F_OK), 0);
+    EXPECT_EQ(unlink("out.tif"), 0);
+    ImageFilm img13(2, 2, "out.tiff");
+    EXPECT_TRUE(img13.save_image());
+    EXPECT_EQ(access("out.tiff", F_OK), 0);
+    EXPECT_EQ(unlink("out.tiff"), 0);
+#else
+    errors_count[WARNING_INDEX] = 0;
+    ImageFilm img12(2,2,"out.tif");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(img12.save_image());
+    EXPECT_EQ(access("out.tif.ppm",F_OK),0);
+    EXPECT_EQ(unlink("out.tif.ppm"),0);
+    errors_count[WARNING_INDEX] = 0;
+    ImageFilm img13(2,2,"out.tiff");
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    EXPECT_TRUE(img13.save_image());
+    EXPECT_EQ(access("out.tiff.ppm",F_OK),0);
+    EXPECT_EQ(unlink("out.tiff.ppm"),0);
 #endif
 }
 

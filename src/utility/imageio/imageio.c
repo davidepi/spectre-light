@@ -108,6 +108,28 @@ char img_read8(const char* name, const char* ext, uint8_t* values,
     return retval;
 }
 
+char img_supported(const char* ext)
+{
+    char retval = 0;
+    if(strcmp(ext, "bmp") == 0 ||
+       strcmp(ext, "tga") == 0 ||
+       strcmp(ext, "ppm") == 0)
+        retval = 1;
+#ifdef JPEG_FOUND
+    else if(strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0)
+        retval = 1;
+#endif
+#ifdef PNG_FOUND
+    else if(strcmp(ext, "png") == 0)
+           retval = 1;
+#endif
+#ifdef TIFF_FOUND
+    else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
+        retval = 1;
+#endif
+    return retval;
+}
+
 /*
 char img_read32(const char* name, const char* ext, float* values,
                 uint8_t* alpha)

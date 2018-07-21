@@ -100,6 +100,8 @@ IF(JPEG_FOUND)
     IF(GTEST_FOUND)
         SET_PROPERTY(SOURCE tests/unit-testing/imageio_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DJPEG_FOUND ")
+        SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DJPEG_FOUND ")
         TARGET_SOURCES(runTests PUBLIC src/utility/imageio/jpg.c)
         TARGET_LINK_LIBRARIES(runTests ${JPEG_LIBRARIES})
     ENDIF(GTEST_FOUND)
@@ -117,6 +119,8 @@ IF(PNG_FOUND)
     IF(GTEST_FOUND)
         SET_PROPERTY(SOURCE tests/unit-testing/imageio_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DPNG_FOUND ")
+        SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DPNG_FOUND ")
         TARGET_SOURCES(runTests PUBLIC src/utility/imageio/png.c)
         TARGET_LINK_LIBRARIES(runTests ${PNG_LIBRARIES})
     ENDIF(GTEST_FOUND)
@@ -133,6 +137,8 @@ IF(TIFF_FOUND)
     TARGET_LINK_LIBRARIES(spectre-rgb ${TIFF_LIBRARIES})
     IF(GTEST_FOUND)
         SET_PROPERTY(SOURCE tests/unit-testing/imageio_tests.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DTIFF_FOUND ")
+        SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DTIFF_FOUND ")
         TARGET_SOURCES(runTests PUBLIC src/utility/imageio/tiff.c)
         TARGET_LINK_LIBRARIES(runTests ${TIFF_LIBRARIES})

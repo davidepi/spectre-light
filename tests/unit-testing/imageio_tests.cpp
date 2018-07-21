@@ -22,6 +22,35 @@ extern "C" {
 
 SPECTRE_TEST_INIT(ImageIO_tests)
 
+SPECTRE_TEST(ImageIO, image_supported_func)
+{
+    bool res;
+    res = img_supported("ppm");
+    EXPECT_TRUE(res);
+    res = img_supported("bmp");
+    EXPECT_TRUE(res);
+    res = img_supported("tga");
+    EXPECT_TRUE(res);
+#ifdef JPEG_FOUND
+    res = img_supported("jpg");
+    EXPECT_TRUE(res);
+    res = img_supported("jpeg");
+    EXPECT_TRUE(res);
+#endif
+#ifdef PNG_FOUND
+    res = img_supported("png");
+    EXPECT_TRUE(res);
+#endif
+#ifdef TIFF_FOUND
+    res = img_supported("tif");
+    EXPECT_TRUE(res);
+    res = img_supported("tiff");
+    EXPECT_TRUE(res);
+#endif
+    res = img_supported("dds");
+    EXPECT_FALSE(res);
+}
+
 SPECTRE_TEST(ImageIO, ppm_write_func)
 {
     char file_stat[64];

@@ -1,5 +1,5 @@
 /*  Created,  16 Jul 2018   */
-/*  Last Edit 18 Jul 2018   */
+/*  Last Edit 21 Jul 2018   */
 
 /**
  *  \file imageio.h
@@ -44,7 +44,7 @@
  *  ext value is used to determine the actual type of image that will be written
  *
  *  \param[in] name Path where the image will be written
- *  \param[in] ext Extension of the image, like "bmp" or "tga"
+ *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
  *  \param[in] width Width of the image
  *  \param[in] height Height of the image
  *  \param[in] data Image data, as an array of size width*height*3 with
@@ -63,7 +63,7 @@ char img_write(const char* name, const char* ext, int width, int height,
  *  final image will be readable
  *
  *  \param[in] name Path of the image on disk
- *  \param[in] ext Extension of the image, like "bmp" or "tga"
+ *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
  *  \return 1 if the image is valid, 0 otherwise
  */
 char img_valid(const char* name, const char* ext);
@@ -76,7 +76,7 @@ char img_valid(const char* name, const char* ext);
  *  then set into the two pointer passed as input.
  *
  *  \param[in] name Path of the image on disk
- *  \param[in] ext Extension of the image, like "bmp" or "tga"
+ *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
  *  \param[out] width Width of the image
  *  \param[out] height Height of the image
  *  \return 1 if the width and height could be determined, 0 otherwise
@@ -96,7 +96,7 @@ char img_dimensions(const char* name, const char* ext,
  *  array, provided it is not NULL. The alpha array size should be width*height
  *
  *  \param[in] name Path of the image on disk
- *  \param[in] ext Extension of the image, like "bmp" or "tga"
+ *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
  *  \param[in] values Array of size width*height*3 that will contain every
  *  image value in range [0-255], top-down left-right order with channel as
  *  RGBRGB...
@@ -109,6 +109,18 @@ char img_dimensions(const char* name, const char* ext,
  */
 char img_read8(const char* name, const char* ext, uint8_t* values,
                uint8_t* alpha);
+
+/**
+ * \brief Checks if this library can handle the image
+ *
+ *  Briefly checks if the type of image with the given extension can be managed
+ *  by this library. Note that even if this function returns 1, a particular
+ *  version could be unsupported and unreadable
+ *
+ * \param[in] ext The extension of the image that will be checked, without dot
+ * \return 1 if the library can handle the given kind of images, 0 otherwise
+ */
+char img_supported(const char* ext);
 
 /*
  Maybe this will be readded in future

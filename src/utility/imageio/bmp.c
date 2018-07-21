@@ -25,8 +25,7 @@ char bmp_valid(const char* name)
         if(retval)
         {
             res = fread(&dib, sizeof(struct bmp_dib_v3), 1, fin);
-            retval &= res && ENDIANNESS_LITTLE32(dib.header_size) == 40 &&
-                      dib.compression == 0 && dib.palette_no == 0 &&
+            retval &= res && dib.compression == 0 && dib.palette_no == 0 &&
                       (dib.bpp == 24 || dib.bpp == 32);
         }
     }
@@ -45,9 +44,7 @@ char bmp_dimensions(const char* name, int* width, int* height)
         if(res)
         {
             res = fread(&dib, sizeof(struct bmp_dib_v3), 1, fin);
-            if(res && ENDIANNESS_LITTLE16(header.signature) == BMP_MAGIC &&
-               ENDIANNESS_LITTLE32(dib.header_size) ==
-               sizeof(struct bmp_dib_v3))
+            if(res && ENDIANNESS_LITTLE16(header.signature) == BMP_MAGIC)
             {
                 *width = ENDIANNESS_LITTLE32(dib.width);
                 *height = ENDIANNESS_LITTLE32(dib.height);
@@ -126,8 +123,7 @@ char bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
     {
         res = fread(&dib, sizeof(struct bmp_dib_v3), 1, fin);
         /* not v3 or other fancy features not supported */
-        if(res && ENDIANNESS_LITTLE32(dib.header_size) == 40 &&
-           dib.compression == 0 && dib.palette_no == 0 &&
+        if(res && dib.compression == 0 && dib.palette_no == 0 &&
            (ENDIANNESS_LITTLE16(dib.bpp) == 24 ||
             ENDIANNESS_LITTLE16(dib.bpp) == 32))
         {
