@@ -135,7 +135,7 @@ char png_read(const char* name, uint8_t* values, uint8_t* alpha)
             png_read_image(png_img, rows);
             for(y = 0; y<height; y++)
             {
-                for(x = 0; x<width*4; x++)
+                for(x = 0; x<width; x++)
                 {
                     int index_alpha = y*width+x;
                     int index_rgb = index_alpha*3;

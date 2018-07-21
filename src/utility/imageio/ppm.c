@@ -121,8 +121,6 @@ char ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
                     /* read a pixel block of READ_BUFFER size */
                     while((read = fread(buffer, 2, READ_BUFFER, fin))>0)
                     {
-                        /*read written as size_t*count, but I want only count*/
-                        read /= 2;
                         /* read more byte than expected from image dimensions */
                         if(i+read>=width*height*3U)
                         {

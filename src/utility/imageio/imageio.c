@@ -1,34 +1,9 @@
+/*  author: Davide Pizzolotto   */
+/*  license: MIT                */
+
 #include "imageio.h"
 
 #define UNUSED(x) (void)(x)
-
-char img_valid(const char* name, const char* ext)
-{
-    char retval = 0;
-    /* pos less than 4 chr expected for an extension */
-    if(ext != NULL && strcmp(ext, "") != 0)
-    {
-        if(strcmp(ext, "bmp") == 0)
-            retval = bmp_valid(name);
-        else if(strcmp(ext, "tga") == 0)
-            retval = tga_valid(name);
-        else if(strcmp(ext, "ppm") == 0)
-            retval = ppm_valid(name);
-#ifdef JPEG_FOUND
-        else if(strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0)
-            retval = jpg_valid(name);
-#endif
-#ifdef PNG_FOUND
-        else if(strcmp(ext, "png")==0)
-            retval = png_valid(name);
-#endif
-#ifdef TIFF_FOUND
-        else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
-            retval = tiff_valid(name);
-#endif
-    }
-    return retval;
-}
 
 char img_write(const char* name, const char* ext, int width, int height,
                const uint8_t* data)
@@ -51,6 +26,59 @@ char img_write(const char* name, const char* ext, int width, int height,
 #ifdef TIFF_FOUND
     else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
         retval = tiff_write(name, width, height, data);
+#endif
+    return retval;
+}
+
+char img_valid(const char* name, const char* ext)
+{
+    char retval = 0;
+    /* pos less than 4 chr expected for an extension */
+    if(ext != NULL && strcmp(ext, "") != 0)
+    {
+        if(strcmp(ext, "bmp") == 0)
+            retval = bmp_valid(name);
+        else if(strcmp(ext, "tga") == 0)
+            retval = tga_valid(name);
+        else if(strcmp(ext, "ppm") == 0)
+            retval = ppm_valid(name);
+#ifdef JPEG_FOUND
+        else if(strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0)
+            retval = jpg_valid(name);
+#endif
+#ifdef PNG_FOUND
+        else if(strcmp(ext, "png") == 0)
+            retval = png_valid(name);
+#endif
+#ifdef TIFF_FOUND
+        else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
+            retval = tiff_valid(name);
+#endif
+    }
+    return retval;
+}
+
+char img_dimensions(const char* name, const char* ext,
+                    int* width, int* height)
+{
+    char retval = 0;
+    if(strcmp(ext, "bmp") == 0)
+        retval = bmp_dimensions(name, width, height);
+    else if(strcmp(ext, "tga") == 0)
+        retval = tga_dimensions(name, width, height);
+    else if(strcmp(ext, "ppm") == 0)
+        retval = ppm_dimensions(name, width, height);
+#ifdef JPEG_FOUND
+    else if(strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0)
+        retval = jpg_dimensions(name, width, height);
+#endif
+#ifdef PNG_FOUND
+    else if(strcmp(ext, "png") == 0)
+        retval = png_dimensions(name, width, height);
+#endif
+#ifdef JPEG_FOUND
+    else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
+        retval = tiff_dimensions(name, width, height);
 #endif
     return retval;
 }
@@ -80,10 +108,11 @@ char img_read8(const char* name, const char* ext, uint8_t* values,
     return retval;
 }
 
+/*
 char img_read32(const char* name, const char* ext, float* values,
                 uint8_t* alpha)
 {
-    /* Fast explanation:
+     Fast explanation:
      - float array required as output, but some functions returns char array
      - image width and height are queried and the support char array is created
      - if the image is not readable the array will have a size of 3 and the
@@ -92,7 +121,7 @@ char img_read32(const char* name, const char* ext, float* values,
      - the support array is converted to float array if the read was successful
      - in any case it is deallocated, hence the reason of the bogus malloc(1)
        and allocation even if width and height are not determined
-     */
+
     uint8_t* tmp;
     int width = 1;
     int height = 1;
@@ -145,7 +174,7 @@ char img_read32(const char* name, const char* ext, float* values,
     }
     if(retval)
     {
-        /* this step is useless unless new formats with high DPI are added */
+         this step is useless unless new formats with high DPI are added
         int i = 0;
         while(i<width*height*3)
         {
@@ -156,28 +185,4 @@ char img_read32(const char* name, const char* ext, float* values,
     free(tmp);
     return retval;
 }
-
-char img_dimensions(const char* name, const char* ext,
-                    int* width, int* height)
-{
-    char retval = 0;
-    if(strcmp(ext, "bmp") == 0)
-        retval = bmp_dimensions(name, width, height);
-    else if(strcmp(ext, "tga") == 0)
-        retval = tga_dimensions(name, width, height);
-    else if(strcmp(ext, "ppm") == 0)
-        retval = ppm_dimensions(name, width, height);
-#ifdef JPEG_FOUND
-    else if(strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0)
-        retval = jpg_dimensions(name, width, height);
-#endif
-#ifdef PNG_FOUND
-    else if(strcmp(ext, "png") == 0)
-        retval = png_dimensions(name, width, height);
-#endif
-#ifdef JPEG_FOUND
-    else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
-        retval = tiff_dimensions(name, width, height);
-#endif
-    return retval;
-}
+*/
