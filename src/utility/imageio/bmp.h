@@ -7,7 +7,7 @@
  *  \details Several functions used to read and write Windows Bitmap images
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 13 Jul 2018
+ *  \date 17 Jul 2018
  *  \copyright MIT
  */
 
@@ -37,7 +37,7 @@ PACKED_STRUCT(bmp_header)
     uint32_t data_offset;
 };
 
-/** Structure holding the bmp V3 header (BITMAPINFOHEADER). */
+/** Structure holding the bmp V3 header (BITMAPINFOHEADER). Must be 40 bytes */
 PACKED_STRUCT(bmp_dib_v3)
 {
     /** Size of the header. Must be 40 bytes */

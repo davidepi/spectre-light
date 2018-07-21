@@ -1,7 +1,10 @@
+/*  author: Davide Pizzolotto   */
+/*  license: MIT                */
+
 #include "ppm.h"
 
 #define READ_BUFFER 4096
-#define CLAMP(x, y, z) x<0?x:x>z?z:x
+#define CLAMP(x, y, z) ((x)<0)?0:(x)>(z)?(z):(x)
 #define UNUSED(x) (void)(x)
 
 char ppm_write(const char* name, int width, int height, const uint8_t* array)
