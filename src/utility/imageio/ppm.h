@@ -75,7 +75,7 @@ char ppm_dimensions(const char* name, int* width, int* height);
  *  \note Binary PPM are considerably faster to read than ASCII PPM
  *
  *  \param[in] name The path of the image
- *  \param[out] data An array of size width*height*3 that will hold the values
+ *  \param[out] values An array of size width*height*3 that will hold the values
  *  of the image
  *  \param[out] alpha UNUSED
  *  \return 1 if the image was sucessfully read, 0 otherwise

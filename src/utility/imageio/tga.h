@@ -1,6 +1,6 @@
 /*
 15-7-18
-17-7-18
+23-7-18
 */
 
 #ifndef __TGA_H__
@@ -10,8 +10,9 @@
 #include <string.h>
 #include <stdio.h>
 #include "endianness.h"
+#include "packed_struct.h"
 
-struct tga_header
+PACKED_STRUCT(tga_header)
 {
     uint8_t id_len;
     uint8_t colourmap_type;

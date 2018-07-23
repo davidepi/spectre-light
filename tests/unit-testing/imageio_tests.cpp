@@ -317,8 +317,10 @@ SPECTRE_TEST(ImageIO, bmp_dimensions_func)
     res = img_dimensions(TEST_ASSETS "images/32bit.bmp", "bmp", &width,
                          &height);
     EXPECT_TRUE(res);
-    width = 2;
-    height = 2;
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    width = 0;
+    height = 0;
 }
 
 SPECTRE_TEST(ImageIO, bmp_read_func)
@@ -425,9 +427,141 @@ SPECTRE_TEST(ImageIO, bmp_valid_func)
     EXPECT_TRUE(res);
 }
 
-#ifdef JPEG_FOUND
+SPECTRE_TEST(ImageIO, tga_save_func)
+{
+    char file_stat[64];
+    
+    uint8_t image_sample[17*10*3];
+    for(int i = 0; i<17*10*3; i += 3)
+        image_sample[i] = i/3;
+    bool res = img_write("test.tga", "tga", 16, 10, image_sample);
+    ASSERT_TRUE(res);
+#ifndef _WIN32
+    //check if saved image is actually a .bmp
+    FILE* fp = popen("file -b --mime test.tga", "r");
+    fgets(file_stat, 64, fp);
+    pclose(fp);
+    EXPECT_STREQ(file_stat,
+                 "image/x-tgaimage/x-tga; charset=binary\n");
+#endif
+    EXPECT_EQ(unlink("test.tga"), 0);
+    
+    //non existent folder
+    res = img_write("/root/nonexistent/test.tga", "tga", 16, 10, image_sample);
+    EXPECT_FALSE(res);
+}
 
-SPECTRE_TEST(ImageIO, jpg_write_func)
+SPECTRE_TEST(ImageIO, tga_valid_func)
+{
+    bool res;
+    res = img_valid("nonexistent.tga", "tga");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/bmpastga.tga", "tga");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/16bit.tga", "tga");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/24bit.tga", "tga");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/32bit.tga", "tga");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/16bitRLE.tga", "tga");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/24bitRLE.tga", "tga");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/32bitRLE.tga", "tga");
+    EXPECT_TRUE(res);
+}
+
+SPECTRE_TEST(ImageIO, tga_dimensions_func)
+{
+    int width;
+    int height;
+    bool res;
+    res = img_dimensions("nonexistent.tga", "tga", &width, &height);
+    EXPECT_FALSE(res);
+    width = 0;
+    height = 0;
+    res = img_dimensions(TEST_ASSETS "images/bmpastga.tga", "tga", &width,
+                         &height);
+    EXPECT_FALSE(res);
+    width = 0;
+    height = 0;
+    //16bit
+    res = img_dimensions(TEST_ASSETS "images/16bit.tga", "tga", &width,
+                         &height);
+    EXPECT_TRUE(res);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    width = 0;
+    height = 0;
+    //24 bit
+    res = img_dimensions(TEST_ASSETS "images/24bit.tga", "tga", &width,
+                         &height);
+    EXPECT_TRUE(res);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    width = 0;
+    height = 0;
+    //32bit
+    res = img_dimensions(TEST_ASSETS "images/32bit.tga", "tga", &width,
+                         &height);
+    EXPECT_TRUE(res);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+    width = 0;
+    height = 0;
+    //16bit
+    res = img_dimensions(TEST_ASSETS "images/16bitRLE.tga", "tga", &width,
+                         &height);
+    EXPECT_TRUE(res);
+    EXPECT_EQ(width, 10);
+    EXPECT_EQ(height, 10);
+    width = 0;
+    height = 0;
+    //24 bit
+    res = img_dimensions(TEST_ASSETS "images/24bitRLE.tga", "tga", &width,
+                         &height);
+    EXPECT_TRUE(res);
+    EXPECT_EQ(width, 10);
+    EXPECT_EQ(height, 10);
+    width = 0;
+    height = 0;
+    //32bit
+    res = img_dimensions(TEST_ASSETS "images/32bitRLE.tga", "tga", &width,
+                         &height);
+    EXPECT_TRUE(res);
+    EXPECT_EQ(width, 10);
+    EXPECT_EQ(height, 10);
+    width = 0;
+    height = 0;
+}
+
+SPECTRE_TEST(ImageIO, tga_read_func)
+{
+    int res;
+    uint8_t values[10*10*3];
+    res = img_read8("nonexistent.tga", "tga", values, NULL);
+    EXPECT_EQ(res, 0);
+    res = img_read8("bmpastga.tga", "tga", values, NULL);
+    EXPECT_EQ(res, 0);
+    //normal image
+    res = img_read8(TEST_ASSETS "images/24bit.tga", "tga", values, NULL);
+    EXPECT_EQ(values[0], (uint8_t)255);
+    EXPECT_EQ(values[1], (uint8_t)0);
+    EXPECT_EQ(values[2], (uint8_t)0);
+    EXPECT_EQ(values[3], (uint8_t)0);
+    EXPECT_EQ(values[4], (uint8_t)255);
+    EXPECT_EQ(values[5], (uint8_t)0);
+    EXPECT_EQ(values[6], (uint8_t)0);
+    EXPECT_EQ(values[7], (uint8_t)0);
+    EXPECT_EQ(values[8], (uint8_t)255);
+    EXPECT_EQ(values[9], (uint8_t)0);
+    EXPECT_EQ(values[10], (uint8_t)0);
+    EXPECT_EQ(values[11], (uint8_t)0);
+    EXPECT_EQ(res,1);
+}
+
+#ifdef JPEG_FOUND
 {
     char file_stat[64];
 
