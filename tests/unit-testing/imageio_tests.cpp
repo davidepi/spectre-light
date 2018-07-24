@@ -539,7 +539,8 @@ SPECTRE_TEST(ImageIO, tga_dimensions_func)
 SPECTRE_TEST(ImageIO, tga_read_func)
 {
     int res;
-    uint8_t values[10*10*3];
+    uint8_t values[12];
+    uint8_t alpha[4];
     res = img_read8("nonexistent.tga", "tga", values, NULL);
     EXPECT_EQ(res, 0);
     res = img_read8("bmpastga.tga", "tga", values, NULL);
@@ -559,6 +560,65 @@ SPECTRE_TEST(ImageIO, tga_read_func)
     EXPECT_EQ(values[10], (uint8_t)0);
     EXPECT_EQ(values[11], (uint8_t)0);
     EXPECT_EQ(res,1);
+    //32 bit no alpha array
+    res = img_read8(TEST_ASSETS "images/32bit.tga", "tga", values, NULL);
+    EXPECT_EQ(values[0], (uint8_t)255);
+    EXPECT_EQ(values[1], (uint8_t)0);
+    EXPECT_EQ(values[2], (uint8_t)0);
+    EXPECT_EQ(values[3], (uint8_t)0);
+    EXPECT_EQ(values[4], (uint8_t)255);
+    EXPECT_EQ(values[5], (uint8_t)0);
+    EXPECT_EQ(values[6], (uint8_t)0);
+    EXPECT_EQ(values[7], (uint8_t)0);
+    EXPECT_EQ(values[8], (uint8_t)255);
+    EXPECT_EQ(values[9], (uint8_t)0);
+    EXPECT_EQ(values[10], (uint8_t)0);
+    EXPECT_EQ(values[11], (uint8_t)0);
+    EXPECT_EQ(res,1);
+    //32 bit alpha array
+    res = img_read8(TEST_ASSETS "images/32bit.tga", "tga", values, alpha);
+    EXPECT_EQ(values[0], (uint8_t)255);
+    EXPECT_EQ(values[1], (uint8_t)0);
+    EXPECT_EQ(values[2], (uint8_t)0);
+    EXPECT_EQ(values[3], (uint8_t)0);
+    EXPECT_EQ(values[4], (uint8_t)255);
+    EXPECT_EQ(values[5], (uint8_t)0);
+    EXPECT_EQ(values[6], (uint8_t)0);
+    EXPECT_EQ(values[7], (uint8_t)0);
+    EXPECT_EQ(values[8], (uint8_t)255);
+    EXPECT_EQ(values[9], (uint8_t)0);
+    EXPECT_EQ(values[10], (uint8_t)0);
+    EXPECT_EQ(values[11], (uint8_t)0);
+    EXPECT_EQ(alpha[0], (uint8_t)255);
+    EXPECT_EQ(alpha[1], (uint8_t)128);
+    EXPECT_EQ(alpha[2], (uint8_t)66);
+    EXPECT_EQ(alpha[3], (uint8_t)33);
+    EXPECT_EQ(res,2);
+    //16 bit
+    res = img_read8(TEST_ASSETS "images/16bit.tga", "tga", values, NULL);
+    EXPECT_EQ(values[0], (uint8_t)248);
+    EXPECT_EQ(values[1], (uint8_t)0);
+    EXPECT_EQ(values[2], (uint8_t)0);
+    EXPECT_EQ(values[3], (uint8_t)0);
+    EXPECT_EQ(values[4], (uint8_t)248);
+    EXPECT_EQ(values[5], (uint8_t)0);
+    EXPECT_EQ(values[6], (uint8_t)0);
+    EXPECT_EQ(values[7], (uint8_t)0);
+    EXPECT_EQ(values[8], (uint8_t)248);
+    EXPECT_EQ(values[9], (uint8_t)0);
+    EXPECT_EQ(values[10], (uint8_t)0);
+    EXPECT_EQ(values[11], (uint8_t)0);
+    uint8_t rleval[100*3];
+    uint8_t rlealp[100*1];
+//    res = img_read8(TEST_ASSETS "images/24bitRLE.tga", "tga", rleval, NULL);
+//    EXPECT_EQ(res, 1);
+//    for(int i=0;i<40*3;i+=3)
+//    {
+//        EXPECT_EQ(rleval[i+0], 255);
+//        EXPECT_EQ(rleval[i+1], 0);
+//        EXPECT_EQ(rleval[i+2], 0);
+//    }
+//    EXPECT_EQ(res,1);
 }
 
 #ifdef JPEG_FOUND

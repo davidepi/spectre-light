@@ -25,8 +25,13 @@ static char valid_header(struct tga_header* header)
         case TGA_COLORMAP:
         default:retval = 0;
     }
-    retval &= (header->bpp == 24 || header->bpp == 32 || header->bpp == 16);
+    /* first three bytes are the alpha depth, I don't care */
+    printf("%d\n",header->img_descriptor & 0xF);
+    uint8_t descriptor = header->img_descriptor & 0xF0;
+    retval &= (header->bpp == 24 || header->bpp == 32 ||
+               header->bpp == 16 || header->bpp == 15);
     retval &= (header->colourmap_type == 0 || header->colourmap_type == 1);
+    retval &= descriptor == 0  || descriptor == TGA_UPPER_ORIGIN;
     return retval;
 }
 
@@ -110,8 +115,10 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
     if(res && valid_header(&header))
     {
         /* ensures loop invariant code motion */
-        const uint8_t bpp = header.bpp/8;
-        const int compressed = header.datatype_code == TGA_RGB_RLE;
+        /* i want bpp in bytes, 15-bit values are a variant of 16-bit ones */
+        const uint8_t bpp = header.bpp==15?2:header.bpp>>3;
+        const char compressed = header.datatype_code == TGA_RGB_RLE;
+        const char alpha_null = alpha == NULL;
         const int width = ENDIANNESS_LITTLE16(header.width);
         const int height = ENDIANNESS_LITTLE16(header.height);
         uint8_t pixel[5];
@@ -119,10 +126,11 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
         int y = 0;
         int ymax;
         int increment;
-        int rgb_index;
-        int alpha_index = 0;
+        int rgb_idx;
+        int alpha_idx = 0;
         int skipme = header.id_len;
         int i = 0;
+        int rle;
         skipme += header.colourmap_type*
                   ENDIANNESS_LITTLE16(header.colourmap_length);
         if(header.img_descriptor & TGA_UPPER_ORIGIN) //top-down
@@ -140,118 +148,117 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
         fseek(fin, skipme, SEEK_CUR); /* I don't care about these features */
         while(y != ymax)
         {
-            rgb_index = y*width*3;
-            alpha_index = y*width;
+            rgb_idx = y*width*3;
+            alpha_idx = y*width;
             x = 0;
-            while(x<width)
+            while(x<width && fread(&pixel, bpp+compressed, 1, fin))
             {
-                i++;
                 if(!compressed)
                 {
-                    res = fread(&pixel, bpp, 1, fin);
-                    if(!res)
-                        break; /* unexpected EOF, but fd needs to be closed */
                     if(bpp == 3) //24 bit no RLE
                     {
-                        values[rgb_index++] = pixel[2];
-                        values[rgb_index++] = pixel[1];
-                        values[rgb_index++] = pixel[0];
+                        values[rgb_idx++] = pixel[2];
+                        values[rgb_idx++] = pixel[1];
+                        values[rgb_idx++] = pixel[0];
                     }
                     else if(bpp == 4) //32 bit no RLE
                     {
-                        values[rgb_index++] = pixel[2];
-                        values[rgb_index++] = pixel[1];
-                        values[rgb_index++] = pixel[0];
-                        alpha[alpha_index++] = pixel[3];
+                        values[rgb_idx++] = pixel[2];
+                        values[rgb_idx++] = pixel[1];
+                        values[rgb_idx++] = pixel[0];
+                        if(!alpha_null)
+                            alpha[alpha_idx++] = pixel[3];
                     }
                     else //16 bit no RLE
                     {
-                        values[rgb_index++] = (uint8_t)((pixel[1] & 0x7C) << 1);
-                        values[rgb_index++] = (uint8_t)(
-                                ((pixel[1] & 0x03) << 6) |
-                                ((pixel[0] & 0xE0) >> 2));
-                        values[rgb_index++] = (uint8_t)((pixel[0] & 0x1F) << 3);
-                        alpha[alpha_index++] = (uint8_t)((pixel[1] & 0x80));
+                        /* the shift is a multiplication by 8 */
+                        /* used to map a value from 0-31 to 0-255 */
+                        values[rgb_idx++] = (pixel[1] & 0x7C) << 1;
+                        values[rgb_idx++] = (pixel[1] & 0x03) << 6|
+                                            (pixel[0] & 0xE0) >> 2;
+                        values[rgb_idx++] = (pixel[0] & 0x1F) << 3;
                     }
+                    i++;
+                    x++;
                 }
                 else /* RLE compression */
                 {
-                    res = fread(&pixel, bpp+1, 1, fin);
-                    if(res == 0)
-                        goto end; /* unexpected EOF, but fd needs to be closed */
                     if(pixel[0] & 0x80) /* RLE */
                     {
-                        int rle_len = i+(pixel[0] & 0x7F);
-                        while(i<rle_len)
+                        int rle_len = pixel[0] & 0x7F;
+                        for(rle = 0; rle<rle_len; rle_len++)
                         {
-                            //TODO: wrap line here if bottom up
                             if(bpp == 3)
                             {
-                                values[rgb_index++] = pixel[3];
-                                values[rgb_index++] = pixel[2];
-                                values[rgb_index++] = pixel[1];
+                                values[rgb_idx++] = pixel[3];
+                                values[rgb_idx++] = pixel[2];
+                                values[rgb_idx++] = pixel[1];
                             }
                             else if(bpp == 4)
                             {
-                                values[rgb_index++] = pixel[3];
-                                values[rgb_index++] = pixel[2];
-                                values[rgb_index++] = pixel[1];
-                                alpha[alpha_index++] = pixel[4];
+                                values[rgb_idx++] = pixel[3];
+                                values[rgb_idx++] = pixel[2];
+                                values[rgb_idx++] = pixel[1];
+                                if(!alpha_null)
+                                    alpha[alpha_idx++] = pixel[4];
                             }
                             else
                             {
-                                values[rgb_index++] = (uint8_t)(
-                                        (pixel[2] & 0x7C)
-                                                << 1);
-                                values[rgb_index++] = (uint8_t)(
-                                        ((pixel[2] & 0x03) << 6) |
-                                        ((pixel[1] & 0xE0) >> 2));
-                                values[rgb_index++] = (uint8_t)(
-                                        (pixel[1] & 0x1F)
-                                                << 3);
-                                alpha[alpha_index++] = (uint8_t)((pixel[2] &
-                                                                  0x80));
+                                /* the shift is a multiplication by 8 */
+                                /* used to map a value from 0-31 to 0-255 */
+                                values[rgb_idx++] = (pixel[2] & 0x7C) << 1;
+                                values[rgb_idx++] = (pixel[2] & 0x03) << 6|
+                                                    (pixel[1] & 0xE0) >> 2;
+                                values[rgb_idx++] = (pixel[1] & 0x1F) << 3;
                             }
+                            x++;
                             i++;
+                            if(x==width) //wrap line
+                            {
+                                x = 0;
+                                y+=increment;
+                                rgb_idx = y*width*3;
+                                alpha_idx = y*width;
+                            }
                         }
                     }
                     else /* normal */
                     {
                         if(bpp == 3)
                         {
-                            values[rgb_index++] = pixel[3];
-                            values[rgb_index++] = pixel[2];
-                            values[rgb_index++] = pixel[1];
+                            values[rgb_idx++] = pixel[3];
+                            values[rgb_idx++] = pixel[2];
+                            values[rgb_idx++] = pixel[1];
                         }
                         else if(bpp == 4)
                         {
-                            values[rgb_index++] = pixel[3];
-                            values[rgb_index++] = pixel[2];
-                            values[rgb_index++] = pixel[1];
-                            alpha[alpha_index++] = pixel[4];
+                            values[rgb_idx++] = pixel[3];
+                            values[rgb_idx++] = pixel[2];
+                            values[rgb_idx++] = pixel[1];
+                            if(!alpha_null)
+                                alpha[alpha_idx++] = pixel[4];
                         }
                         else
                         {
-                            values[rgb_index++] = (uint8_t)((pixel[2] & 0x7C)
-                                    << 1);
-                            values[rgb_index++] = (uint8_t)(
-                                    ((pixel[2] & 0x03) << 6) |
-                                    ((pixel[1] & 0xE0) >> 2));
-                            values[rgb_index++] = (uint8_t)((pixel[1] & 0x1F)
-                                    << 3);
-                            alpha[alpha_index++] = (uint8_t)((pixel[2] & 0x80));
+                            /* the shift is a multiplication by 8 */
+                            /* used to map a value from 0-31 to 0-255 */
+                            values[rgb_idx++] = (pixel[2] & 0x7C) << 1;
+                            values[rgb_idx++] = (pixel[2] & 0x03) << 6|
+                                                (pixel[1] & 0xE0) >> 2;
+                            values[rgb_idx++] = (pixel[1] & 0x1F) << 3;
                         }
+                        i++;
+                        x++;
                     }
 
                 }
-                x++;
             }
             y+=increment;
         }
-        retval &= width*height == i;
-        retval = retval>0?alpha_index != 0+1:0;
+        retval = width*height == i;
+        //if retval > 0 then retval = 1 without alpha and 2 with alpha
+        retval = retval>0?(!alpha_null&&bpp==4)+1:0;
     }
-    end:
     fclose(fin);
     return retval;
 }
