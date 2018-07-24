@@ -185,8 +185,8 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
                 {
                     if(pixel[0] & 0x80) /* RLE */
                     {
-                        int rle_len = pixel[0] & 0x7F;
-                        for(rle = 0; rle<rle_len; rle_len++)
+                        int rle_len = 1+(pixel[0] & 0x7F);
+                        for(rle = 0; rle<rle_len; rle++)
                         {
                             if(bpp == 3)
                             {
@@ -213,10 +213,17 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
                             }
                             x++;
                             i++;
-                            if(x==width) //wrap line
+                            if(x==width) /* wrap line */
                             {
-                                x = 0;
                                 y+=increment;
+                                if(y==ymax) /* endgame */
+                                {
+                                    /* set condition to break both loops */
+                                    y = ymax-increment;
+                                    x = width;
+                                }
+                                else
+                                    x = 0;
                                 rgb_idx = y*width*3;
                                 alpha_idx = y*width;
                             }

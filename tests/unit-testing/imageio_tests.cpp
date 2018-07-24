@@ -610,15 +610,78 @@ SPECTRE_TEST(ImageIO, tga_read_func)
     EXPECT_EQ(values[11], (uint8_t)0);
     uint8_t rleval[100*3];
     uint8_t rlealp[100*1];
-//    res = img_read8(TEST_ASSETS "images/24bitRLE.tga", "tga", rleval, NULL);
-//    EXPECT_EQ(res, 1);
-//    for(int i=0;i<40*3;i+=3)
-//    {
-//        EXPECT_EQ(rleval[i+0], 255);
-//        EXPECT_EQ(rleval[i+1], 0);
-//        EXPECT_EQ(rleval[i+2], 0);
-//    }
-//    EXPECT_EQ(res,1);
+    res = img_read8(TEST_ASSETS "images/24bitRLE.tga", "tga", rleval, NULL);
+    EXPECT_EQ(res, 1);
+    for(int i=0;i<40*3;i+=3)
+    {
+        EXPECT_EQ(rleval[i+0], 255);
+        EXPECT_EQ(rleval[i+1], 0);
+        EXPECT_EQ(rleval[i+2], 0);
+    }
+    for(int j =0; j<2;j++)
+    {
+    for(int i=0;i<2*3;i+=3)
+    {
+        EXPECT_EQ(rleval[i+0], 255);
+        EXPECT_EQ(rleval[i+1], 0);
+        EXPECT_EQ(rleval[i+2], 0);
+    }
+    for(int i=2*3;i<10*3;i+=3)
+    {
+        EXPECT_EQ(rleval[i+0], 91);
+        EXPECT_EQ(rleval[i+1], 126);
+        EXPECT_EQ(rleval[i+2], 159);
+    }
+    }
+    for(int i=0;i<2;i++)
+    {
+        EXPECT_EQ(rleval[i+ 0], 255);
+        EXPECT_EQ(rleval[i+ 1], 0);
+        EXPECT_EQ(rleval[i+ 2], 0);
+        EXPECT_EQ(rleval[i+ 3], 255);
+        EXPECT_EQ(rleval[i+ 4], 0);
+        EXPECT_EQ(rleval[i+ 5], 0);
+        EXPECT_EQ(rleval[i+ 6], 91);
+        EXPECT_EQ(rleval[i+ 7], 126);
+        EXPECT_EQ(rleval[i+ 8], 159);
+        EXPECT_EQ(rleval[i+ 9], 91);
+        EXPECT_EQ(rleval[i+10], 126);
+        EXPECT_EQ(rleval[i+11], 159);
+        EXPECT_EQ(rleval[i+12], 91);
+        EXPECT_EQ(rleval[i+13], 126);
+        EXPECT_EQ(rleval[i+14], 159);
+        EXPECT_EQ(rleval[i+15], 79);
+        EXPECT_EQ(rleval[i+16], 0);
+        EXPECT_EQ(rleval[i+17], 98);
+        EXPECT_EQ(rleval[i+18], 79);
+        EXPECT_EQ(rleval[i+19], 0);
+        EXPECT_EQ(rleval[i+20], 98);
+        EXPECT_EQ(rleval[i+21], 91);
+        EXPECT_EQ(rleval[i+22], 126);
+        EXPECT_EQ(rleval[i+23], 159);
+        EXPECT_EQ(rleval[i+24], 91);
+        EXPECT_EQ(rleval[i+25], 126);
+        EXPECT_EQ(rleval[i+26], 159);
+        EXPECT_EQ(rleval[i+27], 91);
+        EXPECT_EQ(rleval[i+28], 126);
+        EXPECT_EQ(rleval[i+29], 159);
+    }
+    for(int j =0; j<2;j++)
+    {
+        for(int i=0;i<2*3;i+=3)
+        {
+            EXPECT_EQ(rleval[i+0], 255);
+            EXPECT_EQ(rleval[i+1], 0);
+            EXPECT_EQ(rleval[i+2], 0);
+        }
+        for(int i=2*3;i<10*3;i+=3)
+        {
+            EXPECT_EQ(rleval[i+0], 91);
+            EXPECT_EQ(rleval[i+1], 126);
+            EXPECT_EQ(rleval[i+2], 159);
+        }
+    }
+    EXPECT_EQ(res,1);
 }
 
 #ifdef JPEG_FOUND
