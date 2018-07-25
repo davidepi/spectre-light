@@ -95,7 +95,7 @@ char img_read8(const char* name, const char* ext, uint8_t* values,
         retval = ppm_read(name, values, alpha);
 #ifdef JPEG_FOUND
     else if(strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0)
-        retval = jpg_read(name, values, alpha);
+        retval = jpg_read(name, values);
 #endif
 #ifdef PNG_FOUND
     else if(strcmp(ext, "png") == 0)
@@ -121,7 +121,7 @@ char img_supported(const char* ext)
 #endif
 #ifdef PNG_FOUND
     else if(strcmp(ext, "png") == 0)
-           retval = 1;
+        retval = 1;
 #endif
 #ifdef TIFF_FOUND
     else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)

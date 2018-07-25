@@ -1,3 +1,4 @@
+/* pack a struct, both on MSVC and GCC/clang */
 #ifndef __PACKED_STRUCT_H__
 #define __PACKED_STRUCT_H__
 

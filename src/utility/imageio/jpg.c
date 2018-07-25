@@ -1,3 +1,6 @@
+/*  author: Davide Pizzolotto   */
+/*  license: MIT                */
+
 #include "jpg.h"
 
 #define UNUSED(x) (void)(x)
@@ -109,7 +112,7 @@ char jpg_dimensions(const char* name, int* width, int* height)
 }
 
 
-char jpg_read(const char* name, uint8_t* values, uint8_t* alpha)
+char jpg_read(const char* name, uint8_t* values)
 {
     char retval = 0;
     FILE* fin = fopen(name, "rb");

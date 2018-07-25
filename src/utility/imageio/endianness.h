@@ -1,7 +1,16 @@
-/*
-13-7-18
-16-7-18
+/*  Created,  13 Jul 2018   */
+/*  Last Edit 26 Jul 2018   */
+
+/**
+ *  \file tga.h
+ *  \brief Endianness tools
+ *  \details Macros used to ensure correct endianness of retrieved values
+ *  \author Davide Pizzolotto
+ *  \version 0.2
+ *  \date 25 Jul 2018
+ *  \copyright MIT
  */
+
 
 #ifndef __ENDIANNESS_H__
 #define __ENDIANNESS_H__

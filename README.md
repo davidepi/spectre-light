@@ -30,10 +30,8 @@ have installed Visual Studio with C++ support and Xcode respectively.
 ### Dependencies
 
 Although no dependency is strictly required, with the exception of [cmake](https://cmake.org "cmake homepage") under Linux,
-having the Magick++ library is strongly suggested (API version 7.0 or newer). The Magick++ lib is part of the
-[ImageMagick](https://www.imagemagick.org/script/index.php) suite and can be easily installed
-in any OS. Without Magick++, *spectre-light* is limited to read and write only NetPBM and
-Windows Bitmap V3.0 files.
+having [libjpeg](http://libjpeg.sourceforge.net/), [libpng](http://www.libpng.org/pub/png/libpng.html) or [libtiff](http://simplesystems.org/libtiff/) installed enables support of respectively JPEG, PNG and TIFF images.
+Without those libs, *spectre-light* is limited to read and write only NetPBM, Windows Bitmap and Truevision TGA files.
 
 ### Building
 

@@ -1,3 +1,6 @@
+/*  author: Davide Pizzolotto   */
+/*  license: MIT                */
+
 #include "tiff.h"
 
 char tiff_write(const char* name, int width, int height, const uint8_t* data)

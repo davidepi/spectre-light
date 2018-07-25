@@ -1,3 +1,6 @@
+/*  author: Davide Pizzolotto   */
+/*  license: MIT                */
+
 #include "tga.h"
 
 enum tga_datatype
@@ -29,8 +32,8 @@ static char valid_header(struct tga_header* header)
     uint8_t descriptor = header->img_descriptor & 0xF0;
     retval &= (header->bpp == 24 || header->bpp == 32 ||
                header->bpp == 16 || header->bpp == 15);
-    retval &= (header->colourmap_type == 0 || header->colourmap_type == 1);
-    retval &= descriptor == 0  || descriptor == TGA_UPPER_ORIGIN;
+    retval &= header->colourmap_type == 0;
+    retval &= descriptor == 0 || descriptor == TGA_UPPER_ORIGIN;
     return retval;
 }
 
@@ -82,7 +85,7 @@ char tga_write(const char* name, int width, int height, const uint8_t* data)
         header.height = ENDIANNESS_LITTLE16((uint16_t)height);
         header.datatype_code = TGA_RGB; /* uncompressed RGB */
         header.bpp = 24;
-        header.img_descriptor = 0 | TGA_UPPER_ORIGIN;
+        header.img_descriptor = TGA_UPPER_ORIGIN;
         fwrite(&header, sizeof(struct tga_header), 1, fout);
         for(y = 0; y<height; y++)
         {
@@ -115,7 +118,7 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
     {
         /* ensures loop invariant code motion */
         /* i want bpp in bytes, 15-bit values are a variant of 16-bit ones */
-        const uint8_t bpp = header.bpp==15?2:header.bpp>>3;
+        const uint8_t bpp = header.bpp == 15?2:header.bpp >> 3;
         const char compressed = header.datatype_code == TGA_RGB_RLE;
         const char alpha_null = alpha == NULL;
         const int width = ENDIANNESS_LITTLE16(header.width);
@@ -173,7 +176,7 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
                         /* the shift is a multiplication by 8 */
                         /* used to map a value from 0-31 to 0-255 */
                         values[rgb_idx++] = (pixel[1] & 0x7C) << 1;
-                        values[rgb_idx++] = (pixel[1] & 0x03) << 6|
+                        values[rgb_idx++] = (pixel[1] & 0x03) << 6 |
                                             (pixel[0] & 0xE0) >> 2;
                         values[rgb_idx++] = (pixel[0] & 0x1F) << 3;
                     }
@@ -206,16 +209,16 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
                                 /* the shift is a multiplication by 8 */
                                 /* used to map a value from 0-31 to 0-255 */
                                 values[rgb_idx++] = (pixel[2] & 0x7C) << 1;
-                                values[rgb_idx++] = (pixel[2] & 0x03) << 6|
+                                values[rgb_idx++] = (pixel[2] & 0x03) << 6 |
                                                     (pixel[1] & 0xE0) >> 2;
                                 values[rgb_idx++] = (pixel[1] & 0x1F) << 3;
                             }
                             x++;
                             i++;
-                            if(x==width) /* wrap line */
+                            if(x == width) /* wrap line */
                             {
-                                y+=increment;
-                                if(y==ymax) /* endgame */
+                                y += increment;
+                                if(y == ymax) /* endgame */
                                 {
                                     /* set condition to break both loops */
                                     y = ymax-increment;
@@ -249,7 +252,7 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
                             /* the shift is a multiplication by 8 */
                             /* used to map a value from 0-31 to 0-255 */
                             values[rgb_idx++] = (pixel[2] & 0x7C) << 1;
-                            values[rgb_idx++] = (pixel[2] & 0x03) << 6|
+                            values[rgb_idx++] = (pixel[2] & 0x03) << 6 |
                                                 (pixel[1] & 0xE0) >> 2;
                             values[rgb_idx++] = (pixel[1] & 0x1F) << 3;
                         }
@@ -259,11 +262,11 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
 
                 }
             }
-            y+=increment;
+            y += increment;
         }
         retval = width*height == i;
         //if retval > 0 then retval = 1 without alpha and 2 with alpha
-        retval = retval>0?(!alpha_null&&bpp==4)+1:0;
+        retval = retval>0?(!alpha_null && bpp == 4)+1:0;
     }
     fclose(fin);
     return retval;
