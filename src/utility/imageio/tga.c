@@ -26,7 +26,6 @@ static char valid_header(struct tga_header* header)
         default:retval = 0;
     }
     /* first three bytes are the alpha depth, I don't care */
-    printf("%d\n",header->img_descriptor & 0xF);
     uint8_t descriptor = header->img_descriptor & 0xF0;
     retval &= (header->bpp == 24 || header->bpp == 32 ||
                header->bpp == 16 || header->bpp == 15);

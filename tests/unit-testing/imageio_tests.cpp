@@ -430,7 +430,7 @@ SPECTRE_TEST(ImageIO, bmp_valid_func)
 SPECTRE_TEST(ImageIO, tga_save_func)
 {
     char file_stat[64];
-    
+
     uint8_t image_sample[17*10*3];
     for(int i = 0; i<17*10*3; i += 3)
         image_sample[i] = i/3;
@@ -445,7 +445,7 @@ SPECTRE_TEST(ImageIO, tga_save_func)
                  "image/x-tgaimage/x-tga; charset=binary\n");
 #endif
     EXPECT_EQ(unlink("test.tga"), 0);
-    
+
     //non existent folder
     res = img_write("/root/nonexistent/test.tga", "tga", 16, 10, image_sample);
     EXPECT_FALSE(res);
@@ -541,11 +541,14 @@ SPECTRE_TEST(ImageIO, tga_read_func)
     int res;
     uint8_t values[12];
     uint8_t alpha[4];
+    res = -1;
     res = img_read8("nonexistent.tga", "tga", values, NULL);
     EXPECT_EQ(res, 0);
+    res = -1;
     res = img_read8("bmpastga.tga", "tga", values, NULL);
     EXPECT_EQ(res, 0);
     //normal image
+    res = -1;
     res = img_read8(TEST_ASSETS "images/24bit.tga", "tga", values, NULL);
     EXPECT_EQ(values[0], (uint8_t)255);
     EXPECT_EQ(values[1], (uint8_t)0);
@@ -559,8 +562,9 @@ SPECTRE_TEST(ImageIO, tga_read_func)
     EXPECT_EQ(values[9], (uint8_t)0);
     EXPECT_EQ(values[10], (uint8_t)0);
     EXPECT_EQ(values[11], (uint8_t)0);
-    EXPECT_EQ(res,1);
+    EXPECT_EQ(res, 1);
     //32 bit no alpha array
+    res = -1;
     res = img_read8(TEST_ASSETS "images/32bit.tga", "tga", values, NULL);
     EXPECT_EQ(values[0], (uint8_t)255);
     EXPECT_EQ(values[1], (uint8_t)0);
@@ -574,8 +578,9 @@ SPECTRE_TEST(ImageIO, tga_read_func)
     EXPECT_EQ(values[9], (uint8_t)0);
     EXPECT_EQ(values[10], (uint8_t)0);
     EXPECT_EQ(values[11], (uint8_t)0);
-    EXPECT_EQ(res,1);
+    EXPECT_EQ(res, 1);
     //32 bit alpha array
+    res = -1;
     res = img_read8(TEST_ASSETS "images/32bit.tga", "tga", values, alpha);
     EXPECT_EQ(values[0], (uint8_t)255);
     EXPECT_EQ(values[1], (uint8_t)0);
@@ -593,116 +598,121 @@ SPECTRE_TEST(ImageIO, tga_read_func)
     EXPECT_EQ(alpha[1], (uint8_t)128);
     EXPECT_EQ(alpha[2], (uint8_t)66);
     EXPECT_EQ(alpha[3], (uint8_t)33);
-    EXPECT_EQ(res,2);
+    EXPECT_EQ(res, 2);
     //16 bit
+    res = -1;
     res = img_read8(TEST_ASSETS "images/16bit.tga", "tga", values, NULL);
-    EXPECT_EQ(values[0], (uint8_t)248);
+    //shifts are used to account for precision lost with the 16 bits values
+    EXPECT_EQ(values[0], (uint8_t)255 >> 3 << 3);
     EXPECT_EQ(values[1], (uint8_t)0);
     EXPECT_EQ(values[2], (uint8_t)0);
     EXPECT_EQ(values[3], (uint8_t)0);
-    EXPECT_EQ(values[4], (uint8_t)248);
+    EXPECT_EQ(values[4], (uint8_t)255 >> 3 << 3);
     EXPECT_EQ(values[5], (uint8_t)0);
     EXPECT_EQ(values[6], (uint8_t)0);
     EXPECT_EQ(values[7], (uint8_t)0);
-    EXPECT_EQ(values[8], (uint8_t)248);
+    EXPECT_EQ(values[8], (uint8_t)255 >> 3 << 3);
     EXPECT_EQ(values[9], (uint8_t)0);
     EXPECT_EQ(values[10], (uint8_t)0);
     EXPECT_EQ(values[11], (uint8_t)0);
-    uint8_t rleval[100*3];
-    uint8_t rlealp[100*1];
-    res = img_read8(TEST_ASSETS "images/24bitRLE.tga", "tga", rleval, NULL);
     EXPECT_EQ(res, 1);
-    for(int i=0;i<40*3;i+=3)
-    {
-        EXPECT_EQ(rleval[i+0], 255);
-        EXPECT_EQ(rleval[i+1], 0);
-        EXPECT_EQ(rleval[i+2], 0);
-    }
-    for(int j =0; j<2;j++)
-    {
-    for(int i=0;i<2*3;i+=3)
-    {
-        EXPECT_EQ(rleval[i+0], 255);
-        EXPECT_EQ(rleval[i+1], 0);
-        EXPECT_EQ(rleval[i+2], 0);
-    }
-    for(int i=2*3;i<10*3;i+=3)
-    {
-        EXPECT_EQ(rleval[i+0], 91);
-        EXPECT_EQ(rleval[i+1], 126);
-        EXPECT_EQ(rleval[i+2], 159);
-    }
-    }
-    for(int i=0;i<2;i++)
-    {
-        EXPECT_EQ(rleval[i+ 0], 255);
-        EXPECT_EQ(rleval[i+ 1], 0);
-        EXPECT_EQ(rleval[i+ 2], 0);
-        EXPECT_EQ(rleval[i+ 3], 255);
-        EXPECT_EQ(rleval[i+ 4], 0);
-        EXPECT_EQ(rleval[i+ 5], 0);
-        EXPECT_EQ(rleval[i+ 6], 91);
-        EXPECT_EQ(rleval[i+ 7], 126);
-        EXPECT_EQ(rleval[i+ 8], 159);
-        EXPECT_EQ(rleval[i+ 9], 91);
-        EXPECT_EQ(rleval[i+10], 126);
-        EXPECT_EQ(rleval[i+11], 159);
-        EXPECT_EQ(rleval[i+12], 91);
-        EXPECT_EQ(rleval[i+13], 126);
-        EXPECT_EQ(rleval[i+14], 159);
-        EXPECT_EQ(rleval[i+15], 79);
-        EXPECT_EQ(rleval[i+16], 0);
-        EXPECT_EQ(rleval[i+17], 98);
-        EXPECT_EQ(rleval[i+18], 79);
-        EXPECT_EQ(rleval[i+19], 0);
-        EXPECT_EQ(rleval[i+20], 98);
-        EXPECT_EQ(rleval[i+21], 91);
-        EXPECT_EQ(rleval[i+22], 126);
-        EXPECT_EQ(rleval[i+23], 159);
-        EXPECT_EQ(rleval[i+24], 91);
-        EXPECT_EQ(rleval[i+25], 126);
-        EXPECT_EQ(rleval[i+26], 159);
-        EXPECT_EQ(rleval[i+27], 91);
-        EXPECT_EQ(rleval[i+28], 126);
-        EXPECT_EQ(rleval[i+29], 159);
-    }
-    for(int j =0; j<2;j++)
-    {
-        for(int i=0;i<2*3;i+=3)
-        {
-            EXPECT_EQ(rleval[i+0], 255);
-            EXPECT_EQ(rleval[i+1], 0);
-            EXPECT_EQ(rleval[i+2], 0);
-        }
-        for(int i=2*3;i<10*3;i+=3)
-        {
-            EXPECT_EQ(rleval[i+0], 91);
-            EXPECT_EQ(rleval[i+1], 126);
-            EXPECT_EQ(rleval[i+2], 159);
-        }
-    }
-    EXPECT_EQ(res,1);
+    uint8_t rleval[100*3];
+    uint8_t rleval_expected[300] = {
+            0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00,
+            0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF,
+            0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00,
+            0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00,
+            0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF,
+            0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00,
+            0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00,
+            0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF,
+            0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00,
+            0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00,
+            0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF,
+            0x00, 0x00, 0xFF, 0x00, 0x00, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F,
+            0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E,
+            0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0xFF, 0x00, 0x00, 0xFF,
+            0x00, 0x00, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F,
+            0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E,
+            0x9F, 0x5B, 0x7E, 0x9F, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x5B,
+            0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x4F, 0x00, 0x62,
+            0x4F, 0x00, 0x62, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E,
+            0x9F, 0xFF, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x5B, 0x7E, 0x9F, 0x5B,
+            0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x4F, 0x00, 0x62, 0x4F, 0x00, 0x62,
+            0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0xFF, 0x00,
+            0x00, 0xFF, 0x00, 0x00, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B,
+            0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F,
+            0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0xFF, 0x00, 0x00, 0xFF, 0x00,
+            0x00, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B,
+            0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F, 0x5B, 0x7E, 0x9F,
+            0x5B, 0x7E, 0x9F
+    };
+    uint8_t rlealp[100*1];
+    uint8_t rlealp_expected[100] = {
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00,
+            0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00,
+            0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00,
+            0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00,
+            0x00, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00,
+            0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00,
+            0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    };
+    res = -1;
+    res = img_read8(TEST_ASSETS "images/24bitRLE.tga", "tga", rleval, NULL);
+    ASSERT_EQ(res, 1);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(rleval[i], rleval_expected[i]);
+    memset(rleval, 0, sizeof(rleval));
+    res = -1;
+    res = img_read8(TEST_ASSETS "images/16bitRLE.tga", "tga", rleval, NULL);
+    ASSERT_EQ(res, 1);
+    for(int i = 0; i<300; i++)
+        //shifts are used to account for precision lost with the 16 bits values
+        EXPECT_EQ(rleval[i], rleval_expected[i] >> 3 << 3);
+    memset(rleval, 0, sizeof(rleval));
+    res = -1;
+    res = img_read8(TEST_ASSETS "images/32bitRLE.tga", "tga", rleval, NULL);
+    ASSERT_EQ(res, 1);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(rleval[i], rleval_expected[i]);
+    memset(rleval, 0, sizeof(rleval));
+    memset(rlealp, 0, sizeof(rlealp));
+    res = -1;
+    res = img_read8(TEST_ASSETS "images/32bitRLE.tga", "tga", rleval, rlealp);
+    ASSERT_EQ(res, 2);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(rleval[i], rleval_expected[i]);
+    for(int i = 0; i<100; i++)
+        EXPECT_EQ(rlealp[i], rlealp_expected[i]);
 }
 
 #ifdef JPEG_FOUND
+
+SPECTRE_TEST(ImageIO, jpg_write_func)
 {
     char file_stat[64];
 
     uint8_t image_sample[17*10*3];
-    for(int i = 0; i<17*10*3; i += 3)
+    for(
+            int i = 0;
+            i<17*10*3; i += 3)
         image_sample[i] = i/3;
     bool res = img_write("test.jpg", "jpg", 16, 10, image_sample);
     ASSERT_TRUE(res);
 #ifndef _WIN32
-    //check if saved image is actually a .ppm
+//check if saved image is actually a .ppm
     FILE* fp = popen("file -b --mime test.jpg", "r");
-    fgets(file_stat, 64, fp);
+    fgets(file_stat,
+          64, fp);
     pclose(fp);
     EXPECT_STREQ(file_stat, "image/jpeg; charset=binary\n");
 #endif
     EXPECT_EQ(unlink("test.jpg"), 0);
 
-    //non existent folder
+//non existent folder
     res = img_write("/root/nonexistent/test.jpg", "jpg", 16, 10, image_sample);
     EXPECT_FALSE(res);
     res = img_write("/root/nonexistent/test.jpeg", "jpeg", 16, 10,
