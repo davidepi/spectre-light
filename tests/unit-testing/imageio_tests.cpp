@@ -442,7 +442,7 @@ SPECTRE_TEST(ImageIO, tga_save_func)
     fgets(file_stat, 64, fp);
     pclose(fp);
     EXPECT_STREQ(file_stat,
-                 "image/x-tgaimage/x-tga; charset=binary\n");
+                 "image/x-tga; charset=binary\n");
 #endif
     EXPECT_EQ(unlink("test.tga"), 0);
 
@@ -767,10 +767,9 @@ SPECTRE_TEST(ImageIO, jpg_read_func)
 {
     bool res;
     uint8_t values[6*3];
-    uint8_t alpha[4];
-    res = img_read8("nonexistent.jpg", "jpg", values, alpha);
+    res = img_read8("nonexistent.jpg", "jpg", values, NULL);
     EXPECT_FALSE(res);
-    res = img_read8(TEST_ASSETS "images/bmpasjpg.jpg", "jpg", values, alpha);
+    res = img_read8(TEST_ASSETS "images/bmpasjpg.jpg", "jpg", values, NULL);
     EXPECT_FALSE(res);
     res = img_read8(TEST_ASSETS "images/generic.jpg", "jpg", values, NULL);
     EXPECT_TRUE(res);
@@ -882,10 +881,9 @@ SPECTRE_TEST(ImageIO, png_read_func)
 {
     bool res;
     uint8_t values[6*3];
-    uint8_t alpha[4];
-    res = img_read8("nonexistent.png", "png", values, alpha);
+    res = img_read8("nonexistent.png", "png", values, NULL);
     EXPECT_EQ(res, 0);
-    res = img_read8(TEST_ASSETS "images/bmpaspng.png", "png", values, alpha);
+    res = img_read8(TEST_ASSETS "images/bmpaspng.png", "png", values, NULL);
     EXPECT_EQ(res, 0);
     res = img_read8(TEST_ASSETS "images/generic.png", "png", values, NULL);
     EXPECT_EQ(res, 1);
@@ -909,6 +907,112 @@ SPECTRE_TEST(ImageIO, png_read_func)
     EXPECT_EQ(values[15], (uint8_t)7);
     EXPECT_EQ(values[16], (uint8_t)0);
     EXPECT_EQ(values[17], (uint8_t)0);
+}
+
+#endif
+#ifdef TIFF_FOUND
+
+SPECTRE_TEST(ImageIO, tiff_write_func)
+{
+    char file_stat[64];
+
+    uint8_t image_sample[17*10*3];
+    for(int i = 0; i<17*10*3; i += 3)
+        image_sample[i] = i/3;
+    bool res = img_write("test.tiff", "tiff", 16, 10,
+                         image_sample);
+    ASSERT_TRUE(res);
+#ifndef _WIN32
+    //check if saved image is actually a .ppm
+    FILE* fp = popen("file -b --mime test.tiff", "r");
+    fgets(file_stat, 64, fp);
+    pclose(fp);
+    EXPECT_STREQ(file_stat, "image/tiff; charset=binary\n");
+#endif
+    EXPECT_EQ(unlink("test.tiff"), 0);
+
+    //non existent folder
+    res = img_write("/root/nonexistent/test.tif", "tif", 16, 10, image_sample);
+    EXPECT_FALSE(res);
+}
+
+SPECTRE_TEST(ImageIO, tiff_valid_func)
+{
+    bool res;
+    res = img_valid("nonexistent.tif", "tiff");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/bmpastif.tif", "tif");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/generic.tif", "tif");
+    EXPECT_TRUE(res);
+}
+
+SPECTRE_TEST(ImageIO, tiff_dimensions_func)
+{
+    bool res;
+    int width;
+    int height;
+    width = 0;
+    height = 0;
+    res = img_dimensions("nonexistent.tiff", "tiff", &width, &height);
+    EXPECT_FALSE(res);
+    width = 0;
+    height = 0;
+    res = img_dimensions(TEST_ASSETS "images/bmpastif.tif", "tif", &width,
+                         &height);
+    EXPECT_FALSE(res);
+    width = 0;
+    height = 0;
+    res = img_dimensions(TEST_ASSETS "images/generic.tif", "tif",
+                         &width, &height);
+    EXPECT_TRUE(res);
+    EXPECT_EQ(width, 2);
+    EXPECT_EQ(height, 2);
+}
+
+SPECTRE_TEST(ImageIO, tiff_read_func)
+{
+    char res;
+    uint8_t values[4*3];
+    uint8_t alpha[4];
+    res = img_read8("nonexistent.tiff", "tiff", values, alpha);
+    EXPECT_EQ(res, 0);
+    res = img_read8(TEST_ASSETS "images/bmpastif.tif", "tif", values, alpha);
+    EXPECT_EQ(res, 0);
+    res = img_read8(TEST_ASSETS "images/generic.tif", "tif", values, NULL);
+    EXPECT_EQ(res, 1);
+    EXPECT_EQ(values[0], (uint8_t)255);
+    EXPECT_EQ(values[1], (uint8_t)0);
+    EXPECT_EQ(values[2], (uint8_t)0);
+    EXPECT_EQ(values[3], (uint8_t)0);
+    EXPECT_EQ(values[4], (uint8_t)255);
+    EXPECT_EQ(values[5], (uint8_t)0);
+    EXPECT_EQ(values[6], (uint8_t)0);
+    EXPECT_EQ(values[7], (uint8_t)0);
+    EXPECT_EQ(values[8], (uint8_t)255);
+    EXPECT_EQ(values[9], (uint8_t)0);
+    EXPECT_EQ(values[10], (uint8_t)0);
+    EXPECT_EQ(values[11], (uint8_t)0);
+    memset(values, 0, sizeof(values));
+    res = img_read8(TEST_ASSETS "images/generic_alpha.tiff", "tiff", values,
+                    alpha);
+    EXPECT_EQ(res, 2);
+    EXPECT_EQ(values[0], (uint8_t)255);
+    EXPECT_EQ(values[1], (uint8_t)0);
+    EXPECT_EQ(values[2], (uint8_t)0);
+    EXPECT_EQ(values[3], (uint8_t)0);
+    EXPECT_EQ(values[4], (uint8_t)255);
+    EXPECT_EQ(values[5], (uint8_t)0);
+    EXPECT_EQ(values[6], (uint8_t)0);
+    EXPECT_EQ(values[7], (uint8_t)0);
+    EXPECT_EQ(values[8], (uint8_t)255);
+    EXPECT_EQ(values[9], (uint8_t)0);
+    EXPECT_EQ(values[10], (uint8_t)0);
+    EXPECT_EQ(values[11], (uint8_t)0);
+    EXPECT_EQ(alpha[0], (uint8_t)127);
+    EXPECT_EQ(alpha[1], (uint8_t)255);
+    EXPECT_EQ(alpha[2], (uint8_t)0);
+    EXPECT_EQ(alpha[3], (uint8_t)54);
 }
 
 #endif

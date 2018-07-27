@@ -99,7 +99,7 @@ char img_read8(const char* name, const char* ext, uint8_t* values,
 #endif
 #ifdef PNG_FOUND
     else if(strcmp(ext, "png") == 0)
-        retval = png_read(name, values, alpha);
+        retval = png_read(name, values);
 #endif
 #ifdef TIFF_FOUND
     else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)

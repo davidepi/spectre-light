@@ -73,19 +73,13 @@ char png_dimensions(const char* name, int* width, int* height);
  *  top-down left-right order. This array is expected to be already allocated
  *  with a size of width*height*3. Every channel is written as a single uint8_t
  *  value in the order RGBRGB... with values in the range [0-255].
- *  If the png image contains an alpha channel, it will be written in the
- *  alpha array of size width*height. Also this array is expected to be
- *  already allocated and written values will be in the [0-255] range.
  *
  *  \param[in] name The path on disk where the image can be found
  *  \param[out] values The array of values that will be written. This array
  *  must be already allocated, use png_dimensions to know the actual size of
  *  the image and to preallocate it
- *  \param[out] alpha The array of alpha values. Also this array is expected
- *  to be already allocated
- *  \return 0 if the read was not successful. Otherwise 1 if the image was
- *  without alpha channel and 2 if the image had one
+ *  \return 0 if the read was not successful, 1 otherwise
  */
-char png_read(const char* name, uint8_t* values, uint8_t* alpha);
+char png_read(const char* name, uint8_t* values);
 
 #endif

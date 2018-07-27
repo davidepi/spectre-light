@@ -6,6 +6,8 @@
 char tiff_write(const char* name, int width, int height, const uint8_t* data)
 {
     char retval = 0;
+    TIFFSetWarningHandler(NULL);
+    TIFFSetErrorHandler(NULL);
     TIFF* fout = TIFFOpen(name, "w");
     if(fout != NULL)
     {
@@ -35,6 +37,8 @@ char tiff_write(const char* name, int width, int height, const uint8_t* data)
 char tiff_valid(const char* name)
 {
     char retval = 0;
+    TIFFSetWarningHandler(NULL);
+    TIFFSetErrorHandler(NULL);
     TIFF* fin = TIFFOpen(name, "r");
     if(fin != NULL)
     {
@@ -47,12 +51,13 @@ char tiff_valid(const char* name)
 char tiff_dimensions(const char* name, int* width, int* height)
 {
     char retval = 0;
+    TIFFSetWarningHandler(NULL);
+    TIFFSetErrorHandler(NULL);
     TIFF* fin = TIFFOpen(name, "r");
     if(fin != NULL)
     {
-        *width = TIFFGetField(fin, TIFFTAG_IMAGEWIDTH);
-        *height = TIFFGetField(fin, TIFFTAG_IMAGELENGTH);
-        retval = 1;
+        retval |= TIFFGetField(fin, TIFFTAG_IMAGEWIDTH, width);
+        retval &= TIFFGetField(fin, TIFFTAG_IMAGELENGTH, height);
         TIFFClose(fin);
     }
     return retval;
@@ -61,36 +66,43 @@ char tiff_dimensions(const char* name, int* width, int* height)
 char tiff_read(const char* name, uint8_t* values, uint8_t* alpha)
 {
     char retval = 0;
+    TIFFSetWarningHandler(NULL);
+    TIFFSetErrorHandler(NULL);
     TIFF* fin = TIFFOpen(name, "r");
     if(fin != NULL)
     {
         int width;
         int height;
+        int channels;
         uint32_t* data;
-        TIFFGetField(fin, TIFFTAG_IMAGEWIDTH, &width);
-        TIFFGetField(fin, TIFFTAG_IMAGELENGTH, &height);
+        retval |= TIFFGetField(fin, TIFFTAG_IMAGEWIDTH, &width);
+        retval &= TIFFGetField(fin, TIFFTAG_IMAGELENGTH, &height);
+        retval &= TIFFGetField(fin, TIFFTAG_SAMPLESPERPIXEL, &channels);
         data = (uint32_t*)_TIFFmalloc(sizeof(uint32_t)*width*height);
-        if(TIFFReadRGBAImage(fin, width, height, data, 0))
+        if((channels == 3 || channels == 4) &&
+           TIFFReadRGBAImage(fin, width, height, data, 0))
         {
             int x;
             int y;
-            const int has_alpha =
-                    TIFFGetField(fin, TIFFTAG_SAMPLESPERPIXEL) == 4;
+            const char has_alpha = channels == 4;
             /* reorder in top-down order and process alpha */
             for(y = 0; y<height; y++)
             {
                 for(x = 0; x<width; x++)
                 {
                     int index = y*width+x;
-                    values[index*3+0] = (uint8_t)TIFFGetR(data[index]);
-                    values[index*3+1] = (uint8_t)TIFFGetG(data[index]);
-                    values[index*3+2] = (uint8_t)TIFFGetB(data[index]);
+                    int tif_index = (height-1-y)*width+x;
+                    values[index*3+0] = (uint8_t)TIFFGetR(data[tif_index]);
+                    values[index*3+1] = (uint8_t)TIFFGetG(data[tif_index]);
+                    values[index*3+2] = (uint8_t)TIFFGetB(data[tif_index]);
                     if(has_alpha)
-                        alpha[index] = (uint8_t)TIFFGetA(data[index]);
+                        alpha[index] = (uint8_t)TIFFGetA(data[tif_index]);
                 }
             }
-            retval = 1;
+            retval = has_alpha?2:1;
         }
+        else
+            retval = 0;
         _TIFFfree(data);
         TIFFClose(fin);
     }

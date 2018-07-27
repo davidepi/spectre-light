@@ -82,10 +82,9 @@ char png_dimensions(const char* name, int* width, int* height)
     return retval;
 }
 
-char png_read(const char* name, uint8_t* values, uint8_t* alpha)
+char png_read(const char* name, uint8_t* values)
 {
     char retval = 0;
-    const char has_alpha = alpha != NULL;
     FILE* fin = fopen(name, "rb");
     if(fin != NULL)
     {
@@ -145,8 +144,6 @@ char png_read(const char* name, uint8_t* values, uint8_t* alpha)
                     values[index_rgb+0] = rows[y][x*4+0];
                     values[index_rgb+1] = rows[y][x*4+1];
                     values[index_rgb+2] = rows[y][x*4+2];
-                    if(has_alpha)
-                        alpha[index_alpha] = rows[y][x*4+3];
                 }
                 free(rows[y]);
             }

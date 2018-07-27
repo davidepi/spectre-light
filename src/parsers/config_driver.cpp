@@ -271,7 +271,8 @@ const Texture* ConfigDriver::load_texture(std::string& path)
     {
         if(tex_name.empty())
             tex_name = cur_file.filename();
-        
+
+        //Texture Image will deal with same file but different texture names
         addme = new TextureImage(cur_file, tex_scale, tex_shift, tex_filter);
         TexLib.inherit_texture(tex_name, addme);
     }

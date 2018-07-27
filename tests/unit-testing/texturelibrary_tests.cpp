@@ -15,7 +15,7 @@
 #include "utility/spectrum.hpp"
 
 SPECTRE_TEST_INIT(TextureLibrary_tests)
-/*
+
 SPECTRE_TEST(TextureLibrary, add_texture)
 {
     const Spectrum color1 = SPECTRUM_WHITE;
@@ -61,9 +61,9 @@ SPECTRE_TEST(TextureLibrary, add_map)
 {
     const ImageMap* got;
     errors_count[CRITICAL_INDEX] = 0;
-    float data[12] = {1.f,0,0,0,1.f,0,0,0,1.f,0,0,0};
-    ImageMap* map0 = new ImageMap(data,2);
-    ImageMap* map1 = new ImageMap(data,2);
+    float data[12] = {1.f, 0, 0, 0, 1.f, 0, 0, 0, 1.f, 0, 0, 0};
+    ImageMap* map0 = new ImageMapUnfiltered(data, 2);
+    ImageMap* map1 = new ImageMapUnfiltered(data, 2);
     //assert no construction error of imagemaps
     ASSERT_EQ(errors_count[CRITICAL_INDEX], 0);
 
@@ -109,8 +109,8 @@ SPECTRE_TEST(TextureLibrary, remove_texture)
 
 SPECTRE_TEST(TextureLibrary, remove_map)
 {
-    float data[12] = {1.f,0,0,0,1.f,0,0,0,1.f,0,0,0};
-    ImageMap* map0 = new ImageMap(data,2);
+    float data[12] = {1.f, 0, 0, 0, 1.f, 0, 0, 0, 1.f, 0, 0, 0};
+    ImageMap* map0 = new ImageMapUnfiltered(data, 2);
     TexLib.inherit_map("Removeme", map0);
     const ImageMap* got = TexLib.get_map("Removeme");
     ASSERT_PTR_EQ(got, map0);
@@ -138,8 +138,8 @@ SPECTRE_TEST(TextureLibrary, contains_texture)
 
 SPECTRE_TEST(TextureLibrary, contains_map)
 {
-    float data[12] = {1.f,0,0,0,1.f,0,0,0,1.f,0,0,0};
-    ImageMap* map0 = new ImageMap(data, 2);
+    float data[12] = {1.f, 0, 0, 0, 1.f, 0, 0, 0, 1.f, 0, 0, 0};
+    ImageMap* map0 = new ImageMapUnfiltered(data, 2);
     TexLib.inherit_map("ContainedM", map0);
     bool res = TexLib.contains_map("ContainedM");
     EXPECT_TRUE(res);
@@ -156,10 +156,10 @@ SPECTRE_TEST(TextureLibrary, clear)
     TexLib.inherit_texture("Removeme2", tex2);
     Texture* tex3 = new TextureUniform(SPECTRUM_WHITE);
     TexLib.inherit_texture("Removeme3", tex3);
-    float data[12] = {1.f,0,0,0,1.f,0,0,0,1.f,0,0,0};
-    ImageMap* map0 = new ImageMap(data,2);
+    float data[12] = {1.f, 0, 0, 0, 1.f, 0, 0, 0, 1.f, 0, 0, 0};
+    ImageMap* map0 = new ImageMapUnfiltered(data, 2);
     TexLib.inherit_map("Removeme4", map0);
-    ImageMap* map1 = new ImageMap(data,2);
+    ImageMap* map1 = new ImageMapUnfiltered(data, 2);
     TexLib.inherit_map("Removeme5", map1);
 
     const Texture* got;
@@ -200,15 +200,4 @@ SPECTRE_TEST(TextureLibrary, get_default)
     EXPECT_PTR_EQ(tex0, tex1); //assert that they point to the same value
 }
 
-SPECTRE_TEST(TextureLibrary, filtering)
-{
-    bool res;
-    TexLib.has_filtered(true);
-    res = TexLib.is_unfiltered();
-    EXPECT_EQ(res, false);
-    TexLib.has_filtered(false);
-    res = TexLib.is_unfiltered();
-    EXPECT_EQ(res, true);
-}
-*/
 SPECTRE_TEST_END(TextureLibrary)

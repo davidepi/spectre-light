@@ -156,7 +156,7 @@ SPECTRE_TEST(Parser, filter)
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
     EXPECT_EQ(driver0.value0, 0.33f);
     EXPECT_EQ(driver0.value1, 0.33f);
-    EXPECT_TRUE(driver0.tex_filter==TRILINEAR);
+    EXPECT_TRUE(driver0.tex_filter == TRILINEAR);
     delete r0;
     //box
     ConfigDriver driver1;
@@ -309,15 +309,18 @@ SPECTRE_TEST(Parser, texture)
     delete r1;
 
     //duplicate
-    TexLib.clear();
-    ConfigDriver driver2;
-    errors_count[WARNING_INDEX] = 0;
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture_duplicate.txt",
-                                 &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-    errors_count[WARNING_INDEX] = 0;
-    EXPECT_TRUE(TexLib.contains_texture("Manually written name"));
-    delete r2;
+    //removed test: -> if same texture with same name will be ignored by library
+    //              -> if same texture with different name, TextureLib will
+    //                 handle it
+//    TexLib.clear();
+//    ConfigDriver driver2;
+//    errors_count[WARNING_INDEX] = 0;
+//    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture_duplicate.txt",
+//                                 &s);
+//    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+//    errors_count[WARNING_INDEX] = 0;
+//    EXPECT_TRUE(TexLib.contains_texture("Manually written name"));
+//    delete r2;
 }
 
 SPECTRE_TEST(Parser, material_textures)

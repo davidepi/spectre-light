@@ -116,7 +116,6 @@ char jpg_read(const char* name, uint8_t* values)
 {
     char retval = 0;
     FILE* fin = fopen(name, "rb");
-    UNUSED(alpha);
     if(fin != NULL)
     {
         int row_len;
