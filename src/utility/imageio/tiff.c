@@ -6,9 +6,10 @@
 char tiff_write(const char* name, int width, int height, const uint8_t* data)
 {
     char retval = 0;
+    TIFF* fout;
     TIFFSetWarningHandler(NULL);
     TIFFSetErrorHandler(NULL);
-    TIFF* fout = TIFFOpen(name, "w");
+    fout = TIFFOpen(name, "w");
     if(fout != NULL)
     {
         int y = 0;
@@ -37,9 +38,10 @@ char tiff_write(const char* name, int width, int height, const uint8_t* data)
 char tiff_valid(const char* name)
 {
     char retval = 0;
+    TIFF* fin;
     TIFFSetWarningHandler(NULL);
     TIFFSetErrorHandler(NULL);
-    TIFF* fin = TIFFOpen(name, "r");
+    fin = TIFFOpen(name, "r");
     if(fin != NULL)
     {
         retval = 1;
@@ -51,9 +53,10 @@ char tiff_valid(const char* name)
 char tiff_dimensions(const char* name, int* width, int* height)
 {
     char retval = 0;
+    TIFF* fin;
     TIFFSetWarningHandler(NULL);
     TIFFSetErrorHandler(NULL);
-    TIFF* fin = TIFFOpen(name, "r");
+    fin = TIFFOpen(name, "r");
     if(fin != NULL)
     {
         retval |= TIFFGetField(fin, TIFFTAG_IMAGEWIDTH, width);
@@ -66,9 +69,10 @@ char tiff_dimensions(const char* name, int* width, int* height)
 char tiff_read(const char* name, uint8_t* values, uint8_t* alpha)
 {
     char retval = 0;
+    TIFF* fin;
     TIFFSetWarningHandler(NULL);
     TIFFSetErrorHandler(NULL);
-    TIFF* fin = TIFFOpen(name, "r");
+    fin = TIFFOpen(name, "r");
     if(fin != NULL)
     {
         int width;

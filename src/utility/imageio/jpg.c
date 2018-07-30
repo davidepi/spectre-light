@@ -23,7 +23,7 @@ char jpg_write(const char* name, int width, int height, const uint8_t* data)
         /*not the best thing, but the jpeg functions wants a modifiable array*/
         uint8_t* data_nc = (uint8_t*)malloc(sizeof(uint8_t)*width*height*3);
         memset(&jpg_img, 0, sizeof(jpg_img));
-        memset(&jpg_err, 0, sizeof(jpg_img));
+        memset(&jpg_err, 0, sizeof(jpg_err));
         memcpy(data_nc, data, width*height*3);
         jpg_img.err = jpeg_std_error(&jpg_err);
         jpg_err.error_exit = jpg_error;
@@ -61,7 +61,7 @@ char jpg_valid(const char* name)
         /* without error handling SIGSEGV will be generated */
         struct jpeg_error_mgr jpg_err;
         memset(&jpg_img, 0, sizeof(jpg_img));
-        memset(&jpg_err, 0, sizeof(jpg_img));
+        memset(&jpg_err, 0, sizeof(jpg_err));
         jpg_img.err = jpeg_std_error(&jpg_err);
         jpg_err.error_exit = jpg_error;
         jpg_err.output_message = jpg_error;
@@ -88,7 +88,7 @@ char jpg_dimensions(const char* name, int* width, int* height)
         /* without error handling SIGSEGV will be generated */
         struct jpeg_error_mgr jpg_err;
         memset(&jpg_img, 0, sizeof(jpg_img));
-        memset(&jpg_err, 0, sizeof(jpg_img));
+        memset(&jpg_err, 0, sizeof(jpg_err));
         jpg_img.err = jpeg_std_error(&jpg_err);
         jpg_err.error_exit = jpg_error;
         jpg_err.output_message = jpg_error;
@@ -124,7 +124,7 @@ char jpg_read(const char* name, uint8_t* values)
         /* without error handling SIGSEGV will be generated */
         struct jpeg_error_mgr jpg_err;
         memset(&jpg_img, 0, sizeof(jpg_img));
-        memset(&jpg_err, 0, sizeof(jpg_img));
+        memset(&jpg_err, 0, sizeof(jpg_err));
         jpg_img.err = jpeg_std_error(&jpg_err);
         jpg_err.error_exit = jpg_error;
         jpg_err.output_message = jpg_error;

@@ -83,11 +83,16 @@ char bmp_write(const char* name, int width, int height, const uint8_t* data)
     {
         struct bmp_header header;
         struct bmp_dib_v3 dib;
-        uint8_t pixel[3];
-        const char padding = (width*(ENDIANNESS_LITTLE16(dib.bpp) >> 3))%4;
+        char bpp;
+        char padding;
         int x;
         int y;
+        int data_idx = 0;
+        uint8_t* row;
         create_bmp_header(width, height, &header, &dib);
+        bpp = ENDIANNESS_LITTLE16(dib.bpp) >> 3;
+        padding = (width*bpp)%4;
+        row = (uint8_t*)malloc(sizeof(uint8_t)*(bpp*width+padding));
         fwrite(&header, sizeof(struct bmp_header), 1, fout);
         fwrite(&dib, sizeof(struct bmp_dib_v3), 1, fout);
         for(y = 0; y<height; y++)
@@ -95,16 +100,16 @@ char bmp_write(const char* name, int width, int height, const uint8_t* data)
             for(x = 0; x<width; x++)
             {
                 /* convert from RGB to BGR */
-                pixel[0] = data[(y*width+x)*3+2];
-                pixel[1] = data[(y*width+x)*3+1];
-                pixel[2] = data[(y*width+x)*3+0];
-                fwrite(&pixel, sizeof(pixel), 1, fout);
+                row[x*3+2] = data[data_idx++];
+                row[x*3+1] = data[data_idx++];
+                row[x*3+0] = data[data_idx++];
             }
-            fwrite(&pixel, sizeof(uint8_t), padding, fout); /* random data */
+            fwrite(row, sizeof(uint8_t), bpp*width+padding, fout);
 
         }
+        free(row);
         fclose(fout);
-        retval = 1;
+        retval = data_idx == width*height*bpp;
     }
     return retval;
 }
@@ -131,13 +136,13 @@ char bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
             const int width = ENDIANNESS_LITTLE32(dib.width);
             const int bpp = ENDIANNESS_LITTLE16(dib.bpp) >> 3;
             const char has_alpha = bpp == 4 && alpha != NULL;
+            const char padding = (width*bpp)%4;
             int y;
             int ymax;
             int x;
             int increment = -height/abs(height);
-            int padding = (width*bpp)%4;
             int written = 0;
-            uint8_t pixel[4];
+            uint8_t* row = (uint8_t*)malloc(bpp*width+padding);
             if(increment<0)
             {
                 ymax = -1;
@@ -150,23 +155,23 @@ char bmp_read(const char* name, uint8_t* values, uint8_t* alpha)
                 y = 0;
             }
             fseek(fin, ENDIANNESS_LITTLE32(header.data_offset), SEEK_SET);
-            while(y != ymax)
+            while(y != ymax && fread(row, bpp*width+padding, 1, fin))
             {
                 x = 0;
-                while(x<width && fread(&pixel, bpp, 1, fin))
+                while(x<width)
                 {
-                    values[(y*width+x)*3+0] = pixel[2];
-                    values[(y*width+x)*3+1] = pixel[1];
-                    values[(y*width+x)*3+2] = pixel[0];
-                    /* hoping fread is cached and loop invariant works */
+                    values[(y*width+x)*3+0] = row[x*bpp+2];
+                    values[(y*width+x)*3+1] = row[x*bpp+1];
+                    values[(y*width+x)*3+2] = row[x*bpp+0];
+                    /* hoping loop invariant works */
                     if(has_alpha)
-                        alpha[(y*width+x)] = pixel[3];
-                    written++;
+                        alpha[(y*width+x)] = row[x*bpp+3];
                     x++;
                 }
-                fread(&pixel, sizeof(uint8_t), padding, fin);
+                written += width;
                 y += increment;
             }
+            free(row);
             retval = written == (height*width)?has_alpha?2:1:0;
         }
     }

@@ -10,7 +10,7 @@ enum tga_datatype
     TGA_GRAYSCALE = 0x3,
     TGA_COLORMAP_RLE = 0x9,
     TGA_RGB_RLE = 0xA,
-    TGA_GRAYSCALE_RLE = 0xB,
+    TGA_GRAYSCALE_RLE = 0xB
 };
 
 #define TGA_UPPER_ORIGIN 0x20
@@ -18,6 +18,7 @@ enum tga_datatype
 static char valid_header(struct tga_header* header)
 {
     char retval = 1;
+    uint8_t descriptor = header->img_descriptor & 0xF0;
     switch(header->datatype_code)
     {
         case TGA_RGB:
@@ -29,7 +30,6 @@ static char valid_header(struct tga_header* header)
         default:retval = 0;
     }
     /* first three bytes are the alpha depth, I don't care */
-    uint8_t descriptor = header->img_descriptor & 0xF0;
     retval &= (header->bpp == 24 || header->bpp == 32 ||
                header->bpp == 16 || header->bpp == 15);
     retval &= header->colourmap_type == 0;

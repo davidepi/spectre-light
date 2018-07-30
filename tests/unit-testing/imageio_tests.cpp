@@ -20,6 +20,34 @@ extern "C" {
 #include <cstdio>
 #include <climits>
 
+static const uint8_t write_data[300] = {
+        0xD7, 0xF7, 0x40, 0x17, 0xE9, 0x85, 0x75, 0xE0, 0x3F, 0xEE, 0x22, 0xAE,
+        0xD6, 0xD9, 0x1B, 0x23, 0x83, 0xB1, 0x81, 0xC7, 0x78, 0x77, 0xFE, 0xDD,
+        0xBF, 0xE1, 0x81, 0x8E, 0x0E, 0xB3, 0xD0, 0xB2, 0xA0, 0xA8, 0x36, 0x67,
+        0x84, 0xE6, 0xD4, 0x8E, 0x5F, 0x89, 0x86, 0x0C, 0xEC, 0x5E, 0x3E, 0xAB,
+        0x96, 0x2E, 0x42, 0x7A, 0x9B, 0x6C, 0xCD, 0x67, 0x5A, 0x8F, 0x31, 0x48,
+        0xA5, 0xC6, 0xDD, 0xCC, 0xB4, 0x09, 0xF6, 0x26, 0xEE, 0xE4, 0x66, 0xC0,
+        0xBC, 0xA8, 0xE1, 0x90, 0x47, 0x1D, 0x1B, 0x9A, 0xB5, 0xAF, 0xCC, 0xB4,
+        0x3B, 0xA7, 0x03, 0x9B, 0x5B, 0x84, 0x27, 0x6C, 0x7A, 0x82, 0x69, 0xE5,
+        0xD4, 0x88, 0xAA, 0x99, 0x7F, 0x2A, 0xD0, 0x2F, 0x06, 0x04, 0xAD, 0xA5,
+        0xBA, 0x5F, 0xCC, 0xC8, 0x69, 0x9B, 0xEC, 0xBD, 0xC0, 0x8A, 0x06, 0xC4,
+        0x62, 0x7D, 0xD9, 0x5F, 0x1F, 0x0F, 0x77, 0xD9, 0xAD, 0x99, 0xB4, 0x2B,
+        0x92, 0x72, 0x1E, 0x3A, 0xBF, 0x6A, 0xB5, 0xE5, 0x3E, 0x93, 0x29, 0x0A,
+        0x44, 0x33, 0x39, 0xCE, 0x7B, 0x61, 0x02, 0x6C, 0x8E, 0x5D, 0x24, 0x2D,
+        0x95, 0xF8, 0xEA, 0xB9, 0xB9, 0xB3, 0xD2, 0xEA, 0x2F, 0x20, 0x2B, 0x6B,
+        0xCF, 0xED, 0xD8, 0xE8, 0xC6, 0x78, 0x86, 0x69, 0xD6, 0x4D, 0x2B, 0x15,
+        0xE2, 0x3D, 0x32, 0x8A, 0xB7, 0x1D, 0x63, 0x44, 0x01, 0x34, 0xCE, 0x62,
+        0xE8, 0xF9, 0x61, 0xD7, 0x84, 0x97, 0x6D, 0x07, 0x48, 0xA9, 0x8C, 0x57,
+        0x2C, 0xC2, 0x24, 0x99, 0x99, 0x4B, 0xCD, 0x37, 0x89, 0x8F, 0x89, 0x7B,
+        0xFE, 0xC9, 0x5D, 0x6F, 0x17, 0xF3, 0xAB, 0xF4, 0xB5, 0xDB, 0xDD, 0x5E,
+        0xC1, 0x7F, 0x13, 0x9F, 0x24, 0xCF, 0x76, 0x7A, 0x60, 0xE9, 0xB7, 0x2A,
+        0x7A, 0x45, 0xB1, 0x53, 0xE7, 0x00, 0x43, 0xDB, 0xAA, 0x59, 0x4E, 0xD3,
+        0x93, 0xE1, 0x7D, 0x93, 0x33, 0xE2, 0xC7, 0xD3, 0x1C, 0xC2, 0x8E, 0x3B,
+        0x5B, 0xDB, 0x16, 0x3F, 0x64, 0x4B, 0x72, 0xEA, 0x05, 0x7E, 0xFC, 0x5B,
+        0x69, 0xB7, 0x73, 0x6C, 0x3E, 0x24, 0xD0, 0xF7, 0x3D, 0x03, 0x6D, 0x43,
+        0x0B, 0x10, 0xEB, 0xF6, 0xA4, 0x28, 0x43, 0xAE, 0x1C, 0x8C, 0xCA, 0x04
+};
+
 SPECTRE_TEST_INIT(ImageIO_tests)
 
 SPECTRE_TEST(ImageIO, image_supported_func)
@@ -48,29 +76,6 @@ SPECTRE_TEST(ImageIO, image_supported_func)
     EXPECT_TRUE(res);
 #endif
     res = img_supported("dds");
-    EXPECT_FALSE(res);
-}
-
-SPECTRE_TEST(ImageIO, ppm_write_func)
-{
-    char file_stat[64];
-
-    uint8_t image_sample[17*10*3];
-    for(int i = 0; i<17*10*3; i += 3)
-        image_sample[i] = i/3;
-    bool res = img_write("test.ppm", "ppm", 16, 10, image_sample);
-    ASSERT_TRUE(res);
-#ifndef _WIN32
-    //check if saved image is actually a .ppm
-    FILE* fp = popen("file -b --mime test.ppm", "r");
-    fgets(file_stat, 64, fp);
-    pclose(fp);
-    EXPECT_STREQ(file_stat, "image/x-portable-pixmap; charset=binary\n");
-#endif
-    EXPECT_EQ(unlink("test.ppm"), 0);
-
-    //non existent folder
-    res = img_write("/root/nonexistent/test.ppm", "ppm", 16, 10, image_sample);
     EXPECT_FALSE(res);
 }
 
@@ -246,28 +251,40 @@ SPECTRE_TEST(ImageIO, ppm_read_func)
     memset(data, 0, 12);
 }
 
-SPECTRE_TEST(ImageIO, bmp_write_func)
+SPECTRE_TEST(ImageIO, ppm_write_func)
 {
-    char file_stat[64];
-
-    uint8_t image_sample[17*10*3];
-    for(int i = 0; i<17*10*3; i += 3)
-        image_sample[i] = i/3;
-    bool res = img_write("test.bmp", "bmp", 16, 10, image_sample);
+    uint8_t read_data[300];
+    bool res;
+    res = img_write("test.ppm", "ppm", 10, 10, write_data);
     ASSERT_TRUE(res);
-#ifndef _WIN32
-    //check if saved image is actually a .bmp
-    FILE* fp = popen("file -b --mime test.bmp", "r");
-    fgets(file_stat, 64, fp);
-    pclose(fp);
-    EXPECT_STREQ(file_stat,
-                 "image/x-ms-bmp; charset=binary\n");
-#endif
-    EXPECT_EQ(unlink("test.bmp"), 0);
+    res = img_read8("test.ppm", "ppm", read_data, NULL);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.ppm"), 0);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(read_data[i], write_data[i]);
 
     //non existent folder
-    res = img_write("/root/nonexistent/test.bmp", "bmp", 16, 10, image_sample);
+    res = img_write("/root/nonexistent/test.ppm", "ppm", 10, 10, write_data);
     EXPECT_FALSE(res);
+}
+
+SPECTRE_TEST(ImageIO, bmp_valid_func)
+{
+    bool res;
+    res = img_valid("nonexistent.ppm", "bmp");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/wrong_magic1.bmp", "bmp");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/wrong_magic2.bmp", "bmp");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/os2.bmp", "bmp");
+    EXPECT_FALSE(res);
+    res = img_valid(TEST_ASSETS "images/correct.bmp", "bmp");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/flipped.bmp", "bmp");
+    EXPECT_TRUE(res);
+    res = img_valid(TEST_ASSETS "images/32bit.bmp", "bmp");
+    EXPECT_TRUE(res);
 }
 
 SPECTRE_TEST(ImageIO, bmp_dimensions_func)
@@ -408,46 +425,20 @@ SPECTRE_TEST(ImageIO, bmp_read_func)
     EXPECT_EQ(res, 2);
 }
 
-SPECTRE_TEST(ImageIO, bmp_valid_func)
+SPECTRE_TEST(ImageIO, bmp_write_func)
 {
+    uint8_t read_data[300];
     bool res;
-    res = img_valid("nonexistent.ppm", "bmp");
-    EXPECT_FALSE(res);
-    res = img_valid(TEST_ASSETS "images/wrong_magic1.bmp", "bmp");
-    EXPECT_FALSE(res);
-    res = img_valid(TEST_ASSETS "images/wrong_magic2.bmp", "bmp");
-    EXPECT_FALSE(res);
-    res = img_valid(TEST_ASSETS "images/os2.bmp", "bmp");
-    EXPECT_FALSE(res);
-    res = img_valid(TEST_ASSETS "images/correct.bmp", "bmp");
-    EXPECT_TRUE(res);
-    res = img_valid(TEST_ASSETS "images/flipped.bmp", "bmp");
-    EXPECT_TRUE(res);
-    res = img_valid(TEST_ASSETS "images/32bit.bmp", "bmp");
-    EXPECT_TRUE(res);
-}
-
-SPECTRE_TEST(ImageIO, tga_save_func)
-{
-    char file_stat[64];
-
-    uint8_t image_sample[17*10*3];
-    for(int i = 0; i<17*10*3; i += 3)
-        image_sample[i] = i/3;
-    bool res = img_write("test.tga", "tga", 16, 10, image_sample);
+    res = img_write("test.bmp", "bmp", 10, 10, write_data);
     ASSERT_TRUE(res);
-#ifndef _WIN32
-    //check if saved image is actually a .bmp
-    FILE* fp = popen("file -b --mime test.tga", "r");
-    fgets(file_stat, 64, fp);
-    pclose(fp);
-    EXPECT_STREQ(file_stat,
-                 "image/x-tga; charset=binary\n");
-#endif
-    EXPECT_EQ(unlink("test.tga"), 0);
+    res = img_read8("test.bmp", "bmp", read_data, NULL);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.bmp"), 0);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(read_data[i], write_data[i]);
 
     //non existent folder
-    res = img_write("/root/nonexistent/test.tga", "tga", 16, 10, image_sample);
+    res = img_write("/root/nonexistent/test.bmp", "bmp", 10, 10, write_data);
     EXPECT_FALSE(res);
 }
 
@@ -689,36 +680,24 @@ SPECTRE_TEST(ImageIO, tga_read_func)
         EXPECT_EQ(rlealp[i], rlealp_expected[i]);
 }
 
-#ifdef JPEG_FOUND
-
-SPECTRE_TEST(ImageIO, jpg_write_func)
+SPECTRE_TEST(ImageIO, tga_save_func)
 {
-    char file_stat[64];
-
-    uint8_t image_sample[17*10*3];
-    for(
-            int i = 0;
-            i<17*10*3; i += 3)
-        image_sample[i] = i/3;
-    bool res = img_write("test.jpg", "jpg", 16, 10, image_sample);
+    uint8_t read_data[300];
+    bool res;
+    res = img_write("test.tga", "tga", 10, 10, write_data);
     ASSERT_TRUE(res);
-#ifndef _WIN32
-//check if saved image is actually a .ppm
-    FILE* fp = popen("file -b --mime test.jpg", "r");
-    fgets(file_stat,
-          64, fp);
-    pclose(fp);
-    EXPECT_STREQ(file_stat, "image/jpeg; charset=binary\n");
-#endif
-    EXPECT_EQ(unlink("test.jpg"), 0);
+    res = img_read8("test.tga", "tga", read_data, NULL);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.tga"), 0);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(read_data[i], write_data[i]);
 
-//non existent folder
-    res = img_write("/root/nonexistent/test.jpg", "jpg", 16, 10, image_sample);
-    EXPECT_FALSE(res);
-    res = img_write("/root/nonexistent/test.jpeg", "jpeg", 16, 10,
-                    image_sample);
+    //non existent folder
+    res = img_write("/root/nonexistent/test.tga", "tga", 10, 10, write_data);
     EXPECT_FALSE(res);
 }
+
+#ifdef JPEG_FOUND
 
 SPECTRE_TEST(ImageIO, jpg_valid_func)
 {
@@ -816,32 +795,25 @@ SPECTRE_TEST(ImageIO, jpg_read_func)
     EXPECT_EQ(values[17], (uint8_t)0);
 }
 
-#endif
-#ifdef PNG_FOUND
-
-SPECTRE_TEST(ImageIO, png_write_func)
+SPECTRE_TEST(ImageIO, jpg_write_func)
 {
-    char file_stat[64];
-
-    uint8_t image_sample[17*10*3];
-    for(int i = 0; i<17*10*3; i += 3)
-        image_sample[i] = i/3;
-    bool res = img_write("test.png", "png", 16, 10,
-                         image_sample);
+    uint8_t read_data[300];
+    bool res;
+    res = img_write("test.jpg", "jpg", 10, 10, write_data);
     ASSERT_TRUE(res);
-#ifndef _WIN32
-    //check if saved image is actually a .ppm
-    FILE* fp = popen("file -b --mime test.png", "r");
-    fgets(file_stat, 64, fp);
-    pclose(fp);
-    EXPECT_STREQ(file_stat, "image/png; charset=binary\n");
-#endif
-    EXPECT_EQ(unlink("test.png"), 0);
+    res = img_read8("test.jpg", "jpg", read_data, NULL);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.jpg"), 0);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(read_data[i], write_data[i]);
 
     //non existent folder
-    res = img_write("/root/nonexistent/test.png", "png", 16, 10, image_sample);
+    res = img_write("/root/nonexistent/test.jpeg", "jpeg", 10, 10, write_data);
     EXPECT_FALSE(res);
 }
+
+#endif
+#ifdef PNG_FOUND
 
 SPECTRE_TEST(ImageIO, png_valid_func)
 {
@@ -909,32 +881,25 @@ SPECTRE_TEST(ImageIO, png_read_func)
     EXPECT_EQ(values[17], (uint8_t)0);
 }
 
-#endif
-#ifdef TIFF_FOUND
-
-SPECTRE_TEST(ImageIO, tiff_write_func)
+SPECTRE_TEST(ImageIO, png_write_func)
 {
-    char file_stat[64];
-
-    uint8_t image_sample[17*10*3];
-    for(int i = 0; i<17*10*3; i += 3)
-        image_sample[i] = i/3;
-    bool res = img_write("test.tiff", "tiff", 16, 10,
-                         image_sample);
+    uint8_t read_data[300];
+    bool res;
+    res = img_write("test.png", "png", 10, 10, write_data);
     ASSERT_TRUE(res);
-#ifndef _WIN32
-    //check if saved image is actually a .ppm
-    FILE* fp = popen("file -b --mime test.tiff", "r");
-    fgets(file_stat, 64, fp);
-    pclose(fp);
-    EXPECT_STREQ(file_stat, "image/tiff; charset=binary\n");
-#endif
-    EXPECT_EQ(unlink("test.tiff"), 0);
+    res = img_read8("test.png", "png", read_data, NULL);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.png"), 0);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(read_data[i], write_data[i]);
 
     //non existent folder
-    res = img_write("/root/nonexistent/test.tif", "tif", 16, 10, image_sample);
+    res = img_write("/root/nonexistent/test.png", "png", 10, 10, write_data);
     EXPECT_FALSE(res);
 }
+
+#endif
+#ifdef TIFF_FOUND
 
 SPECTRE_TEST(ImageIO, tiff_valid_func)
 {
@@ -1013,6 +978,23 @@ SPECTRE_TEST(ImageIO, tiff_read_func)
     EXPECT_EQ(alpha[1], (uint8_t)255);
     EXPECT_EQ(alpha[2], (uint8_t)0);
     EXPECT_EQ(alpha[3], (uint8_t)54);
+}
+
+SPECTRE_TEST(ImageIO, tiff_write_func)
+{
+    uint8_t read_data[300];
+    bool res;
+    res = img_write("test.tif", "tif", 10, 10, write_data);
+    ASSERT_TRUE(res);
+    res = img_read8("test.tif", "tif", read_data, NULL);
+    ASSERT_TRUE(res);
+    EXPECT_EQ(unlink("test.tif"), 0);
+    for(int i = 0; i<300; i++)
+        EXPECT_EQ(read_data[i], write_data[i]);
+
+    //non existent folder
+    res = img_write("/root/nonexistent/test.tif", "tif", 10, 10, write_data);
+    EXPECT_FALSE(res);
 }
 
 #endif
