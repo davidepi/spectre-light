@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit 13 Jul 2018
+//Last Edit 30 Jul 2018
 
 /**
  *  \file texture_image.hpp
@@ -7,7 +7,7 @@
  *  \details   Class holding an image map that can be shifted and scaled
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      13 Jul 2018
+ *  \date      30 Jul 2018
  *  \copyright GNU GPLv3
  */
 
@@ -19,6 +19,7 @@
 extern "C" {
 #include "utility/imageio/imageio.h"
 }
+
 #include "textures/texture.hpp"
 #include "textures/texture_image.hpp"
 #include "textures/image_map.hpp"
@@ -91,7 +92,10 @@ public:
      */
     Spectrum map(const HitPoint* hp) const override;
 
-private:
+    //used to ensure ImageMap is allocated of the correct type
+#ifndef TESTS
+    private:
+#endif
 
     ///scale component
     Vec2 scale;
