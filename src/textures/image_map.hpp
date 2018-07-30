@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit 13 Jul 2018
+//Last Edit 30 Jul 2018
 
 /**
  *  \file image_map.hpp
@@ -10,7 +10,7 @@
  *             size and filtering methods
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      13 Jul 2018
+ *  \date      30 Jul 2018
  *  \copyright GNU GPLv3
  */
 
@@ -112,13 +112,6 @@ public:
      *  \param[out] out The ColorRGB class that will hold the texel
      */
     virtual void get_color(Texel32& in, ColorRGB* out) const = 0;
-
-    /**
-     *  \brief Sets the color of a specific texel, given the input ColorRGB
-     *  \param[in] lvl1 The texel that will be changed
-     *  \param[in] val ColorRGB class holding the new value for the texel
-     */
-    virtual void set_color(int lvl1, const ColorRGB& val) = 0;
 };
 
 /**
@@ -178,13 +171,6 @@ public:
      */
     void get_color(int lvl1, ColorRGB* out) const override;
 
-    /**
-     *  \brief Sets the color of a specific texel, given the input ColorRGB
-     *  \param[in] lvl1 The texel that will be changed
-     *  \param[in] val ColorRGB class holding the new value for the texel
-     */
-    void set_color(int lvl1, const ColorRGB& val) override;
-
 private:
 
     Texel* values;
@@ -242,13 +228,6 @@ public:
      *  \param[out] out A ColorRGB class representing the found texel
      */
     void get_color(int lvl1, ColorRGB* out) const override;
-
-    /**
-     *  \brief Sets the color of a specific texel, given the input ColorRGB
-     *  \param[in] lvl1 The texel that will be changed
-     *  \param[in] val ColorRGB class holding the new value for the texel
-     */
-    void set_color(int lvl1, const ColorRGB& val) override;
 
 private:
 
@@ -388,8 +367,8 @@ public:
      *  a filtering function for this ImageMap. At every call of this function
      *  the filtered value will be retrieved from the texture
      *
-     *  \param[in] u u value of the texture mapping
-     *  \param[in] v v value of the texture mapping
+     *  \param[in] u u value of the texture mapping in range [0-1]
+     *  \param[in] v v value of the texture mapping in range [0-1]
      *  \param[in] dudx differential for the u value, when the ray is shifted
      *  on the x axis
      *  \param[in] dvdx differential for the u value, when the ray is shifted
@@ -427,10 +406,11 @@ public:
      *
      *  The filter function is a function pointer that will be used to setup
      *  a filtering function for this ImageMap. At every call of this function
-     *  the filtered value will be retrieved from the texture
+     *  the filtered value will be retrieved from the texture. If the uv maps
+     *  on the border of the texture, the texture will be wrapped
      *
-     *  \param[in] u u value of the texture mapping
-     *  \param[in] v v value of the texture mapping
+     *  \param[in] u u value of the texture mapping in range [0-1]
+     *  \param[in] v v value of the texture mapping in range [0-1]
      *  \param[in] dudx differential for the u value, when the ray is shifted
      *  on the x axis
      *  \param[in] dvdx differential for the u value, when the ray is shifted

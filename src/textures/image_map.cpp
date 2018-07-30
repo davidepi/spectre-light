@@ -119,13 +119,6 @@ void TexelMapLow::get_color(int lvl1, ColorRGB* out) const
                     values[lvl1].b);
 }
 
-void TexelMapLow::set_color(int lvl1, const ColorRGB& val)
-{
-    values[lvl1].r = (uint8_t)(val.r*255);
-    values[lvl1].g = (uint8_t)(val.g*255);
-    values[lvl1].b = (uint8_t)(val.b*255);
-}
-
 void TexelMapHigh::get_texel(int lvl1, Texel32* out) const
 {
     out->r = values[lvl1].r;
@@ -143,13 +136,6 @@ void TexelMapHigh::get_color(int lvl1, ColorRGB* out) const
     *out = ColorRGB(values[lvl1].r,
                     values[lvl1].g,
                     values[lvl1].b);
-}
-
-void TexelMapHigh::set_color(int lvl1, const ColorRGB& val)
-{
-    values[lvl1].r = val.r*255;
-    values[lvl1].g = val.g*255;
-    values[lvl1].b = val.b*255;
 }
 
 ImageMap::ImageMap(const uint8_t* values, uint16_t side)
@@ -314,8 +300,8 @@ ColorRGB ImageMap::bilinear(float u, float v, uint8_t level) const
     v = v*side[level]-0.5f;
     int x = (int)u;
     int y = (int)v;
-    float decimal_u = u-x;
-    float decimal_v = v-y;
+    float decimal_u = fabsf(u-x); //to avoid corner case where this can be -0.5f
+    float decimal_v = fabsf(v-y);
     float int_u = 1.f-decimal_u;
     float int_v = 1.f-decimal_v;
     Texel32 t0;
@@ -323,15 +309,13 @@ ColorRGB ImageMap::bilinear(float u, float v, uint8_t level) const
     Texel32 t2;
     Texel32 t3;
     Texel32 out;
-    //wraps texture if filtering happens outside bounds
-    int x0 = x>=0?x:side[level]-1;
-    int y0 = y>=0?y:side[level]-1;
-    int x1 = (x+1)<=side[level]-1?(x+1):0;
-    int y1 = (y+1)<=side[level]-1?(y+1):0;
-    MIPmap[level]->get_texel(y0*side[level]+x0, &t0);
-    MIPmap[level]->get_texel(y0*side[level]+x1, &t1);
-    MIPmap[level]->get_texel(y1*side[level]+x0, &t2);
-    MIPmap[level]->get_texel(y1*side[level]+x1, &t3);
+    //wraps texture if filtering happens outside bounds (val+1) = out of texture
+    int next_x = (x+1)<=side[level]-1?(x+1):0;
+    int next_y = (y+1)<=side[level]-1?(y+1):0;
+    MIPmap[level]->get_texel(y*side[level]+x, &t0);
+    MIPmap[level]->get_texel(y*side[level]+next_x, &t1);
+    MIPmap[level]->get_texel(next_y*side[level]+x, &t2);
+    MIPmap[level]->get_texel(next_y*side[level]+next_x, &t3);
     ColorRGB retval;
     out.r = (t0.r*int_u+t1.r*decimal_u)*int_v+
             (t2.r*int_u+t3.r*decimal_u)*decimal_v;
@@ -348,8 +332,8 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
                           float dvdy, uint8_t level) const
 {
     //scale values
-    u = max(0.f, u*side[level]-0.5f);
-    v = max(0.f, v*side[level]-0.5f);
+    u = u*side[level]-0.5f;
+    v = v*side[level]-0.5f;
     dudx *= side[level];
     dvdx *= side[level];
     dudy *= side[level];
