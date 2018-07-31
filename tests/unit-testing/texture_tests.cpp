@@ -103,34 +103,54 @@ SPECTRE_TEST(Texture, TextureImage_scale_shift)
     EXPECT_EQ(tex.get_shift().y, shift.y);
 }
 
-SPECTRE_TEST(Texture, differentials_creation)
+SPECTRE_TEST(Texture, Calculate_differentials)
 {
-    Ray r0, rx, ry;
-    //create sampler
-    unsigned int seed[32];
-    for(int i = 0; i<32; i++)
-        seed[i] = i;
-    SamplerStratified sam(0, 2, 0, 2, 4, seed, true);
-
-    //create camera
-    Point3 pos(0.f, 0.f, -10.f);
-    Point3 target(0.f, 0.f, 100.f);
-    Vec3 up(0.f, 1.f, 0.f);
-
-    //square image
-    CameraOrthographic camera(&pos, &target, &up, 2, 2);
-    Sample samples[4];
-    sam.get_samples(samples);
-
-    Sample test = samples[0];
-    Sample testdx = samples[0];
-    testdx.posx++;
-    Sample testdy = samples[0];
-    testdy.posy++;
-
-    camera.create_ray(&test, &r0, &rx, &ry);
+    HitPoint hit;
+    Ray rx;
+    Ray ry;
+    //nx>ny,nz
+    hit.normal_h = Normal(0.7f, 0.6f, 0.5f);
+    hit.point_h = Point3(0.1f, 0.8f, 0.2f);
+    hit.dpdu = Vec3(0.9f, 0.4f, 0.6f);
+    hit.dpdv = Vec3(0.2f, 0.2f, 0.7f);
+    rx.origin = Point3(0.1f, 0.8f, 0.4f);
+    rx.direction = Vec3(0.7f, 0.5f, 0.8f);
+    ry.origin = Point3(0.9f, 0.8f, 0.4f);
+    ry.direction = Vec3(0.1f, 0.5f, 0.7f);
+    calculate_differentials(&hit, &rx, &ry);
+    EXPECT_NEAR(hit.du.x, -0.349789947f, 1e-5f);
+    EXPECT_NEAR(hit.du.y, -1.45312488f, 1e-5f);
+    EXPECT_NEAR(hit.dv.x, 0.489495873f, 1e-5f);
+    EXPECT_NEAR(hit.dv.y, 0.614583373f, 1e-5f);
+    EXPECT_TRUE(hit.differentials);
+    //ny>nz
+    hit.normal_h = Normal(0.3f, 0.6f, 0.5f);
+    calculate_differentials(&hit, &rx, &ry);
+    EXPECT_NEAR(hit.du.x, -0.149536714f, 1e-5f);
+    EXPECT_NEAR(hit.du.y, 1.08823514f, 1e-5f);
+    EXPECT_NEAR(hit.dv.x, 0.288299978f, 1e-5f);
+    EXPECT_NEAR(hit.dv.y, -1.14705873f, 1e-5f);
+    EXPECT_TRUE(hit.differentials);
+    //ny<=nz && nx<=ny && nx<=nz
+    hit.normal_h = Normal(0.3f, 0.5f, 0.8f);
+    calculate_differentials(&hit, &rx, &ry);
+    EXPECT_NEAR(hit.du.x, -0.0581818037f, 1e-5f);
+    EXPECT_NEAR(hit.du.y, 1.9809525f, 1e-5f);
+    EXPECT_NEAR(hit.dv.x, -0.24727273f, 1e-5f);
+    EXPECT_NEAR(hit.dv.y, -5.15238094f, 1e-5f);
+    EXPECT_TRUE(hit.differentials);
+    //no differentials;
+    hit.point_h = Point3(0.318554252f, 0.0149820382f, 0.580925465f);
+    hit.normal_h = Normal(0.249578759f, 0.70821166f, 0.150726095f);
+    hit.dpdu = Vec3(0.552109361f, 0.940024793f, 0.366022646f);
+    hit.dpdv = Vec3(0.197407082f, 0.976550161f, 0.130862013f);
+    rx.origin = Point3(0.404442132f, 0.759377062f, 0.687527895f);
+    rx.direction = Vec3(0.487480313f, 0.395991176f, 0.807750642f);
+    ry.origin = Point3(0.414126188f, 0.553074598f, 0.94479984f);
+    ry.direction = Vec3(0.615469813f, 0.925229012f, 0.692291856f);
+    calculate_differentials(&hit, &rx, &ry);
+    EXPECT_FALSE(hit.differentials);
 }
-
 
 SPECTRE_TEST(Texture, TextureImage_map)
 {
@@ -145,6 +165,18 @@ SPECTRE_TEST(Texture, TextureImage_map)
     ColorRGB color;
     TextureImage tex(TEST_ASSETS "images/correct.bmp", scale, shift,
                      UNFILTERED);
+    //Unfiltered map
+    hp.du = Vec2();
+    hp.dv = Vec2();
+    hp.differentials = true;
+    res = tex.map(&hp);
+    color = res.to_xyz().to_sRGB();
+    EXPECT_NEAR(color.r, 0.999f, 0.1f);
+    EXPECT_NEAR(color.g, 0.f, 0.1f);
+    EXPECT_NEAR(color.b, 0.f, 0.1f);
+
+    tex = TextureImage(TEST_ASSETS "images/correct.bmp", scale, shift,
+                       TRILINEAR);
 
     //Differentials found
     hp.du = Vec2();

@@ -35,9 +35,6 @@
 		6B2321F92094F1ED004FBAF5 /* vec2_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2321EF2094EFB0004FBAF5 /* vec2_tests.cpp */; };
 		6B2321FB2094FA35004FBAF5 /* vec3_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2321F12094EFB1004FBAF5 /* vec3_tests.cpp */; };
 		6B2841B320971713000FC23C /* point2_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2841B120971710000FC23C /* point2_tests.cpp */; };
-		6B3091AB21007DE80061CF37 /* jpg.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B3091AA21007DE70061CF37 /* jpg.c */; };
-		6B3575B02105D0E1006E1F50 /* tiff.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B3575AC2105D0E0006E1F50 /* tiff.c */; };
-		6B3575B12105D0E1006E1F50 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B3575AD2105D0E0006E1F50 /* png.c */; };
 		6B359200208A638F0079F5DF /* parser_obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BFA15222081097B00DCA94C /* parser_obj.cpp */; };
 		6B42DF881F88DFF300C01215 /* fresnel_conditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B42DF851F88DCCF00C01215 /* fresnel_conditions.cpp */; };
 		6B42DF891F88DFF300C01215 /* microfacet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B42DF831F88DCCE00C01215 /* microfacet.cpp */; };
@@ -1102,7 +1099,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B3575B02105D0E1006E1F50 /* tiff.c in Sources */,
 				6B42DF881F88DFF300C01215 /* fresnel_conditions.cpp in Sources */,
 				6B42DF891F88DFF300C01215 /* microfacet.cpp in Sources */,
 				6BA65BE31F70421D00183E94 /* bvh.cpp in Sources */,
@@ -1135,7 +1131,6 @@
 				6BA65BF81F70421D00183E94 /* refraction.cpp in Sources */,
 				6BD89FBC2059951200CE5B05 /* texture.cpp in Sources */,
 				6BA65BFB1F70421D00183E94 /* asset.cpp in Sources */,
-				6B3575B12105D0E1006E1F50 /* png.c in Sources */,
 				6BA65BFC1F70421D00183E94 /* box.cpp in Sources */,
 				6BA65BFD1F70421D00183E94 /* mesh.cpp in Sources */,
 				6BA65BFE1F70421D00183E94 /* shape.cpp in Sources */,
@@ -1159,7 +1154,6 @@
 				6BA65C0B1F70421D00183E94 /* console.cpp in Sources */,
 				6BA65C0C1F70421D00183E94 /* occlusion_tester.cpp in Sources */,
 				6BA65C0D1F70421D00183E94 /* scene.cpp in Sources */,
-				6B3091AB21007DE80061CF37 /* jpg.c in Sources */,
 				6BA65C0E1F70421D00183E94 /* spectrum.cpp in Sources */,
 				6BA65C0F1F70421D00183E94 /* utility.cpp in Sources */,
 				6BA65C101F70421D00183E94 /* wellrng.cpp in Sources */,

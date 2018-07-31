@@ -135,7 +135,7 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
         int rle;
         skipme += header.colourmap_type*
                   ENDIANNESS_LITTLE16(header.colourmap_length);
-        if(header.img_descriptor & TGA_UPPER_ORIGIN) //top-down
+        if(header.img_descriptor & TGA_UPPER_ORIGIN) /* top-down */
         {
             increment = 1;
             ymax = height;
@@ -157,13 +157,13 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
             {
                 if(!compressed)
                 {
-                    if(bpp == 3) //24 bit no RLE
+                    if(bpp == 3) /* 24 bit no RLE */
                     {
                         values[rgb_idx++] = pixel[2];
                         values[rgb_idx++] = pixel[1];
                         values[rgb_idx++] = pixel[0];
                     }
-                    else if(bpp == 4) //32 bit no RLE
+                    else if(bpp == 4) /* 32 bit no RLE */
                     {
                         values[rgb_idx++] = pixel[2];
                         values[rgb_idx++] = pixel[1];
@@ -171,7 +171,7 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
                         if(!alpha_null)
                             alpha[alpha_idx++] = pixel[3];
                     }
-                    else //16 bit no RLE
+                    else /* 16 bit no RLE */
                     {
                         /* the shift is a multiplication by 8 */
                         /* used to map a value from 0-31 to 0-255 */
@@ -265,7 +265,7 @@ char tga_read(const char* name, uint8_t* values, uint8_t* alpha)
             y += increment;
         }
         retval = width*height == i;
-        //if retval > 0 then retval = 1 without alpha and 2 with alpha
+        /* if retval > 0 then retval = 1 without alpha and 2 with alpha */
         retval = retval>0?(!alpha_null && bpp == 4)+1:0;
     }
     fclose(fin);
