@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit 30 Jul 2018
+//Last Edit 31 Jul 2018
 
 /**
  *  \file image_map.hpp
@@ -10,7 +10,7 @@
  *             size and filtering methods
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      30 Jul 2018
+ *  \date      31 Jul 2018
  *  \copyright GNU GPLv3
  */
 

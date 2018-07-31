@@ -195,6 +195,7 @@ ImageMap::~ImageMap()
     for(int i = 0; i<maps_no; i++)
         delete ImageMap::MIPmap[i];
     free(ImageMap::MIPmap);
+    free(ImageMap::side);
 }
 
 ColorRGB ImageMapUnfiltered::filter(float u, float v, float, float,
@@ -341,7 +342,7 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
 
     //calulate ellipse coefficients
     float a = dvdx*dvdx*+dvdy*dvdy+1.f;
-    float b = -2.f*dudx*dvdx+dudy*dvdy;
+    float b = -2.f*(dudx*dvdx+dudy*dvdy);
     float c = dudx*dudx+dudy*dudy+1.f;
     const float invf = 1.f/(a*c-b*b*.25f);
     a *= invf;
@@ -352,11 +353,11 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
     const float delta = -b*b+4.f*a*c;
     const float invdelta = 1.f/delta;
     const float x0 = sqrtf(delta*c);
-    const float x1 = sqrtf(delta*a);
+    const float y0 = sqrtf(delta*a);
     int u0 = (int)ceilf(u-2.f*invdelta*x0);
     int u1 = (int)floorf(u+2.f*invdelta*x0);
-    int v0 = (int)ceilf(v-2.f*invdelta*x1);
-    int v1 = (int)floorf(v+2.f*invdelta*x1);
+    int v0 = (int)ceilf(v-2.f*invdelta*y0);
+    int v1 = (int)floorf(v+2.f*invdelta*y0);
 
     //loops over the AABB, if the point is inside the ellipse, filter it
     float resr = 0.f;
@@ -365,15 +366,19 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
     float total_weight = 0.f;
     for(int y = v0; y<=v1; y++)
     {
-        const float voff = y-v;
+        //wraps texture if ellipse is outside bounds
+        int newy = y<0?side[level]+y:y>side[level]-1?y%side[level]:y;
+        const float voff = newy-v;
         for(int x = u0; x<=u1; x++)
         {
-            const float uoff = x-u;
+            //wraps texture if ellipse is outside bounds
+            int newx = x<0?side[level]+x:x>side[level]-1?x%side[level]:x;
+            const float uoff = newx-u;
             const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
             if(radius2<1.f)
             {
                 ColorRGB hit;
-                MIPmap[level]->get_color(y*side[level]+x, &hit);
+                MIPmap[level]->get_color(newy*side[level]+newx, &hit);
                 //found the correct value for the lookup table, or the most
                 // distant one
                 const int index = min((int)(radius2*EWA_WEIGHTS_SIZE),

@@ -28,6 +28,7 @@ char bmp_valid(const char* name)
             retval &= res && dib.compression == 0 && dib.palette_no == 0 &&
                       (dib.bpp == 24 || dib.bpp == 32);
         }
+        fclose(fin);
     }
     return retval;
 }
