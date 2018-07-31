@@ -68,7 +68,7 @@ SPECTRE_TEST(Texture, TextureImage_constructor)
     TextureImage tex4(TEST_ASSETS "images/correct.bmp", zero, zero, UNFILTERED);
     EXPECT_EQ(errors_count[WARNING_INDEX], 0);
     errors_count[WARNING_INDEX] = 0;
-    EXPECT_EQ(tex3.imagemap, tex4.imagemap);
+    EXPECT_PTR_EQ(tex3.imagemap, tex4.imagemap);
     //trilinear
     TexLib.clear(); //otherwise the texture wil be cached (thus unfiltered)
     errors_count[WARNING_INDEX] = 0;

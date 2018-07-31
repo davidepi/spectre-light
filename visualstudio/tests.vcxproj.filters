@@ -99,9 +99,6 @@
     <ClCompile Include="..\src\utility\spectrum.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\utility\imageIO.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\utility\occlusion_tester.cpp">
       <Filter>sources</Filter>
     </ClCompile>
@@ -288,6 +285,18 @@
     <ClCompile Include="..\tests\unit-testing\texture_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\bmp.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\imageio.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\ppm.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\tga.c">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\unit-testing\spectre_tests.h">
@@ -351,9 +360,6 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utility\spectrum.hpp">
-      <Filter>sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\imageIO.hpp">
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utility\occlusion_tester.hpp">
@@ -462,6 +468,24 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\textures\texture_uniform.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\bmp.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\endianness.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\imageio.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\packed_struct.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\ppm.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\tga.h">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>

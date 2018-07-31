@@ -419,10 +419,10 @@ SPECTRE_TEST(ImageIO, bmp_read_func)
     EXPECT_EQ(values[9], (uint8_t)0);
     EXPECT_EQ(values[10], (uint8_t)0);
     EXPECT_EQ(values[11], (uint8_t)0);
-    EXPECT_EQ(alpha[0], 255);
-    EXPECT_EQ(alpha[1], 128);
-    EXPECT_EQ(alpha[2], 66);
-    EXPECT_EQ(alpha[3], 33);
+    EXPECT_EQ(alpha[0], (uint8_t)255);
+    EXPECT_EQ(alpha[1], (uint8_t)128);
+    EXPECT_EQ(alpha[2], (uint8_t)66);
+    EXPECT_EQ(alpha[3], (uint8_t)33);
     EXPECT_EQ(res, 2);
 }
 
@@ -595,15 +595,15 @@ SPECTRE_TEST(ImageIO, tga_read_func)
     res = -1;
     res = img_read8(TEST_ASSETS "images/16bit.tga", "tga", values, NULL);
     //shifts are used to account for precision lost with the 16 bits values
-    EXPECT_EQ(values[0], (uint8_t)255 >> 3 << 3);
+    EXPECT_EQ(values[0], (uint8_t)(255 >> 3 << 3));
     EXPECT_EQ(values[1], (uint8_t)0);
     EXPECT_EQ(values[2], (uint8_t)0);
     EXPECT_EQ(values[3], (uint8_t)0);
-    EXPECT_EQ(values[4], (uint8_t)255 >> 3 << 3);
+    EXPECT_EQ(values[4], (uint8_t)(255 >> 3 << 3));
     EXPECT_EQ(values[5], (uint8_t)0);
     EXPECT_EQ(values[6], (uint8_t)0);
     EXPECT_EQ(values[7], (uint8_t)0);
-    EXPECT_EQ(values[8], (uint8_t)255 >> 3 << 3);
+    EXPECT_EQ(values[8], (uint8_t)(255 >> 3 << 3));
     EXPECT_EQ(values[9], (uint8_t)0);
     EXPECT_EQ(values[10], (uint8_t)0);
     EXPECT_EQ(values[11], (uint8_t)0);
@@ -663,7 +663,7 @@ SPECTRE_TEST(ImageIO, tga_read_func)
     ASSERT_EQ(res, 1);
     for(int i = 0; i<300; i++)
         //shifts are used to account for precision lost with the 16 bits values
-        EXPECT_EQ(rleval[i], rleval_expected[i] >> 3 << 3);
+        EXPECT_EQ(rleval[i], (uint8_t)(rleval_expected[i] >> 3 << 3));
     memset(rleval, 0, sizeof(rleval));
     res = -1;
     res = img_read8(TEST_ASSETS "images/32bitRLE.tga", "tga", rleval, NULL);

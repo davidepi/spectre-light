@@ -107,7 +107,10 @@
     <ClCompile Include="..\src\utility\color.cpp" />
     <ClCompile Include="..\src\utility\console.cpp" />
     <ClCompile Include="..\src\utility\file.cpp" />
-    <ClCompile Include="..\src\utility\imageIO.cpp" />
+    <ClCompile Include="..\src\utility\imageio\bmp.c" />
+    <ClCompile Include="..\src\utility\imageio\imageio.c" />
+    <ClCompile Include="..\src\utility\imageio\ppm.c" />
+    <ClCompile Include="..\src\utility\imageio\tga.c" />
     <ClCompile Include="..\src\utility\occlusion_tester.cpp" />
     <ClCompile Include="..\src\utility\scene.cpp" />
     <ClCompile Include="..\src\utility\spectrum.cpp" />
@@ -200,7 +203,12 @@
     <ClInclude Include="..\src\utility\color.hpp" />
     <ClInclude Include="..\src\utility\console.hpp" />
     <ClInclude Include="..\src\utility\file.hpp" />
-    <ClInclude Include="..\src\utility\imageIO.hpp" />
+    <ClInclude Include="..\src\utility\imageio\bmp.h" />
+    <ClInclude Include="..\src\utility\imageio\endianness.h" />
+    <ClInclude Include="..\src\utility\imageio\imageio.h" />
+    <ClInclude Include="..\src\utility\imageio\packed_struct.h" />
+    <ClInclude Include="..\src\utility\imageio\ppm.h" />
+    <ClInclude Include="..\src\utility\imageio\tga.h" />
     <ClInclude Include="..\src\utility\occlusion_tester.hpp" />
     <ClInclude Include="..\src\utility\scene.hpp" />
     <ClInclude Include="..\src\utility\spectrum.hpp" />

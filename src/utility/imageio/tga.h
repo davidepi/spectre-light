@@ -49,6 +49,7 @@ PACKED_STRUCT(tga_header)
     /** bits 0-3 alpha depth, bit 4 if true the image is top-down */
     uint8_t img_descriptor;
 };
+END_PACKED_STRUCT
 
 /**
  *  \brief Writes a tga image

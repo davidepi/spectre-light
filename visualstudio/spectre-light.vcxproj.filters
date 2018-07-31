@@ -150,9 +150,6 @@
     <ClCompile Include="..\src\utility\file.cpp">
       <Filter>src\utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\utility\imageIO.cpp">
-      <Filter>src\utility</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\utility\occlusion_tester.cpp">
       <Filter>src\utility</Filter>
     </ClCompile>
@@ -176,6 +173,18 @@
     </ClCompile>
     <ClCompile Include="..\src\textures\texture_uniform.cpp">
       <Filter>src\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\bmp.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\imageio.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\ppm.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\tga.c">
+      <Filter>src\utility\imageio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -344,9 +353,6 @@
     <ClInclude Include="..\src\utility\file.hpp">
       <Filter>src\utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\utility\imageIO.hpp">
-      <Filter>src\utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\utility\occlusion_tester.hpp">
       <Filter>src\utility</Filter>
     </ClInclude>
@@ -371,6 +377,24 @@
     </ClInclude>
     <ClInclude Include="..\src\textures\texture_uniform.hpp">
       <Filter>src\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\bmp.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\endianness.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\imageio.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\packed_struct.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\ppm.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\tga.h">
+      <Filter>src\utility\imageio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -409,6 +433,9 @@
     </Filter>
     <Filter Include="src\utility">
       <UniqueIdentifier>{5377c1a1-da99-40c9-b54d-c2dca2c0c40b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility\imageio">
+      <UniqueIdentifier>{5c7e9e73-b865-4852-9bab-0c114282b51e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

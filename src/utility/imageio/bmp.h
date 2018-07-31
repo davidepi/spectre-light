@@ -36,6 +36,7 @@ PACKED_STRUCT(bmp_header)
     /** Offset from the beginning of the image to the image data */
     uint32_t data_offset;
 };
+END_PACKED_STRUCT
 
 /** Structure holding the bmp V3 header (BITMAPINFOHEADER). Must be 40 bytes */
 PACKED_STRUCT(bmp_dib_v3)
@@ -63,6 +64,7 @@ PACKED_STRUCT(bmp_dib_v3)
     /** Number of important colors, ignored by this implementation */
     uint32_t important_colors_no;
 };
+END_PACKED_STRUCT
 
 /**
  *  \brief Writes a BMP image
