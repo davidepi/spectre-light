@@ -8,5 +8,5 @@ jobs:
         - stage: test
         - stage: coverage
           before_install: git clone https://github.com/google/googletest.git && cd googletest/ && mkdir -p build && cd build/ && cmake .. && sudo make install gtest && cd ../..
-          script: mkdir -p build && cd build/ && cmake -DCMAKE_BUILD_TYPE="Coverage" .. && make runTests && ./runTests && cd CMakeFiles/runTests.dir/src && find . -name '*.cpp.gcno' -execdir gcov -b {} \;
+          script: mkdir -p build && cd build/ && cmake -DCMAKE_BUILD_TYPE="Coverage" .. && make runTests && ./runTests && cd CMakeFiles/runTests.dir/src && find . -name '*.cpp.gcno' -execdir gcov -b {} \; && find . -name '*.c.gcno' -execdir gcov -b {} \;
           after_script: bash <(curl -s https://codecov.io/bash)
