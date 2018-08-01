@@ -194,7 +194,7 @@ ImageMap::~ImageMap()
 {
     for(int i = 0; i<maps_no; i++)
         delete ImageMap::MIPmap[i];
-    free(ImageMap::MIPmap);
+    delete[] ImageMap::MIPmap;
     free(ImageMap::side);
 }
 

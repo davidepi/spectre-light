@@ -75,15 +75,16 @@ char tiff_read(const char* name, uint8_t* values, uint8_t* alpha)
     fin = TIFFOpen(name, "r");
     if(fin != NULL)
     {
-        int width;
-        int height;
-        int channels;
+        int width = 0;
+        int height = 0;
+        int channels = 0;
         uint32_t* data;
         retval |= TIFFGetField(fin, TIFFTAG_IMAGEWIDTH, &width);
         retval &= TIFFGetField(fin, TIFFTAG_IMAGELENGTH, &height);
         retval &= TIFFGetField(fin, TIFFTAG_SAMPLESPERPIXEL, &channels);
         data = (uint32_t*)_TIFFmalloc(sizeof(uint32_t)*width*height);
-        if((channels == 3 || channels == 4) &&
+        /* The first retval is used to ensure channels/width/height are valid */
+        if(retval && (channels == 3 || channels == 4) &&
            TIFFReadRGBAImage(fin, width, height, data, 0))
         {
             int x;

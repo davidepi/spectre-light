@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "materials/lambertian.hpp"
@@ -703,6 +705,7 @@ SPECTRE_TEST(Material, Bsdf_inherit_bdf)
     material.inherit_bdf(lambertian);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
+    delete lambertian;
 }
 
 SPECTRE_TEST(Material, Bsdf_value)
@@ -779,6 +782,7 @@ SPECTRE_TEST(Material, Bsdf_value)
     EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
+    delete ut;
 }
 
 SPECTRE_TEST(Material, Bsdf_sample_value)
@@ -922,6 +926,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     EXPECT_NEAR(wi.z, 0.f, 1e-5f);
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
+    delete ut;
 }
 
 SPECTRE_TEST(Material, Bsdf_pdf)
@@ -1047,6 +1052,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
+    delete ut;
 }
 
 SPECTRE_TEST(Material, SingleBRDF_sample_value)
@@ -1133,6 +1139,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     EXPECT_TRUE(flt_equal(wi.z, 0.f));
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
+    delete ut;
 }
 
 SPECTRE_TEST(Material, SingleBRDF_pdf)
