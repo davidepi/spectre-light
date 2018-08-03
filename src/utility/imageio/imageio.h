@@ -37,6 +37,9 @@
 
 #endif
 
+/** Never forget channel order! */
+typedef uint32_t pixBGRA;
+
 /**
  *  \brief Writes an image in a generic format
  *
@@ -54,7 +57,7 @@
  *  \return 1 if the image was successfully written, 0 otherwise
  */
 char img_write(const char* name, const char* ext, int width, int height,
-               const uint32_t* data);
+               const pixBGRA* data);
 
 /**
  *  \brief Checks if an image header is valid
@@ -103,7 +106,7 @@ char img_dimensions(const char* name, const char* ext,
  *  \return 0 if the function encountered any kind of errors, 1 if the read was
  *  completed successfully
  */
-char img_read8(const char* name, const char* ext, uint32_t* values);
+char img_read8(const char* name, const char* ext, pixBGRA* values);
 
 /**
  * \brief Checks if this library can handle the image

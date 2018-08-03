@@ -6,7 +6,7 @@
 #define UNUSED(x) (void)(x)
 
 char img_write(const char* name, const char* ext, int width, int height,
-               const uint32_t* data)
+               const pixBGRA* data)
 {
     char retval = 0;
     if(strcmp(ext, "bmp") == 0)
@@ -83,7 +83,7 @@ char img_dimensions(const char* name, const char* ext,
     return retval;
 }
 
-char img_read8(const char* name, const char* ext, uint32_t* values)
+char img_read8(const char* name, const char* ext, pixBGRA* values)
 {
     char retval = 0;
     if(strcmp(ext, "bmp") == 0)

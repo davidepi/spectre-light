@@ -301,7 +301,7 @@ SPECTRE_TEST(ImageIO, ppm_write_func)
     res = img_write("/root/nonexistent/test.ppm", "ppm", 10, 10, write_data);
     EXPECT_FALSE(res);
 }
-/*
+
 SPECTRE_TEST(ImageIO, bmp_valid_func)
 {
     bool res;
@@ -377,105 +377,95 @@ SPECTRE_TEST(ImageIO, bmp_dimensions_func)
 SPECTRE_TEST(ImageIO, bmp_read_func)
 {
     int res;
-    uint8_t values[4*3];
-    uint8_t alpha[4];
+    uint32_t data[4];
     //non existent
-    res = img_read8("nonexistent.bmp", "bmp", values, NULL);
+    res = img_read8("nonexistent.bmp", "bmp", data);
     EXPECT_EQ(res, 0);
     //first letter of the magic number is wrong
-    res = img_read8(TEST_ASSETS "images/wrong_magic1.bmp", "bmp", values,
-                    NULL);
+    res = img_read8(TEST_ASSETS "images/wrong_magic1.bmp", "bmp", data);
     EXPECT_EQ(res, 0);
     //second letter of the magic number is wrong
-    res = img_read8(TEST_ASSETS "images/wrong_magic2.bmp", "bmp", values,
-                    NULL);
+    res = img_read8(TEST_ASSETS "images/wrong_magic2.bmp", "bmp", data);
     EXPECT_EQ(res, 0);
     //os2
-    res = img_read8(TEST_ASSETS "images/os2.bmp", "bmp", values, NULL);
+    res = img_read8(TEST_ASSETS "images/os2.bmp", "bmp", data);
     EXPECT_EQ(res, 0);
     //normal image
-    res = img_read8(TEST_ASSETS "images/correct.bmp", "bmp", values, NULL);
-    EXPECT_EQ(values[0], (uint8_t)255);
-    EXPECT_EQ(values[1], (uint8_t)0);
-    EXPECT_EQ(values[2], (uint8_t)0);
-    EXPECT_EQ(values[3], (uint8_t)0);
-    EXPECT_EQ(values[4], (uint8_t)255);
-    EXPECT_EQ(values[5], (uint8_t)0);
-    EXPECT_EQ(values[6], (uint8_t)0);
-    EXPECT_EQ(values[7], (uint8_t)0);
-    EXPECT_EQ(values[8], (uint8_t)255);
-    EXPECT_EQ(values[9], (uint8_t)0);
-    EXPECT_EQ(values[10], (uint8_t)0);
-    EXPECT_EQ(values[11], (uint8_t)0);
+    res = img_read8(TEST_ASSETS "images/correct.bmp", "bmp", data);
+    EXPECT_EQ(RED(data[0]), (uint8_t)255);
+    EXPECT_EQ(GREEN(data[0]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[0]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[0]), (uint8_t)255);
+    EXPECT_EQ(RED(data[1]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[1]), (uint8_t)255);
+    EXPECT_EQ(BLUE(data[1]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[1]), (uint8_t)255);
+    EXPECT_EQ(RED(data[2]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[2]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[2]), (uint8_t)255);
+    EXPECT_EQ(ALPHA(data[2]), (uint8_t)255);
+    EXPECT_EQ(RED(data[3]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[3]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[3]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[3]), (uint8_t)255);
     EXPECT_EQ(res, 1);
     //flipped (negative) rows
-    res = img_read8(TEST_ASSETS "images/flipped.bmp", "bmp", values, NULL);
-    EXPECT_EQ(values[0], (uint8_t)255);
-    EXPECT_EQ(values[1], (uint8_t)0);
-    EXPECT_EQ(values[2], (uint8_t)0);
-    EXPECT_EQ(values[3], (uint8_t)0);
-    EXPECT_EQ(values[4], (uint8_t)255);
-    EXPECT_EQ(values[5], (uint8_t)0);
-    EXPECT_EQ(values[6], (uint8_t)0);
-    EXPECT_EQ(values[7], (uint8_t)0);
-    EXPECT_EQ(values[8], (uint8_t)255);
-    EXPECT_EQ(values[9], (uint8_t)0);
-    EXPECT_EQ(values[10], (uint8_t)0);
-    EXPECT_EQ(values[11], (uint8_t)0);
+    res = img_read8(TEST_ASSETS "images/flipped.bmp", "bmp", data);
+    EXPECT_EQ(RED(data[0]), (uint8_t)255);
+    EXPECT_EQ(GREEN(data[0]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[0]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[0]), (uint8_t)255);
+    EXPECT_EQ(RED(data[1]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[1]), (uint8_t)255);
+    EXPECT_EQ(BLUE(data[1]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[1]), (uint8_t)255);
+    EXPECT_EQ(RED(data[2]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[2]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[2]), (uint8_t)255);
+    EXPECT_EQ(ALPHA(data[2]), (uint8_t)255);
+    EXPECT_EQ(RED(data[3]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[3]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[3]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[3]), (uint8_t)255);
     EXPECT_EQ(res, 1);
-    //32bit - NULL alpha array
-    res = img_read8(TEST_ASSETS "images/32bit.bmp", "bmp", values, NULL);
-    EXPECT_EQ(values[0], (uint8_t)255);
-    EXPECT_EQ(values[1], (uint8_t)0);
-    EXPECT_EQ(values[2], (uint8_t)0);
-    EXPECT_EQ(values[3], (uint8_t)0);
-    EXPECT_EQ(values[4], (uint8_t)255);
-    EXPECT_EQ(values[5], (uint8_t)0);
-    EXPECT_EQ(values[6], (uint8_t)0);
-    EXPECT_EQ(values[7], (uint8_t)0);
-    EXPECT_EQ(values[8], (uint8_t)255);
-    EXPECT_EQ(values[9], (uint8_t)0);
-    EXPECT_EQ(values[10], (uint8_t)0);
-    EXPECT_EQ(values[11], (uint8_t)0);
+    //32bit
+    res = img_read8(TEST_ASSETS "images/32bit.bmp", "bmp", data);
+    EXPECT_EQ(RED(data[0]), (uint8_t)255);
+    EXPECT_EQ(GREEN(data[0]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[0]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[0]), (uint8_t)255);
+    EXPECT_EQ(RED(data[1]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[1]), (uint8_t)255);
+    EXPECT_EQ(BLUE(data[1]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[1]), (uint8_t)128);
+    EXPECT_EQ(RED(data[2]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[2]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[2]), (uint8_t)255);
+    EXPECT_EQ(ALPHA(data[2]), (uint8_t)66);
+    EXPECT_EQ(RED(data[3]), (uint8_t)0);
+    EXPECT_EQ(GREEN(data[3]), (uint8_t)0);
+    EXPECT_EQ(BLUE(data[3]), (uint8_t)0);
+    EXPECT_EQ(ALPHA(data[3]), (uint8_t)33);
     EXPECT_EQ(res, 1);
-    //32bit - alpha array
-    res = img_read8(TEST_ASSETS "images/32bit.bmp", "bmp", values, alpha);
-    EXPECT_EQ(values[0], (uint8_t)255);
-    EXPECT_EQ(values[1], (uint8_t)0);
-    EXPECT_EQ(values[2], (uint8_t)0);
-    EXPECT_EQ(values[3], (uint8_t)0);
-    EXPECT_EQ(values[4], (uint8_t)255);
-    EXPECT_EQ(values[5], (uint8_t)0);
-    EXPECT_EQ(values[6], (uint8_t)0);
-    EXPECT_EQ(values[7], (uint8_t)0);
-    EXPECT_EQ(values[8], (uint8_t)255);
-    EXPECT_EQ(values[9], (uint8_t)0);
-    EXPECT_EQ(values[10], (uint8_t)0);
-    EXPECT_EQ(values[11], (uint8_t)0);
-    EXPECT_EQ(alpha[0], (uint8_t)255);
-    EXPECT_EQ(alpha[1], (uint8_t)128);
-    EXPECT_EQ(alpha[2], (uint8_t)66);
-    EXPECT_EQ(alpha[3], (uint8_t)33);
-    EXPECT_EQ(res, 2);
 }
 
 SPECTRE_TEST(ImageIO, bmp_write_func)
 {
-    uint8_t read_data[300];
+    uint32_t read_data[300];
     bool res;
     res = img_write("test.bmp", "bmp", 10, 10, write_data);
     ASSERT_TRUE(res);
-    res = img_read8("test.bmp", "bmp", read_data, NULL);
+    res = img_read8("test.bmp", "bmp", read_data);
     ASSERT_TRUE(res);
     EXPECT_EQ(unlink("test.bmp"), 0);
-    for(int i = 0; i<300; i++)
+    for(int i = 0; i<100; i++)
         EXPECT_EQ(read_data[i], write_data[i]);
 
     //non existent folder
     res = img_write("/root/nonexistent/test.bmp", "bmp", 10, 10, write_data);
     EXPECT_FALSE(res);
 }
-
+/*
 SPECTRE_TEST(ImageIO, tga_valid_func)
 {
     bool res;
