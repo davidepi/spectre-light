@@ -47,13 +47,14 @@
  *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
  *  \param[in] width Width of the image
  *  \param[in] height Height of the image
- *  \param[in] data Image data, as an array of size width*height*3 with
- *  uint8_t values in range [0-255] ordered top-down left-right and channels
- *  as RGBRGB...
+ *  \param[in] data Image data, as an array of size width*height with
+ *  uint32_t values containing the representation of a pixel. Each pixel is
+ *  composed of four values in range [0-255] ordered top-down left-right and
+ *  ordered as BGRA
  *  \return 1 if the image was successfully written, 0 otherwise
  */
 char img_write(const char* name, const char* ext, int width, int height,
-               const uint8_t* data);
+               const uint32_t* data);
 
 /**
  *  \brief Checks if an image header is valid
@@ -90,25 +91,19 @@ char img_dimensions(const char* name, const char* ext,
  *  This method reads an image from the disk and writes the read data in the
  *  given array. If the input image has a depth higher than 8 bit per pixel
  *  it will be converted. The values array should be already allocated with a
- *  size of width*height*3. Values will be written as uint8_t in range
- *  [0-255] in top-down left-right order and channel as RGBRGB...
- *  If the image contains an alpha channel it will be written in the alpha
- *  array, provided it is not NULL. The alpha array size should be width*height
+ *  size of width*height. Values will be written as uint32_t composed by four
+ *  values in range [0-255], in top-down left-right order. The four channels are
+ *  ordered as BGRA.
  *
  *  \param[in] name Path of the image on disk
  *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
- *  \param[in] values Array of size width*height*3 that will contain every
+ *  \param[in] values Array of size width*height that will contain every
  *  image value in range [0-255], top-down left-right order with channel as
- *  RGBRGB...
- *  \param[out] alpha Array of size width*height containing the alpha channel
- *  of the image, unused if the image has no alpha channel. If this is NULL
- *  and the image has an alpha channel, the channel is discarded
- *  \return 0 if the function encountered any kind of errors, 1 if the image
- *  was successfully read and didn't have an alpha channel, 2 if the image
- *  was successfully read and had an alpha channel
+ *  BGRA. Each pixel is an uint32_value composed of the four BGRA channels.
+ *  \return 0 if the function encountered any kind of errors, 1 if the read was
+ *  completed successfully
  */
-char img_read8(const char* name, const char* ext, uint8_t* values,
-               uint8_t* alpha);
+char img_read8(const char* name, const char* ext, uint32_t* values);
 
 /**
  * \brief Checks if this library can handle the image

@@ -6,7 +6,7 @@
 #define UNUSED(x) (void)(x)
 
 char img_write(const char* name, const char* ext, int width, int height,
-               const uint8_t* data)
+               const uint32_t* data)
 {
     char retval = 0;
     if(strcmp(ext, "bmp") == 0)
@@ -83,16 +83,15 @@ char img_dimensions(const char* name, const char* ext,
     return retval;
 }
 
-char img_read8(const char* name, const char* ext, uint8_t* values,
-               uint8_t* alpha)
+char img_read8(const char* name, const char* ext, uint32_t* values)
 {
     char retval = 0;
     if(strcmp(ext, "bmp") == 0)
-        retval = bmp_read(name, values, alpha);
+        retval = bmp_read(name, values);
     else if(strcmp(ext, "tga") == 0)
-        retval = tga_read(name, values, alpha);
+        retval = tga_read(name, values);
     else if(strcmp(ext, "ppm") == 0)
-        retval = ppm_read(name, values, alpha);
+        retval = ppm_read(name, values);
 #ifdef JPEG_FOUND
     else if(strcmp(ext, "jpg") == 0 || strcmp(ext, "jpeg") == 0)
         retval = jpg_read(name, values);
@@ -103,7 +102,7 @@ char img_read8(const char* name, const char* ext, uint8_t* values,
 #endif
 #ifdef TIFF_FOUND
     else if(strcmp(ext, "tif") == 0 || strcmp(ext, "tiff") == 0)
-        retval = tiff_read(name, values, alpha);
+        retval = tiff_read(name, values);
 #endif
     return retval;
 }

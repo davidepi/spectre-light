@@ -1,5 +1,5 @@
 /*  Created,  13 Jul 2018   */
-/*  Last Edit 30 Jul 2018   */
+/*  Last Edit  2 Aug 2018   */
 
 /**
  *  \file bmp.h
@@ -7,7 +7,7 @@
  *  \details Several functions used to read and write Windows Bitmap images
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 30 Jul 2018
+ *  \date 2 Aug 2018
  *  \copyright MIT
  */
 
@@ -71,18 +71,20 @@ END_PACKED_STRUCT
  *
  *   Writes a BMP V3 image. The image is uncompressed and uses 24 bits per pixel
  *   The image is written in top-down order, ignoring the sign of the input
- *   height. This method works on both Big Endian or Little Endian machines
+ *   height. This method expects input to be in BGRA format.
  *
  *  \param[in] name The path on disk where the image will be written.
  *  Existing files will be overwritten
  *  \param[in] width Width of the image
  *  \param[in] height Height of the image. The sign is ignored and a top-down
  *  ordered image will be written
- *  \param[in] data array of 8-bit values containing the image data in
- *  top-down left to right order. The values are in order RGBRGB...
+ *  \param[in] data array of 32-bit values containing the image data in
+ *  top-down left to right order. The length of this array is expected to be
+ *  width*height with each 32-bit value corresponding to a pixel in BGRA format.
+ *  The alpha channel is discarded.
  *  \return 1 if the image was successfully written, 0 otherwise
  */
-char bmp_write(const char* name, int width, int height, const uint8_t* data);
+char bmp_write(const char* name, int width, int height, const uint32_t* data);
 
 /**
  *  \brief Checks if a BMP image is valid
@@ -130,11 +132,9 @@ char bmp_dimensions(const char* name, int* width, int* height);
  *  \param[out] values The array of values that will be written. This array
  *  must be already allocated, use bmp_dimensions to know the actual size of
  *  the image and to preallocate it
- *  \param[out] alpha The array of alpha values. Also this array is expected
- *  to be already allocated
  *  \return 0 if the read was not successful. Otherwise 1 if the image was
  *  without alpha channel and 2 if the image had one
  */
-char bmp_read(const char* name, uint8_t* values, uint8_t* alpha);
+char bmp_read(const char* name, uint32_t* values);
 
 #endif
