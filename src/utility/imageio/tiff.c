@@ -3,7 +3,7 @@
 
 #include "tiff.h"
 
-char tiff_write(const char* name, int width, int height, const uint8_t* data)
+char tiff_write(const char* name, int width, int height, const uint32_t* data)
 {
     char retval = 0;
     TIFF* fout;
@@ -13,6 +13,7 @@ char tiff_write(const char* name, int width, int height, const uint8_t* data)
     if(fout != NULL)
     {
         int y = 0;
+        int x = 0;
         uint8_t* row;
         TIFFSetField(fout, TIFFTAG_IMAGEWIDTH, width);
         TIFFSetField(fout, TIFFTAG_IMAGELENGTH, height);
@@ -24,7 +25,14 @@ char tiff_write(const char* name, int width, int height, const uint8_t* data)
         row = (uint8_t*)_TIFFmalloc(TIFFScanlineSize(fout));
         while(y<height)
         {
-            row = memcpy(row, data+y*width*3, width*3);
+            x = 0;
+            while(x<width)
+            {
+                row[x*3+0] = (data[y*width+x] & 0x0000FF00) >> 8;
+                row[x*3+1] = (data[y*width+x] & 0x00FF0000) >> 16;
+                row[x*3+2] = (data[y*width+x] & 0xFF000000) >> 24;
+                x++;
+            }
             if(TIFFWriteScanline(fout, row, y++, 0)<0)
                 break;
         }
@@ -66,7 +74,7 @@ char tiff_dimensions(const char* name, int* width, int* height)
     return retval;
 }
 
-char tiff_read(const char* name, uint8_t* values, uint8_t* alpha)
+char tiff_read(const char* name, uint32_t* values)
 {
     char retval = 0;
     TIFF* fin;
@@ -89,7 +97,7 @@ char tiff_read(const char* name, uint8_t* values, uint8_t* alpha)
         {
             int x;
             int y;
-            const char has_alpha = channels == 4;
+            const char HAS_ALPHA = channels == 4;
             /* reorder in top-down order and process alpha */
             for(y = 0; y<height; y++)
             {
@@ -97,14 +105,16 @@ char tiff_read(const char* name, uint8_t* values, uint8_t* alpha)
                 {
                     int index = y*width+x;
                     int tif_index = (height-1-y)*width+x;
-                    values[index*3+0] = (uint8_t)TIFFGetR(data[tif_index]);
-                    values[index*3+1] = (uint8_t)TIFFGetG(data[tif_index]);
-                    values[index*3+2] = (uint8_t)TIFFGetB(data[tif_index]);
-                    if(has_alpha)
-                        alpha[index] = (uint8_t)TIFFGetA(data[tif_index]);
+                    values[index] = TIFFGetB(data[tif_index]) << 24;
+                    values[index] |= TIFFGetG(data[tif_index]) << 16;
+                    values[index] |= TIFFGetR(data[tif_index]) << 8;
+                    if(HAS_ALPHA)
+                        values[index] |= TIFFGetA(data[tif_index]);
+                    else
+                        values[index] |= 0xFF;
                 }
             }
-            retval = has_alpha?2:1;
+            retval = 1;
         }
         else
             retval = 0;

@@ -1,5 +1,5 @@
 /*  Created,  13 Jul 2018   */
-/*  Last Edit  2 Aug 2018   */
+/*  Last Edit  4 Aug 2018   */
 
 /**
  *  \file bmp.h
@@ -7,7 +7,7 @@
  *  \details Several functions used to read and write Windows Bitmap images
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 2 Aug 2018
+ *  \date 4 Aug 2018
  *  \copyright MIT
  */
 

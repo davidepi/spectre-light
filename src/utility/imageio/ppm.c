@@ -14,7 +14,7 @@ char ppm_write(const char* name, int width, int height, const uint32_t* array)
     {
         fprintf(fout, "P6 %d %d 255 ", width, height);
         size_t written = 0;
-        for(i=0;i<width*height;i++)
+        for(i = 0; i<width*height; i++)
         {
             /* convert BGRA to RGB */
             uint8_t pixel[3];
@@ -24,7 +24,7 @@ char ppm_write(const char* name, int width, int height, const uint32_t* array)
             written += fwrite(&pixel, sizeof(uint8_t), 3, fout);
         }
         fclose(fout);
-        retval = written==width*height*3;
+        retval = written == width*height*3;
     }
     return retval;
 }

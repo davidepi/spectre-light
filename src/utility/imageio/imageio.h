@@ -1,5 +1,5 @@
 /*  Created,  16 Jul 2018   */
-/*  Last Edit 21 Jul 2018   */
+/*  Last Edit  4 Aug 2018   */
 
 /**
  *  \file imageio.h
@@ -8,7 +8,7 @@
  *  functions
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 18 Jul 2018
+ *  \date 4 Aug 2018
  *  \copyright MIT
  */
 
@@ -39,6 +39,30 @@
 
 /** Never forget channel order! */
 typedef uint32_t pixBGRA;
+
+/** Red channel mask in a BGRA uint32_t number */
+#define BGRA_RED_MASK 0x0000FF00
+
+/** Green channel mask in a BGRA uint32_t number */
+#define BGRA_GREEN_MASK 0x00FF0000
+
+/** Blue channel mask in a BGRA uint32_t number */
+#define BGRA_BLUE_MASK 0xFF000000
+
+/** Alpha channel mask in a BGRA uint32_t number */
+#define BGRA_ALPHA_MASK 0x000000FF
+
+/** Get the Red channel value */
+#define BGRA_RED(x) (x & BGRA_RED_MASK)>>8
+
+/** Get the Green channel value */
+#define BGRA_GREEN(x) (x & BGRA_GREEN_MASK)>>16
+
+/** Get the Blue channel value */
+#define BGRA_BLUE(x) (x & BGRA_BLUE_MASK)>>24
+
+/** Get the Alpha channel value */
+#define BGRA_ALPHA(x) (x & BGRA_ALPHA_MASK)
 
 /**
  *  \brief Writes an image in a generic format

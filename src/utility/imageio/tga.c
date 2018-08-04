@@ -98,8 +98,8 @@ char tga_write(const char* name, int width, int height, const uint32_t* data)
                 /* convert from RGB to BGR */
                 row[x*BPP+0] = (data[y*width+x] & 0xFF000000) >> 24; /* Blue  */
                 row[x*BPP+1] = (data[y*width+x] & 0x00FF0000) >> 16; /* Green */
-                row[x*BPP+2] = (data[y*width+x] & 0x0000FF00) >>  8; /* Red   */
-                data_idx+=BPP;
+                row[x*BPP+2] = (data[y*width+x] & 0x0000FF00) >> 8; /* Red   */
+                data_idx += BPP;
             }
             fwrite(row, sizeof(uint8_t), BPP*width, fout);
         }
@@ -124,50 +124,49 @@ char tga_read(const char* name, uint32_t* values)
     {
         /* ensures loop invariant code motion */
         /* i want bpp in bytes, 15-bit values are a variant of 16-bit ones */
-        const uint8_t bpp = header.bpp == 15?2:header.bpp >> 3;
-        const char compressed = header.datatype_code == TGA_RGB_RLE;
-        const int width = ENDIANNESS_LITTLE16(header.width);
-        const int height = ENDIANNESS_LITTLE16(header.height);
+        const uint8_t BPP = header.bpp == 15?2:header.bpp >> 3;
+        const char COMPRESSED = header.datatype_code == TGA_RGB_RLE;
+        const int WIDTH = ENDIANNESS_LITTLE16(header.width);
+        const int HEIGHT = ENDIANNESS_LITTLE16(header.height);
         uint8_t pixel[5];
         int x = 0;
         int y = 0;
         int ymax;
         int increment;
         int i;
-        int skipme = header.id_len;
+        const int SKIPME = header.id_len+header.colourmap_type*
+                ENDIANNESS_LITTLE16(header.colourmap_length);
         int written = 0;
         int rle;
-        skipme += header.colourmap_type*
-                  ENDIANNESS_LITTLE16(header.colourmap_length);
         if(header.img_descriptor & TGA_UPPER_ORIGIN) /* top-down */
         {
             increment = 1;
-            ymax = height;
+            ymax = HEIGHT;
             y = 0;
         }
         else
         {
             increment = -1;
             ymax = -1;
-            y = height-1;
+            y = HEIGHT-1;
         }
-        fseek(fin, skipme, SEEK_CUR); /* I don't care about these features */
+        fseek(fin, SKIPME, SEEK_CUR); /* I don't care about these features */
         while(y != ymax)
         {
-            i = y*width;
+            i = y*WIDTH;
             x = 0;
-            while(x<width && fread(&pixel, bpp+compressed, 1, fin))
+            while(x<WIDTH && fread(&pixel, BPP+COMPRESSED, 1, fin))
             {
-                if(!compressed)
+                if(!COMPRESSED)
                 {
-                    if(bpp == 3) /* 24 bit no RLE */
+                    if(BPP == 3) /* 24 bit no RLE */
                     {
                         values[i] = 0x000000FF;
                         values[i] |= pixel[2] << 8;  /* Red   */
                         values[i] |= pixel[1] << 16; /* Green */
                         values[i] |= pixel[0] << 24; /* Blue  */
                     }
-                    else if(bpp == 4) /* 32 bit no RLE */
+                    else if(BPP == 4) /* 32 bit no RLE */
                     {
                         values[i] = 0x00000000;
                         values[i] |= pixel[3] << 0;  /* Alpha */
@@ -182,7 +181,7 @@ char tga_read(const char* name, uint32_t* values)
                         /* used to map a value from 0-31 to 0-255 */
                         values[i] |= ((pixel[1] & 0x7C) << 1) << 8;
                         values[i] |= ((pixel[1] & 0x03) << 6 |
-                                            (pixel[0] & 0xE0) >> 2) << 16;
+                                      (pixel[0] & 0xE0) >> 2) << 16;
                         values[i] |= ((pixel[0] & 0x1F) << 3) << 24;
                     }
                     i++;
@@ -196,14 +195,14 @@ char tga_read(const char* name, uint32_t* values)
                         int rle_len = 1+(pixel[0] & 0x7F);
                         for(rle = 0; rle<rle_len; rle++)
                         {
-                            if(bpp == 3) /* 24 bit no RLE */
+                            if(BPP == 3) /* 24 bit no RLE */
                             {
                                 values[i] = 0x000000FF;
                                 values[i] |= pixel[3] << 8;  /* Red   */
                                 values[i] |= pixel[2] << 16; /* Green */
                                 values[i] |= pixel[1] << 24; /* Blue  */
                             }
-                            else if(bpp == 4) /* 32 bit no RLE */
+                            else if(BPP == 4) /* 32 bit no RLE */
                             {
                                 values[i] = 0x00000000;
                                 values[i] |= pixel[4] << 0;  /* Alpha */
@@ -218,37 +217,37 @@ char tga_read(const char* name, uint32_t* values)
                                 /* used to map a value from 0-31 to 0-255 */
                                 values[i] |= ((pixel[2] & 0x7C) << 1) << 8;
                                 values[i] |= ((pixel[2] & 0x03) << 6 |
-                                                    (pixel[1] & 0xE0) >> 2) << 16;
+                                              (pixel[1] & 0xE0) >> 2) << 16;
                                 values[i] |= ((pixel[1] & 0x1F) << 3) << 24;
                             }
                             i++;
                             written++;
                             x++;
-                            if(x == width) /* wrap line */
+                            if(x == WIDTH) /* wrap line */
                             {
                                 y += increment;
                                 if(y == ymax) /* endgame */
                                 {
                                     /* set condition to break both loops */
                                     y = ymax-increment;
-                                    x = width;
+                                    x = WIDTH;
                                 }
                                 else
                                     x = 0;
-                                i = y*width;
+                                i = y*WIDTH;
                             }
                         }
                     }
                     else /* normal */
                     {
-                        if(bpp == 3) /* 24 bit no RLE */
+                        if(BPP == 3) /* 24 bit no RLE */
                         {
                             values[i] = 0x000000FF;
                             values[i] |= pixel[3] << 8;  /* Red   */
                             values[i] |= pixel[2] << 16; /* Green */
                             values[i] |= pixel[1] << 24; /* Blue  */
                         }
-                        else if(bpp == 4) /* 32 bit no RLE */
+                        else if(BPP == 4) /* 32 bit no RLE */
                         {
                             values[i] = 0x00000000;
                             values[i] |= pixel[4] << 0;  /* Alpha */
@@ -263,7 +262,7 @@ char tga_read(const char* name, uint32_t* values)
                             /* used to map a value from 0-31 to 0-255 */
                             values[i] |= ((pixel[2] & 0x7C) << 1) << 8;
                             values[i] |= ((pixel[2] & 0x03) << 6 |
-                                                (pixel[1] & 0xE0) >> 2) << 16;
+                                          (pixel[1] & 0xE0) >> 2) << 16;
                             values[i] |= ((pixel[1] & 0x1F) << 3) << 24;
                         }
                         x++;
@@ -275,7 +274,7 @@ char tga_read(const char* name, uint32_t* values)
             }
             y += increment;
         }
-        retval = width*height == written;
+        retval = WIDTH*HEIGHT == written;
     }
     fclose(fin);
     return retval;

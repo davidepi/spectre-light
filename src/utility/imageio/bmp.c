@@ -102,8 +102,8 @@ char bmp_write(const char* name, int width, int height, const uint32_t* data)
             {
                 row[x*3+0] = (data[y*width+x] & 0xFF000000) >> 24; /* Blue  */
                 row[x*3+1] = (data[y*width+x] & 0x00FF0000) >> 16; /* Green */
-                row[x*3+2] = (data[y*width+x] & 0x0000FF00) >>  8; /* Red   */
-                data_idx+=3;
+                row[x*3+2] = (data[y*width+x] & 0x0000FF00) >> 8; /* Red   */
+                data_idx += 3;
             }
             fwrite(row, sizeof(uint8_t), bpp*width+padding, fout);
         }
@@ -158,20 +158,20 @@ char bmp_read(const char* name, uint32_t* values)
             fseek(fin, ENDIANNESS_LITTLE32(header.data_offset), SEEK_SET);
             while(y != ymax && fread(row, BPP*WIDTH+PADDING, 1, fin))
             {
-                    x = 0;
-                    while(x<WIDTH)
-                    {
-                        uint32_t pixel;
-                        /* ensures the alpha is always 0xFF */
-                        pixel = 0x000000FF;
-                        pixel |= row[x*BPP+0] << 24;
-                        pixel |= row[x*BPP+1] << 16;
-                        pixel |= row[x*BPP+2] << 8;
-                        if(HAS_ALPHA)
-                            pixel &= (row[x*BPP+3] | 0xFFFFFF00);
-                        values[y*WIDTH+x] = pixel;
-                        x++;
-                    }
+                x = 0;
+                while(x<WIDTH)
+                {
+                    uint32_t pixel;
+                    /* ensures the alpha is always 0xFF */
+                    pixel = 0x000000FF;
+                    pixel |= row[x*BPP+0] << 24;
+                    pixel |= row[x*BPP+1] << 16;
+                    pixel |= row[x*BPP+2] << 8;
+                    if(HAS_ALPHA)
+                        pixel &= (row[x*BPP+3] | 0xFFFFFF00);
+                    values[y*WIDTH+x] = pixel;
+                    x++;
+                }
                 written += WIDTH;
                 y += increment;
             }
