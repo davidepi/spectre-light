@@ -150,8 +150,7 @@ void ImageFilm::set_filter(Filter* f)
 
 bool ImageFilm::save_image()
 {
-    uint8_t* rgb_buffer = (uint8_t*)malloc(
-            ImageFilm::width*ImageFilm::height*3);
+    uint32_t* rgb_buff = (uint32_t*)malloc(sizeof(uint32_t)*width*height);
     unsigned int i = 0;
     ColorRGB rgb;
     //use scale stored colour and output as .ppm
@@ -166,16 +165,16 @@ bool ImageFilm::save_image()
         }
         else
             rgb = ColorRGB(0.f, 0.f, 0.f);
-        rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.r)*0xFF), 255.0f);
-        rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.g)*0xFF), 255.0f);
-        rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.b)*0xFF), 255.0f);
+        //convert float color to BGRA color
+        rgb_buff[i] = 0x000000FF;
+        rgb_buff[i] |= (uint32_t)::min((::max(0.f, rgb.r)*0xFF), 255.0f) << 8;
+        rgb_buff[i] |= (uint32_t)::min((::max(0.f, rgb.g)*0xFF), 255.0f) << 16;
+        rgb_buff[i] |= (uint32_t)::min((::max(0.f, rgb.b)*0xFF), 255.0f) << 24;
     }
     free(ImageFilm::buffer);
     ImageFilm::buffer = NULL;
-    //TODO: FIXME
-    bool retval;
-//    retval = img_write(output.absolute_path(), output.extension(),
-//                            width, height, rgb_buffer);
-    free(rgb_buffer);
+    bool retval = img_write(output.absolute_path(), output.extension(),
+                            width, height, rgb_buff);
+    free(rgb_buff);
     return retval;
 }

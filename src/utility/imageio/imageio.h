@@ -144,6 +144,26 @@ char img_read8(const char* name, const char* ext, pixBGRA* values);
  */
 char img_supported(const char* ext);
 
+/**
+ *  \brief Converts a BGRA array to and RGB one
+ *
+ *  \param[out] out An array of size len*3, already allocated, that will hold
+ *  the RGB values extracted from the BGRA one
+ *  \param[in] in The array that will be converted
+ *  \param[in] len The length of the input array
+ */
+void BGRAtoRGB(uint8_t* out, const uint32_t* in, size_t len);
+
+/**
+ *  \brief Converts an RGB array to a BGRA one
+ *
+ *  \param[out] out An array of size len/3, already allocated, that will hold
+ *  the BGRA values extracted from the RGB one. Alpha will always be 255.
+ *  \param[in] in The array that will be converted
+ *  \param[in] len The length of the input array
+ */
+void RGBtoBGRA(uint32_t* out, const uint8_t* in, size_t len);
+
 /*
  Maybe this will be readded in future
  char img_read32(const char* name, const char* ext, float* values,

@@ -18,9 +18,13 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                            &width, &height);
             if(width == height && (height & (height-1)) == 0) //power of 2
             {
+                //TODO: Remove the uint8_t when ImageMap will have alpha support
                 uint8_t* data = (uint8_t*)malloc(width*height*3);
-                //TODO: FIXME
-//                img_read8(src.absolute_path(), src.extension(), data, NULL);
+                uint32_t* bgra_data = (uint32_t*)malloc(width*height);
+                img_read8(src.absolute_path(), src.extension(), bgra_data);
+                BGRAtoRGB(data, bgra_data, width*height);
+                free(bgra_data);
+
                 switch(filter)
                 {
                     case UNFILTERED:

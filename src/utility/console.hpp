@@ -26,7 +26,7 @@
 #endif
 
 ///Version of the software
-#define SPECTRE_VERSION_MAJOR "0.2"
+#define SPECTRE_VERSION_MAJOR "0.2.0"
 #if defined(GIT_COMMIT_HASH) && defined (GIT_COMMIT_NO) && defined(GIT_BRANCH)
 #define SPECTRE_VERSION SPECTRE_VERSION_MAJOR  "." GIT_COMMIT_NO " " \
         GIT_COMMIT_HASH " (" GIT_BRANCH ")"

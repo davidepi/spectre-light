@@ -129,6 +129,33 @@ char img_supported(const char* ext)
     return retval;
 }
 
+void BGRAtoRGB(uint8_t* out, const uint32_t* in, size_t len)
+{
+    size_t rgb_index = 0;
+    size_t bgra_index = 0;
+    while(bgra_index<len)
+    {
+        out[rgb_index++] = BGRA_RED(in[bgra_index]);
+        out[rgb_index++] = BGRA_GREEN(in[bgra_index]);
+        out[rgb_index++] = BGRA_BLUE(in[bgra_index]);
+        bgra_index++;
+    }
+}
+
+void RGBtoBGRA(uint32_t* out, const uint8_t* in, size_t len)
+{
+    size_t rgb_index = 0;
+    size_t bgra_index = 0;
+    while(rgb_index<len)
+    {
+        out[bgra_index] = 0x000000FF;
+        out[bgra_index] |= in[rgb_index++] << 8;
+        out[bgra_index] |= in[rgb_index++] << 16;
+        out[bgra_index] |= in[rgb_index++] << 24;
+        bgra_index++;
+    }
+}
+
 /*
 char img_read32(const char* name, const char* ext, float* values,
                 uint8_t* alpha)

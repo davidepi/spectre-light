@@ -69,8 +69,8 @@ Under Windows drag-dropping the input file over the executable works aswell.
 
 The input file format is explained [here](./src/parsers/README.md).
 
-*spectre-light* supports `.obj` files for scene and models,  `.ppm` and `.bmp` for textures. As already said, if Magick++ is
-available, additional image formats such as `.jpg`, `.tiff`, `.tga`, `.dds` and `.png` are available.
+*spectre-light* supports `.obj` files for scene and models,  `.ppm` and `.bmp` for textures. 
+As already said, if the libjpg, libpng and libtiff are found, additional image formats such as `.jpg`, `.png` and `.tiff` can be used.
 `.mtl` is not available as an obj companion file for materials due to its tremendous binding with the Phong illumination model. Check the section *Missing .mtl* of the aforementioned input readme for more information.
 
  ## Documentation
