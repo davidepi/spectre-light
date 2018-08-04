@@ -19,7 +19,8 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
             if(width == height && (height & (height-1)) == 0) //power of 2
             {
                 uint8_t* data = (uint8_t*)malloc(width*height*3);
-                img_read8(src.absolute_path(), src.extension(), data, NULL);
+                //TODO: FIXME
+//                img_read8(src.absolute_path(), src.extension(), data, NULL);
                 switch(filter)
                 {
                     case UNFILTERED:

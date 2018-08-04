@@ -3,20 +3,28 @@
 
 #include "ppm.h"
 
-#define READ_BUFFER 4096
 #define CLAMP(x, y, z) ((x)<0)?0:(x)>(z)?(z):(x)
-#define UNUSED(x) (void)(x)
 
-char ppm_write(const char* name, int width, int height, const uint8_t* array)
+char ppm_write(const char* name, int width, int height, const uint32_t* array)
 {
     FILE* fout = fopen(name, "wb");
     char retval = 0;
+    int i;
     if(fout != NULL)
     {
         fprintf(fout, "P6 %d %d 255 ", width, height);
-        fwrite(array, sizeof(uint8_t), width*height*3, fout);
+        size_t written = 0;
+        for(i = 0; i<width*height; i++)
+        {
+            /* convert BGRA to RGB */
+            uint8_t pixel[3];
+            pixel[0] = (array[i] & 0x0000FF00) >> 8;
+            pixel[1] = (array[i] & 0x00FF0000) >> 16;
+            pixel[2] = (array[i] & 0xFF000000) >> 24;
+            written += fwrite(&pixel, sizeof(uint8_t), 3, fout);
+        }
         fclose(fout);
-        retval = 1;
+        retval = written == width*height*3;
     }
     return retval;
 }
@@ -53,14 +61,16 @@ char ppm_valid(const char* name)
     return retval;
 }
 
-char ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
+char ppm_read(const char* name, uint32_t* values)
 {
     FILE* fin = fopen(name, "rb");
     char retval = 0;
-    UNUSED(alpha); /* no alpha in a PPM image */
     if(fin != NULL)
     {
         char magic[2];
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
         fscanf(fin, "%c%c", magic+0, magic+1);
         /* check magic number to determine if ASCII or binary */
         if(magic[0] == 'P')
@@ -78,65 +88,91 @@ char ppm_read(const char* name, uint8_t* values, uint8_t* alpha)
                 char val[6];
                 uint16_t num_val;
                 unsigned int i;
-                for(i = 0; i<width*height*3U; i++)
+                for(i = 0; i<width*height; i++)
                 {
+                    values[i] = 0x000000FF;
                     fscanf(fin, "%5s", val);
                     sscanf(val, "%hu", &num_val);
-                    values[i] = (uint8_t)(CLAMP((num_val/depth), 0.f, 1.f)*255);
+                    red = (uint8_t)(CLAMP((num_val/depth), 0.f, 1.f)*255);
+                    fscanf(fin, "%5s", val);
+                    sscanf(val, "%hu", &num_val);
+                    green = (uint8_t)(CLAMP((num_val/depth), 0.f, 1.f)*255);
+                    fscanf(fin, "%5s", val);
+                    sscanf(val, "%hu", &num_val);
+                    blue = (uint8_t)(CLAMP((num_val/depth), 0.f, 1.f)*255);
+                    values[i] |= red << 8;
+                    values[i] |= green << 16;
+                    values[i] |= blue << 24;
                 }
                 retval = 1;
             }
             else if(magic[1] == '6') /* Binary */
             {
+                unsigned int x = 0;
+                unsigned int y = 0;
+                unsigned int row_idx = 0;
+                unsigned int output_idx = 0;
                 /* skip 1 space, after the depth
                    by specification this will ALWAYS be ONE space or newline
                    so no \n\r or other windows shits */
                 fseek(fin, 1, SEEK_CUR);
+                size_t read;
                 if(depth_short<=255)/* 1 byte per component */
                 {
-                    uint8_t buffer[READ_BUFFER];
-                    unsigned int i = 0;
-                    unsigned int j = 0;
-                    size_t read;
+                    uint8_t* row = (uint8_t*)malloc(sizeof(uint8_t)*width*3);
                     /* read a pixel block of READ_BUFFER size */
-                    while((read = fread(buffer, 1, READ_BUFFER, fin))>0)
+                    while(y<height &&
+                          fread(row, sizeof(uint8_t)*(width*3), 1, fin))
                     {
-                        /* read more byte than expected from the image dims */
-                        if(i+read>=width*height*3U)
+                        row_idx = 0;
+                        x = 0;
+                        while(x<width)
                         {
-                            /* set the read as the maximum size(written bytes)*/
-                            read = width*height*3U-i;
+                            red = (uint8_t)((row[row_idx++]/depth)*255);
+                            green = (uint8_t)((row[row_idx++]/depth)*255);
+                            blue = (uint8_t)((row[row_idx++]/depth)*255);
+                            values[output_idx] = 0x000000FF;
+                            values[output_idx] |= red << 8;
+                            values[output_idx] |= green << 16;
+                            values[output_idx++] |= blue << 24;
+                            x++;
                         }
-                        /* everything is normal */
-                        for(j = 0; j<read; j++)
-                            values[i++] = (uint8_t)((buffer[j]/depth)*255);
+                        y++;
                     }
+                    free(row);
                 }
                 else/* 2 bytes per component, high depth */
                 {
-                    uint16_t buffer[READ_BUFFER];
-                    unsigned int i = 0;
-                    unsigned int j = 0;
-                    size_t read;
+                    uint16_t* row = (uint16_t*)malloc(sizeof(uint16_t)*width*3);
                     /* read a pixel block of READ_BUFFER size */
-                    while((read = fread(buffer, 2, READ_BUFFER, fin))>0)
+                    while(y<height &&
+                          fread(row, sizeof(uint16_t)*(width*3), 1, fin))
                     {
-                        /* read more byte than expected from image dimensions */
-                        if(i+read>=width*height*3U)
+                        row_idx = 0;
+                        x = 0;
+                        while(x<width)
                         {
-                            /*set the read as the maximum size (written bytes)*/
-                            read = width*height*3U-i;
+                            uint16_t val;
+                            val = ENDIANNESS_BIG16(row[row_idx]);
+                            row_idx++;
+                            red = (uint8_t)(CLAMP(val/depth, 0.f, 1.f)*255);
+                            val = ENDIANNESS_BIG16(row[row_idx]);
+                            row_idx++;
+                            green = (uint8_t)(CLAMP(val/depth, 0.f, 1.f)*255);
+                            val = ENDIANNESS_BIG16(row[row_idx]);
+                            row_idx++;
+                            blue = (uint8_t)(CLAMP(val/depth, 0.f, 1.f)*255);
+                            values[output_idx] = 0x000000FF;
+                            values[output_idx] |= red << 8;
+                            values[output_idx] |= green << 16;
+                            values[output_idx++] |= blue << 24;
+                            x++;
                         }
-                        /* everything is normal */
-                        for(j = 0; j<read; j++)
-                        {
-                            uint16_t num_val = ENDIANNESS_BIG16(buffer[j]);
-                            values[i++] = (uint8_t)(CLAMP(num_val/depth,
-                                                          0.f, 1.f)*255);
-                        }
+                        y++;
                     }
+                    free(row);
                 }
-                retval = 1;
+                retval = output_idx == width*height;
             }
         }
         fclose(fin);

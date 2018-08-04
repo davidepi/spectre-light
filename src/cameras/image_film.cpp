@@ -172,8 +172,10 @@ bool ImageFilm::save_image()
     }
     free(ImageFilm::buffer);
     ImageFilm::buffer = NULL;
-    bool retval = img_write(output.absolute_path(), output.extension(),
-                            width, height, rgb_buffer);
+    //TODO: FIXME
+    bool retval;
+//    retval = img_write(output.absolute_path(), output.extension(),
+//                            width, height, rgb_buffer);
     free(rgb_buffer);
     return retval;
 }
