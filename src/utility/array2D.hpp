@@ -1,0 +1,110 @@
+//Created,   5 Aug 2018
+//Last Edit  5 Aug 2018
+
+/**
+ *  \file array2D.hpp
+ *  \brief Cache-efficient allocation for a bidimensional array
+ *  \author Davide Pizzolotto
+ *  \version 0.2
+ *  \date 5 Aug 2018
+ *  \copyright GNU GPLv3
+ */
+
+
+#ifndef __ARRAY2D_HPP__
+#define __ARRAY2D_HPP__
+
+#include <cstdlib>
+#include <cstdint>
+#include <cstring>
+
+///Log2 of the block size. The block size will always be a power of 2.
+#define LOG_BS 5
+
+/**
+ *  \brief Class allocating values in a cache-efficient way for 2D arrays
+ *
+ *  Array2D class is used to better allocate bidimensional arrays. This is done
+ *  by storing data in blocks instead of lines. Instead of storing every
+ *  value in the first y line, and then every value in the second y line and
+ *  so on, this class store only the first 2^LOG_BS values of the first line up
+ *  to the first 2^LOG_BS lines. Then the values from 2^LOG_BS to 2*2^LOG_BS and
+ *  so forth.
+ *
+ *  With a LOG_BS of 2 (just for thi example), the data is laid out as follow:
+ *  <pre>
+ *  normal          Array2D
+ *  0 1 2 3         0 1 4 5
+ *  4 5 6 7         2 3 6 7
+ *  8 9 A B         8 9 C D
+ *  C D E F         A B E F
+ *  </pre>
+ *  Ensuring that the values "4" and "0" which are nearby on a 2D perspective
+ *  but not on a 1D one, are on the same cache line.
+ *
+ *  This dramatically improves the cache performance when accessing an
+ *  element implies accessing also nearby elements on the y row.
+ *  (An example of this is the bilinear filter which requires the 4 pixel
+ *  nearby a given point)
+ *  The price to pay for this is an increase in the operations required to get
+ *  the element index (11 operations, versus the 3 required by the classic
+ *  y*width+x), however, in most of the cases the benefits are worth it.
+ *
+ *  To ensure faster lookup, both sides of the array will be equal and power
+ *  of two.
+ *
+ *  \tparam T datatype that will be stored inside the array
+ */
+template<class T>
+class Array2D
+{
+public:
+
+    /**
+     *  \brief Constructor
+     *
+     *  Allocates an empty array of elements T, with size side*side. To
+     *  ensure faster lookup, side will be rounded to the next power of two.
+     *
+     *  \param[in] side The lenght of a side of the array. The other side
+     *  MUST be equal to this one
+     */
+    Array2D(uint32_t side);
+
+    ///Copy-constructor
+    Array2D(const Array2D& other);
+
+    ///Destructor
+    ~Array2D();
+
+    /**
+     *  \brief Returns the element at position (x,y)
+     *
+     *  \param[in] x Coordinate x of the element
+     *  \param[in] y Coordinate y of the element
+     *  \return Value found at position (x,y)
+     */
+    T get(int x, int y) const;
+
+    /**
+     *  \brief Sets the value for the element at position (x,y)
+     *
+     *  \param[in] x Coordinate x of the element
+     *  \param[in] y Coordinate y of the element
+     *  \param[in] value The value that will be written at the given position
+     */
+    void set(int x, int y, T value);
+
+    //Need to ensure that the internal allocation is correct during tests
+#ifndef TESTS
+    private:
+#endif
+
+    //number of blocks
+    const uint32_t BLOCKS_NO;
+
+    //allocated data
+    T* data;
+};
+
+#endif
