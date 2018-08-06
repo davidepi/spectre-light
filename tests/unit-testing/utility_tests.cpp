@@ -5,10 +5,13 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "utility/utility.hpp"
+#include "utility/array2D.hpp"
 #include <climits>
 
 SPECTRE_TEST_INIT(Utility_tests)

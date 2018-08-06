@@ -116,7 +116,6 @@ char ppm_read(const char* name, uint32_t* values)
                    by specification this will ALWAYS be ONE space or newline
                    so no \n\r or other windows shits */
                 fseek(fin, 1, SEEK_CUR);
-                size_t read;
                 if(depth_short<=255)/* 1 byte per component */
                 {
                     uint8_t* row = (uint8_t*)malloc(sizeof(uint8_t)*width*3);
