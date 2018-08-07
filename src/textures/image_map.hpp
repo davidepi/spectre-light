@@ -39,6 +39,28 @@ enum TextureFilter_t
     EWA
 };
 
+enum ImageChannel
+{
+    BLUE = 0,
+    GREEN = 1,
+    RED = 2,
+    uALPHA = 3,
+};
+
+struct Texel
+{
+    uint8_t b;
+    uint8_t g;
+    uint8_t r;
+    uint8_t a;
+};
+
+union TexelUnion
+{
+    Texel bgra_texel;
+    uint32_t bgra_value;
+};
+
 ///Max eccentricity value for EWA filtering ellipse. Bounds EWA to constant time
 #define EWA_MAX_ECCENTRICITY 30.f
 
@@ -138,7 +160,7 @@ protected:
     uint8_t maps_no;
 
     ///Array holding every MIPmap level
-    Array2D<uint32_t>** MIPmap;
+    Array2D<TexelUnion>** MIPmap;
 };
 
 /**

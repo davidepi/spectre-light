@@ -3,8 +3,8 @@
 
 #include "textures/image_map.hpp"
 
-static void downsample(const pixBGRA* in, pixBGRA* out,
-                       unsigned short input_side);
+static void downsample(const TexelUnion* in, TexelUnion* out,
+                       uint16_t input_side);
 
 //------------------------ removed because expf not constexpr in macOS ---------
 //constexpr float init_ewa_weight(int step)
@@ -72,22 +72,22 @@ const float ImageMapEWA::EWA_WEIGHTS[EWA_WEIGHTS_SIZE] = {
 ImageMap::ImageMap(const pixBGRA* values, uint16_t side)
 {
     //a bit of memory wasted... this is better than some pointer magic
-    pixBGRA* original = (pixBGRA*)malloc(sizeof(pixBGRA)*side*side);
-    pixBGRA* reduced = (pixBGRA*)malloc(sizeof(pixBGRA)*side*side);
-    memcpy(original, values, sizeof(pixBGRA)*side*side);
+    TexelUnion* original = (TexelUnion*)malloc(sizeof(TexelUnion)*side*side);
+    TexelUnion* reduced = (TexelUnion*)malloc(sizeof(TexelUnion)*side*side);
+    memcpy(original, values, sizeof(TexelUnion)*side*side);
 
     maps_no = (uint8_t)(1+(int)log2f(side));
     ImageMap::side = (uint16_t*)malloc(sizeof(uint16_t)*maps_no);
-    MIPmap = new Array2D<uint32_t>* [maps_no];
-    MIPmap[0] = new Array2D<uint32_t>(values, side);
+    MIPmap = new Array2D<TexelUnion>* [maps_no];
+    MIPmap[0] = new Array2D<TexelUnion>(original, side);
     ImageMap::side[0] = side;
     for(int i = 1; i<maps_no; i++)
     {
         ImageMap::side[i] = ImageMap::side[i-1] >> 1;
         downsample(original, reduced, ImageMap::side[i-1]);
-        MIPmap[i] = new Array2D<uint32_t>(reduced, ImageMap::side[i]);
+        MIPmap[i] = new Array2D<TexelUnion>(reduced, ImageMap::side[i]);
         //swap values, so next iteration the input is the output of this one
-        uint32_t* tmp = reduced;
+        TexelUnion* tmp = reduced;
         reduced = original;
         original = tmp;
     }
@@ -106,12 +106,9 @@ ImageMap::~ImageMap()
 ColorRGB ImageMapUnfiltered::filter(float u, float v, float, float,
                                     float, float) const
 {
-    unsigned short x = (unsigned short)(u*side[0]-0.5f);
-    unsigned short y = (unsigned short)(v*side[0]-0.5f);
-    pixBGRA pixel = MIPmap[0]->get(x, y);
-    return ColorRGB((uint8_t)BGRA_RED(pixel),
-                    (uint8_t)BGRA_GREEN(pixel),
-                    (uint8_t)BGRA_BLUE(pixel));
+    uint16_t x = (uint16_t)(u*side[0]-0.5f);
+    uint16_t y = (uint16_t)(v*side[0]-0.5f);
+    return MIPmap[0]->get(x, y).bgra_value;
 }
 
 ColorRGB ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
@@ -128,7 +125,7 @@ ColorRGB ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
     if(chosen<=0.f) //use full size map
         p0 = bilinear(u, v, 0);
     else if(chosen>maps_no-1) //return the single, most distant pixel
-        p0 = MIPmap[maps_no-1]->get(0, 0);
+        p0 = MIPmap[maps_no-1]->get(0, 0).bgra_value;
     else //perform trilinear interpolation
     {
         ColorRGB p1;
@@ -180,7 +177,7 @@ ColorRGB ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
     float chosen = max(0.f, maps_no-1+log2f(shorter_axis));
     ColorRGB p0; //retval
     if(chosen>maps_no-1) //return the single, most distant pixel
-        p0 = MIPmap[maps_no-1]->get(0, 0);
+        p0 = MIPmap[maps_no-1]->get(0, 0).bgra_value;
     else
     {
         uint8_t chosen_below = (uint8_t)chosen;
@@ -211,27 +208,24 @@ ColorRGB ImageMap::bilinear(float u, float v, uint8_t level) const
     float decimal_v = fabsf(v-y);
     float int_u = 1.f-decimal_u;
     float int_v = 1.f-decimal_v;
-    pixBGRA t0;
-    pixBGRA t1;
-    pixBGRA t2;
-    pixBGRA t3;
     //wraps texture if filtering happens outside bounds (val+1) = out of texture
     int next_x = (x+1)<=side[level]-1?(x+1):0;
     int next_y = (y+1)<=side[level]-1?(y+1):0;
-    t0 = MIPmap[level]->get(x, y);
-    t1 = MIPmap[level]->get(next_x, y);
-    t2 = MIPmap[level]->get(x, next_y);
-    t3 = MIPmap[level]->get(next_x, next_y);
-    uint8_t r = (uint8_t)((BGRA_RED(t0)*int_u+BGRA_RED(t1)*decimal_u)*int_v+
-                          (BGRA_RED(t2)*int_u+BGRA_RED(t3)*decimal_u)*
-                          decimal_v);
-    uint8_t g = (uint8_t)((BGRA_GREEN(t0)*int_u+BGRA_GREEN(t1)*decimal_u)*int_v+
-                          (BGRA_GREEN(t2)*int_u+BGRA_GREEN(t3)*decimal_u)
-                          *decimal_v);
-    uint8_t b = (uint8_t)((BGRA_BLUE(t0)*int_u+BGRA_BLUE(t1)*decimal_u)*int_v+
-                          (BGRA_BLUE(t2)*int_u+BGRA_BLUE(t3)*decimal_u)*
-                          decimal_v);
-    return ColorRGB(r, g, b);
+    const Texel T0 = MIPmap[level]->get(x, y).bgra_texel;
+    const Texel T1 = MIPmap[level]->get(next_x, y).bgra_texel;
+    const Texel T2 = MIPmap[level]->get(x, next_y).bgra_texel;
+    const Texel T3 = MIPmap[level]->get(next_x, next_y).bgra_texel;
+    TexelUnion res;
+    res.bgra_texel.r = (uint8_t)((T0.r*int_u+T1.r*decimal_u)*int_v+
+                                 (T2.r*int_u+T3.r*decimal_u)*decimal_v);
+    res.bgra_texel.g = (uint8_t)((T0.g*int_u+T1.g*decimal_u)*int_v+
+                                 (T2.g*int_u+T3.g*decimal_u)*decimal_v);
+    res.bgra_texel.b = (uint8_t)((T0.b*int_u+T1.b*decimal_u)*int_v+
+                                 (T2.b*int_u+T3.b*decimal_u)*decimal_v);
+    res.bgra_texel.a = (uint8_t)((T0.a*int_u+T1.a*decimal_u)*int_v+
+                                 (T2.a*int_u+T3.a*decimal_u)*decimal_v);
+
+    return res.bgra_value;
 }
 
 ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
@@ -282,7 +276,7 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
             const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
             if(radius2<1.f)
             {
-                ColorRGB hit = MIPmap[level]->get(newx, newy);
+                ColorRGB hit = MIPmap[level]->get(newx, newy).bgra_value;
                 //found the correct value for the lookup table, or the most
                 // distant one
                 const int index = min((int)(radius2*EWA_WEIGHTS_SIZE),
@@ -299,29 +293,24 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
     return ColorRGB(resr*invweigth, resg*invweigth, resb*invweigth);
 }
 
-static void downsample(const pixBGRA* in, pixBGRA* out, uint16_t input_side)
+static void
+downsample(const TexelUnion* in, TexelUnion* out, uint16_t input_side)
 {
     uint16_t output_side = input_side >> 1;
     for(int y = 0; y<output_side; y++)
     {
         for(int x = 0; x<output_side; x++)
         {
-            pixBGRA t0 = in[2*y*input_side+2*x];
-            pixBGRA t1 = in[(2*y+1)*input_side+2*x];
-            pixBGRA t2 = in[2*y*input_side+(2*x+1)];
-            pixBGRA t3 = in[(2*y+1)*input_side+(2*x+1)];
-            uint8_t red = (uint8_t)(0.25f*(BGRA_RED(t0)+BGRA_RED(t1)+
-                                           BGRA_RED(t2)+BGRA_RED(t3)));
-            uint8_t green = (uint8_t)(0.25f*(BGRA_GREEN(t0)+BGRA_GREEN(t1)+
-                                             BGRA_GREEN(t2)+BGRA_GREEN(t3)));
-            uint8_t blue = (uint8_t)(0.25f*(BGRA_BLUE(t0)+BGRA_BLUE(t1)+
-                                            BGRA_BLUE(t2)+BGRA_BLUE(t3)));
-            uint8_t alpha = (uint8_t)(0.25f*(BGRA_ALPHA(t0)+BGRA_ALPHA(t1)+
-                                             BGRA_ALPHA(t2)+BGRA_ALPHA(t3)));
-            out[y*output_side+x] = alpha;
-            out[y*output_side+x] |= red << 8;
-            out[y*output_side+x] |= green << 16;
-            out[y*output_side+x] |= blue << 24;
+            const Texel T0 = in[2*y*input_side+2*x].bgra_texel;
+            const Texel T1 = in[(2*y+1)*input_side+2*x].bgra_texel;
+            const Texel T2 = in[2*y*input_side+(2*x+1)].bgra_texel;
+            const Texel T3 = in[(2*y+1)*input_side+(2*x+1)].bgra_texel;
+            Texel res;
+            res.r = (uint8_t)(0.25f*(T0.r+T1.r+T2.r+T3.r));
+            res.g = (uint8_t)(0.25f*(T0.g+T1.g+T2.g+T3.g));
+            res.b = (uint8_t)(0.25f*(T0.b+T1.b+T2.b+T3.b));
+            res.a = (uint8_t)(0.25f*(T0.a+T1.a+T2.a+T3.a));
+            out[y*output_side+x].bgra_texel = res;
         }
     }
 }
