@@ -1,12 +1,12 @@
 //Created,  25 May 2017
-//Last Edit  8 May 2018
+//Last Edit  7 Aug 2018
 
 /**
  *  \file image_film.hpp
  *  \brief     Buffer storing and saving an image
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 May 2018
+ *  \date      7 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -24,6 +24,7 @@ extern "C" {
 #include "utility/color.hpp"
 #include "utility/console.hpp"
 #include "utility/utility.hpp"
+#include "utility/array2D.hpp"
 #include <cstring>
 #include <cmath>
 #include <mutex>
@@ -123,7 +124,7 @@ public:
     ImageFilm(int width, int height, const char* filename);
 
     ///Default destructor
-    ~ImageFilm();
+    ~ImageFilm() = default;
 
     /** \brief Add a sample to this image
      *
@@ -213,7 +214,7 @@ private:
     Filter* filter;
 
     //the buffer of the image
-    Pixel* buffer;
+    Array2D<Pixel> buffer;
 
     //output image
     File output;

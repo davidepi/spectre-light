@@ -1,18 +1,16 @@
-out: "outputwrong.bmp"
+out: "outputwrong.jpg"
 resolution: {width:800, height:600}
 camera: {type: perspective position:[0,4,2] target:[0,0,-4] up:[0,1,0], fov:70}
 sampler: stratified
 spp: 1
-filter:{texture: trilinear}
+filter:{texture: unfiltered}
 material: {name: "Red Matte", type: matte, diffuse: [255,0,0]}
 material: {name: "Green Matte", type: matte, diffuse: [0,255,0]}
 material: {name: "White Matte", type: matte, diffuse: [255,255,255]}
-material: {name: "Material", type: matte, diffuse: "Earth" }
-texture: {src:"haumea.bmp", name: "Haumea"}
-texture: {src:"jupiter.bmp", name:"Jupiter"}
-texture: {src:"earth.bmp", name:"Earth"}
+material: {name: "Material", type: matte, diffuse: "Haumea" }
+texture: {src:"/Users/davide/Desktop/haumea.bmp", name: "Haumea"}
+texture: {src:"/Users/davide/Desktop/jupiter.bmp", name:"Jupiter"}
 light: { name: "Sphere", position:[0,5,0], temperature:3500 }
-
 
 #world bounds
 world: { name: "Sphere", material: "Red Matte",   position:[-100003,0,0], scale:[1e5,1e5,1e5]}

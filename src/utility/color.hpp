@@ -1,5 +1,5 @@
 //Created,  23 May 2017
-//Last Edit  5 Sep 2017
+//Last Edit  7 Aug 2018
 
 /**
  *  \file color.hpp
@@ -8,7 +8,7 @@
  *  spectrum
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 5 Sep 2017
+ *  \date 7 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,9 @@
 #ifndef __COLOR_HPP__
 #define __COLOR_HPP__
 
+extern "C" {
+#include "imageio/imageio.h"
+};
 #include <cstring>
 #include <cstdlib>
 #include <cmath> //pow
@@ -178,6 +181,17 @@ public:
      *  \sa ColorRGB(float,float,float)
      */
     ColorRGB(unsigned char r, unsigned char g, unsigned char b);
+
+    /** \brief Default Constructor, given components values as a single BGRA val
+     *
+     *
+     *  Create a color with the given value for each component. Values are
+     *  extracted from the input uint32_t in the order BGRA, where each channel
+     *  uses up to 8 bit and spans a range [0-255]
+     *
+     *  \param[in] bgra A pixel representing the entire colour in bgra format
+     */
+    ColorRGB(pixBGRA bgra);
 
     /** \brief Convert this RGB to the XYZ representation
      *

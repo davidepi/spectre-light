@@ -1,12 +1,12 @@
 //Created,   5 Aug 2018
-//Last Edit  6 Aug 2018
+//Last Edit  7 Aug 2018
 
 /**
  *  \file array2D.hpp
  *  \brief Cache-efficient allocation for a bidimensional array
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 6 Aug 2018
+ *  \date 7 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -42,7 +42,7 @@
  *  With a LOG_BS of 2 (just for thi example), the data is laid out as follow:
  *  <pre>
  *  2D view
- *  normal          Array2Di0
+ *  normal          Array2D
  *  0 1 2 3         0 1 4 5
  *  4 5 6 7         2 3 6 7
  *  8 9 A B         8 9 C D
@@ -84,6 +84,9 @@ public:
      */
     Array2D(uint32_t side)
     {
+        //assert at least 1 block for small arrays
+        if(side<BLOCK_SIDE)
+            side = BLOCK_SIDE;
         if((side & side-1) != 0)
         {
             //round up to the next power of 2
@@ -98,6 +101,46 @@ public:
         }
         Array2D<T>::data = (T*)malloc(sizeof(T)*side*side);
         Array2D<T>::blocks_no_side = (side >> LOG_BS);
+    }
+
+    /**
+     *  \brief Constructor with initialization
+     *
+     *  Allocates an array of elements T with size side*side. The input 1D
+     *  array will also be copied into this 2D array. The input 1D array is
+     *  expected to be of length side*side. To ensure faster lookup, side
+     *  will be rounded to the next power of two.
+     *
+     *  \param[in] values The input 1D array that will be converted into this
+     *  2D array. This array should be of side*side length
+     *  \param[in] side The squared length of the array.
+     */
+    Array2D(const T* values, uint32_t side)
+    {
+        //record old side of the array to avoid invalid read
+        int old_side = side;
+        //assert at least 1 block for small arrays
+        if(side<BLOCK_SIDE)
+            side = BLOCK_SIDE;
+        //possibly round up side to a power of 2
+        if((side & side-1) != 0)
+        {
+            //round up to the next power of 2
+            side--;
+            side |= side >> 1;
+            side |= side >> 2;
+            side |= side >> 4;
+            side |= side >> 8;
+            side |= side >> 16;
+            side++;
+            side += (side == 0); //assert side is at least 1
+        }
+        Array2D<T>::data = (T*)malloc(sizeof(T)*side*side);
+        Array2D<T>::blocks_no_side = (side >> LOG_BS);
+        //use the old_side to avoid invalid reads
+        for(int y = 0; y<old_side; y++)
+            for(int x = 0; x<old_side; x++)
+                set(x, y, values[y*old_side+x]);
     }
 
     ///Copy-constructor
@@ -166,6 +209,14 @@ public:
         array_len *= sizeof(T);
         data = (T*)malloc(array_len);
         memcpy(data, other.data, array_len);
+        return *this;
+    }
+
+    ///Clears the entire array by writing only zeroes
+    void zero_out()
+    {
+        size_t array_len = blocks_no_side*blocks_no_side*BLOCK_SIDE*BLOCK_SIDE;
+        memset(data, 0, sizeof(T)*array_len);
     }
 
     //Need to ensure that the internal allocation is correct during tests
@@ -173,7 +224,7 @@ public:
     private:
 #endif
 
-    //number of blocks
+    //number of blocks for each dimension
     uint32_t blocks_no_side;
 
     //allocated data

@@ -41,6 +41,52 @@ static const int expected_order[256] = {
 
 SPECTRE_TEST_INIT(Array2D_tests)
 
+SPECTRE_TEST(Array2D, corner_cases_ctor)
+{
+    //less than 1 block.
+    const int SIDESMALL = 2;
+    Array2D<int> imagesmall(SIDESMALL);
+    EXPECT_EQ(imagesmall.blocks_no_side, 1);
+
+    //not power of 2
+    const int SIDEBIG = 17;
+    Array2D<int> imagebig(SIDEBIG);
+    EXPECT_EQ(imagebig.blocks_no_side, 4); //means that has been rounded to 32
+}
+
+SPECTRE_TEST(Array2D, ctor_with_init)
+{
+    const int SIDE = 16;
+    int values[SIDE*SIDE];
+    for(int i = 0; i<SIDE*SIDE; i++)
+        values[i] = i;
+    Array2D<int> image(values, SIDE);
+    for(int y = 0; y<SIDE; y++)
+        for(int x = 0; x<SIDE; x++)
+            EXPECT_EQ(image.get(x, y), values[y*SIDE+x]);
+
+    //less than 1 block
+    const int SIDESMALL = 2;
+    int values2[SIDESMALL*SIDESMALL];
+    for(int i = 0; i<SIDESMALL*SIDESMALL; i++)
+        values2[i] = i;
+    Array2D<int> image2(values2, SIDESMALL);
+    for(int y = 0; y<SIDESMALL; y++)
+        for(int x = 0; x<SIDESMALL; x++)
+            EXPECT_EQ(image2.get(x, y), values2[y*SIDESMALL+x]);
+
+    //not power of 2
+    const int SIDEBIG = 17;
+    int valuesbig[SIDEBIG*SIDEBIG];
+    for(int i = 0; i<SIDEBIG*SIDEBIG; i++)
+        valuesbig[i] = i;
+    Array2D<int> imagebig(valuesbig, SIDEBIG);
+    ASSERT_EQ(imagebig.blocks_no_side, 4);
+    for(int y = 0; y<SIDEBIG; y++)
+        for(int x = 0; x<SIDEBIG; x++)
+            EXPECT_EQ(imagebig.get(x, y), valuesbig[y*SIDEBIG+x]);
+}
+
 SPECTRE_TEST(Array2D, getter)
 {
     const int SIDE = 16;
@@ -104,6 +150,15 @@ SPECTRE_TEST(Array2D, copy_assignment)
     //assert the two objects are not the same
     image_copied.set(0, 0, 255);
     EXPECT_NE(image_copied.get(0, 0), image.get(0, 0));
+}
+
+SPECTRE_TEST(Array2D, zero_out)
+{
+    const int SIDE = 512;
+    Array2D<int> image(SIDE);
+    image.zero_out();
+    for(int i = 0; i<SIDE*SIDE; i++)
+        EXPECT_EQ(image.data[i], 0);
 }
 
 SPECTRE_TEST_END(Array2D_tests)

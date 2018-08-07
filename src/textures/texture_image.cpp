@@ -18,25 +18,21 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                            &width, &height);
             if(width == height && (height & (height-1)) == 0) //power of 2
             {
-                //TODO: Remove the uint8_t when ImageMap will have alpha support
-                uint8_t* data = (uint8_t*)malloc(width*height*3);
-                uint32_t* bgra_data = (uint32_t*)malloc(width*height);
+                uint32_t* bgra_data = (uint32_t*)malloc(width*height*sizeof
+                        (uint32_t));
                 img_read8(src.absolute_path(), src.extension(), bgra_data);
-                BGRAtoRGB(data, bgra_data, width*height);
-                free(bgra_data);
-
                 switch(filter)
                 {
                     case UNFILTERED:
-                        imagemap = new ImageMapUnfiltered(data, width);
+                        imagemap = new ImageMapUnfiltered(bgra_data, width);
                         break;
                     case TRILINEAR:
-                        imagemap = new ImageMapTrilinear(data, width);
+                        imagemap = new ImageMapTrilinear(bgra_data, width);
                         break;
-                    case EWA:imagemap = new ImageMapEWA(data, width);
+                    case EWA:imagemap = new ImageMapEWA(bgra_data, width);
                         break;
                 }
-                free(data);
+                free(bgra_data);
                 TexLib.inherit_map(src.absolute_path(), imagemap);
             }
             else

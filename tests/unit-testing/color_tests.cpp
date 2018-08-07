@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "utility/color.hpp"
@@ -242,10 +244,18 @@ SPECTRE_TEST(Color, RGB_constructor_components_bytes)
 
 SPECTRE_TEST(Color, RGB_single_component)
 {
-    ColorRGB c(0.5);
+    ColorRGB c(0.5f);
     EXPECT_EQ(c.r, 0.5f);
     EXPECT_EQ(c.g, 0.5f);
     EXPECT_EQ(c.b, 0.5f);
+}
+
+SPECTRE_TEST(Color, RGB_BGRA_input)
+{
+    ColorRGB c(0xFF0080FF);
+    EXPECT_NEAR(c.r, .501960814f, 1e-5f);
+    EXPECT_EQ(c.g, 0.f);
+    EXPECT_EQ(c.b, 1.f);
 }
 
 SPECTRE_TEST(Color, XYZ_to_sRGB)

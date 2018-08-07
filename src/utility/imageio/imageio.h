@@ -53,16 +53,16 @@ typedef uint32_t pixBGRA;
 #define BGRA_ALPHA_MASK 0x000000FF
 
 /** Get the Red channel value */
-#define BGRA_RED(x) (x & BGRA_RED_MASK)>>8
+#define BGRA_RED(x) ((x & BGRA_RED_MASK)>>8)
 
 /** Get the Green channel value */
-#define BGRA_GREEN(x) (x & BGRA_GREEN_MASK)>>16
+#define BGRA_GREEN(x) ((x & BGRA_GREEN_MASK)>>16)
 
 /** Get the Blue channel value */
-#define BGRA_BLUE(x) (x & BGRA_BLUE_MASK)>>24
+#define BGRA_BLUE(x) ((x & BGRA_BLUE_MASK)>>24)
 
 /** Get the Alpha channel value */
-#define BGRA_ALPHA(x) (x & BGRA_ALPHA_MASK)
+#define BGRA_ALPHA(x) ((x & BGRA_ALPHA_MASK))
 
 /**
  *  \brief Writes an image in a generic format

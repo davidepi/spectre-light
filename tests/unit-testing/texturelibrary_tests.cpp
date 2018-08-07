@@ -61,7 +61,7 @@ SPECTRE_TEST(TextureLibrary, add_map)
 {
     const ImageMap* got;
     errors_count[CRITICAL_INDEX] = 0;
-    float data[12] = {1.f, 0, 0, 0, 1.f, 0, 0, 0, 1.f, 0, 0, 0};
+    pixBGRA data[4] = {0x0000FFFF, 0x00FF00FF, 0xFF0000FF, 0x000000FF};
     ImageMap* map0 = new ImageMapUnfiltered(data, 2);
     ImageMap* map1 = new ImageMapUnfiltered(data, 2);
     //assert no construction error of imagemaps
@@ -109,7 +109,7 @@ SPECTRE_TEST(TextureLibrary, remove_texture)
 
 SPECTRE_TEST(TextureLibrary, remove_map)
 {
-    float data[12] = {1.f, 0, 0, 0, 1.f, 0, 0, 0, 1.f, 0, 0, 0};
+    pixBGRA data[4] = {0x0000FFFF, 0x00FF00FF, 0xFF0000FF, 0x000000FF};
     ImageMap* map0 = new ImageMapUnfiltered(data, 2);
     TexLib.inherit_map("Removeme", map0);
     const ImageMap* got = TexLib.get_map("Removeme");
@@ -138,7 +138,7 @@ SPECTRE_TEST(TextureLibrary, contains_texture)
 
 SPECTRE_TEST(TextureLibrary, contains_map)
 {
-    float data[12] = {1.f, 0, 0, 0, 1.f, 0, 0, 0, 1.f, 0, 0, 0};
+    pixBGRA data[4] = {0x0000FFFF, 0x00FF00FF, 0xFF0000FF, 0x000000FF};
     ImageMap* map0 = new ImageMapUnfiltered(data, 2);
     TexLib.inherit_map("ContainedM", map0);
     bool res = TexLib.contains_map("ContainedM");
@@ -156,7 +156,7 @@ SPECTRE_TEST(TextureLibrary, clear)
     TexLib.inherit_texture("Removeme2", tex2);
     Texture* tex3 = new TextureUniform(SPECTRUM_WHITE);
     TexLib.inherit_texture("Removeme3", tex3);
-    float data[12] = {1.f, 0, 0, 0, 1.f, 0, 0, 0, 1.f, 0, 0, 0};
+    pixBGRA data[4] = {0x0000FFFF, 0x00FF00FF, 0xFF0000FF, 0x000000FF};
     ImageMap* map0 = new ImageMapUnfiltered(data, 2);
     TexLib.inherit_map("Removeme4", map0);
     ImageMap* map1 = new ImageMapUnfiltered(data, 2);
