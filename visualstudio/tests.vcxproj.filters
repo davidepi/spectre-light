@@ -297,6 +297,9 @@
     <ClCompile Include="..\src\utility\imageio\tga.c">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\array2d_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\unit-testing\spectre_tests.h">
@@ -486,6 +489,9 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utility\imageio\tga.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\array2D.hpp">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>

@@ -117,6 +117,7 @@
     <ClCompile Include="..\src\utility\utility.cpp" />
     <ClCompile Include="..\src\utility\wellrng.cpp" />
     <ClCompile Include="..\tests\unit-testing\aabb_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\array2d_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\asset_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\box_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\camera_tests.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="..\src\textures\texture_image.hpp" />
     <ClInclude Include="..\src\textures\texture_library.hpp" />
     <ClInclude Include="..\src\textures\texture_uniform.hpp" />
+    <ClInclude Include="..\src\utility\array2D.hpp" />
     <ClInclude Include="..\src\utility\color.hpp" />
     <ClInclude Include="..\src\utility\console.hpp" />
     <ClInclude Include="..\src\utility\file.hpp" />

@@ -29,7 +29,8 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                     case TRILINEAR:
                         imagemap = new ImageMapTrilinear(bgra_data, width);
                         break;
-                    case EWA:imagemap = new ImageMapEWA(bgra_data, width);
+                    case EWA:
+                        imagemap = new ImageMapEWA(bgra_data, width);
                         break;
                 }
                 free(bgra_data);
@@ -64,7 +65,7 @@ Spectrum TextureImage::map(const HitPoint* hit) const
     ColorRGB res;
     if(unfiltered)
     {
-        res = imagemap->filter(u, v, 0, 0, 0, 0);
+        res = imagemap->filter(u, v, 0, 0, 0, 0).bgra_value;
     }
     else
     {
@@ -75,11 +76,11 @@ Spectrum TextureImage::map(const HitPoint* hit) const
             float dudy = hit->du.y*scale.y;
             float dvdx = hit->dv.x*scale.x;
             float dvdy = hit->dv.y*scale.y;
-            res = imagemap->filter(u, v, dudx, dvdx, dudy, dvdy);
+            res = imagemap->filter(u, v, dudx, dvdx, dudy, dvdy).bgra_value;
         }
         else
         {
-            res = imagemap->filter(u, v, 0, 0, 0, 0);
+            res = imagemap->filter(u, v, 0, 0, 0, 0).bgra_value;
         }
     }
     return Spectrum(res, false);

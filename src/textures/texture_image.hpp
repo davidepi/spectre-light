@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit 30 Jul 2018
+//Last Edit  8 Aug 2018
 
 /**
  *  \file texture_image.hpp
@@ -7,13 +7,30 @@
  *  \details   Class holding an image map that can be shifted and scaled
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      30 Jul 2018
+ *  \date      8 Aug 2018
  *  \copyright GNU GPLv3
  */
 
 
 #ifndef __TEXTURE_IMAGE_HPP__
 #define __TEXTURE_IMAGE_HPP__
+
+/** Filtering type used by the TextureImage */
+enum TextureFilter_t
+{
+    UNFILTERED,
+    TRILINEAR,
+    EWA
+};
+
+/** Channel of the TextureImage */
+enum ImageChannel
+{
+    BLUE = 0,
+    GREEN = 1,
+    RED = 2,
+    ALPHA = 3,
+};
 
 //This magnificent bastard must come first, otherwise C++ linking is used anyway
 extern "C" {

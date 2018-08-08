@@ -46,12 +46,12 @@ SPECTRE_TEST(Array2D, corner_cases_ctor)
     //less than 1 block.
     const int SIDESMALL = 2;
     Array2D<int> imagesmall(SIDESMALL);
-    EXPECT_EQ(imagesmall.blocks_no_side, 1);
+    EXPECT_EQ(imagesmall.blocks_no_side, 1U);
 
     //not power of 2
     const int SIDEBIG = 17;
     Array2D<int> imagebig(SIDEBIG);
-    EXPECT_EQ(imagebig.blocks_no_side, 4); //means that has been rounded to 32
+    EXPECT_EQ(imagebig.blocks_no_side, 4U); //means that has been rounded to 32
 }
 
 SPECTRE_TEST(Array2D, ctor_with_init)
@@ -81,7 +81,7 @@ SPECTRE_TEST(Array2D, ctor_with_init)
     for(int i = 0; i<SIDEBIG*SIDEBIG; i++)
         valuesbig[i] = i;
     Array2D<int> imagebig(valuesbig, SIDEBIG);
-    ASSERT_EQ(imagebig.blocks_no_side, 4);
+    ASSERT_EQ(imagebig.blocks_no_side, 4U);
     for(int y = 0; y<SIDEBIG; y++)
         for(int x = 0; x<SIDEBIG; x++)
             EXPECT_EQ(imagebig.get(x, y), valuesbig[y*SIDEBIG+x]);
@@ -154,7 +154,7 @@ SPECTRE_TEST(Array2D, copy_assignment)
 
 SPECTRE_TEST(Array2D, zero_out)
 {
-    const int SIDE = 512;
+    const int SIDE = 64;
     Array2D<int> image(SIDE);
     image.zero_out();
     for(int i = 0; i<SIDE*SIDE; i++)

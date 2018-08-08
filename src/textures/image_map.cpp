@@ -103,15 +103,15 @@ ImageMap::~ImageMap()
     free(ImageMap::side);
 }
 
-ColorRGB ImageMapUnfiltered::filter(float u, float v, float, float,
+TexelUnion ImageMapUnfiltered::filter(float u, float v, float, float,
                                     float, float) const
 {
     uint16_t x = (uint16_t)(u*side[0]-0.5f);
     uint16_t y = (uint16_t)(v*side[0]-0.5f);
-    return MIPmap[0]->get(x, y).bgra_value;
+    return MIPmap[0]->get(x, y);
 }
 
-ColorRGB ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
+TexelUnion ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
                                    float dudy, float dvdy) const
 {
     //float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
@@ -121,33 +121,36 @@ ColorRGB ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
     width = max(width, 1e-5f);
     //choose mipmap
     float chosen = maps_no-1+log2f(width);
-    ColorRGB p0; //retval
+    TexelUnion p0; //retval
     if(chosen<=0.f) //use full size map
         p0 = bilinear(u, v, 0);
     else if(chosen>maps_no-1) //return the single, most distant pixel
-        p0 = MIPmap[maps_no-1]->get(0, 0).bgra_value;
+        p0 = MIPmap[maps_no-1]->get(0, 0);
     else //perform trilinear interpolation
     {
-        ColorRGB p1;
+        TexelUnion p1;
         uint8_t chosen_below = (uint8_t)chosen;
         float decimal = chosen-chosen_below;
         p0 = bilinear(u, v, chosen_below);
         p1 = bilinear(u, v, chosen_below+1);
         const float other_decimal = 1.f-decimal;
-        p0.r *= other_decimal;
-        p0.g *= other_decimal;
-        p0.b *= other_decimal;
-        p1.r *= decimal;
-        p1.g *= decimal;
-        p1.b *= decimal;
-        p0.r += p1.r;
-        p0.g += p1.g;
-        p0.b += p1.b;
+        p0.bgra_texel.r *= other_decimal;
+        p0.bgra_texel.g *= other_decimal;
+        p0.bgra_texel.b *= other_decimal;
+        p0.bgra_texel.a *= other_decimal;
+        p1.bgra_texel.r *= decimal;
+        p1.bgra_texel.g *= decimal;
+        p1.bgra_texel.b *= decimal;
+        p1.bgra_texel.a *= decimal;
+        p0.bgra_texel.r += p1.bgra_texel.r;
+        p0.bgra_texel.g += p1.bgra_texel.g;
+        p0.bgra_texel.b += p1.bgra_texel.b;
+        p0.bgra_texel.a += p1.bgra_texel.a;
     }
     return p0;
 }
 
-ColorRGB ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
+TexelUnion ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
                              float dudy, float dvdy) const
 {
     float longer_axis = sqrtf(dudx*dudx+dvdx*dvdx);
@@ -175,30 +178,33 @@ ColorRGB ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
     }
     // shorter axis 0 previously catched in an if
     float chosen = max(0.f, maps_no-1+log2f(shorter_axis));
-    ColorRGB p0; //retval
+    TexelUnion p0; //retval
     if(chosen>maps_no-1) //return the single, most distant pixel
-        p0 = MIPmap[maps_no-1]->get(0, 0).bgra_value;
+        p0 = MIPmap[maps_no-1]->get(0, 0);
     else
     {
         uint8_t chosen_below = (uint8_t)chosen;
         float decimal = chosen-chosen_below;
         p0 = ewa(u, v, dudx, dvdx, dudy, dvdy, chosen_below);
-        ColorRGB p1 = ewa(u, v, dudx, dvdx, dudy, dvdy, chosen_below+1);
+        TexelUnion p1 = ewa(u, v, dudx, dvdx, dudy, dvdy, chosen_below+1);
         const float other_decimal = 1.f-decimal;
-        p0.r *= other_decimal;
-        p0.g *= other_decimal;
-        p0.b *= other_decimal;
-        p1.r *= decimal;
-        p1.g *= decimal;
-        p1.b *= decimal;
-        p0.r += p1.r;
-        p0.g += p1.g;
-        p0.b += p1.b;
+        p0.bgra_texel.r *= other_decimal;
+        p0.bgra_texel.g *= other_decimal;
+        p0.bgra_texel.b *= other_decimal;
+        p0.bgra_texel.a *= other_decimal;
+        p1.bgra_texel.r *= decimal;
+        p1.bgra_texel.g *= decimal;
+        p1.bgra_texel.b *= decimal;
+        p1.bgra_texel.a *= decimal;
+        p0.bgra_texel.r += p1.bgra_texel.r;
+        p0.bgra_texel.g += p1.bgra_texel.g;
+        p0.bgra_texel.b += p1.bgra_texel.b;
+        p0.bgra_texel.a += p1.bgra_texel.a;
     }
     return p0;
 }
 
-ColorRGB ImageMap::bilinear(float u, float v, uint8_t level) const
+TexelUnion ImageMap::bilinear(float u, float v, uint8_t level) const
 {
     u = u*side[level]-0.5f;
     v = v*side[level]-0.5f;
@@ -225,10 +231,10 @@ ColorRGB ImageMap::bilinear(float u, float v, uint8_t level) const
     res.bgra_texel.a = (uint8_t)((T0.a*int_u+T1.a*decimal_u)*int_v+
                                  (T2.a*int_u+T3.a*decimal_u)*decimal_v);
 
-    return res.bgra_value;
+    return res;
 }
 
-ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
+TexelUnion ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
                           float dvdy, uint8_t level) const
 {
     //scale values
@@ -262,6 +268,7 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
     float resr = 0.f;
     float resg = 0.f;
     float resb = 0.f;
+    float resa = 0.f;
     float total_weight = 0.f;
     for(int y = v0; y<=v1; y++)
     {
@@ -276,21 +283,27 @@ ColorRGB ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
             const float radius2 = a*uoff*uoff+b*voff*uoff+c*voff*voff;
             if(radius2<1.f)
             {
-                ColorRGB hit = MIPmap[level]->get(newx, newy).bgra_value;
+                TexelUnion hit = MIPmap[level]->get(newx, newy);
                 //found the correct value for the lookup table, or the most
                 // distant one
                 const int index = min((int)(radius2*EWA_WEIGHTS_SIZE),
                                       EWA_WEIGHTS_SIZE-1);
                 const float weight = ImageMapEWA::EWA_WEIGHTS[index];
-                resr += hit.r*weight;
-                resg += hit.g*weight;
-                resb += hit.b*weight;
+                resr += hit.bgra_texel.r*weight;
+                resg += hit.bgra_texel.g*weight;
+                resb += hit.bgra_texel.b*weight;
+                resa += hit.bgra_texel.a*weight;
                 total_weight += weight;
             }
         }
     }
     float invweigth = 1.f/total_weight;
-    return ColorRGB(resr*invweigth, resg*invweigth, resb*invweigth);
+    TexelUnion retval;
+    retval.bgra_texel.r = resr * invweigth;
+    retval.bgra_texel.g = resg * invweigth;
+    retval.bgra_texel.b = resb * invweigth;
+    retval.bgra_texel.a = resa * invweigth;
+    return retval;
 }
 
 static void

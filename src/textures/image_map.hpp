@@ -1,16 +1,15 @@
 //Created,   7 May 2018
-//Last Edit  7 Aug 2018
+//Last Edit  8 Aug 2018
 
 /**
  *  \file image_map.hpp
  *  \brief     Helper classes used to handle Images used as textures
  *  \details   ImageMap class, a square, power of 2, image used inside
  *             TextureImage as a MIPMap.
- *             Several other classes are provided to cope with varying texel
- *             size and filtering methods
+ *             Several other classes are provided to cope with varying filtering methods
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      7 Aug 2018
+ *  \date      8 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -22,7 +21,6 @@
 #include "utility/imageio/imageio.h"
 #include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
-#include "utility/spectrum.hpp"
 #include "utility/utility.hpp" //swap
 #include <cstdlib> //malloc/free
 #include <cmath> //sqrtf
@@ -31,21 +29,6 @@
 
 //forward declaration to be used in TexelMap
 class ImageMap;
-
-enum TextureFilter_t
-{
-    UNFILTERED,
-    TRILINEAR,
-    EWA
-};
-
-enum ImageChannel
-{
-    BLUE = 0,
-    GREEN = 1,
-    RED = 2,
-    uALPHA = 3,
-};
 
 struct Texel
 {
@@ -131,7 +114,7 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    virtual ColorRGB filter(float u, float v, float dudx, float dvdx,
+    virtual TexelUnion filter(float u, float v, float dudx, float dvdx,
                             float dudy, float dvdy) const = 0;
 
 protected:
@@ -151,7 +134,7 @@ protected:
      *  delegated to the filtering algorithm
      *  \return The filtered texel color
      */
-    ColorRGB bilinear(float u, float v, uint8_t level) const;
+    TexelUnion bilinear(float u, float v, uint8_t level) const;
 
     ///width or height of every MIPmap level
     uint16_t* side;
@@ -196,7 +179,7 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    ColorRGB filter(float u, float v, float dudx, float dvdx,
+    TexelUnion filter(float u, float v, float dudx, float dvdx,
                     float dudy, float dvdy) const override;
 };
 
@@ -238,7 +221,7 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    ColorRGB filter(float u, float v, float dudx, float dvdx,
+    TexelUnion filter(float u, float v, float dudx, float dvdx,
                     float dudy, float dvdy) const override;
 };
 
@@ -276,7 +259,7 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    ColorRGB filter(float u, float v, float dudx, float dvdx,
+    TexelUnion filter(float u, float v, float dudx, float dvdx,
                     float dudy, float dvdy) const override;
 
 private:
@@ -289,7 +272,7 @@ private:
     static const float EWA_WEIGHTS[EWA_WEIGHTS_SIZE];
 
     //Performs the actual ewa filtering
-    ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
+    TexelUnion ewa(float u, float v, float dudx, float dvdx, float dudy,
                  float dvdy, uint8_t level) const;
 };
 
