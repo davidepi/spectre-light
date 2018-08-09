@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit  8 Aug 2018
+//Last Edit  9 Aug 2018
 
 /**
  *  \file image_map.hpp
@@ -9,7 +9,7 @@
  *             Several other classes are provided to cope with varying filtering methods
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 Aug 2018
+ *  \date      9 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -30,14 +30,34 @@
 //forward declaration to be used in TexelMap
 class ImageMap;
 
+/**
+ * \brief Struct holding a single Texel of the map in BGRA order
+ *
+ *  Since the architecture is little endian, the first element will map to the
+ *  least significant digit of the uint32_t. The uint32_t is enforced to be
+ *  as BGRA, so the actual order of this struct is a, r, g, b.
+ *  On the other hand, if the architecture is big endian, the uint32_t is
+ *  still forced to be BGRA, so the first element of this struct will be the
+ *  Blue component, mapping to the most significant byte.
+ */
 struct Texel
 {
+#ifndef IS_BIG_ENDIAN
+    uint8_t a;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+#else
     uint8_t b;
     uint8_t g;
     uint8_t r;
     uint8_t a;
+#endif
 };
 
+/**
+ * \brief Union between an uint32_t texel and the Texel struct
+ */
 union TexelUnion
 {
     Texel bgra_texel;
@@ -115,7 +135,7 @@ public:
      *  \return The filtered pixel value
      */
     virtual TexelUnion filter(float u, float v, float dudx, float dvdx,
-                            float dudy, float dvdy) const = 0;
+                              float dudy, float dvdy) const = 0;
 
 protected:
 
@@ -180,7 +200,7 @@ public:
      *  \return The filtered pixel value
      */
     TexelUnion filter(float u, float v, float dudx, float dvdx,
-                    float dudy, float dvdy) const override;
+                      float dudy, float dvdy) const override;
 };
 
 /**
@@ -222,7 +242,7 @@ public:
      *  \return The filtered pixel value
      */
     TexelUnion filter(float u, float v, float dudx, float dvdx,
-                    float dudy, float dvdy) const override;
+                      float dudy, float dvdy) const override;
 };
 
 /**
@@ -260,7 +280,7 @@ public:
      *  \return The filtered pixel value
      */
     TexelUnion filter(float u, float v, float dudx, float dvdx,
-                    float dudy, float dvdy) const override;
+                      float dudy, float dvdy) const override;
 
 private:
 
@@ -273,7 +293,7 @@ private:
 
     //Performs the actual ewa filtering
     TexelUnion ewa(float u, float v, float dudx, float dvdx, float dudy,
-                 float dvdy, uint8_t level) const;
+                   float dvdy, uint8_t level) const;
 };
 
 #endif

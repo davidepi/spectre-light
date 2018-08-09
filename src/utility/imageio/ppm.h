@@ -29,7 +29,7 @@
  *  \param[in] name The name of the output file
  *  \param[in] width The width of the image
  *  \param[in] height The height of the image
- *  \param[in] data An array of BGRA values of size width*height,
+ *  \param[in] data An array of 0xBBGGRRAA values of size width*height,
  *  containing the pixel values. The alpha channel of this array is ignored
  */
 char ppm_write(const char* name, int width, int height, const uint32_t* data);
@@ -69,7 +69,7 @@ char ppm_dimensions(const char* name, int* width, int* height);
  *  saves the value of the pixels in the data array. The data array is an array
  *  of length width*height and stores values as uint32_t composed of four bytes
  *  in the range [0-255]. Each byte represents a component.
- *  The components are stored in the order B,G,R,A and given the fact that no
+ *  The components are stored in the order 0xBBGGRRAA and given the fact that no
  *  alpha channel is supported due to the PPM specification, the A value will
  *  always be 0xFF. If the binary PPM file has a color depth higher than 24 bits
  *  per pixel, the values are assumed to be in Big Endian order (Most

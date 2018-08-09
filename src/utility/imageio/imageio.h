@@ -77,7 +77,7 @@ typedef uint32_t pixBGRA;
  *  \param[in] data Image data, as an array of size width*height with
  *  uint32_t values containing the representation of a pixel. Each pixel is
  *  composed of four values in range [0-255] ordered top-down left-right and
- *  ordered as BGRA
+ *  ordered as 0xBBGGRRAA
  *  \return 1 if the image was successfully written, 0 otherwise
  */
 char img_write(const char* name, const char* ext, int width, int height,
@@ -120,7 +120,7 @@ char img_dimensions(const char* name, const char* ext,
  *  it will be converted. The values array should be already allocated with a
  *  size of width*height. Values will be written as uint32_t composed by four
  *  values in range [0-255], in top-down left-right order. The four channels are
- *  ordered as BGRA.
+ *  ordered as 0xBBGGRRAA.
  *
  *  \param[in] name Path of the image on disk
  *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
@@ -145,17 +145,17 @@ char img_read8(const char* name, const char* ext, pixBGRA* values);
 char img_supported(const char* ext);
 
 /**
- *  \brief Converts a BGRA array to and RGB one
+ *  \brief Converts a 0xBBGGRRAA array to an RGB one
  *
  *  \param[out] out An array of size len*3, already allocated, that will hold
- *  the RGB values extracted from the BGRA one
+ *  the RGB values extracted from the 0xBBGGRRAA one
  *  \param[in] in The array that will be converted
  *  \param[in] len The length of the input array
  */
 void BGRAtoRGB(uint8_t* out, const uint32_t* in, size_t len);
 
 /**
- *  \brief Converts an RGB array to a BGRA one
+ *  \brief Converts an RGB array to a 0xBBGGRRAA one
  *
  *  \param[out] out An array of size len/3, already allocated, that will hold
  *  the BGRA values extracted from the RGB one. Alpha will always be 255.

@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit  8 Aug 2018
+//Last Edit  9 Aug 2018
 
 /**
  *  \file texture_image.hpp
@@ -7,7 +7,7 @@
  *  \details   Class holding an image map that can be shifted and scaled
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 Aug 2018
+ *  \date      9 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -23,14 +23,26 @@ enum TextureFilter_t
     EWA
 };
 
-/** Channel of the TextureImage */
+//Check image_map.hpp for details on ARGB/BGRA between the two architectures
+#ifndef IS_BIG_ENDIAN
+/** Channel of the TextureImage. ARGB order in little endian machines */
+enum ImageChannel
+{
+    ALPHA = 0,
+    RED = 1,
+    GREEN = 2,
+    BLUE = 3,
+};
+#else
+/** Channel of the TextureImage. BGRA order in big endian machines */
 enum ImageChannel
 {
     BLUE = 0,
     GREEN = 1,
     RED = 2,
-    ALPHA = 3,
+    ALPHA = 3
 };
+#endif
 
 //This magnificent bastard must come first, otherwise C++ linking is used anyway
 extern "C" {
@@ -108,6 +120,20 @@ public:
      *  coordinates (u,v)
      */
     Spectrum map(const HitPoint* hp) const override;
+
+    /**
+     *  \brief Returns the value for a specific channel
+     *
+     *  This function is similar to the map one, but instead of returning the
+     *  RGB spectrum, the filtered texel value is returned. The texture will
+     *  still be shifted and scaled. The returned value will be in the
+     *  [0-255] range
+     *
+     *  \param[in] hp The data of the hit point
+     *  \param[in] channel The requested channel of the image
+     *  \return The value of the requested channel for the hit point
+     */
+    uint8_t map_channel(const HitPoint* hp, ImageChannel channel) const;
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS

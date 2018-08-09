@@ -31,7 +31,8 @@
  *  \param[in] height Height of the image
  *  \param[in] data array of 32-bit values containing the image data in
  *  top-down left to right order. Each value contains color components in
- *  BGRA order. The alpha channel is ignored, since JPG does not support it
+ *  0xBBGGRRAA order. The alpha channel is ignored, since JPG does not
+ *  support it
  *  \return 1 if the image was successfully written, 0 otherwise
  */
 char jpg_write(const char* name, int width, int height, const uint32_t* data);
@@ -70,8 +71,8 @@ char jpg_dimensions(const char* name, int* width, int* height);
  *  Reads a jpg image and writes the image data on the values array in
  *  top-down left-right order. This array is expected to be already allocated
  *  with a size of width*height. Every channel is written in a uint32_t
- *  value in the order BGRA with values in the range [0-255]. The alpha value
- *  however, will always be 0xFF due to JPG restrictions.
+ *  value in the order 0xBBGGRRAA with values in the range [0-255]. The alpha
+ *  value, however, will always be 0xFF due to JPG restrictions.
  *
  *  \param[in] name The path on disk where the image can be found
  *  \param[out] values The array of values that will be written. This array

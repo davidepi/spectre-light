@@ -66,7 +66,7 @@ END_PACKED_STRUCT
  *  \param[in] height Height of the image
  *  \param[in] data array of 32-bit values and length width*height containing
  *  the image data in top-down left to right order. Every value represents a
- *  pixel with channels ordered as BGRA
+ *  pixel with channels ordered as 0xBBGGRRAA
  *  \return 1 if the image was successfully written, 0 otherwise
  */
 char tga_write(const char* name, int width, int height, const uint32_t* data);
@@ -104,8 +104,8 @@ char tga_dimensions(const char* name, int* width, int* height);
  *
  *  Reads a tga image and writes the image data on the values array in
  *  top-down left-right order. This array is expected to be already allocated
- *  with a size of width*height. Every value represents a pixel composed of BGRA
- *  channel in this specific order, with channel values in the range [0-255].
+ *  with a size of width*height. Every value represents a pixel with channel
+ *  ordered as 0xBBGGRRAA and channel values in the range [0-255].
  *  This method supports 16-bit, 24-bit and 32-bit images, both uncompressed
  *  and compressed. If a 16 bit image is found, values will still be in the
  *  [0-255] range

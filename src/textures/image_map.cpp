@@ -104,7 +104,7 @@ ImageMap::~ImageMap()
 }
 
 TexelUnion ImageMapUnfiltered::filter(float u, float v, float, float,
-                                    float, float) const
+                                      float, float) const
 {
     uint16_t x = (uint16_t)(u*side[0]-0.5f);
     uint16_t y = (uint16_t)(v*side[0]-0.5f);
@@ -112,7 +112,7 @@ TexelUnion ImageMapUnfiltered::filter(float u, float v, float, float,
 }
 
 TexelUnion ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
-                                   float dudy, float dvdy) const
+                                     float dudy, float dvdy) const
 {
     //float width = min(dudx*dudx+dvdx*dvdx, dudy*dudy+dvdy*dvdy);
     float width = max(max(fabsf(dudx), fabsf(dvdx)),
@@ -151,7 +151,7 @@ TexelUnion ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
 }
 
 TexelUnion ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
-                             float dudy, float dvdy) const
+                               float dudy, float dvdy) const
 {
     float longer_axis = sqrtf(dudx*dudx+dvdx*dvdx);
     float shorter_axis = sqrtf(dudy*dudy+dvdy*dvdy);
@@ -234,8 +234,9 @@ TexelUnion ImageMap::bilinear(float u, float v, uint8_t level) const
     return res;
 }
 
-TexelUnion ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
-                          float dvdy, uint8_t level) const
+TexelUnion
+ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
+                 float dvdy, uint8_t level) const
 {
     //scale values
     u = u*side[level]-0.5f;
@@ -299,10 +300,10 @@ TexelUnion ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy
     }
     float invweigth = 1.f/total_weight;
     TexelUnion retval;
-    retval.bgra_texel.r = resr * invweigth;
-    retval.bgra_texel.g = resg * invweigth;
-    retval.bgra_texel.b = resb * invweigth;
-    retval.bgra_texel.a = resa * invweigth;
+    retval.bgra_texel.r = resr*invweigth;
+    retval.bgra_texel.g = resg*invweigth;
+    retval.bgra_texel.b = resb*invweigth;
+    retval.bgra_texel.a = resa*invweigth;
     return retval;
 }
 
