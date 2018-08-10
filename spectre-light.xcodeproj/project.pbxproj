@@ -35,8 +35,6 @@
 		6B2321F92094F1ED004FBAF5 /* vec2_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2321EF2094EFB0004FBAF5 /* vec2_tests.cpp */; };
 		6B2321FB2094FA35004FBAF5 /* vec3_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2321F12094EFB1004FBAF5 /* vec3_tests.cpp */; };
 		6B2841B320971713000FC23C /* point2_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2841B120971710000FC23C /* point2_tests.cpp */; };
-		6B2FC7972118893F00DEACB3 /* array2d_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FC7962118893F00DEACB3 /* array2d_tests.cpp */; };
-		6B2FC7982118895F00DEACB3 /* array2d_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FC7962118893F00DEACB3 /* array2d_tests.cpp */; };
 		6B2FC7992118895F00DEACB3 /* array2d_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2FC7962118893F00DEACB3 /* array2d_tests.cpp */; };
 		6B359200208A638F0079F5DF /* parser_obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BFA15222081097B00DCA94C /* parser_obj.cpp */; };
 		6B42DF881F88DFF300C01215 /* fresnel_conditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B42DF851F88DCCF00C01215 /* fresnel_conditions.cpp */; };
@@ -280,6 +278,7 @@
 		6B2321F12094EFB1004FBAF5 /* vec3_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = vec3_tests.cpp; sourceTree = "<group>"; };
 		6B2321F22094EFB1004FBAF5 /* triangle_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = triangle_tests.cpp; sourceTree = "<group>"; };
 		6B2841B120971710000FC23C /* point2_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = point2_tests.cpp; sourceTree = "<group>"; };
+		6B2F31D9211DB0420013D09B /* array2D.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = array2D.hpp; path = src/utility/array2D.hpp; sourceTree = "<group>"; };
 		6B2FC7962118893F00DEACB3 /* array2d_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = array2d_tests.cpp; sourceTree = "<group>"; };
 		6B3091A921007DE70061CF37 /* jpg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpg.h; sourceTree = "<group>"; };
 		6B3091AA21007DE70061CF37 /* jpg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jpg.c; sourceTree = "<group>"; };
@@ -911,6 +910,7 @@
 			isa = PBXGroup;
 			children = (
 				6B1F6AB020FC950000FB8E0F /* imageio */,
+				6B2F31D9211DB0420013D09B /* array2D.hpp */,
 				6B771A311ED3A72500EEF79B /* color.cpp */,
 				6B771A321ED3A72500EEF79B /* color.hpp */,
 				6B1700471ED35F8F00D046BE /* console.cpp */,
@@ -1113,7 +1113,6 @@
 				6BA65BE71F70421D00183E94 /* image_film.cpp in Sources */,
 				6BA65BE81F70421D00183E94 /* camera_orthographic.cpp in Sources */,
 				6BA65BE91F70421D00183E94 /* camera_perspective.cpp in Sources */,
-				6B2FC7972118893F00DEACB3 /* array2d_tests.cpp in Sources */,
 				6B1F6ABC20FC950000FB8E0F /* ppm.c in Sources */,
 				6BA55D9820753EA500F869C2 /* file.cpp in Sources */,
 				6BA65BEA1F70421D00183E94 /* AABB.cpp in Sources */,
@@ -1184,7 +1183,6 @@
 				6BA65C141F70424E00183E94 /* bvh.cpp in Sources */,
 				6BA65C151F70424E00183E94 /* kdtree.cpp in Sources */,
 				6BA65C161F70424E00183E94 /* camera.cpp in Sources */,
-				6B2FC7982118895F00DEACB3 /* array2d_tests.cpp in Sources */,
 				6B1F6AC020FC950F00FB8E0F /* ppm.c in Sources */,
 				6BA65C171F70424E00183E94 /* camera360.cpp in Sources */,
 				6BA65C181F70424E00183E94 /* image_film.cpp in Sources */,

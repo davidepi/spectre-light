@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 17 Jun 2018
+//Last Edit 10 Aug 2018
 
 /**
  *  \file      config_driver.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      17 Jun 2018
+ *  \date      10 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -18,6 +18,7 @@
 extern "C" {
 #include "utility/imageio/imageio.h"
 }
+
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -155,8 +156,18 @@ public:
     ///Color of the light, that will be converted to the emitted spectrum
     Vec3 color;
 
+    ///Name of the mask that will be used
+    std::string mask_tex;
+
+    ///Channel used for masking
+    ImageChannel mask_chn;
+
+    ///True if the channel should be inverted
+    bool mask_inv;
+
     ///Initialize the class with default values for world space meshes
-    MeshWorld():scale(1), is_light(false), temperature(-1), color(255, 255, 255)
+    MeshWorld():scale(1), is_light(false), temperature(-1),
+                color(255, 255, 255), mask_chn(ALPHA), mask_inv(false)
     {};
 };
 
@@ -225,7 +236,7 @@ public:
 
 //dirty hack because this class is impossible to test otherwise
 #ifndef TESTS
-    private:
+private:
 #endif
 
     ///The name of the output image that will be created by the renderer

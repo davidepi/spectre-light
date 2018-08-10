@@ -12,8 +12,8 @@ char ppm_write(const char* name, int width, int height, const uint32_t* array)
     int i;
     if(fout != NULL)
     {
+        ssize_t written = 0;
         fprintf(fout, "P6 %d %d 255 ", width, height);
-        size_t written = 0;
         for(i = 0; i<width*height; i++)
         {
             /* convert BGRA to RGB */

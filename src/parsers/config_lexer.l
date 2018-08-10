@@ -129,6 +129,12 @@ beckmann { UPDATE_POS; return yy::ConfigParser::make_BECKMANN(loc); }
 ggx { UPDATE_POS; return yy::ConfigParser::make_GGX(loc); }
 color {UPDATE_POS; return yy::ConfigParser::make_COLOR(loc);}
 element {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
+"using channel R" {UPDATE_POS; return yy::ConfigParser::make_CHNR(loc);}
+"using channel G" {UPDATE_POS; return yy::ConfigParser::make_CHNG(loc);}
+"using channel B" {UPDATE_POS; return yy::ConfigParser::make_CHNB(loc);}
+"using channel A" {UPDATE_POS; return yy::ConfigParser::make_CHNA(loc);}
+inverted {UPDATE_POS; return yy::ConfigParser::make_INV(loc);}
+mask {UPDATE_POS; return yy::ConfigParser::make_MASK(loc);}
 {uint}    { UPDATE_POS; return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
 {int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 {float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }

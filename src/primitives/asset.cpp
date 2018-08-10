@@ -31,6 +31,9 @@ Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
 {
     //since intersection is performed in object_space, convert back the ray
     Ray ray_obj = worldToObj**ray_world;
+    //keep old_value in case the hit is invalidated by the mask
+    float previous_distance = *distance;
+    HitPoint previous_hit = *hit;
     bool res = Asset::model->intersect(&ray_obj, distance, hit);
     if(res)
     {
@@ -45,6 +48,17 @@ Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
         hit->dpdu.normalize();
         hit->dpdv.normalize();
         hit->cross = normalize(cross(Vec3(hit->normal_h), hit->dpdu));
+        if(mask.map != NULL)
+        {
+            bool mask_val = mask.map->map_channel(hit, mask.channel)>=THRESHOLD;
+            if((!mask_val || mask.inverted) && (mask_val || !mask.inverted))
+            {
+                //hit invalidated, restore previous distance
+                *distance = previous_distance;
+                *hit = previous_hit;
+                res = false;
+            }
+        }
     }
     return res;
 }
@@ -77,4 +91,9 @@ void Asset::set_materials(const Bsdf** mats, unsigned char mats_len,
 const Bsdf* Asset::get_material(unsigned int index) const
 {
     return Asset::materials[materials_index[index]];
+}
+
+void Asset::set_mask(Mask m)
+{
+    Asset::mask = m;
 }

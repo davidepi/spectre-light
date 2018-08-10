@@ -267,7 +267,7 @@ const Texture* ConfigDriver::load_texture(std::string& path)
     else
         cur_file.append(path.c_str());
     if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
-            img_valid(cur_file.absolute_path(), cur_file.extension()))
+       img_valid(cur_file.absolute_path(), cur_file.extension()))
     {
         if(tex_name.empty())
             tex_name = cur_file.filename();
@@ -567,6 +567,22 @@ void ConfigDriver::build_meshes()
         scale_matrix.set_scale(mesh_w.scale);
         //watchout the order!!!
         transform = position_matrix*rotation_matrix*scale_matrix;
+        //resolve the mask
+        Mask mask;
+        mask.channel = mesh_w.mask_chn;
+        mask.inverted = mesh_w.mask_inv;
+        if(mesh_w.mask_tex.empty())
+            mask.map = NULL;
+        else
+        {
+            if(TexLib.contains_texture(mesh_w.mask_tex))
+                mask.map = (const TextureImage*)TexLib.get_texture(
+                        mesh_w.mask_tex);
+            else
+                //TODO: remove this shitty RTTI dependency
+                mask.map = dynamic_cast<const TextureImage*>(load_texture(
+                        mesh_w.mask_tex));
+        }
         Asset* current_asset;
         if(!mesh_w.is_light)
         {
@@ -630,5 +646,6 @@ void ConfigDriver::build_meshes()
             free(associations);
             current_scene->inherit_light((AreaLight*)current_asset);
         }
+        current_asset->set_mask(mask);
     }
 }

@@ -137,7 +137,7 @@ public:
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS
-    private:
+private:
 #endif
 
     ///scale component
@@ -151,6 +151,17 @@ public:
 
     ///The underlying ImageMap
     const ImageMap* imagemap;
+};
+
+/** POD structure used to represent a Mask */
+struct Mask
+{
+    /** Image used as mask */
+    const TextureImage* map;
+    /** Channel of the Image that wil be used */
+    ImageChannel channel;
+    /** True if this image has to be inverted */
+    bool inverted;
 };
 
 #endif

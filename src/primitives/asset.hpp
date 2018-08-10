@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit  8 Jun 2018
+//Last Edit 10 Aug 2018
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 Jun 2018
+ *  \date      10 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -19,6 +19,10 @@
 #include "primitives/shape.hpp"
 #include "materials/bdf.hpp"
 #include "materials/material_library.hpp"
+#include "textures/texture_image.hpp"
+
+///Values under 128 are considered false when applying masking
+#define THRESHOLD 128
 
 /**
  *  \class Asset asset.hpp "primitives/asset.hpp"
@@ -139,6 +143,16 @@ public:
      */
     const Bsdf* get_material(unsigned int ith_face) const;
 
+    /**
+     *  \brief Sets a Mask for this asset
+     *
+     *  Sets the Mask that will be used during rendering. The Mask is used to
+     *  possibly invalidate a correct intersection
+     *
+     *  \param[in] m The mask that will be set
+     */
+    void set_mask(Mask m);
+
 protected:
 
     ///Underlying model
@@ -163,6 +177,9 @@ private:
 
     //index associating every face to every material
     unsigned char* materials_index;
+
+    //mask used during intersections
+    Mask mask;
 
 };
 

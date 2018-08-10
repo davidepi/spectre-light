@@ -14,6 +14,7 @@
     #include "geometry/vec3.hpp"
     #include "geometry/vec2.hpp"
     #include "materials/metals.hpp"
+    #include "textures/texture_image.hpp"
     class ConfigDriver;
 }
 %param{ ConfigDriver& driver }
@@ -93,6 +94,12 @@
 %token SPECULAR "`specular` keyword"
 %token SRC "`src` keyword"
 %token PATH_TRACE "`path` keyword"
+%token CHNR "Red channel attribute"
+%token CHNG "Green channel attribute"
+%token CHNB "Blue channel attribute"
+%token CHNA "Alpha channel attribute"
+%token INV "inverted attribute"
+%token MASK "`mask` keyword"
 %token SILVER "`Ag`"
 %token ALUMINIUM "`Al`"
 %token GOLD "`Au`"
@@ -133,6 +140,7 @@
 %type <int> integer
 %type <Vec3> vector
 %type <Vec2> vector2
+%type <ImageChannel> channel
 
 %%
 
@@ -204,6 +212,8 @@ world_stmt
 | SCALE COLON vector {driver.cur_mesh.scale = $3;}
 | SCALE COLON number {driver.cur_mesh.scale = $3;}
 | MATERIAL COLON STRING {driver.cur_mesh.material_name = $3.substr(1,$3.size()-2);}
+| MASK COLON STRING {driver.cur_mesh.mask_tex = $3.substr(1,$3.size()-2);}
+| MASK COLON STRING attributes {driver.cur_mesh.mask_tex = $3.substr(1,$3.size()-2);}
 | COMMA
 ;
 
@@ -294,6 +304,20 @@ element
 | VANADIUM {$$ = METAL_VANADIUM; }
 | ZINC {$$ = METAL_ZINC; }
 | ZIRCONIUM {$$ = METAL_ZIRCONIUM; }
+;
+
+attributes: attributes attribute | attribute;
+
+attribute
+: channel {driver.cur_mesh.mask_chn = $1;}
+| INV {driver.cur_mesh.mask_inv = true;}
+;
+
+channel
+: CHNR  {$$ = RED;}
+| CHNG  {$$ = GREEN;}
+| CHNB  {$$ = BLUE;}
+| CHNA  {$$ = ALPHA;}
 ;
 
 vector:

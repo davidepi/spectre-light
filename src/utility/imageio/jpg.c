@@ -126,8 +126,8 @@ char jpg_read(const char* name, uint32_t* values)
     if(fin != NULL)
     {
         int row_len;
-        int x;
-        int y;
+        unsigned int x;
+        unsigned int y;
         uint8_t* row;
         struct jpeg_decompress_struct jpg_img;
         /* without error handling SIGSEGV will be generated */

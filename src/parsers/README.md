@@ -5,6 +5,7 @@ with the following differences:
 
 - Keys are reserved keywords and thus cannot be neither user-defined nor quoted
 - A comma is not required between each `key:value` pair, a whitespace is sufficient
+- After a value additional attributes can be issued. This is currently used only to specify the mask channel that will be used
 - The toplevel object can not be enclosed in curly braces
 
 Recall that every relative path declared inside the input file is resolved from the position of the input file itself, instead of the current working directory. This was done in order to depend just by the initial position of the input file.
@@ -158,6 +159,7 @@ material | quoted string | The name of the material that will be applied to the 
 position | float[3] | The position of the model in the scene | [0,0,0]
 rotation | float[3] | The rotation of the model in the scene, in degrees | [0,0,0]
 scale | float[3] or float | The scaling applied to the model in the scene. The single float value applies uniform scaling to every dimension | 1
+mask | quoted string + [texture attributes](#attributes) | The texture used as alpha mask for this object. Attributes can specify which channel will be used and if the mask should be inverted
 
 #### Texture
 Keys for Texture objects
@@ -218,3 +220,15 @@ V | Vanadium
 W | Tungsten
 Zn | Zinc
 Zr | Zirconium
+
+### Attributes
+
+Attributes can be added after a value to specify additional informations. These are the one currently supported
+
+Attribute | Type | Action
+---|---|---
+`using channel R`| Texture | Selects the Red channel
+`using channel G`| Texture | Selects the Green channel
+`using channel B`| Texture | Selects the Blue channel
+`using channel A`| Texture | Selects the Alpha channel
+`inverted` | Texture | Inverts the texture map
