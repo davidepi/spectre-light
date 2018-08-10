@@ -342,23 +342,23 @@ void ConfigDriver::build_materials()
         {
             case MATTE:
             {
-                material = new SingleBRDF();
                 if(mat->rough_x != 0)
                 {
                     float roughness = lerp(mat->rough_x, 0.f, 100.f);
-                    material->inherit_bdf(new OrenNayar(roughness), diffuse);
+                    material = new SingleBRDF(new OrenNayar(roughness),
+                                              diffuse);
                 }
                 else
-                    material->inherit_bdf(new Lambertian, diffuse);
+                    material = new SingleBRDF(new Lambertian, diffuse);
                 break;
             }
             case GLOSSY:
             {
-                material = new Bsdf();
+                MultiBSDF* multimat = new MultiBSDF();
                 Fresnel* fresnel = new Dielectric(cauchy(1.f, 0),
                                                   cauchy(1.5f, 0));
                 MicrofacetDist* dist;
-                material->inherit_bdf(new Lambertian(), diffuse);
+                multimat->inherit_bdf(new Lambertian(), diffuse);
                 //no specular in glossy, avoid division by zero
                 if(mat->rough_x == 0)
                     mat->rough_x = MIN_ROUGHNESS;
@@ -373,12 +373,13 @@ void ConfigDriver::build_materials()
                     else
                         dist = new GGXiso(mat->rough_x);
                 }
-                material->inherit_bdf(new MicrofacetR(dist, fresnel), specular);
+                multimat->inherit_bdf(new MicrofacetR(dist, fresnel), specular);
+                material = (Bsdf*)multimat;
                 break;
             }
             case GLASS:
             {
-                material = new Bsdf();
+                MultiBSDF* multimat = new MultiBSDF();
                 Bdf* reflective;
                 Bdf* refractive;
                 Spectrum etai = cauchy(1.f, 0.f);
@@ -420,8 +421,9 @@ void ConfigDriver::build_materials()
                     reflective = new MicrofacetR(dist_r, fresnel_r);
                     refractive = new MicrofacetT(dist_t, etai, mat->ior);
                 }
-                material->inherit_bdf(refractive, diffuse);
-                material->inherit_bdf(reflective, specular);
+                multimat->inherit_bdf(refractive, diffuse);
+                multimat->inherit_bdf(reflective, specular);
+                material = (Bsdf*)multimat;
                 break;
             }
             case METAL:
@@ -431,7 +433,6 @@ void ConfigDriver::build_materials()
                 Bdf* bdf;
                 MicrofacetDist* dist;
                 Fresnel* fresnel;
-                material = new SingleBRDF();
                 ior = Spectrum(METALS[mat->elem].n);
                 absorption = Spectrum(METALS[mat->elem].k);
                 if(mat->rough_x == 0 && mat->rough_y == -1) //specular
@@ -454,7 +455,7 @@ void ConfigDriver::build_materials()
                     fresnel = new Conductor(ior, absorption);
                     bdf = new MicrofacetR(dist, fresnel);
                 }
-                material->inherit_bdf(bdf);
+                material = new SingleBRDF(bdf);
                 break;
             }
         }

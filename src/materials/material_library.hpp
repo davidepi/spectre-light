@@ -15,6 +15,8 @@
 #define __MATERIAL_LIBRARY_HPP__
 
 #include "materials/bdf.hpp"
+#include "materials/bsdf.hpp"
+#include "materials/single_brdf.hpp"
 #include "materials/lambertian.hpp"
 #include <unordered_map>
 #include <string>

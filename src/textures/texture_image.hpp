@@ -153,6 +153,9 @@ private:
     const ImageMap* imagemap;
 };
 
+///Values under 128 are considered false when applying masking
+#define MASK_BINARY_THRESHOLD 128
+
 /** POD structure used to represent a Mask */
 struct Mask
 {

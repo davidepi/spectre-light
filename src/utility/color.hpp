@@ -18,7 +18,7 @@
 
 extern "C" {
 #include "imageio/imageio.h"
-};
+}
 #include <cstring>
 #include <cstdlib>
 #include <cmath> //pow

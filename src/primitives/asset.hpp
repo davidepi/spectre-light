@@ -21,9 +21,6 @@
 #include "materials/material_library.hpp"
 #include "textures/texture_image.hpp"
 
-///Values under 128 are considered false when applying masking
-#define THRESHOLD 128
-
 /**
  *  \class Asset asset.hpp "primitives/asset.hpp"
  *  \brief A container for shapes, materials and textures

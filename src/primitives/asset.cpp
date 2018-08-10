@@ -50,7 +50,8 @@ Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
         hit->cross = normalize(cross(Vec3(hit->normal_h), hit->dpdu));
         if(mask.map != NULL)
         {
-            bool mask_val = mask.map->map_channel(hit, mask.channel)>=THRESHOLD;
+            bool mask_val = mask.map->map_channel(hit, mask.channel)>=
+                            MASK_BINARY_THRESHOLD;
             if((!mask_val || mask.inverted) && (mask_val || !mask.inverted))
             {
                 //hit invalidated, restore previous distance

@@ -5,8 +5,7 @@
 
 MaterialLibrary::MaterialLibrary()
 {
-    MaterialLibrary::default_material = new Bsdf();
-    default_material->inherit_bdf(new Lambertian());
+    MaterialLibrary::default_material = new SingleBRDF(new Lambertian());
     lib.insert(std::make_pair("Default", default_material));
 }
 
@@ -66,7 +65,7 @@ bool MaterialLibrary::contains(const std::string& name) const
 {
     std::unordered_map<std::string, const Bsdf*>::const_iterator got =
             lib.find(name);
-    return got!=lib.end();
+    return got != lib.end();
 }
 
 const Bsdf* MaterialLibrary::get_default() const

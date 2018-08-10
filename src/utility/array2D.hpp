@@ -87,7 +87,7 @@ public:
         //assert at least 1 block for small arrays
         if(side<BLOCK_SIDE)
             side = BLOCK_SIDE;
-        if((side & side-1) != 0)
+        if((side & (side-1)) != 0)
         {
             //round up to the next power of 2
             side--;
