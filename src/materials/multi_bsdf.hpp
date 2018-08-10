@@ -1,6 +1,16 @@
-//
-// Created by davide on 10/08/18.
-//
+//Created,   10 Aug 2018
+//Last Edit  11 Aug 2018
+
+/**
+ *  \file bdf.hpp
+ *  \brief     Standard implementation of a material
+ *  \details   A material composed of reflective and transmittive components
+ *  \author    Davide Pizzolotto
+ *  \version   0.2
+ *  \date      11 Aug 2018
+ *  \copyright GNU GPLv3
+ */
+
 
 #ifndef __MULTI_BDF_HPP__
 #define __MULTI_BDF_HPP__
@@ -8,6 +18,21 @@
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
 
+/**
+ *  \brief Material wrapping multiple reflective or transmittive surfaces
+ *
+ *  The BSDF defines how the light scatters on a surface. This class is composed
+ *  by several BRDF and BTDF that represent respectively how the light is
+ *  reflected and transmitted. By combining these BxDFs it is possible to define
+ *  how the light behaves when reaching the surface.
+ *
+ *  This is the standard implementation of a material.
+ *
+ *  \note A multi-material differs from this class: in this class every BDF
+ *  component participates to the final result, where in a multi-material the
+ *  actual BSDF defining the result is determined by a mask. Despite the
+ *  similar names, a multi-material is one step above this class
+ */
 class MultiBSDF : public Bsdf
 {
 public:
@@ -16,9 +41,9 @@ public:
     MultiBSDF();
 
     ///Default destructor
-    virtual ~MultiBSDF();
+    ~MultiBSDF() override;
 
-    /** \brief Add the Bdf to the Bsdf
+    /** \brief Add the Bdf to the BSDF
      *
      *  Inherit the ownership of the given Bdf and adds it to this Bsdf.
      *  This means that the value of the Bdf will be taken in consideration when
@@ -30,7 +55,7 @@ public:
      *
      *  \param[in] addme The Bdf that will be added
      *  \param[in] spectrum The texture that will be used to compute the
-     *  spectrum of the Bsdf. If left empty, the default White texture will be
+     *  spectrum of the BSDF. If left empty, the default White texture will be
      *  used
      */
     void inherit_bdf(Bdf* addme, const Texture* spectrum = NULL);
@@ -48,8 +73,8 @@ public:
      *  \param[in] matchSpec True if specular Bdfs should be considered
      *  \return The value of the BSDF
      */
-    virtual Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                           bool matchSpec) const;
+    Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+                   bool matchSpec) const override;
 
     /** \brief Return the value of the BSDF
      *
@@ -69,9 +94,10 @@ public:
      *  \param[out] matchedSpec True if the method matched a specular Bdf
      *  \return A sampled value of the BSDF
      */
-    virtual Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
-                                  const HitPoint* h, Vec3* wiW, float* pdf,
-                                  bool matchSpec, bool* matchedSpec) const;
+    Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
+                          const HitPoint* h, Vec3* wiW, float* pdf,
+                          bool matchSpec, bool* matchedSpec) const
+    override;
 
     /** \brief Return the probability density function for this bsdf
      *
@@ -83,15 +109,15 @@ public:
      *  \param[in] matchSpec True if the method should match specular Bdfs
      *  \return The pdf for this set of values
      */
-    virtual float pdf(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                      bool matchSpec) const;
+    float pdf(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+              bool matchSpec) const override;
 
 protected:
 
-    //number of Bdfs
+    //number of BxDFs
     unsigned char count;
 
-    //Bdfs
+    //BxDFs
     Bdf* bdfs[_MAX_BDF_];
 
     //Textures

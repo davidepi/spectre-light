@@ -1,4 +1,3 @@
-
 //Created,   16 Jun 2017
 //Last Edit  11 Apr 2018
 
@@ -34,10 +33,13 @@
  *  \brief Component of the Bsdf class
  *
  *  The bdf class can represent either a BRDF or a BTDF. It is a fundamental
- *  component of the Bsdf class, describing how the light is reflected at a
- *  surface.
- *  Note that every Bdf produces a Greyscale spectrum. Then the Bsdf class is
- *  responsible of chosing the right texture to module the results of Bdfs
+ *  component of the wrapping material classes, describing how the light is
+ *  reflected at a surface.
+ *  Note that every Bdf produces the spectrum resulting from the interaction
+ *  with a white surface.
+ *  Then the material class that wraps this Bdf is responsible of choosing a
+ *  correct texture to multiply this spectrum.
+ *  Note that every Bdf works in shading space
  */
 class Bdf
 {

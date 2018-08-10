@@ -18,6 +18,9 @@
 #include "materials/microfacet_distributions.hpp"
 #include "materials/fresnel_conditions.hpp"
 #include "materials/metals.hpp"
+#include "materials/bdf.hpp"
+#include "materials/multi_bsdf.hpp"
+#include "materials/single_brdf.hpp"
 #include "primitives/asset.hpp"
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
@@ -690,9 +693,9 @@ SPECTRE_TEST(Material, FresnelConditions_Dielectric_eval)
     EXPECT_EQ(res.w[2], 1.f);
 }
 
-SPECTRE_TEST(Material, Bsdf_inherit_bdf)
+SPECTRE_TEST(Material, MultiBSDF_inherit_bdf)
 {
-    Bsdf material;
+    MultiBSDF material;
     material.inherit_bdf(new Lambertian());
     for(int i = 1; i<_MAX_BDF_; i++)
         material.inherit_bdf(new Lambertian());
@@ -708,12 +711,12 @@ SPECTRE_TEST(Material, Bsdf_inherit_bdf)
     delete lambertian;
 }
 
-SPECTRE_TEST(Material, Bsdf_value)
+SPECTRE_TEST(Material, MultiBSDF_value)
 {
     const Bsdf* materials[1];
-    Bsdf material_r;
-    Bsdf metal;
-    Bsdf materialWtexture;
+    MultiBSDF material_r;
+    MultiBSDF metal;
+    MultiBSDF materialWtexture;
     unsigned char associations = 0;
     ColorRGB red((unsigned char)255, 0, 0);
     Texture* ut = new TextureUniform(Spectrum(red, false));
@@ -785,7 +788,7 @@ SPECTRE_TEST(Material, Bsdf_value)
     delete ut;
 }
 
-SPECTRE_TEST(Material, Bsdf_sample_value)
+SPECTRE_TEST(Material, MultiBSDF_sample_value)
 {
     bool matched_spec;
     Sphere s;
@@ -800,7 +803,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    Bsdf material_r;
+    MultiBSDF material_r;
     material_r.inherit_bdf(new Lambertian());
 
     //brdf diffuse match spec ok
@@ -830,7 +833,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     EXPECT_TRUE(wi.is_normalized());
 
     //textured material
-    Bsdf materialWtexture;
+    MultiBSDF materialWtexture;
     ColorRGB red((unsigned char)255, 0, 0);
     Texture* ut = new TextureUniform(Spectrum(red, false));
     materialWtexture.inherit_bdf(new Lambertian(), ut);
@@ -846,7 +849,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
 
-    Bsdf mat_glass;
+    MultiBSDF mat_glass;
     Spectrum ior_i = cauchy(1.f, 0.f);
     Spectrum ior_t = cauchy(1.33f, 0.f);
     mat_glass.inherit_bdf(new DielectricReflection(ior_i, ior_t));
@@ -896,7 +899,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
 
-    Bsdf mat_glossy;
+    MultiBSDF mat_glossy;
     MicrofacetDist* ggx1 = new GGXiso(0.2f);
     MicrofacetDist* ggx2 = new GGXiso(0.2f);
     mat_glossy.inherit_bdf(new MicrofacetR(ggx1,
@@ -929,7 +932,7 @@ SPECTRE_TEST(Material, Bsdf_sample_value)
     delete ut;
 }
 
-SPECTRE_TEST(Material, Bsdf_pdf)
+SPECTRE_TEST(Material, MultiBSDF_pdf)
 {
     Sphere s;
     Matrix4 m;
@@ -942,8 +945,8 @@ SPECTRE_TEST(Material, Bsdf_pdf)
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    Bsdf material;
-    Bsdf metal;
+    MultiBSDF material;
+    MultiBSDF metal;
     //empty
     wi = Vec3(0.f, 1.f, 0.f);
     pdf = material.pdf(&(r.direction), &hit, &wi, false);
@@ -961,7 +964,7 @@ SPECTRE_TEST(Material, Bsdf_pdf)
     EXPECT_NEAR(pdf, 0.318309873f, 1e-5f);
 
     //multiple values
-    Bsdf material2;
+    MultiBSDF material2;
     float pdf2;
     material2.inherit_bdf(new Lambertian());
     material2.inherit_bdf(new Lambertian());
@@ -972,13 +975,12 @@ SPECTRE_TEST(Material, Bsdf_pdf)
 SPECTRE_TEST(Material, SingleBRDF_inherit_bdf)
 {
     //add single reflective material
-    SingleBRDF material;
     errors_count[WARNING_INDEX] = 0;
-    material.inherit_bdf(new Lambertian());
+    SingleBRDF material(new Lambertian());
     EXPECT_EQ(errors_count[WARNING_INDEX], 0);
     //fail to add transmittive material
     errors_count[WARNING_INDEX] = 0;
-    material.inherit_bdf(new Refraction(cauchy(1.0, 0.f), cauchy(1.33f, 0.f)));
+    SingleBRDF material2(new Refraction(cauchy(1.0, 0.f), cauchy(1.33f, 0.f)));
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
 }
@@ -986,13 +988,9 @@ SPECTRE_TEST(Material, SingleBRDF_inherit_bdf)
 SPECTRE_TEST(Material, SingleBRDF_value)
 {
     const Bsdf* materials[1];
-    SingleBRDF material_r;
-    SingleBRDF materialWtexture;
-    SingleBRDF metal;
     unsigned char associations = 0;
     ColorRGB red((unsigned char)255, 0, 0);
     Texture* ut = new TextureUniform(Spectrum(red, false));
-    Bsdf material_t;
     Sphere s;
     Matrix4 m;
     Vec3 wi;
@@ -1002,10 +1000,10 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
     float distance = FLT_MAX;
-    material_r.inherit_bdf(new Lambertian());
-    materialWtexture.inherit_bdf(new Lambertian(), ut);
-    metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,
-                                              METALS[METAL_GOLD].k));
+    SingleBRDF material_r(new Lambertian());
+    SingleBRDF materialWtexture(new Lambertian(), ut);
+    SingleBRDF metal(new ConductorReflection(METALS[METAL_GOLD].n,
+                                             METALS[METAL_GOLD].k));
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
     //matching brdf no-spec
@@ -1072,11 +1070,9 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    SingleBRDF material_r;
-    SingleBRDF metal;
-    material_r.inherit_bdf(new Lambertian());
-    metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,
-                                              METALS[METAL_GOLD].k));
+    SingleBRDF material_r(new Lambertian());
+    SingleBRDF metal(new ConductorReflection(METALS[METAL_GOLD].n,
+                                             METALS[METAL_GOLD].k));
     materials[0] = &metal;
     a.set_materials(materials, 1, &association);
     //brdf specular no match
@@ -1124,10 +1120,9 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     EXPECT_TRUE(wi.is_normalized());
 
     //textured material
-    Bsdf materialWtexture;
     ColorRGB red((unsigned char)255, 0, 0);
     Texture* ut = new TextureUniform(Spectrum(red, false));
-    materialWtexture.inherit_bdf(new Lambertian(), ut);
+    SingleBRDF materialWtexture(new Lambertian(), ut);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                         &wi, &pdf, false, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
@@ -1155,11 +1150,9 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    SingleBRDF material_r;
-    SingleBRDF metal;
-    material_r.inherit_bdf(new Lambertian());
-    metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,
-                                              METALS[METAL_GOLD].k));
+    SingleBRDF material_r(new Lambertian());
+    SingleBRDF metal(new ConductorReflection(METALS[METAL_GOLD].n,
+                                             METALS[METAL_GOLD].k));
     wi = Vec3(0.f, 1.f, 0.f);
 
     //non matching spec

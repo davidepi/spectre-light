@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "primitives/asset.hpp"
@@ -87,21 +89,16 @@ SPECTRE_TEST(Asset, intersect_AABB)
 
 SPECTRE_TEST(Asset, material_setter_getter)
 {
-    Bsdf material;
-    material.inherit_bdf(new Lambertian());
+    SingleBRDF material(new Lambertian());
     Box s;
     Matrix4 m;
     m.set_translation(Vec3(-2, 0, 0));
 
     //set materials
-    Bsdf material1;
-    material1.inherit_bdf(new Lambertian());
-    Bsdf material2;
-    material2.inherit_bdf(new Lambertian());
-    Bsdf material3;
-    material3.inherit_bdf(new Lambertian());
-    Bsdf material4;
-    material4.inherit_bdf(new Lambertian());
+    SingleBRDF material1(new Lambertian());
+    SingleBRDF material2(new Lambertian());
+    SingleBRDF material3(new Lambertian());
+    SingleBRDF material4(new Lambertian());
     const Bsdf* array[] = {&material1, &material2, &material3, &material4};
     const unsigned char indexes[] = {0, 1, 2, 3, 0, 2};
     Asset b(&s, m, 1);

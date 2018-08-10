@@ -1,6 +1,5 @@
-//
-// Created by davide on 10/08/18.
-//
+//author: Davide Pizzolotto
+//license: GNU GPLv3
 
 #include "multi_bsdf.hpp"
 

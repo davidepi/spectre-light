@@ -326,7 +326,6 @@ SPECTRE_TEST(Parser, texture)
 SPECTRE_TEST(Parser, material_textures)
 {
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
@@ -387,7 +386,6 @@ SPECTRE_TEST(Parser, material_textures)
 SPECTRE_TEST(Parser, material_duplicate)
 {
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
@@ -426,7 +424,6 @@ SPECTRE_TEST(Parser, material_duplicate)
 SPECTRE_TEST(Parser, material_matte)
 {
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
@@ -463,7 +460,6 @@ SPECTRE_TEST(Parser, material_glossy)
 {
     unsigned char association = 0;
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
@@ -532,7 +528,6 @@ SPECTRE_TEST(Parser, material_glass)
 {
     unsigned char association = 0;
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
@@ -603,7 +598,6 @@ SPECTRE_TEST(Parser, material_metal)
 {
     unsigned char association = 0;
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;

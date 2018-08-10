@@ -48,18 +48,19 @@ Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
         hit->dpdu.normalize();
         hit->dpdv.normalize();
         hit->cross = normalize(cross(Vec3(hit->normal_h), hit->dpdu));
-        if(mask.map != NULL)
-        {
-            bool mask_val = mask.map->map_channel(hit, mask.channel)>=
-                            MASK_BINARY_THRESHOLD;
-            if((!mask_val || mask.inverted) && (mask_val || !mask.inverted))
-            {
-                //hit invalidated, restore previous distance
-                *distance = previous_distance;
-                *hit = previous_hit;
-                res = false;
-            }
-        }
+        //TODO: this MUST be inside the Shape, EOF. Also need to rework Mask
+//        if(mask.map != NULL)
+//        {
+//            bool mask_val = mask.map->map_channel(hit, mask.channel)>=
+//                            MASK_BINARY_THRESHOLD;
+//            if((!mask_val || mask.inverted) && (mask_val || !mask.inverted))
+//            {
+//                //hit invalidated, restore previous distance
+//                *distance = previous_distance;
+//                *hit = previous_hit;
+//                res = false;
+//            }
+//        }
     }
     return res;
 }

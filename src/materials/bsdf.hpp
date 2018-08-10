@@ -1,11 +1,10 @@
-
 //Created,   16 Jun 2017
 //Last Edit  11 Apr 2018
 
 /**
  *  \file bdf.hpp
  *  \brief     Contains Bsdf class
- *  \details   Simplest material definition
+ *  \details   Material interface
  *  \author    Davide Pizzolotto
  *  \version   0.2
  *  \date      11 Apr 2018
@@ -24,15 +23,18 @@
 #include <cstring> //error msg
 #include <cstdlib> //malloc error msg
 
-
 /**
  *  \class Bsdf bdf.hpp "materials/bdf.hpp"
- *  \brief Wrapper for several Bdf
+ *  \brief Interface used to define a material
  *
- *  The BSDF defines how the light scatters on a surface. This class is composed
- *  by several BRDF and BTDF that represent respectively how the light is
- *  reflected and transmitted. By combining these Bdfs it is possible to define
- *  how the light behaves when reaching the surface
+ *  The BSDF defines how the light scatters on a surface. This class exposes
+ *  some method useful to know how a light ray behaves in world space and the
+ *  actual spectrum returned by the interaction with a surface.
+ *
+ *  A BSDF is actually the definition of a material.
+ *  However, this class is just an interface. The MultiBSDF class wraps
+ *  together these methods with the actual underlying components of the
+ *  material (BRDFs and BTDFs)
  */
 class Bsdf
 {

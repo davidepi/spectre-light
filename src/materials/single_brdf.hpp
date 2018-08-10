@@ -1,3 +1,17 @@
+//Created,   10 Aug 2018
+//Last Edit  11 Aug 2018
+
+/**
+ *  \file bdf.hpp
+ *  \brief     Wrapper of single BRDF in a material
+ *  \details   A material composed of just one single reflective component
+ *  \author    Davide Pizzolotto
+ *  \version   0.2
+ *  \date      11 Aug 2018
+ *  \copyright GNU GPLv3
+ */
+
+
 #ifndef __SINGLE_BRDF_HPP__
 #define __SINGLE_BRDF_HPP__
 
@@ -8,10 +22,10 @@
  *  \class SingleBRDF bdf.hpp "materials/bdf.hpp"
  *  \brief Wrapper for a single BRDF
  *
- *  The SingleBRDF class is a simplified version of the BSDF one. It encloses a
- *  single Bdf class exhibiting only reflectivity, and it is used to simplify
- *  the computation of matte surfaces. Note that it is not possible to add a
- *  single BTDF.
+ *  The SingleBRDF class is a simplified version of the MultiBSDF one. It
+ *  encloses a single Bdf class exhibiting only reflectivity, and it is used
+ *  to simplify the computation of matte surfaces. Note that it is not
+ *  possible to add a single BTDF.
  */
 class SingleBRDF : public Bsdf
 {
@@ -36,7 +50,7 @@ public:
     SingleBRDF(const Bdf* inherited, const Texture* texture = NULL);
 
     ///Default destructor
-    virtual ~SingleBRDF();
+    ~SingleBRDF() override;
 
     /** \brief Return the value of the BSDF
      *
