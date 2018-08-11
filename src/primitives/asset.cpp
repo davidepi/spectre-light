@@ -48,19 +48,14 @@ Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
         hit->dpdu.normalize();
         hit->dpdv.normalize();
         hit->cross = normalize(cross(Vec3(hit->normal_h), hit->dpdu));
-        //TODO: this MUST be inside the Shape, EOF. Also need to rework Mask
-//        if(mask.map != NULL)
-//        {
-//            bool mask_val = mask.map->map_channel(hit, mask.channel)>=
-//                            MASK_BINARY_THRESHOLD;
-//            if((!mask_val || mask.inverted) && (mask_val || !mask.inverted))
-//            {
-//                //hit invalidated, restore previous distance
-//                *distance = previous_distance;
-//                *hit = previous_hit;
-//                res = false;
-//            }
-//        }
+        //TODO: move this inside shape
+        if(mask.is_masked(hit))
+        {
+            //hit invalidated, restore previous distance
+            *distance = previous_distance;
+            *hit = previous_hit;
+            res = false;
+        }
     }
     return res;
 }
@@ -95,7 +90,7 @@ const Bsdf* Asset::get_material(unsigned int index) const
     return Asset::materials[materials_index[index]];
 }
 
-void Asset::set_mask(Mask m)
+void Asset::set_mask(const MaskBoolean& m)
 {
     Asset::mask = m;
 }

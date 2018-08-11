@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.5.
+// A Bison parser, made by GNU Bison 3.0.4.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,16 +40,16 @@
 #ifndef YY_YY_CONFIG_PARSER_TAB_HH_INCLUDED
 # define YY_YY_CONFIG_PARSER_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 12 "config_parser.y" // lalr1.cc:394
+#line 12 "config_parser.y" // lalr1.cc:377
 
     #include <string>
     #include "geometry/vec3.hpp"
     #include "geometry/vec2.hpp"
     #include "materials/metals.hpp"
-    #include "textures/texture_image.hpp"
+    #include "textures/mask_boolean.hpp"
     class ConfigDriver;
 
-#line 53 "config_parser.tab.hh" // lalr1.cc:394
+#line 53 "config_parser.tab.hh" // lalr1.cc:377
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -126,7 +126,7 @@
 
 
 namespace yy {
-#line 130 "config_parser.tab.hh" // lalr1.cc:394
+#line 130 "config_parser.tab.hh" // lalr1.cc:377
 
 
 
@@ -1146,8 +1146,6 @@ namespace yy {
       typedef basic_symbol<by_state> super_type;
       /// Construct an empty symbol.
       stack_symbol_type ();
-      /// Copy construct.
-      stack_symbol_type (const stack_symbol_type& that);
       /// Steal the contents from \a sym to build this.
       stack_symbol_type (state_type s, symbol_type& sym);
       /// Assignment, needed by push_back.
@@ -1176,7 +1174,7 @@ namespace yy {
     void yypush_ (const char* m, state_type s, symbol_type& sym);
 
     /// Pop \a n symbols the three stacks.
-    void yypop_ (unsigned n = 1);
+    void yypop_ (unsigned int n = 1);
 
     /// Constants.
     enum
@@ -1241,12 +1239,12 @@ namespace yy {
       85,    86,    87,    88,    89,    90,    91,    92,    93,    94,
       95,    96,    97,    98,    99,   100,   101,   102,   103,   104
     };
-    const unsigned user_token_number_max_ = 359;
+    const unsigned int user_token_number_max_ = 359;
     const token_number_type undef_token_ = 2;
 
-    if (static_cast<int> (t) <= yyeof_)
+    if (static_cast<int>(t) <= yyeof_)
       return yyeof_;
-    else if (static_cast<unsigned> (t) <= user_token_number_max_)
+    else if (static_cast<unsigned int> (t) <= user_token_number_max_)
       return translate_table[t];
     else
       return undef_token_;
@@ -1260,17 +1258,19 @@ namespace yy {
 
   // basic_symbol.
   template <typename Base>
+  inline
   ConfigParser::basic_symbol<Base>::basic_symbol ()
     : value ()
   {}
 
   template <typename Base>
+  inline
   ConfigParser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
     : Base (other)
     , value ()
     , location (other.location)
   {
-    switch (other.type_get ())
+      switch (other.type_get ())
     {
       case 130: // channel
         value.copy< ImageChannel > (other.value);
@@ -1312,14 +1312,16 @@ namespace yy {
 
   }
 
+
   template <typename Base>
+  inline
   ConfigParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
     : Base (t)
     , value ()
     , location (l)
   {
     (void) v;
-    switch (this->type_get ())
+      switch (this->type_get ())
     {
       case 130: // channel
         value.copy< ImageChannel > (v);
@@ -1428,12 +1430,14 @@ namespace yy {
 
 
   template <typename Base>
+  inline
   ConfigParser::basic_symbol<Base>::~basic_symbol ()
   {
     clear ();
   }
 
   template <typename Base>
+  inline
   void
   ConfigParser::basic_symbol<Base>::clear ()
   {
@@ -1448,7 +1452,7 @@ namespace yy {
     }
 
     // Type destructor.
-  switch (yytype)
+    switch (yytype)
     {
       case 130: // channel
         value.template destroy< ImageChannel > ();
@@ -1492,6 +1496,7 @@ namespace yy {
   }
 
   template <typename Base>
+  inline
   bool
   ConfigParser::basic_symbol<Base>::empty () const
   {
@@ -1499,11 +1504,12 @@ namespace yy {
   }
 
   template <typename Base>
+  inline
   void
   ConfigParser::basic_symbol<Base>::move (basic_symbol& s)
   {
-    super_type::move (s);
-    switch (this->type_get ())
+    super_type::move(s);
+      switch (this->type_get ())
     {
       case 130: // channel
         value.move< ImageChannel > (s.value);
@@ -2230,7 +2236,7 @@ namespace yy {
 
 
 } // yy
-#line 2234 "config_parser.tab.hh" // lalr1.cc:394
+#line 2240 "config_parser.tab.hh" // lalr1.cc:377
 
 
 

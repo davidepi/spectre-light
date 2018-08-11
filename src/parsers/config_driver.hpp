@@ -350,6 +350,9 @@ private:
     ///Load a texture and the corresponding map given the path on disk
     const Texture* load_texture(std::string& path);
 
+    ///Exactly like load_texture, but will always return a TextureImage
+    const TextureImage* load_mask(std::string& path);
+
     ///Hold all the maps, used to set them the filter after parsing
     std::vector<ImageMap*> all_textures;
 

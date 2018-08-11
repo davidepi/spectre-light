@@ -14,7 +14,7 @@
     #include "geometry/vec3.hpp"
     #include "geometry/vec2.hpp"
     #include "materials/metals.hpp"
-    #include "textures/texture_image.hpp"
+    #include "textures/mask_boolean.hpp"
     class ConfigDriver;
 }
 %param{ ConfigDriver& driver }

@@ -23,27 +23,6 @@ enum TextureFilter_t
     EWA
 };
 
-//Check image_map.hpp for details on ARGB/BGRA between the two architectures
-#ifndef IS_BIG_ENDIAN
-/** Channel of the TextureImage. ARGB order in little endian machines */
-enum ImageChannel
-{
-    ALPHA = 0,
-    RED = 1,
-    GREEN = 2,
-    BLUE = 3,
-};
-#else
-/** Channel of the TextureImage. BGRA order in big endian machines */
-enum ImageChannel
-{
-    BLUE = 0,
-    GREEN = 1,
-    RED = 2,
-    ALPHA = 3
-};
-#endif
-
 //This magnificent bastard must come first, otherwise C++ linking is used anyway
 extern "C" {
 #include "utility/imageio/imageio.h"
@@ -121,19 +100,18 @@ public:
      */
     Spectrum map(const HitPoint* hp) const override;
 
-    /**
-     *  \brief Returns the value for a specific channel
+    /** \brief Maps an (u,v) coordinate to a texture value
      *
-     *  This function is similar to the map one, but instead of returning the
-     *  RGB spectrum, the filtered texel value is returned. The texture will
-     *  still be shifted and scaled. The returned value will be in the
-     *  [0-255] range
+     *  Given the coordinates \p u and \p v of a point, this method finds the
+     *  Spectrum value associated with these coordinates by looking at the
+     *  underlying ImageMap. Exactly like the map method, but this returns a
+     *  TexelUnion instead of a Spectrum.
      *
      *  \param[in] hp The data of the hit point
-     *  \param[in] channel The requested channel of the image
-     *  \return The value of the requested channel for the hit point
+     *  \return The Spectrum value of the mesh with this texture applied at the
+     *  coordinates (u,v)
      */
-    uint8_t map_channel(const HitPoint* hp, ImageChannel channel) const;
+    TexelUnion map_value(const HitPoint* hp)const;
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS
@@ -151,20 +129,6 @@ private:
 
     ///The underlying ImageMap
     const ImageMap* imagemap;
-};
-
-///Values under 128 are considered false when applying masking
-#define MASK_BINARY_THRESHOLD 128
-
-/** POD structure used to represent a Mask */
-struct Mask
-{
-    /** Image used as mask */
-    const TextureImage* map;
-    /** Channel of the Image that wil be used */
-    ImageChannel channel;
-    /** True if this image has to be inverted */
-    bool inverted;
 };
 
 #endif

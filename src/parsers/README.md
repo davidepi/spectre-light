@@ -159,7 +159,7 @@ material | quoted string | The name of the material that will be applied to the 
 position | float[3] | The position of the model in the scene | [0,0,0]
 rotation | float[3] | The rotation of the model in the scene, in degrees | [0,0,0]
 scale | float[3] or float | The scaling applied to the model in the scene. The single float value applies uniform scaling to every dimension | 1
-mask | quoted string + [texture attributes](#attributes) | The texture used as alpha mask for this object. Attributes can specify which channel will be used and if the mask should be inverted
+mask | quoted string + [texture attributes](#attributes) | The texture used as alpha mask for this object. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the mask is disabled. Attributes can specify which channel will be used and if the mask should be inverted
 
 #### Texture
 Keys for Texture objects

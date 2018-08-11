@@ -19,7 +19,7 @@
 #include "primitives/shape.hpp"
 #include "materials/bdf.hpp"
 #include "materials/material_library.hpp"
-#include "textures/texture_image.hpp"
+#include "textures/mask_boolean.hpp"
 
 /**
  *  \class Asset asset.hpp "primitives/asset.hpp"
@@ -148,7 +148,7 @@ public:
      *
      *  \param[in] m The mask that will be set
      */
-    void set_mask(Mask m);
+    void set_mask(const MaskBoolean& m);
 
 protected:
 
@@ -176,7 +176,7 @@ private:
     unsigned char* materials_index;
 
     //mask used during intersections
-    Mask mask;
+    MaskBoolean mask;
 
 };
 

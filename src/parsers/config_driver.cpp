@@ -287,6 +287,37 @@ const Texture* ConfigDriver::load_texture(std::string& path)
     return addme;
 }
 
+const TextureImage* ConfigDriver::load_mask(std::string& path)
+{
+    File cur_file = current_dir;
+    const TextureImage* addme;
+    if(is_absolute(path.c_str()))
+        //recreates the File class... but absolute path should be a rare case
+        //File does not have a dflt constructor. Should I make one?
+        cur_file = File(path.c_str());
+    else
+        cur_file.append(path.c_str());
+    if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
+       img_valid(cur_file.absolute_path(), cur_file.extension()))
+    {
+        if(tex_name.empty())
+            tex_name = cur_file.filename();
+
+        //Texture Image will deal with same file but different texture names
+        addme = new TextureImage(cur_file, tex_scale, tex_shift, tex_filter);
+        TexLib.inherit_texture(tex_name, addme);
+    }
+    else
+    {
+        Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
+        addme = NULL;
+    }
+    tex_name.clear(); //reset name for next texture
+    tex_scale = Vec2(1.f); //reset scaling for next texture
+    tex_shift = Vec2(); //reset shifting for next texture
+    return addme;
+}
+
 void ConfigDriver::build_materials()
 {
     ParsedMaterial* mat;
@@ -569,21 +600,18 @@ void ConfigDriver::build_meshes()
         //watchout the order!!!
         transform = position_matrix*rotation_matrix*scale_matrix;
         //resolve the mask
-        Mask mask;
-        mask.channel = mesh_w.mask_chn;
-        mask.inverted = mesh_w.mask_inv;
+        const TextureImage* mask_map;
         if(mesh_w.mask_tex.empty())
-            mask.map = NULL;
+            mask_map = NULL;
         else
         {
             if(TexLib.contains_texture(mesh_w.mask_tex))
-                mask.map = (const TextureImage*)TexLib.get_texture(
+                mask_map = (const TextureImage*)TexLib.get_texture(
                         mesh_w.mask_tex);
             else
-                //TODO: remove this shitty RTTI dependency
-                mask.map = dynamic_cast<const TextureImage*>(load_texture(
-                        mesh_w.mask_tex));
+                mask_map = load_mask(mesh_w.mask_tex);
         }
+        MaskBoolean mask(mask_map, mesh_w.mask_chn, mesh_w.mask_inv);
         Asset* current_asset;
         if(!mesh_w.is_light)
         {

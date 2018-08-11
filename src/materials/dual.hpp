@@ -8,11 +8,12 @@
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
 #include "textures/texture_image.hpp"
+#include "textures/mask_boolean.hpp"
 
 class DualBsdf : public Bsdf
 {
 
-    DualBsdf(const Bsdf* first, const Bsdf* second, const Mask& mask);
+    DualBsdf(const Bsdf* first, const Bsdf* second, const MaskBoolean& mask);
 
     ~DualBsdf() final = default;
 
@@ -69,7 +70,7 @@ class DualBsdf : public Bsdf
                       bool matchSpec) const override;
 
 private:
-    const Mask mask;
+    const MaskBoolean mask;
     const Bsdf* first;
     const Bsdf* second;
 };
