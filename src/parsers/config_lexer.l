@@ -112,6 +112,7 @@ scale { UPDATE_POS; return yy::ConfigParser::make_SCALE(loc); }
 shift { UPDATE_POS; return yy::ConfigParser::make_SHIFT(loc); }
 temperature { UPDATE_POS; return yy::ConfigParser::make_TEMPERATURE(loc); }
 material { UPDATE_POS; return yy::ConfigParser::make_MATERIAL(loc); }
+dualmaterial {UPDATE_POS; return yy::ConfigParser::make_DUALMATERIAL(loc);}
 texture { UPDATE_POS; return yy::ConfigParser::make_TEXTURE(loc); }
 src {UPDATE_POS; return yy::ConfigParser::make_SRC(loc); }
 matte { UPDATE_POS; return yy::ConfigParser::make_MATTE(loc); }
@@ -135,6 +136,8 @@ element {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
 "using channel A" {UPDATE_POS; return yy::ConfigParser::make_CHNA(loc);}
 inverted {UPDATE_POS; return yy::ConfigParser::make_INV(loc);}
 mask {UPDATE_POS; return yy::ConfigParser::make_MASK(loc);}
+first {UPDATE_POS; return yy::ConfigParser::make_FIRST(loc);}
+second {UPDATE_POS; return yy::ConfigParser::make_SECOND(loc);}
 {uint}    { UPDATE_POS; return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
 {int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 {float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }

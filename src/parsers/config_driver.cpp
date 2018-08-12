@@ -93,6 +93,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
 
     //build deferred objects
     build_materials();
+    build_dualmaterials();
     for(unsigned int i = 0; i<deferred_shapes.size(); i++)
         parse_and_allocate_obj(deferred_shapes[i].c_str());
     build_meshes();
@@ -117,6 +118,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
     all_textures.clear();
     children.clear();
     deferred_materials.clear();
+    deferred_dualmats.clear();
     shapes.clear();
     deferred_shapes.clear();
     deferred_meshes.clear();
@@ -255,7 +257,7 @@ const TextureUniform* ConfigDriver::load_texture_uniform()
     return val;
 }
 
-const Texture* ConfigDriver::load_texture(std::string& path)
+const Texture* ConfigDriver::load_texture(const std::string& path)
 {
 
     File cur_file = current_dir;
@@ -287,7 +289,7 @@ const Texture* ConfigDriver::load_texture(std::string& path)
     return addme;
 }
 
-const TextureImage* ConfigDriver::load_mask(std::string& path)
+const TextureImage* ConfigDriver::load_mask(const std::string& path)
 {
     File cur_file = current_dir;
     const TextureImage* addme;
@@ -493,6 +495,21 @@ void ConfigDriver::build_materials()
         MtlLib.add_inherit(mat->name, material);
     }
 }
+void ConfigDriver::build_dualmaterials()
+{
+    ParsedDualMaterial* mat;
+    DualBsdf* material;
+    const Bsdf* first;
+    const Bsdf* second;
+    for(int i = 0; i<(int)deferred_dualmats.size(); i++)
+    {
+        mat = &deferred_dualmats[i];
+        first = MtlLib.get(mat->first);
+        second = MtlLib.get(mat->second);
+        material = new DualBsdf(first, second, build_mask(mat->mask));
+        MtlLib.add_inherit(mat->name, material);
+    }
+}
 
 void ConfigDriver::parse_and_allocate_obj(const char* obj_file)
 {
@@ -599,19 +616,6 @@ void ConfigDriver::build_meshes()
         scale_matrix.set_scale(mesh_w.scale);
         //watchout the order!!!
         transform = position_matrix*rotation_matrix*scale_matrix;
-        //resolve the mask
-        const TextureImage* mask_map;
-        if(mesh_w.mask_tex.empty())
-            mask_map = NULL;
-        else
-        {
-            if(TexLib.contains_texture(mesh_w.mask_tex))
-                mask_map = (const TextureImage*)TexLib.get_texture(
-                        mesh_w.mask_tex);
-            else
-                mask_map = load_mask(mesh_w.mask_tex);
-        }
-        MaskBoolean mask(mask_map, mesh_w.mask_chn, mesh_w.mask_inv);
         Asset* current_asset;
         if(!mesh_w.is_light)
         {
@@ -675,6 +679,22 @@ void ConfigDriver::build_meshes()
             free(associations);
             current_scene->inherit_light((AreaLight*)current_asset);
         }
-        current_asset->set_mask(mask);
+        //resolve the mask
+        current_asset->set_mask(build_mask(cur_mesh.mask));
     }
+}
+
+MaskBoolean ConfigDriver::build_mask(const ParsedMask& mask)
+{
+    const TextureImage* map;
+    if(mask.mask_tex.empty())
+        map = NULL;
+    else
+    {
+        if(TexLib.contains_texture(mask.mask_tex))
+            map = (const TextureImage*)TexLib.get_texture(mask.mask_tex);
+        else
+            map = load_mask(mask.mask_tex);
+    }
+    return MaskBoolean(map, mask.mask_chn, mask.mask_inv);
 }

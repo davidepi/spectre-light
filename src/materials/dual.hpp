@@ -12,6 +12,7 @@
 
 class DualBsdf : public Bsdf
 {
+public:
 
     DualBsdf(const Bsdf* first, const Bsdf* second, const MaskBoolean& mask);
 

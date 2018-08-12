@@ -39,6 +39,7 @@ world: {
     name: "box001"
     position: [-1,0,0]
     scale: 1.5
+    mask: "Wall" using channel R inverted
 }
 
 texture:{name:'Wall',src:"folder/wall.tga"}
@@ -86,6 +87,7 @@ enum | A keyword used as an enum. The keywords change from object to object, so 
 ### Toplevel keys
 The possible keys are described in this section. Note that there are some dependency between the keywords and the following are parsed after reading every file:
 - `material` -> depending on `texture`
+- `dualmaterial` -> depending on `material`
 - `shape` -> depending on `material`
 - `light` -> depending on `shape`
 - `world` -> depending on `shape`
@@ -104,6 +106,7 @@ light | [object](#light) | Description of a light positioned into the scene | -
 world | [object](#world) | Description of a shape positioned into the scene | -
 texture | [object](#texture) | Texture that will be loaded into the library | -
 material | [object](#material) or quoted string | Description of a material that will be put in the Material Library. The quoted string will chain another file to this one to be parsed, see section [Chained Files](#chained-children-files) for more information | -
+dualmaterial | [object](#dualmaterial) | A multi-material composed of two materials and a mask
 
 ### Objects
 These are the various keys that can be used for objects described in the previous section. These objects must be enclosed in curly braces
@@ -159,7 +162,7 @@ material | quoted string | The name of the material that will be applied to the 
 position | float[3] | The position of the model in the scene | [0,0,0]
 rotation | float[3] | The rotation of the model in the scene, in degrees | [0,0,0]
 scale | float[3] or float | The scaling applied to the model in the scene. The single float value applies uniform scaling to every dimension | 1
-mask | quoted string + [texture attributes](#attributes) | The texture used as alpha mask for this object. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the mask is disabled. Attributes can specify which channel will be used and if the mask should be inverted
+mask | quoted string + [mask attributes](#attributes) | The texture used as alpha mask for this object. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the mask is disabled. Attributes can specify which channel will be used and if the mask should be inverted | White mask
 
 #### Texture
 Keys for Texture objects
@@ -185,6 +188,16 @@ anisotropy | float | single value in range [0-1] used to calcualte the y roughne
 distribution | enum | If the material has a roughness higher than 0, the distribution that will be used to simulate the roughness. Possible values are `blinn`, `beckmann`, `ggx`. If the anisotropy value is set and is different from the roughness, the distribution value will always be `ggx` since it is the only distribution implemented for anisotropic materials | beckmann
 diffuse | quoted string or float[3] | The texture map that will be used for the spectrum. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the "Default" texture is used. If an array of values is given an uniform coloured texture is created with the given values, expected as RGB values in range [0-255]. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | "Default" (white texture)
 specular | quoted string or float[3] | Same input of the diffuse component. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| "Default" (white texture)
+
+#### Dualmaterial
+Keys for Dualmaterial objects
+
+Key | Type | Usage | Default value
+---|---|---|---
+name | quoted string | The name of the material that will be added to the Library | Syntax error
+first | quoted string | The name of the first material composing the dual material | Default
+second | quoted string | The name of the second material composing the dual material | Default
+mask | quoted string + [mask attributes](#attributes) | The texture used as alpha mask for this object. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the mask is disabled. Attributes can specify which channel will be used and if the mask should be inverted | White mask
 
 ##### Metals
 Possible values for materials with the `metal` keyword. These should be passed as keywords (case insensitive) to the `element` key of the material object. Note that these will override the `diffuse` and `specular`  parameters which are not supported for metals. Roughness, distribution and anisotropy can still be used

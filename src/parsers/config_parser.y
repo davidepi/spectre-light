@@ -77,6 +77,7 @@
 %token SHIFT "`shift` keyword"
 %token COLOR "`color` keyword"
 %token MATERIAL "`material` keyword"
+%token DUALMATERIAL "`dualmaterial` keyword"
 %token TEXTURE "`texture` keyword"
 %token ANISOTROPY "`anisotropy` keyword"
 %token BECKMANN "`beckmann` keyword"
@@ -100,6 +101,8 @@
 %token CHNA "Alpha channel attribute"
 %token INV "inverted attribute"
 %token MASK "`mask` keyword"
+%token FIRST "`first` keyword"
+%token SECOND "`second` keyword"
 %token SILVER "`Ag`"
 %token ALUMINIUM "`Al`"
 %token GOLD "`Au`"
@@ -166,6 +169,7 @@ stmt
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON STRING {driver.children.push_back($3.substr(1,$3.size()-2));}
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU {driver.deferred_materials.push_back(driver.cur_mat);driver.cur_mat=ParsedMaterial();}
+| DUALMATERIAL COLON OPEN_CU dualmaterial_obj CLOSE_CU {driver.deferred_dualmats.push_back(driver.cur_dualmat);driver.cur_dualmat = ParsedDualMaterial();}
 | COMMA
 ;
 
@@ -212,8 +216,8 @@ world_stmt
 | SCALE COLON vector {driver.cur_mesh.scale = $3;}
 | SCALE COLON number {driver.cur_mesh.scale = $3;}
 | MATERIAL COLON STRING {driver.cur_mesh.material_name = $3.substr(1,$3.size()-2);}
-| MASK COLON STRING {driver.cur_mesh.mask_tex = $3.substr(1,$3.size()-2);}
-| MASK COLON STRING attributes {driver.cur_mesh.mask_tex = $3.substr(1,$3.size()-2);}
+| MASK COLON STRING {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2); driver.cur_mesh.mask = driver.cur_mask;driver.cur_mask = ParsedMask();}
+| MASK COLON STRING attributes {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_mesh.mask = driver.cur_mask;driver.cur_mask = ParsedMask();}
 | COMMA
 ;
 
@@ -271,6 +275,22 @@ material_stmt
 | COMMA
 ;
 
+dualmaterial_obj
+: NAME COLON STRING dualmaterial_rec {driver.cur_dualmat.name = $3.substr(1,$3.size()-2);}
+| dualmaterial_rec NAME COLON STRING {driver.cur_dualmat.name = $4.substr(1,$4.size()-2);}
+| dualmaterial_rec NAME COLON STRING dualmaterial_rec {driver.cur_dualmat.name = $4.substr(1,$4.size()-2);}
+| NAME COLON STRING {driver.cur_dualmat.name = $3.substr(1,$3.size()-2);}
+;
+
+dualmaterial_rec: dualmaterial_rec dualmaterial_stmt | dualmaterial_stmt;
+dualmaterial_stmt
+: FIRST COLON STRING {driver.cur_dualmat.first = $3.substr(1,$3.size()-2);}
+| SECOND COLON STRING {driver.cur_dualmat.second = $3.substr(1,$3.size()-2);}
+| MASK COLON STRING {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_dualmat.mask = driver.cur_mask; driver.cur_mask = ParsedMask();}
+| MASK COLON STRING attributes {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_dualmat.mask = driver.cur_mask; driver.cur_mask = ParsedMask();}
+| COMMA
+;
+
 /* add also elements to materials/metals.hpp file, while respecting indexes.
    Non-existent materials are thrown away here, so no check is performed outside
    the parser */
@@ -309,8 +329,8 @@ element
 attributes: attributes attribute | attribute;
 
 attribute
-: channel {driver.cur_mesh.mask_chn = $1;}
-| INV {driver.cur_mesh.mask_inv = true;}
+: channel {driver.cur_mask.mask_chn = $1;}
+| INV {driver.cur_mask.mask_inv = true;}
 ;
 
 channel
