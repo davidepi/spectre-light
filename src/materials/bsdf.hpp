@@ -2,7 +2,7 @@
 //Last Edit  11 Apr 2018
 
 /**
- *  \file bdf.hpp
+ *  \file bsdf.hpp
  *  \brief     Contains Bsdf class
  *  \details   Material interface
  *  \author    Davide Pizzolotto

@@ -2,7 +2,7 @@
 //Last Edit  11 Aug 2018
 
 /**
- *  \file bdf.hpp
+ *  \file single_brdf.hpp
  *  \brief     Wrapper of single BRDF in a material
  *  \details   A material composed of just one single reflective component
  *  \author    Davide Pizzolotto

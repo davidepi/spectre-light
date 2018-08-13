@@ -64,7 +64,7 @@ public:
                  TextureFilter_t filter);
 
     ///Default destructor
-    ~TextureImage() override = default;
+    virtual ~TextureImage() = default;
 
     /**
      *  \brief Returns the shift component
@@ -115,7 +115,7 @@ public:
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS
-private:
+protected:
 #endif
 
     ///scale component

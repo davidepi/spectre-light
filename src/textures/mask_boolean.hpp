@@ -1,6 +1,16 @@
-//
-// Created by davide on 11/08/18.
-//
+//Created,  11 Aug 2018
+//Last Edit 12 Aug 2018
+
+/**
+ *  \file mask_boolean.hpp
+ *  \brief     Boolean mask
+ *  \details   Enables masking capabilities given a TextureImage
+ *  \author    Davide Pizzolotto
+ *  \version   0.2
+ *  \date      12 Aug 2018
+ *  \copyright GNU GPLv3
+ */
+
 
 #ifndef __MASK_BOOLEAN_HPP__
 #define __MASK_BOOLEAN_HPP__
@@ -31,6 +41,15 @@ enum ImageChannel
 ///Values under the threshold are considered false when applying masking
 #define MASK_BINARY_THRESHOLD 128
 
+/**
+ *  \brief Mask based on a texture, performing boolean masking
+ *
+ *  This class is a TextureImage wrapper used to perform masking. The method
+ *  is_masked is provided in order to know if a given point over the surface
+ *  of an asset is masked or not. Additional members of this class are used
+ *  to know which channel should be considered for the mask and if the mask
+ *  should be inverted
+ */
 class MaskBoolean
 {
 public:

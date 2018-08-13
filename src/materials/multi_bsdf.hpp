@@ -2,7 +2,7 @@
 //Last Edit  11 Aug 2018
 
 /**
- *  \file bdf.hpp
+ *  \file multi_bsdf.hpp
  *  \brief     Standard implementation of a material
  *  \details   A material composed of reflective and transmittive components
  *  \author    Davide Pizzolotto

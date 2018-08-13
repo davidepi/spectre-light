@@ -1,6 +1,16 @@
-//
-// Created by davide on 10/08/18.
-//
+//Created,  10 Aug 2018
+//Last Edit 12 Aug 2018
+
+/**
+ *  \file dual.hpp
+ *  \brief     DualBsdf class
+ *  \details   Multi-material composed by two other materials
+ *  \author    Davide Pizzolotto
+ *  \version   0.2
+ *  \date      12 Aug 2018
+ *  \copyright GNU GPLv3
+ */
+
 
 #ifndef __DUAL_HPP__
 #define __DUAL_HPP__
@@ -10,6 +20,18 @@
 #include "textures/texture_image.hpp"
 #include "textures/mask_boolean.hpp"
 
+/**
+ *  \brief Multi-material composed by two Bsdf
+ *
+ *  The DualBsdf class is the simplest multi-material. This class wraps
+ *  together two BSDFs and a BooleanMask, and itself inherits from the Bsdf
+ *  class. When the spectrum is computed, this class uses the provided mask
+ *  in order to decide which material should contribute to the given point.
+ *
+ *  Note that this class differs from the MultiBSDF one: in the latter every
+ *  Bdf contributes to the final result, while in this only the one chosen by
+ *  the Mask is used
+ */
 class DualBsdf : public Bsdf
 {
 public:
@@ -23,7 +45,8 @@ public:
      *  Computes the value of the Bsdf in the point, defining how the light is
      *  reflected or transmitted. This function returns the ratio of reflected
      *  radiance to the incident irradiance on the surface. This value is
-     *  determined by the BRDFs and BTDFs encompassed in the BSDF
+     *  determined by one of the Bsdf composing the DualBsdf, decided by the
+     *  value of the BooleanMask.
      *
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
@@ -71,8 +94,14 @@ public:
                       bool matchSpec) const override;
 
 private:
+
+    ///Mask used to decide which Bsdf should contribute
     const MaskBoolean mask;
+
+    ///First Bsdf
     const Bsdf* first;
+
+    ///Second Bsdf
     const Bsdf* second;
 };
 

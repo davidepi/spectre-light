@@ -1,6 +1,5 @@
-//
-// Created by davide on 11/08/18.
-//
+//author: Davide Pizzolotto
+//license: GNU GPLv3
 
 #include "mask_boolean.hpp"
 
