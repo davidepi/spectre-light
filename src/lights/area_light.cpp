@@ -76,7 +76,7 @@ AreaLight::sample_visible_surface(float r0, float r1, const Point3* pos,
     *distance = FLT_MAX;
     //will always succeed
 //    bool res=
-    AreaLight::model->intersect(&ray, distance, &hit);
+    AreaLight::model->intersect(&ray, distance, &hit, &mask);
     //erase the next if after all the intersections are tried
     //TODO: now this should never happen and has been commented. Tried
     //blackbox testing for something like 1 hour, but maybe for newer
@@ -88,7 +88,7 @@ AreaLight::sample_visible_surface(float r0, float r1, const Point3* pos,
 //        return SPECTRUM_BLACK;
 //    }
     light_point = ray.apply(*distance);
-    normal = hit.normal_h; //object space
+    normal = hit.normal_g; //object space
     *wi = ray.direction;
     *pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
            (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
@@ -122,14 +122,14 @@ float AreaLight::pdf(const Point3* p, const Vec3* wi) const
     float distance = FLT_MAX;
     //here success is not guaranteed, maybe the wi vector is random
     //need to check if the intersection can happen
-    bool res = AreaLight::model->intersect(&ray, &distance, &hit);
+    bool res = AreaLight::model->intersect(&ray, &distance, &hit, &mask);
     if(!res)
         return 0;
     Point3 light_point = ray.apply(distance);
     float pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
                 (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
                 (ray.origin.z-light_point.z)*(ray.origin.z-light_point.z);
-    pdf /= (absdot(hit.normal_h, -(ray.direction))*AreaLight::area);
+    pdf /= (absdot(hit.normal_g, -(ray.direction))*AreaLight::area);
     return pdf;
 }
 

@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 30 Jul 2018
+//Last Edit 19 Aug 2018
 
 /**
  *  \file shape.hpp
@@ -7,7 +7,7 @@
  *  \details   The superclass from which every shape inherits
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      30 Jul 2018
+ *  \date      19 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -19,6 +19,8 @@
 #include "geometry/ray.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/AABB.hpp"
+#include "textures/mask_boolean.hpp"
+#include "primitives/hit_point.hpp"
 
 struct HitPoint;
 
@@ -63,7 +65,8 @@ public:
      *  \param[out] distance The distance of the point of intersection
      *  \param[out] h Details on the hit point on the surface
      */
-    virtual bool intersect(const Ray* r, float* distance, HitPoint* h) const =0;
+    virtual bool intersect(const Ray* r, float* distance, HitPoint* h,
+                           const MaskBoolean* mask) const = 0;
 
     /** \brief Recalculate the AABB
      *
@@ -144,48 +147,5 @@ private:
     //id of the shape
     const unsigned int id;
 };
-
-//this will be defined in another file, but I need a pointer to it in HitPoint
-//but HitPoint is required by Shape::intersect
-class Asset;
-
-///Struct containing the data of the intersection between a Ray and a Shape
-struct HitPoint
-{
-    ///The hit point in world space
-    Point3 point_h;
-
-    ///The normal of the hit point in world space
-    Normal normal_h;
-
-    ///Differential of hit point, varying the x coordinate on the surface
-    Vec3 dpdu;
-
-    ///Differential of hit point, varying the y coordinate on the surface
-    Vec3 dpdv;
-
-    ///Cross between normal and dpdu, in world space
-    Vec3 cross;
-
-    ///Hit asset
-    const Asset* asset_h;
-
-    ///index of the hit triangle (0 if the asset is not a mesh)
-    unsigned int index;
-
-    ///Mapping coordinate u of the point, used for texture mapping
-    Point2 uv;
-
-    ///Holds values dudx and dudy, differentials of the u parameter
-    Vec2 du;
-
-    ///Holds values dvdx and dvdy, differentials of the v parameter
-    Vec2 dv;
-
-    //true if the values du and dv are set
-    bool differentials;
-};
-
-void calculate_differentials(HitPoint* hp, Ray* rx, Ray* ry);
 
 #endif

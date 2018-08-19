@@ -36,9 +36,9 @@ Spectrum MultiBSDF::value(const Vec3* wo, const HitPoint* h, const Vec3* wi,
                           bool matchSpec) const
 {
     char flags = matchSpec?FLAG_SPEC:0;
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_h));
-    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_h));
-    if(wi->dot(h->normal_h)*wo->dot(h->normal_h)>0)//reflected ray
+    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
+    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_g));
+    if(wi->dot(h->normal_g)*wo->dot(h->normal_g)>0)//reflected ray
         flags |= FLAG_BRDF;
     else                                //transmitted ray
         flags |= FLAG_BTDF;
@@ -86,7 +86,7 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
         chosen--;
 
     //transform to shading space
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_h));
+    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
     wo_shading.normalize();
     Vec3 tmpwi;
 
@@ -104,9 +104,9 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
         tmpwi.normalize();
 
     //transform incident ray to world space
-    wi->x = h->dpdu.x*tmpwi.x+h->cross.x*tmpwi.y+h->normal_h.x*tmpwi.z;
-    wi->y = h->dpdu.y*tmpwi.x+h->cross.y*tmpwi.y+h->normal_h.y*tmpwi.z;
-    wi->z = h->dpdu.z*tmpwi.x+h->cross.z*tmpwi.y+h->normal_h.z*tmpwi.z;
+    wi->x = h->dpdu.x*tmpwi.x+h->cross.x*tmpwi.y+h->normal_g.x*tmpwi.z;
+    wi->y = h->dpdu.y*tmpwi.x+h->cross.y*tmpwi.y+h->normal_g.y*tmpwi.z;
+    wi->z = h->dpdu.z*tmpwi.x+h->cross.z*tmpwi.y+h->normal_g.z*tmpwi.z;
 
     wi->normalize();
     //if not specular, throw away retval and compute the value for the generated
@@ -117,7 +117,7 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
         char flags;
         retval = SPECTRUM_BLACK;
         *pdf = 0.f;
-        if(wo->dot(h->normal_h)*wi->dot(h->normal_h)>0)
+        if(wo->dot(h->normal_g)*wi->dot(h->normal_g)>0)
             flags = FLAG_BRDF;
         else
             flags = FLAG_BTDF;
@@ -148,8 +148,8 @@ float MultiBSDF::pdf(const Vec3* wo, const HitPoint* h, const Vec3* wi,
         return 0.f;
     char flags = matchSpec?FLAG_BRDF | FLAG_BTDF | FLAG_SPEC:FLAG_BRDF |
                                                              FLAG_BTDF;
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_h));
-    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_h));
+    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
+    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_g));
     wo_shading.normalize();
     wi_shading.normalize();
     float pdf = 0.f;

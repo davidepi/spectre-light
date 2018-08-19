@@ -16,7 +16,7 @@
 #define __UNIFORM_HPP_
 
 #include "textures/texture.hpp"
-#include "primitives/shape.hpp"
+#include "primitives/hit_point.hpp"
 #include "utility/spectrum.hpp"
 
 /**

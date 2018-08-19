@@ -405,7 +405,8 @@ void Bvh::flatten(void* n, uint32_t* index)
 ///Max depth of the Bvh tree
 #define BVH_MAX_DEPTH 32
 
-bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h) const
+bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h,
+                    const MaskBoolean* mask) const
 {
     RayProperties rp(*r);
     float dmin;
@@ -425,7 +426,7 @@ bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h) const
                 for(int i = 0; i<node->len; i++)
                 {
                     unsigned int tmp_index = node->offset+i;
-                    if(Bvh::tris[tmp_index].intersect(r, distance, h))
+                    if(Bvh::tris[tmp_index].intersect(r, distance, h, mask))
                     {
                         h->index = tmp_index;
                         found = true;

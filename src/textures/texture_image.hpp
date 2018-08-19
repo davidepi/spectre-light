@@ -29,9 +29,9 @@ extern "C" {
 }
 
 #include "textures/texture.hpp"
-#include "textures/texture_image.hpp"
 #include "textures/image_map.hpp"
 #include "textures/texture_library.hpp"
+#include "primitives/hit_point.hpp"
 
 
 /**
@@ -111,7 +111,7 @@ public:
      *  \return The Spectrum value of the mesh with this texture applied at the
      *  coordinates (u,v)
      */
-    TexelUnion map_value(const HitPoint* hp)const;
+    TexelUnion map_value(const HitPoint* hp) const;
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS

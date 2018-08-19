@@ -1,5 +1,5 @@
 //Created,   10 Aug 2018
-//Last Edit  11 Aug 2018
+//Last Edit  19 Aug 2018
 
 /**
  *  \file single_brdf.hpp
@@ -7,7 +7,7 @@
  *  \details   A material composed of just one single reflective component
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      11 Aug 2018
+ *  \date      19 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
+#include "materials/lambertian.hpp"
 
 /**
  *  \class SingleBRDF bdf.hpp "materials/bdf.hpp"

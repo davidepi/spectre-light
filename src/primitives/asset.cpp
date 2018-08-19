@@ -32,30 +32,20 @@ Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
     //since intersection is performed in object_space, convert back the ray
     Ray ray_obj = worldToObj**ray_world;
     //keep old_value in case the hit is invalidated by the mask
-    float previous_distance = *distance;
-    HitPoint previous_hit = *hit;
-    bool res = Asset::model->intersect(&ray_obj, distance, hit);
+    bool res = Asset::model->intersect(&ray_obj, distance, hit, &mask);
     if(res)
     {
         //retransform back to world space
         hit->point_h = objToWorld*hit->point_h;
         //normal requires the inverse of the transformation. Since I want a
         //objToWorld, its inverse is a worldToObj
-        hit->normal_h = transform_normal(hit->normal_h, &worldToObj);
+        hit->normal_g = transform_normal(hit->normal_g, &worldToObj);
         hit->dpdu = objToWorld*hit->dpdu;
         hit->dpdv = objToWorld*hit->dpdv;
-        hit->normal_h.normalize();
+        hit->normal_g.normalize();
         hit->dpdu.normalize();
         hit->dpdv.normalize();
-        hit->cross = normalize(cross(Vec3(hit->normal_h), hit->dpdu));
-        //TODO: move this inside shape
-        if(mask.is_masked(hit))
-        {
-            //hit invalidated, restore previous distance
-            *distance = previous_distance;
-            *hit = previous_hit;
-            res = false;
-        }
+        hit->cross = normalize(cross(Vec3(hit->normal_g), hit->dpdu));
     }
     return res;
 }

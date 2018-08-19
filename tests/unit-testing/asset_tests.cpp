@@ -35,9 +35,10 @@ SPECTRE_TEST(Asset, intersect)
     Asset a(&s, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    MaskBoolean mask;
     float distance = FLT_MAX;
 
-    EXPECT_FALSE(s.intersect(&r, &distance, &hit));
+    EXPECT_FALSE(s.intersect(&r, &distance, &hit, &mask));
     ASSERT_TRUE(a.intersect(&r, &distance, &hit));
     EXPECT_EQ(hit.point_h.x, -2.f);
     EXPECT_EQ(hit.point_h.y, -1.f);

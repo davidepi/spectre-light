@@ -1,5 +1,5 @@
 //Created,   6 Aug 2017
-//Last Edit 30 Mar 2018
+//Last Edit 19 Aug 2018
 
 /**
  *  \file mesh.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a triangle mesh in the space
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      30 Mar 2018
+ *  \date      19 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -104,7 +104,8 @@ public:
      *  \param[out] h an HitPoint class containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h,
+                   const MaskBoolean* mask) const;
 
     /** \brief Calculate the AABB
      *

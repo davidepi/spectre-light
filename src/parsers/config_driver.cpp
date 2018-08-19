@@ -302,12 +302,11 @@ const TextureImage* ConfigDriver::load_mask(const std::string& path)
     if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
        img_valid(cur_file.absolute_path(), cur_file.extension()))
     {
-        if(tex_name.empty())
-            tex_name = cur_file.filename();
-
         //Texture Image will deal with same file but different texture names
         addme = new TextureImage(cur_file, tex_scale, tex_shift, tex_filter);
-        TexLib.inherit_texture(tex_name, addme);
+        //mask cannot be named, so in place creation will always use the
+        //filename
+        TexLib.inherit_texture(cur_file.filename(), addme);
     }
     else
     {
@@ -680,7 +679,7 @@ void ConfigDriver::build_meshes()
             current_scene->inherit_light((AreaLight*)current_asset);
         }
         //resolve the mask
-        current_asset->set_mask(build_mask(cur_mesh.mask));
+        current_asset->set_mask(build_mask(mesh_w.mask));
     }
 }
 

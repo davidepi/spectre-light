@@ -1,5 +1,5 @@
 //Created,   10 Aug 2018
-//Last Edit  11 Aug 2018
+//Last Edit  19 Aug 2018
 
 /**
  *  \file multi_bsdf.hpp
@@ -7,7 +7,7 @@
  *  \details   A material composed of reflective and transmittive components
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      11 Aug 2018
+ *  \date      19 Aug 2018
  *  \copyright GNU GPLv3
  */
 

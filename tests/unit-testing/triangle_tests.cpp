@@ -137,65 +137,66 @@ SPECTRE_TEST(Triangle, intersection)
     float distance;
     HitPoint hit;
     bool res;
+    MaskBoolean mask;
 
     //ray parallel to triangle
     r = Ray(Point3(0, -10, 1), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //ray origin left of the triangle, dir perpendicular
     //u<0
     r = Ray(Point3(-2, 0, 1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //ray origin right of the triangle, dir perpendicular
     //u>1
     r = Ray(Point3(1.1, 0, 1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //ray origin near the border, dir almost touches the edge of the triangle
     //v<0
     r = Ray(Point3(0.3, 0.1, 1), Vec3(-0.57735f, -0.57735f, -0.57735f));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //ray origin near the border, dir almost touches the edge of the triangle
     //u+v>1
     r = Ray(Point3(0.3, 0.1, 1), Vec3(0.57735f, 0.57735f, -0.57735f));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //hit but it's a self intersection
     r = Ray(Point3(0.5, 0.5, 1E-8), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //hit but I already have a closer hit
     r = Ray(Point3(0.5, 0.5, 3), Vec3(0, 0, -1));
     distance = 1;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //normal hit
     r = Ray(Point3(0.5, 0.5, 1.f), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 0.f);
     EXPECT_EQ(distance, 1.f);
-    EXPECT_EQ(hit.normal_h.x, 0.f);
-    EXPECT_EQ(hit.normal_h.y, 0.f);
-    EXPECT_EQ(hit.normal_h.z, 1.f);
+    EXPECT_EQ(hit.normal_g.x, 0.f);
+    EXPECT_EQ(hit.normal_g.y, 0.f);
+    EXPECT_EQ(hit.normal_g.z, 1.f);
     hit.dpdu.normalize();
     EXPECT_EQ(hit.dpdu.x, 1.f);
     EXPECT_EQ(hit.dpdu.y, 0.f);
@@ -221,12 +222,13 @@ SPECTRE_TEST(Triangle, sample_point)
     Ray r;
     float distance;
     bool res;
+    MaskBoolean mask;
 
     //normal case, intersect from above the originated point
     t.sample_point(0.5, 0.5, NULL, &p, &n);
     r = Ray(Point3(p.x, p.y, p.z+1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 
     //corner case, r0 a bit less than 0
@@ -239,21 +241,21 @@ SPECTRE_TEST(Triangle, sample_point)
     t.sample_point(1.f+FLT_EPSILON, 1.f, NULL, &p, &n);
     r = Ray(Point3(p.x, p.y, p.z+1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 
     //corner case, r1 a bit less than 0
     t.sample_point(0.f, 0.f-FLT_EPSILON, NULL, &p, &n);
     r = Ray(Point3(p.x, p.y, p.z+1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 
     //corner case, r1 a bit more than 1
     t.sample_point(1.f, 1.f-FLT_EPSILON, NULL, &p, &n);
     r = Ray(Point3(p.x, p.y, p.z+1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = t.intersect(&r, &distance, &hit);
+    res = t.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 }
 

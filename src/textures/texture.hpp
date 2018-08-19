@@ -15,7 +15,7 @@
 #ifndef __TEXTURE_HPP_
 #define __TEXTURE_HPP_
 
-#include "primitives/shape.hpp"
+#include "primitives/hit_point.hpp"
 #include "utility/spectrum.hpp"
 
 /**

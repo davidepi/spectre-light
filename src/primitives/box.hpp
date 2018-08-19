@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 14 Dec 2017
+//Last Edit 19 Aug 2018
 
 /**
  *  \file box.hpp
@@ -7,7 +7,7 @@
  *  \details   All the methods to represent a box not aligned with axis
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      14 Dec 2017
+ *  \date      19 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -64,7 +64,8 @@ public:
      *  \param[out] hp The HitPoint structure containing information about the
      *  intersection point
      */
-    bool intersect(const Ray* r, float* distance, HitPoint* hp) const;
+    bool intersect(const Ray* r, float* distance, HitPoint* hp,
+                   const MaskBoolean* mask) const;
 
     /** \brief Recalculate the AABB
      *

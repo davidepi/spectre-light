@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "primitives/sphere.hpp"
@@ -74,12 +76,13 @@ SPECTRE_TEST(Sphere, intersect)
     float distance;
     Ray r;
     HitPoint h;
+    MaskBoolean mask;
 
     //distance < 0 This should NEVER happen and must be catched by kd-trees
     r = Ray(Point3(0, -10, 0), Vec3(0, 1, 0));
     distance = -1;
     errors_count[ERROR_INDEX] = 0;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
 
@@ -94,15 +97,15 @@ SPECTRE_TEST(Sphere, intersect)
     //hit origin before the sphere
     r = Ray(Point3(0, -10, 0), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 9.f);
     EXPECT_EQ(h.point_h.x, 0.f);
     EXPECT_EQ(h.point_h.y, -1.f);
     EXPECT_EQ(h.point_h.z, 0.f);
-    EXPECT_EQ(h.normal_h.x, 0.f);
-    EXPECT_EQ(h.normal_h.y, -1.f);
-    EXPECT_EQ(h.normal_h.z, 0.f);
+    EXPECT_EQ(h.normal_g.x, 0.f);
+    EXPECT_EQ(h.normal_g.y, -1.f);
+    EXPECT_EQ(h.normal_g.z, 0.f);
     h.dpdu.normalize();
     EXPECT_EQ(h.dpdu.x, 1.f);
     EXPECT_EQ(h.dpdu.y, 0.f);
@@ -113,15 +116,15 @@ SPECTRE_TEST(Sphere, intersect)
     //hit origin inside the sphere
     r = Ray(Point3(0, 0, 0), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 1.f);
     EXPECT_EQ(h.point_h.x, 1.f);
     EXPECT_EQ(h.point_h.y, 0.f);
     EXPECT_EQ(h.point_h.z, 0.f);
-    EXPECT_EQ(h.normal_h.x, 1.f);
-    EXPECT_EQ(h.normal_h.y, 0.f);
-    EXPECT_EQ(h.normal_h.z, 0.f);
+    EXPECT_EQ(h.normal_g.x, 1.f);
+    EXPECT_EQ(h.normal_g.y, 0.f);
+    EXPECT_EQ(h.normal_g.z, 0.f);
     h.dpdu.normalize();
     EXPECT_EQ(h.dpdu.x, 0.f);
     EXPECT_EQ(h.dpdu.y, 1.f);
@@ -132,21 +135,21 @@ SPECTRE_TEST(Sphere, intersect)
     //hit but origin after the sphere (= miss)
     r = Ray(Point3(0, 10, 0), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_FALSE(res);
 
     //hit in the exact vertical axis of the sphere
     r = Ray(Point3(0, 0, 0), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 1.f);
     EXPECT_EQ(h.point_h.x, SELF_INTERSECT_ERROR);
     EXPECT_EQ(h.point_h.y, 0.f);
     EXPECT_EQ(h.point_h.z, 1.f);
-    EXPECT_EQ(h.normal_h.x, 0.f);
-    EXPECT_EQ(h.normal_h.y, 0.f);
-    EXPECT_EQ(h.normal_h.z, 1.f);
+    EXPECT_EQ(h.normal_g.x, 0.f);
+    EXPECT_EQ(h.normal_g.y, 0.f);
+    EXPECT_EQ(h.normal_g.z, 1.f);
     h.dpdu.normalize();
     EXPECT_EQ(h.dpdu.x, 0.f);
     EXPECT_EQ(h.dpdu.y, 1.f);
@@ -156,19 +159,19 @@ SPECTRE_TEST(Sphere, intersect)
     //complete miss
     r = Ray(Point3(-2, -2, -10), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_FALSE(res);
 
     //better solution already found for origin outside
     r = Ray(Point3(0, -10, 0), Vec3(0, 1, 0));
     distance = 8;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_FALSE(res);
 
     //better solution already found for origin inside
     r = Ray(Point3(0, 0, 0), Vec3(0, 1, 0));
     distance = 0.5f;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_FALSE(res);
 }
 

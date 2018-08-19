@@ -8,19 +8,21 @@ SingleBRDF::SingleBRDF(const Bdf* bdf, const Texture* texture)
     if(bdf->is_BRDF())
     {
         SingleBRDF::bdf = bdf;
-        if(texture != NULL)
-            SingleBRDF::texture = texture;
-        else
-            SingleBRDF::texture = TexLib.get_default();
     }
     else
     {
         Console.warning(MESSAGE_SINGLE_BRDF_WRONG);
-        //this is deleted ANYWAY to prevent leaks.
+        //this is deleted ANYWAY to prevent unintended behaviour.
         //the fact is that once passed to this function, addme is managed by
         //this class. This class refuses to add it, so it is instadeleted
+        //and a default implementation used
         delete bdf;
+        SingleBRDF::bdf = new Lambertian();
     }
+    if(texture != NULL)
+        SingleBRDF::texture = texture;
+    else
+        SingleBRDF::texture = TexLib.get_default();
 }
 
 SingleBRDF::~SingleBRDF()
@@ -33,12 +35,12 @@ Spectrum SingleBRDF::value(const Vec3* wo, const HitPoint* h, const Vec3* wi,
 {
     char flags = matchSpec?FLAG_SPEC:0;
     Spectrum retval = SPECTRUM_BLACK;
-    if(wi->dot(h->normal_h)*wo->dot(h->normal_h)>0)//reflected ray
+    if(wi->dot(h->normal_g)*wo->dot(h->normal_g)>0)//reflected ray
         flags |= FLAG_BRDF;
     else                                //transmitted ray
         return retval;
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_h));
-    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_h));
+    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
+    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_g));
     wo_shading.normalize();
     wi_shading.normalize();
     if(bdf->matches(flags))
@@ -64,15 +66,15 @@ Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
     }
     else
         *matchedSpec = false;
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_h));
+    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
     wo_shading.normalize();
     Vec3 tmpwi;
     Spectrum retval;
     retval = bdf->sample_value(&wo_shading, &tmpwi, r1, r2, pdf);
     tmpwi.normalize();
-    wi->x = h->dpdu.x*tmpwi.x+h->cross.x*tmpwi.y+h->normal_h.x*tmpwi.z;
-    wi->y = h->dpdu.y*tmpwi.x+h->cross.y*tmpwi.y+h->normal_h.y*tmpwi.z;
-    wi->z = h->dpdu.z*tmpwi.x+h->cross.z*tmpwi.y+h->normal_h.z*tmpwi.z;
+    wi->x = h->dpdu.x*tmpwi.x+h->cross.x*tmpwi.y+h->normal_g.x*tmpwi.z;
+    wi->y = h->dpdu.y*tmpwi.x+h->cross.y*tmpwi.y+h->normal_g.y*tmpwi.z;
+    wi->z = h->dpdu.z*tmpwi.x+h->cross.z*tmpwi.y+h->normal_g.z*tmpwi.z;
     wi->normalize();
     return retval*texture->map(h);
 }
@@ -82,8 +84,8 @@ float SingleBRDF::pdf(const Vec3* wo, const HitPoint* h, const Vec3* wi,
 {
     if(!matchSpec && bdf->is_specular())
         return 0.f;
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_h));
-    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_h));
+    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
+    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_g));
     wo_shading.normalize();
     wi_shading.normalize();
     float pdf;

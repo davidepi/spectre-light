@@ -1,5 +1,5 @@
 //Created,   6 May 2017
-//Last Edit 10 Aug 2018
+//Last Edit 19 Aug 2018
 
 /**
  *  \file asset.hpp
@@ -8,7 +8,7 @@
  *             materials and textures
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      10 Aug 2018
+ *  \date      19 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -161,6 +161,9 @@ protected:
     ///WorldToObj matrix
     Matrix4 worldToObj;
 
+    //mask used during intersections
+    MaskBoolean mask;
+
 private:
 
     //id of the asset
@@ -174,10 +177,6 @@ private:
 
     //index associating every face to every material
     unsigned char* materials_index;
-
-    //mask used during intersections
-    MaskBoolean mask;
-
 };
 
 #endif

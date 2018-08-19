@@ -52,7 +52,8 @@ float Triangle::surface(const Matrix4* transform) const
     return 0.5f*cross(point_b-point_a, point_c-point_a).length();
 }
 
-bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h) const
+bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h,
+                         const MaskBoolean* mask) const
 {
     //recap since this method has become pretty cryptic
     // a,b,c = triangle vertices
@@ -82,12 +83,9 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h) const
     if(dist<SELF_INTERSECT_ERROR || dist>*distance)
         return false;
 
-    // -> hit
-    *distance = dist;
-    float w = 1.f-u-v;
-    h->point_h = r->apply(dist); //compute hit point
-
+    //hit now dependes only on masking
     //determines UV values
+    const float w = 1.f-u-v;
     const float delta[2][2] = {{a.t[0]-c.t[0], b.t[0]-c.t[0]},
                                {a.t[1]-c.t[1], b.t[1]-c.t[1]}};
     const float uvdet = delta[0][0]*delta[1][1]-delta[0][1]*delta[1][0];
@@ -95,14 +93,32 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h) const
     const float invuvdet = 1.f/uvdet;
     const Vec3 ac = a.p-c.p;
     const Vec3 bc = b.p-c.p;
-    h->dpdu = (ac*delta[1][1]-bc*delta[1][0])*invuvdet;
-    h->dpdv = (bc*delta[0][0]-ac*delta[0][1])*invuvdet;
-    h->uv.x = w*a.t.x+u*b.t.x+v*c.t.x;
-    h->uv.y = w*a.t.y+u*b.t.y+v*c.t.y;
+    //tmp is necessary because I cannot overwrite original "h" if there's not
+    //intersection. (here intersection could be invalidated by mask)
+    HitPoint tmp;
+    tmp.dpdu = (ac*delta[1][1]-bc*delta[1][0])*invuvdet;
+    tmp.dpdv = (bc*delta[0][0]-ac*delta[0][1])*invuvdet;
+    tmp.uv.x = w*a.t.x+u*b.t.x+v*c.t.x;
+    tmp.uv.y = w*a.t.y+u*b.t.y+v*c.t.y;
+    tmp.du = h->du;
+    tmp.dv = h->du;
+    tmp.differentials = h->differentials;
+    if(!mask->is_masked(&tmp))
+    {
+        //not masked -> copy uv and dpdu, dpdv
+        h->dpdu = tmp.dpdu;
+        h->dpdv = tmp.dpdv;
+        h->uv = tmp.uv;
+    }
+    else
+        return false;
 
+    // from here it is a guaranteed hit
+    *distance = dist;
+    h->point_h = r->apply(dist);
     //compute normal in the point, given normals in the vertices
-    h->normal_h = a.n*w+b.n*u+c.n*v;
-    h->cross = cross(Vec3(h->normal_h), h->dpdu);
+    h->normal_g = a.n*w+b.n*u+c.n*v;
+    h->cross = cross(Vec3(h->normal_g), h->dpdu);
     return true;
 }
 

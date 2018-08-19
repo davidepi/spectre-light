@@ -7,6 +7,7 @@ with the following differences:
 - A comma is not required between each `key:value` pair, a whitespace is sufficient
 - After a value additional attributes can be issued. This is currently used only to specify the mask channel that will be used
 - The toplevel object can not be enclosed in curly braces
+- The `#` character can be used to ignore the rest of the line
 
 Recall that every relative path declared inside the input file is resolved from the position of the input file itself, instead of the current working directory. This was done in order to depend just by the initial position of the input file.
 Relative paths are OS independent: a `folder\file` path can be used on Linux/MacOS and a `folder/file` path can be used on Windows aswell
