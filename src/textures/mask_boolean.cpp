@@ -25,7 +25,7 @@ bool MaskBoolean::is_masked(const HitPoint* hp) const
 #endif
         bool masked = channel_value>=MASK_BINARY_THRESHOLD;
 
-        //account for mask inversion with a XOR (both are bool so this with a !=)
+        //account for mask inversion with a XOR (both are bool so != works)
         return masked != inverted;
     }
 }

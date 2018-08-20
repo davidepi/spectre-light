@@ -195,7 +195,7 @@ SPECTRE_TEST(TextureLibrary, clear)
 
 SPECTRE_TEST(TextureLibrary, get_default)
 {
-    const Texture* tex0 = TexLib.get_default();
+    const Texture* tex0 = TexLib.get_dflt_diffuse();
     const Texture* tex1 = TexLib.get_texture("Default");
     EXPECT_PTR_EQ(tex0, tex1); //assert that they point to the same value
 }

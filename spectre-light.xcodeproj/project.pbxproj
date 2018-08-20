@@ -66,9 +66,6 @@
 		6B640EE4212729E900E08344 /* single_brdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EE0212729E900E08344 /* single_brdf.cpp */; };
 		6B640EE5212729E900E08344 /* dual.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EE2212729E900E08344 /* dual.cpp */; };
 		6B640EE821272B0600E08344 /* mask_boolean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EE621272B0600E08344 /* mask_boolean.cpp */; };
-		6B640EEB21272BE700E08344 /* texture_bump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EE921272BE700E08344 /* texture_bump.cpp */; };
-		6B640EEC21272BE800E08344 /* texture_bump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EE921272BE700E08344 /* texture_bump.cpp */; };
-		6B640EED21272BE800E08344 /* texture_bump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EE921272BE700E08344 /* texture_bump.cpp */; };
 		6B640EF02127315C00E08344 /* hit_point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EEE2127315C00E08344 /* hit_point.cpp */; };
 		6B640EF12127315C00E08344 /* hit_point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EEE2127315C00E08344 /* hit_point.cpp */; };
 		6B640EF22127315C00E08344 /* hit_point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EEE2127315C00E08344 /* hit_point.cpp */; };
@@ -178,6 +175,9 @@
 		6BA65C411F70424E00183E94 /* wellrng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3773D71ECEE37500711829 /* wellrng.cpp */; };
 		6BA65C421F70424E00183E94 /* renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7A01F116422000943A3 /* renderer.cpp */; };
 		6BA65C431F70424E00183E94 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B8C0BB61EAE2DD9001DF9C9 /* main.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
+		6BA6BC99212B55B6004FEBB1 /* bump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA6BC97212B55B6004FEBB1 /* bump.cpp */; };
+		6BA6BC9A212B55D7004FEBB1 /* bump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA6BC97212B55B6004FEBB1 /* bump.cpp */; };
+		6BA6BC9B212B55D8004FEBB1 /* bump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA6BC97212B55B6004FEBB1 /* bump.cpp */; };
 		6BB4A47D1FE5483600A2CA9D /* color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B771A311ED3A72500EEF79B /* color.cpp */; };
 		6BBAA6741FE73E2F00C13844 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7B91F1164C4000943A3 /* scene.cpp */; };
 		6BBAA6751FE73E5300C13844 /* kdtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B6E58EB1EC2062300D22A4B /* kdtree.cpp */; };
@@ -194,9 +194,6 @@
 		6BC8C2F0200D1F6900984630 /* oren_nayar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7AC1F116466000943A3 /* oren_nayar.cpp */; };
 		6BC8C2F1200D1F6900984630 /* reflection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7AE1F116466000943A3 /* reflection.cpp */; };
 		6BC8C2F2200D1F6900984630 /* refraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7B01F116466000943A3 /* refraction.cpp */; };
-		6BC8C5572121FE6900354D9A /* texture_height.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC8C5552121FE6900354D9A /* texture_height.cpp */; };
-		6BC8C5582121FE6900354D9A /* texture_height.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC8C5552121FE6900354D9A /* texture_height.cpp */; };
-		6BC8C5592121FE6900354D9A /* texture_height.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC8C5552121FE6900354D9A /* texture_height.cpp */; };
 		6BCDDF6B1FE09B6E007536FF /* box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BE2FCBB1EBE2D0F00CB782D /* box.cpp */; };
 		6BCDDF6C1FE09B6E007536FF /* shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BBF2B8B1EB8F6A8004589AA /* shape.cpp */; };
 		6BCDDF6D1FE09B6E007536FF /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BB9EBDC1EBA592800485ECE /* sphere.cpp */; };
@@ -432,8 +429,6 @@
 		6B640EE2212729E900E08344 /* dual.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dual.cpp; path = src/materials/dual.cpp; sourceTree = "<group>"; };
 		6B640EE621272B0600E08344 /* mask_boolean.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mask_boolean.cpp; path = src/textures/mask_boolean.cpp; sourceTree = "<group>"; };
 		6B640EE721272B0600E08344 /* mask_boolean.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = mask_boolean.hpp; path = src/textures/mask_boolean.hpp; sourceTree = "<group>"; };
-		6B640EE921272BE700E08344 /* texture_bump.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_bump.cpp; path = src/textures/texture_bump.cpp; sourceTree = "<group>"; };
-		6B640EEA21272BE700E08344 /* texture_bump.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = texture_bump.hpp; path = src/textures/texture_bump.hpp; sourceTree = "<group>"; };
 		6B640EEE2127315C00E08344 /* hit_point.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = hit_point.cpp; path = src/primitives/hit_point.cpp; sourceTree = "<group>"; };
 		6B640EEF2127315C00E08344 /* hit_point.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = hit_point.hpp; path = src/primitives/hit_point.hpp; sourceTree = "<group>"; };
 		6B6D188E1EDD705600EB720C /* camera_perspective.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = camera_perspective.cpp; path = src/cameras/camera_perspective.cpp; sourceTree = "<group>"; };
@@ -474,6 +469,8 @@
 		6BA55D9720753EA500F869C2 /* file.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = file.hpp; path = src/utility/file.hpp; sourceTree = "<group>"; };
 		6BA65BCC1F70417400183E94 /* spectre-full */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "spectre-full"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BA65BD71F70418800183E94 /* spectre-rgb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "spectre-rgb"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6BA6BC97212B55B6004FEBB1 /* bump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bump.cpp; path = src/textures/bump.cpp; sourceTree = "<group>"; };
+		6BA6BC98212B55B6004FEBB1 /* bump.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bump.hpp; path = src/textures/bump.hpp; sourceTree = "<group>"; };
 		6BABC39E1EBF99C70090EA4E /* appveyor.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = appveyor.yml; sourceTree = "<group>"; };
 		6BABC39F1EBF99C70090EA4E /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		6BABC3A01EBF99C70090EA4E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -486,8 +483,6 @@
 		6BBF2B8C1EB8F6A8004589AA /* shape.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = shape.hpp; path = src/primitives/shape.hpp; sourceTree = "<group>"; };
 		6BC109E82074BD0700FFBE13 /* lex.yy.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lex.yy.cc; path = src/parsers/lex.yy.cc; sourceTree = "<group>"; usesTabs = 0; };
 		6BC109E92074BD0700FFBE13 /* config_parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = config_parser.tab.cc; path = src/parsers/config_parser.tab.cc; sourceTree = "<group>"; };
-		6BC8C5552121FE6900354D9A /* texture_height.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_height.cpp; path = src/textures/texture_height.cpp; sourceTree = "<group>"; };
-		6BC8C5562121FE6900354D9A /* texture_height.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = texture_height.hpp; path = src/textures/texture_height.hpp; sourceTree = "<group>"; };
 		6BCE8BBF1FAFCC8C0056854A /* input_example.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = input_example.txt; sourceTree = "<group>"; };
 		6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_image.cpp; path = src/textures/texture_image.cpp; sourceTree = "<group>"; };
 		6BCEE5F420A1C5DC00E3B530 /* texture_image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = texture_image.hpp; path = src/textures/texture_image.hpp; sourceTree = "<group>"; };
@@ -983,6 +978,8 @@
 		6BD89FB8205994DE00CE5B05 /* textures */ = {
 			isa = PBXGroup;
 			children = (
+				6BA6BC97212B55B6004FEBB1 /* bump.cpp */,
+				6BA6BC98212B55B6004FEBB1 /* bump.hpp */,
 				6B09101820A0AEFC008BB048 /* image_map.cpp */,
 				6B09101920A0AEFC008BB048 /* image_map.hpp */,
 				6B640EE621272B0600E08344 /* mask_boolean.cpp */,
@@ -995,10 +992,6 @@
 				6BD89FCC2059A8EF00CE5B05 /* texture_library.hpp */,
 				6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */,
 				6BD89FC020599D8800CE5B05 /* texture_uniform.hpp */,
-				6B640EE921272BE700E08344 /* texture_bump.cpp */,
-				6B640EEA21272BE700E08344 /* texture_bump.hpp */,
-				6BC8C5552121FE6900354D9A /* texture_height.cpp */,
-				6BC8C5562121FE6900354D9A /* texture_height.hpp */,
 			);
 			name = textures;
 			sourceTree = "<group>";
@@ -1193,11 +1186,11 @@
 				6BC109EA2074BD0800FFBE13 /* lex.yy.cc in Sources */,
 				6B09101A20A0AEFC008BB048 /* image_map.cpp in Sources */,
 				6BA65C051F70421D00183E94 /* filter_mitchell.cpp in Sources */,
-				6BC8C5572121FE6900354D9A /* texture_height.cpp in Sources */,
 				6BA65C061F70421D00183E94 /* sampler_random.cpp in Sources */,
 				6BA65C071F70421D00183E94 /* sampler.cpp in Sources */,
 				6BA65C081F70421D00183E94 /* sampler_stratified.cpp in Sources */,
 				6B640EF02127315C00E08344 /* hit_point.cpp in Sources */,
+				6BA6BC99212B55B6004FEBB1 /* bump.cpp in Sources */,
 				6BA65C091F70421D00183E94 /* filter_tent.cpp in Sources */,
 				6BA07CB520719F11009139ED /* config_driver.cpp in Sources */,
 				6B1F6ABB20FC950000FB8E0F /* imageio.c in Sources */,
@@ -1215,7 +1208,6 @@
 				6B1F6ABD20FC950000FB8E0F /* tga.c in Sources */,
 				6BA65C111F70421D00183E94 /* renderer.cpp in Sources */,
 				6BA65C121F70421D00183E94 /* main.cpp in Sources */,
-				6B640EEB21272BE700E08344 /* texture_bump.cpp in Sources */,
 				6B640EE3212729E900E08344 /* multi_bsdf.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1242,6 +1234,7 @@
 				6BA65C1B1F70424E00183E94 /* AABB.cpp in Sources */,
 				6BA65C1C1F70424E00183E94 /* point3.cpp in Sources */,
 				6BA65C1D1F70424E00183E94 /* ray.cpp in Sources */,
+				6BA6BC9A212B55D7004FEBB1 /* bump.cpp in Sources */,
 				6BA65C1E1F70424E00183E94 /* matrix4.cpp in Sources */,
 				6BA65C1F1F70424E00183E94 /* vec2.cpp in Sources */,
 				6BA65C201F70424E00183E94 /* vec3.cpp in Sources */,
@@ -1251,7 +1244,6 @@
 				6BA65C241F70424E00183E94 /* bdf.cpp in Sources */,
 				6BBF23061F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */,
 				6BA65C251F70424E00183E94 /* lambertian.cpp in Sources */,
-				6B640EEC21272BE800E08344 /* texture_bump.cpp in Sources */,
 				6BA65C261F70424E00183E94 /* material_library.cpp in Sources */,
 				6BA65C271F70424E00183E94 /* oren_nayar.cpp in Sources */,
 				6BA65C281F70424E00183E94 /* reflection.cpp in Sources */,
@@ -1270,7 +1262,6 @@
 				6BA65C351F70424E00183E94 /* filter_lanczos.cpp in Sources */,
 				6B09101B20A0AEFC008BB048 /* image_map.cpp in Sources */,
 				6BD89FCE2059A8EF00CE5B05 /* texture_library.cpp in Sources */,
-				6BC8C5582121FE6900354D9A /* texture_height.cpp in Sources */,
 				6BA65C361F70424E00183E94 /* filter_mitchell.cpp in Sources */,
 				6BA65C371F70424E00183E94 /* sampler_random.cpp in Sources */,
 				6BA65C381F70424E00183E94 /* sampler.cpp in Sources */,
@@ -1308,7 +1299,6 @@
 				6B94261A20928CA5007551AE /* parser_obj_tests.cpp in Sources */,
 				6BDC3C83207C384700D49570 /* lex.yy.cc in Sources */,
 				6BDC3C84207C384700D49570 /* config_driver.cpp in Sources */,
-				6B640EED21272BE800E08344 /* texture_bump.cpp in Sources */,
 				6B4CA47420767AA800709064 /* file.cpp in Sources */,
 				6BC8C2ED200D1F6900984630 /* fresnel_conditions.cpp in Sources */,
 				6BF8002120923A4200150BE3 /* matrix4_tests.cpp in Sources */,
@@ -1336,6 +1326,7 @@
 				6B21659F1FEA7B9A008E5C2E /* filter_gaussian.cpp in Sources */,
 				6B2165A01FEA7B9A008E5C2E /* filter_lanczos.cpp in Sources */,
 				6B94261D209290CB007551AE /* ray_tests.cpp in Sources */,
+				6BA6BC9B212B55D8004FEBB1 /* bump.cpp in Sources */,
 				6B2165A11FEA7B9A008E5C2E /* filter_mitchell.cpp in Sources */,
 				6BEB857D2092260F00B7CA30 /* imageio_tests.cpp in Sources */,
 				6B2321F82094F113004FBAF5 /* utility_tests.cpp in Sources */,
@@ -1387,7 +1378,6 @@
 				6BD89FBE2059951200CE5B05 /* texture.cpp in Sources */,
 				6BF8002320923B5900150BE3 /* microfacets_tests.cpp in Sources */,
 				6BDCA10B2094DE8C000725C3 /* texture_tests.cpp in Sources */,
-				6BC8C5592121FE6900354D9A /* texture_height.cpp in Sources */,
 				6B02B2771FD8BD390014D6CD /* point3.cpp in Sources */,
 				6B02B2761FD8BD1D0014D6CD /* ray.cpp in Sources */,
 				6B9015D020FDE6000032845E /* bmp.c in Sources */,

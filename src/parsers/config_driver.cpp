@@ -261,7 +261,7 @@ const Texture* ConfigDriver::load_texture(const std::string& path)
 {
 
     File cur_file = current_dir;
-    const Texture* addme = TexLib.get_default();
+    const Texture* addme = TexLib.get_dflt_diffuse();
     if(is_absolute(path.c_str()))
         //recreates the File class... but absolute path should be a rare case
         //File does not have a dflt constructor. Should I make one?
@@ -281,7 +281,7 @@ const Texture* ConfigDriver::load_texture(const std::string& path)
     else
     {
         Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
-        addme = TexLib.get_default();
+        addme = TexLib.get_dflt_diffuse();
     }
     tex_name.clear(); //reset name for next texture
     tex_scale = Vec2(1.f); //reset scaling for next texture
@@ -303,9 +303,10 @@ const TextureImage* ConfigDriver::load_mask(const std::string& path)
        img_valid(cur_file.absolute_path(), cur_file.extension()))
     {
         //Texture Image will deal with same file but different texture names
-        addme = new TextureImage(cur_file, tex_scale, tex_shift, tex_filter);
-        //mask cannot be named, so in place creation will always use the
-        //filename
+        //mask cannot be named, so in place creation will always use dflt vals
+        Vec2 shift;
+        Vec2 scale(1.f);
+        addme = new TextureImage(cur_file, scale, shift, UNFILTERED);
         TexLib.inherit_texture(cur_file.filename(), addme);
     }
     else
@@ -313,9 +314,6 @@ const TextureImage* ConfigDriver::load_mask(const std::string& path)
         Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
         addme = NULL;
     }
-    tex_name.clear(); //reset name for next texture
-    tex_scale = Vec2(1.f); //reset scaling for next texture
-    tex_shift = Vec2(); //reset shifting for next texture
     return addme;
 }
 
@@ -494,6 +492,7 @@ void ConfigDriver::build_materials()
         MtlLib.add_inherit(mat->name, material);
     }
 }
+
 void ConfigDriver::build_dualmaterials()
 {
     ParsedDualMaterial* mat;
@@ -692,7 +691,7 @@ MaskBoolean ConfigDriver::build_mask(const ParsedMask& mask)
     {
         if(TexLib.contains_texture(mask.mask_tex))
             map = (const TextureImage*)TexLib.get_texture(mask.mask_tex);
-        else
+        else //in place mask creation
             map = load_mask(mask.mask_tex);
     }
     return MaskBoolean(map, mask.mask_chn, mask.mask_inv);

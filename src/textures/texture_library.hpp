@@ -1,12 +1,12 @@
 //Created,  14 Mar 2018
-//Last Edit 21 May 2018
+//Last Edit 20 Aug 2018
 
 /**
  *  \file texture_library.hpp
  *  \brief TextureLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  21 May 2018
+ *  \date  20 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 #include "textures/texture.hpp"
 #include "textures/texture_uniform.hpp"
 #include "textures/image_map.hpp"
+#include "textures/bump.hpp"
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -156,14 +157,26 @@ public:
 
     /** \brief Returns the "Default" texture
      *
-     *  This method returns the "Default" texture. It performs the same action
-     *  as calling TextureLibrary::get() with "Default" as parameter. However,
-     *  since "Default" is a system texture, it is cached inside this class
-     *  and by using this method a call to the underlying hash map is avoided
+     *  This method returns the "Default" diffuse texture. It performs the same
+     *  action as calling TextureLibrary::get() with "Default" as parameter.
+     *  However, since "Default" is a system texture, it is cached inside
+     *  this class and by using this method a call to the underlying hash map
+     *  is avoided. The Default diffuse texture is actually a white
+     *  TextureUniform
      *
      *  \return The "Default" texture
      */
-    const Texture* get_default() const;
+    const Texture* get_dflt_diffuse() const;
+
+    /**
+     * \brief Returns the default bump texture
+     *
+     *  This method returns the default TextureBump. The implementation of the
+     *  default TextureBump does nothing, but some materials requires it
+     *
+     * \return The default TextureBump implementation
+     */
+    const Bump* get_dflt_bump() const;
 
 private:
 
@@ -174,7 +187,8 @@ private:
     std::unordered_map<std::string, const Texture*> texlib;
     std::unordered_map<std::string, const ImageMap*> maplib;
     std::vector<const Texture*> unreferenced;
-    const Texture* default_texture;
+    const Texture* default_diffuse;
+    const Bump* default_bump;
     bool unfiltered;
 };
 
@@ -182,4 +196,3 @@ private:
 #define TexLib TextureLibrary::instance()
 
 #endif
-

@@ -14,7 +14,8 @@ MultiBSDF::~MultiBSDF()
         delete MultiBSDF::bdfs[i];
 }
 
-void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum)
+void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum,
+                            const Bump* bump)
 {
 #ifdef DEBUG
     if(count == _MAX_BDF_)
@@ -25,10 +26,14 @@ void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum)
 #endif
     MultiBSDF::bdfs[count] = addme;
     if(spectrum != NULL)
-        MultiBSDF::textures[count] = spectrum;
+        MultiBSDF::diffuse[count] = spectrum;
     else
         //assuming default texture always exists and is SPECTRUM_ONE
-        MultiBSDF::textures[count] = TexLib.get_default();
+        MultiBSDF::diffuse[count] = TexLib.get_dflt_diffuse();
+    if(bump != NULL)
+        MultiBSDF::bump[count] = bump;
+    else
+        MultiBSDF::bump[count] = TexLib.get_dflt_bump();
     count++;
 }
 
@@ -36,21 +41,26 @@ Spectrum MultiBSDF::value(const Vec3* wo, const HitPoint* h, const Vec3* wi,
                           bool matchSpec) const
 {
     char flags = matchSpec?FLAG_SPEC:0;
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
-    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_g));
     if(wi->dot(h->normal_g)*wo->dot(h->normal_g)>0)//reflected ray
         flags |= FLAG_BRDF;
     else                                //transmitted ray
         flags |= FLAG_BTDF;
     Spectrum retval = SPECTRUM_BLACK;
-    wo_shading.normalize();
-    wi_shading.normalize();
     for(int i = 0; i<count; i++)
     {
         //add contribution only if matches refl/trans
         if(bdfs[i]->matches(flags))
-            retval += bdfs[i]->value(&wo_shading, &wi_shading)*
-                      textures[i]->map(h);
+        {
+            bump[i]->bump(h);
+            Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross),
+                            wo->dot(h->normal_s));
+            Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross),
+                            wi->dot(h->normal_s));
+            wo_shading.normalize();
+            wi_shading.normalize();
+            retval +=
+                    bdfs[i]->value(&wo_shading, &wi_shading)*diffuse[i]->map(h);
+        }
     }
     return retval;
 }
@@ -85,8 +95,11 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
     if(chosen == matchcount) //out of array
         chosen--;
 
+    //apply bump mapping
+    bump[chosen]->bump(h);
+
     //transform to shading space
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
+    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_s));
     wo_shading.normalize();
     Vec3 tmpwi;
 
@@ -104,9 +117,9 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
         tmpwi.normalize();
 
     //transform incident ray to world space
-    wi->x = h->dpdu.x*tmpwi.x+h->cross.x*tmpwi.y+h->normal_g.x*tmpwi.z;
-    wi->y = h->dpdu.y*tmpwi.x+h->cross.y*tmpwi.y+h->normal_g.y*tmpwi.z;
-    wi->z = h->dpdu.z*tmpwi.x+h->cross.z*tmpwi.y+h->normal_g.z*tmpwi.z;
+    wi->x = h->dpdu.x*tmpwi.x+h->cross.x*tmpwi.y+h->normal_s.x*tmpwi.z;
+    wi->y = h->dpdu.y*tmpwi.x+h->cross.y*tmpwi.y+h->normal_s.y*tmpwi.z;
+    wi->z = h->dpdu.z*tmpwi.x+h->cross.z*tmpwi.y+h->normal_s.z*tmpwi.z;
 
     wi->normalize();
     //if not specular, throw away retval and compute the value for the generated
@@ -125,8 +138,12 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
         {
             if(bdfs[i]->matches(flags))//add contribution only if matches
             {
+                bump[i]->bump(h);
+                wo_shading = Vec3(wo->dot(h->dpdu), wo->dot(h->cross),
+                                  wo->dot(h->normal_s));
+                wo_shading.normalize();
                 retval += bdfs[i]->value(&wo_shading, &tmpwi)*
-                          textures[chosen]->map(h);
+                          diffuse[chosen]->map(h);
                 *pdf += bdfs[i]->pdf(&wo_shading, &tmpwi);
             }
         }
@@ -134,7 +151,7 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
     else
     {
         *matchedSpec = true;
-        retval *= textures[chosen]->map(h);
+        retval *= diffuse[chosen]->map(h);
     }
     if(matchcount>1)
         *pdf /= (float)matchcount;
@@ -148,10 +165,6 @@ float MultiBSDF::pdf(const Vec3* wo, const HitPoint* h, const Vec3* wi,
         return 0.f;
     char flags = matchSpec?FLAG_BRDF | FLAG_BTDF | FLAG_SPEC:FLAG_BRDF |
                                                              FLAG_BTDF;
-    Vec3 wo_shading(wo->dot(h->dpdu), wo->dot(h->cross), wo->dot(h->normal_g));
-    Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross), wi->dot(h->normal_g));
-    wo_shading.normalize();
-    wi_shading.normalize();
     float pdf = 0.f;
     int matching = 0;
     for(int i = 0; i<count; ++i)
@@ -159,6 +172,13 @@ float MultiBSDF::pdf(const Vec3* wo, const HitPoint* h, const Vec3* wi,
         if(bdfs[i]->matches(flags))
         {
             matching++;
+            bump[i]->bump(h);
+            Vec3 wo_shading = Vec3(wo->dot(h->dpdu), wo->dot(h->cross),
+                                   wo->dot(h->normal_s));
+            Vec3 wi_shading(wi->dot(h->dpdu), wi->dot(h->cross),
+                            wi->dot(h->normal_s));
+            wo_shading.normalize();
+            wi_shading.normalize();
             pdf += bdfs[i]->pdf(&wo_shading, &wi_shading);
         }
     }

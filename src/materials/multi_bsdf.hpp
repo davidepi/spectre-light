@@ -1,5 +1,5 @@
 //Created,   10 Aug 2018
-//Last Edit  19 Aug 2018
+//Last Edit  20 Aug 2018
 
 /**
  *  \file multi_bsdf.hpp
@@ -7,7 +7,7 @@
  *  \details   A material composed of reflective and transmittive components
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      19 Aug 2018
+ *  \date      20 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
+#include "textures/bump.hpp"
 
 /**
  *  \brief Material wrapping multiple reflective or transmittive surfaces
@@ -57,8 +58,13 @@ public:
      *  \param[in] spectrum The texture that will be used to compute the
      *  spectrum of the BSDF. If left empty, the default White texture will be
      *  used
+     *  \param[in] bump The texture that will be used to compute the shading
+     *  normal in the current point. If left empty, the default TextureBump
+     *  will be used. The default TextureBump generates a shading normal
+     *  equal to the geometric normal
      */
-    void inherit_bdf(Bdf* addme, const Texture* spectrum = NULL);
+    void inherit_bdf(Bdf* addme, const Texture* spectrum = NULL,
+                     const Bump* bump = NULL);
 
     /** \brief Return the value of the BSDF
      *
@@ -121,7 +127,8 @@ protected:
     Bdf* bdfs[_MAX_BDF_];
 
     //Textures
-    const Texture* textures[_MAX_BDF_];
+    const Texture* diffuse[_MAX_BDF_];
+    const Bump* bump[_MAX_BDF_];
 };
 
 

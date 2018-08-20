@@ -49,7 +49,7 @@
 #define PROGRESS_BAR_UPDATE_SECONDS 1
 
 ///Only for debug
-//#define FORCED_SEED 0
+//#define FORCED_SEED 1542433404
 
 #include "validator.h"
 

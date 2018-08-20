@@ -74,7 +74,7 @@ Spectrum DielectricReflection::sample_value(const Vec3* wo, Vec3* wi,
     float ei;
     float et;
     float abscosthetai = wo->z;
-    if(wo->z<0) //exiting ray
+    if(wo->z<=0) //exiting ray
     {
         ei = eta_t;
         et = eta_i;

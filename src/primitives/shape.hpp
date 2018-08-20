@@ -12,8 +12,8 @@
  */
 
 
-#ifndef __SHAPE_HPP_
-#define __SHAPE_HPP_
+#ifndef __SHAPE_HPP__
+#define __SHAPE_HPP__
 
 #include "geometry/point2.hpp"
 #include "geometry/ray.hpp"
@@ -22,7 +22,6 @@
 #include "textures/mask_boolean.hpp"
 #include "primitives/hit_point.hpp"
 
-struct HitPoint;
 
 /**
  *  \class Shape shape.hpp "primitives/shape.hpp"

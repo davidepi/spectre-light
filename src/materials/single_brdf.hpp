@@ -1,5 +1,5 @@
 //Created,   10 Aug 2018
-//Last Edit  19 Aug 2018
+//Last Edit  20 Aug 2018
 
 /**
  *  \file single_brdf.hpp
@@ -7,7 +7,7 @@
  *  \details   A material composed of just one single reflective component
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      19 Aug 2018
+ *  \date      20 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -18,6 +18,7 @@
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
 #include "materials/lambertian.hpp"
+#include "textures/bump.hpp"
 
 /**
  *  \class SingleBRDF bdf.hpp "materials/bdf.hpp"
@@ -44,11 +45,16 @@ public:
      *  free at destruction time
      *
      *  \param[in] inherited The Bdf that will be added
-     *  \param[in] texture The texture that will be used to compute the
+     *  \param[in] diffuse The texture that will be used to compute the
      *  spectrum of the Bsdf (otherwise every Bdf uses a white spectrum). If
      *  left empty, the default White texture will be used
+     *  \param[in] bump The texture that will be used to compute the shading
+     *  normal in the current point. If left empty, the default TextureBump
+     *  will be used. The default TextureBump generates a shading normal
+     *  equal to the geometric normal
      */
-    SingleBRDF(const Bdf* inherited, const Texture* texture = NULL);
+    SingleBRDF(const Bdf* inherited, const Texture* diffuse = NULL, const
+               Bump* bump = NULL);
 
     ///Default destructor
     ~SingleBRDF() override;
@@ -107,7 +113,10 @@ private:
     const Bdf* bdf;
 
     //Textures
-    const Texture* texture;
+    const Texture* diffuse;
+
+    //Bump
+    const Bump* bump;
 };
 
 #endif
