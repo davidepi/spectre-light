@@ -17,27 +17,6 @@
 
 #include "textures/texture_image.hpp"
 
-//Check image_map.hpp for details on ARGB/BGRA between the two architectures
-#ifndef IS_BIG_ENDIAN
-/** Channel of the TextureImage. ARGB order in little endian machines */
-enum ImageChannel
-{
-    ALPHA = 0,
-    RED = 1,
-    GREEN = 2,
-    BLUE = 3,
-};
-#else
-/** Channel of the TextureImage. BGRA order in big endian machines */
-enum ImageChannel
-{
-    BLUE = 0,
-    GREEN = 1,
-    RED = 2,
-    ALPHA = 3
-};
-#endif
-
 ///Values under the threshold are considered false when applying masking
 #define MASK_BINARY_THRESHOLD 128
 

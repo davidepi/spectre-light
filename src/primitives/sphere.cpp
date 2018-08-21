@@ -16,9 +16,9 @@ static inline void compute_uvs(const Point3* hit, HitPoint* ret)
     float cosphi = hit->x*invzrad;
     float sinphi = hit->y*invzrad;
     ret->uv = Point2(phi*INV_TWOPI, (theta-thetamin)*inv_thetad);
-    ret->dpdu = Vec3(-TWO_PI*hit->y, TWO_PI*hit->x, 0);
-    ret->dpdv = Vec3(hit->z*cosphi, hit->z*sinphi, -sinf(theta));
-    ret->dpdv *= thetad;
+    ret->geometric.dpdu = Vec3(-TWO_PI*hit->y, TWO_PI*hit->x, 0);
+    ret->geometric.dpdv = Vec3(hit->z*cosphi, hit->z*sinphi, -sinf(theta));
+    ret->geometric.dpdv *= thetad;
 }
 
 AABB Sphere::compute_AABB() const
@@ -98,10 +98,10 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit,
         //here I need to generate uvs, and then test alpha masking
         HitPoint tmp;
         //intersection point BEFORE applying the shift if (x,y) == 0;
-        //the shift is applied to avoid a 0-length dpdu
+        //the shift is applied to avoid a 0-length geometric.dpdu
         Point3 hitp = r->apply(sol1);
         tmp.point_h = hitp;
-        if(tmp.point_h.x == 0 && tmp.point_h.y == 0)//otherwise h->dpdu would be
+        if(tmp.point_h.x == 0 && tmp.point_h.y == 0)//otherwise h->geometric.dpdu would be
             tmp.point_h.x = SELF_INTERSECT_ERROR;   //a 0 length vector
         tmp.du = hit->du;
         tmp.dv = hit->dv;
@@ -113,8 +113,8 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit,
             *distance = sol1;
             hit->point_h = tmp.point_h;
             hit->uv = tmp.uv;
-            hit->dpdu = tmp.dpdu;
-            hit->dpdv = tmp.dpdv;
+            hit->geometric.dpdu = tmp.geometric.dpdu;
+            hit->geometric.dpdv = tmp.geometric.dpdv;
         }
         else if(!isnan(sol2))
         {
@@ -130,8 +130,8 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit,
                 *distance = sol2;
                 hit->point_h = tmp.point_h;
                 hit->uv = tmp.uv;
-                hit->dpdu = tmp.dpdu;
-                hit->dpdv = tmp.dpdv;
+                hit->geometric.dpdu = tmp.geometric.dpdu;
+                hit->geometric.dpdv = tmp.geometric.dpdv;
             }
             else //both hit were invalidated
                 return false;
@@ -142,7 +142,7 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit,
         //hit happened, but normal should stay unpolluted (no shift)
         //otherwise normalization fucks everything up badly
         Vec3 normal(hitp.x, hitp.y, hitp.z);
-        hit->normal_g = Normal(normal);
+        hit->geometric.n = Normal(normal);
         hit->index = 0;
         return true;
     }

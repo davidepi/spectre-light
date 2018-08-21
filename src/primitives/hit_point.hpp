@@ -23,25 +23,32 @@
 //HitPoint struct needs Asset and Asset needs HitPoint. Forward declaration.
 class Asset;
 
-///Struct containing the data of the intersection between a Ray and a Shape
-struct HitPoint
+///Struct containing the HitPoint data that could be altered by shading
+struct ShadingHitPoint
 {
-    ///The hit point in world space
-    Point3 point_h;
-
-    ///The geometric normal of the hit point in world space
-    Normal normal_g;
-
-    ///The shading normal of the hit point in shading space
-    mutable Normal normal_s;
-
     ///Differential of hit point, varying the x coordinate on the surface
     Vec3 dpdu;
 
     ///Differential of hit point, varying the y coordinate on the surface
     Vec3 dpdv;
 
-    ///Cross between normal and dpdu, in world space
+    ///The normal of the hit point, in world space
+    Normal n;
+};
+
+///Struct containing the data of the intersection between a Ray and a Shape
+struct HitPoint
+{
+    ///The hit point in world space
+    Point3 point_h;
+
+    ///Data of the original hit point
+    ShadingHitPoint geometric;
+
+    ///Data altered by shading
+    mutable ShadingHitPoint shading;
+
+    ///Cross between normal and geometric.dpdu, in world space
     Vec3 cross;
 
     ///Hit asset

@@ -20,7 +20,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
     wo.normalize();
     //if first hit is light or specular, use its emission
     if((r->ricochet==0 || last_spec)
-       && hp->asset_h->is_light() && dot(hp->normal_g,wo)>0)
+       && hp->asset_h->is_light() && dot(hp->geometric.n,wo)>0)
         retval+=*power*((AreaLight *)hp->asset_h)->emissive_spectrum();
     
     //calculate direct lighting at point
@@ -52,7 +52,7 @@ Spectrum PathTracer::l_rec(const Scene *sc, const HitPoint *hp, const Ray *r,
                                    true, &matchedSpec);
     if(pdf==0 || f.is_black())
         return retval;
-    float adot = absdot(wi,hp->normal_g);
+    float adot = absdot(wi,hp->geometric.n);
     //calculate new power, new ray and new intersection point
     *power *= f*adot/pdf*rrprob;
     Ray r2(hp->point_h,wi);
