@@ -117,8 +117,7 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h,
     *distance = dist;
     h->point_h = r->apply(dist);
     //compute normal in the point, given normals in the vertices
-    h->normal_g = a.n*w+b.n*u+c.n*v;
-    h->cross = cross(Vec3(h->normal_g), h->dpdu);
+    h->normal_h = a.n*w+b.n*u+c.n*v;
     return true;
 }
 

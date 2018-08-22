@@ -30,19 +30,13 @@ struct HitPoint
     Point3 point_h;
 
     ///The geometric normal of the hit point in world space
-    Normal normal_g;
-
-    ///The shading normal of the hit point in shading space
-    mutable Normal normal_s;
+    Normal normal_h;
 
     ///Differential of hit point, varying the x coordinate on the surface
     Vec3 dpdu;
 
     ///Differential of hit point, varying the y coordinate on the surface
     Vec3 dpdv;
-
-    ///Cross between normal and dpdu, in world space
-    Vec3 cross;
 
     ///Hit asset
     const Asset* asset_h;

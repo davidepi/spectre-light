@@ -116,7 +116,7 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit,
             hit->dpdu = tmp.dpdu;
             hit->dpdv = tmp.dpdv;
         }
-        else if(!isnan(sol2))
+        else if(!std::isnan(sol2))
         {
             //repeat the procedure with second hit, first was invalidated
             hitp = r->apply(sol2);
@@ -142,7 +142,7 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit,
         //hit happened, but normal should stay unpolluted (no shift)
         //otherwise normalization fucks everything up badly
         Vec3 normal(hitp.x, hitp.y, hitp.z);
-        hit->normal_g = Normal(normal);
+        hit->normal_h = Normal(normal);
         hit->index = 0;
         return true;
     }

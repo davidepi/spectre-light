@@ -18,7 +18,8 @@
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
 #include "materials/lambertian.hpp"
-#include "textures/bump.hpp"
+#include "materials/shading_space.hpp"
+#include "materials/bump.hpp"
 
 /**
  *  \class SingleBRDF bdf.hpp "materials/bdf.hpp"

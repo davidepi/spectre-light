@@ -16,13 +16,14 @@
 #define __TEXTURE_BUMP_HPP__
 
 #include "primitives/hit_point.hpp"
+#include "materials/shading_space.hpp"
 
 /**
  * \brief Exposes the interface to perform bump mapping
  *
  *  This class is an interface useful for the creation of the shading normal.
  *  It exposes a single method, bump(), responsible for the shading normal
- *  creation in the passed HitPoint. This method is called by the various
+ *  creation from the passed HitPoint. This method is called by the various
  *  BxDF in order to calculate incoming and outgoing wo and wi vectors.
  */
 class Bump
@@ -32,12 +33,13 @@ public:
     /**
      *  \brief Generates the shading normal
      *
-     *  Given an HitPoint, this class updates its shading normal
-     * \param[in,out] hp The HitPoint that will hold information useful for
-     *  the shading normal calculation and the mutable shading normal that
-     *  will be updated
+     *  Given an HitPoint, this class creates its shading space matrix
+     *  \param[in] hp The HitPoint that will hold information useful for
+     *  the shading normal calculation
+     *  \param[out] matrix The ShadingSpace class that will be filled with
+     *  the three orthonormal vectors expressing the shading space
      */
-    virtual void bump(const HitPoint* hp) const;
+    virtual void bump(const HitPoint* hp, ShadingSpace* matrix) const;
 };
 
 #endif

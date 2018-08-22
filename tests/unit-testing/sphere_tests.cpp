@@ -103,9 +103,9 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.point_h.x, 0.f);
     EXPECT_EQ(h.point_h.y, -1.f);
     EXPECT_EQ(h.point_h.z, 0.f);
-    EXPECT_EQ(h.normal_g.x, 0.f);
-    EXPECT_EQ(h.normal_g.y, -1.f);
-    EXPECT_EQ(h.normal_g.z, 0.f);
+    EXPECT_EQ(h.normal_h.x, 0.f);
+    EXPECT_EQ(h.normal_h.y, -1.f);
+    EXPECT_EQ(h.normal_h.z, 0.f);
     h.dpdu.normalize();
     EXPECT_EQ(h.dpdu.x, 1.f);
     EXPECT_EQ(h.dpdu.y, 0.f);
@@ -122,9 +122,9 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.point_h.x, 1.f);
     EXPECT_EQ(h.point_h.y, 0.f);
     EXPECT_EQ(h.point_h.z, 0.f);
-    EXPECT_EQ(h.normal_g.x, 1.f);
-    EXPECT_EQ(h.normal_g.y, 0.f);
-    EXPECT_EQ(h.normal_g.z, 0.f);
+    EXPECT_EQ(h.normal_h.x, 1.f);
+    EXPECT_EQ(h.normal_h.y, 0.f);
+    EXPECT_EQ(h.normal_h.z, 0.f);
     h.dpdu.normalize();
     EXPECT_EQ(h.dpdu.x, 0.f);
     EXPECT_EQ(h.dpdu.y, 1.f);
@@ -147,9 +147,9 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.point_h.x, SELF_INTERSECT_ERROR);
     EXPECT_EQ(h.point_h.y, 0.f);
     EXPECT_EQ(h.point_h.z, 1.f);
-    EXPECT_EQ(h.normal_g.x, 0.f);
-    EXPECT_EQ(h.normal_g.y, 0.f);
-    EXPECT_EQ(h.normal_g.z, 1.f);
+    EXPECT_EQ(h.normal_h.x, 0.f);
+    EXPECT_EQ(h.normal_h.y, 0.f);
+    EXPECT_EQ(h.normal_h.z, 1.f);
     h.dpdu.normalize();
     EXPECT_EQ(h.dpdu.x, 0.f);
     EXPECT_EQ(h.dpdu.y, 1.f);

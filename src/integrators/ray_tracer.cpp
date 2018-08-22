@@ -9,7 +9,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
     Spectrum L = SPECTRUM_BLACK;
     int nlights = sc->size_lights();
     if(hp->asset_h->is_light())
-        if(dot(hp->normal_g,-r->direction)>0)
+        if(dot(hp->normal_h,-r->direction)>0)
             L+=((AreaLight *) hp->asset_h)->emissive_spectrum();
     if(nlights>0)
     {
@@ -41,7 +41,7 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
                 {
                     float weight = (lightpdf*lightpdf)/(lightpdf*lightpdf+
                                                         bsdfpdf*bsdfpdf);
-                    L+=bsdf_f*direct_l*absdot(wi,hp->normal_g)*weight/lightpdf;
+                    L+=bsdf_f*direct_l*absdot(wi,hp->normal_h)*weight/lightpdf;
                 }
             }
         }
@@ -61,10 +61,10 @@ Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r,
             HitPoint h2;
             if(sc->k.intersect(&r2,&h2))
                 if(h2.asset_h->get_id() == light->get_id())
-                    if(dot(h2.normal_g,-r2.direction)>0)
+                    if(dot(h2.normal_h,-r2.direction)>0)
                     {
                         Spectrum rad = light->emissive_spectrum();
-                        L += bsdf_f*rad*absdot(wi, hp->normal_g)*w/bsdfpdf;
+                        L += bsdf_f*rad*absdot(wi, hp->normal_h)*w/bsdfpdf;
                     }
         }
     }

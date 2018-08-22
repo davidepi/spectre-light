@@ -17,7 +17,7 @@
 #include "textures/texture.hpp"
 #include "textures/texture_uniform.hpp"
 #include "textures/image_map.hpp"
-#include "textures/bump.hpp"
+#include "materials/bump.hpp"
 #include <unordered_map>
 #include <vector>
 #include <string>

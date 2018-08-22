@@ -502,8 +502,14 @@ void ConfigDriver::build_dualmaterials()
     for(int i = 0; i<(int)deferred_dualmats.size(); i++)
     {
         mat = &deferred_dualmats[i];
-        first = MtlLib.get(mat->first);
-        second = MtlLib.get(mat->second);
+        if(MtlLib.contains(mat->first))
+            first = MtlLib.get(mat->first);
+        else
+            first = MtlLib.get_default();
+        if(MtlLib.contains(mat->second))
+            second = MtlLib.get(mat->second);
+        else
+            second = MtlLib.get_default();
         material = new DualBsdf(first, second, build_mask(mat->mask));
         MtlLib.add_inherit(mat->name, material);
     }

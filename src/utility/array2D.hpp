@@ -123,7 +123,7 @@ public:
         if(side<BLOCK_SIDE)
             side = BLOCK_SIDE;
         //possibly round up side to a power of 2
-        if((side & side-1) != 0)
+        if((side & (side-1)) != 0)
         {
             //round up to the next power of 2
             side--;
