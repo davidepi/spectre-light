@@ -43,7 +43,6 @@ SPECTRE_TEST(Asset, intersect)
     EXPECT_EQ(hit.point_h.x, -2.f);
     EXPECT_EQ(hit.point_h.y, -1.f);
     EXPECT_EQ(hit.point_h.z, 0.f);
-    EXPECT_TRUE(hit.cross.is_normalized());
     distance = 0.1;
     EXPECT_FALSE(a.intersect(&r, &distance, &hit));
 

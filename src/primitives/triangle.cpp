@@ -96,8 +96,8 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h,
     //tmp is necessary because I cannot overwrite original "h" if there's not
     //intersection. (here intersection could be invalidated by mask)
     HitPoint tmp;
-    tmp.geometric.dpdu = (ac*delta[1][1]-bc*delta[1][0])*invuvdet;
-    tmp.geometric.dpdv = (bc*delta[0][0]-ac*delta[0][1])*invuvdet;
+    tmp.dpdu = (ac*delta[1][1]-bc*delta[1][0])*invuvdet;
+    tmp.dpdv = (bc*delta[0][0]-ac*delta[0][1])*invuvdet;
     tmp.uv.x = w*a.t.x+u*b.t.x+v*c.t.x;
     tmp.uv.y = w*a.t.y+u*b.t.y+v*c.t.y;
     tmp.du = h->du;
@@ -105,9 +105,9 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h,
     tmp.differentials = h->differentials;
     if(!mask->is_masked(&tmp))
     {
-        //not masked -> copy uv and geometric.dpdu, geometric.dpdv
-        h->geometric.dpdu = tmp.geometric.dpdu;
-        h->geometric.dpdv = tmp.geometric.dpdv;
+        //not masked -> copy uv and dpdu, dpdv
+        h->dpdu = tmp.dpdu;
+        h->dpdv = tmp.dpdv;
         h->uv = tmp.uv;
     }
     else
@@ -117,8 +117,7 @@ bool Triangle::intersect(const Ray* r, float* distance, HitPoint* h,
     *distance = dist;
     h->point_h = r->apply(dist);
     //compute normal in the point, given normals in the vertices
-    h->geometric.n = a.n*w+b.n*u+c.n*v;
-    h->cross = cross(Vec3(h->geometric.n), h->geometric.dpdu);
+    h->normal_h = a.n*w+b.n*u+c.n*v;
     return true;
 }
 

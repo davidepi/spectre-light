@@ -117,14 +117,14 @@ bool Box::intersect(const Ray* r, float* distance, HitPoint* h,
     {
         *distance = tmpdistance;
         h->point_h = r->apply(*distance);
-        h->geometric.n = Normal();
-        h->geometric.n[axis] = (float)(-sign(r->direction[axis]));
+        h->normal_h = Normal();
+        h->normal_h[axis] = (float)(-sign(r->direction[axis]));
         if(inside)
-            h->geometric.n[axis] *= -1;
-        if(h->geometric.n.z != 0)
-            h->geometric.dpdu = Vec3(h->geometric.n.z, 0, 0);
+            h->normal_h[axis] *= -1;
+        if(h->normal_h.z != 0)
+            h->dpdu = Vec3(h->normal_h.z, 0, 0);
         else
-            h->geometric.dpdu = Vec3(-h->geometric.n.y, h->geometric.n.x, 0);
+            h->dpdu = Vec3(-h->normal_h.y, h->normal_h.x, 0);
         h->index = 0;
         return true;
         //TODO: missing uv generation, and masking should be done after uvs

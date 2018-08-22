@@ -109,10 +109,10 @@ SPECTRE_TEST(Texture, Calculate_differentials)
     Ray rx;
     Ray ry;
     //nx>ny,nz
-    hit.geometric.n = Normal(0.7f, 0.6f, 0.5f);
+    hit.normal_h = Normal(0.7f, 0.6f, 0.5f);
     hit.point_h = Point3(0.1f, 0.8f, 0.2f);
-    hit.geometric.dpdu = Vec3(0.9f, 0.4f, 0.6f);
-    hit.geometric.dpdv = Vec3(0.2f, 0.2f, 0.7f);
+    hit.dpdu = Vec3(0.9f, 0.4f, 0.6f);
+    hit.dpdv = Vec3(0.2f, 0.2f, 0.7f);
     rx.origin = Point3(0.1f, 0.8f, 0.4f);
     rx.direction = Vec3(0.7f, 0.5f, 0.8f);
     ry.origin = Point3(0.9f, 0.8f, 0.4f);
@@ -124,7 +124,7 @@ SPECTRE_TEST(Texture, Calculate_differentials)
     EXPECT_NEAR(hit.dv.y, 0.614583373f, 1e-5f);
     EXPECT_TRUE(hit.differentials);
     //ny>nz
-    hit.geometric.n = Normal(0.3f, 0.6f, 0.5f);
+    hit.normal_h = Normal(0.3f, 0.6f, 0.5f);
     calculate_differentials(&hit, &rx, &ry);
     EXPECT_NEAR(hit.du.x, -0.149536714f, 1e-5f);
     EXPECT_NEAR(hit.du.y, 1.08823514f, 1e-5f);
@@ -132,7 +132,7 @@ SPECTRE_TEST(Texture, Calculate_differentials)
     EXPECT_NEAR(hit.dv.y, -1.14705873f, 1e-5f);
     EXPECT_TRUE(hit.differentials);
     //ny<=nz && nx<=ny && nx<=nz
-    hit.geometric.n = Normal(0.3f, 0.5f, 0.8f);
+    hit.normal_h = Normal(0.3f, 0.5f, 0.8f);
     calculate_differentials(&hit, &rx, &ry);
     EXPECT_NEAR(hit.du.x, -0.0581818037f, 1e-5f);
     EXPECT_NEAR(hit.du.y, 1.9809525f, 1e-5f);
@@ -141,9 +141,9 @@ SPECTRE_TEST(Texture, Calculate_differentials)
     EXPECT_TRUE(hit.differentials);
     //no differentials;
     hit.point_h = Point3(0.318554252f, 0.0149820382f, 0.580925465f);
-    hit.geometric.n = Normal(0.249578759f, 0.70821166f, 0.150726095f);
-    hit.geometric.dpdu = Vec3(0.552109361f, 0.940024793f, 0.366022646f);
-    hit.geometric.dpdv = Vec3(0.197407082f, 0.976550161f, 0.130862013f);
+    hit.normal_h = Normal(0.249578759f, 0.70821166f, 0.150726095f);
+    hit.dpdu = Vec3(0.552109361f, 0.940024793f, 0.366022646f);
+    hit.dpdv = Vec3(0.197407082f, 0.976550161f, 0.130862013f);
     rx.origin = Point3(0.404442132f, 0.759377062f, 0.687527895f);
     rx.direction = Vec3(0.487480313f, 0.395991176f, 0.807750642f);
     ry.origin = Point3(0.414126188f, 0.553074598f, 0.94479984f);

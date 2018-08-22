@@ -157,7 +157,7 @@ public:
      *  in a division by zero error
      *  \sa is_normalized()
      */
-    void normalize();
+    Vec3& normalize();
 
     /**  \brief Compute the dot product
      *
@@ -562,7 +562,7 @@ public:
      *  in a division by zero error
      *  \sa is_normalized()
      */
-    void normalize();
+    Normal& normalize();
 
     /**  \brief Check if the current normal is normalized
      *

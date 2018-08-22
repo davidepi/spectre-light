@@ -10,7 +10,7 @@ TextureHeight::TextureHeight(const TextureImage* image, ImageChannel channel)
     TextureHeight::image = image;
 }
 
-void TextureHeight::bump(const HitPoint* hp) const
+void TextureHeight::bump(const HitPoint* hp, ShadingSpace* matrix) const
 {
     float deltau = 0.5f*(fabsf(hp->du.x)+fabsf(hp->du.y));
     float deltav = 0.5f*(fabsf(hp->dv.x)+fabsf(hp->dv.y));
@@ -20,7 +20,6 @@ void TextureHeight::bump(const HitPoint* hp) const
         deltav += 1e-2f;
     float uvu = hp->uv.x+deltau;
     float uvv = hp->uv.y+deltav;
-    Normal nn = (Normal)(cross(hp->geometric.dpdu, hp->geometric.dpdv));
 
     HitPoint shift_u;
     shift_u.uv = Point2(uvu, hp->uv.y);
@@ -58,10 +57,8 @@ void TextureHeight::bump(const HitPoint* hp) const
     shifted_v = *(&(tex.b)+channel);
 #endif
 
-    hp->shading.dpdu = hp->geometric.dpdu+
-                       (Vec3)(hp->geometric.n*(shifted_u-original)/deltau);
-    hp->shading.dpdv = hp->geometric.dpdv+
-                       (Vec3)(hp->geometric.n*(shifted_v-original)/deltav);
-    hp->shading.n = (Normal)cross(hp->shading.dpdu, hp->shading.dpdv);
-    hp->shading.n.normalize();
+    matrix->s = hp->dpdu+(Vec3)(hp->normal_h*(shifted_u-original)/deltau);
+    Vec3 dpdv = hp->dpdv+(Vec3)(hp->normal_h*(shifted_v-original)/deltav);
+    matrix->n = (Normal)cross(matrix->s, dpdv);
+    matrix->t = cross(Vec3(matrix->n), matrix->s).normalize();
 }

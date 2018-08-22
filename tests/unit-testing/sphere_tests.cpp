@@ -103,13 +103,13 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.point_h.x, 0.f);
     EXPECT_EQ(h.point_h.y, -1.f);
     EXPECT_EQ(h.point_h.z, 0.f);
-    EXPECT_EQ(h.geometric.n.x, 0.f);
-    EXPECT_EQ(h.geometric.n.y, -1.f);
-    EXPECT_EQ(h.geometric.n.z, 0.f);
-    h.geometric.dpdu.normalize();
-    EXPECT_EQ(h.geometric.dpdu.x, 1.f);
-    EXPECT_EQ(h.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(h.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(h.normal_h.x, 0.f);
+    EXPECT_EQ(h.normal_h.y, -1.f);
+    EXPECT_EQ(h.normal_h.z, 0.f);
+    h.dpdu.normalize();
+    EXPECT_EQ(h.dpdu.x, 1.f);
+    EXPECT_EQ(h.dpdu.y, 0.f);
+    EXPECT_EQ(h.dpdu.z, 0.f);
     EXPECT_EQ(h.uv.x, 0.75f);
     EXPECT_EQ(h.uv.y, 0.5f);
 
@@ -122,13 +122,13 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.point_h.x, 1.f);
     EXPECT_EQ(h.point_h.y, 0.f);
     EXPECT_EQ(h.point_h.z, 0.f);
-    EXPECT_EQ(h.geometric.n.x, 1.f);
-    EXPECT_EQ(h.geometric.n.y, 0.f);
-    EXPECT_EQ(h.geometric.n.z, 0.f);
-    h.geometric.dpdu.normalize();
-    EXPECT_EQ(h.geometric.dpdu.x, 0.f);
-    EXPECT_EQ(h.geometric.dpdu.y, 1.f);
-    EXPECT_EQ(h.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(h.normal_h.x, 1.f);
+    EXPECT_EQ(h.normal_h.y, 0.f);
+    EXPECT_EQ(h.normal_h.z, 0.f);
+    h.dpdu.normalize();
+    EXPECT_EQ(h.dpdu.x, 0.f);
+    EXPECT_EQ(h.dpdu.y, 1.f);
+    EXPECT_EQ(h.dpdu.z, 0.f);
     EXPECT_EQ(h.uv.x, 0.f);
     EXPECT_EQ(h.uv.y, 0.5f);
 
@@ -147,13 +147,13 @@ SPECTRE_TEST(Sphere, intersect)
     EXPECT_EQ(h.point_h.x, SELF_INTERSECT_ERROR);
     EXPECT_EQ(h.point_h.y, 0.f);
     EXPECT_EQ(h.point_h.z, 1.f);
-    EXPECT_EQ(h.geometric.n.x, 0.f);
-    EXPECT_EQ(h.geometric.n.y, 0.f);
-    EXPECT_EQ(h.geometric.n.z, 1.f);
-    h.geometric.dpdu.normalize();
-    EXPECT_EQ(h.geometric.dpdu.x, 0.f);
-    EXPECT_EQ(h.geometric.dpdu.y, 1.f);
-    EXPECT_EQ(h.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(h.normal_h.x, 0.f);
+    EXPECT_EQ(h.normal_h.y, 0.f);
+    EXPECT_EQ(h.normal_h.z, 1.f);
+    h.dpdu.normalize();
+    EXPECT_EQ(h.dpdu.x, 0.f);
+    EXPECT_EQ(h.dpdu.y, 1.f);
+    EXPECT_EQ(h.dpdu.z, 0.f);
     EXPECT_EQ(h.uv.x, 0.f);
     EXPECT_EQ(h.uv.y, 1.f);
     //complete miss

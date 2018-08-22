@@ -7,24 +7,24 @@ void calculate_differentials(HitPoint* hit, Ray* rx, Ray* ry)
 {
     //ripped from pbrt
     //calculate intersection of differentials with plane
-    float d = -dot(hit->geometric.n, Vec3(hit->point_h.x,
+    float d = -dot(hit->normal_h, Vec3(hit->point_h.x,
                                        hit->point_h.y,
                                        hit->point_h.z));
     Vec3 rxv = Vec3(rx->origin.x, rx->origin.y, rx->origin.z);
     Vec3 ryv = Vec3(ry->origin.x, ry->origin.y, ry->origin.z);
-    float tx = -(dot(hit->geometric.n, rxv)+d);
-    tx /= dot(hit->geometric.n, rx->direction);
-    float ty = -(dot(hit->geometric.n, ryv)+d);
-    ty /= dot(hit->geometric.n, ry->direction);
+    float tx = -(dot(hit->normal_h, rxv)+d);
+    tx /= dot(hit->normal_h, rx->direction);
+    float ty = -(dot(hit->normal_h, ryv)+d);
+    ty /= dot(hit->normal_h, ry->direction);
     Point3 px = rx->origin+(rx->direction*tx);
     Point3 py = ry->origin+(ry->direction*ty);
     //points differentials
     //    Vec3 dpdx = px-hit->point_h;
     //    Vec3 dpdy = py-hit->point_h;
 
-    float nx = fabsf(hit->geometric.n.x);
-    float ny = fabsf(hit->geometric.n.y);
-    float nz = fabsf(hit->geometric.n.z);
+    float nx = fabsf(hit->normal_h.x);
+    float ny = fabsf(hit->normal_h.y);
+    float nz = fabsf(hit->normal_h.z);
     uint8_t axes0;
     uint8_t axes1;
 
@@ -43,10 +43,10 @@ void calculate_differentials(HitPoint* hit, Ray* rx, Ray* ry)
         axes0 = 0;
         axes1 = 1;
     }
-    float a00 = hit->geometric.dpdu[axes0];
-    float a01 = hit->geometric.dpdv[axes0];
-    float a10 = hit->geometric.dpdu[axes1];
-    float a11 = hit->geometric.dpdv[axes1];
+    float a00 = hit->dpdu[axes0];
+    float a01 = hit->dpdv[axes0];
+    float a10 = hit->dpdu[axes1];
+    float a11 = hit->dpdv[axes1];
     float bx0 = px[axes0]-hit->point_h[axes0];
     float bx1 = px[axes1]-hit->point_h[axes1];
     float by0 = py[axes0]-hit->point_h[axes0];

@@ -88,7 +88,7 @@ AreaLight::sample_visible_surface(float r0, float r1, const Point3* pos,
 //        return SPECTRUM_BLACK;
 //    }
     light_point = ray.apply(*distance);
-    normal = hit.geometric.n; //object space
+    normal = hit.normal_h; //object space
     *wi = ray.direction;
     *pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
            (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
@@ -129,7 +129,7 @@ float AreaLight::pdf(const Point3* p, const Vec3* wi) const
     float pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
                 (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
                 (ray.origin.z-light_point.z)*(ray.origin.z-light_point.z);
-    pdf /= (absdot(hit.geometric.n, -(ray.direction))*AreaLight::area);
+    pdf /= (absdot(hit.normal_h, -(ray.direction))*AreaLight::area);
     return pdf;
 }
 

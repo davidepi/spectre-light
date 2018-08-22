@@ -40,19 +40,16 @@ Spectrum SingleBRDF::value(const Vec3* wo, const HitPoint* h, const Vec3* wi,
 {
     char flags = matchSpec?FLAG_SPEC:0;
     Spectrum retval = SPECTRUM_BLACK;
-    if(wi->dot(h->geometric.n)*wo->dot(h->geometric.n)>0)//reflected ray
+    if(wi->dot(h->normal_h)*wo->dot(h->normal_h)>0)//reflected ray
         flags |= FLAG_BRDF;
     else                                //transmitted ray
         return retval;
     if(bdf->matches(flags))
     {
-        bump->bump(h);
-        Vec3 wo_shading(wo->dot(h->geometric.dpdu), wo->dot(h->cross),
-                        wo->dot(h->shading.n));
-        Vec3 wi_shading(wi->dot(h->geometric.dpdu), wi->dot(h->cross),
-                        wi->dot(h->shading.n));
-        wo_shading.normalize();
-        wi_shading.normalize();
+        ShadingSpace shading_matrix;
+        bump->bump(h, &shading_matrix);
+        Vec3 wo_shading = shading_matrix.to_shading(*wo);
+        Vec3 wi_shading = shading_matrix.to_shading(*wi);
         retval = bdf->value(&wo_shading, &wi_shading);
         retval *= diffuse->map(h);
     }
@@ -74,17 +71,14 @@ Spectrum SingleBRDF::sample_value(float, float r1, float r2, const Vec3* wo,
     }
     else
         *matchedSpec = false;
-    bump->bump(h);
-    Vec3 wo_shading(wo->dot(h->geometric.dpdu), wo->dot(h->cross), wo->dot(h->shading.n));
-    wo_shading.normalize();
-    Vec3 tmpwi;
+    ShadingSpace shading_matrix;
+    bump->bump(h, &shading_matrix);
+    Vec3 wo_shading = shading_matrix.to_shading(*wo);
+    Vec3 wi_shading;
     Spectrum retval;
-    retval = bdf->sample_value(&wo_shading, &tmpwi, r1, r2, pdf);
-    tmpwi.normalize();
-    wi->x = h->geometric.dpdu.x*tmpwi.x+h->cross.x*tmpwi.y+h->shading.n.x*tmpwi.z;
-    wi->y = h->geometric.dpdu.y*tmpwi.x+h->cross.y*tmpwi.y+h->shading.n.y*tmpwi.z;
-    wi->z = h->geometric.dpdu.z*tmpwi.x+h->cross.z*tmpwi.y+h->shading.n.z*tmpwi.z;
-    wi->normalize();
+    retval = bdf->sample_value(&wo_shading, &wi_shading, r1, r2, pdf);
+    wi_shading.normalize();
+    *wi = shading_matrix.to_world(wi_shading);
     return retval*diffuse->map(h);
 }
 
@@ -93,12 +87,9 @@ float SingleBRDF::pdf(const Vec3* wo, const HitPoint* h, const Vec3* wi,
 {
     if(!matchSpec && bdf->is_specular())
         return 0.f;
-    bump->bump(h);
-    Vec3 wo_shading(wo->dot(h->geometric.dpdu), wo->dot(h->cross), wo->dot(h->shading.n));
-    Vec3 wi_shading(wi->dot(h->geometric.dpdu), wi->dot(h->cross), wi->dot(h->shading.n));
-    wo_shading.normalize();
-    wi_shading.normalize();
-    float pdf;
-    pdf = bdf->pdf(&wo_shading, &wi_shading);
-    return pdf;
+    ShadingSpace shading_matrix;
+    bump->bump(h, &shading_matrix);
+    Vec3 wo_shading = shading_matrix.to_shading(*wo);
+    Vec3 wi_shading = shading_matrix.to_shading(*wi);
+    return bdf->pdf(&wo_shading, &wi_shading);
 }

@@ -115,12 +115,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 0.f);
     EXPECT_EQ(hit.point_h.z, 0.5f);
-    EXPECT_EQ(hit.geometric.n.x, 0.f);
-    EXPECT_EQ(hit.geometric.n.y, -1.f);
-    EXPECT_EQ(hit.geometric.n.z, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, 1.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, -1.f);
+    EXPECT_EQ(hit.normal_h.z, 0.f);
+    EXPECT_EQ(hit.dpdu.x, 1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //point back hit back
     r = Ray(Point3(0.5f, 10.f, 0.5f), Vec3(0, -1, 0));
@@ -131,12 +131,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 1.f);
     EXPECT_EQ(hit.point_h.z, 0.5f);
-    EXPECT_EQ(hit.geometric.n.x, 0.f);
-    EXPECT_EQ(hit.geometric.n.y, 1.f);
-    EXPECT_EQ(hit.geometric.n.z, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, -1.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, 1.f);
+    EXPECT_EQ(hit.normal_h.z, 0.f);
+    EXPECT_EQ(hit.dpdu.x, -1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //point right hit right
     r = Ray(Point3(5, 0.5, 0.5), Vec3(-1, 0, 0));
@@ -147,12 +147,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 1.f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 0.5f);
-    EXPECT_EQ(hit.geometric.n.x, 1.f);
-    EXPECT_EQ(hit.geometric.n.y, 0.f);
-    EXPECT_EQ(hit.geometric.n.z, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 1.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 1.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, 0.f);
+    EXPECT_EQ(hit.dpdu.x, 0.f);
+    EXPECT_EQ(hit.dpdu.y, 1.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //point left hit left
     r = Ray(Point3(-5, 0.5, 0.5), Vec3(1, 0, 0));
@@ -163,12 +163,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 0.5f);
-    EXPECT_EQ(hit.geometric.n.x, -1.f);
-    EXPECT_EQ(hit.geometric.n.y, 0.f);
-    EXPECT_EQ(hit.geometric.n.z, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, -1.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, -1.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, 0.f);
+    EXPECT_EQ(hit.dpdu.x, 0.f);
+    EXPECT_EQ(hit.dpdu.y, -1.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //point top hit top
     r = Ray(Point3(0.5, 0.5, 3), Vec3(0, 0, -1));
@@ -179,12 +179,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 1.f);
-    EXPECT_EQ(hit.geometric.n.x, 0.f);
-    EXPECT_EQ(hit.geometric.n.y, 0.f);
-    EXPECT_EQ(hit.geometric.n.z, 1.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, 1.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, 1.f);
+    EXPECT_EQ(hit.dpdu.x, 1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //point bottom hit bottom
     r = Ray(Point3(0.5, 0.5, -3), Vec3(0, 0, 1));
@@ -195,12 +195,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 0.f);
-    EXPECT_EQ(hit.geometric.n.x, 0.f);
-    EXPECT_EQ(hit.geometric.n.y, 0.f);
-    EXPECT_EQ(hit.geometric.n.z, -1.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, -1.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, -1.f);
+    EXPECT_EQ(hit.dpdu.x, -1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //inside hit front
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(0, -1, 0));
@@ -211,12 +211,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 0.f);
     EXPECT_EQ(hit.point_h.z, 0.5f);
-    EXPECT_EQ(hit.geometric.n.x, 0.f);
-    EXPECT_EQ(hit.geometric.n.y, -1.f);
-    EXPECT_EQ(hit.geometric.n.z, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, 1.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, -1.f);
+    EXPECT_EQ(hit.normal_h.z, 0.f);
+    EXPECT_EQ(hit.dpdu.x, 1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //inside hit back
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(0, 1, 0));
@@ -227,12 +227,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 1.f);
     EXPECT_EQ(hit.point_h.z, 0.5f);
-    EXPECT_EQ(hit.geometric.n.x, 0.f);
-    EXPECT_EQ(hit.geometric.n.y, 1.f);
-    EXPECT_EQ(hit.geometric.n.z, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, -1.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, 1.f);
+    EXPECT_EQ(hit.normal_h.z, 0.f);
+    EXPECT_EQ(hit.dpdu.x, -1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //inside hit right
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(1, 0, 0));
@@ -243,12 +243,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 1.f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 0.5f);
-    EXPECT_EQ(hit.geometric.n.x, 1.f);
-    EXPECT_EQ(hit.geometric.n.y, 0.f);
-    EXPECT_EQ(hit.geometric.n.z, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 1.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 1.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, 0.f);
+    EXPECT_EQ(hit.dpdu.x, 0.f);
+    EXPECT_EQ(hit.dpdu.y, 1.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //inside hit left
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(-1, 0, 0));
@@ -259,12 +259,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 0.5f);
-    EXPECT_EQ(hit.geometric.n.x, -1.f);
-    EXPECT_EQ(hit.geometric.n.y, 0.f);
-    EXPECT_EQ(hit.geometric.n.z, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, -1.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, -1.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, 0.f);
+    EXPECT_EQ(hit.dpdu.x, 0.f);
+    EXPECT_EQ(hit.dpdu.y, -1.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //inside hit top
     r = Ray(Point3(0.5, 0.5, 0.5), Vec3(0, 0, 1));
@@ -275,12 +275,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 1.f);
-    EXPECT_EQ(hit.geometric.n.x, 0.f);
-    EXPECT_EQ(hit.geometric.n.y, 0.f);
-    EXPECT_EQ(hit.geometric.n.z, 1.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, 1.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, 1.f);
+    EXPECT_EQ(hit.dpdu.x, 1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //inside hit bottom
     r = Ray(Point3(0.5, 0.5, 0.5), Vec3(0, 0, -1));
@@ -291,12 +291,12 @@ SPECTRE_TEST(Box, intersect)
     EXPECT_EQ(hit.point_h.x, 0.5f);
     EXPECT_EQ(hit.point_h.y, 0.5f);
     EXPECT_EQ(hit.point_h.z, 0.f);
-    EXPECT_EQ(hit.geometric.n.x, 0.f);
-    EXPECT_EQ(hit.geometric.n.y, 0.f);
-    EXPECT_EQ(hit.geometric.n.z, -1.f);
-    EXPECT_EQ(hit.geometric.dpdu.x, -1.f);
-    EXPECT_EQ(hit.geometric.dpdu.y, 0.f);
-    EXPECT_EQ(hit.geometric.dpdu.z, 0.f);
+    EXPECT_EQ(hit.normal_h.x, 0.f);
+    EXPECT_EQ(hit.normal_h.y, 0.f);
+    EXPECT_EQ(hit.normal_h.z, -1.f);
+    EXPECT_EQ(hit.dpdu.x, -1.f);
+    EXPECT_EQ(hit.dpdu.y, 0.f);
+    EXPECT_EQ(hit.dpdu.z, 0.f);
 
     //point left, dir left
     r = Ray(Point3(-5, 0.5, 0.5), Vec3(-1, 0, 0));

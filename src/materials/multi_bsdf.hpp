@@ -17,7 +17,8 @@
 
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
-#include "textures/bump.hpp"
+#include "materials/shading_space.hpp"
+#include "materials/bump.hpp"
 
 /**
  *  \brief Material wrapping multiple reflective or transmittive surfaces
