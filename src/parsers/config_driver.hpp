@@ -42,6 +42,7 @@ extern "C" {
 #include "parsers/config_parser.tab.hh"
 #include "textures/texture_library.hpp"
 #include "textures/texture_image.hpp"
+#include "textures/texture_height.hpp"
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
 #include "materials/single_brdf.hpp"
@@ -106,6 +107,9 @@ public:
 
     ///Uniform texture if the material is going to use an uniform value
     const TextureUniform* specular_uniform;
+
+    ///Name of the bump texture, as it can be found in the TextureLibrary
+    std::string bump;
 
     ///Initialize the class with default values for materials
     ParsedMaterial();

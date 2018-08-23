@@ -31,6 +31,11 @@ class Bump
 public:
 
     /**
+     *  \brief Default destructor
+     */
+    virtual ~Bump() = default;
+
+    /**
      *  \brief Generates the shading normal
      *
      *  Given an HitPoint, this class creates its shading space matrix

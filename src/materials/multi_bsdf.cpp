@@ -11,7 +11,10 @@ MultiBSDF::MultiBSDF()
 MultiBSDF::~MultiBSDF()
 {
     for(int i = 0; i<count; i++)
+    {
         delete MultiBSDF::bdfs[i];
+        delete MultiBSDF::bump[i];
+    }
 }
 
 void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum,
@@ -33,7 +36,7 @@ void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum,
     if(bump != NULL)
         MultiBSDF::bump[count] = bump;
     else
-        MultiBSDF::bump[count] = TexLib.get_dflt_bump();
+        MultiBSDF::bump[count] = new Bump();
     count++;
 }
 

@@ -3,12 +3,10 @@
 
 #include "texture_library.hpp"
 
-TextureLibrary::TextureLibrary()
-        :default_diffuse(new TextureUniform(SPECTRUM_ONE)),
-        default_bump(new Bump())
+TextureLibrary::TextureLibrary():default_diffuse(
+        new TextureUniform(SPECTRUM_ONE))
 {
     texlib.insert(std::make_pair("Default", default_diffuse));
-    unfiltered = false;
 }
 
 TextureLibrary::~TextureLibrary()
@@ -123,9 +121,4 @@ bool TextureLibrary::contains_map(const std::string& name) const
 const Texture* TextureLibrary::get_dflt_diffuse() const
 {
     return TextureLibrary::default_diffuse;
-}
-
-const Bump* TextureLibrary::get_dflt_bump() const
-{
-    return TextureLibrary::default_bump;
 }

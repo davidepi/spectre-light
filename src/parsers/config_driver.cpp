@@ -1,6 +1,7 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
+#include <textures/texture_normal.hpp>
 #include "config_driver.hpp"
 
 ///minimum value for ParsedMaterial::rough_x when the material is not specular
@@ -323,6 +324,7 @@ void ConfigDriver::build_materials()
     Bsdf* material;
     const Texture* diffuse;
     const Texture* specular;
+    const Bump* bump_map;
     for(int i = 0; i<(int)deferred_materials.size(); i++)
     {
         mat = &deferred_materials[i];
@@ -357,6 +359,19 @@ void ConfigDriver::build_materials()
         else
             specular = mat->specular_uniform;
 
+        if(!mat->bump.empty())
+        {
+            if(TexLib.contains_texture(mat->bump))
+                bump_map = new TextureNormal((const TextureImage*)
+                                                     TexLib.get_texture(
+                                                             mat->bump));
+            else
+                bump_map = new TextureNormal((const TextureImage*)
+                                                     load_texture(mat->bump));
+        }
+        else
+            bump_map = new Bump();
+
         //isotropic element, no point in using anisotropic one
         mat->rough_x = clamp(mat->rough_x, 0.f, 1.f);
         if(mat->rough_y == mat->rough_x)
@@ -379,7 +394,8 @@ void ConfigDriver::build_materials()
                                               diffuse);
                 }
                 else
-                    material = new SingleBRDF(new Lambertian, diffuse);
+                    material = new SingleBRDF(new Lambertian, diffuse,
+                                              bump_map);
                 break;
             }
             case GLOSSY:

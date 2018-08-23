@@ -168,16 +168,6 @@ public:
      */
     const Texture* get_dflt_diffuse() const;
 
-    /**
-     * \brief Returns the default bump texture
-     *
-     *  This method returns the default TextureBump. The implementation of the
-     *  default TextureBump does nothing, but some materials requires it
-     *
-     * \return The default TextureBump implementation
-     */
-    const Bump* get_dflt_bump() const;
-
 private:
 
     TextureLibrary();
@@ -188,8 +178,6 @@ private:
     std::unordered_map<std::string, const ImageMap*> maplib;
     std::vector<const Texture*> unreferenced;
     const Texture* default_diffuse;
-    const Bump* default_bump;
-    bool unfiltered;
 };
 
 ///Access the texture library just by writing "TexLib"

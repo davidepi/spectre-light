@@ -27,12 +27,13 @@ SingleBRDF::SingleBRDF(const Bdf* bdf, const Texture* texture,
     if(bump != NULL)
         SingleBRDF::bump = bump;
     else
-        SingleBRDF::bump = TexLib.get_dflt_bump();
+        SingleBRDF::bump = new Bump();
 }
 
 SingleBRDF::~SingleBRDF()
 {
     delete SingleBRDF::bdf;
+    delete SingleBRDF::bump;
 }
 
 Spectrum SingleBRDF::value(const Vec3* wo, const HitPoint* h, const Vec3* wi,

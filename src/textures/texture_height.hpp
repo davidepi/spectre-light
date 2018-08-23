@@ -17,6 +17,7 @@ public:
     void bump(const HitPoint* hp, ShadingSpace* matrix) const override;
 
 private:
+    void gradient(const HitPoint* hp, float* u, float* v)const;
     const TextureImage* image;
     const ImageChannel channel;
 };

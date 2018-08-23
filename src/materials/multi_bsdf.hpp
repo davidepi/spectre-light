@@ -62,7 +62,10 @@ public:
      *  \param[in] bump The texture that will be used to compute the shading
      *  normal in the current point. If left empty, the default TextureBump
      *  will be used. The default TextureBump generates a shading normal
-     *  equal to the geometric normal
+     *  equal to the geometric normal.
+     *
+     *  \warning The Bump will be deleted by this BSDF constructor. (The idea
+     *  is that Bump are constructed by the Parses and managed by BxDFs)
      */
     void inherit_bdf(Bdf* addme, const Texture* spectrum = NULL,
                      const Bump* bump = NULL);

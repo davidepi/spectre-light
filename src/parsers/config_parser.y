@@ -93,6 +93,7 @@
 %token METAL "`metal keyword"
 %token ROUGHNESS "`roughness` keyword"
 %token SPECULAR "`specular` keyword"
+%token BUMP "`bump` keyword"
 %token SRC "`src` keyword"
 %token PATH_TRACE "`path` keyword"
 %token CHNR "Red channel attribute"
@@ -271,6 +272,7 @@ material_stmt
 | DIFFUSE COLON vector {driver.tex_color = $3; driver.cur_mat.diffuse_uniform = driver.load_texture_uniform();}
 | SPECULAR COLON STRING {driver.cur_mat.specular = $3.substr(1,$3.size()-2);}
 | SPECULAR COLON vector {driver.tex_color = $3; driver.cur_mat.specular_uniform = driver.load_texture_uniform();}
+| BUMP COLON STRING {driver.cur_mat.bump = $3.substr(1,$3.size()-2);}
 | ELEM COLON element {driver.cur_mat.elem = $3;}
 | COMMA
 ;
