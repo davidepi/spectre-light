@@ -728,6 +728,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     Asset a(&s, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     material_r.inherit_bdf(new Lambertian());
     materialWtexture.inherit_bdf(new Lambertian(), ut);
@@ -741,7 +742,8 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     materials[0] = &material_r;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -749,7 +751,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
 
     //reflected ray spec not ok
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -759,12 +761,12 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     materials[0] = &metal;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_TRUE(res.is_black());
 
     //specular ray allowed (however value will always return false for specular)
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_TRUE(res.is_black());
 
     //multi material, pick only non specular
@@ -772,7 +774,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     materials[0] = &metal;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.318309873f, 1e-5f);
@@ -781,7 +783,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     materials[0] = &materialWtexture;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
@@ -800,6 +802,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     Asset a(&s, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
@@ -807,7 +810,9 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     material_r.inherit_bdf(new Lambertian());
 
     //brdf diffuse match spec ok
-    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    material_r.gen_shading_matrix(&hit, &matrix);
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                  &matrix, &wi,
                                   &pdf, true, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -820,7 +825,8 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     EXPECT_TRUE(wi.is_normalized());
 
     //brdf diffuse match spec not ok
-    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                  &matrix, &wi,
                                   &pdf, false, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -837,7 +843,9 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     ColorRGB red((unsigned char)255, 0, 0);
     Texture* ut = new TextureUniform(Spectrum(red, false));
     materialWtexture.inherit_bdf(new Lambertian(), ut);
+    materialWtexture.gen_shading_matrix(&hit, &matrix);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                        &matrix,
                                         &wi, &pdf, false, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
@@ -855,7 +863,9 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     mat_glass.inherit_bdf(new DielectricReflection(ior_i, ior_t));
     mat_glass.inherit_bdf(new Refraction(ior_i, ior_t));
     //multi material specular, choose first (reflection)
-    res = mat_glass.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat_glass.gen_shading_matrix(&hit, &matrix);
+    res = mat_glass.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit,
+                                 &matrix, &wi,
                                  &pdf, true, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.0200593174f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0200593174f, 1e-5f);
@@ -867,7 +877,8 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     EXPECT_EQ(matched_spec, true);
     EXPECT_TRUE(wi.is_normalized());
     //multi material specular, choose second (refraction)
-    res = mat_glass.sample_value(1.f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    res = mat_glass.sample_value(1.f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                                 &wi,
                                  &pdf, true, &matched_spec);
     EXPECT_NEAR(res.w[0], 1.73341715f, 1e-5f);
     EXPECT_NEAR(res.w[1], 1.73341715f, 1e-5f);
@@ -880,14 +891,16 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     EXPECT_TRUE(wi.is_normalized());
 
     //brdf no match
-    res = mat_glass.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    res = mat_glass.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                 &matrix, &wi,
                                  &pdf, false, &matched_spec);
     EXPECT_TRUE(res.is_black());
     EXPECT_EQ(pdf, 0.f);
 
     //multi material specular + non specular, non specular not allowed
     mat_glass.inherit_bdf((Bdf*)new Lambertian());
-    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                  &matrix, &wi,
                                   &pdf, false, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -905,8 +918,10 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     mat_glossy.inherit_bdf(new MicrofacetR(ggx1,
                                            new Dielectric(ior_i, ior_t)));
     mat_glossy.inherit_bdf(new MicrofacetT(ggx2, ior_i, ior_t));
+    mat_glossy.gen_shading_matrix(&hit, &matrix);
     //multi material glossy, choose first (reflection)
-    res = mat_glossy.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    res = mat_glossy.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit,
+                                  &matrix, &wi,
                                   &pdf, false, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.0116626127f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0116626127f, 1e-5f);
@@ -918,7 +933,8 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     EXPECT_EQ(matched_spec, false);
     EXPECT_TRUE(wi.is_normalized());
     //multi material glossy, choose second (refraction)
-    res = mat_glossy.sample_value(1.f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    res = mat_glossy.sample_value(1.f, 0.5f, 0.5f, &(r.direction), &hit,
+                                  &matrix, &wi,
                                   &pdf, false, &matched_spec);
     EXPECT_NEAR(res.w[0], 30.8263855f, 1e-5f);
     EXPECT_NEAR(res.w[1], 30.8263855f, 1e-5f);
@@ -942,6 +958,7 @@ SPECTRE_TEST(Material, MultiBSDF_pdf)
     Asset a(&s, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
@@ -949,18 +966,19 @@ SPECTRE_TEST(Material, MultiBSDF_pdf)
     MultiBSDF metal;
     //empty
     wi = Vec3(0.f, 1.f, 0.f);
-    pdf = material.pdf(&(r.direction), &hit, &wi, false);
+    material.gen_shading_matrix(&hit, &matrix);
+    pdf = material.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_EQ(pdf, 0.f);
 
     //non matching
     metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,
                                               METALS[METAL_GOLD].k));
-    pdf = metal.pdf(&(r.direction), &hit, &wi, false);
+    pdf = metal.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_EQ(pdf, 0.f);
 
     //matching
     material.inherit_bdf(new Lambertian());
-    pdf = material.pdf(&(r.direction), &hit, &wi, false);
+    pdf = material.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_NEAR(pdf, 0.318309873f, 1e-5f);
 
     //multiple values
@@ -968,7 +986,8 @@ SPECTRE_TEST(Material, MultiBSDF_pdf)
     float pdf2;
     material2.inherit_bdf(new Lambertian());
     material2.inherit_bdf(new Lambertian());
-    pdf2 = material2.pdf(&(r.direction), &hit, &wi, false);
+    material2.gen_shading_matrix(&hit, &matrix);
+    pdf2 = material2.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_NEAR(pdf2, pdf, 1e-5f);
 }
 
@@ -999,6 +1018,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     Asset a(&s, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     SingleBRDF material_r(new Lambertian());
     SingleBRDF materialWtexture(new Lambertian(), ut);
@@ -1012,7 +1032,8 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     materials[0] = &material_r;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -1022,7 +1043,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     wi = Vec3(0.f, 1.f, 0.f);
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -1032,21 +1053,23 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     materials[0] = &metal;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_TRUE(res.is_black());
 
     //matching spec.. but value does not allow me to return > 0 for specular
     wi = Vec3(0.f, 1.f, 0.f);
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_TRUE(res.is_black());
 
     //textured material
     materials[0] = &materialWtexture;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, true);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
@@ -1067,6 +1090,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     Asset a(&s, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
@@ -1076,12 +1100,15 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     materials[0] = &metal;
     a.set_materials(materials, 1, &association);
     //brdf specular no match
-    res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    metal.gen_shading_matrix(&hit, &matrix);
+    res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, false, &matched_spec);
     EXPECT_TRUE(res.is_black());
 
     //brdf specular match
-    res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &matched_spec);
     EXPECT_NEAR(res.w[0], 2.43357158f, 1e-5f);
     EXPECT_NEAR(res.w[1], 1.25041258f, 1e-5f);
@@ -1094,7 +1121,9 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     EXPECT_TRUE(wi.is_normalized());
 
     //brdf diffuse match with no-spec requested
-    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    material_r.gen_shading_matrix(&hit, &matrix);
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                  &matrix, &wi,
                                   &pdf, false, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -1107,7 +1136,8 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     EXPECT_TRUE(wi.is_normalized());
 
     //brdf diffuse match with spec requested
-    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                  &matrix, &wi,
                                   &pdf, true, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
@@ -1123,7 +1153,9 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     ColorRGB red((unsigned char)255, 0, 0);
     Texture* ut = new TextureUniform(Spectrum(red, false));
     SingleBRDF materialWtexture(new Lambertian(), ut);
+    materialWtexture.gen_shading_matrix(&hit, &matrix);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
+                                        &matrix,
                                         &wi, &pdf, false, &matched_spec);
     EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
@@ -1147,6 +1179,7 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
     Asset a(&s, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
@@ -1156,19 +1189,21 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
     wi = Vec3(0.f, 1.f, 0.f);
 
     //non matching spec
-    pdf = metal.pdf(&(r.direction), &hit, &wi, false);
+    metal.gen_shading_matrix(&hit, &matrix);
+    pdf = metal.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_EQ(pdf, 0.f);
 
     //matching spec
-    pdf = metal.pdf(&(r.direction), &hit, &wi, true);
+    pdf = metal.pdf(&(r.direction), &hit, &matrix, &wi, true);
     EXPECT_EQ(pdf, 0.f);
 
     //matching brdf no-spec
-    pdf = material_r.pdf(&(r.direction), &hit, &wi, false);
+    material_r.gen_shading_matrix(&hit, &matrix);
+    pdf = material_r.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_NEAR(pdf, 0.318309873f, 1e-5f);
 
     //matching brdf yes-spec
-    pdf = material_r.pdf(&(r.direction), &hit, &wi, true);
+    pdf = material_r.pdf(&(r.direction), &hit, &matrix, &wi, true);
     EXPECT_NEAR(pdf, 0.318309873f, 1e-5f);
 }
 
