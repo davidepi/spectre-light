@@ -126,6 +126,7 @@ distribution { UPDATE_POS; return yy::ConfigParser::make_DISTRIBUTION(loc); }
 diffuse { UPDATE_POS; return yy::ConfigParser::make_DIFFUSE(loc); }
 specular { UPDATE_POS; return yy::ConfigParser::make_SPECULAR(loc); }
 bump {UPDATE_POS; return yy::ConfigParser::make_BUMP(loc); }
+normal {UPDATE_POS; return yy::ConfigParser::make_NORMAL(loc);}
 blinn { UPDATE_POS; return yy::ConfigParser::make_BLINN(loc); }
 beckmann { UPDATE_POS; return yy::ConfigParser::make_BECKMANN(loc); }
 ggx { UPDATE_POS; return yy::ConfigParser::make_GGX(loc); }

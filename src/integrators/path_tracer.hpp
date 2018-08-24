@@ -57,14 +57,14 @@ class PathTracer : public LightIntegrator
      *  \return The radiance arriving at the film
      */
     Spectrum radiance(const Scene* sc, const HitPoint* hp,
-                      const Ray* r, Sampler* sam,OcclusionTester *ot)const;
+                      const Ray* r, Sampler* sam, OcclusionTester* ot) const;
 
 private:
 
     //recursive function for the radiance computation
     Spectrum l_rec(const Scene* sc, const HitPoint* hp,
                    const Ray* r, Sampler* sam, Spectrum* power, bool last_spec,
-                   OcclusionTester *ot)const;
+                   OcclusionTester* ot) const;
 };
 
 #endif

@@ -65,9 +65,12 @@ void TextureHeight::bump(const HitPoint* hp, ShadingSpace* matrix) const
 
     Vec3 dpdu = hp->dpdu+(Vec3)(hp->normal_h*(u-dot(hp->normal_h, hp->dpdu)));
     Vec3 dpdv = hp->dpdv+(Vec3)(hp->normal_h*(v-dot(hp->normal_h, hp->dpdv)));
-    matrix->n = (Normal)cross(dpdu, dpdv).normalize();
-    matrix->s = (dpdu-(Vec3)(matrix->n)*dot(dpdu, matrix->n)).normalize();
-    matrix->t = cross(Vec3(matrix->n), matrix->s).normalize();
+    matrix->n = (Normal)cross(dpdu, dpdv);
+    matrix->n.normalize();
+    matrix->s = (dpdu-(Vec3)(matrix->n)*dot(dpdu, matrix->n));
+    matrix->s.normalize();
+    matrix->t = cross(Vec3(matrix->n), matrix->s);
+    matrix->t.normalize();
     if(dot(matrix->n, hp->normal_h)<0)
         matrix->n *= -1;
 }

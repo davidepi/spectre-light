@@ -1,5 +1,5 @@
 //Created,   10 Aug 2018
-//Last Edit  20 Aug 2018
+//Last Edit  24 Aug 2018
 
 /**
  *  \file multi_bsdf.hpp
@@ -7,7 +7,7 @@
  *  \details   A material composed of reflective and transmittive components
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      20 Aug 2018
+ *  \date      24 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -59,16 +59,11 @@ public:
      *  \param[in] spectrum The texture that will be used to compute the
      *  spectrum of the BSDF. If left empty, the default White texture will be
      *  used
-     *  \param[in] bump The texture that will be used to compute the shading
-     *  normal in the current point. If left empty, the default TextureBump
-     *  will be used. The default TextureBump generates a shading normal
-     *  equal to the geometric normal.
      *
      *  \warning The Bump will be deleted by this BSDF constructor. (The idea
      *  is that Bump are constructed by the Parses and managed by BxDFs)
      */
-    void inherit_bdf(Bdf* addme, const Texture* spectrum = NULL,
-                     const Bump* bump = NULL);
+    void inherit_bdf(Bdf* addme, const Texture* spectrum = NULL);
 
     /** \brief Return the value of the BSDF
      *
@@ -80,11 +75,13 @@ public:
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wiW The incident direction, in world space
+     *  \param[in] matrix The matrix used to swap from world space to shading
+     *  space
      *  \param[in] matchSpec True if specular Bdfs should be considered
      *  \return The value of the BSDF
      */
     Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                   bool matchSpec) const override;
+                   const ShadingSpace* matrix, bool matchSpec) const override;
 
     /** \brief Return the value of the BSDF
      *
@@ -97,6 +94,8 @@ public:
      *  \param[in] r2 A random float in the interval (0.0,1.0)
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
+     *  \param[in] matrix The matrix used to swap from world space to shading
+     *  space
      *  \param[out] wiW The incident direction, in world space
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
@@ -105,8 +104,9 @@ public:
      *  \return A sampled value of the BSDF
      */
     Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
-                          const HitPoint* h, Vec3* wiW, float* pdf,
-                          bool matchSpec, bool* matchedSpec) const
+                          const HitPoint* h, const ShadingSpace* matrix,
+                          Vec3* wiW, float* pdf, bool matchSpec,
+                          bool* matchedSpec) const
     override;
 
     /** \brief Return the probability density function for this bsdf
@@ -115,12 +115,14 @@ public:
      *
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
+     *  \param[in] matrix The matrix used to swap from world space to shading
+     *  space
      *  \param[in] wiW The incident direction, in world space
      *  \param[in] matchSpec True if the method should match specular Bdfs
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-              bool matchSpec) const override;
+    float pdf(const Vec3* woW, const HitPoint* h, const ShadingSpace* matrix,
+              const Vec3* wiW, bool matchSpec) const override;
 
 protected:
 
@@ -132,7 +134,6 @@ protected:
 
     //Textures
     const Texture* diffuse[_MAX_BDF_];
-    const Bump* bump[_MAX_BDF_];
 };
 
 

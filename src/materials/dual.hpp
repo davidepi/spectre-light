@@ -1,5 +1,5 @@
 //Created,  10 Aug 2018
-//Last Edit 12 Aug 2018
+//Last Edit 24 Aug 2018
 
 /**
  *  \file dual.hpp
@@ -7,7 +7,7 @@
  *  \details   Multi-material composed by two other materials
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      12 Aug 2018
+ *  \date      24 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -38,8 +38,6 @@ public:
 
     DualBsdf(const Bsdf* first, const Bsdf* second, const MaskBoolean& mask);
 
-    ~DualBsdf() final = default;
-
     /** \brief Return the value of the BSDF
      *
      *  Computes the value of the Bsdf in the point, defining how the light is
@@ -51,11 +49,13 @@ public:
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
      *  \param[in] wiW The incident direction, in world space
+     *  \param[in] matrix The matrix used to swap from world space to shading
+     *  space
      *  \param[in] matchSpec True if specular Bdfs should be considered
      *  \return The value of the BSDF
      */
     Spectrum value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                           bool matchSpec) const override;
+                   const ShadingSpace* matrix, bool matchSpec) const override;
 
     /** \brief Return the value of the BSDF
      *
@@ -68,6 +68,8 @@ public:
      *  \param[in] r2 A random float in the interval (0.0,1.0)
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
+     *  \param[in] matrix The matrix used to swap from world space to shading
+     *  space
      *  \param[out] wiW The incident direction, in world space
      *  \param[out] pdf The probability density function of the chosen point
      *  over the bdf hemisphere
@@ -76,9 +78,9 @@ public:
      *  \return A sampled value of the BSDF
      */
     Spectrum sample_value(float r0, float r1, float r2, const Vec3* woW,
-                                  const HitPoint* h, Vec3* wiW, float* pdf,
-                                  bool matchSpec, bool* matchedSpec)
-                                  const override;
+                          const HitPoint* h, const ShadingSpace* matrix,
+                          Vec3* wiW, float* pdf, bool matchSpec,
+                          bool* matchedSpec) const override;
 
     /** \brief Return the probability density function for this bsdf
      *
@@ -86,12 +88,24 @@ public:
      *
      *  \param[in] woW The outgoing direction, in world space
      *  \param[in] h  The properties of the hit point
+     *  \param[in] matrix The matrix used to swap from world space to shading
+     *  space
      *  \param[in] wiW The incident direction, in world space
      *  \param[in] matchSpec True if the method should match specular Bdfs
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
-                      bool matchSpec) const override;
+    float pdf(const Vec3* woW, const HitPoint* h, const ShadingSpace* matrix,
+              const Vec3* wiW, bool matchSpec) const override;
+
+    /**
+     *  \brief  Calculate the shading matrix for this material
+     *
+     * \param[in] hp The HitPoint that will be used for the shading matrix
+     * computation
+     * \param[out] matrix The shading matrix that will be generated
+     */
+    void gen_shading_matrix(const HitPoint* hp, ShadingSpace* matrix) const
+    override;
 
 private:
 

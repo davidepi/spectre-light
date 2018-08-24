@@ -30,11 +30,15 @@ void TextureNormal::bump(const HitPoint* hp, ShadingSpace* matrix) const
 
     ShadingSpace old;
     old.s = hp->dpdu;
-    old.n = (Normal)cross(hp->dpdu, hp->dpdv).normalize();
-    old.t = cross(old.s, (Vec3)old.n).normalize();
+    old.n = (Normal)cross(hp->dpdu, hp->dpdv);
+    old.n.normalize();
+    old.t = cross(old.s, (Vec3)old.n);
+    old.t.normalize();
 
-    matrix->n = (Normal)(old.to_world(normal)).normalize();
-    matrix->s = (hp->dpdu-
-                 (Vec3)(matrix->n*dot(matrix->n, hp->dpdu))).normalize();
-    matrix->t = cross(Vec3(matrix->n), matrix->s).normalize();
+    matrix->n = (Normal)(old.to_world(normal));
+    matrix->n.normalize();
+    matrix->s = (hp->dpdu-(Vec3)(matrix->n*dot(matrix->n, hp->dpdu)));
+    matrix->s.normalize();
+    matrix->t = cross(Vec3(matrix->n), matrix->s);
+    matrix->t.normalize();
 }

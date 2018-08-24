@@ -19,6 +19,7 @@ ParsedMaterial::ParsedMaterial()
     diffuse_uniform = NULL;
     specular = "Default";
     specular_uniform = NULL;
+    bump_is_normal = false;
 }
 
 ConfigDriver::ConfigDriver()
@@ -362,12 +363,19 @@ void ConfigDriver::build_materials()
         if(!mat->bump.empty())
         {
             if(TexLib.contains_texture(mat->bump))
-                bump_map = new TextureNormal((const TextureImage*)
-                                                     TexLib.get_texture(
-                                                             mat->bump));
+                if(mat->bump_is_normal)
+                    bump_map = new TextureNormal(
+                            (const TextureImage*)TexLib.get_texture(mat->bump));
+                else
+                    bump_map = new TextureHeight(
+                            (const TextureImage*)TexLib.get_texture(mat->bump),
+                            RED);
+            else if(mat->bump_is_normal)
+                bump_map = new TextureNormal(
+                        (const TextureImage*)load_texture(mat->bump));
             else
-                bump_map = new TextureNormal((const TextureImage*)
-                                                     load_texture(mat->bump));
+                bump_map = new TextureHeight(
+                        (const TextureImage*)load_texture(mat->bump), RED);
         }
         else
             bump_map = new Bump();
@@ -394,8 +402,7 @@ void ConfigDriver::build_materials()
                                               diffuse);
                 }
                 else
-                    material = new SingleBRDF(new Lambertian, diffuse,
-                                              bump_map);
+                    material = new SingleBRDF(new Lambertian, diffuse);
                 break;
             }
             case GLOSSY:
@@ -505,6 +512,7 @@ void ConfigDriver::build_materials()
                 break;
             }
         }
+        material->inherit_bump(bump_map);
         MtlLib.add_inherit(mat->name, material);
     }
 }

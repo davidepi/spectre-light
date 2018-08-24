@@ -11,14 +11,10 @@ MultiBSDF::MultiBSDF()
 MultiBSDF::~MultiBSDF()
 {
     for(int i = 0; i<count; i++)
-    {
         delete MultiBSDF::bdfs[i];
-        delete MultiBSDF::bump[i];
-    }
 }
 
-void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum,
-                            const Bump* bump)
+void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum)
 {
 #ifdef DEBUG
     if(count == _MAX_BDF_)
@@ -33,41 +29,34 @@ void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum,
     else
         //assuming default texture always exists and is SPECTRUM_ONE
         MultiBSDF::diffuse[count] = TexLib.get_dflt_diffuse();
-    if(bump != NULL)
-        MultiBSDF::bump[count] = bump;
-    else
-        MultiBSDF::bump[count] = new Bump();
     count++;
 }
 
-Spectrum MultiBSDF::value(const Vec3* wo, const HitPoint* h, const Vec3* wi,
-                          bool matchSpec) const
+Spectrum MultiBSDF::value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
+                          const ShadingSpace* matrix, bool matchSpec) const
 {
     char flags = matchSpec?FLAG_SPEC:0;
-    if(wi->dot(h->normal_h)*wo->dot(h->normal_h)>0)//reflected ray
+    if(wiW->dot(h->normal_h)*woW->dot(h->normal_h)>0)//reflected ray
         flags |= FLAG_BRDF;
     else                                //transmitted ray
         flags |= FLAG_BTDF;
     Spectrum retval = SPECTRUM_BLACK;
-    ShadingSpace shading_matrix;
+    Vec3 wo_shading = matrix->to_shading(*woW);
+    Vec3 wi_shading = matrix->to_shading(*wiW);
     for(int i = 0; i<count; i++)
     {
         //add contribution only if matches refl/trans
         if(bdfs[i]->matches(flags))
-        {
-            bump[i]->bump(h, &shading_matrix);
-            Vec3 wo_shading = shading_matrix.to_shading(*wo);
-            Vec3 wi_shading = shading_matrix.to_shading(*wi);
             retval +=
                     bdfs[i]->value(&wo_shading, &wi_shading)*diffuse[i]->map(h);
-        }
     }
     return retval;
 }
 
-Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
-                                 const HitPoint* h, Vec3* wi, float* pdf,
-                                 bool matchSpec, bool* matchedSpec) const
+Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* woW,
+                                 const HitPoint* h, const ShadingSpace* matrix,
+                                 Vec3* wiW, float* pdf, bool matchSpec,
+                                 bool* matchedSpec) const
 {
     //this could be skipped with an ad-hoc method but... it will loop 2-3 times
     //at max...
@@ -95,12 +84,8 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
     if(chosen == matchcount) //out of array
         chosen--;
 
-    //apply bump mapping
-    ShadingSpace shading_matrix;
-    bump[chosen]->bump(h, &shading_matrix);
-
     //transform to shading space
-    Vec3 wo_shading = shading_matrix.to_shading(*wo);
+    Vec3 wo_shading = matrix->to_shading(*woW);
     Vec3 wi_shading;
 
     //I don't care about the result, but I need to generate the &wi vector
@@ -118,7 +103,7 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
         wi_shading.normalize();
 
     //transform incident ray to world space
-    *wi = shading_matrix.to_world(wi_shading);
+    *wiW = matrix->to_world(wi_shading);
     //if not specular, throw away retval and compute the value for the generated
     //pair of directions
     if(!matching[chosen]->is_specular())
@@ -127,7 +112,7 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
         char flags;
         retval = SPECTRUM_BLACK;
         *pdf = 0.f;
-        if(wo->dot(h->normal_h)*wi->dot(h->normal_h)>0)
+        if(woW->dot(h->normal_h)*wiW->dot(h->normal_h)>0)
             flags = FLAG_BRDF;
         else
             flags = FLAG_BTDF;
@@ -135,8 +120,6 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
         {
             if(bdfs[i]->matches(flags))//add contribution only if matches
             {
-                bump[i]->bump(h, &shading_matrix);
-                wo_shading = shading_matrix.to_shading(*wo);
                 retval += bdfs[i]->value(&wo_shading, &wi_shading)*
                           diffuse[chosen]->map(h);
                 *pdf += bdfs[i]->pdf(&wo_shading, &wi_shading);
@@ -153,8 +136,9 @@ Spectrum MultiBSDF::sample_value(float r0, float r1, float r2, const Vec3* wo,
     return retval;
 }
 
-float MultiBSDF::pdf(const Vec3* wo, const HitPoint* h, const Vec3* wi,
-                     bool matchSpec) const
+float
+MultiBSDF::pdf(const Vec3* woW, const HitPoint*, const ShadingSpace* matrix,
+               const Vec3* wiW, bool matchSpec) const
 {
     if(MultiBSDF::count == 0)
         return 0.f;
@@ -162,15 +146,13 @@ float MultiBSDF::pdf(const Vec3* wo, const HitPoint* h, const Vec3* wi,
                                                              FLAG_BTDF;
     float pdf = 0.f;
     int matching = 0;
-    ShadingSpace shading_matrix;
+    Vec3 wo_shading = matrix->to_shading(*woW);
+    Vec3 wi_shading = matrix->to_shading(*wiW);
     for(int i = 0; i<count; ++i)
     {
         if(bdfs[i]->matches(flags))
         {
             matching++;
-            bump[i]->bump(h, &shading_matrix);
-            Vec3 wo_shading = shading_matrix.to_shading(*wo);
-            Vec3 wi_shading = shading_matrix.to_shading(*wi);
             pdf += bdfs[i]->pdf(&wo_shading, &wi_shading);
         }
     }

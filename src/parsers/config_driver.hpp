@@ -111,6 +111,9 @@ public:
     ///Name of the bump texture, as it can be found in the TextureLibrary
     std::string bump;
 
+    ///True if the bump map is a normal map
+    bool bump_is_normal;
+
     ///Initialize the class with default values for materials
     ParsedMaterial();
 };
