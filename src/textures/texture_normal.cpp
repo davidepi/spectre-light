@@ -1,6 +1,5 @@
-//
-// Created by davide on 12/08/18.
-//
+//author: Davide Pizzolotto
+//license: GNU GPLv3
 
 #include "texture_normal.hpp"
 
@@ -9,7 +8,9 @@ TextureNormal::TextureNormal(const TextureImage* image)
     TextureNormal::image = image;
 }
 
-void TextureNormal::bump(const HitPoint* hp, ShadingSpace* matrix) const
+void
+TextureNormal::bump(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
+                    Normal* normal) const
 {
     constexpr const float INV255 = 1.f/255.f;
     TexelUnion res = image->map_value(hp);
@@ -22,23 +23,21 @@ void TextureNormal::bump(const HitPoint* hp, ShadingSpace* matrix) const
     x *= 2.f;
     y *= 2.f;
     z *= 2.f;
-    x *= 1.f;
-    y *= 1.f;
-    z *= 1.f;
+    x -= 1.f;
+    y -= 1.f;
+    z -= 1.f;
 
-    Vec3 normal(x, y, z);
+    Vec3 normal_shading(x, y, z);
 
     ShadingSpace old;
     old.s = hp->dpdu;
-    old.n = (Normal)cross(hp->dpdu, hp->dpdv);
-    old.n.normalize();
-    old.t = cross(old.s, (Vec3)old.n);
-    old.t.normalize();
+    old.n = (Normal)cross(hp->dpdu, hp->dpdv).normalize();
+    old.t = cross(old.s, (Vec3)old.n).normalize();
 
-    matrix->n = (Normal)(old.to_world(normal));
-    matrix->n.normalize();
-    matrix->s = (hp->dpdu-(Vec3)(matrix->n*dot(matrix->n, hp->dpdu)));
-    matrix->s.normalize();
-    matrix->t = cross(Vec3(matrix->n), matrix->s);
-    matrix->t.normalize();
+    matrix->n = (Normal)(old.to_world(normal_shading)).normalize();
+    matrix->s = (hp->dpdu-
+                 (Vec3)(matrix->n*dot(matrix->n, hp->dpdu))).normalize();
+    matrix->t = cross(Vec3(matrix->n), matrix->s).normalize();
+    *normal = matrix->n;
+    *point = hp->point_h;
 }

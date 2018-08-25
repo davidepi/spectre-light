@@ -18,16 +18,19 @@ Spectrum PathTracer::l_rec(const Scene* sc, const HitPoint* hp, const Ray* r,
     Spectrum retval = SPECTRUM_BLACK;
     Vec3 wo = -r->direction;
     wo.normalize();
-    //if first hit is light or specular, use its emission
-    if((r->ricochet == 0 || last_spec)
-       && hp->asset_h->is_light() && dot(hp->normal_h, wo)>0)
-        retval += *power*((AreaLight*)hp->asset_h)->emissive_spectrum();
-
     //calculate direct lighting at point
     const Bsdf* mat = hp->asset_h->get_material(hp->index);
     ShadingSpace matrix;
-    mat->gen_shading_matrix(hp, &matrix);
-    Spectrum direct = direct_l(sc, hp, r, sam, ot);
+    Normal n;
+    Point3 p;
+    mat->gen_shading_matrix(hp, &matrix, &p, &n);
+
+    //if first hit is light or specular, use its emission
+    if((r->ricochet == 0 || last_spec)
+       && hp->asset_h->is_light() && dot(n, wo)>0)
+        retval += *power*((AreaLight*)hp->asset_h)->emissive_spectrum();
+
+    Spectrum direct = direct_l(sc, hp, r, sam, ot, mat, &p, &n, &matrix);
     retval += *power*direct;
 
     //random samples
@@ -54,10 +57,10 @@ Spectrum PathTracer::l_rec(const Scene* sc, const HitPoint* hp, const Ray* r,
                                    &wi, &pdf, true, &matchedSpec);
     if(pdf == 0 || f.is_black())
         return retval;
-    float adot = absdot(wi, hp->normal_h);
+    float adot = absdot(wi, n);
     //calculate new power, new ray and new intersection point
     *power *= f*adot/pdf*rrprob;
-    Ray r2(hp->point_h, wi);
+    Ray r2(p, wi);
     r2.ricochet = (unsigned char)(r->ricochet+1);
     HitPoint h2;
     h2.differentials = false;

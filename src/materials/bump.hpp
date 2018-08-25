@@ -43,8 +43,11 @@ public:
      *  the shading normal calculation
      *  \param[out] matrix The ShadingSpace class that will be filled with
      *  the three orthonormal vectors expressing the shading space
+     *  \param[out] point The displaced (shading) hit point
+     *  \param[out] normal The shading normal
      */
-    virtual void bump(const HitPoint* hp, ShadingSpace* matrix) const;
+    virtual void bump(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
+                      Normal* normal) const;
 };
 
 #endif

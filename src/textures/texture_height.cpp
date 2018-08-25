@@ -29,9 +29,10 @@ void TextureHeight::gradient(const HitPoint* hp, float* u, float* v) const
 
     float epsilon_u = 0.5f*(fabsf(hp->du.x)+fabsf(hp->du.y));
     if(epsilon_u == 0)
-        epsilon_u += 1e-2f;
+        epsilon_u = 0.01f;
     shifted.point_h = hp->point_h+hp->dpdu*epsilon_u;
-    shifted.uv = hp->uv+Vec2(epsilon_u, 0.f);
+    shifted.uv = hp->uv;
+    shifted.uv.x += epsilon_u;
 
     tex = image->map_value(&shifted).bgra_texel;
 #ifndef IS_BIG_ENDIAN
@@ -41,10 +42,11 @@ void TextureHeight::gradient(const HitPoint* hp, float* u, float* v) const
 #endif
 
     float epsilon_v = 0.5f*(fabsf(hp->dv.x)+fabsf(hp->dv.y));
-    if(epsilon_v == 0)
-        epsilon_v += 1e-2f;
-    shifted.point_h = hp->point_h+hp->dpdv*epsilon_u;
-    shifted.uv = hp->uv+Vec2(0.f, epsilon_v);
+    if(epsilon_v == 0.f)
+        epsilon_v = 0.01f;
+    shifted.point_h = hp->point_h+hp->dpdv*epsilon_v;
+    shifted.uv = hp->uv;
+    shifted.uv.y += epsilon_v;
 
     tex = image->map_value(&shifted).bgra_texel;
 #ifndef IS_BIG_ENDIAN
@@ -55,22 +57,22 @@ void TextureHeight::gradient(const HitPoint* hp, float* u, float* v) const
 
     *u = (shifted_u-original)*INV255/epsilon_u;
     *v = (shifted_v-original)*INV255/epsilon_v;
-
 }
 
-void TextureHeight::bump(const HitPoint* hp, ShadingSpace* matrix) const
+void
+TextureHeight::bump(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
+                    Normal* normal) const
 {
     float u, v;
     gradient(hp, &u, &v);
 
     Vec3 dpdu = hp->dpdu+(Vec3)(hp->normal_h*(u-dot(hp->normal_h, hp->dpdu)));
     Vec3 dpdv = hp->dpdv+(Vec3)(hp->normal_h*(v-dot(hp->normal_h, hp->dpdv)));
-    matrix->n = (Normal)cross(dpdu, dpdv);
-    matrix->n.normalize();
-    matrix->s = (dpdu-(Vec3)(matrix->n)*dot(dpdu, matrix->n));
-    matrix->s.normalize();
-    matrix->t = cross(Vec3(matrix->n), matrix->s);
-    matrix->t.normalize();
+    matrix->n = (Normal)cross(dpdu, dpdv).normalize();
+    matrix->s = (dpdu-(Vec3)(matrix->n)*dot(dpdu, matrix->n)).normalize();
+    matrix->t = cross(Vec3(matrix->n), matrix->s).normalize();
     if(dot(matrix->n, hp->normal_h)<0)
         matrix->n *= -1;
+    *normal = matrix->n;
+    *point = hp->point_h;
 }
