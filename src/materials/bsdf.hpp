@@ -128,14 +128,13 @@ public:
      * \param[in] hp The HitPoint that will be used for the shading matrix
      * computation
      * \param[out] matrix The shading matrix that will be generated
-     * \param[out] point The displaced (shading) hit point
      * \param[out] normal The shading normal
      */
     virtual void
-    gen_shading_matrix(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
+    gen_shading_matrix(const HitPoint* hp, ShadingSpace* matrix,
                        Normal* normal) const
     {
-        bump->bump(hp, matrix, point, normal);
+        bump->bump(hp, matrix, normal);
     }
 
 protected:

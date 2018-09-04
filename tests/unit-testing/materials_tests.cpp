@@ -723,6 +723,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     Sphere s;
     Matrix4 m;
     Vec3 wi;
+    Normal shading_normal;
     Spectrum res;
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&s, m, 1);
@@ -742,7 +743,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     materials[0] = &material_r;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    a.get_material(0)->gen_shading_matrix(&hit, &matrix);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
@@ -796,6 +797,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     Sphere s;
     Matrix4 m;
     Vec3 wi;
+    Normal shading_normal;
     float pdf;
     Spectrum res;
     m.set_translation(Vec3(-2, 0, 0));
@@ -810,7 +812,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     material_r.inherit_bdf(new Lambertian());
 
     //brdf diffuse match spec ok
-    material_r.gen_shading_matrix(&hit, &matrix);
+    material_r.gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                   &matrix, &wi,
                                   &pdf, true, &matched_spec);
@@ -843,7 +845,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     ColorRGB red((unsigned char)255, 0, 0);
     Texture* ut = new TextureUniform(Spectrum(red, false));
     materialWtexture.inherit_bdf(new Lambertian(), ut);
-    materialWtexture.gen_shading_matrix(&hit, &matrix);
+    materialWtexture.gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                         &matrix,
                                         &wi, &pdf, false, &matched_spec);
@@ -863,7 +865,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     mat_glass.inherit_bdf(new DielectricReflection(ior_i, ior_t));
     mat_glass.inherit_bdf(new Refraction(ior_i, ior_t));
     //multi material specular, choose first (reflection)
-    mat_glass.gen_shading_matrix(&hit, &matrix);
+    mat_glass.gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = mat_glass.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit,
                                  &matrix, &wi,
                                  &pdf, true, &matched_spec);
@@ -918,7 +920,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     mat_glossy.inherit_bdf(new MicrofacetR(ggx1,
                                            new Dielectric(ior_i, ior_t)));
     mat_glossy.inherit_bdf(new MicrofacetT(ggx2, ior_i, ior_t));
-    mat_glossy.gen_shading_matrix(&hit, &matrix);
+    mat_glossy.gen_shading_matrix(&hit, &matrix, &shading_normal);
     //multi material glossy, choose first (reflection)
     res = mat_glossy.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit,
                                   &matrix, &wi,
@@ -952,6 +954,7 @@ SPECTRE_TEST(Material, MultiBSDF_pdf)
 {
     Sphere s;
     Matrix4 m;
+    Normal shading_normal;
     Vec3 wi;
     float pdf;
     m.set_translation(Vec3(-2, 0, 0));
@@ -966,7 +969,7 @@ SPECTRE_TEST(Material, MultiBSDF_pdf)
     MultiBSDF metal;
     //empty
     wi = Vec3(0.f, 1.f, 0.f);
-    material.gen_shading_matrix(&hit, &matrix);
+    material.gen_shading_matrix(&hit, &matrix, &shading_normal);
     pdf = material.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_EQ(pdf, 0.f);
 
@@ -986,7 +989,7 @@ SPECTRE_TEST(Material, MultiBSDF_pdf)
     float pdf2;
     material2.inherit_bdf(new Lambertian());
     material2.inherit_bdf(new Lambertian());
-    material2.gen_shading_matrix(&hit, &matrix);
+    material2.gen_shading_matrix(&hit, &matrix, &shading_normal);
     pdf2 = material2.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_NEAR(pdf2, pdf, 1e-5f);
 }
@@ -1013,6 +1016,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     Sphere s;
     Matrix4 m;
     Vec3 wi;
+    Normal shading_normal;
     Spectrum res;
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&s, m, 1);
@@ -1032,7 +1036,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     materials[0] = &material_r;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    a.get_material(0)->gen_shading_matrix(&hit, &matrix);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
@@ -1053,7 +1057,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     materials[0] = &metal;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    a.get_material(0)->gen_shading_matrix(&hit, &matrix);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_TRUE(res.is_black());
 
@@ -1068,7 +1072,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     materials[0] = &materialWtexture;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    a.get_material(0)->gen_shading_matrix(&hit, &matrix);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
     EXPECT_NEAR(res.w[0], 0.131288946f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
@@ -1084,6 +1088,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     Sphere s;
     Matrix4 m;
     Vec3 wi;
+    Normal shading_normal;
     float pdf;
     Spectrum res;
     m.set_translation(Vec3(-2, 0, 0));
@@ -1100,7 +1105,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     materials[0] = &metal;
     a.set_materials(materials, 1, &association);
     //brdf specular no match
-    metal.gen_shading_matrix(&hit, &matrix);
+    metal.gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = metal.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
                              &wi,
                              &pdf, false, &matched_spec);
@@ -1121,7 +1126,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     EXPECT_TRUE(wi.is_normalized());
 
     //brdf diffuse match with no-spec requested
-    material_r.gen_shading_matrix(&hit, &matrix);
+    material_r.gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                   &matrix, &wi,
                                   &pdf, false, &matched_spec);
@@ -1153,7 +1158,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     ColorRGB red((unsigned char)255, 0, 0);
     Texture* ut = new TextureUniform(Spectrum(red, false));
     SingleBRDF materialWtexture(new Lambertian(), ut);
-    materialWtexture.gen_shading_matrix(&hit, &matrix);
+    materialWtexture.gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = materialWtexture.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                         &matrix,
                                         &wi, &pdf, false, &matched_spec);
@@ -1174,6 +1179,7 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
     Sphere s;
     Matrix4 m;
     Vec3 wi;
+    Normal shading_normal;
     float pdf;
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&s, m, 1);
@@ -1189,7 +1195,7 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
     wi = Vec3(0.f, 1.f, 0.f);
 
     //non matching spec
-    metal.gen_shading_matrix(&hit, &matrix);
+    metal.gen_shading_matrix(&hit, &matrix, &shading_normal);
     pdf = metal.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_EQ(pdf, 0.f);
 
@@ -1198,7 +1204,7 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
     EXPECT_EQ(pdf, 0.f);
 
     //matching brdf no-spec
-    material_r.gen_shading_matrix(&hit, &matrix);
+    material_r.gen_shading_matrix(&hit, &matrix, &shading_normal);
     pdf = material_r.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_NEAR(pdf, 0.318309873f, 1e-5f);
 

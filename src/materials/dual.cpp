@@ -44,10 +44,10 @@ DualBsdf::pdf(const Vec3* woW, const HitPoint* h, const ShadingSpace* matrix,
 }
 
 void DualBsdf::gen_shading_matrix(const HitPoint* hp, ShadingSpace* matrix,
-                                  Point3* point, Normal* normal) const
+                                  Normal* normal) const
 {
     if(mask.is_masked(hp))
-        first->gen_shading_matrix(hp, matrix, point, normal);
+        first->gen_shading_matrix(hp, matrix, normal);
     else
-        second->gen_shading_matrix(hp, matrix, point, normal);
+        second->gen_shading_matrix(hp, matrix, normal);
 }

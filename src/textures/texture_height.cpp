@@ -60,7 +60,7 @@ void TextureHeight::gradient(const HitPoint* hp, float* u, float* v) const
 }
 
 void
-TextureHeight::bump(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
+TextureHeight::bump(const HitPoint* hp, ShadingSpace* matrix,
                     Normal* normal) const
 {
     float u, v;
@@ -74,5 +74,4 @@ TextureHeight::bump(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
     if(dot(matrix->n, hp->normal_h)<0)
         matrix->n *= -1;
     *normal = matrix->n;
-    *point = hp->point_h;
 }

@@ -43,6 +43,7 @@ extern "C" {
 #include "textures/texture_library.hpp"
 #include "textures/texture_image.hpp"
 #include "textures/texture_height.hpp"
+#include "textures/texture_normal.hpp"
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
 #include "materials/single_brdf.hpp"

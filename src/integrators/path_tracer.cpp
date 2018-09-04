@@ -22,8 +22,8 @@ Spectrum PathTracer::l_rec(const Scene* sc, const HitPoint* hp, const Ray* r,
     const Bsdf* mat = hp->asset_h->get_material(hp->index);
     ShadingSpace matrix;
     Normal n;
-    Point3 p;
-    mat->gen_shading_matrix(hp, &matrix, &p, &n);
+    Point3 p = hp->point_h;
+    mat->gen_shading_matrix(hp, &matrix, &n);
 
     //if first hit is light or specular, use its emission
     if((r->ricochet == 0 || last_spec)

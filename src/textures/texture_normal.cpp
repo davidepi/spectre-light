@@ -9,7 +9,7 @@ TextureNormal::TextureNormal(const TextureImage* image)
 }
 
 void
-TextureNormal::bump(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
+TextureNormal::bump(const HitPoint* hp, ShadingSpace* matrix,
                     Normal* normal) const
 {
     constexpr const float INV255 = 1.f/255.f;
@@ -39,5 +39,4 @@ TextureNormal::bump(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
                  (Vec3)(matrix->n*dot(matrix->n, hp->dpdu))).normalize();
     matrix->t = cross(Vec3(matrix->n), matrix->s).normalize();
     *normal = matrix->n;
-    *point = hp->point_h;
 }

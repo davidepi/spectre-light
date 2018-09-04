@@ -15,7 +15,7 @@ public:
 
     TextureHeight(const TextureImage* image, ImageChannel channel);
 
-    void bump(const HitPoint* hp, ShadingSpace* matrix, Point3* point,
+    void bump(const HitPoint* hp, ShadingSpace* matrix,
               Normal* normal) const override;
 
 private:
