@@ -103,7 +103,7 @@ SPECTRE_TEST(Consolet, critical_vargs)
 SPECTRE_TEST(Consolet, progress_bar)
 {
     //just for coverage, changes here are pretty evident
-//    Console.progress_bar(0.5,300);
+    Console.progress_bar(0.5,300);
 }
 
 SPECTRE_TEST(Consolet, progress_bar_done)

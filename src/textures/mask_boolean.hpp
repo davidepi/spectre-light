@@ -1,5 +1,5 @@
 //Created,  11 Aug 2018
-//Last Edit 12 Aug 2018
+//Last Edit  4 Sep 2018
 
 /**
  *  \file mask_boolean.hpp
@@ -7,7 +7,7 @@
  *  \details   Enables masking capabilities given a TextureImage
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      12 Aug 2018
+ *  \date      4 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -54,7 +54,7 @@ public:
 
     ///Default destructor
     ~MaskBoolean() = default;
-
+    
     /**
      *  \brief Returns the value for this mask
      *
@@ -65,7 +65,23 @@ public:
      *  this method
      *
      *  \param[in] hp The data of the hit point
-     *  \return true if the value is masked, false otherwise
+     *  \return true if the value is not masked, so it is visible, false
+     *  otherwise
+     */
+    bool is_visible(const HitPoint* hp) const;
+
+    /**
+     *  \brief Returns the value for this mask
+     *
+     *  This function finds the texture value of the underlying TextureImage
+     *  (considering shift and scale) and returns false if the value is above
+     *  the threshold, false otherwise. Only the channel passed in the
+     *  constructor is considered. Mask inversion is taken into account in
+     *  this method
+     *
+     *  \param[in] hp The data of the hit point
+     *  \return true if the value is masked, so it is not visible, false
+     *  otherwise
      */
     bool is_masked(const HitPoint* hp) const;
 

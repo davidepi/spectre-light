@@ -15,6 +15,7 @@
 #include "textures/texture_uniform.hpp"
 #include "textures/image_map.hpp"
 #include "textures/texture_image.hpp"
+#include "textures/mask_boolean.hpp"
 #include "samplers/sampler_stratified.hpp"
 #include "cameras/camera_orthographic.hpp"
 #include <typeinfo>
@@ -352,6 +353,66 @@ SPECTRE_TEST(Texture, TextureImage_map_channel)
     EXPECT_EQ(res.bgra_texel.g, 0U);
     EXPECT_EQ(res.bgra_texel.b, 0U);
     EXPECT_EQ(res.bgra_texel.a, 255U);
+}
+
+SPECTRE_TEST(Mask, MaskBoolean_dflt)
+{
+    HitPoint hp;
+    hp.differentials = false;
+    errors_count[CRITICAL_INDEX] = 0;
+    ASSERT_EQ(errors_count[CRITICAL_INDEX], 0);
+    MaskBoolean mask;
+    hp.uv = Point2(0.25f, 0.25f);
+    EXPECT_TRUE(mask.is_visible(&hp));
+    EXPECT_FALSE(mask.is_masked(&hp));
+    hp.uv = Point2(0.75, 0.25);
+    EXPECT_TRUE(mask.is_visible(&hp));
+    EXPECT_FALSE(mask.is_masked(&hp));
+    hp.uv = Point2(0.25, 0.75);
+    EXPECT_TRUE(mask.is_visible(&hp));
+    EXPECT_FALSE(mask.is_masked(&hp));
+    hp.uv = Point2(0.75, 0.75);
+    EXPECT_TRUE(mask.is_visible(&hp));
+    EXPECT_FALSE(mask.is_masked(&hp));
+}
+
+SPECTRE_TEST(Mask, MaskBoolean_texture)
+{
+    HitPoint hp;
+    hp.differentials = false;
+    errors_count[CRITICAL_INDEX] = 0;
+    ASSERT_EQ(errors_count[CRITICAL_INDEX], 0);
+    Vec2 scale(1.f, 1.f);
+    Vec2 shift(0.f, 0.f);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+
+    MaskBoolean mask(&tx, RED, false);
+    hp.uv = Point2(0.25f, 0.25f);
+    EXPECT_TRUE(mask.is_visible(&hp));
+    EXPECT_FALSE(mask.is_masked(&hp));
+    hp.uv = Point2(0.75, 0.25);
+    EXPECT_FALSE(mask.is_visible(&hp));
+    EXPECT_TRUE(mask.is_masked(&hp));
+    hp.uv = Point2(0.25, 0.75);
+    EXPECT_FALSE(mask.is_visible(&hp));
+    EXPECT_TRUE(mask.is_masked(&hp));
+    hp.uv = Point2(0.75, 0.75);
+    EXPECT_FALSE(mask.is_visible(&hp));
+    EXPECT_TRUE(mask.is_masked(&hp));
+
+    MaskBoolean inverted_mask(&tx, RED, true);
+    hp.uv = Point2(0.25f, 0.25f);
+    EXPECT_FALSE(inverted_mask.is_visible(&hp));
+    EXPECT_TRUE(inverted_mask.is_masked(&hp));
+    hp.uv = Point2(0.75, 0.25);
+    EXPECT_TRUE(inverted_mask.is_visible(&hp));
+    EXPECT_FALSE(inverted_mask.is_masked(&hp));
+    hp.uv = Point2(0.25, 0.75);
+    EXPECT_TRUE(inverted_mask.is_visible(&hp));
+    EXPECT_FALSE(inverted_mask.is_masked(&hp));
+    hp.uv = Point2(0.75, 0.75);
+    EXPECT_TRUE(inverted_mask.is_visible(&hp));
+    EXPECT_FALSE(inverted_mask.is_masked(&hp));
 }
 
 SPECTRE_TEST_END(Texture)

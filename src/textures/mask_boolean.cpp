@@ -10,10 +10,10 @@ MaskBoolean::MaskBoolean(const TextureImage* map, ImageChannel channel, bool
 inverted):map(map), channel(channel), inverted(inverted)
 {}
 
-bool MaskBoolean::is_masked(const HitPoint* hp) const
+bool MaskBoolean::is_visible(const HitPoint* hp) const
 {
     if(map == NULL)
-        return false;
+        return true;
     else
     {
         Texel texel = map->map_value(hp).bgra_texel;
@@ -25,7 +25,12 @@ bool MaskBoolean::is_masked(const HitPoint* hp) const
 #endif
         bool masked = channel_value>=MASK_BINARY_THRESHOLD;
 
-        //account for mask inversion with a XOR (both are bool so != works)
+        //XOR returns if the value is visible, XNOR return if masked
         return masked != inverted;
     }
+}
+
+bool MaskBoolean::is_masked(const HitPoint* hp) const
+{
+    return !is_visible(hp);
 }

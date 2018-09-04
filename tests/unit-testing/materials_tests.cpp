@@ -21,6 +21,7 @@
 #include "materials/bdf.hpp"
 #include "materials/multi_bsdf.hpp"
 #include "materials/single_brdf.hpp"
+#include "materials/dual.hpp"
 #include "primitives/asset.hpp"
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
@@ -1211,6 +1212,173 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
     //matching brdf yes-spec
     pdf = material_r.pdf(&(r.direction), &hit, &matrix, &wi, true);
     EXPECT_NEAR(pdf, 0.318309873f, 1e-5f);
+}
+
+SPECTRE_TEST(Material, DualBsdf_value)
+{
+    const Bsdf* materials[1];
+    unsigned char associations = 0;
+    Sphere s;
+    Matrix4 m;
+    Vec3 wi = Vec3(0, 1, 0);
+    Normal shading_normal;
+    m.set_translation(Vec3(-2, 0, 0));
+    Asset a(&s, m, 1);
+    Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
+    HitPoint hit;
+    ShadingSpace matrix;
+    ColorXYZ res;
+    ColorXYZ alt;
+    float distance = FLT_MAX;
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+
+    TextureUniform red(Spectrum(ColorRGB(1.f, 0.f, 0.f), false));
+    TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
+    Vec2 scale(1.f);
+    Vec2 shift(0.f);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    SingleBRDF mat0(new Lambertian(), &red);
+    SingleBRDF mat1(new Lambertian(), &blue);
+    MaskBoolean mask(&tx, RED, false);
+
+    //masked
+    DualBsdf dual(&mat0, &mat1, mask);
+    materials[0] = &dual;
+    a.set_materials(materials, 1, &associations);
+    ASSERT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix,
+                                   false).to_xyz();
+    alt = mat1.value(&r.direction, &hit, &wi, &matrix, false).to_xyz();
+    EXPECT_EQ(res.r, alt.r);
+    EXPECT_EQ(res.g, alt.g);
+    EXPECT_EQ(res.b, alt.b);
+
+    //not masked
+    r = Ray(Point3(-2.9, 0.4, 0), Vec3(0, 1, 0));
+    ASSERT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix,
+                                   false).to_xyz();
+    alt = mat0.value(&r.direction, &hit, &wi, &matrix, false).to_xyz();
+    EXPECT_EQ(res.r, alt.r);
+    EXPECT_EQ(res.g, alt.g);
+    EXPECT_EQ(res.b, alt.b);
+}
+
+SPECTRE_TEST(Material, DualBsdf_sample_value)
+{
+    const Bsdf* materials[1];
+    unsigned char associations = 0;
+    Sphere s;
+    Matrix4 m;
+    bool matched_spec;
+    Vec3 wi;
+    Vec3 wi_alt;
+    float pdf;
+    float pdf_alt;
+    Normal shading_normal;
+    m.set_translation(Vec3(-2, 0, 0));
+    Asset a(&s, m, 1);
+    Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
+    HitPoint hit;
+    ShadingSpace matrix;
+    ColorXYZ res;
+    ColorXYZ alt;
+    float distance = FLT_MAX;
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+
+    TextureUniform red(Spectrum(ColorRGB(1.f, 0.f, 0.f), false));
+    TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
+    Vec2 scale(1.f);
+    Vec2 shift(0.f);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    SingleBRDF mat0(new Lambertian(), &red);
+    SingleBRDF mat1(new Lambertian(), &blue);
+    MaskBoolean mask(&tx, RED, false);
+
+    //masked
+    DualBsdf dual(&mat0, &mat1, mask);
+    materials[0] = &dual;
+    a.set_materials(materials, 1, &associations);
+    ASSERT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->sample_value(0.5f, 0.5f, 0.5f, &(r.direction),
+                                          &hit, &matrix, &wi, &pdf, false,
+                                          &matched_spec).to_xyz();
+    alt = mat1.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                            &wi_alt, &pdf_alt, false, &matched_spec).to_xyz();
+    EXPECT_EQ(res.r, alt.r);
+    EXPECT_EQ(res.g, alt.g);
+    EXPECT_EQ(res.b, alt.b);
+    EXPECT_EQ(wi.x, wi_alt.x);
+    EXPECT_EQ(wi.y, wi_alt.y);
+    EXPECT_EQ(wi.z, wi_alt.z);
+    EXPECT_EQ(pdf, pdf_alt);
+
+    //not masked
+    r = Ray(Point3(-2.9, 0.4, 0), Vec3(0, 1, 0));
+    ASSERT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->sample_value(0.5f, 0.5f, 0.5f, &(r.direction),
+                                          &hit, &matrix, &wi, &pdf, false,
+                                          &matched_spec).to_xyz();
+    alt = mat0.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                            &wi_alt, &pdf_alt, false, &matched_spec).to_xyz();
+    EXPECT_EQ(res.r, alt.r);
+    EXPECT_EQ(res.g, alt.g);
+    EXPECT_EQ(res.b, alt.b);
+    EXPECT_EQ(wi.x, wi_alt.x);
+    EXPECT_EQ(wi.y, wi_alt.y);
+    EXPECT_EQ(wi.z, wi_alt.z);
+    EXPECT_EQ(pdf, pdf_alt);
+}
+
+SPECTRE_TEST(Material, DualBsdf_pdf)
+{
+    const Bsdf* materials[1];
+    unsigned char associations = 0;
+    Sphere s;
+    Matrix4 m;
+    bool matched_spec;
+    Vec3 wi;
+    Normal shading_normal;
+    m.set_translation(Vec3(-2, 0, 0));
+    Asset a(&s, m, 1);
+    Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
+    HitPoint hit;
+    ShadingSpace matrix;
+    float res;
+    float alt;
+    float distance = FLT_MAX;
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+
+    TextureUniform red(Spectrum(ColorRGB(1.f, 0.f, 0.f), false));
+    TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
+    Vec2 scale(1.f);
+    Vec2 shift(0.f);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    SingleBRDF mat0(new Lambertian(), &red);
+    SingleBRDF mat1(new Lambertian(), &blue);
+    MaskBoolean mask(&tx, RED, false);
+
+    //masked
+    DualBsdf dual(&mat0, &mat1, mask);
+    materials[0] = &dual;
+    a.set_materials(materials, 1, &associations);
+    ASSERT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->pdf(&(r.direction), &hit, &matrix, &wi, false);
+    alt = mat1.pdf(&(r.direction), &hit, &matrix, &wi, false);
+    EXPECT_EQ(res, alt);
+
+    //not masked
+    r = Ray(Point3(-2.9, 0.4, 0), Vec3(0, 1, 0));
+    ASSERT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->pdf(&(r.direction), &hit, &matrix, &wi, false);
+    alt = mat0.pdf(&(r.direction), &hit, &matrix, &wi, false);
+    EXPECT_EQ(res, alt);
 }
 
 SPECTRE_TEST_END(Material)

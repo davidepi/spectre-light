@@ -14,7 +14,7 @@ mask):mask(mask)
 Spectrum DualBsdf::value(const Vec3* woW, const HitPoint* h, const Vec3* wiW,
                          const ShadingSpace* matrix, bool matchSpec) const
 {
-    if(mask.is_masked(h))
+    if(mask.is_visible(h))
         return first->value(woW, h, wiW, matrix, matchSpec);
     else
         return second->value(woW, h, wiW, matrix, matchSpec);
@@ -25,7 +25,7 @@ Spectrum DualBsdf::sample_value(float r0, float r1, float r2, const Vec3* woW,
                                 Vec3* wiW, float* pdf, bool matchSpec,
                                 bool* matchedSpec) const
 {
-    if(mask.is_masked(h))
+    if(mask.is_visible(h))
         return first->sample_value(r0, r1, r2, woW, h, matrix, wiW, pdf,
                                    matchSpec, matchedSpec);
     else
@@ -37,7 +37,7 @@ float
 DualBsdf::pdf(const Vec3* woW, const HitPoint* h, const ShadingSpace* matrix,
               const Vec3* wiW, bool matchSpec) const
 {
-    if(mask.is_masked(h))
+    if(mask.is_visible(h))
         return first->pdf(woW, h, matrix, wiW, matchSpec);
     else
         return second->pdf(woW, h, matrix, wiW, matchSpec);
@@ -46,7 +46,7 @@ DualBsdf::pdf(const Vec3* woW, const HitPoint* h, const ShadingSpace* matrix,
 void DualBsdf::gen_shading_matrix(const HitPoint* hp, ShadingSpace* matrix,
                                   Normal* normal) const
 {
-    if(mask.is_masked(hp))
+    if(mask.is_visible(hp))
         first->gen_shading_matrix(hp, matrix, normal);
     else
         second->gen_shading_matrix(hp, matrix, normal);

@@ -1,5 +1,5 @@
 //Created,  10 Aug 2018
-//Last Edit 24 Aug 2018
+//Last Edit  4 Sep 2018
 
 /**
  *  \file dual.hpp
@@ -7,7 +7,7 @@
  *  \details   Multi-material composed by two other materials
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      24 Aug 2018
+ *  \date      4 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -36,6 +36,13 @@ class DualBsdf : public Bsdf
 {
 public:
 
+    /**
+     *  DualBsdf constructor
+     *
+     *  \param[in] first The material contributing to the visible part
+     *  \param[in] second The material contributing to the masked part
+     *  \param[in] mask The mask used to chose between the two materials
+     */
     DualBsdf(const Bsdf* first, const Bsdf* second, const MaskBoolean& mask);
 
     /** \brief Return the value of the BSDF
@@ -114,10 +121,10 @@ private:
     ///Mask used to decide which Bsdf should contribute
     const MaskBoolean mask;
 
-    ///First Bsdf
+    ///First Bsdf - Visible one
     const Bsdf* first;
 
-    ///Second Bsdf
+    ///Second Bsdf - Masked one
     const Bsdf* second;
 };
 
