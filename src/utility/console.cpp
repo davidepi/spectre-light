@@ -44,8 +44,8 @@ Console::Console()
 void Console::motd()
 {
 #ifndef SUPPRESS_MOTD
-    fprintf(stdout, "Spectre version %s\nReleased on %s, compiled on %s\n",
-            SPECTRE_VERSION, SPECTRE_RELEASE, __DATE__);
+    fprintf(stdout, "Spectre version %s\nCompiled with %s version %s on %s\n",
+           SPECTRE_VERSION, COMPILER_NAME, COMPILER_VERSION, __DATE__);
 #ifdef DEBUG
     fprintf(stdout, MESSAGE_DEBUG "\n");
 #endif

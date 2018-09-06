@@ -1340,7 +1340,6 @@ SPECTRE_TEST(Material, DualBsdf_pdf)
     unsigned char associations = 0;
     Sphere s;
     Matrix4 m;
-    bool matched_spec;
     Vec3 wi;
     Normal shading_normal;
     m.set_translation(Vec3(-2, 0, 0));

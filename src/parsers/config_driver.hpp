@@ -113,7 +113,8 @@ public:
     std::string bump;
 
     ///True if the bump map is a normal map
-    bool bump_is_normal;
+    //EDIT: Heightmaps have been removed so every bump is normal
+    //bool bump_is_normal;
 
     ///Initialize the class with default values for materials
     ParsedMaterial();
@@ -187,7 +188,8 @@ public:
 
     ///Initialize the class with default values for world space meshes
     MeshWorld():scale(1), is_light(false), temperature(-1),
-                color(255, 255, 255) {};
+                color(255, 255, 255)
+    {};
 };
 
 /// Struct used to hold information about a dualmaterial parsed by ConfigParser
@@ -273,7 +275,7 @@ public:
 
 //dirty hack because this class is impossible to test otherwise
 #ifndef TESTS
-private:
+    private:
 #endif
 
     ///The name of the output image that will be created by the renderer

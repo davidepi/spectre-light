@@ -6,7 +6,9 @@
 #include "windows.h"
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "utility/file.hpp"
@@ -453,7 +455,7 @@ SPECTRE_TEST(File, list_files)
 
     File f2(TEST_ASSETS);
     f2.ls(&res);
-    EXPECT_EQ(res.size(), (size_t)3);
+    EXPECT_EQ(res.size(), (size_t)4);
 }
 
 SPECTRE_TEST(File, is_absolute_inline)

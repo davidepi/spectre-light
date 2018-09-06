@@ -9,3 +9,5 @@ coverage:
     - "src/parsers/position.hh"
     - "src/parsers/config_parser.y"
     - "src/parsers/config_lexer.l"
+    - "src/textures/texture_height.hpp"
+    - "src/textures/texture_height.cpp"

@@ -175,6 +175,46 @@ SPECTRE_TEST(Sphere, intersect)
     ASSERT_FALSE(res);
 }
 
+SPECTRE_TEST(Sphere, masked_hit)
+{
+    Sphere s;
+    bool res;
+    float distance;
+    Ray r;
+    HitPoint h;
+    Vec2 shift(0.f);
+    Vec2 scale(1.f);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    MaskBoolean mask(&tx, RED, false);
+
+    //point invalidated but second one is ok (with fixed point_h)
+    distance = INFINITY;
+    r = Ray(Point3(0.f, 0.f, 10.f), Vec3(0, 0, -1));
+    res = s.intersect(&r, &distance, &h, &mask);
+    EXPECT_TRUE(res);
+
+    //same as before but a closer solution was found
+    distance = 1e-5f;
+    res = s.intersect(&r, &distance, &h, &mask);
+    EXPECT_FALSE(res);
+
+    //both points invalidated
+    distance = INFINITY;
+    tx = TextureImage(TEST_ASSETS "images/black.bmp", scale, shift, UNFILTERED);
+    mask = MaskBoolean(&tx, RED, false);
+    r = Ray(Point3(0.f, -10.f, 0.f), Vec3(0, 1, 0));
+    res = s.intersect(&r, &distance, &h, &mask);
+    EXPECT_FALSE(res);
+
+    //starting from inside, only viable point invalidated
+    distance = INFINITY;
+    tx = TextureImage(TEST_ASSETS "images/black.bmp", scale, shift, UNFILTERED);
+    mask = MaskBoolean(&tx, RED, false);
+    r = Ray(Point3(0.f, 0.f, 0.f), Vec3(0, 1, 0));
+    res = s.intersect(&r, &distance, &h, &mask);
+    EXPECT_FALSE(res);
+}
+
 SPECTRE_TEST(Sphere, surface_object)
 {
     Sphere s;

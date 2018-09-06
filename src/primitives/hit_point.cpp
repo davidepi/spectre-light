@@ -60,15 +60,6 @@ void calculate_differentials(HitPoint* hit, Ray* rx, Ray* ry)
         hit->dv.x = (a00*bx1-a10*bx0)*invdet;
         hit->du.y = (a11*by0-a01*by1)*invdet;
         hit->dv.y = (a00*by1-a10*by0)*invdet;
-        //check solutions
-#ifdef DEBUG
-        //after 1 hour of randomly generated values, this never happened
-        //left just in case someday I'll find out a corner case that falls here
-        if(std::isnan(hit->du.x) || std::isnan(hit->dv.x) ||
-           std::isnan(hit->du.y) || std::isnan(hit->dv.y))
-            throw "NaN differentials";
-#endif
-
         hit->differentials = true;
     }
     else

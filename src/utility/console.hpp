@@ -34,9 +34,6 @@
 #define SPECTRE_VERSION SPECTRE_VERSION_MAJOR
 #endif
 
-///Release date of this version
-#define SPECTRE_RELEASE "(Unreleased)"
-
 /**
  * \class Console Console.hpp "utility/console.hpp"
  * \brief Console logging

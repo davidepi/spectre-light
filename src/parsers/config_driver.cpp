@@ -18,7 +18,7 @@ ParsedMaterial::ParsedMaterial()
     diffuse_uniform = NULL;
     specular = "Default";
     specular_uniform = NULL;
-    bump_is_normal = false;
+    //bump_is_normal = false; //EDIT: removed TextureHeight, so this is true
 }
 
 ConfigDriver::ConfigDriver()
@@ -361,20 +361,33 @@ void ConfigDriver::build_materials()
 
         if(!mat->bump.empty())
         {
+            /* OLD PIECE OF CODE CONSIDERING THE HEIGHT MAP IMPLEMENTATION
+             * now the TextureHeight is not used because I cannot figure out
+             * why it does not work
+             ```
+             if(TexLib.contains_texture(mat->bump))
+               if(mat->bump_is_normal)
+                 bump_map = new TextureNormal(
+                   (const TextureImage*)TexLib.get_texture(mat->bump));
+                 else
+                   bump_map = new TextureHeight(
+                             (const TextureImage*)TexLib.get_texture(mat->bump),
+                               RED);
+                 else if(mat->bump_is_normal)
+                   bump_map = new TextureNormal(
+                               (const TextureImage*)load_texture(mat->bump));
+                 else
+                     bump_map = new TextureHeight(
+                       (const TextureImage*)load_texture(mat->bump), RED);
+            ```
+             */
+
             if(TexLib.contains_texture(mat->bump))
-                if(mat->bump_is_normal)
-                    bump_map = new TextureNormal(
-                            (const TextureImage*)TexLib.get_texture(mat->bump));
-                else
-                    bump_map = new TextureHeight(
-                            (const TextureImage*)TexLib.get_texture(mat->bump),
-                            RED);
-            else if(mat->bump_is_normal)
+                bump_map = new TextureNormal(
+                        (const TextureImage*)TexLib.get_texture(mat->bump));
+            else
                 bump_map = new TextureNormal(
                         (const TextureImage*)load_texture(mat->bump));
-            else
-                bump_map = new TextureHeight(
-                        (const TextureImage*)load_texture(mat->bump), RED);
         }
         else
             bump_map = new Bump();
