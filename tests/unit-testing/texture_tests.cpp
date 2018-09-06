@@ -16,6 +16,7 @@
 #include "textures/image_map.hpp"
 #include "textures/texture_image.hpp"
 #include "textures/mask_boolean.hpp"
+#include "textures/texture_normal.hpp"
 #include "samplers/sampler_stratified.hpp"
 #include "cameras/camera_orthographic.hpp"
 #include <typeinfo>
@@ -413,6 +414,28 @@ SPECTRE_TEST(Mask, MaskBoolean_texture)
     hp.uv = Point2(0.75, 0.75);
     EXPECT_TRUE(inverted_mask.is_visible(&hp));
     EXPECT_FALSE(inverted_mask.is_masked(&hp));
+}
+
+SPECTRE_TEST(Texture, TextureNormal_bump)
+{
+    HitPoint hp;
+    ShadingSpace matrix;
+    Normal normal;
+
+    hp.normal_h = Normal(0, 0, 1);
+    normal = hp.normal_h;
+    hp.uv = Point2(0.75, 0.25);
+    hp.dpdu = Vec3(1, 0, 0);
+    hp.dpdv = Vec3(0, 1, 0);
+
+    Vec2 shift(0.f);
+    Vec2 scale(1.f);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    TextureNormal tn(&tx);
+    tn.bump(&hp, &matrix, &normal);
+    EXPECT_NEAR(normal.x, 0.577350259f, 1e-5f);
+    EXPECT_NEAR(normal.y, 0.577350259f, 1e-5f);
+    EXPECT_NEAR(normal.z, 0.577350259f, 1e-5f);
 }
 
 SPECTRE_TEST_END(Texture)

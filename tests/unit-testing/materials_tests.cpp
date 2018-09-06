@@ -782,6 +782,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     EXPECT_NEAR(res.w[2], 0.318309873f, 1e-5f);
 
     //textured material
+    wi = Vec3(0.f, 1.f, 0.f);
     materials[0] = &materialWtexture;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
@@ -790,6 +791,21 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     EXPECT_NEAR(res.w[1], 0.0676958858f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00615417166f, 1e-5f);
     delete ut;
+
+    //multi material - transmitted part
+    MultiBSDF mat_glass;
+    Spectrum ior_i = cauchy(1.f, 0.f);
+    Spectrum ior_t = cauchy(1.33f, 0.f);
+    mat_glass.inherit_bdf(new DielectricReflection(ior_i, ior_t));
+    mat_glass.inherit_bdf(new Refraction(ior_i, ior_t));
+    //multi material specular, choose first (reflection)
+    mat_glass.gen_shading_matrix(&hit, &matrix, &shading_normal);
+    wi = Vec3(0.f, -1.f, 0.f);
+    materials[0] = &mat_glass;
+    a.set_materials(materials, 1, &associations);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, true);
+    EXPECT_TRUE(res.is_black());//-> no value for specular transmitted :'(
 }
 
 SPECTRE_TEST(Material, MultiBSDF_sample_value)
@@ -892,6 +908,12 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     EXPECT_NEAR(wi.z, 0.f, 1e-5f);
     EXPECT_EQ(matched_spec, true);
     EXPECT_TRUE(wi.is_normalized());
+
+    //multi material specular, Total Internal Reflection
+    Vec3 woW(0.5, 0.2, -0.4);
+    res = mat_glass.sample_value(1.f, 0.7, 0.3, &woW, &hit, &matrix, &wi, &pdf,
+                                 true, &matched_spec);
+    EXPECT_TRUE(res.is_black());
 
     //brdf no match
     res = mat_glass.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
@@ -1043,6 +1065,11 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     EXPECT_NEAR(res.w[0], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.318309873f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.318309873f, 1e-5f);
+
+    //transmitted ray, so the singlebrdf returns black
+    wi = Vec3(0.f, -1.f, 0.f);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_TRUE(res.is_black());
 
     //matching brdf yes-spec
     wi = Vec3(0.f, 1.f, 0.f);

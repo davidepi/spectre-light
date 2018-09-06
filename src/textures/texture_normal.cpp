@@ -39,4 +39,6 @@ TextureNormal::bump(const HitPoint* hp, ShadingSpace* matrix,
                  (Vec3)(matrix->n*dot(matrix->n, hp->dpdu))).normalize();
     matrix->t = cross(Vec3(matrix->n), matrix->s).normalize();
     *normal = matrix->n;
+    if(dot(*normal,hp->normal_h)<0)
+        *normal*=-1;
 }
