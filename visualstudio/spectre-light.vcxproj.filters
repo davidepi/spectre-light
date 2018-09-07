@@ -186,6 +186,30 @@
     <ClCompile Include="..\src\utility\imageio\tga.c">
       <Filter>src\utility\imageio</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\materials\bump.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\dual.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\multi_bsdf.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\shading_space.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\materials\single_brdf.cpp">
+      <Filter>src\materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\mask_boolean.cpp">
+      <Filter>src\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\textures\texture_normal.cpp">
+      <Filter>src\textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\hit_point.cpp">
+      <Filter>src\primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\renderer.hpp" />
@@ -395,6 +419,33 @@
     </ClInclude>
     <ClInclude Include="..\src\utility\imageio\tga.h">
       <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\bump.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\dual.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\multi_bsdf.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\shading_space.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\single_brdf.hpp">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\mask_boolean.hpp">
+      <Filter>src\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\textures\texture_normal.hpp">
+      <Filter>src\textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\hit_point.hpp">
+      <Filter>src\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\bsdf.hpp">
+      <Filter>src\materials</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

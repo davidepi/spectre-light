@@ -273,10 +273,10 @@ SPECTRE_TEST(Texture, TextureImage_map_channel)
     hp.dv = Vec2();
     hp.differentials = true;
     res = tex.map_value(&hp);
-    EXPECT_EQ(res.bgra_texel.r, 255U);
-    EXPECT_EQ(res.bgra_texel.g, 0U);
-    EXPECT_EQ(res.bgra_texel.b, 0U);
-    EXPECT_EQ(res.bgra_texel.a, 255U);
+    EXPECT_EQ(res.bgra_texel.r, (uint8_t)255U);
+    EXPECT_EQ(res.bgra_texel.g, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.b, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
 
     tex = TextureImage(TEST_ASSETS "images/correct.bmp", shift, scale,
                        TRILINEAR);
@@ -286,10 +286,10 @@ SPECTRE_TEST(Texture, TextureImage_map_channel)
     hp.dv = Vec2();
     hp.differentials = true;
     res = tex.map_value(&hp);
-    EXPECT_EQ(res.bgra_texel.r, 255U);
-    EXPECT_EQ(res.bgra_texel.g, 0U);
-    EXPECT_EQ(res.bgra_texel.b, 0U);
-    EXPECT_EQ(res.bgra_texel.a, 255U);
+    EXPECT_EQ(res.bgra_texel.r, (uint8_t)255U);
+    EXPECT_EQ(res.bgra_texel.g, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.b, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
 
     //Scale u component
     hp.differentials = false;
@@ -297,30 +297,30 @@ SPECTRE_TEST(Texture, TextureImage_map_channel)
     tex = TextureImage(TEST_ASSETS "images/correct.bmp", shift, scale,
                        TRILINEAR);
     res = tex.map_value(&hp);
-    EXPECT_EQ(res.bgra_texel.r, 0U);
-    EXPECT_EQ(res.bgra_texel.g, 255U);
-    EXPECT_EQ(res.bgra_texel.b, 0U);
-    EXPECT_EQ(res.bgra_texel.a, 255U);
+    EXPECT_EQ(res.bgra_texel.r, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.g, (uint8_t)255U);
+    EXPECT_EQ(res.bgra_texel.b, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
 
     //Scale v component
     scale = Vec2(1.f, 3.f);
     tex = TextureImage(TEST_ASSETS "images/correct.bmp", shift, scale,
                        TRILINEAR);
     res = tex.map_value(&hp);
-    EXPECT_EQ(res.bgra_texel.r, 0U);
-    EXPECT_EQ(res.bgra_texel.g, 0U);
-    EXPECT_EQ(res.bgra_texel.b, 255U);
-    EXPECT_EQ(res.bgra_texel.a, 255U);
+    EXPECT_EQ(res.bgra_texel.r, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.g, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.b, (uint8_t)255U);
+    EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
 
     //Scale uv component
     scale = Vec2(3.f, 3.f);
     tex = TextureImage(TEST_ASSETS "images/correct.bmp", shift, scale,
                        TRILINEAR);
     res = tex.map_value(&hp);
-    EXPECT_EQ(res.bgra_texel.r, 0U);
-    EXPECT_EQ(res.bgra_texel.g, 0U);
-    EXPECT_EQ(res.bgra_texel.b, 0U);
-    EXPECT_EQ(res.bgra_texel.a, 255U);
+    EXPECT_EQ(res.bgra_texel.r, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.g, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.b, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
 
     //shift u component
     scale = Vec2(1.f, 1.f);
@@ -328,10 +328,10 @@ SPECTRE_TEST(Texture, TextureImage_map_channel)
     tex = TextureImage(TEST_ASSETS "images/correct.bmp", shift, scale,
                        TRILINEAR);
     res = tex.map_value(&hp);
-    EXPECT_EQ(res.bgra_texel.r, 0U);
-    EXPECT_EQ(res.bgra_texel.g, 255U);
-    EXPECT_EQ(res.bgra_texel.b, 0U);
-    EXPECT_EQ(res.bgra_texel.a, 255U);
+    EXPECT_EQ(res.bgra_texel.r, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.g, (uint8_t)255U);
+    EXPECT_EQ(res.bgra_texel.b, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
 
     //shift v component
     scale = Vec2(1.f, 1.f);
@@ -339,10 +339,10 @@ SPECTRE_TEST(Texture, TextureImage_map_channel)
     tex = TextureImage(TEST_ASSETS "images/correct.bmp", shift, scale,
                        TRILINEAR);
     res = tex.map_value(&hp);
-    EXPECT_EQ(res.bgra_texel.r, 0U);
-    EXPECT_EQ(res.bgra_texel.g, 0U);
-    EXPECT_EQ(res.bgra_texel.b, 255U);
-    EXPECT_EQ(res.bgra_texel.a, 255U);
+    EXPECT_EQ(res.bgra_texel.r, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.g, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.b, (uint8_t)255U);
+    EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
 
     //shift uv component
     scale = Vec2(1.f, 1.f);
@@ -350,10 +350,10 @@ SPECTRE_TEST(Texture, TextureImage_map_channel)
     tex = TextureImage(TEST_ASSETS "images/correct.bmp", shift, scale,
                        TRILINEAR);
     res = tex.map_value(&hp);
-    EXPECT_EQ(res.bgra_texel.r, 0U);
-    EXPECT_EQ(res.bgra_texel.g, 0U);
-    EXPECT_EQ(res.bgra_texel.b, 0U);
-    EXPECT_EQ(res.bgra_texel.a, 255U);
+    EXPECT_EQ(res.bgra_texel.r, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.g, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.b, (uint8_t)0U);
+    EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
 }
 
 SPECTRE_TEST(Mask, MaskBoolean_dflt)

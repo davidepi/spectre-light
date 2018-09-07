@@ -40,20 +40,26 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release-rgb|x64'">NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <ClCompile Include="..\src\materials\bdf.cpp" />
+    <ClCompile Include="..\src\materials\bump.cpp" />
+    <ClCompile Include="..\src\materials\dual.cpp" />
     <ClCompile Include="..\src\materials\fresnel_conditions.cpp" />
     <ClCompile Include="..\src\materials\lambertian.cpp" />
     <ClCompile Include="..\src\materials\material_library.cpp" />
     <ClCompile Include="..\src\materials\microfacet.cpp" />
     <ClCompile Include="..\src\materials\microfacet_distributions.cpp" />
+    <ClCompile Include="..\src\materials\multi_bsdf.cpp" />
     <ClCompile Include="..\src\materials\oren_nayar.cpp" />
     <ClCompile Include="..\src\materials\reflection.cpp" />
     <ClCompile Include="..\src\materials\refraction.cpp" />
+    <ClCompile Include="..\src\materials\shading_space.cpp" />
+    <ClCompile Include="..\src\materials\single_brdf.cpp" />
     <ClCompile Include="..\src\parsers\config_driver.cpp" />
     <ClCompile Include="..\src\parsers\config_parser.tab.cc" />
     <ClCompile Include="..\src\parsers\lex.yy.cc" />
     <ClCompile Include="..\src\parsers\parser_obj.cpp" />
     <ClCompile Include="..\src\primitives\asset.cpp" />
     <ClCompile Include="..\src\primitives\box.cpp" />
+    <ClCompile Include="..\src\primitives\hit_point.cpp" />
     <ClCompile Include="..\src\primitives\mesh.cpp" />
     <ClCompile Include="..\src\primitives\shape.cpp" />
     <ClCompile Include="..\src\primitives\sphere.cpp" />
@@ -68,9 +74,11 @@
     <ClCompile Include="..\src\samplers\sampler_random.cpp" />
     <ClCompile Include="..\src\samplers\sampler_stratified.cpp" />
     <ClCompile Include="..\src\textures\image_map.cpp" />
+    <ClCompile Include="..\src\textures\mask_boolean.cpp" />
     <ClCompile Include="..\src\textures\texture.cpp" />
     <ClCompile Include="..\src\textures\texture_image.cpp" />
     <ClCompile Include="..\src\textures\texture_library.cpp" />
+    <ClCompile Include="..\src\textures\texture_normal.cpp" />
     <ClCompile Include="..\src\textures\texture_uniform.cpp" />
     <ClCompile Include="..\src\utility\color.cpp" />
     <ClCompile Include="..\src\utility\console.cpp" />
@@ -106,15 +114,21 @@
     <ClInclude Include="..\src\lights\area_light.hpp" />
     <ClInclude Include="..\src\localization.h" />
     <ClInclude Include="..\src\materials\bdf.hpp" />
+    <ClInclude Include="..\src\materials\bsdf.hpp" />
+    <ClInclude Include="..\src\materials\bump.hpp" />
+    <ClInclude Include="..\src\materials\dual.hpp" />
     <ClInclude Include="..\src\materials\fresnel_conditions.hpp" />
     <ClInclude Include="..\src\materials\lambertian.hpp" />
     <ClInclude Include="..\src\materials\material_library.hpp" />
     <ClInclude Include="..\src\materials\metals.hpp" />
     <ClInclude Include="..\src\materials\microfacet.hpp" />
     <ClInclude Include="..\src\materials\microfacet_distributions.hpp" />
+    <ClInclude Include="..\src\materials\multi_bsdf.hpp" />
     <ClInclude Include="..\src\materials\oren_nayar.hpp" />
     <ClInclude Include="..\src\materials\reflection.hpp" />
     <ClInclude Include="..\src\materials\refraction.hpp" />
+    <ClInclude Include="..\src\materials\shading_space.hpp" />
+    <ClInclude Include="..\src\materials\single_brdf.hpp" />
     <ClInclude Include="..\src\parsers\config_driver.hpp" />
     <ClInclude Include="..\src\parsers\config_parser.tab.hh" />
     <ClInclude Include="..\src\parsers\location.hh" />
@@ -123,6 +137,7 @@
     <ClInclude Include="..\src\parsers\stack.hh" />
     <ClInclude Include="..\src\primitives\asset.hpp" />
     <ClInclude Include="..\src\primitives\box.hpp" />
+    <ClInclude Include="..\src\primitives\hit_point.hpp" />
     <ClInclude Include="..\src\primitives\mesh.hpp" />
     <ClInclude Include="..\src\primitives\shape.hpp" />
     <ClInclude Include="..\src\primitives\sphere.hpp" />
@@ -139,9 +154,11 @@
     <ClInclude Include="..\src\samplers\sampler_stratified.hpp" />
     <ClInclude Include="..\src\settings.h" />
     <ClInclude Include="..\src\textures\image_map.hpp" />
+    <ClInclude Include="..\src\textures\mask_boolean.hpp" />
     <ClInclude Include="..\src\textures\texture.hpp" />
     <ClInclude Include="..\src\textures\texture_image.hpp" />
     <ClInclude Include="..\src\textures\texture_library.hpp" />
+    <ClInclude Include="..\src\textures\texture_normal.hpp" />
     <ClInclude Include="..\src\textures\texture_uniform.hpp" />
     <ClInclude Include="..\src\utility\color.hpp" />
     <ClInclude Include="..\src\utility\console.hpp" />
@@ -245,7 +262,7 @@
       <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;_DEBUG;X64;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;SPECTRAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;_DEBUG;X64;_CONSOLE;COMPILER_NAME="MS Visual C++";COMPILER_VERSION=_MSC_FULL_VER;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;SPECTRAL</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -271,7 +288,7 @@
       <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;_DEBUG;X64;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;_DEBUG;X64;_CONSOLE;COMPILER_NAME="MS Visual C++";COMPILER_VERSION=_MSC_FULL_VER;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -299,7 +316,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;SPECTRAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;COMPILER_NAME="MS Visual C++";COMPILER_VERSION=_MSC_FULL_VER;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;SPECTRAL</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
