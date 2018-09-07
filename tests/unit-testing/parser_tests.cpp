@@ -67,8 +67,8 @@ SPECTRE_TEST(Parser, resolution)
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/resolution_even.txt", &s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
     errors_count[NOTICE_INDEX] = 0;
-    EXPECT_EQ(driver2.width, 3008);
-    EXPECT_EQ(driver2.height, 1504);
+    EXPECT_EQ(driver2.width, 2016);
+    EXPECT_EQ(driver2.height, 1512);
     delete r2;
     //not multiple of 32, but height odd
     ConfigDriver driver3;
@@ -308,19 +308,29 @@ SPECTRE_TEST(Parser, texture)
     EXPECT_FALSE(TexLib.contains_texture("I do not exist"));
     delete r1;
 
-    //duplicate
-    //removed test: -> if same texture with same name will be ignored by library
-    //              -> if same texture with different name, TextureLib will
-    //                 handle it
-//    TexLib.clear();
-//    ConfigDriver driver2;
-//    errors_count[WARNING_INDEX] = 0;
-//    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture_duplicate.txt",
-//                                 &s);
-//    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-//    errors_count[WARNING_INDEX] = 0;
-//    EXPECT_TRUE(TexLib.contains_texture("Manually written name"));
-//    delete r2;
+    //already existing name
+    ASSERT_TRUE(TexLib.contains_texture("Manually written name"));
+    ConfigDriver driver2;
+    const TextureImage* img0 = TexLib.get_texture("Manually written name");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture.txt",
+                                 &s);
+    const TextureImage* img1 = TexLib.get_texture("Manually written name");
+    EXPECT_PTR_EQ(img0, img1);
+    delete r2;
+    
+    TexLib.clear();
+}
+
+SPECTRE_TEST(Parser, bump)
+{
+    Scene s;
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/bump.txt",&s);
+    ASSERT_TRUE(MtlLib.contains("With normal map"));
+    ASSERT_TRUE(MtlLib.contains("No bump"));
+    delete r0;
+    MtlLib.clear();
+    TexLib.clear();
 }
 
 SPECTRE_TEST(Parser, material_textures)
@@ -347,14 +357,16 @@ SPECTRE_TEST(Parser, material_textures)
     Renderer* r0 = driver0.parse(TEST_ASSETS
                                  "parser/material_texture.txt",
                                  &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 2);
     errors_count[WARNING_INDEX] = 0;
     ASSERT_TRUE(MtlLib.contains("Diffuse color"));
     ASSERT_TRUE(MtlLib.contains("Specular color"));
     ASSERT_TRUE(MtlLib.contains("Not found diffuse"));
+    ASSERT_TRUE(MtlLib.contains("Not found specular"));
     const Bsdf* mat0 = MtlLib.get("Diffuse color");
     const Bsdf* mat1 = MtlLib.get("Specular color");
     const Bsdf* mat2 = MtlLib.get("Not found diffuse");
+    const Bsdf* mat3 = MtlLib.get("Not found specular");
 
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
@@ -383,8 +395,15 @@ SPECTRE_TEST(Parser, material_textures)
     EXPECT_NEAR(res.w[1], 0.159286126f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.173435494f, 1e-5f);
 
-    //TODO: missing tests with actual imagemaps
-
+    a.set_materials((const Bsdf**)&mat3, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.151396676f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159286126f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.173435494f, 1e-5f);
+    
     delete r0;
 }
 
@@ -452,7 +471,6 @@ SPECTRE_TEST(Parser, material_matte)
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt", &s);
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
-
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
@@ -461,6 +479,17 @@ SPECTRE_TEST(Parser, material_matte)
     EXPECT_NEAR(res.w[0], 0.0656985715f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00307962182f, 1e-5f);
+    
+    ASSERT_TRUE(MtlLib.contains("Red Lambertian"));
+    const Bsdf* mat1 = MtlLib.get("Red Lambertian");
+    a.set_materials((const Bsdf**)&mat1, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.131289f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.067696f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.006154f, 1e-5f);
 
     delete r0;
     TexLib.clear();
@@ -743,6 +772,55 @@ SPECTRE_TEST(Parser, material_metal)
     EXPECT_NEAR(res.w[2], 1.07088006f, 1e-5f);
     MtlLib.clear();
     TexLib.clear();
+    delete r0;
+}
+
+SPECTRE_TEST(Parser, material_dualmaterial)
+{
+    Scene s;
+    Sphere sphere;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    Normal shading_normal;
+    unsigned char association = 0;
+    m.set_translation(Vec3(-2, 0, 0));
+    Asset a(&sphere, m, 1);
+    Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
+    HitPoint hit;
+    ShadingSpace matrix;
+    float distance = FLT_MAX;
+    wi = Vec3(0.f, 1.f, 0.f);
+    wi.normalize();
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/dualmat.txt", &s);
+    ASSERT_TRUE(MtlLib.contains("Red"));
+    ASSERT_TRUE(MtlLib.contains("Blue"));
+    ASSERT_TRUE(MtlLib.contains("Inverted"));
+    ASSERT_TRUE(MtlLib.contains("Non-inverted"));
+    
+    const Bsdf* mat0 = MtlLib.get("Inverted");
+    a.set_materials((const Bsdf**)&mat0, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.131289f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.067696f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.006154f, 1e-5f);
+    
+    const Bsdf* mat1 = MtlLib.get("Non-inverted");
+    a.set_materials((const Bsdf**)&mat1, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.057435f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.022974f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.302491f, 1e-5f);
+    
     delete r0;
 }
 

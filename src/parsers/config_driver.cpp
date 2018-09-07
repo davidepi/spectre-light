@@ -272,7 +272,7 @@ const TextureImage* ConfigDriver::load_texture(const std::string& path)
     if(tex_name.empty())
         tex_name = cur_file.filename();
     if(TexLib.contains_texture(tex_name))
-        //TexLib contains only TextureImage
+        //TexLib already contains TextureImage
         addme = (TextureImage*)TexLib.get_texture(tex_name);
     else if(cur_file.exists() && cur_file.readable() && !           cur_file.is_folder() &&
        img_valid(cur_file.absolute_path(), cur_file.extension()))
@@ -355,13 +355,7 @@ void ConfigDriver::build_materials()
                        (const TextureImage*)load_texture(mat->bump), RED);
             ```
              */
-
-            if(TexLib.contains_texture(mat->bump))
-                bump_map = new TextureNormal(
-                        (const TextureImage*)TexLib.get_texture(mat->bump));
-            else
-                bump_map = new TextureNormal(
-                        (const TextureImage*)load_texture(mat->bump));
+            bump_map = new TextureNormal((const TextureImage*)load_texture(mat->bump));
         }
         else
             bump_map = new Bump();
