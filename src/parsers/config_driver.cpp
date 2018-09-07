@@ -14,9 +14,9 @@ ParsedMaterial::ParsedMaterial()
     rough_x = 0;
     rough_y = -1;
     dist = SPECTRE_DIST_BECKMANN;
-    diffuse = "Default";
+    diffuse = "";
     diffuse_uniform = NULL;
-    specular = "Default";
+    specular = "";
     specular_uniform = NULL;
     //bump_is_normal = false; //EDIT: removed TextureHeight, so this is true
 }
@@ -258,63 +258,37 @@ const TextureUniform* ConfigDriver::load_texture_uniform()
     return val;
 }
 
-const Texture* ConfigDriver::load_texture(const std::string& path)
+const TextureImage* ConfigDriver::load_texture(const std::string& path)
 {
 
     File cur_file = current_dir;
-    const Texture* addme = TexLib.get_dflt_diffuse();
+    const TextureImage* addme;
     if(is_absolute(path.c_str()))
-        //recreates the File class... but absolute path should be a rare case
-        //File does not have a dflt constructor. Should I make one?
+        //TODO: avoid recreating the cur_file class
         cur_file = File(path.c_str());
     else
         cur_file.append(path.c_str());
-    if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
+    //resolve texture name
+    if(tex_name.empty())
+        tex_name = cur_file.filename();
+    if(TexLib.contains_texture(tex_name))
+        //TexLib contains only TextureImage
+        addme = (TextureImage*)TexLib.get_texture(tex_name);
+    else if(cur_file.exists() && cur_file.readable() && !           cur_file.is_folder() &&
        img_valid(cur_file.absolute_path(), cur_file.extension()))
     {
-        if(tex_name.empty())
-            tex_name = cur_file.filename();
-
         //Texture Image will deal with same file but different texture names
-        addme = new TextureImage(cur_file, tex_scale, tex_shift, tex_filter);
+        addme = new TextureImage(cur_file, tex_shift, tex_scale, tex_filter);
         TexLib.inherit_texture(tex_name, addme);
     }
     else
     {
         Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
-        addme = TexLib.get_dflt_diffuse();
+        addme = TexLib.get_dflt_teximage();
     }
     tex_name.clear(); //reset name for next texture
     tex_scale = Vec2(1.f); //reset scaling for next texture
     tex_shift = Vec2(); //reset shifting for next texture
-    return addme;
-}
-
-const TextureImage* ConfigDriver::load_mask(const std::string& path)
-{
-    File cur_file = current_dir;
-    const TextureImage* addme;
-    if(is_absolute(path.c_str()))
-        //recreates the File class... but absolute path should be a rare case
-        //File does not have a dflt constructor. Should I make one?
-        cur_file = File(path.c_str());
-    else
-        cur_file.append(path.c_str());
-    if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
-       img_valid(cur_file.absolute_path(), cur_file.extension()))
-    {
-        //Texture Image will deal with same file but different texture names
-        //mask cannot be named, so in place creation will always use dflt vals
-        Vec2 shift;
-        Vec2 scale(1.f);
-        addme = new TextureImage(cur_file, scale, shift, UNFILTERED);
-        TexLib.inherit_texture(cur_file.filename(), addme);
-    }
-    else
-    {
-        Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
-        addme = NULL;
-    }
     return addme;
 }
 
@@ -340,8 +314,8 @@ void ConfigDriver::build_materials()
         //diffuse
         if(mat->diffuse_uniform == NULL) //use non uniform texture
         {
-            if(TexLib.contains_texture(mat->diffuse))
-                diffuse = TexLib.get_texture(mat->diffuse);
+            if(mat->diffuse.empty())
+                diffuse = TexLib.get_dflt_teximage();
             else
                 diffuse = load_texture(mat->diffuse);
         }
@@ -351,8 +325,8 @@ void ConfigDriver::build_materials()
         //specular
         if(mat->specular_uniform == NULL) //use non uniform texture
         {
-            if(TexLib.contains_texture(mat->specular))
-                specular = TexLib.get_texture(mat->specular);
+            if(mat->specular.empty())
+                specular = TexLib.get_dflt_teximage();
             else
                 specular = load_texture(mat->specular);
         }
@@ -731,10 +705,7 @@ MaskBoolean ConfigDriver::build_mask(const ParsedMask& mask)
         map = NULL;
     else
     {
-        if(TexLib.contains_texture(mask.mask_tex))
-            map = (const TextureImage*)TexLib.get_texture(mask.mask_tex);
-        else //in place mask creation
-            map = load_mask(mask.mask_tex);
+        map = load_texture(mask.mask_tex);
     }
     return MaskBoolean(map, mask.mask_chn, mask.mask_inv);
 }

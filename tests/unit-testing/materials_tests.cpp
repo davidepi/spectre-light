@@ -1263,7 +1263,7 @@ SPECTRE_TEST(Material, DualBsdf_value)
     TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
     Vec2 scale(1.f);
     Vec2 shift(0.f);
-    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
     SingleBRDF mat0(new Lambertian(), &red);
     SingleBRDF mat1(new Lambertian(), &blue);
     MaskBoolean mask(&tx, RED, false);
@@ -1319,7 +1319,7 @@ SPECTRE_TEST(Material, DualBsdf_sample_value)
     TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
     Vec2 scale(1.f);
     Vec2 shift(0.f);
-    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
     SingleBRDF mat0(new Lambertian(), &red);
     SingleBRDF mat1(new Lambertian(), &blue);
     MaskBoolean mask(&tx, RED, false);
@@ -1383,7 +1383,7 @@ SPECTRE_TEST(Material, DualBsdf_pdf)
     TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
     Vec2 scale(1.f);
     Vec2 shift(0.f);
-    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
     SingleBRDF mat0(new Lambertian(), &red);
     SingleBRDF mat1(new Lambertian(), &blue);
     MaskBoolean mask(&tx, RED, false);

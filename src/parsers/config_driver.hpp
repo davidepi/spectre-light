@@ -387,10 +387,7 @@ public:
     Vec2 tex_shift;
 
     ///Load a texture and the corresponding map given the path on disk
-    const Texture* load_texture(const std::string& path);
-
-    ///Exactly like load_texture, but will always return a TextureImage
-    const TextureImage* load_mask(const std::string& path);
+    const TextureImage* load_texture(const std::string& path);
 
     ///Hold all the maps, used to set them the filter after parsing
     std::vector<ImageMap*> all_textures;

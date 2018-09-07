@@ -184,7 +184,7 @@ SPECTRE_TEST(Sphere, masked_hit)
     HitPoint h;
     Vec2 shift(0.f);
     Vec2 scale(1.f);
-    TextureImage tx(TEST_ASSETS "images/correct.bmp", scale, shift, UNFILTERED);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
     MaskBoolean mask(&tx, RED, false);
 
     //point invalidated but second one is ok (with fixed point_h)
@@ -200,7 +200,7 @@ SPECTRE_TEST(Sphere, masked_hit)
 
     //both points invalidated
     distance = INFINITY;
-    tx = TextureImage(TEST_ASSETS "images/black.bmp", scale, shift, UNFILTERED);
+    tx = TextureImage(TEST_ASSETS "images/black.bmp", shift, scale, UNFILTERED);
     mask = MaskBoolean(&tx, RED, false);
     r = Ray(Point3(0.f, -10.f, 0.f), Vec3(0, 1, 0));
     res = s.intersect(&r, &distance, &h, &mask);
@@ -208,7 +208,7 @@ SPECTRE_TEST(Sphere, masked_hit)
 
     //starting from inside, only viable point invalidated
     distance = INFINITY;
-    tx = TextureImage(TEST_ASSETS "images/black.bmp", scale, shift, UNFILTERED);
+    tx = TextureImage(TEST_ASSETS "images/black.bmp", shift, scale, UNFILTERED);
     mask = MaskBoolean(&tx, RED, false);
     r = Ray(Point3(0.f, 0.f, 0.f), Vec3(0, 1, 0));
     res = s.intersect(&r, &distance, &h, &mask);

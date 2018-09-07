@@ -224,7 +224,7 @@ SPECTRE_TEST(Triangle, masked_hit)
     HitPoint hit;
     Vec2 shift(0.f);
     Vec2 scale(1.f);
-    TextureImage tx(TEST_ASSETS "images/black.bmp", scale, shift, UNFILTERED);
+    TextureImage tx(TEST_ASSETS "images/black.bmp", shift, scale, UNFILTERED);
     MaskBoolean mask;
 
     r = Ray(Point3(0.5, 0.5, 1.f), Vec3(0, 0, -1));

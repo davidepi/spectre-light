@@ -18,32 +18,30 @@ SPECTRE_TEST_INIT(TextureLibrary_tests)
 
 SPECTRE_TEST(TextureLibrary, add_texture)
 {
-    const Spectrum color1 = SPECTRUM_WHITE;
-    const Spectrum color2(4500);
+    Vec2 shift(0.f);
+    Vec2 scale(1.f);
     Spectrum res;
     HitPoint h;
 
-    Texture* tex = new TextureUniform(color1);
+    TextureImage* tex = new TextureImage(TEST_ASSETS "images/black.bmp", shift,
+                                         scale, UNFILTERED);
     TexLib.inherit_texture("New", tex);
-    const Texture* got = TexLib.get_texture("New");
-    ASSERT_EQ(got, tex);
+    const TextureImage* got = TexLib.get_texture("New");
+    ASSERT_PTR_EQ(got, tex);
     res = got->map(&h);
-    EXPECT_EQ(color1.w[0], res.w[0]);
-    EXPECT_EQ(color1.w[1], res.w[1]);
-    EXPECT_EQ(color1.w[2], res.w[2]);
+    EXPECT_TRUE(res.is_black());
 
     //add different with same name, should be refused
-    Texture* tex2 = new TextureUniform(color2);
+    TextureImage* tex2 = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                          shift, scale, UNFILTERED);
     TexLib.inherit_texture("New", tex2);
-    const Texture* got2 = TexLib.get_texture("New");
+    const TextureImage* got2 = TexLib.get_texture("New");
     res = got2->map(&h);
-    EXPECT_EQ(color1.w[0], res.w[0]);
-    EXPECT_EQ(color1.w[1], res.w[1]);
-    EXPECT_EQ(color1.w[2], res.w[2]);
-    EXPECT_NE(color2.w[0], res.w[0]);
-    EXPECT_NE(color2.w[1], res.w[1]);
-    EXPECT_NE(color2.w[2], res.w[2]);
+    EXPECT_TRUE(res.is_black());
+    EXPECT_FALSE(tex2->map(&h).is_black());
     delete tex2;
+
+    TexLib.clear();
 }
 
 SPECTRE_TEST(TextureLibrary, add_texture_anonymous)
@@ -86,7 +84,10 @@ SPECTRE_TEST(TextureLibrary, add_map)
 
 SPECTRE_TEST(TextureLibrary, remove_texture)
 {
-    Texture* tex = new TextureUniform(SPECTRUM_WHITE);
+    Vec2 shift(0.f);
+    Vec2 scale(1.f);
+    TextureImage* tex = new TextureImage(TEST_ASSETS "images/black.bmp", shift,
+                                         scale, UNFILTERED);
     TexLib.inherit_texture("Removeme", tex);
     const Texture* got = TexLib.get_texture("Removeme");
     ASSERT_PTR_EQ(got, tex);
@@ -100,11 +101,6 @@ SPECTRE_TEST(TextureLibrary, remove_texture)
     TexLib.erase_texture("Removeme");
     got = TexLib.get_texture("Removeme");
     EXPECT_PTR_NULL(got);
-
-    got = TexLib.get_texture("Default");
-    EXPECT_PTR_NOTNULL(got);
-    TexLib.erase_texture("Default");
-    EXPECT_PTR_NOTNULL(got);
 }
 
 SPECTRE_TEST(TextureLibrary, remove_map)
@@ -127,7 +123,10 @@ SPECTRE_TEST(TextureLibrary, remove_map)
 
 SPECTRE_TEST(TextureLibrary, contains_texture)
 {
-    Texture* tex = new TextureUniform(SPECTRUM_WHITE);
+    Vec2 shift(0.f);
+    Vec2 scale(1.f);
+    TextureImage* tex = new TextureImage(TEST_ASSETS "images/black.bmp", shift,
+                                         scale, UNFILTERED);
     TexLib.inherit_texture("Contained", tex);
     bool res = TexLib.contains_texture("Contained");
     EXPECT_TRUE(res);
@@ -150,11 +149,16 @@ SPECTRE_TEST(TextureLibrary, contains_map)
 
 SPECTRE_TEST(TextureLibrary, clear)
 {
-    Texture* tex = new TextureUniform(SPECTRUM_WHITE);
+    Vec2 shift(0.f);
+    Vec2 scale(1.f);
+    TextureImage* tex = new TextureImage(TEST_ASSETS "images/black.bmp", shift,
+                                         scale, UNFILTERED);
     TexLib.inherit_texture("Removeme", tex);
-    Texture* tex2 = new TextureUniform(SPECTRUM_WHITE);
+    TextureImage* tex2 = new TextureImage(TEST_ASSETS "images/black.bmp", shift,
+                                          scale, UNFILTERED);
     TexLib.inherit_texture("Removeme2", tex2);
-    Texture* tex3 = new TextureUniform(SPECTRUM_WHITE);
+    TextureImage* tex3 = new TextureImage(TEST_ASSETS "images/black.bmp", shift,
+                                          scale, UNFILTERED);
     TexLib.inherit_texture("Removeme3", tex3);
     pixBGRA data[4] = {0x0000FFFF, 0x00FF00FF, 0xFF0000FF, 0x000000FF};
     ImageMap* map0 = new ImageMapUnfiltered(data, 2);
@@ -174,8 +178,6 @@ SPECTRE_TEST(TextureLibrary, clear)
     EXPECT_PTR_NOTNULL(gotm);
     gotm = TexLib.get_map("Removeme5");
     EXPECT_PTR_NOTNULL(gotm);
-    got = TexLib.get_texture("Default");
-    EXPECT_PTR_NOTNULL(got);
 
     TexLib.clear();
 
@@ -189,15 +191,35 @@ SPECTRE_TEST(TextureLibrary, clear)
     EXPECT_PTR_NULL(gotm);
     gotm = TexLib.get_map("Removeme5");
     EXPECT_PTR_NULL(gotm);
-    got = TexLib.get_texture("Default");
-    EXPECT_PTR_NOTNULL(got);
 }
 
-SPECTRE_TEST(TextureLibrary, get_default)
+SPECTRE_TEST(TextureLibrary, get_default_map)
 {
-    const Texture* tex0 = TexLib.get_dflt_diffuse();
-    const Texture* tex1 = TexLib.get_texture("Default");
-    EXPECT_PTR_EQ(tex0, tex1); //assert that they point to the same value
+    const ImageMap* map0 = TexLib.get_dflt_map();
+    uint32_t tex = map0->filter(0, 0, 0, 0, 0, 0).bgra_value;
+    EXPECT_EQ(tex, 0xFFFFFFFF);
+}
+
+SPECTRE_TEST(TextureLibrary, get_default_texture)
+{
+    HitPoint hp;
+    ColorRGB res;
+    const Texture* tex0 = TexLib.get_dflt_texture();
+    res = tex0->map(&hp).to_xyz().to_sRGB();
+    EXPECT_NEAR(res.r, 1.f, 1e-1f);
+    EXPECT_NEAR(res.g, 1.f, 1e-1f);
+    EXPECT_NEAR(res.b, 1.f, 1e-1f);
+}
+
+SPECTRE_TEST(TextureLibrary, get_default_image)
+{
+    HitPoint hp;
+    ColorRGB res;
+    const TextureImage* img0 = TexLib.get_dflt_teximage();
+    res = img0->map(&hp).to_xyz().to_sRGB();
+    EXPECT_NEAR(res.r, 1.f, 1e-2f);
+    EXPECT_NEAR(res.g, 1.f, 1e-2f);
+    EXPECT_NEAR(res.b, 1.f, 1e-2f);
 }
 
 SPECTRE_TEST_END(TextureLibrary)

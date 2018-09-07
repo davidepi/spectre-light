@@ -1,6 +1,6 @@
 #include "texture_image.hpp"
 
-TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
+TextureImage::TextureImage(const File& src, Vec2& shift, Vec2& scale,
                            TextureFilter_t filter):scale(scale), shift(shift)
 {
     unfiltered = filter == UNFILTERED;
@@ -38,17 +38,23 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
             else
             {
                 Console.warning(MESSAGE_TEXTURE_POWER2, src.absolute_path());
-                imagemap = TexLib.get_map("Default");
+                imagemap = TexLib.get_dflt_map();
             }
         }
         else
         {
             //should be checked by parser
             Console.warning(MESSAGE_TEXTURE_ERROR, src.absolute_path());
-            imagemap = TexLib.get_map("Default");
+            imagemap = TexLib.get_dflt_map();
         }
     }
 }
+
+TextureImage::TextureImage(const ImageMap* map, Vec2& shift, Vec2& scale,
+                           bool unfiltered):scale(scale), shift(shift),
+                                            unfiltered(unfiltered),
+                                            imagemap(map)
+{}
 
 TexelUnion TextureImage::map_value(const HitPoint* hit) const
 {

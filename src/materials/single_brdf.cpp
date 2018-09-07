@@ -22,7 +22,7 @@ SingleBRDF::SingleBRDF(const Bdf* bdf, const Texture* texture)
     if(texture != NULL)
         SingleBRDF::diffuse = texture;
     else
-        SingleBRDF::diffuse = TexLib.get_dflt_diffuse();
+        SingleBRDF::diffuse = TexLib.get_dflt_texture();
 }
 
 SingleBRDF::~SingleBRDF()

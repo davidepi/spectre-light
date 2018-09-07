@@ -20,16 +20,15 @@
 - [x] extended image support (.jpg/.tiff support)
 - [x] lex/yacc parser
 - [x] diffuse texture mapping
-- [ ] **-> bump/normal textures <-**
+- [x] bump/normal textures
 - [ ] new light system (sunlight + environment)
 - [ ] real cameras (and depth of field)
-- [ ] bidirectional path tracer
 
 ### V0.3 ###
+- a lot of new integrators (bdpt, mlt, photon mapping, etc...)
 - 3DS max exporter
 - fog system
 - subsurface scattering
-- metropolis light transport
 
 ### More ###
 - bvh exporter/importer/generator

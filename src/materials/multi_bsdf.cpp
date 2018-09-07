@@ -28,7 +28,7 @@ void MultiBSDF::inherit_bdf(Bdf* addme, const Texture* spectrum)
         MultiBSDF::diffuse[count] = spectrum;
     else
         //assuming default texture always exists and is SPECTRUM_ONE
-        MultiBSDF::diffuse[count] = TexLib.get_dflt_diffuse();
+        MultiBSDF::diffuse[count] = TexLib.get_dflt_texture();
     count++;
 }
 

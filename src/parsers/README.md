@@ -187,8 +187,8 @@ element | enum | For `metal` typed materials, this will specify a metal from the
 roughness | float | single value in range [0-1] used to calculate the roughness of a material | 0
 anisotropy | float | single value in range [0-1] used to calcualte the y roughness of a material for surfaces that exhibit anisotropic reflections like hairs or brushed steel. If this equals the roughness value or is unset, the surface is assumed isotropic | roughness value
 distribution | enum | If the material has a roughness higher than 0, the distribution that will be used to simulate the roughness. Possible values are `blinn`, `beckmann`, `ggx`. If the anisotropy value is set and is different from the roughness, the distribution value will always be `ggx` since it is the only distribution implemented for anisotropic materials | beckmann
-diffuse | quoted string or float[3] | The texture map that will be used for the spectrum. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the "Default" texture is used. If an array of values is given an uniform coloured texture is created with the given values, expected as RGB values in range [0-255]. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | "Default" (white texture)
-specular | quoted string or float[3] | Same input of the diffuse component. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| "Default" (white texture)
+diffuse | quoted string or float[3] | The texture map that will be used for the spectrum. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the default texture is used. If an array of values is given an uniform coloured texture is created with the given values, expected as RGB values in range [0-255]. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | default white texture
+specular | quoted string or float[3] | Same input of the diffuse component. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| default white texture
 
 #### Dualmaterial
 Keys for Dualmaterial objects
@@ -196,8 +196,8 @@ Keys for Dualmaterial objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the material that will be added to the Library | Syntax error
-first | quoted string | The name of the first material composing the dual material | Default
-second | quoted string | The name of the second material composing the dual material | Default
+first | quoted string | The name of the first material composing the dual material, the one on the visible part of the mask | Default
+second | quoted string | The name of the second material composing the dual material, the one on the hidden part of the mask | Default
 mask | quoted string + [mask attributes](#attributes) | The texture used as alpha mask for this object. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the mask is disabled. Attributes can specify which channel will be used and if the mask should be inverted | White mask
 
 ##### Metals

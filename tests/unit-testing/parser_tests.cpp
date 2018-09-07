@@ -370,18 +370,18 @@ SPECTRE_TEST(Parser, material_textures)
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.319684714f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.303918838f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.319018781f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.318374306f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.346649765f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat2, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.159286112f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.159286112f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.159286112f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.151396676f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159286126f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.173435494f, 1e-5f);
 
     //TODO: missing tests with actual imagemaps
 
@@ -503,18 +503,18 @@ SPECTRE_TEST(Parser, material_glossy)
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.319684714f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.303918838f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.319018781f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.318374306f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.346649765f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat1, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.193397462f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.189456000f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.307217479f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.117517456f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.124586321f, 1e-5f);
 
     //TODO: these values are not convincing, but the roughness is 0.001
     //so it should be fine... need to check again visually
@@ -523,18 +523,18 @@ SPECTRE_TEST(Parser, material_glossy)
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 3183.22998f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 3183.16626f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 3183.10474f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 3025.57128f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 3183.16674f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 3465.85937f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat3, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.0606181398f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0604604780f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0261571147f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.305674285f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.3059570491f, 1e-5f);
 
     delete r0;
     MtlLib.clear();
@@ -582,9 +582,9 @@ SPECTRE_TEST(Parser, material_glass)
     res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
                              &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0337359607f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.0337359607f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0337359607f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0320650190f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0337359644f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0367327257f, 1e-5f);
 
     mat1->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = mat1->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
@@ -598,9 +598,9 @@ SPECTRE_TEST(Parser, material_glass)
     res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
                              &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0190198198f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0180777683f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0190198198f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0190198198f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0207093507f, 1e-5f);
 
     mat3->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = mat3->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
@@ -614,9 +614,9 @@ SPECTRE_TEST(Parser, material_glass)
     res = mat4->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
                              &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0132096251f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0125553524f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0132096251f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0132096251f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0143830357f, 1e-5f);
 
     delete r0;
     MtlLib.clear();

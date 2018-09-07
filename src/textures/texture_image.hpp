@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit  9 Aug 2018
+//Last Edit  7 Sep 2018
 
 /**
  *  \file texture_image.hpp
@@ -7,7 +7,7 @@
  *  \details   Class holding an image map that can be shifted and scaled
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      9 Aug 2018
+ *  \date      7 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -73,18 +73,37 @@ public:
      *  this class
      *
      *  \param[in] src The path to the underlying ImageMap
-     *  \param[in] scale The value used to scale the UV values before performing
-     *  texture mapping
      *  \param[in] shift The value used to shift the UV values before performing
+     *  texture mapping
+     *  \param[in] scale The value used to scale the UV values before performing
      *  texture mapping
      *  \param[in] filter The type of filter that will be used to filter this
      *  texture
      */
-    TextureImage(const File& src, Vec2& scale, Vec2& shift,
+    TextureImage(const File& src, Vec2& shift, Vec2& scale,
                  TextureFilter_t filter);
 
+    /**
+     *  \brief Constructor
+     *
+     *  Given the underlying ImageMap and its shift and scale values, construct
+     *  this class
+     *
+     *  \param[in] map A pointer to the underlying ImageMap
+     *  \param[in] scale The value used to scale the UV values before performing
+     *  texture mapping
+     *  \param[in] shift The value used to shift the UV values before performing
+     *  texture mapping
+     *  \param[in] unfiltered True if the underlying ImageMap is unfiltered.
+     *  If this is not known, use false. Passing false if the image is
+     *  unfiltered causes only a small performance degradation, passing true
+     *  if the image is NOT unfiltered leads to completely wrong results.
+     */
+    TextureImage(const ImageMap* map, Vec2& shift, Vec2& scale,
+                 bool unfiltered = false);
+
     ///Default destructor
-    virtual ~TextureImage() = default;
+    ~TextureImage() override = default;
 
     /**
      *  \brief Returns the shift component
@@ -135,7 +154,7 @@ public:
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS
-protected:
+    protected:
 #endif
 
     ///scale component

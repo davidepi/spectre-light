@@ -2,20 +2,28 @@
 //license: GNU GPLv3
 
 #include "texture_library.hpp"
+#include "texture_image.hpp"
 
-TextureLibrary::TextureLibrary():default_diffuse(
-        new TextureUniform(SPECTRUM_ONE))
+TextureLibrary::TextureLibrary()
 {
-    texlib.insert(std::make_pair("Default", default_diffuse));
+    default_texture = new TextureUniform(SPECTRUM_ONE);
+    pixBGRA value = 0xFFFFFFFF;
+    default_map = new ImageMapUnfiltered(&value, 1);
+    Vec2 shift(0.f);
+    Vec2 scale(1.f);
+    default_teximg = new TextureImage(default_map, shift, scale, true);
 }
 
 TextureLibrary::~TextureLibrary()
 {
     TextureLibrary::clear();
+    delete default_map;
+    delete default_teximg;
+    delete default_texture;
 }
 
 void TextureLibrary::inherit_texture(const std::string& name,
-                                     const Texture* texture)
+                                     const TextureImage* texture)
 {
     texlib.insert(std::make_pair(name, texture));
 }
@@ -30,11 +38,10 @@ void TextureLibrary::inherit_map(const std::string& name, const ImageMap* map)
     maplib.insert(std::make_pair(name, map));
 }
 
-const Texture* TextureLibrary::get_texture(const std::string& name) const
+const TextureImage* TextureLibrary::get_texture(const std::string& name) const
 {
-    const Texture* retval;
-    std::unordered_map<std::string, const Texture*>::const_iterator got =
-            texlib.find(name);
+    const TextureImage* retval;
+    auto got = texlib.find(name);
     if(got != texlib.end())
         retval = got->second;
     else
@@ -45,8 +52,7 @@ const Texture* TextureLibrary::get_texture(const std::string& name) const
 const ImageMap* TextureLibrary::get_map(const std::string& name) const
 {
     const ImageMap* retval;
-    std::unordered_map<std::string, const ImageMap*>::const_iterator got =
-            maplib.find(name);
+    auto got = maplib.find(name);
     if(got != maplib.end())
         retval = got->second;
     else
@@ -56,22 +62,17 @@ const ImageMap* TextureLibrary::get_map(const std::string& name) const
 
 void TextureLibrary::erase_texture(const std::string& name)
 {
-    if(name != "Default")
+    auto it = texlib.find(name);
+    if(it != texlib.end())
     {
-        std::unordered_map<std::string, const Texture*>::const_iterator it =
-                texlib.find(name);
-        if(it != texlib.end())
-        {
-            delete it->second;
-            texlib.erase(it);
-        }
+        delete it->second;
+        texlib.erase(it);
     }
 }
 
 void TextureLibrary::erase_map(const std::string& name)
 {
-    std::unordered_map<std::string, const ImageMap*>::const_iterator it =
-            maplib.find(name);
+    auto it = maplib.find(name);
     if(it != maplib.end())
     {
         delete it->second;
@@ -81,13 +82,6 @@ void TextureLibrary::erase_map(const std::string& name)
 
 void TextureLibrary::clear()
 {
-    //remove Default to avoid deallocation
-    std::unordered_map<std::string, const Texture*>::const_iterator got =
-            texlib.find("Default");
-
-    const Texture* dflt = got->second;
-    texlib.erase(got);
-
     for(std::pair<std::string, const Texture*> element:TextureLibrary::texlib)
         delete element.second;
     TextureLibrary::texlib.clear();
@@ -99,26 +93,31 @@ void TextureLibrary::clear()
     for(const Texture* element:TextureLibrary::unreferenced)
         delete element;
     unreferenced.clear();
-
-    //readd default texture
-    texlib.insert(std::make_pair("Default", dflt));
 }
 
 bool TextureLibrary::contains_texture(const std::string& name) const
 {
-    std::unordered_map<std::string, const Texture*>::const_iterator got =
-            texlib.find(name);
+    auto got = texlib.find(name);
     return got != texlib.end();
 }
 
 bool TextureLibrary::contains_map(const std::string& name) const
 {
-    std::unordered_map<std::string, const ImageMap*>::const_iterator got =
-            maplib.find(name);
+    auto got = maplib.find(name);
     return got != maplib.end();
 }
 
-const Texture* TextureLibrary::get_dflt_diffuse() const
+const Texture* TextureLibrary::get_dflt_texture() const
 {
-    return TextureLibrary::default_diffuse;
+    return TextureLibrary::default_texture;
+}
+
+const TextureImage* TextureLibrary::get_dflt_teximage() const
+{
+    return TextureLibrary::default_teximg;
+}
+
+const ImageMap* TextureLibrary::get_dflt_map() const
+{
+    return TextureLibrary::default_map;
 }
