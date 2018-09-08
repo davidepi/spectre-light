@@ -1,15 +1,16 @@
-out: "outputwrong.jpg"
-resolution: {width:800, height:600}
+out: "output.jpg"
+resolution: {width:1280, height:1024}
 camera: {type: perspective position:[0,4,2] target:[0,0,-4] up:[0,1,0], fov:70}
 sampler: stratified
-spp: 1
+spp: 121
 filter:{texture: unfiltered}
 material: {name: "Red Matte", type: matte, diffuse: [255,0,0]}
 material: {name: "Green Matte", type: matte, diffuse: [0,255,0]}
 material: {name: "White Matte", type: matte, diffuse: [255,255,255]}
-material: {name: "Material", type: matte, diffuse: "Haumea" }
-texture: {src:"/Users/davide/Desktop/haumea.bmp", name: "Haumea"}
-texture: {src:"/Users/davide/Desktop/jupiter.bmp", name:"Jupiter"}
+material: {name: "Material", type: matte, bump: "Cobblestone_bump, diffuse: "Cobblestone_diffuse"}
+material: {name: "Glass", type: glass, ior:1.33}
+texture: {src:"cobble_b.jpg", name: "Cobblestone_bump", scale:[4,4]}
+texture: {src:"cobble_d.jpg", name: "Cobblestone_diffuse", scale:[4,4]}
 light: { name: "Sphere", position:[0,5,0], temperature:3500 }
 
 #world bounds
@@ -20,5 +21,5 @@ world: { name: "Sphere", material: "White Matte", position:[0,100005,0],  scale:
 world: { name: "Sphere", material: "White Matte", position:[0,0,100005],  scale:[1e5,1e5,1e5]}
 world: { name: "Sphere", material: "White Matte", position:[0,0,-100005], scale:[1e5,1e5,1e5]}
 
-world: {name: "Sphere", material: "Material", position: [0,1.5,-1], scale:1.5}
+world: {name: "Sphere", material: "Material", position: [0,1.5,-1], scale:1.5, rotation:[45,0,0]}
 

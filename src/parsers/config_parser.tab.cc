@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.1.
+// A Bison parser, made by GNU Bison 3.0.4.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 
 // First part of user declarations.
 
-#line 37 "config_parser.tab.cc" // lalr1.cc:407
+#line 37 "config_parser.tab.cc" // lalr1.cc:404
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -47,13 +47,13 @@
 
 // User implementation prologue.
 
-#line 51 "config_parser.tab.cc" // lalr1.cc:415
+#line 51 "config_parser.tab.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 28 "config_parser.y" // lalr1.cc:416
+#line 28 "config_parser.y" // lalr1.cc:413
  
     #include "parsers/config_driver.hpp"
 
-#line 57 "config_parser.tab.cc" // lalr1.cc:416
+#line 57 "config_parser.tab.cc" // lalr1.cc:413
 
 
 #ifndef YY_
@@ -65,15 +65,6 @@
 # endif
 # ifndef YY_
 #  define YY_(msgid) msgid
-# endif
-#endif
-
-// Whether we are compiled with exception support.
-#ifndef YY_EXCEPTIONS
-# if defined __GNUC__ && !defined __EXCEPTIONS
-#  define YY_EXCEPTIONS 0
-# else
-#  define YY_EXCEPTIONS 1
 # endif
 #endif
 
@@ -113,7 +104,7 @@
     {                                           \
       *yycdebug_ << Title << ' ';               \
       yy_print_ (*yycdebug_, Symbol);           \
-      *yycdebug_ << '\n';                       \
+      *yycdebug_ << std::endl;                  \
     }                                           \
   } while (false)
 
@@ -132,9 +123,9 @@
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE (Symbol)
-# define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
-# define YY_STACK_PRINT()                static_cast<void> (0)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE(Symbol)
+# define YY_REDUCE_PRINT(Rule)           static_cast<void>(0)
+# define YY_STACK_PRINT()                static_cast<void>(0)
 
 #endif // !YYDEBUG
 
@@ -148,7 +139,7 @@
 
 
 namespace yy {
-#line 152 "config_parser.tab.cc" // lalr1.cc:491
+#line 143 "config_parser.tab.cc" // lalr1.cc:479
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -209,20 +200,24 @@ namespace yy {
 
 
   // by_state.
+  inline
   ConfigParser::by_state::by_state ()
     : state (empty_state)
   {}
 
+  inline
   ConfigParser::by_state::by_state (const by_state& other)
     : state (other.state)
   {}
 
+  inline
   void
   ConfigParser::by_state::clear ()
   {
     state = empty_state;
   }
 
+  inline
   void
   ConfigParser::by_state::move (by_state& that)
   {
@@ -230,10 +225,12 @@ namespace yy {
     that.clear ();
   }
 
+  inline
   ConfigParser::by_state::by_state (state_type s)
     : state (s)
   {}
 
+  inline
   ConfigParser::symbol_number_type
   ConfigParser::by_state::type_get () const
   {
@@ -243,58 +240,16 @@ namespace yy {
       return yystos_[state];
   }
 
+  inline
   ConfigParser::stack_symbol_type::stack_symbol_type ()
   {}
 
-  ConfigParser::stack_symbol_type::stack_symbol_type (const stack_symbol_type& that)
-    : super_type (that.state, that.location)
-  {
-    switch (that.type_get ())
-    {
-      case 137: // channel
-        value.copy< ImageChannel > (that.value);
-        break;
 
-      case 139: // vector2
-        value.copy< Vec2 > (that.value);
-        break;
-
-      case 138: // vector
-        value.copy< Vec3 > (that.value);
-        break;
-
-      case 107: // "floating point value"
-      case 140: // number
-        value.copy< float > (that.value);
-        break;
-
-      case 106: // "integer value"
-      case 141: // integer
-        value.copy< int > (that.value);
-        break;
-
-      case 134: // element
-        value.copy< metal_t > (that.value);
-        break;
-
-      case 108: // "quoted string"
-        value.copy< std::string > (that.value);
-        break;
-
-      case 105: // "positive integer value"
-        value.copy< unsigned int > (that.value);
-        break;
-
-      default:
-        break;
-    }
-
-  }
-
+  inline
   ConfigParser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
     : super_type (s, that.location)
   {
-    switch (that.type_get ())
+      switch (that.type_get ())
     {
       case 137: // channel
         value.move< ImageChannel > (that.value);
@@ -338,11 +293,12 @@ namespace yy {
     that.type = empty_symbol;
   }
 
+  inline
   ConfigParser::stack_symbol_type&
   ConfigParser::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
     state = that.state;
-    switch (that.type_get ())
+      switch (that.type_get ())
     {
       case 137: // channel
         value.copy< ImageChannel > (that.value);
@@ -388,6 +344,7 @@ namespace yy {
 
 
   template <typename Base>
+  inline
   void
   ConfigParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
@@ -416,6 +373,7 @@ namespace yy {
   }
 #endif
 
+  inline
   void
   ConfigParser::yypush_ (const char* m, state_type s, symbol_type& sym)
   {
@@ -423,6 +381,7 @@ namespace yy {
     yypush_ (m, t);
   }
 
+  inline
   void
   ConfigParser::yypush_ (const char* m, stack_symbol_type& s)
   {
@@ -431,8 +390,9 @@ namespace yy {
     yystack_.push (s);
   }
 
+  inline
   void
-  ConfigParser::yypop_ (unsigned n)
+  ConfigParser::yypop_ (unsigned int n)
   {
     yystack_.pop (n);
   }
@@ -464,7 +424,7 @@ namespace yy {
   }
 #endif // YYDEBUG
 
-  ConfigParser::state_type
+  inline ConfigParser::state_type
   ConfigParser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - yyntokens_] + yystate;
@@ -474,13 +434,13 @@ namespace yy {
       return yydefgoto_[yysym - yyntokens_];
   }
 
-  bool
+  inline bool
   ConfigParser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
-  bool
+  inline bool
   ConfigParser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
@@ -507,20 +467,20 @@ namespace yy {
     /// The return value of parse ().
     int yyresult;
 
-#if YY_EXCEPTIONS
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
     try
-#endif // YY_EXCEPTIONS
       {
-    YYCDEBUG << "Starting parse\n";
+    YYCDEBUG << "Starting parse" << std::endl;
 
 
     // User initialization code.
-    #line 22 "config_parser.y" // lalr1.cc:750
+    #line 22 "config_parser.y" // lalr1.cc:741
 {
     yyla.location.begin.filename = yyla.location.end.filename = &driver.file;
 }
 
-#line 524 "config_parser.tab.cc" // lalr1.cc:750
+#line 484 "config_parser.tab.cc" // lalr1.cc:741
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -531,7 +491,7 @@ namespace yy {
 
     // A new symbol was pushed on the stack.
   yynewstate:
-    YYCDEBUG << "Entering state " << yystack_[0].state << '\n';
+    YYCDEBUG << "Entering state " << yystack_[0].state << std::endl;
 
     // Accept?
     if (yystack_[0].state == yyfinal_)
@@ -541,6 +501,7 @@ namespace yy {
 
     // Backup.
   yybackup:
+
     // Try to take a decision without lookahead.
     yyn = yypact_[yystack_[0].state];
     if (yy_pact_value_is_default_ (yyn))
@@ -550,20 +511,16 @@ namespace yy {
     if (yyla.empty ())
       {
         YYCDEBUG << "Reading a token: ";
-#if YY_EXCEPTIONS
         try
-#endif // YY_EXCEPTIONS
           {
             symbol_type yylookahead (yylex (driver));
             yyla.move (yylookahead);
           }
-#if YY_EXCEPTIONS
         catch (const syntax_error& yyexc)
           {
             error (yyexc);
             goto yyerrlab1;
           }
-#endif // YY_EXCEPTIONS
       }
     YY_SYMBOL_PRINT ("Next token is", yyla);
 
@@ -607,11 +564,11 @@ namespace yy {
     yylen = yyr2_[yyn];
     {
       stack_symbol_type yylhs;
-      yylhs.state = yy_lr_goto_state_ (yystack_[yylen].state, yyr1_[yyn]);
+      yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
       /* Variants are always initialized to an empty instance of the
          correct type. The default '$$ = $1' action is NOT applied
          when using variants.  */
-      switch (yyr1_[yyn])
+        switch (yyr1_[yyn])
     {
       case 137: // channel
         yylhs.value.build< ImageChannel > ();
@@ -652,760 +609,755 @@ namespace yy {
     }
 
 
-      // Default location.
+      // Compute the default @$.
       {
         slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
         YYLLOC_DEFAULT (yylhs.location, slice, yylen);
-        yyerror_range[1].location = yylhs.location;
       }
 
       // Perform the reduction.
       YY_REDUCE_PRINT (yyn);
-#if YY_EXCEPTIONS
       try
-#endif // YY_EXCEPTIONS
         {
           switch (yyn)
             {
   case 4:
-#line 160 "config_parser.y" // lalr1.cc:870
+#line 160 "config_parser.y" // lalr1.cc:859
     {driver.output = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 674 "config_parser.tab.cc" // lalr1.cc:870
+#line 628 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 7:
-#line 163 "config_parser.y" // lalr1.cc:870
+#line 163 "config_parser.y" // lalr1.cc:859
     {driver.sampler_type = SPECTRE_SAMPLER_RANDOM;}
-#line 680 "config_parser.tab.cc" // lalr1.cc:870
+#line 634 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 8:
-#line 164 "config_parser.y" // lalr1.cc:870
+#line 164 "config_parser.y" // lalr1.cc:859
     {driver.sampler_type = SPECTRE_SAMPLER_STRATIFIED;}
-#line 686 "config_parser.tab.cc" // lalr1.cc:870
+#line 640 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 9:
-#line 165 "config_parser.y" // lalr1.cc:870
+#line 165 "config_parser.y" // lalr1.cc:859
     {driver.spp = yystack_[0].value.as< unsigned int > ();}
-#line 692 "config_parser.tab.cc" // lalr1.cc:870
+#line 646 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 10:
-#line 166 "config_parser.y" // lalr1.cc:870
+#line 166 "config_parser.y" // lalr1.cc:859
     {/* path_trace is the only available and dflt */}
-#line 698 "config_parser.tab.cc" // lalr1.cc:870
+#line 652 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 11:
-#line 167 "config_parser.y" // lalr1.cc:870
+#line 167 "config_parser.y" // lalr1.cc:859
     {/* camera depends on resolution */}
-#line 704 "config_parser.tab.cc" // lalr1.cc:870
+#line 658 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 12:
-#line 168 "config_parser.y" // lalr1.cc:870
+#line 168 "config_parser.y" // lalr1.cc:859
     {driver.deferred_shapes.push_back(yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2));}
-#line 710 "config_parser.tab.cc" // lalr1.cc:870
+#line 664 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 13:
-#line 169 "config_parser.y" // lalr1.cc:870
+#line 169 "config_parser.y" // lalr1.cc:859
     {driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
-#line 716 "config_parser.tab.cc" // lalr1.cc:870
+#line 670 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 14:
-#line 170 "config_parser.y" // lalr1.cc:870
+#line 170 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.is_light=true;driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
-#line 722 "config_parser.tab.cc" // lalr1.cc:870
+#line 676 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 16:
-#line 172 "config_parser.y" // lalr1.cc:870
+#line 172 "config_parser.y" // lalr1.cc:859
     {driver.children.push_back(yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2));}
-#line 728 "config_parser.tab.cc" // lalr1.cc:870
+#line 682 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 17:
-#line 173 "config_parser.y" // lalr1.cc:870
+#line 173 "config_parser.y" // lalr1.cc:859
     {driver.deferred_materials.push_back(driver.cur_mat);driver.cur_mat=ParsedMaterial();}
-#line 734 "config_parser.tab.cc" // lalr1.cc:870
+#line 688 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 18:
-#line 174 "config_parser.y" // lalr1.cc:870
+#line 174 "config_parser.y" // lalr1.cc:859
     {driver.deferred_dualmats.push_back(driver.cur_dualmat);driver.cur_dualmat = ParsedDualMaterial();}
-#line 740 "config_parser.tab.cc" // lalr1.cc:870
+#line 694 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 22:
-#line 180 "config_parser.y" // lalr1.cc:870
+#line 180 "config_parser.y" // lalr1.cc:859
     {driver.width = yystack_[0].value.as< unsigned int > ();}
-#line 746 "config_parser.tab.cc" // lalr1.cc:870
+#line 700 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 23:
-#line 181 "config_parser.y" // lalr1.cc:870
+#line 181 "config_parser.y" // lalr1.cc:859
     {driver.height = yystack_[0].value.as< unsigned int > ();}
-#line 752 "config_parser.tab.cc" // lalr1.cc:870
+#line 706 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 27:
-#line 187 "config_parser.y" // lalr1.cc:870
+#line 187 "config_parser.y" // lalr1.cc:859
     {driver.filter_type = SPECTRE_FILTER_BOX;}
-#line 758 "config_parser.tab.cc" // lalr1.cc:870
+#line 712 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 28:
-#line 188 "config_parser.y" // lalr1.cc:870
+#line 188 "config_parser.y" // lalr1.cc:859
     {driver.filter_type = SPECTRE_FILTER_TENT;}
-#line 764 "config_parser.tab.cc" // lalr1.cc:870
+#line 718 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 29:
-#line 189 "config_parser.y" // lalr1.cc:870
+#line 189 "config_parser.y" // lalr1.cc:859
     {driver.filter_type = SPECTRE_FILTER_GAUSS;}
-#line 770 "config_parser.tab.cc" // lalr1.cc:870
+#line 724 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 30:
-#line 190 "config_parser.y" // lalr1.cc:870
+#line 190 "config_parser.y" // lalr1.cc:859
     {driver.filter_type = SPECTRE_FILTER_MITCHELL;}
-#line 776 "config_parser.tab.cc" // lalr1.cc:870
+#line 730 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
-#line 191 "config_parser.y" // lalr1.cc:870
+#line 191 "config_parser.y" // lalr1.cc:859
     {driver.filter_type = SPECTRE_FILTER_LANCZOS;}
-#line 782 "config_parser.tab.cc" // lalr1.cc:870
+#line 736 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 32:
-#line 192 "config_parser.y" // lalr1.cc:870
+#line 192 "config_parser.y" // lalr1.cc:859
     {driver.value0 = yystack_[0].value.as< float > ();}
-#line 788 "config_parser.tab.cc" // lalr1.cc:870
+#line 742 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 33:
-#line 193 "config_parser.y" // lalr1.cc:870
+#line 193 "config_parser.y" // lalr1.cc:859
     {driver.value1 = yystack_[0].value.as< float > ();}
-#line 794 "config_parser.tab.cc" // lalr1.cc:870
+#line 748 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 34:
-#line 194 "config_parser.y" // lalr1.cc:870
+#line 194 "config_parser.y" // lalr1.cc:859
     {driver.tex_filter = UNFILTERED;}
-#line 800 "config_parser.tab.cc" // lalr1.cc:870
+#line 754 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 35:
-#line 195 "config_parser.y" // lalr1.cc:870
+#line 195 "config_parser.y" // lalr1.cc:859
     {driver.tex_filter = TRILINEAR;}
-#line 806 "config_parser.tab.cc" // lalr1.cc:870
+#line 760 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 36:
-#line 196 "config_parser.y" // lalr1.cc:870
+#line 196 "config_parser.y" // lalr1.cc:859
     {driver.tex_filter = EWA;}
-#line 812 "config_parser.tab.cc" // lalr1.cc:870
+#line 766 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 40:
-#line 202 "config_parser.y" // lalr1.cc:870
+#line 202 "config_parser.y" // lalr1.cc:859
     {driver.camera_type = SPECTRE_CAMERA_ORTHOGRAPHIC;}
-#line 818 "config_parser.tab.cc" // lalr1.cc:870
+#line 772 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 41:
-#line 203 "config_parser.y" // lalr1.cc:870
+#line 203 "config_parser.y" // lalr1.cc:859
     {driver.camera_type = SPECTRE_CAMERA_PERSPECTIVE;}
-#line 824 "config_parser.tab.cc" // lalr1.cc:870
+#line 778 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 42:
-#line 204 "config_parser.y" // lalr1.cc:870
+#line 204 "config_parser.y" // lalr1.cc:859
     {driver.camera_type = SPECTRE_CAMERA_PANORAMA;}
-#line 830 "config_parser.tab.cc" // lalr1.cc:870
+#line 784 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 43:
-#line 205 "config_parser.y" // lalr1.cc:870
+#line 205 "config_parser.y" // lalr1.cc:859
     {driver.camera_pos = Point3(yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z);}
-#line 836 "config_parser.tab.cc" // lalr1.cc:870
+#line 790 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 44:
-#line 206 "config_parser.y" // lalr1.cc:870
+#line 206 "config_parser.y" // lalr1.cc:859
     {driver.camera_tar = Point3(yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z);}
-#line 842 "config_parser.tab.cc" // lalr1.cc:870
+#line 796 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 45:
-#line 207 "config_parser.y" // lalr1.cc:870
+#line 207 "config_parser.y" // lalr1.cc:859
     {driver.camera_up = yystack_[0].value.as< Vec3 > ();}
-#line 848 "config_parser.tab.cc" // lalr1.cc:870
+#line 802 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 46:
-#line 208 "config_parser.y" // lalr1.cc:870
+#line 208 "config_parser.y" // lalr1.cc:859
     {driver.fov = yystack_[0].value.as< float > ();}
-#line 854 "config_parser.tab.cc" // lalr1.cc:870
+#line 808 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 52:
-#line 214 "config_parser.y" // lalr1.cc:870
+#line 214 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 860 "config_parser.tab.cc" // lalr1.cc:870
+#line 814 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 53:
-#line 216 "config_parser.y" // lalr1.cc:870
+#line 216 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.position = yystack_[0].value.as< Vec3 > ();}
-#line 866 "config_parser.tab.cc" // lalr1.cc:870
+#line 820 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 54:
-#line 217 "config_parser.y" // lalr1.cc:870
+#line 217 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.rotation = yystack_[0].value.as< Vec3 > ();}
-#line 872 "config_parser.tab.cc" // lalr1.cc:870
+#line 826 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 55:
-#line 218 "config_parser.y" // lalr1.cc:870
+#line 218 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.scale = yystack_[0].value.as< Vec3 > ();}
-#line 878 "config_parser.tab.cc" // lalr1.cc:870
+#line 832 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 56:
-#line 219 "config_parser.y" // lalr1.cc:870
+#line 219 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.scale = yystack_[0].value.as< float > ();}
-#line 884 "config_parser.tab.cc" // lalr1.cc:870
+#line 838 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 57:
-#line 220 "config_parser.y" // lalr1.cc:870
+#line 220 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.material_name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 890 "config_parser.tab.cc" // lalr1.cc:870
+#line 844 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 58:
-#line 221 "config_parser.y" // lalr1.cc:870
+#line 221 "config_parser.y" // lalr1.cc:859
     {driver.cur_mask.mask_tex = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2); driver.cur_mesh.mask = driver.cur_mask;driver.cur_mask = ParsedMask();}
-#line 896 "config_parser.tab.cc" // lalr1.cc:870
+#line 850 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 59:
-#line 222 "config_parser.y" // lalr1.cc:870
+#line 222 "config_parser.y" // lalr1.cc:859
     {driver.cur_mask.mask_tex = yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);driver.cur_mesh.mask = driver.cur_mask;driver.cur_mask = ParsedMask();}
-#line 902 "config_parser.tab.cc" // lalr1.cc:870
+#line 856 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 67:
-#line 229 "config_parser.y" // lalr1.cc:870
+#line 229 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.temperature = yystack_[0].value.as< unsigned int > ();}
-#line 908 "config_parser.tab.cc" // lalr1.cc:870
+#line 862 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 68:
-#line 230 "config_parser.y" // lalr1.cc:870
+#line 230 "config_parser.y" // lalr1.cc:859
     {driver.cur_mesh.color = yystack_[0].value.as< Vec3 > ();}
-#line 914 "config_parser.tab.cc" // lalr1.cc:870
+#line 868 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 69:
-#line 234 "config_parser.y" // lalr1.cc:870
+#line 234 "config_parser.y" // lalr1.cc:859
     {driver.tex_src=yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);driver.load_texture(driver.tex_src);}
-#line 920 "config_parser.tab.cc" // lalr1.cc:870
+#line 874 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 70:
-#line 235 "config_parser.y" // lalr1.cc:870
+#line 235 "config_parser.y" // lalr1.cc:859
     {driver.tex_src=yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);driver.load_texture(driver.tex_src);}
-#line 926 "config_parser.tab.cc" // lalr1.cc:870
+#line 880 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 71:
-#line 236 "config_parser.y" // lalr1.cc:870
+#line 236 "config_parser.y" // lalr1.cc:859
     {driver.tex_src=yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);driver.load_texture(driver.tex_src);}
-#line 932 "config_parser.tab.cc" // lalr1.cc:870
+#line 886 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 72:
-#line 237 "config_parser.y" // lalr1.cc:870
+#line 237 "config_parser.y" // lalr1.cc:859
     {driver.tex_src=yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);driver.load_texture(driver.tex_src);}
-#line 938 "config_parser.tab.cc" // lalr1.cc:870
+#line 892 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 75:
-#line 242 "config_parser.y" // lalr1.cc:870
+#line 242 "config_parser.y" // lalr1.cc:859
     {driver.tex_name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 944 "config_parser.tab.cc" // lalr1.cc:870
+#line 898 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 76:
-#line 243 "config_parser.y" // lalr1.cc:870
+#line 243 "config_parser.y" // lalr1.cc:859
     {driver.tex_scale = yystack_[0].value.as< Vec2 > ();}
-#line 950 "config_parser.tab.cc" // lalr1.cc:870
+#line 904 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 77:
-#line 244 "config_parser.y" // lalr1.cc:870
+#line 244 "config_parser.y" // lalr1.cc:859
     {driver.tex_scale = Vec2(yystack_[0].value.as< float > ());}
-#line 956 "config_parser.tab.cc" // lalr1.cc:870
+#line 910 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 78:
-#line 245 "config_parser.y" // lalr1.cc:870
+#line 245 "config_parser.y" // lalr1.cc:859
     {driver.tex_shift = yystack_[0].value.as< Vec2 > ();}
-#line 962 "config_parser.tab.cc" // lalr1.cc:870
+#line 916 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 80:
-#line 251 "config_parser.y" // lalr1.cc:870
+#line 251 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.name = yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);}
-#line 968 "config_parser.tab.cc" // lalr1.cc:870
+#line 922 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 81:
-#line 252 "config_parser.y" // lalr1.cc:870
+#line 252 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 974 "config_parser.tab.cc" // lalr1.cc:870
+#line 928 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 82:
-#line 253 "config_parser.y" // lalr1.cc:870
+#line 253 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.name = yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);}
-#line 980 "config_parser.tab.cc" // lalr1.cc:870
+#line 934 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 83:
-#line 254 "config_parser.y" // lalr1.cc:870
+#line 254 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 986 "config_parser.tab.cc" // lalr1.cc:870
+#line 940 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 86:
-#line 259 "config_parser.y" // lalr1.cc:870
+#line 259 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.type = MATTE;}
-#line 992 "config_parser.tab.cc" // lalr1.cc:870
+#line 946 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 87:
-#line 260 "config_parser.y" // lalr1.cc:870
+#line 260 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.type = GLOSSY;}
-#line 998 "config_parser.tab.cc" // lalr1.cc:870
+#line 952 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 88:
-#line 261 "config_parser.y" // lalr1.cc:870
+#line 261 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.type = METAL;}
-#line 1004 "config_parser.tab.cc" // lalr1.cc:870
+#line 958 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 89:
-#line 262 "config_parser.y" // lalr1.cc:870
+#line 262 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.type = GLASS;}
-#line 1010 "config_parser.tab.cc" // lalr1.cc:870
+#line 964 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 90:
-#line 263 "config_parser.y" // lalr1.cc:870
+#line 263 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.ior = cauchy(yystack_[0].value.as< float > (),0);}
-#line 1016 "config_parser.tab.cc" // lalr1.cc:870
+#line 970 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 91:
-#line 264 "config_parser.y" // lalr1.cc:870
+#line 264 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.ior = cauchy(yystack_[0].value.as< Vec2 > ().x,yystack_[0].value.as< Vec2 > ().y);}
-#line 1022 "config_parser.tab.cc" // lalr1.cc:870
+#line 976 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 92:
-#line 265 "config_parser.y" // lalr1.cc:870
+#line 265 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.ior = cauchy(yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z);}
-#line 1028 "config_parser.tab.cc" // lalr1.cc:870
+#line 982 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 93:
-#line 266 "config_parser.y" // lalr1.cc:870
+#line 266 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.ior = sellmeier(yystack_[1].value.as< Vec3 > ().x,yystack_[1].value.as< Vec3 > ().y,yystack_[1].value.as< Vec3 > ().z,yystack_[0].value.as< Vec3 > ().x,yystack_[0].value.as< Vec3 > ().y,yystack_[0].value.as< Vec3 > ().z);}
-#line 1034 "config_parser.tab.cc" // lalr1.cc:870
+#line 988 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 94:
-#line 267 "config_parser.y" // lalr1.cc:870
+#line 267 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.rough_x = yystack_[0].value.as< float > ();}
-#line 1040 "config_parser.tab.cc" // lalr1.cc:870
+#line 994 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 95:
-#line 268 "config_parser.y" // lalr1.cc:870
+#line 268 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.rough_y = yystack_[0].value.as< float > ();}
-#line 1046 "config_parser.tab.cc" // lalr1.cc:870
+#line 1000 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 96:
-#line 269 "config_parser.y" // lalr1.cc:870
+#line 269 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.dist = SPECTRE_DIST_BLINN;}
-#line 1052 "config_parser.tab.cc" // lalr1.cc:870
+#line 1006 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 97:
-#line 270 "config_parser.y" // lalr1.cc:870
+#line 270 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.dist = SPECTRE_DIST_BECKMANN;}
-#line 1058 "config_parser.tab.cc" // lalr1.cc:870
+#line 1012 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 98:
-#line 271 "config_parser.y" // lalr1.cc:870
+#line 271 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.dist = SPECTRE_DIST_GGX;}
-#line 1064 "config_parser.tab.cc" // lalr1.cc:870
+#line 1018 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 99:
-#line 272 "config_parser.y" // lalr1.cc:870
+#line 272 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.diffuse = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 1070 "config_parser.tab.cc" // lalr1.cc:870
+#line 1024 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 100:
-#line 273 "config_parser.y" // lalr1.cc:870
+#line 273 "config_parser.y" // lalr1.cc:859
     {driver.tex_color = yystack_[0].value.as< Vec3 > (); driver.cur_mat.diffuse_uniform = driver.load_texture_uniform();}
-#line 1076 "config_parser.tab.cc" // lalr1.cc:870
+#line 1030 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 101:
-#line 274 "config_parser.y" // lalr1.cc:870
+#line 274 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.specular = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 1082 "config_parser.tab.cc" // lalr1.cc:870
+#line 1036 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 102:
-#line 275 "config_parser.y" // lalr1.cc:870
+#line 275 "config_parser.y" // lalr1.cc:859
     {driver.tex_color = yystack_[0].value.as< Vec3 > (); driver.cur_mat.specular_uniform = driver.load_texture_uniform();}
-#line 1088 "config_parser.tab.cc" // lalr1.cc:870
+#line 1042 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 103:
-#line 277 "config_parser.y" // lalr1.cc:870
+#line 277 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.bump = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2); /* driver.cur_mat.bump_is_normal = true; */}
-#line 1094 "config_parser.tab.cc" // lalr1.cc:870
+#line 1048 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 104:
-#line 278 "config_parser.y" // lalr1.cc:870
+#line 278 "config_parser.y" // lalr1.cc:859
     {driver.cur_mat.elem = yystack_[0].value.as< metal_t > ();}
-#line 1100 "config_parser.tab.cc" // lalr1.cc:870
+#line 1054 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 106:
-#line 283 "config_parser.y" // lalr1.cc:870
+#line 283 "config_parser.y" // lalr1.cc:859
     {driver.cur_dualmat.name = yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);}
-#line 1106 "config_parser.tab.cc" // lalr1.cc:870
+#line 1060 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 107:
-#line 284 "config_parser.y" // lalr1.cc:870
+#line 284 "config_parser.y" // lalr1.cc:859
     {driver.cur_dualmat.name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 1112 "config_parser.tab.cc" // lalr1.cc:870
+#line 1066 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 108:
-#line 285 "config_parser.y" // lalr1.cc:870
+#line 285 "config_parser.y" // lalr1.cc:859
     {driver.cur_dualmat.name = yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);}
-#line 1118 "config_parser.tab.cc" // lalr1.cc:870
+#line 1072 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 109:
-#line 286 "config_parser.y" // lalr1.cc:870
+#line 286 "config_parser.y" // lalr1.cc:859
     {driver.cur_dualmat.name = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 1124 "config_parser.tab.cc" // lalr1.cc:870
+#line 1078 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 112:
-#line 291 "config_parser.y" // lalr1.cc:870
+#line 291 "config_parser.y" // lalr1.cc:859
     {driver.cur_dualmat.first = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 1130 "config_parser.tab.cc" // lalr1.cc:870
+#line 1084 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 113:
-#line 292 "config_parser.y" // lalr1.cc:870
+#line 292 "config_parser.y" // lalr1.cc:859
     {driver.cur_dualmat.second = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);}
-#line 1136 "config_parser.tab.cc" // lalr1.cc:870
+#line 1090 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 114:
-#line 293 "config_parser.y" // lalr1.cc:870
+#line 293 "config_parser.y" // lalr1.cc:859
     {driver.cur_mask.mask_tex = yystack_[0].value.as< std::string > ().substr(1,yystack_[0].value.as< std::string > ().size()-2);driver.cur_dualmat.mask = driver.cur_mask; driver.cur_mask = ParsedMask();}
-#line 1142 "config_parser.tab.cc" // lalr1.cc:870
+#line 1096 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 115:
-#line 294 "config_parser.y" // lalr1.cc:870
+#line 294 "config_parser.y" // lalr1.cc:859
     {driver.cur_mask.mask_tex = yystack_[1].value.as< std::string > ().substr(1,yystack_[1].value.as< std::string > ().size()-2);driver.cur_dualmat.mask = driver.cur_mask; driver.cur_mask = ParsedMask();}
-#line 1148 "config_parser.tab.cc" // lalr1.cc:870
+#line 1102 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 117:
-#line 302 "config_parser.y" // lalr1.cc:870
+#line 302 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_SILVER; }
-#line 1154 "config_parser.tab.cc" // lalr1.cc:870
+#line 1108 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 118:
-#line 303 "config_parser.y" // lalr1.cc:870
+#line 303 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_ALUMINIUM; }
-#line 1160 "config_parser.tab.cc" // lalr1.cc:870
+#line 1114 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 119:
-#line 304 "config_parser.y" // lalr1.cc:870
+#line 304 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_GOLD; }
-#line 1166 "config_parser.tab.cc" // lalr1.cc:870
+#line 1120 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 120:
-#line 305 "config_parser.y" // lalr1.cc:870
+#line 305 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_COPPER; }
-#line 1172 "config_parser.tab.cc" // lalr1.cc:870
+#line 1126 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 121:
-#line 306 "config_parser.y" // lalr1.cc:870
+#line 306 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_IRON; }
-#line 1178 "config_parser.tab.cc" // lalr1.cc:870
+#line 1132 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 122:
-#line 307 "config_parser.y" // lalr1.cc:870
+#line 307 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_MERCURY; }
-#line 1184 "config_parser.tab.cc" // lalr1.cc:870
+#line 1138 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 123:
-#line 308 "config_parser.y" // lalr1.cc:870
+#line 308 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_LEAD; }
-#line 1190 "config_parser.tab.cc" // lalr1.cc:870
+#line 1144 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 124:
-#line 309 "config_parser.y" // lalr1.cc:870
+#line 309 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_PLATINUM; }
-#line 1196 "config_parser.tab.cc" // lalr1.cc:870
+#line 1150 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 125:
-#line 310 "config_parser.y" // lalr1.cc:870
+#line 310 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_TUNGSTEN; }
-#line 1202 "config_parser.tab.cc" // lalr1.cc:870
+#line 1156 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 126:
-#line 311 "config_parser.y" // lalr1.cc:870
+#line 311 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_BERYLLIUM; }
-#line 1208 "config_parser.tab.cc" // lalr1.cc:870
+#line 1162 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 127:
-#line 312 "config_parser.y" // lalr1.cc:870
+#line 312 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_BISMUTH; }
-#line 1214 "config_parser.tab.cc" // lalr1.cc:870
+#line 1168 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 128:
-#line 313 "config_parser.y" // lalr1.cc:870
+#line 313 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_COBALT; }
-#line 1220 "config_parser.tab.cc" // lalr1.cc:870
+#line 1174 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 129:
-#line 314 "config_parser.y" // lalr1.cc:870
+#line 314 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_CHROMIUM; }
-#line 1226 "config_parser.tab.cc" // lalr1.cc:870
+#line 1180 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 130:
-#line 315 "config_parser.y" // lalr1.cc:870
+#line 315 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_GERMANIUM; }
-#line 1232 "config_parser.tab.cc" // lalr1.cc:870
+#line 1186 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 131:
-#line 316 "config_parser.y" // lalr1.cc:870
+#line 316 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_POTASSIUM; }
-#line 1238 "config_parser.tab.cc" // lalr1.cc:870
+#line 1192 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 132:
-#line 317 "config_parser.y" // lalr1.cc:870
+#line 317 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_LITHIUM; }
-#line 1244 "config_parser.tab.cc" // lalr1.cc:870
+#line 1198 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 133:
-#line 318 "config_parser.y" // lalr1.cc:870
+#line 318 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_MAGNESIUM; }
-#line 1250 "config_parser.tab.cc" // lalr1.cc:870
+#line 1204 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 134:
-#line 319 "config_parser.y" // lalr1.cc:870
+#line 319 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_MANGANESE; }
-#line 1256 "config_parser.tab.cc" // lalr1.cc:870
+#line 1210 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 135:
-#line 320 "config_parser.y" // lalr1.cc:870
+#line 320 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_MOLYBDENUM; }
-#line 1262 "config_parser.tab.cc" // lalr1.cc:870
+#line 1216 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 136:
-#line 321 "config_parser.y" // lalr1.cc:870
+#line 321 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_SODIUM; }
-#line 1268 "config_parser.tab.cc" // lalr1.cc:870
+#line 1222 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 137:
-#line 322 "config_parser.y" // lalr1.cc:870
+#line 322 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_NIOBIUM; }
-#line 1274 "config_parser.tab.cc" // lalr1.cc:870
+#line 1228 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 138:
-#line 323 "config_parser.y" // lalr1.cc:870
+#line 323 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_NICKEL; }
-#line 1280 "config_parser.tab.cc" // lalr1.cc:870
+#line 1234 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 139:
-#line 324 "config_parser.y" // lalr1.cc:870
+#line 324 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_PALLADIUM; }
-#line 1286 "config_parser.tab.cc" // lalr1.cc:870
+#line 1240 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 140:
-#line 325 "config_parser.y" // lalr1.cc:870
+#line 325 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_RHODIUM; }
-#line 1292 "config_parser.tab.cc" // lalr1.cc:870
+#line 1246 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 141:
-#line 326 "config_parser.y" // lalr1.cc:870
+#line 326 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_TANTALUM; }
-#line 1298 "config_parser.tab.cc" // lalr1.cc:870
+#line 1252 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 142:
-#line 327 "config_parser.y" // lalr1.cc:870
+#line 327 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_TITANIUM; }
-#line 1304 "config_parser.tab.cc" // lalr1.cc:870
+#line 1258 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 143:
-#line 328 "config_parser.y" // lalr1.cc:870
+#line 328 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_VANADIUM; }
-#line 1310 "config_parser.tab.cc" // lalr1.cc:870
+#line 1264 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 144:
-#line 329 "config_parser.y" // lalr1.cc:870
+#line 329 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_ZINC; }
-#line 1316 "config_parser.tab.cc" // lalr1.cc:870
+#line 1270 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 145:
-#line 330 "config_parser.y" // lalr1.cc:870
+#line 330 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< metal_t > () = METAL_ZIRCONIUM; }
-#line 1322 "config_parser.tab.cc" // lalr1.cc:870
+#line 1276 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 148:
-#line 336 "config_parser.y" // lalr1.cc:870
+#line 336 "config_parser.y" // lalr1.cc:859
     {driver.cur_mask.mask_chn = yystack_[0].value.as< ImageChannel > ();}
-#line 1328 "config_parser.tab.cc" // lalr1.cc:870
+#line 1282 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 149:
-#line 337 "config_parser.y" // lalr1.cc:870
+#line 337 "config_parser.y" // lalr1.cc:859
     {driver.cur_mask.mask_inv = true;}
-#line 1334 "config_parser.tab.cc" // lalr1.cc:870
+#line 1288 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 150:
-#line 341 "config_parser.y" // lalr1.cc:870
+#line 341 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< ImageChannel > () = RED;}
-#line 1340 "config_parser.tab.cc" // lalr1.cc:870
+#line 1294 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 151:
-#line 342 "config_parser.y" // lalr1.cc:870
+#line 342 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< ImageChannel > () = GREEN;}
-#line 1346 "config_parser.tab.cc" // lalr1.cc:870
+#line 1300 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 152:
-#line 343 "config_parser.y" // lalr1.cc:870
+#line 343 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< ImageChannel > () = BLUE;}
-#line 1352 "config_parser.tab.cc" // lalr1.cc:870
+#line 1306 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 153:
-#line 344 "config_parser.y" // lalr1.cc:870
+#line 344 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< ImageChannel > () = ALPHA;}
-#line 1358 "config_parser.tab.cc" // lalr1.cc:870
+#line 1312 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 154:
-#line 349 "config_parser.y" // lalr1.cc:870
+#line 349 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< Vec3 > () = Vec3(yystack_[5].value.as< float > (),yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
-#line 1364 "config_parser.tab.cc" // lalr1.cc:870
+#line 1318 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 155:
-#line 353 "config_parser.y" // lalr1.cc:870
+#line 353 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< Vec2 > () = Vec2(yystack_[3].value.as< float > (),yystack_[1].value.as< float > ());}
-#line 1370 "config_parser.tab.cc" // lalr1.cc:870
+#line 1324 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 156:
-#line 357 "config_parser.y" // lalr1.cc:870
+#line 357 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< float > () = yystack_[0].value.as< float > ();}
-#line 1376 "config_parser.tab.cc" // lalr1.cc:870
+#line 1330 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 157:
-#line 358 "config_parser.y" // lalr1.cc:870
+#line 358 "config_parser.y" // lalr1.cc:859
     {yylhs.value.as< float > () = (float)yystack_[0].value.as< int > ();}
-#line 1382 "config_parser.tab.cc" // lalr1.cc:870
+#line 1336 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 158:
-#line 362 "config_parser.y" // lalr1.cc:870
+#line 362 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< int > () = yystack_[0].value.as< unsigned int > ();}
-#line 1388 "config_parser.tab.cc" // lalr1.cc:870
+#line 1342 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 159:
-#line 363 "config_parser.y" // lalr1.cc:870
+#line 363 "config_parser.y" // lalr1.cc:859
     { yylhs.value.as< int > () = yystack_[0].value.as< int > ();}
-#line 1394 "config_parser.tab.cc" // lalr1.cc:870
+#line 1348 "config_parser.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 1398 "config_parser.tab.cc" // lalr1.cc:870
+#line 1352 "config_parser.tab.cc" // lalr1.cc:859
             default:
               break;
             }
         }
-#if YY_EXCEPTIONS
       catch (const syntax_error& yyexc)
         {
           error (yyexc);
           YYERROR;
         }
-#endif // YY_EXCEPTIONS
       YY_SYMBOL_PRINT ("-> $$ =", yylhs);
       yypop_ (yylen);
       yylen = 0;
@@ -1458,6 +1410,7 @@ namespace yy {
        code.  */
     if (false)
       goto yyerrorlab;
+    yyerror_range[1].location = yystack_[yylen - 1].location;
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -1529,12 +1482,12 @@ namespace yy {
 
     return yyresult;
   }
-#if YY_EXCEPTIONS
     catch (...)
       {
-        YYCDEBUG << "Exception caught: cleaning lookahead and stack\n";
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
         // Do not try to display the values of the reclaimed symbols,
-        // as their printers might throw an exception.
+        // as their printer might throw an exception.
         if (!yyla.empty ())
           yy_destroy_ (YY_NULLPTR, yyla);
 
@@ -1545,13 +1498,12 @@ namespace yy {
           }
         throw;
       }
-#endif // YY_EXCEPTIONS
   }
 
   void
   ConfigParser::error (const syntax_error& yyexc)
   {
-    error (yyexc.location, yyexc.what ());
+    error (yyexc.location, yyexc.what());
   }
 
   // Generate an error message.
@@ -1627,13 +1579,12 @@ namespace yy {
         case N:                               \
           yyformat = S;                       \
         break
-      default: // Avoid compiler warnings.
-        YYCASE_ (0, YY_("syntax error"));
-        YYCASE_ (1, YY_("syntax error, unexpected %s"));
-        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
-        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+        YYCASE_(0, YY_("syntax error"));
+        YYCASE_(1, YY_("syntax error, unexpected %s"));
+        YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
 #undef YYCASE_
       }
 
@@ -1652,11 +1603,11 @@ namespace yy {
   }
 
 
-  const short ConfigParser::yypact_ninf_ = -260;
+  const short int ConfigParser::yypact_ninf_ = -260;
 
   const signed char ConfigParser::yytable_ninf_ = -1;
 
-  const short
+  const short int
   ConfigParser::yypact_[] =
   {
      127,  -260,    27,    34,    36,    40,    46,    48,    51,    79,
@@ -1726,7 +1677,7 @@ namespace yy {
      108,     0,    72,     0,     0,     0,     0,   155,     0,   154
   };
 
-  const short
+  const short int
   ConfigParser::yypgoto_[] =
   {
     -260,  -260,   303,  -260,   301,  -260,   295,  -260,   289,  -260,
@@ -1735,7 +1686,7 @@ namespace yy {
      -51,  -105,  -260
   };
 
-  const short
+  const short int
   ConfigParser::yydefgoto_[] =
   {
       -1,    15,    16,    50,    51,    57,    58,    65,    66,    68,
@@ -1744,7 +1695,7 @@ namespace yy {
      240,   172,   173
   };
 
-  const unsigned short
+  const unsigned short int
   ConfigParser::yytable_[] =
   {
      147,   154,   161,   174,   181,   181,   183,   184,   268,   238,
@@ -1786,7 +1737,7 @@ namespace yy {
        0,     0,     0,     0,     0,     0,     0,     0,     0,   196
   };
 
-  const short
+  const short int
   ConfigParser::yycheck_[] =
   {
       84,    92,   100,   108,     5,     5,   114,   115,   201,     5,
@@ -1957,7 +1908,7 @@ namespace yy {
   };
 
 #if YYDEBUG
-  const unsigned short
+  const unsigned short int
   ConfigParser::yyrline_[] =
   {
        0,   155,   155,   156,   160,   161,   162,   163,   164,   165,
@@ -1988,18 +1939,18 @@ namespace yy {
            i_end = yystack_.end ();
          i != i_end; ++i)
       *yycdebug_ << ' ' << i->state;
-    *yycdebug_ << '\n';
+    *yycdebug_ << std::endl;
   }
 
   // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
   ConfigParser::yy_reduce_print_ (int yyrule)
   {
-    unsigned yylno = yyrline_[yyrule];
+    unsigned int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
     // Print the symbols being reduced, and their result.
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-               << " (line " << yylno << "):\n";
+               << " (line " << yylno << "):" << std::endl;
     // The symbols being reduced.
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
@@ -2010,8 +1961,8 @@ namespace yy {
 
 
 } // yy
-#line 2014 "config_parser.tab.cc" // lalr1.cc:1181
-#line 366 "config_parser.y" // lalr1.cc:1182
+#line 1965 "config_parser.tab.cc" // lalr1.cc:1167
+#line 366 "config_parser.y" // lalr1.cc:1168
 
 
 void yy::ConfigParser::error (const location_type& l, const std::string& m)

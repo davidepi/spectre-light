@@ -21,7 +21,7 @@
 - [x] lex/yacc parser
 - [x] diffuse texture mapping
 - [x] bump/normal textures
-- [ ] new light system (sunlight + environment)
+- [ ] **-> new light system (sunlight + environment) <-**
 - [ ] real cameras (and depth of field)
 
 ### V0.3 ###

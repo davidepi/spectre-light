@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.1.
+// A Bison parser, made by GNU Bison 3.0.4.
 
 // Positions for Bison parsers in C++
 
-// Copyright (C) 2002-2015, 2018 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -52,25 +52,26 @@
 
 
 namespace yy {
-#line 56 "position.hh" // location.cc:331
+#line 56 "position.hh" // location.cc:296
   /// Abstract a position.
   class position
   {
   public:
     /// Construct a position.
     explicit position (std::string* f = YY_NULLPTR,
-                       unsigned l = 1u,
-                       unsigned c = 1u)
+                       unsigned int l = 1u,
+                       unsigned int c = 1u)
       : filename (f)
       , line (l)
       , column (c)
-    {}
+    {
+    }
 
 
     /// Initialization.
     void initialize (std::string* fn = YY_NULLPTR,
-                     unsigned l = 1u,
-                     unsigned c = 1u)
+                     unsigned int l = 1u,
+                     unsigned int c = 1u)
     {
       filename = fn;
       line = l;
@@ -99,15 +100,17 @@ namespace yy {
     /// File name to which this position refers.
     std::string* filename;
     /// Current line number.
-    unsigned line;
+    unsigned int line;
     /// Current column number.
-    unsigned column;
+    unsigned int column;
 
   private:
-    /// Compute max(min, lhs+rhs).
-    static unsigned add_ (unsigned lhs, int rhs, int min)
+    /// Compute max(min, lhs+rhs) (provided min <= lhs).
+    static unsigned int add_ (unsigned int lhs, int rhs, unsigned int min)
     {
-      return static_cast<unsigned>(std::max(min, static_cast<int>(lhs) + rhs));
+      return (0 < rhs || -static_cast<unsigned int>(rhs) < lhs
+              ? rhs + lhs
+              : min);
     }
   };
 
@@ -163,7 +166,7 @@ namespace yy {
    ** \param pos a reference to the position to redirect
    */
   template <typename YYChar>
-  std::basic_ostream<YYChar>&
+  inline std::basic_ostream<YYChar>&
   operator<< (std::basic_ostream<YYChar>& ostr, const position& pos)
   {
     if (pos.filename)
@@ -173,5 +176,5 @@ namespace yy {
 
 
 } // yy
-#line 177 "position.hh" // location.cc:331
+#line 180 "position.hh" // location.cc:296
 #endif // !YY_YY_POSITION_HH_INCLUDED
