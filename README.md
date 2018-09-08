@@ -3,10 +3,9 @@
 
 ![render-example](https://github.com/davidepi/spectre-light/blob/master/docs/readme_image.jpg)
 
-[![](https://img.shields.io/github/release/davidepi/spectre-light.svg)](https://github.com/davidepi/spectre-light/releases)
-[![Build status](https://travis-ci.org/davidepi/spectre-light.svg?branch=master)](https://travis-ci.org/davidepi/spectre-light)
-[![Build status](https://ci.appveyor.com/api/projects/status/d4bx9kjo42nnpfy5/branch/master?svg=true)](https://ci.appveyor.com/project/darkstar13/spectre-light/branch/master)
-[![codecov](https://codecov.io/gh/davidepi/spectre-light/branch/master/graph/badge.svg)](https://codecov.io/gh/davidepi/spectre-light)
+[![Build status](https://travis-ci.org/davidepi/spectre-light.svg?branch=dev)](https://travis-ci.org/davidepi/spectre-light)
+[![Build status](https://ci.appveyor.com/api/projects/status/d4bx9kjo42nnpfy5/branch/dev?svg=true)](https://ci.appveyor.com/project/darkstar13/spectre-light/branch/master)
+[![codecov](https://codecov.io/gh/davidepi/spectre-light/branch/dev/graph/badge.svg)](https://codecov.io/gh/davidepi/spectre-light)
 [![loc](https://tokei.rs/b1/github/davidepi/spectre-light)](https://github.com/davidepi/spectre-light)
 
 *spectre-light* is a photorealistic unbiased physically-based renderer. It inherits its base
@@ -69,7 +68,7 @@ Under Windows drag-dropping the input file over the executable works aswell.
 
 The input file format is explained [here](./src/parsers/README.md).
 
-*spectre-light* supports `.obj` files for scene and models,  `.ppm` and `.bmp` for textures. 
+*spectre-light* supports `.obj` files for scene and models, `.tga` `.ppm` and `.bmp` for textures. 
 As already said, if the libjpg, libpng and libtiff are found, additional image formats such as `.jpg`, `.png` and `.tiff` can be used.
 `.mtl` is not available as an obj companion file for materials due to its tremendous binding with the Phong illumination model. Check the section *Missing .mtl* of the aforementioned input readme for more information.
 
@@ -104,7 +103,7 @@ As already said, if the libjpg, libpng and libtiff are found, additional image f
 
 
  Under macOS and Windows, testing is done with the default testing suite, 
- and tests are already configured in the provided .sln/.xcproj file
+ and tests are already configured in the provided `.sln`/`.xcproj` file
  ## License
  
  *spectre-light* is released under the terms of the GNU GPLv3 License. You may find the
