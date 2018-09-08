@@ -158,7 +158,7 @@ void KdTree::addAsset(const Asset* addme)
         const Asset** tmp = (const Asset**)malloc(sizeof(Asset*)*(allocNo));
         if(tmp)
         {
-            memcpy(tmp, assetsList, assets_allocated*sizeof(Asset*));
+            memcpy(tmp, assetsList, assets_number*sizeof(Asset*));
             assets_allocated = allocNo;
             free(KdTree::assetsList);
             KdTree::assetsList = tmp;

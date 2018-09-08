@@ -34,7 +34,8 @@
  *  function
  *  \return The radiance arriving at the film
  */
-Spectrum direct_l(const Scene *sc, const HitPoint *hp,
-                  const Ray *r, Sampler *sam, OcclusionTester *ot);
+Spectrum direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
+                  OcclusionTester* ot, const Bsdf* mat, const Point3* point_s,
+                  const Normal* normal_s, const ShadingSpace* matrix);
 
 #endif

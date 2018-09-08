@@ -80,9 +80,10 @@ void Mesh::finalize()
     bvh.buildTree(Mesh::tris, count);
 }
 
-bool Mesh::intersect(const Ray* r, float* distance, HitPoint* h) const
+bool Mesh::intersect(const Ray* r, float* distance, HitPoint* h,
+                     const MaskBoolean* mask) const
 {
-    return bvh.intersect(r, distance, h);
+    return bvh.intersect(r, distance, h, mask);
 }
 
 AABB Mesh::compute_AABB() const

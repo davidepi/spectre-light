@@ -1,16 +1,15 @@
 //Created,   7 May 2018
-//Last Edit 31 Jul 2018
+//Last Edit  9 Aug 2018
 
 /**
  *  \file image_map.hpp
  *  \brief     Helper classes used to handle Images used as textures
  *  \details   ImageMap class, a square, power of 2, image used inside
  *             TextureImage as a MIPMap.
- *             Several other classes are provided to cope with varying texel
- *             size and filtering methods
+ *             Several other classes are provided to cope with varying filtering methods
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      31 Jul 2018
+ *  \date      9 Aug 2018
  *  \copyright GNU GPLv3
  */
 
@@ -22,46 +21,47 @@
 #include "utility/imageio/imageio.h"
 #include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
-#include "utility/spectrum.hpp"
 #include "utility/utility.hpp" //swap
 #include <cstdlib> //malloc/free
 #include <cmath> //sqrtf
 #include <array> //EWA weights allocation
+#include "utility/array2D.hpp"
 
 //forward declaration to be used in TexelMap
 class ImageMap;
 
-enum TextureFilter_t
-{
-    UNFILTERED,
-    TRILINEAR,
-    EWA
-};
-
-///Pixel component of a texture, 24-bit version
+/**
+ * \brief Struct holding a single Texel of the map in BGRA order
+ *
+ *  Since the architecture is little endian, the first element will map to the
+ *  least significant digit of the uint32_t. The uint32_t is enforced to be
+ *  as BGRA, so the actual order of this struct is a, r, g, b.
+ *  On the other hand, if the architecture is big endian, the uint32_t is
+ *  still forced to be BGRA, so the first element of this struct will be the
+ *  Blue component, mapping to the most significant byte.
+ */
 struct Texel
 {
-    ///Red component in range [0-255]
+#ifndef IS_BIG_ENDIAN
+    uint8_t a;
     uint8_t r;
-
-    ///Green component in range [0-255]
     uint8_t g;
-
-    ///Blue component in range [0-255]
     uint8_t b;
+#else
+    uint8_t b;
+    uint8_t g;
+    uint8_t r;
+    uint8_t a;
+#endif
 };
 
-///Pixel component of a texture, high dpi version
-struct Texel32
+/**
+ * \brief Union between an uint32_t texel and the Texel struct
+ */
+union TexelUnion
 {
-    ///Red component in range [0-1]
-    float r;
-
-    ///Green component in range [0-1]
-    float g;
-
-    ///Blue component in range [0-1]
-    float b;
+    Texel bgra_texel;
+    uint32_t bgra_value;
 };
 
 ///Max eccentricity value for EWA filtering ellipse. Bounds EWA to constant time
@@ -75,177 +75,11 @@ struct Texel32
 //#define EWA_ALPHA 2.f
 
 /**
- *  \brief Struct used to hold a single mipmap level
- *  The TexelMap struct is used to allocate a single MIPmap level and access its
- *  texels.
- */
-struct TexelMap
-{
-public:
-
-    ///Default destructor
-    virtual ~TexelMap();
-
-    /**
-     *  \brief Returns a specific texel of the MIPmap in the form of a Texel32
-     *  \param[in] lvl1 The index of the texel
-     *  \param[out] out The Texel32 struct that will hold the texel
-     */
-    virtual void get_texel(int lvl1, Texel32* out) const = 0;
-
-    /**
-     *  \brief Returns a specific texel of the MIPmap in the form of ColorRGB
-     *  \param[in] lvl1 The index of the texel
-     *  \param[out] out A ColorRGB class representing the found texel
-     */
-    virtual void get_color(int lvl1, ColorRGB* out) const = 0;
-
-    /**
-     *  \brief Converts a specific texel of the MIPmap in the form of ColorRGB
-     *  This is used because the retrieved Texel32 will not always be in range
-     *  [0-1]
-     *
-     *  \note This is used primarly because Texel32 returned by TexelMapLow and
-     *  TexelMapHigh uses different ranges ([0-255] or [0-1])
-     *
-     *  \param[in] in The index of the texel
-     *  \param[out] out The ColorRGB class that will hold the texel
-     */
-    virtual void get_color(Texel32& in, ColorRGB* out) const = 0;
-};
-
-/**
- *  \brief Struct used to hold a single MIPmap level.
- *  This struct contains a MIPmap level composed of uint8_t values per single
- *  pixel, for a total of width*height*3 values. No alpha channel is supported.
- *  The image must have equal width and height
- *  Values are in range [0-255]
- */
-struct TexelMapLow : TexelMap
-{
-public:
-
-    /**
-     *  \brief Constructs the TexelMap given the array of values
-     *  \param[in] values An array of size side*side*3 with each pixel composing
-     *  the MIPmap ordered by row from top to bottom, in range [0-255]
-     *  \param[in] side The value of width or height of the map. Recall that
-     *  these two values must be the same
-     */
-    TexelMapLow(const uint8_t* values, uint16_t side);
-
-    //no copy allowed
-    TexelMapLow(const TexelMapLow&) = delete;
-
-    ///Default destructor
-    ~TexelMapLow() override;
-
-    /**
-     *  \brief Returns a specific texel of the MIPmap in the form of a Texel32
-     *  \param[in] lvl1 The index of the texel
-     *  \param[out] out The Texel32 struct that will hold the texel
-     *
-     *  /note Returned values will be in range [0-255] instead of the usual
-     *  [0-1] used in Texel32, one should use get_color(Texel32,ColorRGB) to
-     *  convert between the two
-     */
-    void get_texel(int lvl1, Texel32* out) const override;
-
-    /**
-     *  \brief Converts a specific texel of the MIPmap in the form of ColorRGB
-     *  This is used because the retrieved Texel32 will not always be in range
-     *  [0-1]
-     *
-     *  \note This is used primarly because Texel32 returned by TexelMapLow and
-     *  TexelMapHigh uses different ranges ([0-255] or [0-1])
-     *
-     *  \param[in] in The index of the texel
-     *  \param[out] out The ColorRGB class that will hold the texel
-     */
-    void get_color(Texel32& in, ColorRGB* out) const override;
-
-    /**
-     *  \brief Returns a specific texel of the MIPmap in the form of ColorRGB
-     *  \param[in] lvl1 The index of the texel
-     *  \param[out] out A ColorRGB class representing the found texel
-     */
-    void get_color(int lvl1, ColorRGB* out) const override;
-
-private:
-
-    Texel* values;
-};
-
-/**
- *  \brief Struct used to hold a single MIPmap level.
- *  This struct contains a MIPmap level composed of float values per single
- *  pixel, for a total of width*height*3 values. No alpha channel is supported.
- *  The image must have equal width and height
- *  Values are in range [0-1]
- */
-struct TexelMapHigh : TexelMap
-{
-public:
-
-    /**
-     *  \brief Constructs the TexelMap given the array of values
-     *  \param[in] values An array of size side*side*3 with each pixel composing
-     *  the MIPmap ordered by row from top to bottom in range [0.0-1.0]
-     *  \param[in] side The value of width or height of the map. Recall that
-     *  these two values must be the same
-     */
-    TexelMapHigh(const float* values, uint16_t side);
-
-    //no copy allowed
-    TexelMapHigh(const TexelMapHigh&) = delete;
-
-    ///Default destructor
-    ~TexelMapHigh() override;
-
-    /**
-     *  \brief Returns a specific texel of the MIPmap in the form of a Texel32
-     *  \param[in] lvl1 The index of the texel
-     *  \param[out] out The Texel32 struct that will hold the texel
-     */
-    void get_texel(int lvl1, Texel32* out) const override;
-
-    /**
-     *  \brief Converts a specific texel of the MIPmap in the form of ColorRGB
-     *  This is used because the retrieved Texel32 will not always be in range
-     *  [0-1]
-     *
-     *  \note This is used primarly because Texel32 returned by TexelMapLow and
-     *  TexelMapHigh uses different ranges ([0-255] or [0-1])
-     *
-     *  \param[in] in The index of the texel
-     *  \param[out] out The ColorRGB class that will hold the texel
-     */
-    void get_color(Texel32& in, ColorRGB* out) const override;
-
-    /**
-     *  \brief Returns a specific texel of the MIPmap in the form of ColorRGB
-     *  \param[in] lvl1 The index of the texel
-     *  \param[out] out A ColorRGB class representing the found texel
-     */
-    void get_color(int lvl1, ColorRGB* out) const override;
-
-private:
-
-    Texel32* values;
-};
-
-/**
  *  \brief ImageMap
  *  Class representing an allocated image used for texture storage.
  *  Being specialized in texture storage, the ImageMap imposes two
  *  constraints: the width and height are expected to be equal and a power of
  *  two.
- *  This class comes in two different flavours: high depth and 24-bit depth and
- *  this is done to save space on memory. For this reason if the high depth
- *  constructor is used but every value could be represented by a 24-bit depth
- *  image this one will be used. High depth images are represented using 32 bit
- *  floating point values, so the limit of the image is the precision ensured by
- *  the float data type.
  *
  *  This class is different from ImageFilm: this one is specialized in texture
  *  reading and texture storage on memory, while ImageFilm class is used for the
@@ -262,32 +96,18 @@ public:
     /**
      *  \brief Constructs an ImageMap with 8-bit per component
      *
-     *  Constructor used to allocate an ImageMap where each value is an 8 bit
-     *  unsigned integer, in range [0-255]. The width and height of the image
-     *  must be equals and power of two. MIPmaps necessary for the ImageMap to
-     *  work are allocated inside this constructor, so the final ImageMap size
-     *  will be 33% bigger than the original image
+     *  Constructor used to allocate an ImageMap where each value is a 32 bit
+     *  represented color, with each channel in range [0-255] and BGRA order.
+     *  The width and height of the image must be equals and power of two.
+     *  MIPmaps necessary for the ImageMap to work are allocated inside this
+     *  constructor, so the final ImageMap size will be 33% bigger than the
+     *  original image
      *
      *  \param[in] values An array holding every value that will be used by the
      *  ImageMap.
      *  \param[in] side The width and height of the input image.
      */
-    ImageMap(const uint8_t* values, uint16_t side);
-
-    /**
-     *  \brief Constructs an ImageMap with 32-bit per component
-     *
-     *  Constructor used to allocate an ImageMap where each value is a 32-bit
-     *  floating point, in range [0.0-1.0]. The width and height of the image
-     *  must be equals and power of two. MIPmaps necessary for the ImageMap to
-     *  work are allocated inside this constructor, so the final ImageMap size
-     *  will be 33% bigger than the original image
-     *
-     *  \param[in] values An array holding every value that will be used by the
-     *  ImageMap.
-     *  \param[in] side The width and height of the input image.
-     */
-    ImageMap(const float* values, uint16_t side);
+    ImageMap(const pixBGRA* values, uint16_t side);
 
     ///No copy allowed
     ImageMap(const ImageMap& old) = delete;
@@ -314,8 +134,8 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    virtual ColorRGB filter(float u, float v, float dudx, float dvdx,
-                            float dudy, float dvdy) const = 0;
+    virtual TexelUnion filter(float u, float v, float dudx, float dvdx,
+                              float dudy, float dvdy) const = 0;
 
 protected:
 
@@ -334,7 +154,7 @@ protected:
      *  delegated to the filtering algorithm
      *  \return The filtered texel color
      */
-    ColorRGB bilinear(float u, float v, uint8_t level) const;
+    TexelUnion bilinear(float u, float v, uint8_t level) const;
 
     ///width or height of every MIPmap level
     uint16_t* side;
@@ -343,7 +163,7 @@ protected:
     uint8_t maps_no;
 
     ///Array holding every MIPmap level
-    TexelMap** MIPmap;
+    Array2D<TexelUnion>** MIPmap;
 };
 
 /**
@@ -379,8 +199,8 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    ColorRGB filter(float u, float v, float dudx, float dvdx,
-                    float dudy, float dvdy) const override;
+    TexelUnion filter(float u, float v, float dudx, float dvdx,
+                      float dudy, float dvdy) const override;
 };
 
 /**
@@ -421,8 +241,8 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    ColorRGB filter(float u, float v, float dudx, float dvdx,
-                    float dudy, float dvdy) const override;
+    TexelUnion filter(float u, float v, float dudx, float dvdx,
+                      float dudy, float dvdy) const override;
 };
 
 /**
@@ -459,8 +279,8 @@ public:
      *  on the y axis
      *  \return The filtered pixel value
      */
-    ColorRGB filter(float u, float v, float dudx, float dvdx,
-                    float dudy, float dvdy) const override;
+    TexelUnion filter(float u, float v, float dudx, float dvdx,
+                      float dudy, float dvdy) const override;
 
 private:
 
@@ -472,8 +292,8 @@ private:
     static const float EWA_WEIGHTS[EWA_WEIGHTS_SIZE];
 
     //Performs the actual ewa filtering
-    ColorRGB ewa(float u, float v, float dudx, float dvdx, float dudy,
-                 float dvdy, uint8_t level) const;
+    TexelUnion ewa(float u, float v, float dudx, float dvdx, float dudy,
+                   float dvdy, uint8_t level) const;
 };
 
 #endif

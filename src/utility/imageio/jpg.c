@@ -11,7 +11,7 @@ static void jpg_error(j_common_ptr jpg_img)
     /* avoid terminating program if jpg error is encountered */
 }
 
-char jpg_write(const char* name, int width, int height, const uint8_t* data)
+char jpg_write(const char* name, int width, int height, const uint32_t* data)
 {
     char retval = 0;
     FILE* fout = fopen(name, "wb");
@@ -19,12 +19,19 @@ char jpg_write(const char* name, int width, int height, const uint8_t* data)
     {
         struct jpeg_compress_struct jpg_img;
         struct jpeg_error_mgr jpg_err;
+        int i;
         JSAMPROW current_row;
         /*not the best thing, but the jpeg functions wants a modifiable array*/
         uint8_t* data_nc = (uint8_t*)malloc(sizeof(uint8_t)*width*height*3);
         memset(&jpg_img, 0, sizeof(jpg_img));
         memset(&jpg_err, 0, sizeof(jpg_err));
-        memcpy(data_nc, data, width*height*3);
+        for(i = 0; i<width*height; i++)
+        {
+            /* convert BGRA to RGB */
+            data_nc[i*3+0] = (data[i] & 0x0000FF00) >> 8;
+            data_nc[i*3+1] = (data[i] & 0x00FF0000) >> 16;
+            data_nc[i*3+2] = (data[i] & 0xFF000000) >> 24;
+        }
         jpg_img.err = jpeg_std_error(&jpg_err);
         jpg_err.error_exit = jpg_error;
         jpg_err.output_message = jpg_error;
@@ -42,11 +49,11 @@ char jpg_write(const char* name, int width, int height, const uint8_t* data)
             current_row = data_nc+jpg_img.next_scanline*3*width;
             jpeg_write_scanlines(&jpg_img, &current_row, 1);
         }
+        retval = 1;
         jpeg_finish_compress(&jpg_img);
         fclose(fout);
         free(data_nc);
         jpeg_destroy_compress(&jpg_img);
-        retval = 1;
     }
     return retval;
 }
@@ -112,14 +119,16 @@ char jpg_dimensions(const char* name, int* width, int* height)
 }
 
 
-char jpg_read(const char* name, uint8_t* values)
+char jpg_read(const char* name, uint32_t* values)
 {
     char retval = 0;
     FILE* fin = fopen(name, "rb");
     if(fin != NULL)
     {
         int row_len;
-        JSAMPROW current_row;
+        unsigned int x;
+        unsigned int y;
+        uint8_t* row;
         struct jpeg_decompress_struct jpg_img;
         /* without error handling SIGSEGV will be generated */
         struct jpeg_error_mgr jpg_err;
@@ -134,12 +143,24 @@ char jpg_read(const char* name, uint8_t* values)
         {
             jpeg_start_decompress(&jpg_img);
             row_len = jpg_img.output_width*jpg_img.output_components;
+            row = (uint8_t*)malloc(sizeof(uint8_t)*row_len);
             retval = 1;
             while(jpg_img.output_scanline<jpg_img.output_height)
             {
-                current_row = values+jpg_img.output_scanline*row_len;
-                retval &= jpeg_read_scanlines(&jpg_img, &current_row, 1)>0;
+                y = jpg_img.output_scanline;
+                retval &= jpeg_read_scanlines(&jpg_img, &row, 1)>0;
+                x = 0;
+                while(x<jpg_img.output_width)
+                {
+                    int i = y*jpg_img.output_width+x;
+                    values[i] = 0x000000FF;
+                    values[i] |= row[x*3+0] << 8;
+                    values[i] |= row[x*3+1] << 16;
+                    values[i] |= row[x*3+2] << 24;
+                    x++;
+                }
             }
+            free(row);
         }
         jpeg_finish_decompress(&jpg_img);
         jpeg_destroy_decompress(&jpg_img);

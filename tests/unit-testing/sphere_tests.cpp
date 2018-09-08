@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "primitives/sphere.hpp"
@@ -74,12 +76,13 @@ SPECTRE_TEST(Sphere, intersect)
     float distance;
     Ray r;
     HitPoint h;
+    MaskBoolean mask;
 
     //distance < 0 This should NEVER happen and must be catched by kd-trees
     r = Ray(Point3(0, -10, 0), Vec3(0, 1, 0));
     distance = -1;
     errors_count[ERROR_INDEX] = 0;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
 
@@ -94,7 +97,7 @@ SPECTRE_TEST(Sphere, intersect)
     //hit origin before the sphere
     r = Ray(Point3(0, -10, 0), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 9.f);
     EXPECT_EQ(h.point_h.x, 0.f);
@@ -113,7 +116,7 @@ SPECTRE_TEST(Sphere, intersect)
     //hit origin inside the sphere
     r = Ray(Point3(0, 0, 0), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 1.f);
     EXPECT_EQ(h.point_h.x, 1.f);
@@ -132,13 +135,13 @@ SPECTRE_TEST(Sphere, intersect)
     //hit but origin after the sphere (= miss)
     r = Ray(Point3(0, 10, 0), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_FALSE(res);
 
     //hit in the exact vertical axis of the sphere
     r = Ray(Point3(0, 0, 0), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 1.f);
     EXPECT_EQ(h.point_h.x, SELF_INTERSECT_ERROR);
@@ -156,20 +159,60 @@ SPECTRE_TEST(Sphere, intersect)
     //complete miss
     r = Ray(Point3(-2, -2, -10), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_FALSE(res);
 
     //better solution already found for origin outside
     r = Ray(Point3(0, -10, 0), Vec3(0, 1, 0));
     distance = 8;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_FALSE(res);
 
     //better solution already found for origin inside
     r = Ray(Point3(0, 0, 0), Vec3(0, 1, 0));
     distance = 0.5f;
-    res = s.intersect(&r, &distance, &h);
+    res = s.intersect(&r, &distance, &h, &mask);
     ASSERT_FALSE(res);
+}
+
+SPECTRE_TEST(Sphere, masked_hit)
+{
+    Sphere s;
+    bool res;
+    float distance;
+    Ray r;
+    HitPoint h;
+    Vec2 shift(0.f);
+    Vec2 scale(1.f);
+    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
+    MaskBoolean mask(&tx, RED, false);
+
+    //point invalidated but second one is ok (with fixed point_h)
+    distance = INFINITY;
+    r = Ray(Point3(0.f, 0.f, 10.f), Vec3(0, 0, -1));
+    res = s.intersect(&r, &distance, &h, &mask);
+    EXPECT_TRUE(res);
+
+    //same as before but a closer solution was found
+    distance = 1e-5f;
+    res = s.intersect(&r, &distance, &h, &mask);
+    EXPECT_FALSE(res);
+
+    //both points invalidated
+    distance = INFINITY;
+    tx = TextureImage(TEST_ASSETS "images/black.bmp", shift, scale, UNFILTERED);
+    mask = MaskBoolean(&tx, RED, false);
+    r = Ray(Point3(0.f, -10.f, 0.f), Vec3(0, 1, 0));
+    res = s.intersect(&r, &distance, &h, &mask);
+    EXPECT_FALSE(res);
+
+    //starting from inside, only viable point invalidated
+    distance = INFINITY;
+    tx = TextureImage(TEST_ASSETS "images/black.bmp", shift, scale, UNFILTERED);
+    mask = MaskBoolean(&tx, RED, false);
+    r = Ray(Point3(0.f, 0.f, 0.f), Vec3(0, 1, 0));
+    res = s.intersect(&r, &distance, &h, &mask);
+    EXPECT_FALSE(res);
 }
 
 SPECTRE_TEST(Sphere, surface_object)

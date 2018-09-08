@@ -14,10 +14,11 @@ ParsedMaterial::ParsedMaterial()
     rough_x = 0;
     rough_y = -1;
     dist = SPECTRE_DIST_BECKMANN;
-    diffuse = "Default";
+    diffuse = "";
     diffuse_uniform = NULL;
-    specular = "Default";
+    specular = "";
     specular_uniform = NULL;
+    //bump_is_normal = false; //EDIT: removed TextureHeight, so this is true
 }
 
 ConfigDriver::ConfigDriver()
@@ -93,6 +94,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
 
     //build deferred objects
     build_materials();
+    build_dualmaterials();
     for(unsigned int i = 0; i<deferred_shapes.size(); i++)
         parse_and_allocate_obj(deferred_shapes[i].c_str());
     build_meshes();
@@ -117,6 +119,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
     all_textures.clear();
     children.clear();
     deferred_materials.clear();
+    deferred_dualmats.clear();
     shapes.clear();
     deferred_shapes.clear();
     deferred_meshes.clear();
@@ -255,31 +258,33 @@ const TextureUniform* ConfigDriver::load_texture_uniform()
     return val;
 }
 
-const Texture* ConfigDriver::load_texture(std::string& path)
+const TextureImage* ConfigDriver::load_texture(const std::string& path)
 {
 
     File cur_file = current_dir;
-    const Texture* addme = TexLib.get_default();
+    const TextureImage* addme;
     if(is_absolute(path.c_str()))
-        //recreates the File class... but absolute path should be a rare case
-        //File does not have a dflt constructor. Should I make one?
+        //TODO: avoid recreating the cur_file class
         cur_file = File(path.c_str());
     else
         cur_file.append(path.c_str());
-    if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
-            img_valid(cur_file.absolute_path(), cur_file.extension()))
+    //resolve texture name
+    if(tex_name.empty())
+        tex_name = cur_file.filename();
+    if(TexLib.contains_texture(tex_name))
+        //TexLib already contains TextureImage
+        addme = (TextureImage*)TexLib.get_texture(tex_name);
+    else if(cur_file.exists() && cur_file.readable() && !           cur_file.is_folder() &&
+       img_valid(cur_file.absolute_path(), cur_file.extension()))
     {
-        if(tex_name.empty())
-            tex_name = cur_file.filename();
-
         //Texture Image will deal with same file but different texture names
-        addme = new TextureImage(cur_file, tex_scale, tex_shift, tex_filter);
+        addme = new TextureImage(cur_file, tex_shift, tex_scale, tex_filter);
         TexLib.inherit_texture(tex_name, addme);
     }
     else
     {
         Console.warning(MESSAGE_TEXTURE_ERROR, cur_file.absolute_path());
-        addme = TexLib.get_default();
+        addme = TexLib.get_dflt_teximage();
     }
     tex_name.clear(); //reset name for next texture
     tex_scale = Vec2(1.f); //reset scaling for next texture
@@ -293,6 +298,7 @@ void ConfigDriver::build_materials()
     Bsdf* material;
     const Texture* diffuse;
     const Texture* specular;
+    const Bump* bump_map;
     for(int i = 0; i<(int)deferred_materials.size(); i++)
     {
         mat = &deferred_materials[i];
@@ -308,8 +314,8 @@ void ConfigDriver::build_materials()
         //diffuse
         if(mat->diffuse_uniform == NULL) //use non uniform texture
         {
-            if(TexLib.contains_texture(mat->diffuse))
-                diffuse = TexLib.get_texture(mat->diffuse);
+            if(mat->diffuse.empty())
+                diffuse = TexLib.get_dflt_teximage();
             else
                 diffuse = load_texture(mat->diffuse);
         }
@@ -319,13 +325,40 @@ void ConfigDriver::build_materials()
         //specular
         if(mat->specular_uniform == NULL) //use non uniform texture
         {
-            if(TexLib.contains_texture(mat->specular))
-                specular = TexLib.get_texture(mat->specular);
+            if(mat->specular.empty())
+                specular = TexLib.get_dflt_teximage();
             else
                 specular = load_texture(mat->specular);
         }
         else
             specular = mat->specular_uniform;
+
+        if(!mat->bump.empty())
+        {
+            /* OLD PIECE OF CODE CONSIDERING THE HEIGHT MAP IMPLEMENTATION
+             * now the TextureHeight is not used because I cannot figure out
+             * why it does not work
+             ```
+             if(TexLib.contains_texture(mat->bump))
+               if(mat->bump_is_normal)
+                 bump_map = new TextureNormal(
+                   (const TextureImage*)TexLib.get_texture(mat->bump));
+                 else
+                   bump_map = new TextureHeight(
+                             (const TextureImage*)TexLib.get_texture(mat->bump),
+                               RED);
+                 else if(mat->bump_is_normal)
+                   bump_map = new TextureNormal(
+                               (const TextureImage*)load_texture(mat->bump));
+                 else
+                     bump_map = new TextureHeight(
+                       (const TextureImage*)load_texture(mat->bump), RED);
+            ```
+             */
+            bump_map = new TextureNormal((const TextureImage*)load_texture(mat->bump));
+        }
+        else
+            bump_map = new Bump();
 
         //isotropic element, no point in using anisotropic one
         mat->rough_x = clamp(mat->rough_x, 0.f, 1.f);
@@ -342,23 +375,23 @@ void ConfigDriver::build_materials()
         {
             case MATTE:
             {
-                material = new SingleBRDF();
                 if(mat->rough_x != 0)
                 {
                     float roughness = lerp(mat->rough_x, 0.f, 100.f);
-                    material->inherit_bdf(new OrenNayar(roughness), diffuse);
+                    material = new SingleBRDF(new OrenNayar(roughness),
+                                              diffuse);
                 }
                 else
-                    material->inherit_bdf(new Lambertian, diffuse);
+                    material = new SingleBRDF(new Lambertian, diffuse);
                 break;
             }
             case GLOSSY:
             {
-                material = new Bsdf();
+                MultiBSDF* multimat = new MultiBSDF();
                 Fresnel* fresnel = new Dielectric(cauchy(1.f, 0),
                                                   cauchy(1.5f, 0));
                 MicrofacetDist* dist;
-                material->inherit_bdf(new Lambertian(), diffuse);
+                multimat->inherit_bdf(new Lambertian(), diffuse);
                 //no specular in glossy, avoid division by zero
                 if(mat->rough_x == 0)
                     mat->rough_x = MIN_ROUGHNESS;
@@ -373,12 +406,13 @@ void ConfigDriver::build_materials()
                     else
                         dist = new GGXiso(mat->rough_x);
                 }
-                material->inherit_bdf(new MicrofacetR(dist, fresnel), specular);
+                multimat->inherit_bdf(new MicrofacetR(dist, fresnel), specular);
+                material = (Bsdf*)multimat;
                 break;
             }
             case GLASS:
             {
-                material = new Bsdf();
+                MultiBSDF* multimat = new MultiBSDF();
                 Bdf* reflective;
                 Bdf* refractive;
                 Spectrum etai = cauchy(1.f, 0.f);
@@ -420,8 +454,9 @@ void ConfigDriver::build_materials()
                     reflective = new MicrofacetR(dist_r, fresnel_r);
                     refractive = new MicrofacetT(dist_t, etai, mat->ior);
                 }
-                material->inherit_bdf(refractive, diffuse);
-                material->inherit_bdf(reflective, specular);
+                multimat->inherit_bdf(refractive, diffuse);
+                multimat->inherit_bdf(reflective, specular);
+                material = (Bsdf*)multimat;
                 break;
             }
             case METAL:
@@ -431,7 +466,6 @@ void ConfigDriver::build_materials()
                 Bdf* bdf;
                 MicrofacetDist* dist;
                 Fresnel* fresnel;
-                material = new SingleBRDF();
                 ior = Spectrum(METALS[mat->elem].n);
                 absorption = Spectrum(METALS[mat->elem].k);
                 if(mat->rough_x == 0 && mat->rough_y == -1) //specular
@@ -454,10 +488,33 @@ void ConfigDriver::build_materials()
                     fresnel = new Conductor(ior, absorption);
                     bdf = new MicrofacetR(dist, fresnel);
                 }
-                material->inherit_bdf(bdf);
+                material = new SingleBRDF(bdf);
                 break;
             }
         }
+        material->inherit_bump(bump_map);
+        MtlLib.add_inherit(mat->name, material);
+    }
+}
+
+void ConfigDriver::build_dualmaterials()
+{
+    ParsedDualMaterial* mat;
+    DualBsdf* material;
+    const Bsdf* first;
+    const Bsdf* second;
+    for(int i = 0; i<(int)deferred_dualmats.size(); i++)
+    {
+        mat = &deferred_dualmats[i];
+        if(MtlLib.contains(mat->first))
+            first = MtlLib.get(mat->first);
+        else
+            first = MtlLib.get_default();
+        if(MtlLib.contains(mat->second))
+            second = MtlLib.get(mat->second);
+        else
+            second = MtlLib.get_default();
+        material = new DualBsdf(first, second, build_mask(mat->mask));
         MtlLib.add_inherit(mat->name, material);
     }
 }
@@ -630,5 +687,25 @@ void ConfigDriver::build_meshes()
             free(associations);
             current_scene->inherit_light((AreaLight*)current_asset);
         }
+        //resolve the mask
+        current_asset->set_mask(build_mask(mesh_w.mask));
     }
+}
+
+MaskBoolean ConfigDriver::build_mask(const ParsedMask& mask)
+{
+    const TextureImage* map;
+    if(mask.mask_tex.empty())
+        map = NULL;
+    else
+    {
+        map = load_texture(mask.mask_tex);
+    }
+    return MaskBoolean(map, mask.mask_chn, mask.mask_inv);
+}
+
+ParsedMask::ParsedMask()
+{
+    mask_inv = false;
+    mask_chn = ALPHA;
 }

@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "geometry/vec3.hpp"
@@ -29,6 +31,25 @@ SPECTRE_TEST(Vec3, given_constructor)
     EXPECT_EQ(v.x, 1.0f);
     EXPECT_EQ(v.y, 0.0f);
     EXPECT_EQ(v.z, -1.0f);
+
+    errors_count[ERROR_INDEX] = 0;
+    v = Vec3(NAN, 0.f, 0.f);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    v = Vec3(0.f, NAN, 0.f);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    v = Vec3(0.f, 0.f, NAN);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    v = Vec3(INFINITY, 0.f, 0.f);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    v = Vec3(0.f, INFINITY, 0.f);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    v = Vec3(0.f, 0.f, INFINITY);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
 }
 
 SPECTRE_TEST(Vec3, same_value_constructor)
@@ -38,6 +59,14 @@ SPECTRE_TEST(Vec3, same_value_constructor)
     EXPECT_EQ(v.x, f);
     EXPECT_EQ(v.y, f);
     EXPECT_EQ(v.z, f);
+
+    errors_count[ERROR_INDEX] = 0;
+    Vec3 v2(NAN);
+    EXPECT_GT(errors_count[ERROR_INDEX], 0);
+
+    errors_count[ERROR_INDEX] = 0;
+    Vec3 v3(INFINITY);
+    EXPECT_GT(errors_count[ERROR_INDEX], 0);
 }
 
 SPECTRE_TEST(Vec3, vec2_constructor)
@@ -48,6 +77,32 @@ SPECTRE_TEST(Vec3, vec2_constructor)
     EXPECT_EQ(v3.x, v2.x);
     EXPECT_EQ(v3.y, v2.y);
     EXPECT_EQ(v3.z, f);
+
+    errors_count[ERROR_INDEX] = 0;
+    Vec2 v4a(NAN, 0);
+    Vec3 v4(v4a, 1.f);
+    EXPECT_GT(errors_count[ERROR_INDEX], 0);
+    errors_count[ERROR_INDEX] = 0;
+    Vec2 v4b(0, NAN);
+    v4 = Vec3(v4b, 1.f);
+    EXPECT_GT(errors_count[ERROR_INDEX], 0);
+    errors_count[ERROR_INDEX] = 0;
+    Vec2 v4o(0.f, 0.f);
+    v4 = Vec3(v4o, NAN);
+    EXPECT_GT(errors_count[ERROR_INDEX], 0);
+
+    errors_count[ERROR_INDEX] = 0;
+    v4a = Vec2(INFINITY, 0);
+    v4 = Vec3(v4a, 1.f);
+    EXPECT_GT(errors_count[ERROR_INDEX], 0);
+    errors_count[ERROR_INDEX] = 0;
+    v4b = Vec2(0, INFINITY);
+    v4 = Vec3(v4b, 1.f);
+    EXPECT_GT(errors_count[ERROR_INDEX], 0);
+    errors_count[ERROR_INDEX] = 0;
+    v4o = Vec2(0.f, 0.f);
+    v4 = Vec3(v4o, INFINITY);
+    EXPECT_GT(errors_count[ERROR_INDEX], 0);
 }
 
 SPECTRE_TEST(Vec3, array_constructor)
@@ -57,6 +112,33 @@ SPECTRE_TEST(Vec3, array_constructor)
     EXPECT_EQ(v.x, array[0]);
     EXPECT_EQ(v.y, array[1]);
     EXPECT_EQ(v.z, array[2]);
+
+    errors_count[ERROR_INDEX] = 0;
+    array[0] = NAN;
+    v = Vec3(array);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    array[0] = INFINITY;
+    v = Vec3(array);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    array[0] = 0.f;
+    array[1] = NAN;
+    v = Vec3(array);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    array[1] = INFINITY;
+    v = Vec3(array);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    array[1] = 0.f;
+    array[2] = NAN;
+    v = Vec3(array);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    errors_count[ERROR_INDEX] = 0;
+    array[2] = INFINITY;
+    v = Vec3(array);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
 }
 
 SPECTRE_TEST(Vec3, array_constructor_null_pointer)
@@ -82,6 +164,31 @@ SPECTRE_TEST(Vec3, normal_constructor)
     EXPECT_EQ(v.x, n.x);
     EXPECT_EQ(v.y, n.y);
     EXPECT_EQ(v.z, n.z);
+
+    n1 = Normal(NAN, 0.f, 0.f);
+    errors_count[ERROR_INDEX] = 0;
+    v1 = Vec3(n1);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    n1 = Normal(0.f, NAN, 0.f);
+    errors_count[ERROR_INDEX] = 0;
+    v1 = Vec3(n1);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    n1 = Normal(0.f, 0.f, NAN);
+    errors_count[ERROR_INDEX] = 0;
+    v1 = Vec3(n1);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    n1 = Normal(INFINITY, 0.f, 0.f);
+    errors_count[ERROR_INDEX] = 0;
+    v1 = Vec3(n1);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    n1 = Normal(0.f, INFINITY, 0.f);
+    errors_count[ERROR_INDEX] = 0;
+    v1 = Vec3(n1);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
+    n1 = Normal(0.f, 0.f, INFINITY);
+    errors_count[ERROR_INDEX] = 0;
+    v1 = Vec3(n1);
+    EXPECT_EQ(errors_count[ERROR_INDEX], 1);
 }
 
 SPECTRE_TEST(Vec3, clone)

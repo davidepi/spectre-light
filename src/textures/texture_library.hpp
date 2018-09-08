@@ -1,12 +1,12 @@
 //Created,  14 Mar 2018
-//Last Edit 21 May 2018
+//Last Edit  7 Sep 2018
 
 /**
  *  \file texture_library.hpp
  *  \brief TextureLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  21 May 2018
+ *  \date  7 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -17,9 +17,14 @@
 #include "textures/texture.hpp"
 #include "textures/texture_uniform.hpp"
 #include "textures/image_map.hpp"
+#include "materials/bump.hpp"
+#include "texture_image.hpp"
 #include <unordered_map>
 #include <vector>
 #include <string>
+
+//Forward declaration, since TextureImage needs TexLib
+class TextureImage;
 
 /**
  * \class TextureLibrary texture_library.hpp "textures/texture_library.hpp"
@@ -60,9 +65,9 @@ public:
      *  double free error
      *
      *  \param[in] name The name of the texture
-     *  \param[in] texture The texture that will be added
+     *  \param[in] texture The textureImage that will be added
      */
-    void inherit_texture(const std::string& name, const Texture* texture);
+    void inherit_texture(const std::string& name, const TextureImage* texture);
 
     /** \brief Add a texture to the library
      *
@@ -98,7 +103,7 @@ public:
      * \param[in] name The texture to retrieve
      * \return The texture, if it is stored in the library, NULL otherwise
      */
-    const Texture* get_texture(const std::string& name) const;
+    const TextureImage* get_texture(const std::string& name) const;
 
     /** \brief Retrieve a map from the library
      *
@@ -111,8 +116,6 @@ public:
     const ImageMap* get_map(const std::string& name) const;
 
     /** \brief Remove and deallocate a texture from the library
-     *
-     *  Note that it is not possible to erase the "Default" texture
      *
      * \param[in] name The texture that will be removed and deallocated
      */
@@ -129,8 +132,6 @@ public:
      *
      *  This method will clear and thus deallocate every texture stored in the
      *  library, included maps and anonymous textures
-     *  Note, however, that the "Default" texture will not be removed for
-     *  integrity reasons
      */
     void clear();
 
@@ -154,16 +155,35 @@ public:
      */
     bool contains_map(const std::string& name) const;
 
-    /** \brief Returns the "Default" texture
+    /** \brief Returns the default texture
      *
-     *  This method returns the "Default" texture. It performs the same action
-     *  as calling TextureLibrary::get() with "Default" as parameter. However,
-     *  since "Default" is a system texture, it is cached inside this class
-     *  and by using this method a call to the underlying hash map is avoided
+     *  This method returns a default texture. This returned texture can be used
+     *  whenever a Texture object and correspond to a white TextureUniform.
      *
-     *  \return The "Default" texture
+     *  \return The default texture
      */
-    const Texture* get_default() const;
+    const Texture* get_dflt_texture() const;
+
+    /** \brief Returns the default TextureImage
+     *
+     *  Similar to the get_dflt_texture() method, this one instead returns
+     *  the default TextureImage. The default TextureImage is not shifted or
+     *  scaled and maps to the default ImageMap.
+     *
+     *  \return The default TextureImage
+     */
+    const TextureImage* get_dflt_teximage() const;
+
+    /**
+     *  \brief Returns the default ImageMap
+     *
+     *  Similar to the get_dflt_texture() method, this one returns the
+     *  default ImageMap. The default ImageMap is a map of size 1 by 1,
+     *  composed only of one white pixel and unfiltered
+     *
+     *  \return The default ImageMap
+     */
+    const ImageMap* get_dflt_map() const;
 
 private:
 
@@ -171,15 +191,15 @@ private:
 
     ~TextureLibrary();
 
-    std::unordered_map<std::string, const Texture*> texlib;
+    std::unordered_map<std::string, const TextureImage*> texlib;
     std::unordered_map<std::string, const ImageMap*> maplib;
     std::vector<const Texture*> unreferenced;
     const Texture* default_texture;
-    bool unfiltered;
+    const TextureImage* default_teximg;
+    const ImageMap* default_map;
 };
 
 ///Access the texture library just by writing "TexLib"
 #define TexLib TextureLibrary::instance()
 
 #endif
-

@@ -25,6 +25,7 @@ SPECTRE_TEST(Mesh, add_triangle_points)
     float distance;
     HitPoint hit;
     bool res;
+    MaskBoolean mask;
 
     m.add_triangle(p0, p1, p2, n);
 
@@ -32,11 +33,11 @@ SPECTRE_TEST(Mesh, add_triangle_points)
     m.finalize();
     r = Ray(Point3(0, -10, 1), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = m.intersect(&r, &distance, &hit);
+    res = m.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
     r = Ray(Point3(0, 0.5, 1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = m.intersect(&r, &distance, &hit);
+    res = m.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 }
 
@@ -69,6 +70,7 @@ SPECTRE_TEST(Mesh, add_triangle_vertices)
     float distance;
     HitPoint hit;
     bool res;
+    MaskBoolean mask;
 
     //realloc
     Mesh m3(1);
@@ -77,15 +79,15 @@ SPECTRE_TEST(Mesh, add_triangle_vertices)
     m3.finalize();
     r = Ray(Point3(0, -10, 1), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = m3.intersect(&r, &distance, &hit);
+    res = m3.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
     r = Ray(Point3(0, 0.5, 1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = m3.intersect(&r, &distance, &hit);
+    res = m3.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
     r = Ray(Point3(0, 0.5, 1), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = m3.intersect(&r, &distance, &hit);
+    res = m3.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 
     //no need to realloc
@@ -94,11 +96,11 @@ SPECTRE_TEST(Mesh, add_triangle_vertices)
     m2.finalize();
     r = Ray(Point3(0, -10, 1), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = m2.intersect(&r, &distance, &hit);
+    res = m2.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
     r = Ray(Point3(0, 0.5, 1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = m2.intersect(&r, &distance, &hit);
+    res = m2.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 
     //enourmous amount of triangles with realloc, assert no crash
@@ -145,17 +147,18 @@ SPECTRE_TEST(Mesh, resize)
     float distance;
     HitPoint hit;
     bool res;
+    MaskBoolean mask;
     r = Ray(Point3(0, -10, 1), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = m.intersect(&r, &distance, &hit);
+    res = m.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
     r = Ray(Point3(0, 0.5, 1), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = m.intersect(&r, &distance, &hit);
+    res = m.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
     r = Ray(Point3(0, 0.5, 1), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = m.intersect(&r, &distance, &hit);
+    res = m.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 }
 
@@ -428,26 +431,27 @@ SPECTRE_TEST(Mesh, sample_point)
     Point3 p;
     Normal n;
     HitPoint hit;
+    MaskBoolean mask;
 
     //first one
     m.sample_point(0.05f, 0.5f, densities, &p, &n);
     Ray r = Ray(Point3(p.x, p.y, p.z+100), Vec3(0, 0, -1));
     float distance = FLT_MAX;
-    bool res = m.intersect(&r, &distance, &hit);
+    bool res = m.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 
     //last one
     m.sample_point(0.95f, 0.5f, densities, &p, &n);
     r = Ray(Point3(p.x, p.y, p.z+100), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = m.intersect(&r, &distance, &hit);
+    res = m.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 
     //6th position (in order to trigger both jumps of the divide et impera)
     m.sample_point(0.7f, 0.5f, densities, &p, &n);
     r = Ray(Point3(p.x, p.y, p.z+100), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = m.intersect(&r, &distance, &hit);
+    res = m.intersect(&r, &distance, &hit, &mask);
     EXPECT_TRUE(res);
 }
 

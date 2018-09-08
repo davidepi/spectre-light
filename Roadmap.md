@@ -15,21 +15,22 @@
 - [x] spectrum (rgb and spectral rendering, blackbody radiation)
 - [x] microfacet reflection and transmission (blinn, beckmann, ggx isotropic, ggx anisotropic)
 
-### V0.2 ###
+### V0.2  - OVERCAST ###
 - [x] unit testing
 - [x] extended image support (.jpg/.tiff support)
 - [x] lex/yacc parser
-- [ ] **-> diffuse texture mapping<-**
-- [ ] bump/normal textures
-- [ ] sun position and sunlight
-- [ ] environment (sky) system
-- [ ] camera lenses
-- [ ] depth of field
-- [ ] bidirectional path tracer
-- [ ] metropolis light transport
-- [ ] irradiance caching
+- [x] diffuse texture mapping
+- [x] bump/normal textures
+- [ ] **-> new light system (sunlight + environment) <-**
+- [ ] real cameras (and depth of field)
 
 ### V0.3 ###
+- a lot of new integrators (bdpt, mlt, photon mapping, etc...)
+- 3DS max exporter
+- fog system
+- subsurface scattering
+
+### More ###
 - bvh exporter/importer/generator
 - texture caching
 - memory checks
@@ -40,7 +41,6 @@
 - tessellation and displacement mapping
 - more?
 
-### V0.4 ###
+### Even More ###
 - gpu rendering
 - energy redistribution path tracing
-- volume rendering

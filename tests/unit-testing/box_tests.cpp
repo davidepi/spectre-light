@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "primitives/box.hpp"
@@ -96,6 +98,7 @@ SPECTRE_TEST(Box, intersect)
     ASSERT_EQ(sign(10), 1);
     ASSERT_EQ(sign(0), 1);
     ASSERT_EQ(sign(-10), -1);
+    MaskBoolean mask;
 
     Box box;
     Ray r;
@@ -106,7 +109,7 @@ SPECTRE_TEST(Box, intersect)
     //point front, hit front
     r = Ray(Point3(0.5f, -10.f, 0.5f), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 10.f);
     EXPECT_EQ(hit.point_h.x, 0.5f);
@@ -122,7 +125,7 @@ SPECTRE_TEST(Box, intersect)
     //point back hit back
     r = Ray(Point3(0.5f, 10.f, 0.5f), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 9.f);
     EXPECT_EQ(hit.point_h.x, 0.5f);
@@ -138,7 +141,7 @@ SPECTRE_TEST(Box, intersect)
     //point right hit right
     r = Ray(Point3(5, 0.5, 0.5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 4.f);
     EXPECT_EQ(hit.point_h.x, 1.f);
@@ -154,7 +157,7 @@ SPECTRE_TEST(Box, intersect)
     //point left hit left
     r = Ray(Point3(-5, 0.5, 0.5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 5.f);
     EXPECT_EQ(hit.point_h.x, 0.f);
@@ -170,7 +173,7 @@ SPECTRE_TEST(Box, intersect)
     //point top hit top
     r = Ray(Point3(0.5, 0.5, 3), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 2.f);
     EXPECT_EQ(hit.point_h.x, 0.5f);
@@ -186,7 +189,7 @@ SPECTRE_TEST(Box, intersect)
     //point bottom hit bottom
     r = Ray(Point3(0.5, 0.5, -3), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 3.f);
     EXPECT_EQ(hit.point_h.x, 0.5f);
@@ -202,7 +205,7 @@ SPECTRE_TEST(Box, intersect)
     //inside hit front
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 0.5f);
     EXPECT_EQ(hit.point_h.x, 0.5f);
@@ -218,7 +221,7 @@ SPECTRE_TEST(Box, intersect)
     //inside hit back
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 0.5f);
     EXPECT_EQ(hit.point_h.x, 0.5f);
@@ -234,7 +237,7 @@ SPECTRE_TEST(Box, intersect)
     //inside hit right
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 0.5f);
     EXPECT_EQ(hit.point_h.x, 1.f);
@@ -250,7 +253,7 @@ SPECTRE_TEST(Box, intersect)
     //inside hit left
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 0.5f);
     EXPECT_EQ(hit.point_h.x, 0.f);
@@ -266,7 +269,7 @@ SPECTRE_TEST(Box, intersect)
     //inside hit top
     r = Ray(Point3(0.5, 0.5, 0.5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 0.5f);
     EXPECT_EQ(hit.point_h.x, 0.5f);
@@ -282,7 +285,7 @@ SPECTRE_TEST(Box, intersect)
     //inside hit bottom
     r = Ray(Point3(0.5, 0.5, 0.5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     ASSERT_TRUE(res);
     EXPECT_EQ(distance, 0.5f);
     EXPECT_EQ(hit.point_h.x, 0.5f);
@@ -298,403 +301,403 @@ SPECTRE_TEST(Box, intersect)
     //point left, dir left
     r = Ray(Point3(-5, 0.5, 0.5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point left dir above
     r = Ray(Point3(-5, 0.5, 0.5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point left dir below
     r = Ray(Point3(-5, 0.5, 0.5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point left dir front
     r = Ray(Point3(-5, 0.5, 0.5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point left dir back
     r = Ray(Point3(-5, 0.5, 0.5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point right, dir right
     r = Ray(Point3(5, 0.5, 0.5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point right, dir above
     r = Ray(Point3(5, 0.5, 0.5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point right, dir below
     r = Ray(Point3(5, 0.5, 0.5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point right, dir front
     r = Ray(Point3(5, 0.5, 0.5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point right, dir back
     r = Ray(Point3(5, 0.5, 0.5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point back, dir back
     r = Ray(Point3(0.5, 5, 0.5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point back, dir left
     r = Ray(Point3(0.5, 5, 0.5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point back, dir right
     r = Ray(Point3(0.5, 5, 0.5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point back, dir top
     r = Ray(Point3(0.5, 5, 0.5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point back, dir bottom
     r = Ray(Point3(0.5, 5, 0.5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point front, dir front
     r = Ray(Point3(0.5, -5, 0.5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point front, dir left
     r = Ray(Point3(0.5, -5, 0.5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point front, dir right
     r = Ray(Point3(0.5, -5, 0.5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point front, dir up
     r = Ray(Point3(0.5, -5, 0.5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point front, dir down
     r = Ray(Point3(0.5, -5, 0.5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point above, dir up
     r = Ray(Point3(0.5f, 0.5f, 5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point above, dir left
     r = Ray(Point3(0.5f, 0.5f, 5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point above, dir right
     r = Ray(Point3(0.5f, 0.5f, 5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point above, dir front
     r = Ray(Point3(0.5f, 0.5f, 5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point above, dir back
     r = Ray(Point3(0.5f, 0.5f, 5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point below, dir down
     r = Ray(Point3(0.5f, 0.5f, -5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point below, dir left
     r = Ray(Point3(0.5f, 0.5f, -5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point below, dir right
     r = Ray(Point3(0.5f, 0.5f, -5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point below, dir front
     r = Ray(Point3(0.5f, 0.5f, -5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //point below, dir back
     r = Ray(Point3(0.5f, 0.5f, -5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point left, dir left
     r = Ray(Point3(-5, -5, -5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point left, dir right
     r = Ray(Point3(-5, -5, -5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point left dir above
     r = Ray(Point3(-5, -5, -5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point left dir below
     r = Ray(Point3(-5, -5, -5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point left dir front
     r = Ray(Point3(-5, -5, -5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point left dir back
     r = Ray(Point3(-5, -5, -5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point right, dir right
     r = Ray(Point3(5, 5, 5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point right, dir left
     r = Ray(Point3(5, 5, 5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point right, dir above
     r = Ray(Point3(5, 5, 5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point right, dir below
     r = Ray(Point3(5, 5, 5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point right, dir front
     r = Ray(Point3(5, 5, 5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point right, dir back
     r = Ray(Point3(5, 5, 5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point back, dir back
     r = Ray(Point3(5, 5, 5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point back, dir front
     r = Ray(Point3(5, 5, 5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point back, dir left
     r = Ray(Point3(5, 5, 5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point back, dir right
     r = Ray(Point3(5, 5, 5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point back, dir top
     r = Ray(Point3(5, 5, 5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point back, dir bottom
     r = Ray(Point3(5, 5, 5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point front, dir front
     r = Ray(Point3(-5, -5, -5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point front, dir back
     r = Ray(Point3(-5, -5, -5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point front, dir left
     r = Ray(Point3(-5, -5, -5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point front, dir right
     r = Ray(Point3(-5, -5, -5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point front, dir up
     r = Ray(Point3(-5, -5, -5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point front, dir down
     r = Ray(Point3(-5, -5, -5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point above, dir up
     r = Ray(Point3(5, 5, 5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point above, dir down
     r = Ray(Point3(5, 5, 5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point above, dir left
     r = Ray(Point3(5, 5, 5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point above, dir right
     r = Ray(Point3(5, 5, 5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point above, dir front
     r = Ray(Point3(5, 5, 5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point above, dir back
     r = Ray(Point3(5, 5, 5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point below, dir down
     r = Ray(Point3(-5, -5, -5), Vec3(0, 0, -1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point below, dir up
     r = Ray(Point3(-5, -5, -5), Vec3(0, 0, 1));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point below, dir left
     r = Ray(Point3(-5, -5, -5), Vec3(1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point below, dir right
     r = Ray(Point3(-5, -5, -5), Vec3(-1, 0, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point below, dir front
     r = Ray(Point3(-5, -5, -5), Vec3(0, -1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //miss point below, dir back
     r = Ray(Point3(-5, -5, -5), Vec3(0, 1, 0));
     distance = FLT_MAX;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
 
     //already found closer one from inside
     r = Ray(Point3(0.5f, 0.5f, 0.5f), Vec3(0, -1, 0));
     distance = 0.3f;
-    res = box.intersect(&r, &distance, &hit);
+    res = box.intersect(&r, &distance, &hit, &mask);
     EXPECT_FALSE(res);
     EXPECT_EQ(distance, 0.3f);
 }

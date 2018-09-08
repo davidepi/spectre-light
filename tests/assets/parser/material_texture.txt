@@ -20,3 +20,9 @@ material: {
     roughness: 0.2
 }
 
+material: {
+  name: "Not found specular"
+  type: matte
+  specular: "cantfindme"
+  roughness: 0.2
+}

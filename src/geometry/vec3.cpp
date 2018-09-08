@@ -132,26 +132,27 @@ Vec3 Vec3::cross(const Vec3& target) const
                 Vec3::x*target.y-Vec3::y*target.x);
 }
 
-void Vec3::normalize()
+Vec3& Vec3::normalize()
 {
     float len;
     float len2;
     len2 = Vec3::x*Vec3::x+Vec3::y*Vec3::y+Vec3::z*Vec3::z;
     if(len2>1.f-1E-5f && len2<1.f+1E-5f)
-        return;
+        return *this;
     else
         len = sqrtf(len2);
 #ifdef DEBUG
     if(len == 0)
     {
         Console.critical(MESSAGE_NORMALIZE_ZERO);
-        return;
+        return *this;
     }
 #endif
     len = 1/len;
     Vec3::x *= len;
     Vec3::y *= len;
     Vec3::z *= len;
+    return *this;
 }
 
 bool Vec3::is_normalized() const
@@ -600,26 +601,27 @@ float Normal::distance(const Normal& target) const
     return sqrtf((x*x)+(y*y)+(z*z));
 }
 
-void Normal::normalize()
+Normal& Normal::normalize()
 {
     float len;
     float len2;
     len2 = Normal::x*Normal::x+Normal::y*Normal::y+Normal::z*Normal::z;
     if(len2>1.f-1E-5f && len2<1.f+1E-5f)
-        return;
+        return *this;
     else
         len = sqrtf(len2);
 #ifdef DEBUG
     if(len == 0)
     {
         Console.critical(MESSAGE_NORMALIZE_ZERO);
-        return;
+        return *this;
     }
 #endif
     len = 1/len;
     Normal::x *= len;
     Normal::y *= len;
     Normal::z *= len;
+    return *this;
 }
 
 bool Normal::is_normalized() const

@@ -112,6 +112,7 @@ scale { UPDATE_POS; return yy::ConfigParser::make_SCALE(loc); }
 shift { UPDATE_POS; return yy::ConfigParser::make_SHIFT(loc); }
 temperature { UPDATE_POS; return yy::ConfigParser::make_TEMPERATURE(loc); }
 material { UPDATE_POS; return yy::ConfigParser::make_MATERIAL(loc); }
+dualmaterial {UPDATE_POS; return yy::ConfigParser::make_DUALMATERIAL(loc);}
 texture { UPDATE_POS; return yy::ConfigParser::make_TEXTURE(loc); }
 src {UPDATE_POS; return yy::ConfigParser::make_SRC(loc); }
 matte { UPDATE_POS; return yy::ConfigParser::make_MATTE(loc); }
@@ -124,11 +125,21 @@ anisotropy { UPDATE_POS; return yy::ConfigParser::make_ANISOTROPY(loc); }
 distribution { UPDATE_POS; return yy::ConfigParser::make_DISTRIBUTION(loc); }
 diffuse { UPDATE_POS; return yy::ConfigParser::make_DIFFUSE(loc); }
 specular { UPDATE_POS; return yy::ConfigParser::make_SPECULAR(loc); }
+bump {/* UPDATE_POS; return yy::ConfigParser::make_BUMP(loc); */}
+normal {UPDATE_POS; return yy::ConfigParser::make_NORMAL(loc);}
 blinn { UPDATE_POS; return yy::ConfigParser::make_BLINN(loc); }
 beckmann { UPDATE_POS; return yy::ConfigParser::make_BECKMANN(loc); }
 ggx { UPDATE_POS; return yy::ConfigParser::make_GGX(loc); }
 color {UPDATE_POS; return yy::ConfigParser::make_COLOR(loc);}
 element {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
+"using channel R" {UPDATE_POS; return yy::ConfigParser::make_CHNR(loc);}
+"using channel G" {UPDATE_POS; return yy::ConfigParser::make_CHNG(loc);}
+"using channel B" {UPDATE_POS; return yy::ConfigParser::make_CHNB(loc);}
+"using channel A" {UPDATE_POS; return yy::ConfigParser::make_CHNA(loc);}
+inverted {UPDATE_POS; return yy::ConfigParser::make_INV(loc);}
+mask {UPDATE_POS; return yy::ConfigParser::make_MASK(loc);}
+first {UPDATE_POS; return yy::ConfigParser::make_FIRST(loc);}
+second {UPDATE_POS; return yy::ConfigParser::make_SECOND(loc);}
 {uint}    { UPDATE_POS; return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
 {int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 {float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }

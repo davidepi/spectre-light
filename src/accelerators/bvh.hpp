@@ -15,6 +15,7 @@
 #define __BVH_HPP__
 
 #include "primitives/triangle.hpp"
+#include "textures/mask_boolean.hpp"
 #include <algorithm>
 #include <vector>
 
@@ -100,7 +101,8 @@ public:
      *  \param[out] h The hit triangle
      *  \return true if there is an intersection, false otherwise
      */
-    bool intersect(const Ray* r, float* distance, HitPoint* h) const;
+    bool intersect(const Ray* r, float* distance, HitPoint* h,
+                   const MaskBoolean* mask) const;
 
 private:
 

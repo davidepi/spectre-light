@@ -1,0 +1,22 @@
+material: {
+  name: "Red",
+  diffuse: [255,0,0]
+}
+
+material: {
+  name: "Blue",
+  diffuse: [0,0,255]
+}
+
+dualmaterial: {
+  name: "Non-inverted",
+  second: "Blue",
+  mask: "../images/black.bmp" using channel R
+}
+
+dualmaterial: {
+  name: "Inverted",
+  first: "Red",
+  mask: "../images/black.bmp" using channel R inverted
+}
+

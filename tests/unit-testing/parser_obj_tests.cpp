@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "parsers/parser_obj.hpp"
@@ -251,12 +253,9 @@ SPECTRE_TEST(ParserObj, get_face_number)
 SPECTRE_TEST(ParserObj, get_material_no)
 {
     //push some materials used in the file into the library
-    Bsdf* mat0 = new SingleBRDF();
-    Bsdf* mat1 = new SingleBRDF();
-    Bsdf* mat2 = new SingleBRDF();
-    mat0->inherit_bdf(new Lambertian());
-    mat1->inherit_bdf(new Lambertian());
-    mat2->inherit_bdf(new Lambertian());
+    Bsdf* mat0 = new SingleBRDF(new Lambertian());
+    Bsdf* mat1 = new SingleBRDF(new Lambertian());
+    Bsdf* mat2 = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("Red", mat0);
     MtlLib.add_inherit("Green", mat1);
     MtlLib.add_inherit("Blue", mat2);
@@ -285,12 +284,9 @@ SPECTRE_TEST(ParserObj, get_material_no)
 SPECTRE_TEST(ParserObj, get_materials)
 {
     //push some materials used in the file into the library
-    Bsdf* mat0 = new SingleBRDF();
-    Bsdf* mat1 = new SingleBRDF();
-    Bsdf* mat2 = new SingleBRDF();
-    mat0->inherit_bdf(new Lambertian());
-    mat1->inherit_bdf(new Lambertian());
-    mat2->inherit_bdf(new Lambertian());
+    Bsdf* mat0 = new SingleBRDF(new Lambertian());
+    Bsdf* mat1 = new SingleBRDF(new Lambertian());
+    Bsdf* mat2 = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("Red", mat0);
     MtlLib.add_inherit("Green", mat1);
     MtlLib.add_inherit("Blue", mat2);
@@ -327,12 +323,9 @@ SPECTRE_TEST(ParserObj, get_materials)
 SPECTRE_TEST(ParserObj, get_material_association)
 {
     //push some materials used in the file into the library
-    Bsdf* mat0 = new SingleBRDF();
-    Bsdf* mat1 = new SingleBRDF();
-    Bsdf* mat2 = new SingleBRDF();
-    mat0->inherit_bdf(new Lambertian());
-    mat1->inherit_bdf(new Lambertian());
-    mat2->inherit_bdf(new Lambertian());
+    Bsdf* mat0 = new SingleBRDF(new Lambertian());
+    Bsdf* mat1 = new SingleBRDF(new Lambertian());
+    Bsdf* mat2 = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("Red", mat0);
     MtlLib.add_inherit("Green", mat1);
     MtlLib.add_inherit("Blue", mat2);

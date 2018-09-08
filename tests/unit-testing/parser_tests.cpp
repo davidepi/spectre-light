@@ -67,8 +67,8 @@ SPECTRE_TEST(Parser, resolution)
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/resolution_even.txt", &s);
     EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
     errors_count[NOTICE_INDEX] = 0;
-    EXPECT_EQ(driver2.width, 3008);
-    EXPECT_EQ(driver2.height, 1504);
+    EXPECT_EQ(driver2.width, 2016);
+    EXPECT_EQ(driver2.height, 1512);
     delete r2;
     //not multiple of 32, but height odd
     ConfigDriver driver3;
@@ -308,25 +308,34 @@ SPECTRE_TEST(Parser, texture)
     EXPECT_FALSE(TexLib.contains_texture("I do not exist"));
     delete r1;
 
-    //duplicate
-    //removed test: -> if same texture with same name will be ignored by library
-    //              -> if same texture with different name, TextureLib will
-    //                 handle it
-//    TexLib.clear();
-//    ConfigDriver driver2;
-//    errors_count[WARNING_INDEX] = 0;
-//    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture_duplicate.txt",
-//                                 &s);
-//    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
-//    errors_count[WARNING_INDEX] = 0;
-//    EXPECT_TRUE(TexLib.contains_texture("Manually written name"));
-//    delete r2;
+    //already existing name
+    ASSERT_TRUE(TexLib.contains_texture("Manually written name"));
+    ConfigDriver driver2;
+    const TextureImage* img0 = TexLib.get_texture("Manually written name");
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture.txt",
+                                 &s);
+    const TextureImage* img1 = TexLib.get_texture("Manually written name");
+    EXPECT_PTR_EQ(img0, img1);
+    delete r2;
+    
+    TexLib.clear();
+}
+
+SPECTRE_TEST(Parser, bump)
+{
+    Scene s;
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/bump.txt",&s);
+    ASSERT_TRUE(MtlLib.contains("With normal map"));
+    ASSERT_TRUE(MtlLib.contains("No bump"));
+    delete r0;
+    MtlLib.clear();
+    TexLib.clear();
 }
 
 SPECTRE_TEST(Parser, material_textures)
 {
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
@@ -336,6 +345,8 @@ SPECTRE_TEST(Parser, material_textures)
     Asset a(&sphere, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
+    Normal shading_normal;
     float distance = FLT_MAX;
     wi = Vec3(0.f, 1.f, 0.f);
     wi.normalize();
@@ -346,18 +357,21 @@ SPECTRE_TEST(Parser, material_textures)
     Renderer* r0 = driver0.parse(TEST_ASSETS
                                  "parser/material_texture.txt",
                                  &s);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 2);
     errors_count[WARNING_INDEX] = 0;
     ASSERT_TRUE(MtlLib.contains("Diffuse color"));
     ASSERT_TRUE(MtlLib.contains("Specular color"));
     ASSERT_TRUE(MtlLib.contains("Not found diffuse"));
+    ASSERT_TRUE(MtlLib.contains("Not found specular"));
     const Bsdf* mat0 = MtlLib.get("Diffuse color");
     const Bsdf* mat1 = MtlLib.get("Specular color");
     const Bsdf* mat2 = MtlLib.get("Not found diffuse");
+    const Bsdf* mat3 = MtlLib.get("Not found specular");
 
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.0656985715f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
@@ -365,38 +379,48 @@ SPECTRE_TEST(Parser, material_textures)
 
     a.set_materials((const Bsdf**)&mat1, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.319684714f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.303918838f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.319018781f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.318374306f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.346649765f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat2, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.159286112f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.159286112f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.159286112f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.151396676f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159286126f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.173435494f, 1e-5f);
 
-    //TODO: missing tests with actual imagemaps
-
+    a.set_materials((const Bsdf**)&mat3, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.151396676f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159286126f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.173435494f, 1e-5f);
+    
     delete r0;
 }
 
 SPECTRE_TEST(Parser, material_duplicate)
 {
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
+    Normal shading_normal;
     unsigned char association = 0;
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&sphere, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     wi = Vec3(0.f, 1.f, 0.f);
     wi.normalize();
@@ -412,7 +436,8 @@ SPECTRE_TEST(Parser, material_duplicate)
     const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.0656985715f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
@@ -426,16 +451,17 @@ SPECTRE_TEST(Parser, material_duplicate)
 SPECTRE_TEST(Parser, material_matte)
 {
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
+    Normal shading_normal;
     unsigned char association = 0;
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&sphere, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     wi = Vec3(0.f, 1.f, 0.f);
     wi.normalize();
@@ -445,14 +471,25 @@ SPECTRE_TEST(Parser, material_matte)
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt", &s);
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
-
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
     EXPECT_NEAR(res.w[0], 0.0656985715f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00307962182f, 1e-5f);
+    
+    ASSERT_TRUE(MtlLib.contains("Red Lambertian"));
+    const Bsdf* mat1 = MtlLib.get("Red Lambertian");
+    a.set_materials((const Bsdf**)&mat1, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.131289f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.067696f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.006154f, 1e-5f);
 
     delete r0;
     TexLib.clear();
@@ -463,15 +500,16 @@ SPECTRE_TEST(Parser, material_glossy)
 {
     unsigned char association = 0;
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
+    Normal shading_normal;
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&sphere, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     wi = Vec3(0.f, 1.f, 0.f);
     wi.normalize();
@@ -491,37 +529,41 @@ SPECTRE_TEST(Parser, material_glossy)
 
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.319684714f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.303918838f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.319018781f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.318374306f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.346649765f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat1, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.193397462f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.189456000f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.307217479f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.117517456f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.124586321f, 1e-5f);
 
     //TODO: these values are not convincing, but the roughness is 0.001
     //so it should be fine... need to check again visually
     a.set_materials((const Bsdf**)&mat2, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 3183.22998f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 3183.16626f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 3183.10474f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 3025.57128f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 3183.16674f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 3465.85937f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat3, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = a.get_material(0)->value(&r.direction, &hit, &wi, false);
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.0606181398f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0604604780f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0261571147f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.305674285f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.3059570491f, 1e-5f);
 
     delete r0;
     MtlLib.clear();
@@ -532,17 +574,18 @@ SPECTRE_TEST(Parser, material_glass)
 {
     unsigned char association = 0;
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
+    Normal shading_normal;
     float pdf;
     bool spec;
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&sphere, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     wi = Vec3(0.f, 1.f, 0.f);
     wi.normalize();
@@ -564,35 +607,45 @@ SPECTRE_TEST(Parser, material_glass)
 
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat0->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0337359607f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.0337359607f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0337359607f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0320650190f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0337359644f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0367327257f, 1e-5f);
 
-    res = mat1->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat1->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat1->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 0.00702887168f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0140577434f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00234295661f, 1e-5f);
 
-    res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat2->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0190198198f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0180777683f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0190198198f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0190198198f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0207093507f, 1e-5f);
 
-    res = mat3->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat3->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat3->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 0.00172365177f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.000689460721f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00907789823f, 1e-5f);
 
-    res = mat4->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat4->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat4->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0132096251f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0125553524f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0132096251f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0132096251f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0143830357f, 1e-5f);
 
     delete r0;
     MtlLib.clear();
@@ -603,15 +656,16 @@ SPECTRE_TEST(Parser, material_metal)
 {
     unsigned char association = 0;
     Scene s;
-    Bsdf material_t;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
     Spectrum res;
+    Normal shading_normal;
     m.set_translation(Vec3(-2, 0, 0));
     Asset a(&sphere, m, 1);
     Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
     HitPoint hit;
+    ShadingSpace matrix;
     float distance = FLT_MAX;
     float pdf;
     bool spec;
@@ -643,13 +697,17 @@ SPECTRE_TEST(Parser, material_metal)
 
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat0->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 1.02331078f, 1e-5f);
     EXPECT_NEAR(res.w[1], 1.01512516f, 1e-5f);
     EXPECT_NEAR(res.w[2], 1.00878441f, 1e-5f);
 
-    res = mat1->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat1->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat1->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     //TODO: these does not seems corrects. However increasing roughness by a
     //factor 10 decreases values by a factor 10, so I guess is ok
@@ -657,49 +715,112 @@ SPECTRE_TEST(Parser, material_metal)
     EXPECT_NEAR(res.w[1], 53.2028809f, 1e-5f);
     EXPECT_NEAR(res.w[2], 52.4990005f, 1e-5f);
 
-    res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat2->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 0.439082593f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.854520261f, 1e-5f);
     EXPECT_NEAR(res.w[2], 1.02771819f, 1e-5f);
 
-    res = mat3->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat3->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat3->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 0.0810785815f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.103847116f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.142712966f, 1e-5f);
 
-    res = mat4->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat4->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat4->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 0.0904954969f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0942749753f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.0979211553f, 1e-5f);
 
-    res = mat5->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat5->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat5->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 1.28624129f, 1e-5f);
     EXPECT_NEAR(res.w[1], 1.28329968f, 1e-5f);
     EXPECT_NEAR(res.w[2], 1.27962887f, 1e-5f);
 
-    res = mat6->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat6->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat6->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 1.07706308f, 1e-5f);
     EXPECT_NEAR(res.w[1], 1.09061503f, 1e-5f);
     EXPECT_NEAR(res.w[2], 1.10157096f, 1e-5f);
 
-    res = mat7->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat7->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat7->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 1.19391644f, 1e-5f);
     EXPECT_NEAR(res.w[1], 1.0686053f, 1e-5f);
     EXPECT_NEAR(res.w[2], 1.04458189f, 1e-5f);
 
-    res = mat8->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &wi,
+    mat8->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = mat8->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
+                             &wi,
                              &pdf, true, &spec);
     EXPECT_NEAR(res.w[0], 1.3052932f, 1e-5f);
     EXPECT_NEAR(res.w[1], 1.18112957f, 1e-5f);
     EXPECT_NEAR(res.w[2], 1.07088006f, 1e-5f);
     MtlLib.clear();
     TexLib.clear();
+    delete r0;
+}
+
+SPECTRE_TEST(Parser, material_dualmaterial)
+{
+    Scene s;
+    Sphere sphere;
+    Matrix4 m;
+    Vec3 wi;
+    Spectrum res;
+    Normal shading_normal;
+    unsigned char association = 0;
+    m.set_translation(Vec3(-2, 0, 0));
+    Asset a(&sphere, m, 1);
+    Ray r(Point3(-2, -10, 0), Vec3(0, 1, 0));
+    HitPoint hit;
+    ShadingSpace matrix;
+    float distance = FLT_MAX;
+    wi = Vec3(0.f, 1.f, 0.f);
+    wi.normalize();
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    
+    ConfigDriver driver0;
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/dualmat.txt", &s);
+    ASSERT_TRUE(MtlLib.contains("Red"));
+    ASSERT_TRUE(MtlLib.contains("Blue"));
+    ASSERT_TRUE(MtlLib.contains("Inverted"));
+    ASSERT_TRUE(MtlLib.contains("Non-inverted"));
+    
+    const Bsdf* mat0 = MtlLib.get("Inverted");
+    a.set_materials((const Bsdf**)&mat0, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.131289f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.067696f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.006154f, 1e-5f);
+    
+    const Bsdf* mat1 = MtlLib.get("Non-inverted");
+    a.set_materials((const Bsdf**)&mat1, 1, &association);
+    EXPECT_TRUE(a.intersect(&r, &distance, &hit));
+    a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
+    res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
+    EXPECT_FALSE(res.is_black());
+    EXPECT_NEAR(res.w[0], 0.057435f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.022974f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.302491f, 1e-5f);
+    
     delete r0;
 }
 

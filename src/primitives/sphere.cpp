@@ -3,6 +3,24 @@
 
 #include "sphere.hpp"
 
+static inline void compute_uvs(const Point3* hit, HitPoint* ret)
+{
+    float phi = atan2f(hit->y, hit->x);
+    if(phi<0)phi += TWO_PI;
+    float theta = acosf(clamp(hit->z, -1.f, 1.f));
+    constexpr const float thetamin = ONE_PI; //arccos(-1);
+    constexpr const float thetamax = 0.f; //arccos(1);
+    constexpr const float thetad = (thetamax-thetamin);
+    constexpr const float inv_thetad = 1.f/thetad;
+    float invzrad = 1.f/sqrtf(hit->x*hit->x+hit->y*hit->y);
+    float cosphi = hit->x*invzrad;
+    float sinphi = hit->y*invzrad;
+    ret->uv = Point2(phi*INV_TWOPI, (theta-thetamin)*inv_thetad);
+    ret->dpdu = Vec3(-TWO_PI*hit->y, TWO_PI*hit->x, 0);
+    ret->dpdv = Vec3(hit->z*cosphi, hit->z*sinphi, -sinf(theta));
+    ret->dpdv *= thetad;
+}
+
 AABB Sphere::compute_AABB() const
 {
     const Point3 pmin(-1.f, -1.f, -1.f);
@@ -42,16 +60,17 @@ AABB Sphere::compute_AABB(const Matrix4* transform) const
     return AABB(&pmi, &pma);
 }
 
-bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit) const
+bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit,
+                       const MaskBoolean* mask) const
 {
 #ifdef DEBUG
     if(*distance<SELF_INTERSECT_ERROR)
         Console.severe("Intersection distance < 0");
 #endif
-    const Vec3 tmp(r->origin.x, r->origin.y, r->origin.z);
+    const Vec3 originVec(r->origin.x, r->origin.y, r->origin.z);
     float a = r->direction.dot(r->direction);
-    float b = 2*(r->direction.dot(tmp));
-    float c = tmp.dot(tmp)-1.f;
+    float b = 2*(r->direction.dot(originVec));
+    float c = originVec.dot(originVec)-1.f;
     float sol1;
     float sol2;
     if(equation2(a, b, c, &sol1, &sol2))
@@ -66,34 +85,65 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit) const
             if(sol2<SELF_INTERSECT_ERROR || *distance<sol2)
                 return false;               //already between sol1 and sol2
             else
-                *distance = sol2;
+            {
+                //only second solution can be considered valid
+                //write the valid one in the first and set second as NaN
+                //NaN will be used to indicate the mask that this is invalid
+                swap(&sol1, &sol2);
+                sol2 = NAN;
+            }
         }
-        else
+
+        //tmp because I cannot overwrite until 100% sure the hit happened
+        //here I need to generate uvs, and then test alpha masking
+        HitPoint tmp;
+        //intersection point BEFORE applying the shift if (x,y) == 0;
+        //the shift is applied to avoid a 0-length dpdu
+        Point3 hitp = r->apply(sol1);
+        tmp.point_h = hitp;
+        if(tmp.point_h.x == 0 && tmp.point_h.y == 0)//otherwise h->dpdu would be
+            tmp.point_h.x = SELF_INTERSECT_ERROR;   //a 0 length vector
+        tmp.du = hit->du;
+        tmp.dv = hit->dv;
+        tmp.differentials = hit->differentials;
+        compute_uvs(&(tmp.point_h), &tmp);
+        if(!mask->is_masked(&tmp))
+        {
+            //first hit is ok!
             *distance = sol1;
-        hit->point_h = r->apply(*distance);
-        Vec3 normal(hit->point_h.x, hit->point_h.y, hit->point_h.z);
-        hit->normal_h = Normal(normal);
-        if(hit->point_h.x == 0 && hit->point_h.y == 0)//otherwise h->dpdu
-        {                                             //would be a 0
-            hit->point_h.x = SELF_INTERSECT_ERROR; //-length vector
+            hit->point_h = tmp.point_h;
+            hit->uv = tmp.uv;
+            hit->dpdu = tmp.dpdu;
+            hit->dpdv = tmp.dpdv;
         }
+        else if(!std::isnan(sol2))
+        {
+            //repeat the procedure with second hit, first was invalidated
+            hitp = r->apply(sol2);
+            tmp.point_h = hitp;
+            if(tmp.point_h.x == 0 && tmp.point_h.y == 0)
+                tmp.point_h.x = SELF_INTERSECT_ERROR;
+            compute_uvs(&(tmp.point_h), &tmp);
+            if(!mask->is_masked(&tmp))
+            {
+                //second hit is ok!
+                *distance = sol2;
+                hit->point_h = tmp.point_h;
+                hit->uv = tmp.uv;
+                hit->dpdu = tmp.dpdu;
+                hit->dpdv = tmp.dpdv;
+            }
+            else //both hit were invalidated
+                return false;
+        }
+        else //only viable solution invalidated
+            return false;
+
+        //hit happened, but normal should stay unpolluted (no shift)
+        //otherwise normalization fucks everything up badly
+        Vec3 normal(hitp.x, hitp.y, hitp.z);
+        hit->normal_h = Normal(normal);
         hit->index = 0;
-        float phi = atan2f(hit->point_h.y, hit->point_h.x);
-        if(phi<0)phi += TWO_PI;
-        float theta = acosf(clamp(hit->point_h.z, -1.f, 1.f));
-        constexpr const float thetamin = ONE_PI; //arccos(-1);
-        constexpr const float thetamax = 0.f; //arccos(1);
-        constexpr const float thetad = (thetamax-thetamin);
-        constexpr const float denom = 1.f/thetad;
-        float invzrad = 1.f/sqrtf(hit->point_h.x*hit->point_h.x+
-                                  hit->point_h.y*hit->point_h.y);
-        float cosphi = hit->point_h.x*invzrad;
-        float sinphi = hit->point_h.y*invzrad;
-        hit->uv = Point2(phi*INV_TWOPI, (theta-thetamin)*denom);
-        hit->dpdu = Vec3(-TWO_PI*hit->point_h.y, TWO_PI*hit->point_h.x, 0);
-        hit->dpdv = Vec3(hit->point_h.z*cosphi, hit->point_h.z*sinphi,
-                         -sinf(theta));
-        hit->dpdv *= thetad;
         return true;
     }
     else

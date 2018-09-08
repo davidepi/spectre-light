@@ -3,13 +3,14 @@
 
 #include "png.h"
 
-char png_write(const char* name, int width, int height, const uint8_t* data)
+char png_write(const char* name, int width, int height, const uint32_t* data)
 {
     char retval = 0;
     const int COMPONENTS = 3;
     FILE* fout = fopen(name, "wb");
     if(fout != NULL)
     {
+        int x;
         int y;
         png_structp png_img;
         png_infop png_info;
@@ -18,7 +19,12 @@ char png_write(const char* name, int width, int height, const uint8_t* data)
         for(y = 0; y<height; y++)
         {
             rows[y] = (png_bytep)malloc(sizeof(png_bytep)*width*COMPONENTS);
-            memcpy(rows[y], data+y*width*COMPONENTS, width*COMPONENTS);
+            for(x = 0; x<width; x++)
+            {
+                rows[y][x*3+0] = (data[y*width+x] & 0x0000FF00) >> 8;
+                rows[y][x*3+1] = (data[y*width+x] & 0x00FF0000) >> 16;
+                rows[y][x*3+2] = (data[y*width+x] & 0xFF000000) >> 24;
+            }
         }
         png_img = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL,
                                           NULL);
@@ -82,7 +88,7 @@ char png_dimensions(const char* name, int* width, int* height)
     return retval;
 }
 
-char png_read(const char* name, uint8_t* values)
+char png_read(const char* name, uint32_t* values)
 {
     char retval = 0;
     FILE* fin = fopen(name, "rb");
@@ -98,6 +104,7 @@ char png_read(const char* name, uint8_t* values)
         int height;
         int color_type;
         int bpp;
+        int index_rgb;
         fread(header, 1, 8, fin);
         if(png_sig_cmp(header, 0, 8) == 0)
         {
@@ -135,24 +142,21 @@ char png_read(const char* name, uint8_t* values)
             for(y = 0; y<height; y++)
                 rows[y] = (png_byte*)malloc(sizeof(png_byte)*width*4);
             png_read_image(png_img, rows);
+            index_rgb = 0;
             for(y = 0; y<height; y++)
             {
                 for(x = 0; x<width; x++)
                 {
-                    int index_alpha = y*width+x;
-                    int index_rgb = index_alpha*3;
-                    values[index_rgb+0] = rows[y][x*4+0];
-                    values[index_rgb+1] = rows[y][x*4+1];
-                    values[index_rgb+2] = rows[y][x*4+2];
+                    values[index_rgb] = rows[y][x*4+3];
+                    values[index_rgb] |= rows[y][x*4+2] << 24;
+                    values[index_rgb] |= rows[y][x*4+1] << 16;
+                    values[index_rgb++] |= rows[y][x*4+0] << 8;
                 }
                 free(rows[y]);
             }
             free(rows);
             png_destroy_read_struct(&png_img, &png_info, NULL);
-            retval = 1;
-            if(color_type == PNG_COLOR_TYPE_GRAY_ALPHA ||
-               color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-                retval++;
+            retval = index_rgb == width*height;
         }
         fclose(fin);
     }

@@ -4,13 +4,12 @@
 #include "image_film.hpp"
 
 ImageFilm::ImageFilm(int width, int height, const char* fullpath)
-        :width(width), height(height), output(fullpath)
+        :width(width), height(height), buffer(max(width, height)),
+         output(fullpath)
 {
     ImageFilm::filter = NULL;
     //allocate image
-    ImageFilm::buffer = (Pixel*)malloc(sizeof(Pixel)*width*height);
-    //set as zero, I need to have number of samples = 0 for every pixel
-    memset(ImageFilm::buffer, 0, sizeof(Pixel)*width*height);
+    buffer.zero_out();
     if(output.exists() && output.is_folder())
     {
         Console.critical(MESSAGE_OUTPUT_ISFOLDER);
@@ -42,12 +41,6 @@ ImageFilm::ImageFilm(int width, int height, const char* fullpath)
     }
     else
         Console.critical(MESSAGE_W_DENIED, parent_folder.absolute_path());
-}
-
-ImageFilm::~ImageFilm()
-{
-    if(ImageFilm::buffer != NULL)
-        free(ImageFilm::buffer);
 }
 
 void ImageFilm::add_pixel(const Sample* sample, ColorXYZ color,
@@ -90,11 +83,12 @@ void ImageFilm::add_pixel(const Sample* sample, ColorXYZ color,
             else
             {
                 //no chance that other threads will write this pixel, insta add
-                Pixel* val = buffer+(width*y+x);
-                val->cie_x += color.r*weight;
-                val->cie_y += color.g*weight;
-                val->cie_z += color.b*weight;
-                val->samples += weight;
+                Pixel val = buffer.get(x, y);
+                val.cie_x += color.r*weight;
+                val.cie_y += color.g*weight;
+                val.cie_z += color.b*weight;
+                val.samples += weight;
+                buffer.set(x, y, val);
             }
         }
 }
@@ -104,7 +98,7 @@ void ImageFilm::add_pixel_deferred(ExecutorData* secure_area)
     //try to gain the lock
     if(mtx.try_lock())
     {
-        Pixel* value;
+        Pixel value;
         TodoPixel pixel_toadd;
         //until the pixel not in the secure area are finished
         while(!secure_area->deferred.empty())
@@ -112,11 +106,12 @@ void ImageFilm::add_pixel_deferred(ExecutorData* secure_area)
             //add the current pixel, since I have the lock
             pixel_toadd = secure_area->deferred.top();
             secure_area->deferred.pop();
-            value = buffer+(width*pixel_toadd.y+pixel_toadd.x);
-            value->cie_x += pixel_toadd.cie_x;
-            value->cie_y += pixel_toadd.cie_y;
-            value->cie_z += pixel_toadd.cie_z;
-            value->samples += pixel_toadd.samples;
+            value = buffer.get(pixel_toadd.x, pixel_toadd.y);
+            value.cie_x += pixel_toadd.cie_x;
+            value.cie_y += pixel_toadd.cie_y;
+            value.cie_z += pixel_toadd.cie_z;
+            value.samples += pixel_toadd.samples;
+            buffer.set(pixel_toadd.x, pixel_toadd.y, value);
         }
         mtx.unlock();
     }
@@ -124,7 +119,7 @@ void ImageFilm::add_pixel_deferred(ExecutorData* secure_area)
 
 void ImageFilm::add_pixel_forced(ExecutorData* secure_area)
 {
-    Pixel* value;
+    Pixel value;
     TodoPixel pixel_toadd;
 
     //last chance to add the pixel, now I need the lock at any cost
@@ -134,11 +129,12 @@ void ImageFilm::add_pixel_forced(ExecutorData* secure_area)
     {
         pixel_toadd = secure_area->deferred.top();
         secure_area->deferred.pop();
-        value = buffer+(width*pixel_toadd.y+pixel_toadd.x);
-        value->cie_x += pixel_toadd.cie_x;
-        value->cie_y += pixel_toadd.cie_y;
-        value->cie_z += pixel_toadd.cie_z;
-        value->samples += pixel_toadd.samples;
+        value = buffer.get(pixel_toadd.x, pixel_toadd.y);
+        value.cie_x += pixel_toadd.cie_x;
+        value.cie_y += pixel_toadd.cie_y;
+        value.cie_z += pixel_toadd.cie_z;
+        value.samples += pixel_toadd.samples;
+        buffer.set(pixel_toadd.x, pixel_toadd.y, value);
     }
     mtx.unlock();
 }
@@ -150,30 +146,37 @@ void ImageFilm::set_filter(Filter* f)
 
 bool ImageFilm::save_image()
 {
-    uint8_t* rgb_buffer = (uint8_t*)malloc(
-            ImageFilm::width*ImageFilm::height*3);
+    uint32_t* rgb_buff = (uint32_t*)malloc(sizeof(uint32_t)*width*height);
     unsigned int i = 0;
     ColorRGB rgb;
     //use scale stored colour and output as .ppm
-    for(int j = 0; j<ImageFilm::width*ImageFilm::height; j++)
+    for(int y = 0; y<ImageFilm::height; y++)
     {
-        if(buffer[j].samples>0.f) //if at least one sample
+        for(int x = 0; x<ImageFilm::width; x++)
         {
-            float weight = 1.f/buffer[j].samples;
-            rgb = ColorXYZ(buffer[j].cie_x*weight,
-                           buffer[j].cie_y*weight,
-                           buffer[j].cie_z*weight).to_sRGB();
+            Pixel value = buffer.get(x, y);
+            if(value.samples>0.f) //if at least one sample
+            {
+                float weight = 1.f/value.samples;
+                rgb = ColorXYZ(value.cie_x*weight,
+                               value.cie_y*weight,
+                               value.cie_z*weight).to_sRGB();
+            }
+            else
+                rgb = ColorRGB(0.f, 0.f, 0.f);
+            //convert float color to BGRA color
+            rgb_buff[i] = 0x000000FF;
+            rgb_buff[i] |=
+                    (uint32_t)::min((::max(0.f, rgb.r)*0xFF), 255.0f) << 8;
+            rgb_buff[i] |=
+                    (uint32_t)::min((::max(0.f, rgb.g)*0xFF), 255.0f) << 16;
+            rgb_buff[i] |=
+                    (uint32_t)::min((::max(0.f, rgb.b)*0xFF), 255.0f) << 24;
+            i++;
         }
-        else
-            rgb = ColorRGB(0.f, 0.f, 0.f);
-        rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.r)*0xFF), 255.0f);
-        rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.g)*0xFF), 255.0f);
-        rgb_buffer[i++] = (uint8_t)::min((::max(0.f, rgb.b)*0xFF), 255.0f);
     }
-    free(ImageFilm::buffer);
-    ImageFilm::buffer = NULL;
     bool retval = img_write(output.absolute_path(), output.extension(),
-                            width, height, rgb_buffer);
-    free(rgb_buffer);
+                            width, height, rgb_buff);
+    free(rgb_buff);
     return retval;
 }

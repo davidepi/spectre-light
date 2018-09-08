@@ -1,6 +1,6 @@
 #include "texture_image.hpp"
 
-TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
+TextureImage::TextureImage(const File& src, Vec2& shift, Vec2& scale,
                            TextureFilter_t filter):scale(scale), shift(shift)
 {
     unfiltered = filter == UNFILTERED;
@@ -18,38 +18,45 @@ TextureImage::TextureImage(const File& src, Vec2& scale, Vec2& shift,
                            &width, &height);
             if(width == height && (height & (height-1)) == 0) //power of 2
             {
-                uint8_t* data = (uint8_t*)malloc(width*height*3);
-                img_read8(src.absolute_path(), src.extension(), data, NULL);
+                uint32_t* bgra_data = (uint32_t*)malloc(width*height*sizeof
+                        (uint32_t));
+                img_read8(src.absolute_path(), src.extension(), bgra_data);
                 switch(filter)
                 {
                     case UNFILTERED:
-                        imagemap = new ImageMapUnfiltered(data, width);
+                        imagemap = new ImageMapUnfiltered(bgra_data, width);
                         break;
                     case TRILINEAR:
-                        imagemap = new ImageMapTrilinear(data, width);
+                        imagemap = new ImageMapTrilinear(bgra_data, width);
                         break;
-                    case EWA:imagemap = new ImageMapEWA(data, width);
+                    case EWA:imagemap = new ImageMapEWA(bgra_data, width);
                         break;
                 }
-                free(data);
+                free(bgra_data);
                 TexLib.inherit_map(src.absolute_path(), imagemap);
             }
             else
             {
                 Console.warning(MESSAGE_TEXTURE_POWER2, src.absolute_path());
-                imagemap = TexLib.get_map("Default");
+                imagemap = TexLib.get_dflt_map();
             }
         }
         else
         {
             //should be checked by parser
             Console.warning(MESSAGE_TEXTURE_ERROR, src.absolute_path());
-            imagemap = TexLib.get_map("Default");
+            imagemap = TexLib.get_dflt_map();
         }
     }
 }
 
-Spectrum TextureImage::map(const HitPoint* hit) const
+TextureImage::TextureImage(const ImageMap* map, Vec2& shift, Vec2& scale,
+                           bool unfiltered):scale(scale), shift(shift),
+                                            unfiltered(unfiltered),
+                                            imagemap(map)
+{}
+
+TexelUnion TextureImage::map_value(const HitPoint* hit) const
 {
     float u = hit->uv.x*scale.x+shift.x;
     float v = hit->uv.y*scale.y+shift.y;
@@ -60,7 +67,7 @@ Spectrum TextureImage::map(const HitPoint* hit) const
     if(v>1.f)
         v = v-(int)v;
 
-    ColorRGB res;
+    TexelUnion res;
     if(unfiltered)
     {
         res = imagemap->filter(u, v, 0, 0, 0, 0);
@@ -81,7 +88,12 @@ Spectrum TextureImage::map(const HitPoint* hit) const
             res = imagemap->filter(u, v, 0, 0, 0, 0);
         }
     }
-    return Spectrum(res, false);
+    return res;
+}
+
+Spectrum TextureImage::map(const HitPoint* hit) const
+{
+    return Spectrum(map_value(hit).bgra_value, false);
 }
 
 Vec2 TextureImage::get_shift() const

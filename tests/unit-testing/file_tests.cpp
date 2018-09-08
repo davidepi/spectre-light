@@ -6,7 +6,9 @@
 #include "windows.h"
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "utility/file.hpp"
@@ -451,9 +453,21 @@ SPECTRE_TEST(File, list_files)
     f1.ls(&res);
     EXPECT_TRUE(res.empty());
 
+//check the super long file
+#ifndef WIN32
+#define  FILENAME TEST_ASSETS "/empty_file_used_just_to_reach_the_limit_of_"\
+            "255_characters_and_force_a_realloc_of_the_buffer_in_the_tested_"\
+            "file_class.____________________________________________________"\
+            "_______________________________________________________________"\
+            "_______________________"
+    FILE* fin = fopen(FILENAME, "w");
+    ASSERT_PTR_NE(fin, NULL);
     File f2(TEST_ASSETS);
     f2.ls(&res);
-    EXPECT_EQ(res.size(), (size_t)3);
+    EXPECT_EQ(res.size(), (size_t)4);
+    int removed = unlink(FILENAME);
+    EXPECT_EQ(removed, 0);
+#endif
 }
 
 SPECTRE_TEST(File, is_absolute_inline)

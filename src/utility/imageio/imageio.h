@@ -1,5 +1,5 @@
 /*  Created,  16 Jul 2018   */
-/*  Last Edit 21 Jul 2018   */
+/*  Last Edit  4 Aug 2018   */
 
 /**
  *  \file imageio.h
@@ -8,7 +8,7 @@
  *  functions
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 18 Jul 2018
+ *  \date 4 Aug 2018
  *  \copyright MIT
  */
 
@@ -37,6 +37,33 @@
 
 #endif
 
+/** Never forget channel order! */
+typedef uint32_t pixBGRA;
+
+/** Red channel mask in a BGRA uint32_t number */
+#define BGRA_RED_MASK 0x0000FF00
+
+/** Green channel mask in a BGRA uint32_t number */
+#define BGRA_GREEN_MASK 0x00FF0000
+
+/** Blue channel mask in a BGRA uint32_t number */
+#define BGRA_BLUE_MASK 0xFF000000
+
+/** Alpha channel mask in a BGRA uint32_t number */
+#define BGRA_ALPHA_MASK 0x000000FF
+
+/** Get the Red channel value */
+#define BGRA_RED(x) ((x & BGRA_RED_MASK)>>8)
+
+/** Get the Green channel value */
+#define BGRA_GREEN(x) ((x & BGRA_GREEN_MASK)>>16)
+
+/** Get the Blue channel value */
+#define BGRA_BLUE(x) ((x & BGRA_BLUE_MASK)>>24)
+
+/** Get the Alpha channel value */
+#define BGRA_ALPHA(x) ((x & BGRA_ALPHA_MASK))
+
 /**
  *  \brief Writes an image in a generic format
  *
@@ -47,13 +74,14 @@
  *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
  *  \param[in] width Width of the image
  *  \param[in] height Height of the image
- *  \param[in] data Image data, as an array of size width*height*3 with
- *  uint8_t values in range [0-255] ordered top-down left-right and channels
- *  as RGBRGB...
+ *  \param[in] data Image data, as an array of size width*height with
+ *  uint32_t values containing the representation of a pixel. Each pixel is
+ *  composed of four values in range [0-255] ordered top-down left-right and
+ *  ordered as 0xBBGGRRAA
  *  \return 1 if the image was successfully written, 0 otherwise
  */
 char img_write(const char* name, const char* ext, int width, int height,
-               const uint8_t* data);
+               const pixBGRA* data);
 
 /**
  *  \brief Checks if an image header is valid
@@ -90,25 +118,19 @@ char img_dimensions(const char* name, const char* ext,
  *  This method reads an image from the disk and writes the read data in the
  *  given array. If the input image has a depth higher than 8 bit per pixel
  *  it will be converted. The values array should be already allocated with a
- *  size of width*height*3. Values will be written as uint8_t in range
- *  [0-255] in top-down left-right order and channel as RGBRGB...
- *  If the image contains an alpha channel it will be written in the alpha
- *  array, provided it is not NULL. The alpha array size should be width*height
+ *  size of width*height. Values will be written as uint32_t composed by four
+ *  values in range [0-255], in top-down left-right order. The four channels are
+ *  ordered as 0xBBGGRRAA.
  *
  *  \param[in] name Path of the image on disk
  *  \param[in] ext Extension of the image, like "bmp" or "tga", without dot
- *  \param[in] values Array of size width*height*3 that will contain every
+ *  \param[in] values Array of size width*height that will contain every
  *  image value in range [0-255], top-down left-right order with channel as
- *  RGBRGB...
- *  \param[out] alpha Array of size width*height containing the alpha channel
- *  of the image, unused if the image has no alpha channel. If this is NULL
- *  and the image has an alpha channel, the channel is discarded
- *  \return 0 if the function encountered any kind of errors, 1 if the image
- *  was successfully read and didn't have an alpha channel, 2 if the image
- *  was successfully read and had an alpha channel
+ *  BGRA. Each pixel is an uint32_value composed of the four BGRA channels.
+ *  \return 0 if the function encountered any kind of errors, 1 if the read was
+ *  completed successfully
  */
-char img_read8(const char* name, const char* ext, uint8_t* values,
-               uint8_t* alpha);
+char img_read8(const char* name, const char* ext, pixBGRA* values);
 
 /**
  * \brief Checks if this library can handle the image
@@ -121,6 +143,26 @@ char img_read8(const char* name, const char* ext, uint8_t* values,
  * \return 1 if the library can handle the given kind of images, 0 otherwise
  */
 char img_supported(const char* ext);
+
+/**
+ *  \brief Converts a 0xBBGGRRAA array to an RGB one
+ *
+ *  \param[out] out An array of size len*3, already allocated, that will hold
+ *  the RGB values extracted from the 0xBBGGRRAA one
+ *  \param[in] in The array that will be converted
+ *  \param[in] len The length of the input array
+ */
+void BGRAtoRGB(uint8_t* out, const uint32_t* in, size_t len);
+
+/**
+ *  \brief Converts an RGB array to a 0xBBGGRRAA one
+ *
+ *  \param[out] out An array of size len/3, already allocated, that will hold
+ *  the BGRA values extracted from the RGB one. Alpha will always be 255.
+ *  \param[in] in The array that will be converted
+ *  \param[in] len The length of the input array
+ */
+void RGBtoBGRA(uint32_t* out, const uint8_t* in, size_t len);
 
 /*
  Maybe this will be readded in future

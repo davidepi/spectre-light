@@ -14,6 +14,7 @@
     #include "geometry/vec3.hpp"
     #include "geometry/vec2.hpp"
     #include "materials/metals.hpp"
+    #include "textures/mask_boolean.hpp"
     class ConfigDriver;
 }
 %param{ ConfigDriver& driver }
@@ -76,6 +77,7 @@
 %token SHIFT "`shift` keyword"
 %token COLOR "`color` keyword"
 %token MATERIAL "`material` keyword"
+%token DUALMATERIAL "`dualmaterial` keyword"
 %token TEXTURE "`texture` keyword"
 %token ANISOTROPY "`anisotropy` keyword"
 %token BECKMANN "`beckmann` keyword"
@@ -91,8 +93,18 @@
 %token METAL "`metal keyword"
 %token ROUGHNESS "`roughness` keyword"
 %token SPECULAR "`specular` keyword"
+/* %token BUMP "`bump` keyword" */
+%token NORMAL "`normal` keyword"
 %token SRC "`src` keyword"
 %token PATH_TRACE "`path` keyword"
+%token CHNR "Red channel attribute"
+%token CHNG "Green channel attribute"
+%token CHNB "Blue channel attribute"
+%token CHNA "Alpha channel attribute"
+%token INV "inverted attribute"
+%token MASK "`mask` keyword"
+%token FIRST "`first` keyword"
+%token SECOND "`second` keyword"
 %token SILVER "`Ag`"
 %token ALUMINIUM "`Al`"
 %token GOLD "`Au`"
@@ -133,6 +145,7 @@
 %type <int> integer
 %type <Vec3> vector
 %type <Vec2> vector2
+%type <ImageChannel> channel
 
 %%
 
@@ -158,6 +171,7 @@ stmt
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON STRING {driver.children.push_back($3.substr(1,$3.size()-2));}
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU {driver.deferred_materials.push_back(driver.cur_mat);driver.cur_mat=ParsedMaterial();}
+| DUALMATERIAL COLON OPEN_CU dualmaterial_obj CLOSE_CU {driver.deferred_dualmats.push_back(driver.cur_dualmat);driver.cur_dualmat = ParsedDualMaterial();}
 | COMMA
 ;
 
@@ -204,6 +218,8 @@ world_stmt
 | SCALE COLON vector {driver.cur_mesh.scale = $3;}
 | SCALE COLON number {driver.cur_mesh.scale = $3;}
 | MATERIAL COLON STRING {driver.cur_mesh.material_name = $3.substr(1,$3.size()-2);}
+| MASK COLON STRING {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2); driver.cur_mesh.mask = driver.cur_mask;driver.cur_mask = ParsedMask();}
+| MASK COLON STRING attributes {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_mesh.mask = driver.cur_mask;driver.cur_mask = ParsedMask();}
 | COMMA
 ;
 
@@ -257,7 +273,25 @@ material_stmt
 | DIFFUSE COLON vector {driver.tex_color = $3; driver.cur_mat.diffuse_uniform = driver.load_texture_uniform();}
 | SPECULAR COLON STRING {driver.cur_mat.specular = $3.substr(1,$3.size()-2);}
 | SPECULAR COLON vector {driver.tex_color = $3; driver.cur_mat.specular_uniform = driver.load_texture_uniform();}
+/* | BUMP COLON STRING {driver.cur_mat.bump = $3.substr(1,$3.size()-2); driver.cur_mat.bump_is_normal = false;} */
+| NORMAL COLON STRING {driver.cur_mat.bump = $3.substr(1,$3.size()-2); /* driver.cur_mat.bump_is_normal = true; */}
 | ELEM COLON element {driver.cur_mat.elem = $3;}
+| COMMA
+;
+
+dualmaterial_obj
+: NAME COLON STRING dualmaterial_rec {driver.cur_dualmat.name = $3.substr(1,$3.size()-2);}
+| dualmaterial_rec NAME COLON STRING {driver.cur_dualmat.name = $4.substr(1,$4.size()-2);}
+| dualmaterial_rec NAME COLON STRING dualmaterial_rec {driver.cur_dualmat.name = $4.substr(1,$4.size()-2);}
+| NAME COLON STRING {driver.cur_dualmat.name = $3.substr(1,$3.size()-2);}
+;
+
+dualmaterial_rec: dualmaterial_rec dualmaterial_stmt | dualmaterial_stmt;
+dualmaterial_stmt
+: FIRST COLON STRING {driver.cur_dualmat.first = $3.substr(1,$3.size()-2);}
+| SECOND COLON STRING {driver.cur_dualmat.second = $3.substr(1,$3.size()-2);}
+| MASK COLON STRING {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_dualmat.mask = driver.cur_mask; driver.cur_mask = ParsedMask();}
+| MASK COLON STRING attributes {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_dualmat.mask = driver.cur_mask; driver.cur_mask = ParsedMask();}
 | COMMA
 ;
 
@@ -294,6 +328,20 @@ element
 | VANADIUM {$$ = METAL_VANADIUM; }
 | ZINC {$$ = METAL_ZINC; }
 | ZIRCONIUM {$$ = METAL_ZIRCONIUM; }
+;
+
+attributes: attributes attribute | attribute;
+
+attribute
+: channel {driver.cur_mask.mask_chn = $1;}
+| INV {driver.cur_mask.mask_inv = true;}
+;
+
+channel
+: CHNR  {$$ = RED;}
+| CHNG  {$$ = GREEN;}
+| CHNB  {$$ = BLUE;}
+| CHNA  {$$ = ALPHA;}
 ;
 
 vector:

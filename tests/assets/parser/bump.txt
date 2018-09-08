@@ -1,0 +1,8 @@
+material:{
+  name: "With normal map"
+  normal: "../images/black.bmp"
+}
+
+material:{
+  name: "No bump"
+}

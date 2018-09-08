@@ -20,15 +20,19 @@
 #include <string> //std::wstring, std::string
 #include <iostream> //std::wcout, std::cout
 #include <cstdarg> //va_start, va_end
+
 #ifdef _WIN32
 #include <conio.h> //_getch()
 #endif
 
 ///Version of the software
-#define SPECTRE_VERSION "0.1.2 (dev)"
-
-///Release date of this version
-#define SPECTRE_RELEASE "(Unreleased)"
+#define SPECTRE_VERSION_MAJOR "0.2.0"
+#if defined(GIT_COMMIT_HASH) && defined (GIT_COMMIT_NO) && defined(GIT_BRANCH)
+#define SPECTRE_VERSION SPECTRE_VERSION_MAJOR  " build " GIT_COMMIT_NO " (" \
+        GIT_COMMIT_HASH ")"
+#else
+#define SPECTRE_VERSION SPECTRE_VERSION_MAJOR
+#endif
 
 /**
  * \class Console Console.hpp "utility/console.hpp"

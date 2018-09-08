@@ -47,6 +47,8 @@
     if(actual!=expected){FAIL();}
 #define ASSERT_PTR_EQ(actual,expected) \
     if(actual!=expected){FAIL();}
+#define ASSERT_PTR_NE(actual, expected) \
+    if(actual==expected){FAIL();}
 #define ASSERT_ANY_THROW(actual); \
     try{actual;XCTAssertTrue(false);}catch(const char* m){}
 #elif defined(__VS__)
@@ -78,6 +80,7 @@ namespace tests \
 #define ASSERT_FALSE(X) if(X){FAIL();}
 #define ASSERT_EQ(x,y) if(x!=y){FAIL();}
 #define ASSERT_PTR_EQ(x,y) if(x!=y){FAIL();}
+#define ASSERT_PTR_NE(x,y) if(x==y){FAIL();}
 #define ASSERT_ANY_THROW(x) try{x;Assert::Fail();}catch(const char* m){}
 #else
 #define SPECTRE_TEST_INIT(CLASSNAME)
@@ -88,5 +91,6 @@ namespace tests \
 #define EXPECT_PTR_NULL(x) EXPECT_EQ(x,nullptr)
 #define EXPECT_PTR_NOTNULL(x) EXPECT_NE(x,nullptr)
 #define ASSERT_PTR_EQ(x,y) if(x!=y){FAIL();}
+#define ASSERT_PTR_NE(x,y) if(x==y){FAIL();}
 #endif
 

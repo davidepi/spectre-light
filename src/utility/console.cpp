@@ -43,9 +43,16 @@ Console::Console()
 
 void Console::motd()
 {
+#ifdef _MSC_VER
+    //this trick is necessary since _MSC_VER is an integer
+    //#_MSC_VER does not seem to work
+#define COMPILER_NAME "MS Visual C++"
+    char COMPILER_VERSION[6];
+    snprintf(COMPILER_VERSION, 6, "%02d.%02d", _MSC_VER/100, _MSC_VER%100);
+#endif
 #ifndef SUPPRESS_MOTD
-    fprintf(stdout, "Spectre version %s\nReleased on %s, compiled on %s\n",
-            SPECTRE_VERSION, SPECTRE_RELEASE, __DATE__);
+    fprintf(stdout, "Spectre version %s\nCompiled with %s version %s on %s\n",
+           SPECTRE_VERSION, COMPILER_NAME, COMPILER_VERSION, __DATE__);
 #ifdef DEBUG
     fprintf(stdout, MESSAGE_DEBUG "\n");
 #endif

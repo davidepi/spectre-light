@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "materials/material_library.hpp"
@@ -14,13 +16,13 @@ SPECTRE_TEST_INIT(MaterialLibrary_tests)
 
 SPECTRE_TEST(MaterialLibrary, add)
 {
-    Bsdf* mat = new Bsdf;
+    Bsdf* mat = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("New", mat);
     const Bsdf* got = MtlLib.get("New");
     EXPECT_PTR_EQ((const Bsdf*)mat, got);
 
     //add different with same name
-    Bsdf* mat3 = new Bsdf;
+    Bsdf* mat3 = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("New", mat3);
     const Bsdf* got3 = MtlLib.get("New");
     EXPECT_PTR_NE(got3, mat3);
@@ -29,7 +31,7 @@ SPECTRE_TEST(MaterialLibrary, add)
 
 SPECTRE_TEST(MaterialLibrary, remove)
 {
-    Bsdf* mat = new Bsdf;
+    Bsdf* mat = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("Removeme", mat);
     const Bsdf* got = MtlLib.get("Removeme");
     ASSERT_PTR_EQ(mat, got);
@@ -52,7 +54,7 @@ SPECTRE_TEST(MaterialLibrary, remove)
 
 SPECTRE_TEST(MaterialLibrary, contains)
 {
-    Bsdf* mat = new Bsdf;
+    Bsdf* mat = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("Contained", mat);
     bool res = MtlLib.contains("Contained");
     EXPECT_TRUE(res);
@@ -63,11 +65,11 @@ SPECTRE_TEST(MaterialLibrary, contains)
 
 SPECTRE_TEST(MaterialLibrary, clear)
 {
-    Bsdf* mat = new Bsdf();
+    Bsdf* mat = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("Removeme", mat);
-    Bsdf* mat2 = new Bsdf();
+    Bsdf* mat2 = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("Removeme2", mat2);
-    Bsdf* mat3 = new Bsdf();
+    Bsdf* mat3 = new SingleBRDF(new Lambertian());
     MtlLib.add_inherit("Removeme3", mat3);
 
     const Bsdf* got;

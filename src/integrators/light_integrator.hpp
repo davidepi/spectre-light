@@ -53,10 +53,11 @@ public:
      */
     virtual Spectrum radiance(const Scene* scene, const HitPoint* hit,
                               const Ray* ray, Sampler* sampler,
-                              OcclusionTester* visibility)const = 0;
+                              OcclusionTester* visibility) const = 0;
 
     ///Default destructor
-    virtual ~LightIntegrator(){};
+    virtual ~LightIntegrator()
+    {};
 };
 
 #endif

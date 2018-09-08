@@ -103,13 +103,16 @@ SPECTRE_TEST(Consolet, critical_vargs)
 SPECTRE_TEST(Consolet, progress_bar)
 {
     //just for coverage, changes here are pretty evident
-//    Console.progress_bar(0.5,300);
+    Console.progress_bar(0.5,300);
+    printf("\n");
+    EXPECT_TRUE(true);
 }
 
 SPECTRE_TEST(Consolet, progress_bar_done)
 {
     //just for coverage, changes here are pretty evident
     Console.progress_bar_done();
+    EXPECT_TRUE(true);
 }
 
 SPECTRE_TEST_END(Consolet_tests)
