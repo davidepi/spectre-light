@@ -262,7 +262,7 @@
       <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;_DEBUG;X64;_CONSOLE;COMPILER_NAME="MS Visual C++";COMPILER_VERSION=_MSC_FULL_VER;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;SPECTRAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;_DEBUG;X64;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;SPECTRAL</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -288,7 +288,7 @@
       <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;_DEBUG;X64;_CONSOLE;COMPILER_NAME="MS Visual C++";COMPILER_VERSION=_MSC_FULL_VER;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG;_DEBUG;X64;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -316,7 +316,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;COMPILER_NAME="MS Visual C++";COMPILER_VERSION=_MSC_FULL_VER;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;SPECTRAL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;SPECTRAL</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
@@ -351,7 +351,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;COMPILER_NAME="MS Visual C++";COMPILER_VERSION=_MSC_FULL_VER;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
       <LanguageStandard>stdcpp14</LanguageStandard>
