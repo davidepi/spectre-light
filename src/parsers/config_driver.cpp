@@ -703,3 +703,9 @@ MaskBoolean ConfigDriver::build_mask(const ParsedMask& mask)
     }
     return MaskBoolean(map, mask.mask_chn, mask.mask_inv);
 }
+
+ParsedMask::ParsedMask()
+{
+    mask_inv = false;
+    mask_chn = ALPHA;
+}

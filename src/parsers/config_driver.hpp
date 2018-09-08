@@ -153,6 +153,9 @@ public:
 
     ///true if the texture used as mask should be inverted
     bool mask_inv;
+
+    ///default constructor of parsed mask
+    ParsedMask();
 };
 
 ///Class used to represent a mesh in WorldSpace. Called Asset in the renderer
