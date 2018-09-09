@@ -102,7 +102,7 @@ public:
      *
      *  \param[in] addme The Arealight that will be added
      */
-    void inherit_arealight(const AreaLight* addme);
+    void inherit_arealight(const LightArea* addme);
 
     /**
      *  \brief Adds a Light to the scene

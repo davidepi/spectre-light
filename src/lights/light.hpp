@@ -6,7 +6,7 @@
  *  \brief     Interface for light emitting probes and objects
  *  \author    Davide Pizzolotto
  *  \version   0.1
- *  \date      30 Mar 2018
+ *  \date      9 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,12 @@
 #include "utility/spectrum.hpp"
 #include "geometry/ray.hpp"
 
+/**
+ *  \brief Interface for light emitting probes.
+ *
+ *  This class exposed the various method that must be implemented in order
+ *  to classify any subclasses as "Light".
+ */
 class Light
 {
 public:
@@ -105,10 +111,20 @@ public:
      */
     virtual float pdf(const Point3* p, const Vec3* wi) const = 0;
 
+    /**
+     *  \brief Returns true if the light can be rendered
+     *
+     *  This method returns true if the light can be seen while rendering
+     *  (an example of this are LightArea, while LightOmni are an example of
+     *  not renderable lights, since they are infinitely small)
+     *
+     *  \return true if the light can be rendered. false otherwise
+     */
+    virtual bool renderable()const = 0;
+
 protected:
 
     const Spectrum c;
 };
-
 
 #endif

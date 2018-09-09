@@ -19,7 +19,7 @@ SPECTRE_TEST(Light, AreaLight_is_light)
     Sphere s;
     Matrix4 m;
     m.set_identity();
-    AreaLight light(&s, m, SPECTRUM_ONE);
+    LightArea light(&s, m, SPECTRUM_ONE);
     EXPECT_TRUE(light.is_light());
 }
 
@@ -28,7 +28,7 @@ SPECTRE_TEST(Light, AreaLight_emissive_spectrum)
     Sphere s;
     Matrix4 m;
     m.set_identity();
-    AreaLight light(&s, m, SPECTRUM_ONE);
+    LightArea light(&s, m, SPECTRUM_ONE);
     Spectrum res = light.emissive_spectrum();
     EXPECT_NEAR(res.w[0], 1.f, 1e-5f);
     EXPECT_NEAR(res.w[1], 1.f, 1e-5f);
@@ -40,7 +40,7 @@ SPECTRE_TEST(Light, AreaLight_sample_surface)
     Sphere s;
     Matrix4 m;
     m.set_identity();
-    AreaLight light(&s, m, SPECTRUM_ONE);
+    LightArea light(&s, m, SPECTRUM_ONE);
     Ray out_ray;
     float pdf = 0.f;
     Spectrum res;
@@ -65,7 +65,7 @@ SPECTRE_TEST(Light, AreaLight_pdf_surface)
     Sphere s;
     Matrix4 m;
     m.set_identity();
-    AreaLight light(&s, m, SPECTRUM_ONE);
+    LightArea light(&s, m, SPECTRUM_ONE);
     Ray ray(Point3(-1.f, 0.f, 0.f), Vec3(-0.302774f, 0.931841f, 0.200000f));
     float pdf = light.pdf(&ray);
     EXPECT_NEAR(pdf, 0.012665147f, 1e-5f);
@@ -76,7 +76,7 @@ SPECTRE_TEST(Light, AreaLight_sample_visible_surface)
     Sphere s;
     Matrix4 m;
     m.set_identity();
-    AreaLight light(&s, m, SPECTRUM_ONE);
+    LightArea light(&s, m, SPECTRUM_ONE);
     Vec3 wi;
     Point3 pos;
     Spectrum res;
@@ -118,7 +118,7 @@ SPECTRE_TEST(Light, AreaLight_pdf_surface_visible)
     Sphere s;
     Matrix4 m;
     m.set_identity();
-    AreaLight light(&s, m, SPECTRUM_ONE);
+    LightArea light(&s, m, SPECTRUM_ONE);
     Vec3 wi;
     Point3 pos;
     float pdf;

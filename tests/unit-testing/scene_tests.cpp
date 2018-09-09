@@ -54,7 +54,7 @@ SPECTRE_TEST(Scene, inherit_light)
     Sphere* sphere = new Sphere();
     Matrix4 transform;
     transform.set_identity();
-    Asset* addme1 = new AreaLight(sphere, transform, Spectrum(1500));
+    Asset* addme1 = new LightArea(sphere, transform, Spectrum(1500));
     EXPECT_EQ(scene.size_assets(), (unsigned int)0);
     EXPECT_EQ(scene.size_lights(), (unsigned int)0);
     scene.inherit_shape(sphere);
@@ -62,26 +62,26 @@ SPECTRE_TEST(Scene, inherit_light)
     EXPECT_EQ(scene.size_assets(), (unsigned int)1);
     EXPECT_EQ(scene.size_lights(), (unsigned int)0);
 
-    Asset* addme2 = new AreaLight(sphere, transform, Spectrum(1500));
-    scene.inherit_arealight((AreaLight*)addme2);
+    Asset* addme2 = new LightArea(sphere, transform, Spectrum(1500));
+    scene.inherit_arealight((LightArea*)addme2);
     EXPECT_EQ(scene.size_assets(), (unsigned int)2);
     EXPECT_EQ(scene.size_lights(), (unsigned int)1);
 
     //don't add duplicates
     for(int i = scene.size_lights(); i<_MAX_LIGHTS_; i++)
-        scene.inherit_arealight((AreaLight*)addme1);
+        scene.inherit_arealight((LightArea*)addme1);
     EXPECT_EQ(scene.size_assets(), (unsigned int)2);
     EXPECT_EQ(scene.size_lights(), (unsigned int)1);
 
     //fill all lights
     for(int i = scene.size_lights(); i<_MAX_LIGHTS_; i++)
         scene.inherit_arealight(
-                new AreaLight(sphere, transform, Spectrum(1500)));
+                new LightArea(sphere, transform, Spectrum(1500)));
     EXPECT_EQ(scene.size_lights(), (unsigned int)_MAX_LIGHTS_);
 
     //add extra light
     errors_count[WARNING_INDEX] = 0;
-    AreaLight* last_light = new AreaLight(sphere, transform, Spectrum(1500));
+    LightArea* last_light = new LightArea(sphere, transform, Spectrum(1500));
     scene.inherit_arealight(last_light);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
@@ -93,10 +93,10 @@ SPECTRE_TEST(Scene, get_lights)
     Sphere* sphere = new Sphere();
     Matrix4 transform;
     transform.set_identity();
-    const AreaLight* values[_MAX_LIGHTS_];
+    const LightArea* values[_MAX_LIGHTS_];
     for(int i = 0; i<_MAX_LIGHTS_; i++)
     {
-        values[i] = new AreaLight(sphere, transform, Spectrum(1500));
+        values[i] = new LightArea(sphere, transform, Spectrum(1500));
         scene.inherit_arealight(values[i]);
     }
     for(unsigned int i = 0; i<scene.size_lights(); i++)

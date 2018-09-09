@@ -663,7 +663,7 @@ void ConfigDriver::build_meshes()
         {
             //blackbody
             if(mesh_w.temperature>=0)
-                current_asset = new AreaLight(mesh_o.mesh, transform,
+                current_asset = new LightArea(mesh_o.mesh, transform,
                                               mesh_w.temperature);
             else
             {
@@ -674,7 +674,7 @@ void ConfigDriver::build_meshes()
                 g = (unsigned char)clamp(mesh_w.color.y, 0.f, 255.f);
                 b = (unsigned char)clamp(mesh_w.color.z, 0.f, 255.f);
                 Spectrum color(ColorRGB(r, g, b), true);
-                current_asset = new AreaLight(mesh_o.mesh, transform, color);
+                current_asset = new LightArea(mesh_o.mesh, transform, color);
             }
             //create a default material for cameras
             const Bsdf* materials[1];
@@ -685,7 +685,7 @@ void ConfigDriver::build_meshes()
             memset(associations, 0, mesh_o.mesh->get_faces_number());
             current_asset->set_materials(materials, 1, associations);
             free(associations);
-            current_scene->inherit_arealight((AreaLight*)current_asset);
+            current_scene->inherit_arealight((LightArea*)current_asset);
         }
         //resolve the mask
         current_asset->set_mask(build_mask(mesh_w.mask));

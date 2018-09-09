@@ -156,10 +156,10 @@ protected:
     const Shape* model;
 
     ///ObjToWorld matrix
-    Matrix4 objToWorld;
+    Matrix4 obj2world;
 
     ///WorldToObj matrix
-    Matrix4 worldToObj;
+    Matrix4 world2obj;
 
     //mask used during intersections
     MaskBoolean mask;

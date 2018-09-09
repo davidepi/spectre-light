@@ -6,13 +6,13 @@
 unsigned static int _asset_ID_pool = 1;
 
 Asset::Asset(const Shape* sp, const Matrix4& transform, unsigned char mat_no)
-        :objToWorld(transform), id(_asset_ID_pool++),
+        :obj2world(transform), id(_asset_ID_pool++),
          aabb(sp->compute_AABB(&transform))
 {
     Asset::model = sp;
     Asset::materials = (const Bsdf**)malloc(sizeof(Bsdf*)*(mat_no+1));
     Asset::materials_index = (unsigned char*)malloc(sp->get_faces_number());
-    Asset::objToWorld.inverse(&(Asset::worldToObj));
+    Asset::obj2world.inverse(&(Asset::world2obj));
 }
 
 unsigned int Asset::get_id() const
@@ -30,18 +30,18 @@ bool
 Asset::intersect(const Ray* ray_world, float* distance, HitPoint* hit) const
 {
     //since intersection is performed in object_space, convert back the ray
-    Ray ray_obj = worldToObj**ray_world;
+    Ray ray_obj = world2obj**ray_world;
     //keep old_value in case the hit is invalidated by the mask
     bool res = Asset::model->intersect(&ray_obj, distance, hit, &mask);
     if(res)
     {
         //retransform back to world space
-        hit->point_h = objToWorld*hit->point_h;
+        hit->point_h = obj2world*hit->point_h;
         //normal requires the inverse of the transformation. Since I want a
-        //objToWorld, its inverse is a worldToObj
-        hit->normal_h = transform_normal(hit->normal_h, &worldToObj);
-        hit->dpdu = objToWorld*hit->dpdu;
-        hit->dpdv = objToWorld*hit->dpdv;
+        //obj2world, its inverse is a world2obj
+        hit->normal_h = transform_normal(hit->normal_h, &world2obj);
+        hit->dpdu = obj2world*hit->dpdu;
+        hit->dpdv = obj2world*hit->dpdv;
         hit->normal_h.normalize();
         hit->dpdu.normalize();
         hit->dpdv.normalize();

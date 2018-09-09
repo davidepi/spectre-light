@@ -48,7 +48,7 @@ unsigned int Scene::size_assets() const
     return (unsigned int)assets.size();
 }
 
-void Scene::inherit_arealight(const AreaLight* addme)
+void Scene::inherit_arealight(const LightArea* addme)
 {
     if(lights.size()<_MAX_LIGHTS_)
     {

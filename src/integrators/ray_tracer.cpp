@@ -12,7 +12,7 @@ direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
     int nlights = sc->size_lights();
     if(hp->asset_h->is_light())
         if(dot(*normal_s, -r->direction)>0)
-            L += ((AreaLight*)hp->asset_h)->emissive_spectrum();
+            L += ((LightArea*)hp->asset_h)->emissive_spectrum();
     if(nlights>0)
     {
         float rand[6];

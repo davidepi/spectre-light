@@ -3,30 +3,30 @@
 
 #include "light_area.hpp"
 
-AreaLight::AreaLight(const Shape* sp, const Matrix4& obj2World,
+LightArea::LightArea(const Shape* sp, const Matrix4& obj2World,
                      const Spectrum& c)
         :Asset(sp, obj2World, 1), Light(c)
 {
     //calculate the surface of the world-space object
-    AreaLight::area = sp->surface(&obj2World);
+    LightArea::area = sp->surface(&obj2World);
     //get the cumulative densities of the various faces of the light
     cd = (float*)malloc(sizeof(float)*sp->get_faces_number());
     sp->get_densities_array(&obj2World, cd);
-    AreaLight::invarea = 1.f/area;
+    LightArea::invarea = 1.f/area;
 }
 
-AreaLight::~AreaLight()
+LightArea::~LightArea()
 {
     free(cd);
 }
 
-Spectrum AreaLight::sample_surface(float r0, float r1, float r2, float r3,
+Spectrum LightArea::sample_surface(float r0, float r1, float r2, float r3,
                                    Ray* out, float* pdf) const
 {
     Normal n;
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
-    AreaLight::model->sample_point(r0, r1, cd, &(out->origin), &n);
+    LightArea::model->sample_point(r0, r1, cd, &(out->origin), &n);
 
     //generate random direction (uniform sphere sampling)
     float z = 1.f-2.f*r2;
@@ -43,24 +43,24 @@ Spectrum AreaLight::sample_surface(float r0, float r1, float r2, float r3,
     //position pdf * direction pdf.
     //1/2pi instead of 1/4pi because the direction is flipped if wrong
     //so in the end is an hemisphere sampling
-    *pdf = AreaLight::invarea*INV_TWOPI;
+    *pdf = LightArea::invarea*INV_TWOPI;
     //objspace to world space
-    *out = AreaLight::objToWorld**out;
-    return AreaLight::c;
+    *out = LightArea::obj2world**out;
+    return LightArea::c;
 }
 
 Spectrum
-AreaLight::sample_visible_surface(float r0, float r1, const Point3* pos,
+LightArea::sample_visible_surface(float r0, float r1, const Point3* pos,
                                   Vec3* wi, float* pdf, float* distance) const
 {
     Normal normal;
     Point3 light_point; //object space
     Ray ray;
-    ray.origin = worldToObj**pos;
+    ray.origin = world2obj**pos;
 
     //generate random origin point of the emitted radiance in the surface of the
     //underlying model of the light
-    AreaLight::model->sample_point(r0, r1, cd, &light_point, &normal);
+    LightArea::model->sample_point(r0, r1, cd, &light_point, &normal);
 
     //in the next steps a ray originating from the current_pos and pointing to
     //the sampled point is tested against the light. This because if the sampled
@@ -71,14 +71,14 @@ AreaLight::sample_visible_surface(float r0, float r1, const Point3* pos,
     *distance = FLT_MAX;
     //will always succeed
 //    bool res=
-    AreaLight::model->intersect(&ray, distance, &hit, &mask);
+    LightArea::model->intersect(&ray, distance, &hit, &mask);
     //erase the next if after all the intersections are tried
     //TODO: now this should never happen and has been commented. Tried
     //blackbox testing for something like 1 hour, but maybe for newer
     //shapes this could generate problems so it is left here as a reference
 //    if(!res)
 //    {
-//        bool res=AreaLight::model->intersect(&ray,distance,&hit);
+//        bool res=LightArea::model->intersect(&ray,distance,&hit);
 //        *pdf = 0;
 //        return SPECTRUM_BLACK;
 //    }
@@ -88,7 +88,7 @@ AreaLight::sample_visible_surface(float r0, float r1, const Point3* pos,
     *pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
            (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
            (ray.origin.z-light_point.z)*(ray.origin.z-light_point.z);
-    *pdf /= (absdot(normal, -(*wi))*AreaLight::area);
+    *pdf /= (absdot(normal, -(*wi))*LightArea::area);
     if(std::isinf(*pdf))
     {
         *pdf = 0;
@@ -103,37 +103,42 @@ AreaLight::sample_visible_surface(float r0, float r1, const Point3* pos,
     else
         retval = SPECTRUM_BLACK;
 
-    *wi = AreaLight::objToWorld**wi;
+    *wi = LightArea::obj2world**wi;
     wi->normalize();
     return retval;
 }
 
-float AreaLight::pdf(const Point3* p, const Vec3* wi) const
+float LightArea::pdf(const Point3* p, const Vec3* wi) const
 {
     Ray ray;
-    ray.origin = AreaLight::worldToObj**p;
-    ray.direction = AreaLight::worldToObj**wi;
+    ray.origin = LightArea::world2obj**p;
+    ray.direction = LightArea::world2obj**wi;
     HitPoint hit;
     float distance = FLT_MAX;
     //here success is not guaranteed, maybe the wi vector is random
     //need to check if the intersection can happen
-    bool res = AreaLight::model->intersect(&ray, &distance, &hit, &mask);
+    bool res = LightArea::model->intersect(&ray, &distance, &hit, &mask);
     if(!res)
         return 0;
     Point3 light_point = ray.apply(distance);
     float pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
                 (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
                 (ray.origin.z-light_point.z)*(ray.origin.z-light_point.z);
-    pdf /= (absdot(hit.normal_h, -(ray.direction))*AreaLight::area);
+    pdf /= (absdot(hit.normal_h, -(ray.direction))*LightArea::area);
     return pdf;
 }
 
-float AreaLight::pdf(const Ray*) const
+float LightArea::pdf(const Ray*) const
 {
-    return AreaLight::invarea*INV_TWOPI;
+    return LightArea::invarea*INV_TWOPI;
 }
 
-bool AreaLight::is_light() const
+bool LightArea::is_light() const
+{
+    return true;
+}
+
+bool LightArea::renderable() const
 {
     return true;
 }

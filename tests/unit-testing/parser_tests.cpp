@@ -978,7 +978,7 @@ SPECTRE_TEST(Parser, light)
     res = s0.k.intersect(&ray, &hp);
     ASSERT_TRUE(res);
     ASSERT_TRUE(hp.asset_h->is_light());
-    emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
+    emitted = ((LightArea*)hp.asset_h)->emissive_spectrum();
     EXPECT_NEAR(emitted.w[0], 0.95047003f, 1e-5f);
     EXPECT_NEAR(emitted.w[1], 1.00000012f, 1e-5f);
     EXPECT_NEAR(emitted.w[2], 1.08882999f, 1e-5f);
@@ -987,7 +987,7 @@ SPECTRE_TEST(Parser, light)
     res = s0.k.intersect(&ray, &hp);
     ASSERT_TRUE(res);
     ASSERT_TRUE(hp.asset_h->is_light());
-    emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
+    emitted = ((LightArea*)hp.asset_h)->emissive_spectrum();
     EXPECT_NEAR(emitted.w[0], 0.92846781f, 1e-5f);
     EXPECT_NEAR(emitted.w[1], 0.940558672f, 1e-5f);
     EXPECT_NEAR(emitted.w[2], 0.694520294f, 1e-5f);
@@ -996,7 +996,7 @@ SPECTRE_TEST(Parser, light)
     res = s0.k.intersect(&ray, &hp);
     ASSERT_TRUE(res);
     ASSERT_TRUE(hp.asset_h->is_light());
-    emitted = ((AreaLight*)hp.asset_h)->emissive_spectrum();
+    emitted = ((LightArea*)hp.asset_h)->emissive_spectrum();
     EXPECT_NEAR(emitted.w[0], 0.359375685f, 1e-5f);
     EXPECT_NEAR(emitted.w[1], 0.716016769f, 1e-5f);
     EXPECT_NEAR(emitted.w[2], 0.12213511f, 1e-5f);
