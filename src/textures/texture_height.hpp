@@ -1,6 +1,4 @@
-//
-// Created by Davide Pizzolotto on 18/08/21.
-//
+//created 21/8/2018
 
 #ifndef __TEXTURE_HEIGHT_HPP__
 #define __TEXTURE_HEIGHT_HPP__

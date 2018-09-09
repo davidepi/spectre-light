@@ -5,19 +5,24 @@
 
 Scene::~Scene()
 {
-    std::unordered_map<unsigned int, const Shape*>::const_iterator shape_it;
-    for(shape_it = shapes.begin(); shape_it != shapes.end(); shape_it++)
-        delete shape_it->second;
+    for(auto& shape : shapes)
+        delete shape.second;
     shapes.clear();
 
-    std::unordered_map<unsigned int, const Asset*>::const_iterator asset_it;
-    for(asset_it = assets.begin(); asset_it != assets.end(); asset_it++)
-        delete asset_it->second;
+    for(auto& asset : assets)
+        delete asset.second;
     assets.clear();
 
-    //DO NOT DELETE individual lights. lights are just pointers owned in, the
+    //DO NOT DELETE area lights. lights are just pointers owned in, the
     //assets array.
-    //The light array is there just for faster lookup
+    //The light array is there just for faster lookup.
+    //This is the reason of the to_delete array for lights
+
+    for(auto& lights_it : to_delete)
+    {
+        delete lights_it;
+    }
+    to_delete.clear();
 }
 
 void Scene::inherit_shape(const Shape* addme)
@@ -43,7 +48,7 @@ unsigned int Scene::size_assets() const
     return (unsigned int)assets.size();
 }
 
-void Scene::inherit_light(const AreaLight* addme)
+void Scene::inherit_arealight(const AreaLight* addme)
 {
     if(lights.size()<_MAX_LIGHTS_)
     {
@@ -59,12 +64,23 @@ void Scene::inherit_light(const AreaLight* addme)
         Console.warning(MESSAGE_MAXLIGHTSNUMBER, _MAX_LIGHTS_);
 }
 
+void Scene::inherit_light(const Light* addme)
+{
+    if(lights.size()<_MAX_LIGHTS_)
+    {
+        lights.push_back(addme);
+        to_delete.push_back(addme);
+    }
+    else
+        Console.warning(MESSAGE_MAXLIGHTSNUMBER, _MAX_LIGHTS_);
+}
+
 unsigned int Scene::size_lights() const
 {
     return (unsigned int)lights.size();
 }
 
-const AreaLight* Scene::get_light(int index) const
+const Light* Scene::get_light(int index) const
 {
     return lights[index];
 }

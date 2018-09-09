@@ -1,11 +1,11 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
-#include "area_light.hpp"
+#include "light_area.hpp"
 
 AreaLight::AreaLight(const Shape* sp, const Matrix4& obj2World,
                      const Spectrum& c)
-        :Asset(sp, obj2World, 1), c(c)
+        :Asset(sp, obj2World, 1), Light(c)
 {
     //calculate the surface of the world-space object
     AreaLight::area = sp->surface(&obj2World);
@@ -18,11 +18,6 @@ AreaLight::AreaLight(const Shape* sp, const Matrix4& obj2World,
 AreaLight::~AreaLight()
 {
     free(cd);
-}
-
-Spectrum AreaLight::emissive_spectrum() const
-{
-    return AreaLight::c;
 }
 
 Spectrum AreaLight::sample_surface(float r0, float r1, float r2, float r3,
@@ -104,7 +99,7 @@ AreaLight::sample_visible_surface(float r0, float r1, const Point3* pos,
     //convert wi to world space
     Spectrum retval;
     if(dot(normal, -(*wi))>0) //cos between ray and hit point normal > 0
-        retval = AreaLight::c;
+        retval = c;
     else
         retval = SPECTRUM_BLACK;
 

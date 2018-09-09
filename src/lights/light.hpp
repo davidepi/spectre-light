@@ -1,9 +1,9 @@
-//Created,  13 Jun 2017
-//Last Edit 30 Mar 2018
+//Created,   9 Sep 2018
+//Last Edit  9 Sep 2018
 
 /**
- *  \file area_light.hpp
- *  \brief     Definition of a light-emitting shape
+ *  \file light.hpp
+ *  \brief     Interface for light emitting probes and objects
  *  \author    Davide Pizzolotto
  *  \version   0.1
  *  \date      30 Mar 2018
@@ -11,38 +11,24 @@
  */
 
 
-#ifndef __AREA_LIGHT_HPP__
-#define __AREA_LIGHT_HPP__
+#ifndef __LIGHT_HPP__
+#define __LIGHT_HPP__
 
 #include "utility/spectrum.hpp"
-#include "primitives/asset.hpp"
-#include "primitives/shape.hpp"
-#include <cmath> //isinf
+#include "geometry/ray.hpp"
 
-/**
- * \class AreaLight area_light.hpp "lights/area_light.hpp"
- * \brief A light-emitting shape
- *
- *  This class extends an Asset in order to transform it into a light. By 
- *  passing a Spectrum the shape is treated as a light emitting shape
- */
-class AreaLight : public Asset
+class Light
 {
 public:
 
-    /** \brief Default Constructor
-     *
-     *  Construct an object emitting light
-     *
-     *  \param[in] shape A pointer to the underlying shape
-     *  \param[in] objToWorld The matrix used to transform the
-     *  light from object space to world space
-     *  \param[in] c The emitted light
+    /**
+     *  \brief Light constructor
+     *  \param[in] intensity The intensity of the light
      */
-    AreaLight(const Shape* shape, const Matrix4& objToWorld, const Spectrum& c);
+    Light(const Spectrum& intensity);
 
     ///Default destructor
-    virtual ~AreaLight();
+    virtual ~Light() = default;
 
     /** \brief Return the radiance for a random ray
      *
@@ -61,8 +47,8 @@ public:
      *  \sa sample_visible_surface
      *  \sa pdf(const Ray* ray)const
      */
-    Spectrum sample_surface(float r0, float r1, float r2, float r3,
-                            Ray* out, float* pdf) const;
+    virtual Spectrum sample_surface(float r0, float r1, float r2, float r3,
+                                    Ray* out, float* pdf) const = 0;
 
     /** \brief Generate the incident vector and return the radiance
      *
@@ -85,20 +71,14 @@ public:
      *  \sa sample_surface
      *  \sa pdf(const Point3* p, const Vec3* wi)const
      */
-    Spectrum sample_visible_surface(float r0, float r1, const Point3* position,
-                                    Vec3* wi, float* pdf,
-                                    float* distance) const;
+    virtual Spectrum
+    sample_visible_surface(float r0, float r1, const Point3* position, Vec3* wi,
+                           float* pdf, float* distance) const = 0;
 
     /** \brief Return the emitted light spectrum
      *  \return The emitted light spectrum
      */
     Spectrum emissive_spectrum() const;
-
-    /** \brief Return true if this asset is a light
-     *
-     *  \return true
-     */
-    bool is_light() const;
 
     /** \brief Return the probability density function for this light
      *
@@ -109,7 +89,7 @@ public:
      *  \return The pdf for this light
      *  \sa sample_surface()
      */
-    float pdf(const Ray* ray) const;
+    virtual float pdf(const Ray* ray) const = 0;
 
     /** \brief Return the probability density function for this light
      *
@@ -123,21 +103,12 @@ public:
      *  \return The pdf for this light
      *  \sa sample_visible_surface()
      */
-    float pdf(const Point3* p, const Vec3* wi) const;
+    virtual float pdf(const Point3* p, const Vec3* wi) const = 0;
 
-private:
+protected:
 
-    //Emissive spectrum of the light
-    Spectrum c;
-
-    //area of the light
-    float area;
-
-    //inverse area of the light
-    float invarea;
-
-    //contains the cumulative area for every face of the underlying shape
-    float* cd;
+    const Spectrum c;
 };
+
 
 #endif

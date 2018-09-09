@@ -11,8 +11,8 @@
  */
 
 
-#ifndef __LIGHT_INTEGRATOR_HPP__
-#define __LIGHT_INTEGRATOR_HPP__
+#ifndef __INTEGRATOR_HPP__
+#define __INTEGRATOR_HPP__
 
 #include "samplers/sampler.hpp"
 #include "utility/scene.hpp"
@@ -31,7 +31,7 @@
  *  Every rendering equation solver, such as path tracer or mlt, should
  *  implement this method
  */
-class LightIntegrator
+class Integrator
 {
 public:
 
@@ -56,7 +56,7 @@ public:
                               OcclusionTester* visibility) const = 0;
 
     ///Default destructor
-    virtual ~LightIntegrator()
+    virtual ~Integrator()
     {};
 };
 

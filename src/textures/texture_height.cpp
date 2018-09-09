@@ -1,7 +1,3 @@
-//
-// Created by Davide Pizzolotto on 18/08/21.
-//
-
 #include "texture_height.hpp"
 
 TextureHeight::TextureHeight(const TextureImage* image, ImageChannel channel)

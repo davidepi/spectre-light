@@ -14,13 +14,13 @@
 #ifndef __PATH_TRACER_HPP__
 #define __PATH_TRACER_HPP__
 
-#include "integrators/light_integrator.hpp"
+#include "integrators/integrator.hpp"
 #include "samplers/sampler.hpp"
 #include "utility/scene.hpp"
 #include "utility/color.hpp"
 #include "utility/spectrum.hpp"
 #include "primitives/shape.hpp"
-#include "lights/area_light.hpp"
+#include "lights/light_area.hpp"
 #include "utility/occlusion_tester.hpp"
 #include "settings.h"
 #include "integrators/ray_tracer.hpp"
@@ -38,7 +38,7 @@
  *  radiance is reflected. After 3 bounces there is a 50% probability that the
  *  path is terminated due to russian roulette.
  */
-class PathTracer : public LightIntegrator
+class PathTracer : public Integrator
 {
     /** \brief Determines the radiance arriving at a point
      *

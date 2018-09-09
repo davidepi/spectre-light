@@ -368,7 +368,7 @@ public:
     `---------------*/
 
     ///The integrator that will be used to solve the rendering equation
-    LightIntegrator* integrator;
+    Integrator* integrator;
 
     /*-------------.
     |   Textures   |

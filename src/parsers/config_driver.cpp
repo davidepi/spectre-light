@@ -685,7 +685,7 @@ void ConfigDriver::build_meshes()
             memset(associations, 0, mesh_o.mesh->get_faces_number());
             current_asset->set_materials(materials, 1, associations);
             free(associations);
-            current_scene->inherit_light((AreaLight*)current_asset);
+            current_scene->inherit_arealight((AreaLight*)current_asset);
         }
         //resolve the mask
         current_asset->set_mask(build_mask(mesh_w.mask));

@@ -1,3 +1,6 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "texture_image.hpp"
 
 TextureImage::TextureImage(const File& src, Vec2& shift, Vec2& scale,

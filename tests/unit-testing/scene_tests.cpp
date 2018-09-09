@@ -63,25 +63,26 @@ SPECTRE_TEST(Scene, inherit_light)
     EXPECT_EQ(scene.size_lights(), (unsigned int)0);
 
     Asset* addme2 = new AreaLight(sphere, transform, Spectrum(1500));
-    scene.inherit_light((AreaLight*)addme2);
+    scene.inherit_arealight((AreaLight*)addme2);
     EXPECT_EQ(scene.size_assets(), (unsigned int)2);
     EXPECT_EQ(scene.size_lights(), (unsigned int)1);
 
     //don't add duplicates
     for(int i = scene.size_lights(); i<_MAX_LIGHTS_; i++)
-        scene.inherit_light((AreaLight*)addme1);
+        scene.inherit_arealight((AreaLight*)addme1);
     EXPECT_EQ(scene.size_assets(), (unsigned int)2);
     EXPECT_EQ(scene.size_lights(), (unsigned int)1);
 
     //fill all lights
     for(int i = scene.size_lights(); i<_MAX_LIGHTS_; i++)
-        scene.inherit_light(new AreaLight(sphere, transform, Spectrum(1500)));
+        scene.inherit_arealight(
+                new AreaLight(sphere, transform, Spectrum(1500)));
     EXPECT_EQ(scene.size_lights(), (unsigned int)_MAX_LIGHTS_);
 
     //add extra light
     errors_count[WARNING_INDEX] = 0;
     AreaLight* last_light = new AreaLight(sphere, transform, Spectrum(1500));
-    scene.inherit_light(last_light);
+    scene.inherit_arealight(last_light);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
 }
@@ -96,7 +97,7 @@ SPECTRE_TEST(Scene, get_lights)
     for(int i = 0; i<_MAX_LIGHTS_; i++)
     {
         values[i] = new AreaLight(sphere, transform, Spectrum(1500));
-        scene.inherit_light(values[i]);
+        scene.inherit_arealight(values[i]);
     }
     for(unsigned int i = 0; i<scene.size_lights(); i++)
         EXPECT_PTR_EQ(scene.get_light(i), values[i]);

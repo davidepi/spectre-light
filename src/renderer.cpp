@@ -6,7 +6,7 @@
 //st = sampler type
 static void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
                      int sampler_type, std::stack<Renderer_task>* jobs,
-                     Scene* scene, LightIntegrator* mc_solver);
+                     Scene* scene, Integrator* mc_solver);
 
 
 static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
@@ -71,7 +71,7 @@ void Renderer::inherit_filter(Filter* filter)
     Renderer::film.set_filter(filter);
 }
 
-void Renderer::inherit_integrator(LightIntegrator* integrator)
+void Renderer::inherit_integrator(Integrator* integrator)
 {
     Renderer::mc_solver = integrator;
 }
@@ -147,7 +147,7 @@ int Renderer::render(Scene* s)
 
 void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
               int sampler_type, std::stack<Renderer_task>* jobs, Scene* scene,
-              LightIntegrator* mc_solver)
+              Integrator* mc_solver)
 {
     //generate seed for WELLrng. Constant WELL_R is inside wellrng.h
     unsigned int WELLseed[WELL_R];

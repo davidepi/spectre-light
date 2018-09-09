@@ -12,7 +12,8 @@ char ppm_write(const char* name, int width, int height, const uint32_t* array)
     int i;
     if(fout != NULL)
     {
-        int32_t written = 0; //ssize_t on unix is SSIZE_T on windows. This is a joke.
+        /* ssize_t on unix is SSIZE_T on windows. This is a joke. */
+        int32_t written = 0;
         fprintf(fout, "P6 %d %d 255 ", width, height);
         for(i = 0; i<width*height; i++)
         {

@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 #endif
 
-#include "lights/area_light.hpp"
+#include "lights/light_area.hpp"
 #include "primitives/sphere.hpp"
 #include <random>
 

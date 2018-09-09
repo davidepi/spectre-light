@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 23 Apr 2018
+//Last Edit  9 Sep 2018
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      23 Apr 2018
+ *  \date      9 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -21,7 +21,7 @@
 #include "geometry/matrix4.hpp"
 #include "utility/utility.hpp"
 #include "utility/console.hpp"
-#include "lights/area_light.hpp"
+#include "lights/light_area.hpp"
 #include <unordered_map>
 
 /**
@@ -93,16 +93,29 @@ public:
      */
     unsigned int size_assets() const;
 
-    /** \brief Add a Light to the scene
+    /** \brief Add an AreaLight to the scene
      *
-     *  Given a pointer to a Light, the scene inherits its ownership.
+     *  Given a pointer to an Light, the scene inherits its ownership.
      *  If possible, use shapes already inside this class by calling the
-     *  Scene::add_light function. Use this function only if the Shape wrapped
-     *  by the Light was already added to the scene
+     *  Scene::add_arealight function. Use this function only if the Shape
+     *  wrapped by the AreaLight was already added to the scene
+     *
+     *  \param[in] addme The Arealight that will be added
+     */
+    void inherit_arealight(const AreaLight* addme);
+
+    /**
+     *  \brief Adds a Light to the scene
+     *
+     *  This method is similar to the inherit_arealight() one, but does not
+     *  add the light to the interesectable objects.
+     *
+     *  \warning Use inherit_arealight() method to add an AreaLight,
+     *  otherwise a double free and a wrong rendering will occur
      *
      *  \param[in] addme The light that will be added
      */
-    void inherit_light(const AreaLight* addme);
+    void inherit_light(const Light* addme);
 
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene
@@ -114,7 +127,7 @@ public:
      *  \param[in] index The index of the light in the light array
      * \return The array of lights in the scene
      */
-    const AreaLight* get_light(int index) const;
+    const Light* get_light(int index) const;
 
 private:
 
@@ -124,8 +137,11 @@ private:
     ///map of assets and lights
     std::unordered_map<unsigned int, const Asset*> assets;
 
+    ///array of lights that should be deleted. (Every light but AreaLights)
+    std::vector<const Light*> to_delete;
+
     ///array of lights, allocated version is stored inside Scene::assets
-    std::vector<const AreaLight*> lights;
+    std::vector<const Light*> lights;
 
 };
 

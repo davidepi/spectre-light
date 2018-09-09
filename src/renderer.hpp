@@ -24,7 +24,7 @@
 #include "samplers/sampler.hpp"
 #include "samplers/sampler_random.hpp"
 #include "samplers/sampler_stratified.hpp"
-#include "integrators/light_integrator.hpp"
+#include "integrators/integrator.hpp"
 #include "settings.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
@@ -161,7 +161,7 @@ public:
      *  \param[in] integrator A LightIntegrator that will be inherited by the
      *  renderer
      */
-    void inherit_integrator(LightIntegrator* integrator);
+    void inherit_integrator(Integrator* integrator);
     
     /** \brief Render the scene
      *
@@ -207,7 +207,7 @@ private:
     std::thread* workers;
 
     //integrator
-    LightIntegrator* mc_solver;
+    Integrator* mc_solver;
 
     //sampler
     int sampler_t;

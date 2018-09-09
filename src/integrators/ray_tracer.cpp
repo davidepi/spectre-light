@@ -21,7 +21,7 @@ direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
         Vec3 wi;
         //choose a light to sample
         int sampledlight = min((int)(rand[0]*nlights), nlights-1);
-        const AreaLight* light = sc->get_light(sampledlight);
+        const Light* light = sc->get_light(sampledlight);
         float lightpdf;
         float bsdfpdf;
         bool matchedSpec;
@@ -64,7 +64,8 @@ direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
             Ray r2(*point_s, wi);
             HitPoint h2;
             if(sc->k.intersect(&r2, &h2))
-                if(h2.asset_h->get_id() == light->get_id())
+                //TODO: previously: if(h2.asset_h->get_id() == light->get_id())
+                if((void*)h2.asset_h == (void*)light)
                     if(dot(h2.normal_h, -r2.direction)>0)
                     {
                         Spectrum rad = light->emissive_spectrum();
