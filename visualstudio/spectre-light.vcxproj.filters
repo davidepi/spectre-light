@@ -48,9 +48,6 @@
     <ClCompile Include="..\src\integrators\path_tracer.cpp">
       <Filter>src\integrators</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\lights\area_light.cpp">
-      <Filter>src\lights</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\materials\bdf.cpp">
       <Filter>src\materials</Filter>
     </ClCompile>
@@ -135,9 +132,6 @@
     <ClCompile Include="..\src\samplers\sampler_stratified.cpp">
       <Filter>src\samplers</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\textures\texture.cpp">
-      <Filter>src\textures</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\textures\texture_library.cpp">
       <Filter>src\textures</Filter>
     </ClCompile>
@@ -210,6 +204,18 @@
     <ClCompile Include="..\src\primitives\hit_point.cpp">
       <Filter>src\primitives</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\lights\light.cpp">
+      <Filter>src\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\light_area.cpp">
+      <Filter>src\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\light_omni.cpp">
+      <Filter>src\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\light_spot.cpp">
+      <Filter>src\lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\renderer.hpp" />
@@ -265,9 +271,6 @@
     </ClInclude>
     <ClInclude Include="..\src\integrators\light_integrator.hpp">
       <Filter>src\integrators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lights\area_light.hpp">
-      <Filter>src\lights</Filter>
     </ClInclude>
     <ClInclude Include="..\src\materials\bdf.hpp">
       <Filter>src\materials</Filter>
@@ -446,6 +449,18 @@
     </ClInclude>
     <ClInclude Include="..\src\materials\bsdf.hpp">
       <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\light.hpp">
+      <Filter>src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\light_area.hpp">
+      <Filter>src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\light_omni.hpp">
+      <Filter>src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\light_spot.hpp">
+      <Filter>src\lights</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

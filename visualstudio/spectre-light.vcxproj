@@ -35,7 +35,10 @@
     <ClCompile Include="..\src\geometry\vec3.cpp" />
     <ClCompile Include="..\src\integrators\path_tracer.cpp" />
     <ClCompile Include="..\src\integrators\ray_tracer.cpp" />
-    <ClCompile Include="..\src\lights\area_light.cpp" />
+    <ClCompile Include="..\src\lights\light.cpp" />
+    <ClCompile Include="..\src\lights\light_area.cpp" />
+    <ClCompile Include="..\src\lights\light_omni.cpp" />
+    <ClCompile Include="..\src\lights\light_spot.cpp" />
     <ClCompile Include="..\src\main.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release-rgb|x64'">NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -75,7 +78,6 @@
     <ClCompile Include="..\src\samplers\sampler_stratified.cpp" />
     <ClCompile Include="..\src\textures\image_map.cpp" />
     <ClCompile Include="..\src\textures\mask_boolean.cpp" />
-    <ClCompile Include="..\src\textures\texture.cpp" />
     <ClCompile Include="..\src\textures\texture_image.cpp" />
     <ClCompile Include="..\src\textures\texture_library.cpp" />
     <ClCompile Include="..\src\textures\texture_normal.cpp" />
@@ -111,7 +113,10 @@
     <ClInclude Include="..\src\integrators\light_integrator.hpp" />
     <ClInclude Include="..\src\integrators\path_tracer.hpp" />
     <ClInclude Include="..\src\integrators\ray_tracer.hpp" />
-    <ClInclude Include="..\src\lights\area_light.hpp" />
+    <ClInclude Include="..\src\lights\light.hpp" />
+    <ClInclude Include="..\src\lights\light_area.hpp" />
+    <ClInclude Include="..\src\lights\light_omni.hpp" />
+    <ClInclude Include="..\src\lights\light_spot.hpp" />
     <ClInclude Include="..\src\localization.h" />
     <ClInclude Include="..\src\materials\bdf.hpp" />
     <ClInclude Include="..\src\materials\bsdf.hpp" />

@@ -5,7 +5,7 @@
  *  \file light_area.hpp
  *  \brief     Definition of a light-emitting shape
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      30 Mar 2018
  *  \copyright GNU GPLv3
  */

@@ -5,7 +5,7 @@
  *  \file light.hpp
  *  \brief     Interface for light emitting probes and objects
  *  \author    Davide Pizzolotto
- *  \version   0.1
+ *  \version   0.2
  *  \date      9 Sep 2018
  *  \copyright GNU GPLv3
  */
