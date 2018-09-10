@@ -120,7 +120,6 @@
 		6BA65BEF1F70421D00183E94 /* vec3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B8C0BB01EAE2D26001DF9C9 /* vec3.cpp */; };
 		6BA65BF01F70421D00183E94 /* path_tracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494E41F52253E00691CE3 /* path_tracer.cpp */; };
 		6BA65BF11F70421D00183E94 /* ray_tracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494E61F52253E00691CE3 /* ray_tracer.cpp */; };
-		6BA65BF21F70421D00183E94 /* area_light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B06C18C1F0B6F100010B402 /* area_light.cpp */; };
 		6BA65BF31F70421D00183E94 /* bdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7A41F116466000943A3 /* bdf.cpp */; };
 		6BA65BF41F70421D00183E94 /* lambertian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7A81F116466000943A3 /* lambertian.cpp */; };
 		6BA65BF51F70421D00183E94 /* material_library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7AA1F116466000943A3 /* material_library.cpp */; };
@@ -165,7 +164,6 @@
 		6BA65C201F70424E00183E94 /* vec3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B8C0BB01EAE2D26001DF9C9 /* vec3.cpp */; };
 		6BA65C211F70424E00183E94 /* path_tracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494E41F52253E00691CE3 /* path_tracer.cpp */; };
 		6BA65C221F70424E00183E94 /* ray_tracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494E61F52253E00691CE3 /* ray_tracer.cpp */; };
-		6BA65C231F70424E00183E94 /* area_light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B06C18C1F0B6F100010B402 /* area_light.cpp */; };
 		6BA65C241F70424E00183E94 /* bdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7A41F116466000943A3 /* bdf.cpp */; };
 		6BA65C251F70424E00183E94 /* lambertian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7A81F116466000943A3 /* lambertian.cpp */; };
 		6BA65C261F70424E00183E94 /* material_library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7AA1F116466000943A3 /* material_library.cpp */; };
@@ -198,7 +196,6 @@
 		6BB4A47D1FE5483600A2CA9D /* color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B771A311ED3A72500EEF79B /* color.cpp */; };
 		6BBAA6741FE73E2F00C13844 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7B91F1164C4000943A3 /* scene.cpp */; };
 		6BBAA6751FE73E5300C13844 /* kdtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B6E58EB1EC2062300D22A4B /* kdtree.cpp */; };
-		6BBAA6761FE73E6E00C13844 /* area_light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B06C18C1F0B6F100010B402 /* area_light.cpp */; };
 		6BBF23051F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BBF23031F72EAEC00D6CBD2 /* microfacet_distributions.cpp */; };
 		6BBF23061F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BBF23031F72EAEC00D6CBD2 /* microfacet_distributions.cpp */; };
 		6BC109EA2074BD0800FFBE13 /* lex.yy.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6BC109E82074BD0700FFBE13 /* lex.yy.cc */; settings = {COMPILER_FLAGS = "-w -g"; }; };
@@ -211,15 +208,24 @@
 		6BC8C2F0200D1F6900984630 /* oren_nayar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7AC1F116466000943A3 /* oren_nayar.cpp */; };
 		6BC8C2F1200D1F6900984630 /* reflection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7AE1F116466000943A3 /* reflection.cpp */; };
 		6BC8C2F2200D1F6900984630 /* refraction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7B01F116466000943A3 /* refraction.cpp */; };
+		6BC9115B21466AF100373774 /* light_area.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115521466AF000373774 /* light_area.cpp */; };
+		6BC9115C21466AF100373774 /* light_omni.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115621466AF100373774 /* light_omni.cpp */; };
+		6BC9115D21466AF100373774 /* light_spot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115821466AF100373774 /* light_spot.cpp */; };
+		6BC9115E21466AF100373774 /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115A21466AF100373774 /* light.cpp */; };
+		6BC9115F21466AF600373774 /* light_area.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115521466AF000373774 /* light_area.cpp */; };
+		6BC9116021466AF700373774 /* light_area.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115521466AF000373774 /* light_area.cpp */; };
+		6BC9116121466AFA00373774 /* light_omni.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115621466AF100373774 /* light_omni.cpp */; };
+		6BC9116221466AFA00373774 /* light_omni.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115621466AF100373774 /* light_omni.cpp */; };
+		6BC9116321466AFD00373774 /* light_spot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115821466AF100373774 /* light_spot.cpp */; };
+		6BC9116421466AFE00373774 /* light_spot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115821466AF100373774 /* light_spot.cpp */; };
+		6BC9116621466B0100373774 /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115A21466AF100373774 /* light.cpp */; };
+		6BC9116721466B0100373774 /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC9115A21466AF100373774 /* light.cpp */; };
 		6BCDDF6B1FE09B6E007536FF /* box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BE2FCBB1EBE2D0F00CB782D /* box.cpp */; };
 		6BCDDF6C1FE09B6E007536FF /* shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BBF2B8B1EB8F6A8004589AA /* shape.cpp */; };
 		6BCDDF6D1FE09B6E007536FF /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BB9EBDC1EBA592800485ECE /* sphere.cpp */; };
 		6BCDDF6E1FE09B6E007536FF /* triangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494D11F5224BE00691CE3 /* triangle.cpp */; };
 		6BCEE5F520A1C5DC00E3B530 /* texture_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */; };
 		6BCEE5F620A1C5DC00E3B530 /* texture_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */; };
-		6BD89FBC2059951200CE5B05 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FB92059951200CE5B05 /* texture.cpp */; };
-		6BD89FBD2059951200CE5B05 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FB92059951200CE5B05 /* texture.cpp */; };
-		6BD89FBE2059951200CE5B05 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FB92059951200CE5B05 /* texture.cpp */; };
 		6BD89FC220599D8800CE5B05 /* texture_uniform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */; };
 		6BD89FC320599D8800CE5B05 /* texture_uniform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */; };
 		6BD89FC420599D8800CE5B05 /* texture_uniform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */; };
@@ -293,8 +299,6 @@
 		6B06BED3213DFF5600A857D4 /* bump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bump.cpp; path = src/materials/bump.cpp; sourceTree = "<group>"; };
 		6B06BED4213DFF5600A857D4 /* shading_space.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = shading_space.hpp; path = src/materials/shading_space.hpp; sourceTree = "<group>"; };
 		6B06BED5213DFF5600A857D4 /* bump.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bump.hpp; path = src/materials/bump.hpp; sourceTree = "<group>"; };
-		6B06C18C1F0B6F100010B402 /* area_light.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = area_light.cpp; path = src/lights/area_light.cpp; sourceTree = "<group>"; };
-		6B06C18D1F0B6F100010B402 /* area_light.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = area_light.hpp; path = src/lights/area_light.hpp; sourceTree = "<group>"; };
 		6B09101820A0AEFC008BB048 /* image_map.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = image_map.cpp; path = src/textures/image_map.cpp; sourceTree = "<group>"; };
 		6B09101920A0AEFC008BB048 /* image_map.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = image_map.hpp; path = src/textures/image_map.hpp; sourceTree = "<group>"; };
 		6B1700471ED35F8F00D046BE /* console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = console.cpp; path = src/utility/console.cpp; sourceTree = "<group>"; };
@@ -506,10 +510,17 @@
 		6BBF2B8C1EB8F6A8004589AA /* shape.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = shape.hpp; path = src/primitives/shape.hpp; sourceTree = "<group>"; };
 		6BC109E82074BD0700FFBE13 /* lex.yy.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lex.yy.cc; path = src/parsers/lex.yy.cc; sourceTree = "<group>"; usesTabs = 0; };
 		6BC109E92074BD0700FFBE13 /* config_parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = config_parser.tab.cc; path = src/parsers/config_parser.tab.cc; sourceTree = "<group>"; };
+		6BC9115321466AF000373774 /* light_omni.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = light_omni.hpp; path = src/lights/light_omni.hpp; sourceTree = "<group>"; };
+		6BC9115421466AF000373774 /* light.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = light.hpp; path = src/lights/light.hpp; sourceTree = "<group>"; };
+		6BC9115521466AF000373774 /* light_area.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = light_area.cpp; path = src/lights/light_area.cpp; sourceTree = "<group>"; };
+		6BC9115621466AF100373774 /* light_omni.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = light_omni.cpp; path = src/lights/light_omni.cpp; sourceTree = "<group>"; };
+		6BC9115721466AF100373774 /* light_area.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = light_area.hpp; path = src/lights/light_area.hpp; sourceTree = "<group>"; };
+		6BC9115821466AF100373774 /* light_spot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = light_spot.cpp; path = src/lights/light_spot.cpp; sourceTree = "<group>"; };
+		6BC9115921466AF100373774 /* light_spot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = light_spot.hpp; path = src/lights/light_spot.hpp; sourceTree = "<group>"; };
+		6BC9115A21466AF100373774 /* light.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = light.cpp; path = src/lights/light.cpp; sourceTree = "<group>"; };
 		6BCE8BBF1FAFCC8C0056854A /* input_example.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = input_example.txt; sourceTree = "<group>"; };
 		6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_image.cpp; path = src/textures/texture_image.cpp; sourceTree = "<group>"; };
 		6BCEE5F420A1C5DC00E3B530 /* texture_image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = texture_image.hpp; path = src/textures/texture_image.hpp; sourceTree = "<group>"; };
-		6BD89FB92059951200CE5B05 /* texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture.cpp; path = src/textures/texture.cpp; sourceTree = "<group>"; };
 		6BD89FBA2059951200CE5B05 /* texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = texture.hpp; path = src/textures/texture.hpp; sourceTree = "<group>"; };
 		6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = texture_uniform.cpp; path = src/textures/texture_uniform.cpp; sourceTree = "<group>"; };
 		6BD89FC020599D8800CE5B05 /* texture_uniform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = texture_uniform.hpp; path = src/textures/texture_uniform.hpp; sourceTree = "<group>"; };
@@ -594,8 +605,14 @@
 		6B06C18B1F0B6EBD0010B402 /* lights */ = {
 			isa = PBXGroup;
 			children = (
-				6B06C18C1F0B6F100010B402 /* area_light.cpp */,
-				6B06C18D1F0B6F100010B402 /* area_light.hpp */,
+				6BC9115521466AF000373774 /* light_area.cpp */,
+				6BC9115721466AF100373774 /* light_area.hpp */,
+				6BC9115621466AF100373774 /* light_omni.cpp */,
+				6BC9115321466AF000373774 /* light_omni.hpp */,
+				6BC9115821466AF100373774 /* light_spot.cpp */,
+				6BC9115921466AF100373774 /* light_spot.hpp */,
+				6BC9115A21466AF100373774 /* light.cpp */,
+				6BC9115421466AF000373774 /* light.hpp */,
 			);
 			name = lights;
 			sourceTree = "<group>";
@@ -1005,7 +1022,6 @@
 				6B09101920A0AEFC008BB048 /* image_map.hpp */,
 				6B640EE621272B0600E08344 /* mask_boolean.cpp */,
 				6B640EE721272B0600E08344 /* mask_boolean.hpp */,
-				6BD89FB92059951200CE5B05 /* texture.cpp */,
 				6BD89FBA2059951200CE5B05 /* texture.hpp */,
 				6B06BEC8213DFF2900A857D4 /* texture_height.cpp */,
 				6B06BEC9213DFF2900A857D4 /* texture_height.hpp */,
@@ -1190,7 +1206,6 @@
 				6B640EE5212729E900E08344 /* dual.cpp in Sources */,
 				6BA65BF01F70421D00183E94 /* path_tracer.cpp in Sources */,
 				6BA65BF11F70421D00183E94 /* ray_tracer.cpp in Sources */,
-				6BA65BF21F70421D00183E94 /* area_light.cpp in Sources */,
 				6BA65BF31F70421D00183E94 /* bdf.cpp in Sources */,
 				6BBF23051F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */,
 				6BA65BF41F70421D00183E94 /* lambertian.cpp in Sources */,
@@ -1198,11 +1213,12 @@
 				6BA65BF51F70421D00183E94 /* material_library.cpp in Sources */,
 				6BA65BF61F70421D00183E94 /* oren_nayar.cpp in Sources */,
 				6BA65BF71F70421D00183E94 /* reflection.cpp in Sources */,
+				6BC9115E21466AF100373774 /* light.cpp in Sources */,
 				6B06BED7213DFF5600A857D4 /* bump.cpp in Sources */,
 				6BD89FC220599D8800CE5B05 /* texture_uniform.cpp in Sources */,
 				6B76AAB32084F079008E234B /* point2.cpp in Sources */,
+				6BC9115B21466AF100373774 /* light_area.cpp in Sources */,
 				6BA65BF81F70421D00183E94 /* refraction.cpp in Sources */,
-				6BD89FBC2059951200CE5B05 /* texture.cpp in Sources */,
 				6BA65BFB1F70421D00183E94 /* asset.cpp in Sources */,
 				6BA65BFC1F70421D00183E94 /* box.cpp in Sources */,
 				6BA65BFD1F70421D00183E94 /* mesh.cpp in Sources */,
@@ -1232,9 +1248,11 @@
 				6B06BECC213DFF2A00A857D4 /* texture_height.cpp in Sources */,
 				6BA65C0E1F70421D00183E94 /* spectrum.cpp in Sources */,
 				6B06BED6213DFF5600A857D4 /* shading_space.cpp in Sources */,
+				6BC9115D21466AF100373774 /* light_spot.cpp in Sources */,
 				6BA65C0F1F70421D00183E94 /* utility.cpp in Sources */,
 				6BA65C101F70421D00183E94 /* wellrng.cpp in Sources */,
 				6BFA15242081097B00DCA94C /* parser_obj.cpp in Sources */,
+				6BC9115C21466AF100373774 /* light_omni.cpp in Sources */,
 				6B1F6ABA20FC950000FB8E0F /* bmp.c in Sources */,
 				6B1F6ABD20FC950000FB8E0F /* tga.c in Sources */,
 				6BA65C111F70421D00183E94 /* renderer.cpp in Sources */,
@@ -1273,17 +1291,17 @@
 				6BA65C201F70424E00183E94 /* vec3.cpp in Sources */,
 				6BA65C211F70424E00183E94 /* path_tracer.cpp in Sources */,
 				6BA65C221F70424E00183E94 /* ray_tracer.cpp in Sources */,
-				6BA65C231F70424E00183E94 /* area_light.cpp in Sources */,
 				6BA65C241F70424E00183E94 /* bdf.cpp in Sources */,
 				6B2E4C31213E72B600FF69FA /* dual.cpp in Sources */,
 				6BBF23061F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */,
+				6BC9116721466B0100373774 /* light.cpp in Sources */,
 				6BA65C251F70424E00183E94 /* lambertian.cpp in Sources */,
 				6BA65C261F70424E00183E94 /* material_library.cpp in Sources */,
 				6BA65C271F70424E00183E94 /* oren_nayar.cpp in Sources */,
+				6BC9115F21466AF600373774 /* light_area.cpp in Sources */,
 				6BA65C281F70424E00183E94 /* reflection.cpp in Sources */,
 				6BD89FC320599D8800CE5B05 /* texture_uniform.cpp in Sources */,
 				6BA65C291F70424E00183E94 /* refraction.cpp in Sources */,
-				6BD89FBD2059951200CE5B05 /* texture.cpp in Sources */,
 				6BA65C2C1F70424E00183E94 /* asset.cpp in Sources */,
 				6BA65C2D1F70424E00183E94 /* box.cpp in Sources */,
 				6BA65C2E1F70424E00183E94 /* mesh.cpp in Sources */,
@@ -1311,9 +1329,11 @@
 				6B2E4C33213E72CA00FF69FA /* mask_boolean.cpp in Sources */,
 				6BA65C3C1F70424E00183E94 /* console.cpp in Sources */,
 				6BA65C3D1F70424E00183E94 /* occlusion_tester.cpp in Sources */,
+				6BC9116321466AFD00373774 /* light_spot.cpp in Sources */,
 				6BA65C3E1F70424E00183E94 /* scene.cpp in Sources */,
 				6BA65C3F1F70424E00183E94 /* spectrum.cpp in Sources */,
 				6BA65C401F70424E00183E94 /* utility.cpp in Sources */,
+				6BC9116121466AFA00373774 /* light_omni.cpp in Sources */,
 				6BA65C411F70424E00183E94 /* wellrng.cpp in Sources */,
 				6B1F6ABE20FC950A00FB8E0F /* bmp.c in Sources */,
 				6B1F6AC120FC951300FB8E0F /* tga.c in Sources */,
@@ -1336,6 +1356,7 @@
 				6BDC3C82207C384700D49570 /* config_parser.tab.cc in Sources */,
 				6B495EAB20A8E9240075D7EE /* image_map.cpp in Sources */,
 				6B94261A20928CA5007551AE /* parser_obj_tests.cpp in Sources */,
+				6BC9116021466AF700373774 /* light_area.cpp in Sources */,
 				6BDC3C83207C384700D49570 /* lex.yy.cc in Sources */,
 				6BDC3C84207C384700D49570 /* config_driver.cpp in Sources */,
 				6B4CA47420767AA800709064 /* file.cpp in Sources */,
@@ -1364,6 +1385,7 @@
 				6B2321F72094F050004FBAF5 /* triangle_tests.cpp in Sources */,
 				6BEB857E209226CD00B7CA30 /* light_tests.cpp in Sources */,
 				6B21659D1FEA7B9A008E5C2E /* filter_box.cpp in Sources */,
+				6BC9116621466B0100373774 /* light.cpp in Sources */,
 				6B5D7932209287FC0039AA8B /* occlusiontester_tests.cpp in Sources */,
 				6BEB857C209221C400B7CA30 /* imagefilm_tests.cpp in Sources */,
 				6B2E4C32213E72B600FF69FA /* dual.cpp in Sources */,
@@ -1374,13 +1396,13 @@
 				6BEB857D2092260F00B7CA30 /* imageio_tests.cpp in Sources */,
 				6B2321F82094F113004FBAF5 /* utility_tests.cpp in Sources */,
 				6BEB857B2092204200B7CA30 /* filter_tests.cpp in Sources */,
+				6BC9116421466AFE00373774 /* light_spot.cpp in Sources */,
 				6B2165A21FEA7B9A008E5C2E /* sampler_random.cpp in Sources */,
 				6B2165A31FEA7B9A008E5C2E /* sampler.cpp in Sources */,
 				6B2165A41FEA7B9A008E5C2E /* sampler_stratified.cpp in Sources */,
 				6B2165A51FEA7B9A008E5C2E /* filter_tent.cpp in Sources */,
 				6B06546E1FE9690B00A47B62 /* occlusion_tester.cpp in Sources */,
 				6B495EAA20A8E86E0075D7EE /* texture_image.cpp in Sources */,
-				6BBAA6761FE73E6E00C13844 /* area_light.cpp in Sources */,
 				6B2E4C2E213E72AB00FF69FA /* single_brdf.cpp in Sources */,
 				6BBAA6751FE73E5300C13844 /* kdtree.cpp in Sources */,
 				6B94261B20928D63007551AE /* parser_tests.cpp in Sources */,
@@ -1421,12 +1443,12 @@
 				6B2FC7992118895F00DEACB3 /* array2d_tests.cpp in Sources */,
 				6B2321FB2094FA35004FBAF5 /* vec3_tests.cpp in Sources */,
 				6BE25A281FDA9DC000360147 /* matrix4.cpp in Sources */,
-				6BD89FBE2059951200CE5B05 /* texture.cpp in Sources */,
 				6BF8002320923B5900150BE3 /* microfacets_tests.cpp in Sources */,
 				6BDCA10B2094DE8C000725C3 /* texture_tests.cpp in Sources */,
 				6B02B2771FD8BD390014D6CD /* point3.cpp in Sources */,
 				6B02B2761FD8BD1D0014D6CD /* ray.cpp in Sources */,
 				6B9015D020FDE6000032845E /* bmp.c in Sources */,
+				6BC9116221466AFA00373774 /* light_omni.cpp in Sources */,
 				6BE113CE1FD4C80900D01A38 /* vec2.cpp in Sources */,
 				6BE113CF1FD4C80900D01A38 /* console.cpp in Sources */,
 				6BE113D01FD4C80900D01A38 /* utility.cpp in Sources */,

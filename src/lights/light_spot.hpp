@@ -18,7 +18,7 @@
 #include "utility/spectrum.hpp"
 #include "geometry/matrix4.hpp"
 
- /**
+/**
  *  \brief Point emitting light in a cone shape
  *
  *  The LightSpot class provides an implementation of a point emitting
@@ -26,7 +26,8 @@
  *  point and thus it won't be rendered.
  *  This light is always positioned at (0,0,0) and the cone will point
  *  downward, the Matrix4 passed to its constructor is used to translate
- *  the light and rotate the cone.
+ *  the light and rotate the cone. Being this light infinitely small, the
+ *  scale does not work on it (rotation is used to rotate the cone).
  */
 class LightSpot : public Light
 {
@@ -45,7 +46,8 @@ public:
      *  value of the radius is hit. Obviously this is assumed to be smaller 
      *  than the total radius value
      */
-    LightSpot(const Spectrum& intensity, const Matrix4& transform, float radius, float falloff);
+    LightSpot(const Spectrum& intensity, const Matrix4& transform, float radius,
+              float falloff);
 
     /** \brief Return the radiance for a random ray
      *
@@ -64,7 +66,8 @@ public:
      *  \sa sample_visible_surface
      *  \sa pdf(const Ray* ray)const
      */
-    Spectrum sample_surface(float r0, float r1, float r2, float r3, Ray * out, float * pdf) const override;
+    Spectrum sample_surface(float r0, float r1, float r2, float r3, Ray* out,
+                            float* pdf) const override;
 
     /** \brief Generate the incident vector and return the radiance
      *
@@ -85,7 +88,9 @@ public:
      *  \sa sample_surface
      *  \sa pdf(const Point3* p, const Vec3* wi)const
      */
-    Spectrum sample_visible_surface(float r0, float r1, const Point3 * position, Vec3 * wi, float * pdf, float * distance) const override;
+    Spectrum
+    sample_visible_surface(float r0, float r1, const Point3* position, Vec3* wi,
+                           float* pdf, float* distance) const override;
 
     /** \brief Return the probability density function for this light
      *
@@ -96,7 +101,7 @@ public:
      *  \return The pdf for this light
      *  \sa sample_surface()
      */
-    float pdf(const Ray * ray) const override;
+    float pdf(const Ray* ray) const override;
 
     /** \brief Return the probability density function for this light
      *
@@ -108,7 +113,7 @@ public:
      *  \param[in] p UNUSED
      *  \param[in] wi UNUSED
      */
-    float pdf(const Point3 * p, const Vec3 * wi) const override;
+    float pdf(const Point3* p, const Vec3* wi) const override;
 
     /**
      *  \brief Returns true if the light can be rendered

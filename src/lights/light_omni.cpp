@@ -13,13 +13,13 @@ Spectrum
 LightOmni::sample_surface(float r0, float r1, float, float, Ray* out,
                           float* pdf) const
 {
+    const float COST = 1.f-2.f*r0;
     out->origin = light_position;
-    const float cost = 1.f-2.f*r0;
-    const float sint = sqrtf(max(0.f, 1-cost*cost));
-    const float phi = 2.f*ONE_PI*r1;
-    out->direction.x = sint*cosf(phi);
-    out->direction.y = sint*sinf(phi);
-    out->direction.z = cost;
+    const float SINT = sqrtf(max(0.f, 1-COST*COST));
+    const float PHI = 2.f*ONE_PI*r1;
+    out->direction.x = SINT*cosf(PHI);
+    out->direction.y = SINT*sinf(PHI);
+    out->direction.z = COST;
     *pdf = INV_FOURPI;
     return c;
 }

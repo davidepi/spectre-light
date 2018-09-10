@@ -48,6 +48,10 @@ direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
             }
         }
 
+        //No way that the light will be hit by bsdf sampling, return now
+        if(!light->renderable())
+            return L;
+
         //mip bsdf sampling
         //NULL is guaranteed not be used since the call will never be specular
         Spectrum bsdf_f = mat->sample_value(rand[3], rand[4], rand[5], &wo, hp,
