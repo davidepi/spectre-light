@@ -68,11 +68,11 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
     //avoid recursive children
     std::vector<std::string> consolidated_children = children;
     children.clear();
-    for(unsigned int i = 0; i<consolidated_children.size(); i++)
+    for(auto& i : consolidated_children)
     {
-        File file1 = is_absolute(consolidated_children[i].c_str())?
-                     File(consolidated_children[i].c_str()):
-                     current_dir.append(consolidated_children[i].c_str());
+        File file1 = is_absolute(i.c_str())?
+                     File(i.c_str()):
+                     current_dir.append(i.c_str());
         file = file1.absolute_path();
         if(file1.exists())
         {
@@ -89,15 +89,24 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
     children.resize(0);
 
     //build default sphere
-    default_sphere = new Sphere();
-    current_scene->inherit_shape(default_sphere);
+    default_sphere.mesh = new Sphere();
+    default_sphere.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
+    default_sphere.materials[0] = MtlLib.get_default();
+    default_sphere.materials_len = 1;
+    default_sphere.association = (unsigned char*)malloc(1);
+    default_sphere.association[0] = 0;
+    current_scene->inherit_shape(default_sphere.mesh);
 
     //build deferred objects
     build_materials();
     build_dualmaterials();
-    for(unsigned int i = 0; i<deferred_shapes.size(); i++)
-        parse_and_allocate_obj(deferred_shapes[i].c_str());
+    for(auto& deferred_shape : deferred_shapes)
+        parse_and_allocate_obj(deferred_shape.c_str());
     build_meshes();
+    build_lights();
+
+    free(default_sphere.materials);
+    free(default_sphere.association);
 
     //delete unused shapes, the ones not inherited by Scene
     //else add them to the scene
@@ -123,6 +132,7 @@ Renderer* ConfigDriver::parse(const std::string& f, Scene* scene)
     shapes.clear();
     deferred_shapes.clear();
     deferred_meshes.clear();
+    deferred_lights.clear();
     used_shapes.clear();
 
     return r;
@@ -274,8 +284,8 @@ const TextureImage* ConfigDriver::load_texture(const std::string& path)
     if(TexLib.contains_texture(tex_name))
         //TexLib already contains TextureImage
         addme = (TextureImage*)TexLib.get_texture(tex_name);
-    else if(cur_file.exists() && cur_file.readable() && !           cur_file.is_folder() &&
-       img_valid(cur_file.absolute_path(), cur_file.extension()))
+    else if(cur_file.exists() && cur_file.readable() && !cur_file.is_folder() &&
+            img_valid(cur_file.absolute_path(), cur_file.extension()))
     {
         //Texture Image will deal with same file but different texture names
         addme = new TextureImage(cur_file, tex_shift, tex_scale, tex_filter);
@@ -355,7 +365,8 @@ void ConfigDriver::build_materials()
                        (const TextureImage*)load_texture(mat->bump), RED);
             ```
              */
-            bump_map = new TextureNormal((const TextureImage*)load_texture(mat->bump));
+            bump_map = new TextureNormal(
+                    (const TextureImage*)load_texture(mat->bump));
         }
         else
             bump_map = new Bump();
@@ -601,12 +612,7 @@ void ConfigDriver::build_meshes()
         {
             //sdl that will always stays in the scene
             //construct the MeshObject (which is the parsed .obj) in place
-            mesh_o.mesh = default_sphere;
-            mesh_o.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
-            mesh_o.materials[0] = MtlLib.get_default();
-            mesh_o.materials_len = 1;
-            mesh_o.association = (unsigned char*)malloc(1);
-            mesh_o.association[0] = 0;
+            mesh_o = default_sphere;
         }
 
         Matrix4 transform;
@@ -624,71 +630,132 @@ void ConfigDriver::build_meshes()
         scale_matrix.set_scale(mesh_w.scale);
         //watchout the order!!!
         transform = position_matrix*rotation_matrix*scale_matrix;
-        Asset* current_asset;
-        if(!mesh_w.is_light)
-        {
-            current_asset = new Asset(mesh_o.mesh, transform, 1);
+        Asset* current_asset = new Asset(mesh_o.mesh, transform, 1);
 
-            //use parsed materials
-            if(mesh_w.material_name.empty())
-            {
-                current_asset->set_materials(mesh_o.materials,
-                                             mesh_o.materials_len,
-                                             mesh_o.association);
-            }
-            else //override materials
-            {
-                const Bsdf* overridden_material;
-                overridden_material = MtlLib.get(mesh_w.material_name);
-                if(overridden_material == NULL)
-                {
-                    //use default if the material is missing
-                    overridden_material = MtlLib.get_default();
-                    Console.warning(MESSAGE_MISSING_MATERIAL_OVERRIDE,
-                                    mesh_w.material_name.c_str(),
-                                    mesh_w.name.c_str());
-                }
-                const Bsdf* materials[1];
-                materials[0] = overridden_material;
-                unsigned char* associations;
-                associations = (unsigned char*)malloc
-                        (mesh_o.mesh->get_faces_number());
-                memset(associations, 0, mesh_o.mesh->get_faces_number());
-                current_asset->set_materials(materials, 1, associations);
-                free(associations);
-            }
-            current_scene->inherit_asset(current_asset);
-        }
-        else
+        //use parsed materials
+        if(mesh_w.material_name.empty())
         {
-            //blackbody
-            if(mesh_w.temperature>=0)
-                current_asset = new LightArea(mesh_o.mesh, transform,
-                                              mesh_w.temperature);
-            else
+            current_asset->set_materials(mesh_o.materials,
+                                         mesh_o.materials_len,
+                                         mesh_o.association);
+        }
+        else //override materials
+        {
+            const Bsdf* overridden_material;
+            overridden_material = MtlLib.get(mesh_w.material_name);
+            if(overridden_material == NULL)
             {
-                unsigned char r;
-                unsigned char g;
-                unsigned char b;
-                r = (unsigned char)clamp(mesh_w.color.x, 0.f, 255.f);
-                g = (unsigned char)clamp(mesh_w.color.y, 0.f, 255.f);
-                b = (unsigned char)clamp(mesh_w.color.z, 0.f, 255.f);
-                Spectrum color(ColorRGB(r, g, b), true);
-                current_asset = new LightArea(mesh_o.mesh, transform, color);
+                //use default if the material is missing
+                overridden_material = MtlLib.get_default();
+                Console.warning(MESSAGE_MISSING_MATERIAL_OVERRIDE,
+                                mesh_w.material_name.c_str(),
+                                mesh_w.name.c_str());
             }
-            //create a default material for cameras
             const Bsdf* materials[1];
-            materials[0] = MtlLib.get_default();
+            materials[0] = overridden_material;
             unsigned char* associations;
             associations = (unsigned char*)malloc
                     (mesh_o.mesh->get_faces_number());
             memset(associations, 0, mesh_o.mesh->get_faces_number());
             current_asset->set_materials(materials, 1, associations);
             free(associations);
-            current_scene->inherit_arealight((LightArea*)current_asset);
         }
+        current_scene->inherit_asset(current_asset);
         //resolve the mask
         current_asset->set_mask(build_mask(mesh_w.mask));
+    }
+}
+
+void ConfigDriver::build_lights()
+{
+    while(!deferred_lights.empty())
+    {
+        ParsedLight light = deferred_lights.back();
+        deferred_lights.pop_back();
+
+        //set color of the light
+        Spectrum intensity;
+        //blackbody
+        if(light.temperature>=0)
+            intensity = Spectrum(light.temperature);
+        else
+        {
+            unsigned char r;
+            unsigned char g;
+            unsigned char b;
+            r = (unsigned char)clamp(light.color.x, 0.f, 255.f);
+            g = (unsigned char)clamp(light.color.y, 0.f, 255.f);
+            b = (unsigned char)clamp(light.color.z, 0.f, 255.f);
+            intensity = Spectrum(ColorRGB(r, g, b), true);
+        }
+
+        //position the light into the scene
+        Matrix4 transform;
+        Matrix4 position_matrix;
+        Matrix4 rotation_matrix;
+        Matrix4 rotx_matrix;
+        Matrix4 roty_matrix;
+        Matrix4 rotz_matrix;
+        Matrix4 scale_matrix;
+        position_matrix.set_translation(light.position);
+        rotx_matrix.set_rotate_x(light.rotation.x);
+        roty_matrix.set_rotate_y(light.rotation.y);
+        rotz_matrix.set_rotate_z(light.rotation.z);
+        rotation_matrix = rotz_matrix*roty_matrix*rotx_matrix;
+        scale_matrix.set_scale(light.scale);
+        transform = position_matrix*rotation_matrix*scale_matrix;
+
+        switch(light.type)
+        {
+            case AREA:
+            {
+                Shape* shape;
+                //same code of build_meshed, check that one for comments
+                if(light.name != "Sphere")
+                {
+                    auto mesh_i = shapes.find(light.name);
+                    if(mesh_i != shapes.end())
+                    {
+                        shape = mesh_i->second.mesh;
+                        used_shapes.insert(light.name);
+                    }
+                    else
+                    {
+                        Console.warning(MESSAGE_SHAPE_NOT_FOUND,
+                                        light.name.c_str());
+                        break;
+                    }
+                }
+                else
+                    shape = default_sphere.mesh;
+                Asset* current_asset = new LightArea(shape, transform,
+                                                     intensity);
+                //create a default material for cameras
+                const Bsdf* materials[1];
+                materials[0] = MtlLib.get_default();
+                unsigned char* associations;
+                associations = (unsigned char*)malloc
+                        (shape->get_faces_number());
+                memset(associations, 0, shape->get_faces_number());
+                current_asset->set_materials(materials, 1, associations);
+                free(associations);
+                current_scene->inherit_arealight((LightArea*)current_asset);
+                break;
+            }
+            case OMNI:
+            {
+                Light* omni = new LightOmni(intensity, position_matrix);
+                current_scene->inherit_light(omni);
+                break;
+            }
+            case SPOT:
+            {
+                Light* spot = new LightSpot(intensity, transform, light.radius,
+                                            light.falloff);
+                current_scene->inherit_light(spot);
+                break;
+            }
+        }
     }
 }
 
@@ -702,10 +769,4 @@ MaskBoolean ConfigDriver::build_mask(const ParsedMask& mask)
         map = load_texture(mask.mask_tex);
     }
     return MaskBoolean(map, mask.mask_chn, mask.mask_inv);
-}
-
-ParsedMask::ParsedMask()
-{
-    mask_inv = false;
-    mask_chn = ALPHA;
 }

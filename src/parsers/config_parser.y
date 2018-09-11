@@ -105,6 +105,11 @@
 %token MASK "`mask` keyword"
 %token FIRST "`first` keyword"
 %token SECOND "`second` keyword"
+%token RADIUS "`radius` keyword"
+%token FALLOFF "`falloff` keyword"
+%token OMNI "`omni` keyword"
+%token SPOT "`spot` keyword"
+%token AREA "`area` keyword"
 %token SILVER "`Ag`"
 %token ALUMINIUM "`Al`"
 %token GOLD "`Au`"
@@ -167,7 +172,7 @@ stmt
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
 | SHAPE COLON STRING {driver.deferred_shapes.push_back($3.substr(1,$3.size()-2));}
 | WORLD COLON OPEN_CU world_obj CLOSE_CU {driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
-| LIGHT COLON OPEN_CU light_obj CLOSE_CU {driver.cur_mesh.is_light=true;driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
+| LIGHT COLON OPEN_CU light_obj CLOSE_CU {driver.deferred_lights.push_back(driver.cur_light);driver.cur_light=ParsedLight();}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
 | MATERIAL COLON STRING {driver.children.push_back($3.substr(1,$3.size()-2));}
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU {driver.deferred_materials.push_back(driver.cur_mat);driver.cur_mat=ParsedMaterial();}
@@ -223,11 +228,21 @@ world_stmt
 | COMMA
 ;
 
-light_obj: world_name light_rec | world_name;
-light_rec: light_rec world_stmt | light_rec light_stmt | light_stmt | world_stmt;
+light_obj: light_obj light_stmt | light_stmt;
 light_stmt
-: TEMPERATURE COLON UINT {driver.cur_mesh.temperature = $3;}
-| COLOR COLON vector {driver.cur_mesh.color = $3;}
+: NAME COLON STRING {driver.cur_light.name = $3.substr(1,$3.size()-2);}
+| TEMPERATURE COLON UINT {driver.cur_light.temperature = $3;}
+| COLOR COLON vector {driver.cur_light.color = $3;}
+| TYPE COLON AREA {driver.cur_light.type = AREA;}
+| TYPE COLON OMNI {driver.cur_light.type = OMNI;}
+| TYPE COLON SPOT {driver.cur_light.type = SPOT;}
+| POSITION COLON vector {driver.cur_light.position = $3;}
+| ROTATION COLON vector {driver.cur_light.rotation = $3;}
+| SCALE COLON vector {driver.cur_light.scale = $3;}
+| SCALE COLON number {driver.cur_light.scale = $3;}
+| RADIUS COLON FLOAT {driver.cur_light.radius = $3;}
+| FALLOFF COLON FLOAT {driver.cur_light.falloff = $3;}
+| COMMA
 ;
 
 texture_obj /* name is already known at this point */

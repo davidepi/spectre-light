@@ -146,12 +146,15 @@ Keys for Light objects
 
 Key | Type | Usage | Default value
 ---|---|---|---
-name | quoted string | The name of the light model. This is the name of a mesh previously parsed with the `shape` keyword | Syntax error
+name | quoted string | Used only by `area` lights, the name of the light model. This is the name of a mesh previously parsed with the `shape` keyword | none, if missing and the light is of type`area` the light is skipped
+type | enum | The type of the light. Possible values are `omni` for omnidirectional lights, `spot` for a light projecting a cone of light beneath it, `area` for an area light | area
 temperature | int+ | The temperature in kelvin of the light. This value will set the light color based on its temperature and thus should not be used in conjunction with the `color` keyword | This value is mutually exclusive with the `color` one. The latter is the one used as default
 color | float[3] | The spectrum emitted by this light. The spectrum is represented as a 3 values RGB number in range [0-255] |  [255,255,255]
 position | float[3] | The position of the light in the scene | [0,0,0]
 rotation | float[3] | The rotation of the light in the scene, in degrees | [0,0,0]
 scale | float[3] or float | The scaling applied to the light in the scene. The single float value applies uniform scaling to every dimension | 1
+radius | float | The radius of the `spot` light | 1
+falloff | float | The radius of the `spot` light after which the falloff kicks in | 0.75
 
 #### World
 Keys for World objects

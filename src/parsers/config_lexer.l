@@ -140,6 +140,11 @@ inverted {UPDATE_POS; return yy::ConfigParser::make_INV(loc);}
 mask {UPDATE_POS; return yy::ConfigParser::make_MASK(loc);}
 first {UPDATE_POS; return yy::ConfigParser::make_FIRST(loc);}
 second {UPDATE_POS; return yy::ConfigParser::make_SECOND(loc);}
+radius {UPDATE_POS; return yy::ConfigParser::make_RADIUS(loc);}
+falloff {UPDATE_POS; return yy::ConfigParser::make_FALLOFF(loc);}
+omni {UPDATE_POS; return yy::ConfigParser::make_OMNI(loc);}
+spot {UPDATE_POS; return yy::ConfigParser::make_SPOT(loc);}
+area {UPDATE_POS; return yy::ConfigParser::make_AREA(loc);}
 {uint}    { UPDATE_POS; return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
 {int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
 {float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
