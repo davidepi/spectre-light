@@ -54,12 +54,15 @@ Spectrum LightSpot::sample_visible_surface(float, float, const Point3* position,
                                            float* distance) const
 {
     *wi = light_position-*position;
-    *distance = wi->length();
+    const float DISTANCE2 =
+            (light_position.x-position->x)*(light_position.x-position->x)+
+            (light_position.y-position->y)*(light_position.y-position->y)+
+            (light_position.z-position->z)*(light_position.z-position->z);
+    *distance = sqrtf(DISTANCE2);
     wi->normalize();
     Vec3 wiL = world2light**wi;
     *pdf = 1.f;
-    return c*falloff(wiL.z, cos_cone_width, cos_falloff_start)/
-           (*distance**distance);
+    return c*falloff(wiL.z, cos_cone_width, cos_falloff_start)/DISTANCE2;
 }
 
 float LightSpot::pdf(const Ray*) const

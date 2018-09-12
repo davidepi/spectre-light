@@ -37,14 +37,19 @@ direct_l(const Scene* sc, const HitPoint* hp, const Ray* r, Sampler* sam,
             Ray r2(*point_s, wi);
             if(!bsdf_f.is_black() && !ot->is_occluded(&r2, light_distance))
             {
-                bsdfpdf = mat->pdf(&wo, hp, matrix, &wi, false);
-                if(bsdfpdf>0)
+                if(light->renderable())
                 {
-                    float weight = (lightpdf*lightpdf)/
-                                   (lightpdf*lightpdf+bsdfpdf*bsdfpdf);
-                    L += bsdf_f*direct_l*absdot(wi, *normal_s)*weight/
-                         lightpdf;
+                    bsdfpdf = mat->pdf(&wo, hp, matrix, &wi, false);
+                    if(bsdfpdf>0.f)
+                    {
+                        float weight = (lightpdf*lightpdf)/
+                                       (lightpdf*lightpdf+bsdfpdf*bsdfpdf);
+                        L += bsdf_f*direct_l*absdot(wi, *normal_s)*weight/
+                             lightpdf;
+                    }
                 }
+                else
+                    L += bsdf_f*direct_l*absdot(wi, *normal_s)/lightpdf;
             }
         }
 

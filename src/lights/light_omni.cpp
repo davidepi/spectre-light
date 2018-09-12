@@ -29,10 +29,14 @@ LightOmni::sample_visible_surface(float, float, const Point3* position,
                                   Vec3* wi, float* pdf, float* distance) const
 {
     *wi = light_position-*position;
-    *distance = wi->length();
+    const float DISTANCE2 =
+            (light_position.x-position->x)*(light_position.x-position->x)+
+            (light_position.y-position->y)*(light_position.y-position->y)+
+            (light_position.z-position->z)*(light_position.z-position->z);
+    *distance = sqrtf(DISTANCE2);
     wi->normalize();
     *pdf = 1.f;
-    return c/(*distance**distance);
+    return c/DISTANCE2;
 }
 
 float LightOmni::pdf(const Ray*) const

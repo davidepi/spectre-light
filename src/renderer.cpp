@@ -224,6 +224,8 @@ void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
         {
             for(int i = 0; i<spp; i++)
             {
+//                if((int)samples->posx == 200 && (int)samples->posy==270)
+//                    volatile int i = 0; //THIS IS USED TO DEBUG A SINLGE PIXEL
                 camera->create_ray(&(samples[i]), &r, &rx, &ry);
                 if(scene->k.intersect(&r, &h))
                 {
