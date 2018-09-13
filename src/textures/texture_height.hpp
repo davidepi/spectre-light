@@ -11,7 +11,7 @@ class TextureHeight : public Bump
 {
 public:
 
-    TextureHeight(const TextureImage* image, ImageChannel channel);
+    TextureHeight(const TextureImage* image, imgchannel_t channel);
 
     void bump(const HitPoint* hp, ShadingSpace* matrix,
               Normal* normal) const override;
@@ -20,7 +20,7 @@ private:
     void gradient(const HitPoint* hp, float* u, float* v) const;
 
     const TextureImage* image;
-    const ImageChannel channel;
+    const imgchannel_t channel;
 };
 
 #endif

@@ -89,9 +89,6 @@ public:
     virtual float pdf(const Vec3* wo, const Vec3* wh) const;
 };
 
-///Value used by the parser to know the distirbution type is `blinn`
-#define SPECTRE_DIST_BLINN 0
-
 /**
  *  \class Blinn microfacet_distributions.hpp
  *  \brief Blinn microfacet model
@@ -178,9 +175,6 @@ private:
     float exponent;
 };
 
-///Value used by the parser to know the distirbution type is `blinn`
-#define SPECTRE_DIST_BECKMANN 1
-
 /**
  *  \class Beckmann microfacet_distributions.hpp
  *  \brief Beckmann microfacet model
@@ -248,9 +242,6 @@ private:
     //alpha x
     float a;
 };
-
-///Value used by the parser to know the distirbution type is `blinn`
-#define SPECTRE_DIST_GGX 2
 
 /**
  *  \class GGXiso microfacet_distributions.hpp

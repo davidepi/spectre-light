@@ -15,14 +15,6 @@
 #ifndef __TEXTURE_IMAGE_HPP__
 #define __TEXTURE_IMAGE_HPP__
 
-/** Filtering type used by the TextureImage */
-enum TextureFilter_t
-{
-    UNFILTERED,
-    TRILINEAR,
-    EWA
-};
-
 //This magnificent bastard must come first, otherwise C++ linking is used anyway
 extern "C" {
 #include "utility/imageio/imageio.h"
@@ -32,27 +24,7 @@ extern "C" {
 #include "textures/image_map.hpp"
 #include "textures/texture_library.hpp"
 #include "primitives/hit_point.hpp"
-
-//Check image_map.hpp for details on ARGB/BGRA between the two architectures
-#ifndef IS_BIG_ENDIAN
-/** Channel of the TextureImage. ARGB order in little endian machines */
-enum ImageChannel
-{
-    ALPHA = 0,
-    RED = 1,
-    GREEN = 2,
-    BLUE = 3,
-};
-#else
-/** Channel of the TextureImage. BGRA order in big endian machines */
-enum ImageChannel
-{
-    BLUE = 0,
-    GREEN = 1,
-    RED = 2,
-    ALPHA = 3
-};
-#endif
+#include "textures/types_imgchannel.h"
 
 /**
  *  \brief Wrapper containing an ImageMap shifted and scaled
@@ -81,7 +53,7 @@ public:
      *  texture
      */
     TextureImage(const File& src, Vec2& shift, Vec2& scale,
-                 TextureFilter_t filter);
+                 texturefilter_t filter);
 
     /**
      *  \brief Constructor

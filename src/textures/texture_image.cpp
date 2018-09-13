@@ -4,7 +4,7 @@
 #include "texture_image.hpp"
 
 TextureImage::TextureImage(const File& src, Vec2& shift, Vec2& scale,
-                           TextureFilter_t filter):scale(scale), shift(shift)
+                           texturefilter_t filter):scale(scale), shift(shift)
 {
     unfiltered = filter == UNFILTERED;
     if(TexLib.contains_map(src.absolute_path())) //imagemap already parsed

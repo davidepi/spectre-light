@@ -18,9 +18,6 @@
 #include "cameras/camera.hpp"
 #include "settings.h"
 
-///Value used by the parser to know the camera type is `panorama`
-#define SPECTRE_CAMERA_PANORAMA 2
-
 /**
  *  \class Camera360
  *  \brief Model for an omni-directional camera

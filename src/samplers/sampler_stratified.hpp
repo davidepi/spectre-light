@@ -18,9 +18,6 @@
 #include <cmath>
 #include "samplers/sampler.hpp"
 
-///Value used by the parser to know the sampler type is `stratified`
-#define SPECTRE_SAMPLER_STRATIFIED 1
-
 /**
  * \class SamplerStratified sampler_stratified.hpp
  * \brief Sampler based on subregion sampling

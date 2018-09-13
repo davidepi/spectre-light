@@ -17,9 +17,6 @@
 
 #include "samplers/filter.hpp"
 
-///Value used by the parser to know the filter type is `box`
-#define SPECTRE_FILTER_BOX 0
-
 /**
  *  \class FilterBox filter_box.hpp "samplers/filter_box.hpp"
  *  \brief Implement the simplest filter

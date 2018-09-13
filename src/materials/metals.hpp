@@ -5,6 +5,7 @@
 #define __METALS_HPP__
 
 #include "utility/spectrum.hpp"
+#include "materials/types_metal.h"
 #include <initializer_list>
 
 /** \class Metal metals.hpp
@@ -35,41 +36,6 @@ public:
     const Spectrum n;
     ///The absorption coefficient of the metal
     const Spectrum k;
-};
-
-enum metal_t
-{
-    METAL_NO_VAL = -1,
-    METAL_SILVER = 0,
-    METAL_ALUMINIUM,
-    METAL_GOLD,
-    METAL_COPPER,
-    METAL_IRON,
-    METAL_MERCURY,
-    METAL_LEAD,
-    METAL_PLATINUM,
-    METAL_TUNGSTEN,
-    METAL_BERYLLIUM,
-    METAL_BISMUTH,
-    METAL_COBALT,
-    METAL_CHROMIUM,
-    METAL_GERMANIUM,
-    METAL_POTASSIUM,
-    METAL_LITHIUM,
-    METAL_MAGNESIUM,
-    METAL_MANGANESE,
-    METAL_MOLYBDENUM,
-    METAL_SODIUM,
-    METAL_NIOBIUM,
-    METAL_NICKEL,
-    METAL_PALLADIUM,
-    METAL_RHODIUM,
-    METAL_TANTALUM,
-    METAL_TITANIUM,
-    METAL_VANADIUM,
-    METAL_ZINC,
-    METAL_ZIRCONIUM,
-    METAL_MAX
 };
 
 const Metal METALS[METAL_MAX] = {

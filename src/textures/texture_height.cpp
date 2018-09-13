@@ -1,6 +1,6 @@
 #include "texture_height.hpp"
 
-TextureHeight::TextureHeight(const TextureImage* image, ImageChannel channel)
+TextureHeight::TextureHeight(const TextureImage* image, imgchannel_t channel)
         :channel(channel)
 {
     TextureHeight::image = image;

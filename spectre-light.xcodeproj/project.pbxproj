@@ -47,6 +47,9 @@
 		6B2321F92094F1ED004FBAF5 /* vec2_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2321EF2094EFB0004FBAF5 /* vec2_tests.cpp */; };
 		6B2321FB2094FA35004FBAF5 /* vec3_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2321F12094EFB1004FBAF5 /* vec3_tests.cpp */; };
 		6B2841B320971713000FC23C /* point2_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B2841B120971710000FC23C /* point2_tests.cpp */; };
+		6B2C62DD214A5EC600318815 /* parsed_structs.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B2C62DC214A5EC600318815 /* parsed_structs.c */; };
+		6B2C62DE214A5EC600318815 /* parsed_structs.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B2C62DC214A5EC600318815 /* parsed_structs.c */; };
+		6B2C62DF214A5EC600318815 /* parsed_structs.c in Sources */ = {isa = PBXBuildFile; fileRef = 6B2C62DC214A5EC600318815 /* parsed_structs.c */; };
 		6B2E4C2D213E72AA00FF69FA /* single_brdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EE0212729E900E08344 /* single_brdf.cpp */; };
 		6B2E4C2E213E72AB00FF69FA /* single_brdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EE0212729E900E08344 /* single_brdf.cpp */; };
 		6B2E4C2F213E72B300FF69FA /* multi_bsdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B640EDC212729E800E08344 /* multi_bsdf.cpp */; };
@@ -317,6 +320,14 @@
 		6B2321F12094EFB1004FBAF5 /* vec3_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = vec3_tests.cpp; sourceTree = "<group>"; };
 		6B2321F22094EFB1004FBAF5 /* triangle_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = triangle_tests.cpp; sourceTree = "<group>"; };
 		6B2841B120971710000FC23C /* point2_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = point2_tests.cpp; sourceTree = "<group>"; };
+		6B2C62DA214A5C7300318815 /* types_metal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = types_metal.h; path = src/materials/types_metal.h; sourceTree = "<group>"; };
+		6B2C62DB214A5CD200318815 /* parsed_structs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = parsed_structs.h; path = src/parsers/parsed_structs.h; sourceTree = "<group>"; };
+		6B2C62DC214A5EC600318815 /* parsed_structs.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = parsed_structs.c; path = src/parsers/parsed_structs.c; sourceTree = "<group>"; };
+		6B2C62E0214A5FDC00318815 /* types_light.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = types_light.h; path = src/lights/types_light.h; sourceTree = "<group>"; };
+		6B2C62E1214A604300318815 /* types_microfacet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = types_microfacet.h; path = src/materials/types_microfacet.h; sourceTree = "<group>"; };
+		6B2C62E2214A643700318815 /* types_imgchannel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = types_imgchannel.h; path = src/textures/types_imgchannel.h; sourceTree = "<group>"; };
+		6B2C62E3214A70C700318815 /* types_sampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = types_sampler.h; path = src/samplers/types_sampler.h; sourceTree = "<group>"; };
+		6B2C62E4214A880100318815 /* types_camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = types_camera.h; path = src/cameras/types_camera.h; sourceTree = "<group>"; };
 		6B2F31D9211DB0420013D09B /* array2D.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = array2D.hpp; path = src/utility/array2D.hpp; sourceTree = "<group>"; };
 		6B2FC7962118893F00DEACB3 /* array2d_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = array2d_tests.cpp; sourceTree = "<group>"; };
 		6B3091A921007DE70061CF37 /* jpg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpg.h; sourceTree = "<group>"; };
@@ -333,7 +344,6 @@
 		6B3494DD1F5224EE00691CE3 /* occlusion_tester.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = occlusion_tester.hpp; path = src/utility/occlusion_tester.hpp; sourceTree = "<group>"; };
 		6B3494DF1F52252500691CE3 /* sampler_random.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sampler_random.cpp; path = src/samplers/sampler_random.cpp; sourceTree = "<group>"; };
 		6B3494E01F52252500691CE3 /* sampler_random.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sampler_random.hpp; path = src/samplers/sampler_random.hpp; sourceTree = "<group>"; };
-		6B3494E31F52253E00691CE3 /* light_integrator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = light_integrator.hpp; path = src/integrators/light_integrator.hpp; sourceTree = "<group>"; };
 		6B3494E41F52253E00691CE3 /* path_tracer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = path_tracer.cpp; path = src/integrators/path_tracer.cpp; sourceTree = "<group>"; };
 		6B3494E51F52253E00691CE3 /* path_tracer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = path_tracer.hpp; path = src/integrators/path_tracer.hpp; sourceTree = "<group>"; };
 		6B3494E61F52253E00691CE3 /* ray_tracer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ray_tracer.cpp; path = src/integrators/ray_tracer.cpp; sourceTree = "<group>"; };
@@ -613,6 +623,7 @@
 				6BC9115921466AF100373774 /* light_spot.hpp */,
 				6BC9115A21466AF100373774 /* light.cpp */,
 				6BC9115421466AF000373774 /* light.hpp */,
+				6B2C62E0214A5FDC00318815 /* types_light.h */,
 			);
 			name = lights;
 			sourceTree = "<group>";
@@ -652,6 +663,8 @@
 				6B57FD162066984F00688CF8 /* config_parser.y */,
 				6BFA15222081097B00DCA94C /* parser_obj.cpp */,
 				6BFA15232081097B00DCA94C /* parser_obj.hpp */,
+				6B2C62DC214A5EC600318815 /* parsed_structs.c */,
+				6B2C62DB214A5CD200318815 /* parsed_structs.h */,
 				6B94C6382067F55500F55A1A /* README.md */,
 			);
 			name = parsers;
@@ -660,7 +673,6 @@
 		6B3494E21F52252D00691CE3 /* integrators */ = {
 			isa = PBXGroup;
 			children = (
-				6B3494E31F52253E00691CE3 /* light_integrator.hpp */,
 				6B3494E41F52253E00691CE3 /* path_tracer.cpp */,
 				6B3494E51F52253E00691CE3 /* path_tracer.hpp */,
 				6B3494E61F52253E00691CE3 /* ray_tracer.cpp */,
@@ -689,6 +701,7 @@
 				6B3494E01F52252500691CE3 /* sampler_random.hpp */,
 				6B01384B1ECF1C9A0093C61D /* sampler_stratified.cpp */,
 				6B01384C1ECF1C9A0093C61D /* sampler_stratified.hpp */,
+				6B2C62E3214A70C700318815 /* types_sampler.h */,
 			);
 			name = samplers;
 			sourceTree = "<group>";
@@ -944,6 +957,7 @@
 				6B6D188F1EDD705600EB720C /* camera_perspective.hpp */,
 				6B771A351ED3AED400EEF79B /* image_film.cpp */,
 				6B771A361ED3AED400EEF79B /* image_film.hpp */,
+				6B2C62E4214A880100318815 /* types_camera.h */,
 			);
 			name = cameras;
 			sourceTree = "<group>";
@@ -1033,6 +1047,7 @@
 				6B06BECA213DFF2900A857D4 /* texture_normal.hpp */,
 				6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */,
 				6BD89FC020599D8800CE5B05 /* texture_uniform.hpp */,
+				6B2C62E2214A643700318815 /* types_imgchannel.h */,
 			);
 			name = textures;
 			sourceTree = "<group>";
@@ -1070,6 +1085,8 @@
 				6B06BED4213DFF5600A857D4 /* shading_space.hpp */,
 				6B640EE0212729E900E08344 /* single_brdf.cpp */,
 				6B640EDF212729E900E08344 /* single_brdf.hpp */,
+				6B2C62DA214A5C7300318815 /* types_metal.h */,
+				6B2C62E1214A604300318815 /* types_microfacet.h */,
 			);
 			name = materials;
 			sourceTree = "<group>";
@@ -1186,6 +1203,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B42DF881F88DFF300C01215 /* fresnel_conditions.cpp in Sources */,
+				6B2C62DD214A5EC600318815 /* parsed_structs.c in Sources */,
 				6B42DF891F88DFF300C01215 /* microfacet.cpp in Sources */,
 				6BA65BE31F70421D00183E94 /* bvh.cpp in Sources */,
 				6BA65BE41F70421D00183E94 /* kdtree.cpp in Sources */,
@@ -1267,6 +1285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B359200208A638F0079F5DF /* parser_obj.cpp in Sources */,
+				6B2C62DE214A5EC600318815 /* parsed_structs.c in Sources */,
 				6B76AAB42084F08B008E234B /* point2.cpp in Sources */,
 				6BC109EC2074BD3600FFBE13 /* config_parser.tab.cc in Sources */,
 				6BC109ED2074BD3600FFBE13 /* lex.yy.cc in Sources */,
@@ -1420,6 +1439,7 @@
 				6B59C5D11FE3F7E700A08B7A /* asset.cpp in Sources */,
 				6B06BEDB213DFF6400A857D4 /* bump.cpp in Sources */,
 				6BE1DE1C1FE2B1BF00BF526F /* bvh.cpp in Sources */,
+				6B2C62DF214A5EC600318815 /* parsed_structs.c in Sources */,
 				6BE1DE1D1FE2B1BF00BF526F /* mesh.cpp in Sources */,
 				6BCDDF6B1FE09B6E007536FF /* box.cpp in Sources */,
 				6BCDDF6C1FE09B6E007536FF /* shape.cpp in Sources */,

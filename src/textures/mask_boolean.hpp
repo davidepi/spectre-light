@@ -50,7 +50,7 @@ public:
      *  \param[in] channel Channel of the texture used to get mask values
      *  \param[in] inverted True if the mask should be inverted
      */
-    MaskBoolean(const TextureImage* map, ImageChannel channel, bool inverted);
+    MaskBoolean(const TextureImage* map, imgchannel_t channel, bool inverted);
 
     ///Default destructor
     ~MaskBoolean() = default;
@@ -91,7 +91,7 @@ private:
     const TextureImage* map;
 
     /** Channel of the Image that wil be used */
-    ImageChannel channel;
+    imgchannel_t channel;
 
     /** True if this image has to be inverted */
     bool inverted;

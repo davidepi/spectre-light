@@ -158,7 +158,7 @@ public:
     std::string mask_tex;
 
     ///channel of the texture used as mask
-    ImageChannel mask_chn;
+    imgchannel_t mask_chn;
 
     ///true if the texture used as mask should be inverted
     bool mask_inv;
@@ -440,7 +440,7 @@ private:
     std::vector<ImageMap*> all_textures;
 
     ///Type of filtering that will be used on the textures
-    TextureFilter_t tex_filter;
+    texturefilter_t tex_filter;
 
     /**
      * \brief Creates and returns a TextureUniform

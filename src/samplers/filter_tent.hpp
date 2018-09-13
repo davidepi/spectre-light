@@ -18,9 +18,6 @@
 #include "samplers/filter.hpp"
 #include "utility/utility.hpp"
 
-///Value used by the parser to know the filter type is `tent`
-#define SPECTRE_FILTER_TENT 1
-
 /**
  *  \class FilterTent filter_tent.hpp "samplers/filter_tent.hpp"
  *  \brief Implement a filter with linear falloff

@@ -19,9 +19,6 @@
 #include "samplers/filter.hpp"
 #include "utility/utility.hpp"
 
-///Value used by the parser to know the filter type is `gaussian`
-#define SPECTRE_FILTER_GAUSS 2
-
 /**
  *  \class FilterGaussian filter_gaussian.hpp "samplers/filter_gaussian.hpp"
  *  \brief Implement a filter with gaussian falloff

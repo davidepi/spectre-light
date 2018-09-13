@@ -252,7 +252,7 @@ namespace yy {
     switch (that.type_get ())
     {
       case 141: // channel
-        value.copy< ImageChannel > (that.value);
+        value.copy< imgchannel_t > (that.value);
         break;
 
       case 143: // vector2
@@ -297,7 +297,7 @@ namespace yy {
     switch (that.type_get ())
     {
       case 141: // channel
-        value.move< ImageChannel > (that.value);
+        value.move< imgchannel_t > (that.value);
         break;
 
       case 143: // vector2
@@ -345,7 +345,7 @@ namespace yy {
     switch (that.type_get ())
     {
       case 141: // channel
-        value.copy< ImageChannel > (that.value);
+        value.copy< imgchannel_t > (that.value);
         break;
 
       case 143: // vector2
@@ -614,7 +614,7 @@ namespace yy {
       switch (yyr1_[yyn])
     {
       case 141: // channel
-        yylhs.value.build< ImageChannel > ();
+        yylhs.value.build< imgchannel_t > ();
         break;
 
       case 143: // vector2
@@ -1383,7 +1383,7 @@ namespace yy {
 
   case 155:
 #line 351 "config_parser.y" // lalr1.cc:870
-    {driver.cur_mask.mask_chn = yystack_[0].value.as< ImageChannel > ();}
+    {driver.cur_mask.mask_chn = yystack_[0].value.as< imgchannel_t > ();}
 #line 1388 "config_parser.tab.cc" // lalr1.cc:870
     break;
 
@@ -1395,25 +1395,25 @@ namespace yy {
 
   case 157:
 #line 356 "config_parser.y" // lalr1.cc:870
-    {yylhs.value.as< ImageChannel > () = RED;}
+    {yylhs.value.as< imgchannel_t > () = RED;}
 #line 1400 "config_parser.tab.cc" // lalr1.cc:870
     break;
 
   case 158:
 #line 357 "config_parser.y" // lalr1.cc:870
-    {yylhs.value.as< ImageChannel > () = GREEN;}
+    {yylhs.value.as< imgchannel_t > () = GREEN;}
 #line 1406 "config_parser.tab.cc" // lalr1.cc:870
     break;
 
   case 159:
 #line 358 "config_parser.y" // lalr1.cc:870
-    {yylhs.value.as< ImageChannel > () = BLUE;}
+    {yylhs.value.as< imgchannel_t > () = BLUE;}
 #line 1412 "config_parser.tab.cc" // lalr1.cc:870
     break;
 
   case 160:
 #line 359 "config_parser.y" // lalr1.cc:870
-    {yylhs.value.as< ImageChannel > () = ALPHA;}
+    {yylhs.value.as< imgchannel_t > () = ALPHA;}
 #line 1418 "config_parser.tab.cc" // lalr1.cc:870
     break;
 

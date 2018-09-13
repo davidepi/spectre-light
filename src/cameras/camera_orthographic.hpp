@@ -21,9 +21,6 @@
 #include "geometry/ray.hpp"
 #include "samplers/sampler.hpp"
 
-///Value used by the parser to know the camera type is `orthographic`
-#define SPECTRE_CAMERA_ORTHOGRAPHIC 0
-
 /**
  *  \class CameraOrthographic
  *  \brief A camera generating an orthographic projection

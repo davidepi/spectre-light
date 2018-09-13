@@ -19,9 +19,6 @@
 #include "samplers/filter.hpp"
 #include "settings.h" //ONE_PI
 
-///Value used by the parser to know the filter type is `lanczos`
-#define SPECTRE_FILTER_LANCZOS 4
-
 /**
  *  \class FilterLanczos filter_lanczos.hpp "samplers/filter_lanczos.hpp"
  *  \brief Implement a filter based on the sinc function

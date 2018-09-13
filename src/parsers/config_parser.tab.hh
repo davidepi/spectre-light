@@ -304,7 +304,7 @@ namespace yy {
     union union_type
     {
       // channel
-      char dummy1[sizeof(ImageChannel)];
+      char dummy1[sizeof(imgchannel_t)];
 
       // vector2
       char dummy2[sizeof(Vec2)];
@@ -499,7 +499,7 @@ namespace yy {
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const ImageChannel& v, const location_type& l);
+  basic_symbol (typename Base::kind_type t, const imgchannel_t& v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const Vec2& v, const location_type& l);
 
@@ -1330,7 +1330,7 @@ namespace yy {
     switch (other.type_get ())
     {
       case 141: // channel
-        value.copy< ImageChannel > (other.value);
+        value.copy< imgchannel_t > (other.value);
         break;
 
       case 143: // vector2
@@ -1379,7 +1379,7 @@ namespace yy {
     switch (this->type_get ())
     {
       case 141: // channel
-        value.copy< ImageChannel > (v);
+        value.copy< imgchannel_t > (v);
         break;
 
       case 143: // vector2
@@ -1427,7 +1427,7 @@ namespace yy {
   {}
 
   template <typename Base>
-  ConfigParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const ImageChannel& v, const location_type& l)
+  ConfigParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const imgchannel_t& v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -1507,7 +1507,7 @@ namespace yy {
   switch (yytype)
     {
       case 141: // channel
-        value.template destroy< ImageChannel > ();
+        value.template destroy< imgchannel_t > ();
         break;
 
       case 143: // vector2
@@ -1562,7 +1562,7 @@ namespace yy {
     switch (this->type_get ())
     {
       case 141: // channel
-        value.move< ImageChannel > (s.value);
+        value.move< imgchannel_t > (s.value);
         break;
 
       case 143: // vector2

@@ -15,9 +15,6 @@
 #ifndef __FILTER_MITCHELL_HPP__
 #define __FILTER_MITCHELL_HPP__
 
-///Value used by the parser to know the filter type is `mitchell`
-#define SPECTRE_FILTER_MITCHELL 3
-
 #include <cmath>
 #include "samplers/filter.hpp"
 
