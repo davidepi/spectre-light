@@ -8,17 +8,12 @@
 #include <cerrno>
 #include <string>
 #include <cstring>
-#include "parsers/config_parser.tab.hh"
-#include "parsers/config_driver.hpp"
-#undef yywrap
-#define yywrap() 1
-static yy::location loc;
 long int current_pos;
 long int last_line_pos;
+long int cur_line;
 %}
 %option nounput
 %option noinput
-%option noyywrap
 %option nounistd
 %option never-interactive
 uint \+?[0-9]+
@@ -56,152 +51,161 @@ zinc [Zz][Nn]
 zirconium [Zz][Rr]
 
 %{
-    #define YY_USER_ACTION loc.columns(yyleng);
+    #define UPDATE_LOC UPDATE_POS;UPDATE_COL
+    #define UPDATE_COL yylloc.last_column=yylloc.first_column+strlen(yytext)
     #define UPDATE_POS current_pos+=strlen(yytext)
+    #define EAT_COL yylloc.first_column = yylloc.last_column+strlen(yytext);yylloc.last_column = yylloc.first_column
+    #define ZERO_COL yylloc.first_column = 0;yylloc.last_column=0
 %}
 
 %%
 
-%{
-    loc.step();
-%}
-: { UPDATE_POS; return yy::ConfigParser::make_COLON(loc); }
-\[ { UPDATE_POS; return yy::ConfigParser::make_OPEN_SQ(loc); }
-\] { UPDATE_POS; return yy::ConfigParser::make_CLOSE_SQ(loc); }
-\{ { UPDATE_POS; return yy::ConfigParser::make_OPEN_CU(loc); }
-\} { UPDATE_POS; return yy::ConfigParser::make_CLOSE_CU(loc); }
-, { UPDATE_POS; return yy::ConfigParser::make_COMMA(loc); }
-out { UPDATE_POS; return yy::ConfigParser::make_OUTPUT(loc); }
-integrator { UPDATE_POS; return yy::ConfigParser::make_INTEGRATOR(loc); }
-path         { UPDATE_POS; return yy::ConfigParser::make_PATH_TRACE(loc); }
-resolution { UPDATE_POS; return yy::ConfigParser::make_RESOLUTION(loc); }
-spp {UPDATE_POS; return yy::ConfigParser::make_SPP(loc); }
-width { UPDATE_POS; return yy::ConfigParser::make_WIDTH(loc); }
-height { UPDATE_POS; return yy::ConfigParser::make_HEIGHT(loc); }
-value0 { UPDATE_POS; return yy::ConfigParser::make_VAL_0(loc); }
-value1 { UPDATE_POS; return yy::ConfigParser::make_VAL_1(loc); }
-sampler { UPDATE_POS; return yy::ConfigParser::make_SAMPLER(loc); }
-random { UPDATE_POS; return yy::ConfigParser::make_RANDOM(loc); }
-stratified { UPDATE_POS; return yy::ConfigParser::make_STRATIFIED(loc); }
-filter { UPDATE_POS; return yy::ConfigParser::make_FILTER(loc); }
-type { UPDATE_POS; return yy::ConfigParser::make_TYPE(loc); }
-box { UPDATE_POS; return yy::ConfigParser::make_BOX(loc); }
-tent { UPDATE_POS; return yy::ConfigParser::make_TENT(loc); }
-triangle { UPDATE_POS; return yy::ConfigParser::make_TENT(loc); }
-gauss { UPDATE_POS; return yy::ConfigParser::make_GAUSS(loc); }
-gaussian { UPDATE_POS; return yy::ConfigParser::make_GAUSS(loc); }
-mitchell { UPDATE_POS; return yy::ConfigParser::make_MITCHELL(loc); }
-lanczos { UPDATE_POS; return yy::ConfigParser::make_LANCZOS(loc); }
-unfiltered { UPDATE_POS; return yy::ConfigParser::make_UNFILTERED(loc); }
-trilinear { UPDATE_POS; return yy::ConfigParser::make_TRILINEAR(loc); }
-ewa {UPDATE_POS; return yy::ConfigParser::make_EWA(loc); }
-camera {UPDATE_POS; return yy::ConfigParser::make_CAMERA(loc); }
-perspective { UPDATE_POS; return yy::ConfigParser::make_PERSPECTIVE(loc); }
-panorama {UPDATE_POS; return yy::ConfigParser::make_PANORAMA(loc); }
-orthographic { UPDATE_POS; return yy::ConfigParser::make_ORTHOGRAPHIC(loc); }
-position {UPDATE_POS; return yy::ConfigParser::make_POSITION(loc); }
-target {UPDATE_POS; return yy::ConfigParser::make_TARGET(loc); }
-up { UPDATE_POS; return yy::ConfigParser::make_UP(loc); }
-fov { UPDATE_POS; return yy::ConfigParser::make_FOV(loc); }
-shape { UPDATE_POS; return yy::ConfigParser::make_SHAPE(loc); }
-world { UPDATE_POS; return yy::ConfigParser::make_WORLD(loc); }
-light { UPDATE_POS; return yy::ConfigParser::make_LIGHT(loc); }
-name { UPDATE_POS; return yy::ConfigParser::make_NAME(loc); }
-rotation { UPDATE_POS; return yy::ConfigParser::make_ROTATION(loc); }
-scale { UPDATE_POS; return yy::ConfigParser::make_SCALE(loc); }
-shift { UPDATE_POS; return yy::ConfigParser::make_SHIFT(loc); }
-temperature { UPDATE_POS; return yy::ConfigParser::make_TEMPERATURE(loc); }
-material { UPDATE_POS; return yy::ConfigParser::make_MATERIAL(loc); }
-dualmaterial {UPDATE_POS; return yy::ConfigParser::make_DUALMATERIAL(loc);}
-texture { UPDATE_POS; return yy::ConfigParser::make_TEXTURE(loc); }
-src {UPDATE_POS; return yy::ConfigParser::make_SRC(loc); }
-matte { UPDATE_POS; return yy::ConfigParser::make_MATTE(loc); }
-glossy { UPDATE_POS; return yy::ConfigParser::make_GLOSSY(loc); }
-metal { UPDATE_POS; return yy::ConfigParser::make_METAL(loc); }
-glass { UPDATE_POS; return yy::ConfigParser::make_GLASS(loc); }
-ior { UPDATE_POS; return yy::ConfigParser::make_IOR(loc); }
-roughness { UPDATE_POS; return yy::ConfigParser::make_ROUGHNESS(loc); }
-anisotropy { UPDATE_POS; return yy::ConfigParser::make_ANISOTROPY(loc); }
-distribution { UPDATE_POS; return yy::ConfigParser::make_DISTRIBUTION(loc); }
-diffuse { UPDATE_POS; return yy::ConfigParser::make_DIFFUSE(loc); }
-specular { UPDATE_POS; return yy::ConfigParser::make_SPECULAR(loc); }
-bump {/* UPDATE_POS; return yy::ConfigParser::make_BUMP(loc); */}
-normal {UPDATE_POS; return yy::ConfigParser::make_NORMAL(loc);}
-blinn { UPDATE_POS; return yy::ConfigParser::make_BLINN(loc); }
-beckmann { UPDATE_POS; return yy::ConfigParser::make_BECKMANN(loc); }
-ggx { UPDATE_POS; return yy::ConfigParser::make_GGX(loc); }
-color {UPDATE_POS; return yy::ConfigParser::make_COLOR(loc);}
-element {UPDATE_POS; return yy::ConfigParser::make_ELEM(loc);}
-"using channel R" {UPDATE_POS; return yy::ConfigParser::make_CHNR(loc);}
-"using channel G" {UPDATE_POS; return yy::ConfigParser::make_CHNG(loc);}
-"using channel B" {UPDATE_POS; return yy::ConfigParser::make_CHNB(loc);}
-"using channel A" {UPDATE_POS; return yy::ConfigParser::make_CHNA(loc);}
-inverted {UPDATE_POS; return yy::ConfigParser::make_INV(loc);}
-mask {UPDATE_POS; return yy::ConfigParser::make_MASK(loc);}
-first {UPDATE_POS; return yy::ConfigParser::make_FIRST(loc);}
-second {UPDATE_POS; return yy::ConfigParser::make_SECOND(loc);}
-radius {UPDATE_POS; return yy::ConfigParser::make_RADIUS(loc);}
-falloff {UPDATE_POS; return yy::ConfigParser::make_FALLOFF(loc);}
-omni {UPDATE_POS; return yy::ConfigParser::make_OMNI(loc);}
-spot {UPDATE_POS; return yy::ConfigParser::make_SPOT(loc);}
-area {UPDATE_POS; return yy::ConfigParser::make_AREA(loc);}
-{uint}    { UPDATE_POS; return yy::ConfigParser::make_UINT(atoi(yytext),loc); }
-{int}    { UPDATE_POS; return yy::ConfigParser::make_INT(atoi(yytext),loc); }
-{float} { UPDATE_POS; return yy::ConfigParser::make_FLOAT(atof(yytext),loc); }
-{string} { UPDATE_POS; return yy::ConfigParser::make_STRING(yytext,loc); }
-{silver} { UPDATE_POS; return yy::ConfigParser::make_SILVER(loc);}
-{aluminium} { UPDATE_POS; return yy::ConfigParser::make_ALUMINIUM(loc);}
-{gold} { UPDATE_POS; return yy::ConfigParser::make_GOLD(loc);}
-{copper} { UPDATE_POS; return yy::ConfigParser::make_COPPER(loc);}
-{iron} { UPDATE_POS; return yy::ConfigParser::make_IRON(loc);}
-{mercury} { UPDATE_POS; return yy::ConfigParser::make_MERCURY(loc);}
-{lead} { UPDATE_POS; return yy::ConfigParser::make_LEAD(loc);}
-{platinum} { UPDATE_POS; return yy::ConfigParser::make_PLATINUM(loc);}
-{tungsten} { UPDATE_POS; return yy::ConfigParser::make_TUNGSTEN(loc);}
-{beryllium} {UPDATE_POS; return yy::ConfigParser::make_BERYLLIUM(loc);}
-{bismuth} {UPDATE_POS; return yy::ConfigParser::make_BISMUTH(loc);}
-{cobalt} {UPDATE_POS; return yy::ConfigParser::make_COBALT(loc);}
-{chromium} {UPDATE_POS; return yy::ConfigParser::make_CHROMIUM(loc);}
-{germanium} {UPDATE_POS; return yy::ConfigParser::make_GERMANIUM(loc);}
-{potassium} {UPDATE_POS; return yy::ConfigParser::make_POTASSIUM(loc);}
-{lithium} {UPDATE_POS; return yy::ConfigParser::make_LITHIUM(loc);}
-{magnesium} {UPDATE_POS; return yy::ConfigParser::make_MAGNESIUM(loc);}
-{manganese} {UPDATE_POS; return yy::ConfigParser::make_MANGANESE(loc);}
-{molybdenum} {UPDATE_POS; return yy::ConfigParser::make_MOLYBDENUM(loc);}
-{sodium} {UPDATE_POS; return yy::ConfigParser::make_SODIUM(loc);}
-{niobium} {UPDATE_POS; return yy::ConfigParser::make_NIOBIUM(loc);}
-{nickel} {UPDATE_POS; return yy::ConfigParser::make_NICKEL(loc);}
-{palladium} {UPDATE_POS; return yy::ConfigParser::make_PALLADIUM(loc);}
-{rhodium} {UPDATE_POS; return yy::ConfigParser::make_RHODIUM(loc);}
-{tantalum} {UPDATE_POS; return yy::ConfigParser::make_TANTALUM(loc);}
-{titanium} {UPDATE_POS; return yy::ConfigParser::make_TITANIUM(loc);}
-{vanadium} {UPDATE_POS; return yy::ConfigParser::make_VANADIUM(loc);}
-{zinc} {UPDATE_POS; return yy::ConfigParser::make_ZINC(loc);}
-{zirconium} {UPDATE_POS; return yy::ConfigParser::make_ZIRCONIUM(loc);}
-#[^\n\r]* {UPDATE_POS; loc.step();}
-[ \t\r]   {UPDATE_POS; loc.step();}
-[\n]     {UPDATE_POS; loc.lines(yyleng);loc.step(); last_line_pos=current_pos; }
-.        {UPDATE_POS; driver.unknown_char(loc,yytext[0]);}
-<<EOF>>            { UPDATE_POS; return yy::ConfigParser::make_END(loc); }
+: { UPDATE_LOC; return COLON; }
+\[ { UPDATE_LOC; return OPEN_SQ; }
+\] { UPDATE_LOC; return CLOSE_SQ; }
+\{ { UPDATE_LOC; return OPEN_CU; }
+\} { UPDATE_LOC; return CLOSE_CU; }
+, { UPDATE_LOC; return COMMA; }
+out { UPDATE_LOC; return OUTPUT; }
+integrator { UPDATE_LOC; return INTEGRATOR; }
+path         { UPDATE_LOC; return PATH_TRACE; }
+resolution { UPDATE_LOC; return RESOLUTION; }
+spp {UPDATE_LOC; return SPP; }
+width { UPDATE_LOC; return WIDTH; }
+height { UPDATE_LOC; return HEIGHT; }
+value0 { UPDATE_LOC; return VAL_0; }
+value1 { UPDATE_LOC; return VAL_1; }
+sampler { UPDATE_LOC; return SAMPLER; }
+random { UPDATE_LOC; return RANDOM; }
+stratified { UPDATE_LOC; return STRATIFIED; }
+filter { UPDATE_LOC; return FILTER; }
+type { UPDATE_LOC; return TYPE; }
+box { UPDATE_LOC; return BOX; }
+tent { UPDATE_LOC; return TENT; }
+triangle { UPDATE_LOC; return TENT; }
+gauss { UPDATE_LOC; return GAUSS; }
+gaussian { UPDATE_LOC; return GAUSS; }
+mitchell { UPDATE_LOC; return MITCHELL; }
+lanczos { UPDATE_LOC; return LANCZOS; }
+unfiltered { UPDATE_LOC; return UNFILTERED; }
+trilinear { UPDATE_LOC; return TRILINEAR; }
+ewa {UPDATE_LOC; return EWA; }
+camera {UPDATE_LOC; return CAMERA; }
+perspective { UPDATE_LOC; return PERSPECTIVE; }
+panorama {UPDATE_LOC; return PANORAMA; }
+orthographic { UPDATE_LOC; return ORTHOGRAPHIC; }
+position {UPDATE_LOC; return POSITION; }
+target {UPDATE_LOC; return TARGET; }
+up { UPDATE_LOC; return UP; }
+fov { UPDATE_LOC; return FOV; }
+shape { UPDATE_LOC; return SHAPE; }
+world { UPDATE_LOC; return WORLD; }
+light { UPDATE_LOC; return LIGHT; }
+name { UPDATE_LOC; return NAME; }
+rotation { UPDATE_LOC; return ROTATION; }
+scale { UPDATE_LOC; return SCALE; }
+shift { UPDATE_LOC; return SHIFT; }
+temperature { UPDATE_LOC; return TEMPERATURE; }
+material { UPDATE_LOC; return MATERIAL; }
+dualmaterial {UPDATE_LOC; return DUALMATERIAL;}
+texture { UPDATE_LOC; return TEXTURE; }
+src {UPDATE_LOC; return SRC; }
+matte { UPDATE_LOC; return MATTE; }
+glossy { UPDATE_LOC; return GLOSSY; }
+metal { UPDATE_LOC; return METAL; }
+glass { UPDATE_LOC; return GLASS; }
+ior { UPDATE_LOC; return IOR; }
+roughness { UPDATE_LOC; return ROUGHNESS; }
+anisotropy { UPDATE_LOC; return ANISOTROPY; }
+distribution { UPDATE_LOC; return DISTRIBUTION; }
+diffuse { UPDATE_LOC; return DIFFUSE; }
+specular { UPDATE_LOC; return SPECULAR; }
+bump {/* UPDATE_LOC; return BUMP; */}
+normal {UPDATE_LOC; return NORMAL;}
+blinn { UPDATE_LOC; return BLINN; }
+beckmann { UPDATE_LOC; return BECKMANN; }
+ggx { UPDATE_LOC; return GGX; }
+color {UPDATE_LOC; return COLOR;}
+element {UPDATE_LOC; return ELEM;}
+"using channel R" {UPDATE_LOC; return CHNR;}
+"using channel G" {UPDATE_LOC; return CHNG;}
+"using channel B" {UPDATE_LOC; return CHNB;}
+"using channel A" {UPDATE_LOC; return CHNA;}
+inverted {UPDATE_LOC; return INV;}
+mask {UPDATE_LOC; return MASK;}
+first {UPDATE_LOC; return FIRST;}
+second {UPDATE_LOC; return SECOND;}
+radius {UPDATE_LOC; return RADIUS;}
+falloff {UPDATE_LOC; return FALLOFF;}
+omni {UPDATE_LOC; return OMNI;}
+spot {UPDATE_LOC; return SPOT;}
+area {UPDATE_LOC; return AREA;}
+{uint}    { UPDATE_LOC; yylval.uval = atoi(yytext); return UINT; }
+{int}    { UPDATE_LOC; yylval.ival = atoi(yytext); return INT; }
+{float} { UPDATE_LOC; yylval.fval = atof(yytext); return FLOAT; }
+{string} { UPDATE_LOC; yylval.sval = strdup(yytext); return STRING; }
+{silver} { UPDATE_LOC; return SILVER;}
+{aluminium} { UPDATE_LOC; return ALUMINIUM;}
+{gold} { UPDATE_LOC; return GOLD;}
+{copper} { UPDATE_LOC; return COPPER;}
+{iron} { UPDATE_LOC; return IRON;}
+{mercury} { UPDATE_LOC; return MERCURY;}
+{lead} { UPDATE_LOC; return LEAD;}
+{platinum} { UPDATE_LOC; return PLATINUM;}
+{tungsten} { UPDATE_LOC; return TUNGSTEN;}
+{beryllium} {UPDATE_LOC; return BERYLLIUM;}
+{bismuth} {UPDATE_LOC; return BISMUTH;}
+{cobalt} {UPDATE_LOC; return COBALT;}
+{chromium} {UPDATE_LOC; return CHROMIUM;}
+{germanium} {UPDATE_LOC; return GERMANIUM;}
+{potassium} {UPDATE_LOC; return POTASSIUM;}
+{lithium} {UPDATE_LOC; return LITHIUM;}
+{magnesium} {UPDATE_LOC; return MAGNESIUM;}
+{manganese} {UPDATE_LOC; return MANGANESE;}
+{molybdenum} {UPDATE_LOC; return MOLYBDENUM;}
+{sodium} {UPDATE_LOC; return SODIUM;}
+{niobium} {UPDATE_LOC; return NIOBIUM;}
+{nickel} {UPDATE_LOC; return NICKEL;}
+{palladium} {UPDATE_LOC; return PALLADIUM;}
+{rhodium} {UPDATE_LOC; return RHODIUM;}
+{tantalum} {UPDATE_LOC; return TANTALUM;}
+{titanium} {UPDATE_LOC; return TITANIUM;}
+{vanadium} {UPDATE_LOC; return VANADIUM;}
+{zinc} {UPDATE_LOC; return ZINC;}
+{zirconium} {UPDATE_LOC; return ZIRCONIUM;}
+#[^\n\r]* {UPDATE_LOC;}
+[ \t]+   {UPDATE_POS; EAT_COL;}
+[\r]     {UPDATE_POS; ZERO_COL;}
+[\n]     {UPDATE_POS; ZERO_COL; cur_line++; last_line_pos=current_pos; }
+.        {UPDATE_LOC; driver.unknown_char(loc,yytext[0]);}
+<<EOF>>  { UPDATE_LOC; return END; }
 
 %%
 
-void ConfigDriver::scan_begin()
+int yywrap(void)
+{
+    return 1;
+}
+
+void config_scan_begin(const char* filename)
 {
     errno = 0;
     current_pos = 0;
     last_line_pos = 0;
-    yyin = fopen(file.c_str(), "r");
-    if(!yyin)
-        Console.critical(MESSAGE_INPUT_ERROR,file.c_str(),strerror(errno));
+    cur_line = 1;
+    ZERO_COL;
+    yyin = fopen(filename, "r");
+//    if(!yyin)
+//        Console.critical(MESSAGE_INPUT_ERROR,file.c_str(),strerror(errno));
 }
 
-void ConfigDriver::scan_end()
+void config_scan_end()
 {
     fclose(yyin);
 }
 
-int ConfigDriver::get_line(char* buf,int len)
+//get a portion of the line being parsed
+int config_get_line(char* buf, int len)
 {
     int line_offset = 0;
     //entire line can't fit in buffer

@@ -22,7 +22,7 @@ enum mat_t
 struct ParsedMaterial
 {
     /** Name of the material */
-    const char* name;
+    char* name;
     
     /** Element of the material, used only if ParsedMaterial::type is METAL */
     enum metal_t elem;
@@ -46,19 +46,19 @@ struct ParsedMaterial
     float rough_y;
     
     /** Name of the diffuse texture, as it can be found in the TextureLibrary */
-    const char* diffuse;
+    char* diffuse;
     
     /** Uniform texture if the material is going to use an uniform value */
     uint8_t diffuse_uniform[3];
     
     /** Name of the specular texture, as it is found in the TextureLibrary */
-    const char* specular;
+    char* specular;
     
     /** Uniform texture if the material is going to use an uniform value */
     uint8_t specular_uniform[3];
     
     /** Name of the normal texture, as it can be found in the TextureLibrary */
-    const char* normal;
+    char* normal;
 };
 
 /**
@@ -71,7 +71,7 @@ void init_ParsedMaterial(struct ParsedMaterial* val);
 struct ParsedMask
 {
     /** Name of the texture used as mask */
-    const char* mask_tex;
+    char* mask_tex;
     
     /** Channel of the texture used as mask */
     enum imgchannel_t mask_chn;
@@ -90,10 +90,10 @@ void init_ParsedMask(struct ParsedMask* val);
 struct ParsedTexture
 {
     /** Temp val for the name of the current texture being parsed */
-    const char* name;
+    char* name;
     
     /** Temp val for the location on disk of the current texture being parsed */
-    const char* src;
+    char* src;
     
     /** Temp val, the RGB color of the TextureUniform currently being parsed */
     uint8_t color[3];
@@ -118,7 +118,7 @@ void init_ParsedTexture(struct ParsedTexture* val);
 struct ParsedLight
 {
     /** Name of the MeshObject in object space if AreaLight */
-    const char* name;
+    char* name;
     
     /** The light type */
     enum light_t type;
@@ -155,13 +155,13 @@ void init_ParsedLight(struct ParsedLight* val);
 struct ParsedDualMaterial
 {
     /** Name of the current material */
-    const char* name;
+    char* name;
     
     /** Name of the first material composing the dual material */
-    const char* first;
+    char* first;
     
     /** Name of the second material composing the dual material */
-    const char* second;
+    char* second;
     
     /** Mask used in the material */
     struct ParsedMask mask;
@@ -176,7 +176,7 @@ void init_ParsedDualMaterial(struct ParsedDualMaterial* val);
 struct ParsedMeshWorld
 {
     /** Name of the MeshObject in object space */
-    const char* name;
+    char* name;
     
     /** Name of the material, if the object space material will be overridden */
     const char* material_name;
@@ -329,12 +329,18 @@ struct ParsedScene
     /** Temp texture that will be copied where needed */
     struct ParsedTexture cur_tex;
     
+    /** Temp mesh in world space that will be copied where needed */
+    struct ParsedMeshWorld cur_mesh;
+    
+    /** Temp light that will be copied where needed */
+    struct ParsedLight cur_light;
+    
      /*----------------.
      |   Image params  |
      `----------------*/
     
     /** The name of the output image that will be created by the renderer */
-    const char* output;
+    char* output;
     
     /** The width of the output image that will be created by the renderer */
     int width;
@@ -405,5 +411,19 @@ struct ParsedScene
     struct ResizableStack children;
     
 };
+
+/**
+ *  \brief Initialize a ParsedScene
+ *  \param[in,out] val The struct that will be initialized
+ */
+void init_ParsedScene(struct ParsedScene* val);
+
+/**
+ *  \brief Frees the memory of objects inside a ParsedScene
+ *  \warning This does not frees the memory of the string contained inside the
+ *  ParsedScene! Those must be handled by the programmer!
+ *  \param[in,out] val The ParsedScene that will be deallocated
+ */
+void deinit_ParsedScene(struct ParsedScene* val);
 
 #endif

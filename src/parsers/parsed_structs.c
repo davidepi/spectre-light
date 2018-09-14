@@ -87,6 +87,51 @@ void init_ParsedMeshWorld(struct ParsedMeshWorld* val)
     init_ParsedMask(&(val->mask));
 }
 
+void init_ParsedScene(struct ParsedScene* val)
+{
+    val->output = NULL;
+    val->width = 800;
+    val->height = 600;
+    val->spp = 121;
+    val->camera_pos[0] = 0.f;
+    val->camera_pos[1] = 0.f;
+    val->camera_pos[2] = 0.f;
+    val->camera_tar[0] = 0.f;
+    val->camera_tar[1] = 0.f;
+    val->camera_tar[2] = 1.f;
+    val->camera_up[0] = 0.f;
+    val->camera_up[1] = 1.f;
+    val->camera_up[2] = 0.f;
+    val->fov = 55.f;
+    val->camera_type = PERSPECTIVE;
+    val->sampler_type = STRATIFIED;
+    val->filter_type = MITCHELL;
+    val->value0 = 0.33f;
+    val->value1 = 0.33f;
+    init_ParsedMaterial(&(val->cur_mat));
+    init_ParsedDualMaterial(&(val->cur_dualmat));
+    init_ParsedMask(&(val->cur_mask));
+    init_ParsedTexture(&(val->cur_tex));
+    init_ParsedMeshWorld(&(val->cur_mesh));
+    init_ParsedLight(&(val->cur_light));
+    init_ResizableParsed(&(val->parsed_textures));
+    init_ResizableParsed(&(val->parsed_materials));
+    init_ResizableParsed(&(val->parsed_dualmaterials));
+    init_ResizableStack(&(val->parsed_mesh_object));
+    init_ResizableParsed(&(val->parsed_mesh_world));
+    init_ResizableStack(&(val->children));
+}
+
+void deinit_ParsedScene(struct ParsedScene* val)
+{
+    deinit_ResizableParsed(&(val->parsed_textures));
+    deinit_ResizableParsed(&(val->parsed_materials));
+    deinit_ResizableParsed(&(val->parsed_dualmaterials));
+    deinit_ResizableStack(&(val->parsed_mesh_object));
+    deinit_ResizableParsed(&(val->parsed_mesh_world));
+    deinit_ResizableStack(&(val->children));
+}
+
 void realloc_ResizableParsed(struct ResizableParsed* arr)
 {
     union ParsedElement* tmp = arr->array;

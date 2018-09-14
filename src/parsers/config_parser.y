@@ -1,35 +1,20 @@
 /* Created,  24 Mar 2018 */
 /* Last Edit  3 Apr 2018 */
 
-%skeleton "lalr1.cc"
-%require "3.0.4"
-%defines
-%define parser_class_name {ConfigParser}
-%define api.token.constructor
-%define api.value.type variant
-%define parse.assert
+%define api.value.type union-directive
+%define lr.type lalr
 %code requires
-{
-    #include <string>
-    #include "geometry/vec3.hpp"
-    #include "geometry/vec2.hpp"
-    #include "materials/metals.hpp"
-    #include "textures/mask_boolean.hpp"
-    class ConfigDriver;
-}
-%param{ ConfigDriver& driver }
-%initial-action
-{
-    @$.begin.filename = @$.end.filename = &driver.file;
-};
 %define parse.trace
 %define parse.error verbose
-%code
-{ 
-    #include "parsers/config_driver.hpp"
-}
+%{
+    #include "parsers/parsed_structs.h"
+    int yylex(void);
+    void yyerror(char const*);
+    ParsedScene parsed;
+    //add a string to the Parsed data and avoid a leak if overwriting
+    #define ADD_STRING(DST,SRC) if(DST==NULL)free(DST);DST=SRC;
+%}
 
-%define api.token.prefix {CONFIG_}
 %token END 0 "end of file"
 %token INVALID "invalid character"
 %token COLON ":"
@@ -140,17 +125,18 @@
 %token ZINC "`Zn`"
 %token ZIRCONIUM "`Zr`"
 
-%token <unsigned int> UINT "positive integer value"
-%token <int> INT "integer value"
-%token <float> FLOAT "floating point value"
-%token <std::string> STRING "quoted string"
+%union{
+    struct { float x, float y, float z } vec;
+    float fval;
+    int ival;
+    uint32_t uval;
+    char* sval;
+}
 
-%type <float> number
-%type <metal_t> element
-%type <int> integer
-%type <Vec3> vector
-%type <Vec2> vector2
-%type <ImageChannel> channel
+%token <uval> UINT "positive integer value"
+%token <ival> INT "integer value"
+%token <fval> FLOAT "floating point value"
+%token <sval> STRING "quoted string"
 
 %%
 
@@ -162,40 +148,40 @@ file
 ;
 
 stmt
-: OUTPUT COLON STRING {driver.output = $3.substr(1,$3.size()-2);}
+: OUTPUT COLON STRING {ADD_STRING(parsed.output,$3.sval);}
 | RESOLUTION COLON OPEN_CU resolution_obj CLOSE_CU
 | FILTER COLON OPEN_CU filter_obj CLOSE_CU
-| SAMPLER  COLON RANDOM {driver.sampler_type = SPECTRE_SAMPLER_RANDOM;}
-| SAMPLER COLON STRATIFIED {driver.sampler_type = SPECTRE_SAMPLER_STRATIFIED;}
-| SPP COLON UINT        {driver.spp = $3;}
+| SAMPLER  COLON RANDOM {parsed.sampler_type = RANDOM;}
+| SAMPLER COLON STRATIFIED {parsed.sampler_type = STRATIFIED;}
+| SPP COLON UINT        {parsed.spp = $3.fval;}
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
-| SHAPE COLON STRING {driver.deferred_shapes.push_back($3.substr(1,$3.size()-2));}
-| WORLD COLON OPEN_CU world_obj CLOSE_CU {driver.deferred_meshes.push_back(driver.cur_mesh);driver.cur_mesh=MeshWorld();}
-| LIGHT COLON OPEN_CU light_obj CLOSE_CU {driver.deferred_lights.push_back(driver.cur_light);driver.cur_light=ParsedLight();}
-| TEXTURE COLON OPEN_CU texture_obj CLOSE_CU
-| MATERIAL COLON STRING {driver.children.push_back($3.substr(1,$3.size()-2));}
-| MATERIAL COLON OPEN_CU material_obj CLOSE_CU {driver.deferred_materials.push_back(driver.cur_mat);driver.cur_mat=ParsedMaterial();}
-| DUALMATERIAL COLON OPEN_CU dualmaterial_obj CLOSE_CU {driver.deferred_dualmats.push_back(driver.cur_dualmat);driver.cur_dualmat = ParsedDualMaterial();}
+| SHAPE COLON STRING {push_ResizableStack(&(parsed.parsed_mesh_object),$3.sval);}
+| WORLD COLON OPEN_CU world_obj CLOSE_CU {push_ResizableParsed(&(parsed.parsed_mesh_world),&(parsed.cur_mesh));init_ParsedMeshWorld(&(parsed->cur_mesh));}
+| LIGHT COLON OPEN_CU light_obj CLOSE_CU {push_ResizableParsed(&(parsed.parsed_lights),&(parsed.cur_light));init_ParsedLight(&(parsed->cur_light));}
+| TEXTURE COLON OPEN_CU texture_obj CLOSE_CU {push_ResizableParsed(&(parsed.parsed_textures),&(parsed.cur_tex));init_ParsedTexture(&(parsed->cur_tex));}
+| MATERIAL COLON STRING {push_ResizableStack(&(parsed.children),$3.sval);}
+| MATERIAL COLON OPEN_CU material_obj CLOSE_CU {push_ResizableParsed(&(parsed.parsed_materials),&(parsed.cur_mat));init_ParsedMaterial(&(parsed->cur_mat));}
+| DUALMATERIAL COLON OPEN_CU dualmaterial_obj CLOSE_CU {push_ResizableParsed(&(parsed.parsed_dualmaterials),&(parsed.cur_dualmat));init_ParsedDualMaterial(&(parsed.cur_dualmat));}
 | COMMA
 ;
 
 resolution_obj: resolution_obj resolution_stmt | resolution_stmt;
 resolution_stmt
-: WIDTH COLON UINT {driver.width = $3;}
-| HEIGHT COLON UINT {driver.height = $3;}
+: WIDTH COLON UINT {parsed.width = $3.uval;}
+| HEIGHT COLON UINT {parsed.height = $3.uval;}
 | COMMA
 ;
 
 filter_obj: filter_obj filter_stmt | filter_stmt;
 filter_stmt
-: TYPE COLON BOX {driver.filter_type = SPECTRE_FILTER_BOX;}
-| TYPE COLON TENT {driver.filter_type = SPECTRE_FILTER_TENT;}
-| TYPE COLON GAUSS {driver.filter_type = SPECTRE_FILTER_GAUSS;}
-| TYPE COLON MITCHELL {driver.filter_type = SPECTRE_FILTER_MITCHELL;}
-| TYPE COLON LANCZOS {driver.filter_type = SPECTRE_FILTER_LANCZOS;}
-| VAL_0 COLON number {driver.value0 = $3;}
-| VAL_1 COLON number {driver.value1 = $3;}
+: TYPE COLON BOX {parsed.filter_type = BOX;}
+| TYPE COLON TENT {parsed.filter_type = TENT;}
+| TYPE COLON GAUSS {parsed.filter_type = GAUSS;}
+| TYPE COLON MITCHELL {parsed.filter_type = MITCHELL;}
+| TYPE COLON LANCZOS {parsed.filter_type = LANCZOS;}
+| VAL_0 COLON number {parsed.value0 = $3.fval;}
+| VAL_1 COLON number {parsed.value1 = $3.fval;}
 | TEXTURE COLON UNFILTERED {driver.tex_filter = UNFILTERED;}
 | TEXTURE COLON TRILINEAR {driver.tex_filter = TRILINEAR;}
 | TEXTURE COLON EWA {driver.tex_filter = EWA;}
@@ -204,60 +190,54 @@ filter_stmt
 
 camera_obj: camera_obj camera_stmt | camera_stmt;
 camera_stmt
-: TYPE COLON ORTHOGRAPHIC {driver.camera_type = SPECTRE_CAMERA_ORTHOGRAPHIC;}
-| TYPE COLON PERSPECTIVE {driver.camera_type = SPECTRE_CAMERA_PERSPECTIVE;}
-| TYPE COLON PANORAMA {driver.camera_type = SPECTRE_CAMERA_PANORAMA;}
-| POSITION COLON vector {driver.camera_pos = Point3($3.x,$3.y,$3.z);}
-| TARGET COLON vector {driver.camera_tar = Point3($3.x,$3.y,$3.z);}
-| UP COLON vector {driver.camera_up = $3;}
-| FOV COLON number {driver.fov = $3;}
+: TYPE COLON ORTHOGRAPHIC {parsed.camera_type = ORTHOGRAPHIC;}
+| TYPE COLON PERSPECTIVE {parsed.camera_type = PERSPECTIVE;}
+| TYPE COLON PANORAMA {parsed.camera_type = PANORAMA;}
+| POSITION COLON vector {parsed.camera_pos[0] = $3.vec.x;parsed.camera_pos[1] = $3.vec.y;parsed.camera_pos[2] = $3.vec.z;}
+| TARGET COLON vector {parsed.camera_tar[0] = $3.vec.x;parsed.camera_tar[1] = $3.vec.y;parsed.camera_tar[2] = $3.vec.z;}
+| UP COLON vector {parsed.camera_up[0] = $3.vec.x;parsed.camera_up[1] = $3.vec.y;parsed.camera_up[2] = $3.vec.z;}
+| FOV COLON number {parsed.fov = $3;}
 | COMMA
 ;
 
-world_obj: world_name world_rec | world_name;
-world_rec: world_rec world_stmt | world_stmt;
-world_name: NAME COLON STRING {driver.cur_mesh.name = $3.substr(1,$3.size()-2);}
+world_obj: world_obj world_stmt | world_stmt
 world_stmt
-: POSITION COLON vector {driver.cur_mesh.position = $3;}
-| ROTATION COLON vector {driver.cur_mesh.rotation = $3;}
-| SCALE COLON vector {driver.cur_mesh.scale = $3;}
-| SCALE COLON number {driver.cur_mesh.scale = $3;}
-| MATERIAL COLON STRING {driver.cur_mesh.material_name = $3.substr(1,$3.size()-2);}
-| MASK COLON STRING {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2); driver.cur_mesh.mask = driver.cur_mask;driver.cur_mask = ParsedMask();}
-| MASK COLON STRING attributes {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_mesh.mask = driver.cur_mask;driver.cur_mask = ParsedMask();}
+: NAME COLON STRING {ADD_STRING(&(parsed.cur_mesh.name),$3.sval);}
+| POSITION COLON vector {parsed.cur_mesh.position[0] = $3.vec.x;parsed.cur_mesh.position[1] = $3.vec.y;parsed.cur_mesh.position[2] = $3.vec.z;}
+| ROTATION COLON vector {parsed.cur_mesh.rotation[0] = $3.vec.x;parsed.cur_mesh.rotation[1] = $3.vec.y;parsed.cur_mesh.rotation[2] = $3.vec.z;}
+| SCALE COLON vector {parsed.cur_mesh.scale[0] = $3.vec.x;parsed.cur_mesh.scale[1] = $3.vec.y;parsed.cur_mesh.scale[2] = $3.vec.z;}
+| SCALE COLON number {parsed.cur_mesh.scale[0] = $3.fval;parsed.cur_mesh.scale[1] = $3.fval;parsed.cur_mesh.scale[2] = $3.fval;}
+| MATERIAL COLON STRING {ADD_STRING(&(parsed.cur_mesh.material_name),$3.sval);}
+| MASK COLON STRING {ADD_STRING(&(parsed.cur_mask.mask_tex),$3.sval); parsed.cur_mesh.mask = parsed.cur_mask;init_ParsedMask(&(parsed.cur_mask));}
+| MASK COLON STRING attributes {ADD_STRING(&(parsed.cur_mask.mask_tex),$3.sval); parsed.cur_mesh.mask = parsed.cur_mask;init_ParsedMask(&(parsed.cur_mask));}
 | COMMA
 ;
 
 light_obj: light_obj light_stmt | light_stmt;
 light_stmt
-: NAME COLON STRING {driver.cur_light.name = $3.substr(1,$3.size()-2);}
-| TEMPERATURE COLON UINT {driver.cur_light.temperature = $3;}
-| COLOR COLON vector {driver.cur_light.color = $3;}
-| TYPE COLON AREA {driver.cur_light.type = AREA;}
-| TYPE COLON OMNI {driver.cur_light.type = OMNI;}
-| TYPE COLON SPOT {driver.cur_light.type = SPOT;}
-| POSITION COLON vector {driver.cur_light.position = $3;}
-| ROTATION COLON vector {driver.cur_light.rotation = $3;}
-| SCALE COLON vector {driver.cur_light.scale = $3;}
-| SCALE COLON number {driver.cur_light.scale = $3;}
-| RADIUS COLON FLOAT {driver.cur_light.radius = $3;}
-| FALLOFF COLON FLOAT {driver.cur_light.falloff = $3;}
+: NAME COLON STRING {ADD_STRING(&(parsed.cur_light.name),$3.sval);}
+| TEMPERATURE COLON UINT {parsed.cur_light.temperature = $3.uval;}
+| COLOR COLON vector {parsed.cur_light.color[0] = $3.vec.x;parsed.cur_light.color[1] = $3.vec.y;parsed.cur_light.color[2] = $3.vec.z;}
+| TYPE COLON AREA {parsed.cur_light.type = AREA;}
+| TYPE COLON OMNI {parsed.cur_light.type = OMNI;}
+| TYPE COLON SPOT {parsed.cur_light.type = SPOT;}
+| POSITION COLON vector {parsed.cur_light.position[0] = $3.vec.x;parsed.cur_light.position[1] = $3.vec.y;parsed.cur_light.position[2] = $3.vec.z;}
+| ROTATION COLON vector {parsed.cur_mesh.rotation[0] = $3.vec.x;parsed.cur_mesh.rotation[1] = $3.vec.y;parsed.cur_mesh.rotation[2] = $3.vec.z;}
+| SCALE COLON vector {parsed.cur_light.scale[0] = $3.vec.x;parsed.cur_light.scale[1] = $3.vec.y;parsed.cur_light.scale[2] = $3.vec.z;}
+| SCALE COLON number {parsed.cur_light.scale[0] = $3.fval;parsed.cur_light.scale[1] = $3.fval;parsed.cur_light.scale[2] = $3.fval;}
+| RADIUS COLON number {parsed.cur_light.radius = $3.fval;}
+| FALLOFF COLON number {driver.cur_light.falloff = $3.fval;}
 | COMMA
 ;
 
-texture_obj /* name is already known at this point */
-: SRC COLON STRING {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture(driver.tex_src);}
-| SRC COLON STRING texture_rec {driver.tex_src=$3.substr(1,$3.size()-2);driver.load_texture(driver.tex_src);}
-| texture_rec SRC COLON STRING {driver.tex_src=$4.substr(1,$4.size()-2);driver.load_texture(driver.tex_src);}
-| texture_rec SRC COLON STRING texture_rec {driver.tex_src=$4.substr(1,$4.size()-2);driver.load_texture(driver.tex_src);}
-;
-
-texture_rec:texture_rec texture_stmt|texture_stmt;
+texture_obj: texture_obj texture_stmt|texture_stmt;
 texture_stmt
-: NAME COLON STRING {driver.tex_name = $3.substr(1,$3.size()-2);}
-| SCALE COLON vector2 {driver.tex_scale = $3;}
-| SCALE COLON number {driver.tex_scale = Vec2($3);}
-| SHIFT COLON vector2 {driver.tex_shift = $3;}
+: SRC COLON STRING {ADD_STRING(&(parsed.cur_tex.tex_name),$3.sval);}
+| NAME COLON STRING {ADD_STRING(&(parsed.cur_tex.tex_src),$3.sval);}
+| SCALE COLON vector2 {parsed.cur_tex.tex_scale[0] = $3.vec.x; parsed.cur_tex.tex_scale[1]=$3.vec.y;}
+| SCALE COLON number {parsed.cur_text.tex_scale[0] = $3.fval; parsed.cur_tex.tex_scale[1]=$3.fval;}
+| SHIFT COLON vector2 {parsed.cur_tex.tex_shift[0] = $3.vec.x; parsed.cur_tex.tex_shift[1]=$3.vec.y;}
+| SHIFT COLON number {parsed.cur_tex.tex_shift[0] = $3.fval; parsed.cur_tex.tex_shift[1]=$3.fval;}
 | COMMA
 ;
 
@@ -380,7 +360,8 @@ integer
 
 %%
 
-void yy::ConfigParser::error (const location_type& l, const std::string& m)
+void yyerror (const char* msg)
 {
-    driver.error(l,m);
+    printf("error");
+    //driver.error(l,m);
 }
