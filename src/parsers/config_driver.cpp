@@ -750,8 +750,8 @@ void ConfigDriver::build_lights()
             }
             case SPOT:
             {
-                Light* spot = new LightSpot(intensity, transform, light.radius,
-                                            light.falloff);
+                Light* spot = new LightSpot(intensity, transform,
+                                            light.falloff, light.radius);
                 current_scene->inherit_light(spot);
                 break;
             }
