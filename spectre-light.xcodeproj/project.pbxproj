@@ -104,8 +104,6 @@
 		6B94261B20928D63007551AE /* parser_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D7929209285620039AA8B /* parser_tests.cpp */; };
 		6B94261C20929048007551AE /* point3_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D792A209285620039AA8B /* point3_tests.cpp */; };
 		6B94261D209290CB007551AE /* ray_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5D7925209285620039AA8B /* ray_tests.cpp */; };
-		6BA07CB520719F11009139ED /* config_driver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA07CB420719F11009139ED /* config_driver.cpp */; };
-		6BA07CB620719F11009139ED /* config_driver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA07CB420719F11009139ED /* config_driver.cpp */; };
 		6BA55D9820753EA500F869C2 /* file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA55D9620753EA500F869C2 /* file.cpp */; };
 		6BA55D9920753EA500F869C2 /* file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA55D9620753EA500F869C2 /* file.cpp */; };
 		6BA65BE31F70421D00183E94 /* bvh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494C91F52249400691CE3 /* bvh.cpp */; };
@@ -201,10 +199,6 @@
 		6BBAA6751FE73E5300C13844 /* kdtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B6E58EB1EC2062300D22A4B /* kdtree.cpp */; };
 		6BBF23051F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BBF23031F72EAEC00D6CBD2 /* microfacet_distributions.cpp */; };
 		6BBF23061F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BBF23031F72EAEC00D6CBD2 /* microfacet_distributions.cpp */; };
-		6BC109EA2074BD0800FFBE13 /* lex.yy.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6BC109E82074BD0700FFBE13 /* lex.yy.cc */; settings = {COMPILER_FLAGS = "-w -g"; }; };
-		6BC109EB2074BD0800FFBE13 /* config_parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6BC109E92074BD0700FFBE13 /* config_parser.tab.cc */; settings = {COMPILER_FLAGS = "-w"; }; };
-		6BC109EC2074BD3600FFBE13 /* config_parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6BC109E92074BD0700FFBE13 /* config_parser.tab.cc */; settings = {COMPILER_FLAGS = "-w"; }; };
-		6BC109ED2074BD3600FFBE13 /* lex.yy.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6BC109E82074BD0700FFBE13 /* lex.yy.cc */; settings = {COMPILER_FLAGS = "-w"; }; };
 		6BC8C2ED200D1F6900984630 /* fresnel_conditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B42DF851F88DCCF00C01215 /* fresnel_conditions.cpp */; };
 		6BC8C2EE200D1F6900984630 /* microfacet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B42DF831F88DCCE00C01215 /* microfacet.cpp */; };
 		6BC8C2EF200D1F6900984630 /* microfacet_distributions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BBF23031F72EAEC00D6CBD2 /* microfacet_distributions.cpp */; };
@@ -235,9 +229,6 @@
 		6BD89FCD2059A8EF00CE5B05 /* texture_library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FCB2059A8EF00CE5B05 /* texture_library.cpp */; };
 		6BD89FCE2059A8EF00CE5B05 /* texture_library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FCB2059A8EF00CE5B05 /* texture_library.cpp */; };
 		6BD89FCF2059A8EF00CE5B05 /* texture_library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FCB2059A8EF00CE5B05 /* texture_library.cpp */; };
-		6BDC3C82207C384700D49570 /* config_parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6BC109E92074BD0700FFBE13 /* config_parser.tab.cc */; settings = {COMPILER_FLAGS = "-w"; }; };
-		6BDC3C83207C384700D49570 /* lex.yy.cc in Sources */ = {isa = PBXBuildFile; fileRef = 6BC109E82074BD0700FFBE13 /* lex.yy.cc */; settings = {COMPILER_FLAGS = "-w"; }; };
-		6BDC3C84207C384700D49570 /* config_driver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BA07CB420719F11009139ED /* config_driver.cpp */; };
 		6BDC3C85207C395400D49570 /* renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7A01F116422000943A3 /* renderer.cpp */; };
 		6BDC3C86207C397300D49570 /* path_tracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494E41F52253E00691CE3 /* path_tracer.cpp */; };
 		6BDC3C87207C397300D49570 /* ray_tracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494E61F52253E00691CE3 /* ray_tracer.cpp */; };
@@ -255,6 +246,11 @@
 		6BE1DE1D1FE2B1BF00BF526F /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494CF1F5224BE00691CE3 /* mesh.cpp */; };
 		6BE25A271FDA9DC000360147 /* AABB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B5F62BB1EB426C800F2194F /* AABB.cpp */; };
 		6BE25A281FDA9DC000360147 /* matrix4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B87E2A61EB236E000EF1566 /* matrix4.cpp */; };
+		6BE730B8214DC94700628E7D /* config_parser.tab.c in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730B6214DC94700628E7D /* config_parser.tab.c */; };
+		6BE730B9214DC94700628E7D /* lex.yy.c in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730B7214DC94700628E7D /* lex.yy.c */; };
+		6BE730BD214DC98C00628E7D /* parser_config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730BB214DC98C00628E7D /* parser_config.cpp */; };
+		6BE730BE214DC98C00628E7D /* parser_config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730BB214DC98C00628E7D /* parser_config.cpp */; };
+		6BE730BF214DC98C00628E7D /* parser_config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730BB214DC98C00628E7D /* parser_config.cpp */; };
 		6BEB857A20921F5900B7CA30 /* file_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BEB857320921D5D00B7CA30 /* file_tests.cpp */; };
 		6BEB857B2092204200B7CA30 /* filter_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BEB857020921D5C00B7CA30 /* filter_tests.cpp */; };
 		6BEB857C209221C400B7CA30 /* imagefilm_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BEB857120921D5C00B7CA30 /* imagefilm_tests.cpp */; };
@@ -481,7 +477,6 @@
 		6B771A351ED3AED400EEF79B /* image_film.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = image_film.cpp; path = src/cameras/image_film.cpp; sourceTree = "<group>"; };
 		6B771A361ED3AED400EEF79B /* image_film.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = image_film.hpp; path = src/cameras/image_film.hpp; sourceTree = "<group>"; };
 		6B779D9C20AF00D900D0C52A /* imagemap_tests.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = imagemap_tests.cpp; sourceTree = "<group>"; };
-		6B7E5036206FFE6700AE307C /* config_driver.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = config_driver.hpp; path = src/parsers/config_driver.hpp; sourceTree = "<group>"; };
 		6B86F7171F55E5DD00057F1C /* spectrum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = spectrum.cpp; path = src/utility/spectrum.cpp; sourceTree = "<group>"; };
 		6B86F7181F55E5DD00057F1C /* spectrum.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = spectrum.hpp; path = src/utility/spectrum.hpp; sourceTree = "<group>"; };
 		6B87E2A61EB236E000EF1566 /* matrix4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matrix4.cpp; path = src/geometry/matrix4.cpp; sourceTree = "<group>"; };
@@ -502,7 +497,6 @@
 		6B94C6382067F55500F55A1A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = src/parsers/README.md; sourceTree = "<group>"; };
 		6B9B00561ECA896E00B84E48 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		6B9B00571ECA896E00B84E48 /* .travis.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
-		6BA07CB420719F11009139ED /* config_driver.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = config_driver.cpp; path = src/parsers/config_driver.cpp; sourceTree = "<group>"; };
 		6BA418D71FC6B01500771E1B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = src/README.md; sourceTree = "<group>"; };
 		6BA55D9620753EA500F869C2 /* file.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = file.cpp; path = src/utility/file.cpp; sourceTree = "<group>"; };
 		6BA55D9720753EA500F869C2 /* file.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = file.hpp; path = src/utility/file.hpp; sourceTree = "<group>"; };
@@ -518,8 +512,6 @@
 		6BBF23041F72EAEC00D6CBD2 /* microfacet_distributions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = microfacet_distributions.hpp; path = src/materials/microfacet_distributions.hpp; sourceTree = "<group>"; };
 		6BBF2B8B1EB8F6A8004589AA /* shape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = shape.cpp; path = src/primitives/shape.cpp; sourceTree = "<group>"; };
 		6BBF2B8C1EB8F6A8004589AA /* shape.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = shape.hpp; path = src/primitives/shape.hpp; sourceTree = "<group>"; };
-		6BC109E82074BD0700FFBE13 /* lex.yy.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lex.yy.cc; path = src/parsers/lex.yy.cc; sourceTree = "<group>"; usesTabs = 0; };
-		6BC109E92074BD0700FFBE13 /* config_parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = config_parser.tab.cc; path = src/parsers/config_parser.tab.cc; sourceTree = "<group>"; };
 		6BC9115321466AF000373774 /* light_omni.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = light_omni.hpp; path = src/lights/light_omni.hpp; sourceTree = "<group>"; };
 		6BC9115421466AF000373774 /* light.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = light.hpp; path = src/lights/light.hpp; sourceTree = "<group>"; };
 		6BC9115521466AF000373774 /* light_area.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = light_area.cpp; path = src/lights/light_area.cpp; sourceTree = "<group>"; };
@@ -564,6 +556,10 @@
 		6BE2FCB91EBDF57000CB782D /* asset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = asset.hpp; path = src/primitives/asset.hpp; sourceTree = "<group>"; };
 		6BE2FCBB1EBE2D0F00CB782D /* box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = box.cpp; path = src/primitives/box.cpp; sourceTree = "<group>"; };
 		6BE2FCBC1EBE2D0F00CB782D /* box.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = box.hpp; path = src/primitives/box.hpp; sourceTree = "<group>"; };
+		6BE730B6214DC94700628E7D /* config_parser.tab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = config_parser.tab.c; path = src/parsers/config_parser.tab.c; sourceTree = "<group>"; };
+		6BE730B7214DC94700628E7D /* lex.yy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lex.yy.c; path = src/parsers/lex.yy.c; sourceTree = "<group>"; };
+		6BE730BB214DC98C00628E7D /* parser_config.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = parser_config.cpp; path = src/parsers/parser_config.cpp; sourceTree = "<group>"; };
+		6BE730BC214DC98C00628E7D /* parser_config.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = parser_config.hpp; path = src/parsers/parser_config.hpp; sourceTree = "<group>"; };
 		6BEA9E6F1ED0FB1400F1A138 /* filter_box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = filter_box.cpp; path = src/samplers/filter_box.cpp; sourceTree = "<group>"; };
 		6BEA9E701ED0FB1400F1A138 /* filter_box.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = filter_box.hpp; path = src/samplers/filter_box.hpp; sourceTree = "<group>"; };
 		6BEA9E721ED0FB1400F1A138 /* filter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = filter.hpp; path = src/samplers/filter.hpp; sourceTree = "<group>"; };
@@ -655,11 +651,11 @@
 		6B3494D51F5224D100691CE3 /* parsers */ = {
 			isa = PBXGroup;
 			children = (
-				6BC109E92074BD0700FFBE13 /* config_parser.tab.cc */,
-				6BC109E82074BD0700FFBE13 /* lex.yy.cc */,
+				6BE730B6214DC94700628E7D /* config_parser.tab.c */,
+				6BE730BB214DC98C00628E7D /* parser_config.cpp */,
+				6BE730BC214DC98C00628E7D /* parser_config.hpp */,
+				6BE730B7214DC94700628E7D /* lex.yy.c */,
 				6B359201208A64330079F5DF /* config_lexer.l */,
-				6BA07CB420719F11009139ED /* config_driver.cpp */,
-				6B7E5036206FFE6700AE307C /* config_driver.hpp */,
 				6B57FD162066984F00688CF8 /* config_parser.y */,
 				6BFA15222081097B00DCA94C /* parser_obj.cpp */,
 				6BFA15232081097B00DCA94C /* parser_obj.hpp */,
@@ -1212,6 +1208,7 @@
 				6BA65BE71F70421D00183E94 /* image_film.cpp in Sources */,
 				6BA65BE81F70421D00183E94 /* camera_orthographic.cpp in Sources */,
 				6BA65BE91F70421D00183E94 /* camera_perspective.cpp in Sources */,
+				6BE730B9214DC94700628E7D /* lex.yy.c in Sources */,
 				6B1F6ABC20FC950000FB8E0F /* ppm.c in Sources */,
 				6BA55D9820753EA500F869C2 /* file.cpp in Sources */,
 				6BA65BEA1F70421D00183E94 /* AABB.cpp in Sources */,
@@ -1227,11 +1224,11 @@
 				6BA65BF31F70421D00183E94 /* bdf.cpp in Sources */,
 				6BBF23051F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */,
 				6BA65BF41F70421D00183E94 /* lambertian.cpp in Sources */,
-				6BC109EB2074BD0800FFBE13 /* config_parser.tab.cc in Sources */,
 				6BA65BF51F70421D00183E94 /* material_library.cpp in Sources */,
 				6BA65BF61F70421D00183E94 /* oren_nayar.cpp in Sources */,
 				6BA65BF71F70421D00183E94 /* reflection.cpp in Sources */,
 				6BC9115E21466AF100373774 /* light.cpp in Sources */,
+				6BE730BD214DC98C00628E7D /* parser_config.cpp in Sources */,
 				6B06BED7213DFF5600A857D4 /* bump.cpp in Sources */,
 				6BD89FC220599D8800CE5B05 /* texture_uniform.cpp in Sources */,
 				6B76AAB32084F079008E234B /* point2.cpp in Sources */,
@@ -1247,7 +1244,6 @@
 				6BA65C031F70421D00183E94 /* filter_gaussian.cpp in Sources */,
 				6BA65C041F70421D00183E94 /* filter_lanczos.cpp in Sources */,
 				6BD89FCD2059A8EF00CE5B05 /* texture_library.cpp in Sources */,
-				6BC109EA2074BD0800FFBE13 /* lex.yy.cc in Sources */,
 				6B09101A20A0AEFC008BB048 /* image_map.cpp in Sources */,
 				6BA65C051F70421D00183E94 /* filter_mitchell.cpp in Sources */,
 				6BA65C061F70421D00183E94 /* sampler_random.cpp in Sources */,
@@ -1255,13 +1251,13 @@
 				6BA65C081F70421D00183E94 /* sampler_stratified.cpp in Sources */,
 				6B640EF02127315C00E08344 /* hit_point.cpp in Sources */,
 				6BA65C091F70421D00183E94 /* filter_tent.cpp in Sources */,
-				6BA07CB520719F11009139ED /* config_driver.cpp in Sources */,
 				6B1F6ABB20FC950000FB8E0F /* imageio.c in Sources */,
 				6BCEE5F520A1C5DC00E3B530 /* texture_image.cpp in Sources */,
 				6BA65C0A1F70421D00183E94 /* color.cpp in Sources */,
 				6B640EE4212729E900E08344 /* single_brdf.cpp in Sources */,
 				6BA65C0B1F70421D00183E94 /* console.cpp in Sources */,
 				6BA65C0C1F70421D00183E94 /* occlusion_tester.cpp in Sources */,
+				6BE730B8214DC94700628E7D /* config_parser.tab.c in Sources */,
 				6BA65C0D1F70421D00183E94 /* scene.cpp in Sources */,
 				6B06BECC213DFF2A00A857D4 /* texture_height.cpp in Sources */,
 				6BA65C0E1F70421D00183E94 /* spectrum.cpp in Sources */,
@@ -1287,8 +1283,6 @@
 				6B359200208A638F0079F5DF /* parser_obj.cpp in Sources */,
 				6B2C62DE214A5EC600318815 /* parsed_structs.c in Sources */,
 				6B76AAB42084F08B008E234B /* point2.cpp in Sources */,
-				6BC109EC2074BD3600FFBE13 /* config_parser.tab.cc in Sources */,
-				6BC109ED2074BD3600FFBE13 /* lex.yy.cc in Sources */,
 				6B42DF8A1F88DFFB00C01215 /* fresnel_conditions.cpp in Sources */,
 				6B42DF8B1F88DFFB00C01215 /* microfacet.cpp in Sources */,
 				6BA65C141F70424E00183E94 /* bvh.cpp in Sources */,
@@ -1338,12 +1332,12 @@
 				6BA65C361F70424E00183E94 /* filter_mitchell.cpp in Sources */,
 				6BA65C371F70424E00183E94 /* sampler_random.cpp in Sources */,
 				6B2E4C2D213E72AA00FF69FA /* single_brdf.cpp in Sources */,
+				6BE730BE214DC98C00628E7D /* parser_config.cpp in Sources */,
 				6BA65C381F70424E00183E94 /* sampler.cpp in Sources */,
 				6BA65C391F70424E00183E94 /* sampler_stratified.cpp in Sources */,
 				6BA65C3A1F70424E00183E94 /* filter_tent.cpp in Sources */,
 				6B1F6ABF20FC950C00FB8E0F /* imageio.c in Sources */,
 				6BCEE5F620A1C5DC00E3B530 /* texture_image.cpp in Sources */,
-				6BA07CB620719F11009139ED /* config_driver.cpp in Sources */,
 				6BA65C3B1F70424E00183E94 /* color.cpp in Sources */,
 				6B2E4C33213E72CA00FF69FA /* mask_boolean.cpp in Sources */,
 				6BA65C3C1F70424E00183E94 /* console.cpp in Sources */,
@@ -1371,13 +1365,11 @@
 				6B76AAB52084F098008E234B /* point2.cpp in Sources */,
 				6BDC3C86207C397300D49570 /* path_tracer.cpp in Sources */,
 				6BDC3C87207C397300D49570 /* ray_tracer.cpp in Sources */,
+				6BE730BF214DC98C00628E7D /* parser_config.cpp in Sources */,
 				6BDC3C85207C395400D49570 /* renderer.cpp in Sources */,
-				6BDC3C82207C384700D49570 /* config_parser.tab.cc in Sources */,
 				6B495EAB20A8E9240075D7EE /* image_map.cpp in Sources */,
 				6B94261A20928CA5007551AE /* parser_obj_tests.cpp in Sources */,
 				6BC9116021466AF700373774 /* light_area.cpp in Sources */,
-				6BDC3C83207C384700D49570 /* lex.yy.cc in Sources */,
-				6BDC3C84207C384700D49570 /* config_driver.cpp in Sources */,
 				6B4CA47420767AA800709064 /* file.cpp in Sources */,
 				6BC8C2ED200D1F6900984630 /* fresnel_conditions.cpp in Sources */,
 				6BF8002120923A4200150BE3 /* matrix4_tests.cpp in Sources */,

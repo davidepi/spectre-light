@@ -187,21 +187,15 @@ int yywrap(void)
     return 1;
 }
 
-void config_scan_begin(const char* filename)
+void config_scan_begin()
 {
     errno = 0;
     current_pos = 0;
     last_line_pos = 0;
     cur_line = 1;
     ZERO_COL;
-    yyin = fopen(filename, "r");
 //    if(!yyin)
 //        Console.critical(MESSAGE_INPUT_ERROR,file.c_str(),strerror(errno));
-}
-
-void config_scan_end()
-{
-    fclose(yyin);
 }
 
 //get a portion of the line being parsed

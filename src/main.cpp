@@ -2,7 +2,7 @@
 //license: GNU GPLv3
 
 #include "utility/console.hpp"
-#include "parsers/config_driver.hpp"
+#include "parsers/parser_config.hpp"
 #include "renderer.hpp"
 #ifdef _WIN32
 #include <conio.h>
@@ -11,7 +11,7 @@
 int main(int argc, char* argv[])
 {
     Renderer* renderer = NULL;
-    ConfigDriver* parser = new ConfigDriver();
+    ParserConfig* parser = new ParserConfig();
     Scene scene;
     if(argc < 2)
         Console.critical("Input should be in the form: executable input_file");
