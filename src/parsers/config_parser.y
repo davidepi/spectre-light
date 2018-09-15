@@ -3,7 +3,6 @@
 
 %define api.value.type union-directive
 %define lr.type lalr
-%code requires
 %define parse.trace
 %define parse.error verbose
 %{
@@ -137,6 +136,8 @@
 %token <ival> INT "integer value"
 %token <fval> FLOAT "floating point value"
 %token <sval> STRING "quoted string"
+%token <vec> vector
+%token <vec> vector2
 
 %%
 
@@ -238,55 +239,40 @@ texture_stmt
 | SCALE COLON number {parsed.cur_text.tex_scale[0] = $3.fval; parsed.cur_tex.tex_scale[1]=$3.fval;}
 | SHIFT COLON vector2 {parsed.cur_tex.tex_shift[0] = $3.vec.x; parsed.cur_tex.tex_shift[1]=$3.vec.y;}
 | SHIFT COLON number {parsed.cur_tex.tex_shift[0] = $3.fval; parsed.cur_tex.tex_shift[1]=$3.fval;}
+| COLOR COLON vector3 {parsed.cur_tex.color[0] = $3.vec.x; parsed.cur_tex.color[1] = $3.vec.y; parsed.cur_tex.color[2] = $3.vec.z;}
 | COMMA
 ;
 
-
-material_obj
-: NAME COLON STRING material_rec {driver.cur_mat.name = $3.substr(1,$3.size()-2);}
-| material_rec NAME COLON STRING {driver.cur_mat.name = $4.substr(1,$4.size()-2);}
-| material_rec NAME COLON STRING material_rec {driver.cur_mat.name = $4.substr(1,$4.size()-2);}
-| NAME COLON STRING {driver.cur_mat.name = $3.substr(1,$3.size()-2);}
-;
-
-material_rec: material_rec material_stmt | material_stmt;
+material_obj: material_obj material_stmt | material_stmt;
 material_stmt
-: TYPE COLON MATTE {driver.cur_mat.type = MATTE;}
-| TYPE COLON GLOSSY {driver.cur_mat.type = GLOSSY;}
-| TYPE COLON METAL {driver.cur_mat.type = METAL;}
-| TYPE COLON GLASS {driver.cur_mat.type = GLASS;}
-| IOR COLON number {driver.cur_mat.ior = cauchy($3,0);}
-| IOR COLON vector2 {driver.cur_mat.ior = cauchy($3.x,$3.y);}
-| IOR COLON vector {driver.cur_mat.ior = cauchy($3.x,$3.y,$3.z);}
-| IOR COLON vector vector {driver.cur_mat.ior = sellmeier($3.x,$3.y,$3.z,$4.x,$4.y,$4.z);}
-| ROUGHNESS COLON number {driver.cur_mat.rough_x = $3;}
-| ANISOTROPY COLON number {driver.cur_mat.rough_y = $3;}
-| DISTRIBUTION COLON BLINN {driver.cur_mat.dist = SPECTRE_DIST_BLINN;}
-| DISTRIBUTION COLON BECKMANN {driver.cur_mat.dist = SPECTRE_DIST_BECKMANN;}
-| DISTRIBUTION COLON GGX {driver.cur_mat.dist = SPECTRE_DIST_GGX;}
-| DIFFUSE COLON STRING {driver.cur_mat.diffuse = $3.substr(1,$3.size()-2);}
-| DIFFUSE COLON vector {driver.tex_color = $3; driver.cur_mat.diffuse_uniform = driver.load_texture_uniform();}
-| SPECULAR COLON STRING {driver.cur_mat.specular = $3.substr(1,$3.size()-2);}
-| SPECULAR COLON vector {driver.tex_color = $3; driver.cur_mat.specular_uniform = driver.load_texture_uniform();}
-/* | BUMP COLON STRING {driver.cur_mat.bump = $3.substr(1,$3.size()-2); driver.cur_mat.bump_is_normal = false;} */
-| NORMAL COLON STRING {driver.cur_mat.bump = $3.substr(1,$3.size()-2); /* driver.cur_mat.bump_is_normal = true; */}
-| ELEM COLON element {driver.cur_mat.elem = $3;}
+: NAME COLON STRING {ADD_STRING(&(parsed.cur_mat.mat_name),$3.sval);}
+| TYPE COLON MATTE {parsed.cur_mat.type = MATTE;}
+| TYPE COLON GLOSSY {parsed.cur_mat.type = GLOSSY;}
+| TYPE COLON METAL {parsed.cur_mat.type = METAL;}
+| TYPE COLON GLASS {parsed.cur_mat.type = GLASS;}
+| IOR COLON number {parsed.cur_mat.ior[0] = $3.fval; parsed.cur_mat.ior[1] = 0.f; parsed.cur_mat.ior[2] = 0.f;}
+| IOR COLON vector2 {parsed.cur_mat.ior[0] = $3.vec.x; parsed.cur_mat.ior[1] = $3.vec.y; parsed.cur_mat.ior[2] = 0.f;}
+| IOR COLON vector {parsed.cur_mat.ior[0] = $3.vec.x; parsed.cur_mat.ior[1] = $3.vec.y; parsed.cur_mat.ior[2] = $3.vec.z;}
+| IOR COLON vector vector {parsed.cur_mat.ior[0] = $3.vec.x; parsed.cur_mat.ior[1] = $3.vec.y; parsed.cur_mat.ior[2] = $3.vec.z;                            parsed.cur_mat.ior_sell[0] = $4.vec.x; parsed.cur_mat.ior_sell[1] = $4.vec.y; parsed.cur_mat.ior_sell[2] = $4.vec.z;}
+| ROUGHNESS COLON number {parsed.cur_mat.rough_x = $3.fval;}
+| ANISOTROPY COLON number {parsed.cur_mat.rough_y = $3.fval;}
+| DISTRIBUTION COLON BLINN {parsed.cur_mat.dist = BLINN;}
+| DISTRIBUTION COLON BECKMANN {parsed.cur_mat.dist = BECKMANN;}
+| DISTRIBUTION COLON GGX {parsed.cur_mat.dist = GGX;}
+| DIFFUSE COLON STRING {ADD_STRING(&(parsed.cur_mat.diffuse),$3.sval);}
+| SPECULAR COLON STRING {ADD_STRING(&(parsed.cur_mat.specular),$3.sval);}
+| NORMAL COLON STRING {ADD_STRING(&(parsed.cur_mat.normal),$3.sval);}
+| ELEM COLON element {parsed.cur_mat.elem = $3.ival;}
 | COMMA
 ;
 
-dualmaterial_obj
-: NAME COLON STRING dualmaterial_rec {driver.cur_dualmat.name = $3.substr(1,$3.size()-2);}
-| dualmaterial_rec NAME COLON STRING {driver.cur_dualmat.name = $4.substr(1,$4.size()-2);}
-| dualmaterial_rec NAME COLON STRING dualmaterial_rec {driver.cur_dualmat.name = $4.substr(1,$4.size()-2);}
-| NAME COLON STRING {driver.cur_dualmat.name = $3.substr(1,$3.size()-2);}
-;
-
-dualmaterial_rec: dualmaterial_rec dualmaterial_stmt | dualmaterial_stmt;
+dualmaterial_obj: dualmaterial_obj dualmaterial_stmt | dualmaterial_stmt;
 dualmaterial_stmt
-: FIRST COLON STRING {driver.cur_dualmat.first = $3.substr(1,$3.size()-2);}
-| SECOND COLON STRING {driver.cur_dualmat.second = $3.substr(1,$3.size()-2);}
-| MASK COLON STRING {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_dualmat.mask = driver.cur_mask; driver.cur_mask = ParsedMask();}
-| MASK COLON STRING attributes {driver.cur_mask.mask_tex = $3.substr(1,$3.size()-2);driver.cur_dualmat.mask = driver.cur_mask; driver.cur_mask = ParsedMask();}
+: NAME COLON STRING {ADD_STRING(&(parsed.cur_dualmat.name),$3.sval);}
+| FIRST COLON STRING {ADD_STRING(&(parsed.cur_dualmat.first),$3.sval);}
+| SECOND COLON STRING {ADD_STRING(&(parsed.cur_dualmat.second),$3.sval);}
+| MASK COLON STRING {ADD_STRING(&(parsed.cur_mask.mask_tex),$3.sval); parsed.cur_dualmat.mask = parsed.cur_mask;init_ParsedMask(&(parsed.cur_mask));}
+| MASK COLON STRING attributes {ADD_STRING(&(parsed.cur_mask.mask_tex),$3.sval); parsed.cur_dualmat.mask = parsed.cur_mask;init_ParsedMask(&(parsed.cur_mask));}
 | COMMA
 ;
 
@@ -294,68 +280,69 @@ dualmaterial_stmt
    Non-existent materials are thrown away here, so no check is performed outside
    the parser */
 element
-: SILVER {$$ = METAL_SILVER; }
-| ALUMINIUM {$$ = METAL_ALUMINIUM; }
-| GOLD {$$ = METAL_GOLD; }
-| COPPER {$$ = METAL_COPPER; }
-| IRON {$$ = METAL_IRON; }
-| MERCURY {$$ = METAL_MERCURY; }
-| LEAD {$$ = METAL_LEAD; }
-| PLATINUM {$$ = METAL_PLATINUM; }
-| TUNGSTEN {$$ = METAL_TUNGSTEN; }
-| BERYLLIUM {$$ = METAL_BERYLLIUM; }
-| BISMUTH {$$ = METAL_BISMUTH; }
-| COBALT {$$ = METAL_COBALT; }
-| CHROMIUM {$$ = METAL_CHROMIUM; }
-| GERMANIUM {$$ = METAL_GERMANIUM; }
-| POTASSIUM {$$ = METAL_POTASSIUM; }
-| LITHIUM {$$ = METAL_LITHIUM; }
-| MAGNESIUM {$$ = METAL_MAGNESIUM; }
-| MANGANESE {$$ = METAL_MANGANESE; }
-| MOLYBDENUM {$$ = METAL_MOLYBDENUM; }
-| SODIUM {$$ = METAL_SODIUM; }
-| NIOBIUM {$$ = METAL_NIOBIUM; }
-| NICKEL {$$ = METAL_NICKEL; }
-| PALLADIUM {$$ = METAL_PALLADIUM; }
-| RHODIUM {$$ = METAL_RHODIUM; }
-| TANTALUM {$$ = METAL_TANTALUM; }
-| TITANIUM {$$ = METAL_TITANIUM; }
-| VANADIUM {$$ = METAL_VANADIUM; }
-| ZINC {$$ = METAL_ZINC; }
-| ZIRCONIUM {$$ = METAL_ZIRCONIUM; }
+: SILVER {$$.ival = METAL_SILVER; }
+| ALUMINIUM {$$.ival = METAL_ALUMINIUM; }
+| GOLD {$$.ival = METAL_GOLD; }
+| COPPER {$$.ival = METAL_COPPER; }
+| IRON {$$.ival = METAL_IRON; }
+| MERCURY {$$.ival = METAL_MERCURY; }
+| LEAD {$$.ival = METAL_LEAD; }
+| PLATINUM {$$.ival = METAL_PLATINUM; }
+| TUNGSTEN {$$.ival = METAL_TUNGSTEN; }
+| BERYLLIUM {$$.ival = METAL_BERYLLIUM; }
+| BISMUTH {$$.ival = METAL_BISMUTH; }
+| COBALT {$$.ival = METAL_COBALT; }
+| CHROMIUM {$$.ival = METAL_CHROMIUM; }
+| GERMANIUM {$$.ival = METAL_GERMANIUM; }
+| POTASSIUM {$$.ival = METAL_POTASSIUM; }
+| LITHIUM {$$.ival = METAL_LITHIUM; }
+| MAGNESIUM {$$.ival = METAL_MAGNESIUM; }
+| MANGANESE {$$.ival = METAL_MANGANESE; }
+| MOLYBDENUM {$$.ival = METAL_MOLYBDENUM; }
+| SODIUM {$$.ival = METAL_SODIUM; }
+| NIOBIUM {$$.ival = METAL_NIOBIUM; }
+| NICKEL {$$.ival = METAL_NICKEL; }
+| PALLADIUM {$$.ival = METAL_PALLADIUM; }
+| RHODIUM {$$.ival = METAL_RHODIUM; }
+| TANTALUM {$$.ival = METAL_TANTALUM; }
+| TITANIUM {$$.ival = METAL_TITANIUM; }
+| VANADIUM {$$.ival = METAL_VANADIUM; }
+| ZINC {$$.ival = METAL_ZINC; }
+| ZIRCONIUM {$$.ival = METAL_ZIRCONIUM; }
 ;
 
 attributes: attributes attribute | attribute;
 
 attribute
-: channel {driver.cur_mask.mask_chn = $1;}
-| INV {driver.cur_mask.mask_inv = true;}
+: channel {parsed.cur_mask.mask_chn = $1;}
+| INV {parsed.cur_mask.mask_inv = true;}
 ;
 
 channel
-: CHNR  {$$ = RED;}
-| CHNG  {$$ = GREEN;}
-| CHNB  {$$ = BLUE;}
-| CHNA  {$$ = ALPHA;}
+: CHNR  {$$.ival = RED;}
+| CHNG  {$$.ival = GREEN;}
+| CHNB  {$$.ival = BLUE;}
+| CHNA  {$$.ival = ALPHA;}
 ;
 
-vector:
-OPEN_SQ number COMMA number COMMA number CLOSE_SQ
-{ $$ = Vec3($2,$4,$6);}
+vector
+:OPEN_SQ number COMMA number COMMA number CLOSE_SQ
+{$$.vec.x = $2.fval;$$.vec.y = $4.fval;$$.vec.z = $6.fval;}
 ;
 
 vector2
-: OPEN_SQ number COMMA number CLOSE_SQ { $$ = Vec2($2,$4);}
+:OPEN_SQ number COMMA number CLOSE_SQ {$$.vec.x = $2.fval;$$.vec.y = $4.fval;}
 ;
 
 number
-: FLOAT {$$ = $1;}
-| integer {$$ = (float)$1;}
+: FLOAT {$$.fval = $1.fval;}
+| UINT {$$.fval = (float)$1.uval;}
+| INT {$$.fval = (float)$1.ival;}
 ;
 
 integer
-: UINT { $$ = $1;}
-| INT  { $$ = $1;}
+: UINT { $$.uval = $1.uval;}
+| INT  { $$.ival = $1.ival;}
 ;
 
 %%
