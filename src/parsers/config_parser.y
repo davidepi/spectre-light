@@ -3,13 +3,16 @@
 
 %define lr.type lalr
 %define parse.trace
+%locations
 %define parse.error verbose
 %{
     #include "parsers/parsed_structs.h"
+    #include <stdio.h>
+    extern FILE* yyin;
     int yylex(void);
     void yyerror(char const*);
     void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized);
-    ParsedScene* parsed;
+    struct ParsedScene* parsed;
     float vec[3];
     //add a string to the Parsed data and avoid a leak if overwriting
     #define ADD_STRING(DST,SRC) if(DST==NULL)free(DST);DST=SRC;
@@ -33,23 +36,23 @@
 %token FILTER "`filter` keyword"
 %token TYPE "`type` keyword"
 %token CAMERA "`camera` keyword"
-%token ORTHOGRAPHIC "`orthographic` keyword"
-%token PERSPECTIVE "`perspective` keyword"
-%token PANORAMA "`panorama` keyword"
+%token ORTHOGRAPHIC_TOKEN "`orthographic` keyword"
+%token PERSPECTIVE_TOKEN "`perspective` keyword"
+%token PANORAMA_TOKEN "`panorama` keyword"
 %token POSITION "`position` keyword"
 %token TARGET "`target` keyword"
 %token UP "`up` keyword"
 %token FOV "`fov` keyword"
-%token RANDOM "`random` keyword"
-%token STRATIFIED "`stratified` keyword"
-%token BOX "`box` keyword"
-%token TENT "`tent` keyword"
-%token GAUSS "`gauss` keyword"
-%token MITCHELL "`mitchell` keyword"
-%token LANCZOS "`lanczos` keyword"
-%token UNFILTERED "`unfiltered` keyword"
-%token TRILINEAR "`trilinear` keyword"
-%token EWA "`ewa` keyword"
+%token RANDOM_TOKEN "`random` keyword"
+%token STRATIFIED_TOKEN "`stratified` keyword"
+%token BOX_TOKEN "`box` keyword"
+%token TENT_TOKEN "`tent` keyword"
+%token GAUSS_TOKEN "`gauss` keyword"
+%token MITCHELL_TOKEN "`mitchell` keyword"
+%token LANCZOS_TOKEN "`lanczos` keyword"
+%token UNFILTERED_TOKEN "`unfiltered` keyword"
+%token TRILINEAR_TOKEN "`trilinear` keyword"
+%token EWA_TOKEN "`ewa` keyword"
 %token VAL_0 "`value0` keyword"
 %token VAL_1 "`value1` keyword"
 %token SHAPE "`shape` keyword"
@@ -65,17 +68,17 @@
 %token DUALMATERIAL "`dualmaterial` keyword"
 %token TEXTURE "`texture` keyword"
 %token ANISOTROPY "`anisotropy` keyword"
-%token BECKMANN "`beckmann` keyword"
-%token BLINN "`blinn` keyword"
+%token BECKMANN_TOKEN "`beckmann` keyword"
+%token BLINN_TOKEN "`blinn` keyword"
 %token DIFFUSE "`diffuse` keyword"
 %token DISTRIBUTION "`distribution` keyword"
 %token ELEM "`element` keyword"
-%token GGX "`ggx` keyword"
-%token GLASS "`glass` keyword"
-%token GLOSSY "`glossy` keyword"
+%token GGX_TOKEN "`ggx` keyword"
+%token GLASS_TOKEN "`glass` keyword"
+%token GLOSSY_TOKEN "`glossy` keyword"
 %token IOR "`ior` keyword"
-%token MATTE "`matte` keyword"
-%token METAL "`metal keyword"
+%token MATTE_TOKEN "`matte` keyword"
+%token METAL_TOKEN "`metal keyword"
 %token ROUGHNESS "`roughness` keyword"
 %token SPECULAR "`specular` keyword"
 /* %token BUMP "`bump` keyword" */
@@ -92,9 +95,9 @@
 %token SECOND "`second` keyword"
 %token RADIUS "`radius` keyword"
 %token FALLOFF "`falloff` keyword"
-%token OMNI "`omni` keyword"
-%token SPOT "`spot` keyword"
-%token AREA "`area` keyword"
+%token OMNI_TOKEN "`omni` keyword"
+%token SPOT_TOKEN "`spot` keyword"
+%token AREA_TOKEN "`area` keyword"
 %token SILVER "`Ag`"
 %token ALUMINIUM "`Al`"
 %token GOLD "`Au`"
@@ -153,8 +156,8 @@ stmt
 : OUTPUT COLON STRING {ADD_STRING(parsed->output,$3);}
 | RESOLUTION COLON OPEN_CU resolution_obj CLOSE_CU
 | FILTER COLON OPEN_CU filter_obj CLOSE_CU
-| SAMPLER  COLON RANDOM {parsed->sampler_type = RANDOM;}
-| SAMPLER COLON STRATIFIED {parsed->sampler_type = STRATIFIED;}
+| SAMPLER  COLON RANDOM_TOKEN {parsed->sampler_type = RANDOM;}
+| SAMPLER COLON STRATIFIED_TOKEN {parsed->sampler_type = STRATIFIED;}
 | SPP COLON UINT        {parsed->spp = $3;}
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
@@ -177,24 +180,24 @@ resolution_stmt
 
 filter_obj: filter_obj filter_stmt | filter_stmt;
 filter_stmt
-: TYPE COLON BOX {parsed->filter_type = BOX;}
-| TYPE COLON TENT {parsed->filter_type = TENT;}
-| TYPE COLON GAUSS {parsed->filter_type = GAUSS;}
-| TYPE COLON MITCHELL {parsed->filter_type = MITCHELL;}
-| TYPE COLON LANCZOS {parsed->filter_type = LANCZOS;}
+: TYPE COLON BOX_TOKEN {parsed->filter_type = BOX;}
+| TYPE COLON TENT_TOKEN {parsed->filter_type = TENT;}
+| TYPE COLON GAUSS_TOKEN {parsed->filter_type = GAUSS;}
+| TYPE COLON MITCHELL_TOKEN {parsed->filter_type = MITCHELL;}
+| TYPE COLON LANCZOS_TOKEN {parsed->filter_type = LANCZOS;}
 | VAL_0 COLON number {parsed->value0 = $3;}
 | VAL_1 COLON number {parsed->value1 = $3;}
-| TEXTURE COLON UNFILTERED {driver.tex_filter = UNFILTERED;}
-| TEXTURE COLON TRILINEAR {driver.tex_filter = TRILINEAR;}
-| TEXTURE COLON EWA {driver.tex_filter = EWA;}
+| TEXTURE COLON UNFILTERED_TOKEN {parsed->tex_filter = UNFILTERED;} //TODO:check this
+| TEXTURE COLON TRILINEAR_TOKEN {parsed->tex_filter = TRILINEAR;}
+| TEXTURE COLON EWA_TOKEN {parsed->tex_filter = EWA;}
 | COMMA
 ;
 
 camera_obj: camera_obj camera_stmt | camera_stmt;
 camera_stmt
-: TYPE COLON ORTHOGRAPHIC {parsed->camera_type = ORTHOGRAPHIC;}
-| TYPE COLON PERSPECTIVE {parsed->camera_type = PERSPECTIVE;}
-| TYPE COLON PANORAMA {parsed->camera_type = PANORAMA;}
+: TYPE COLON ORTHOGRAPHIC_TOKEN {parsed->camera_type = ORTHOGRAPHIC;}
+| TYPE COLON PERSPECTIVE_TOKEN {parsed->camera_type = PERSPECTIVE;}
+| TYPE COLON PANORAMA_TOKEN {parsed->camera_type = PANORAMA;}
 | POSITION COLON vector {parsed->camera_pos[0] = vec[0];parsed->camera_pos[1] = vec[1];parsed->camera_pos[2] = vec[2];}
 | TARGET COLON vector {parsed->camera_tar[0] = vec[0];parsed->camera_tar[1] = vec[1];parsed->camera_tar[2] = vec[2];}
 | UP COLON vector {parsed->camera_up[0] = vec[0];parsed->camera_up[1] = vec[1];parsed->camera_up[2] = vec[2];}
@@ -220,9 +223,9 @@ light_stmt
 : NAME COLON STRING {ADD_STRING(parsed->cur_light.name,$3);}
 | TEMPERATURE COLON UINT {parsed->cur_light.temperature = $3;}
 | COLOR COLON vector {parsed->cur_light.color[0] = vec[0];parsed->cur_light.color[1] = vec[1];parsed->cur_light.color[2] = vec[2];}
-| TYPE COLON AREA {parsed->cur_light.type = AREA;}
-| TYPE COLON OMNI {parsed->cur_light.type = OMNI;}
-| TYPE COLON SPOT {parsed->cur_light.type = SPOT;}
+| TYPE COLON AREA_TOKEN {parsed->cur_light.type = AREA;}
+| TYPE COLON OMNI_TOKEN {parsed->cur_light.type = OMNI;}
+| TYPE COLON SPOT_TOKEN {parsed->cur_light.type = SPOT;}
 | POSITION COLON vector {parsed->cur_light.position[0] = vec[0];parsed->cur_light.position[1] = vec[1];parsed->cur_light.position[2] = vec[2];}
 | ROTATION COLON vector {parsed->cur_mesh.rotation[0] = vec[0];parsed->cur_mesh.rotation[1] = vec[1];parsed->cur_mesh.rotation[2] = vec[2];}
 | SCALE COLON vector {parsed->cur_light.scale[0] = vec[0];parsed->cur_light.scale[1] = vec[1];parsed->cur_light.scale[2] = vec[2];}
@@ -234,31 +237,31 @@ light_stmt
 
 texture_obj: texture_obj texture_stmt|texture_stmt;
 texture_stmt
-: SRC COLON STRING {ADD_STRING(parsed->cur_tex.tex_name,$3);}
-| NAME COLON STRING {ADD_STRING(parsed->cur_tex.tex_src,$3);}
-| SCALE COLON vector2 {parsed->cur_tex.tex_scale[0] = vec[0]; parsed->cur_tex.tex_scale[1]=vec[1];}
-| SCALE COLON number {parsed->cur_text.tex_scale[0] = $3; parsed->cur_tex.tex_scale[1]=$3;}
-| SHIFT COLON vector2 {parsed->cur_tex.tex_shift[0] = vec[0]; parsed->cur_tex.tex_shift[1]=vec[1];}
-| SHIFT COLON number {parsed->cur_tex.tex_shift[0] = $3; parsed->cur_tex.tex_shift[1]=$3;}
+: SRC COLON STRING {ADD_STRING(parsed->cur_tex.name,$3);}
+| NAME COLON STRING {ADD_STRING(parsed->cur_tex.src,$3);}
+| SCALE COLON vector2 {parsed->cur_tex.scale[0] = vec[0]; parsed->cur_tex.scale[1]=vec[1];}
+| SCALE COLON number {parsed->cur_tex.scale[0] = $3; parsed->cur_tex.scale[1]=$3;}
+| SHIFT COLON vector2 {parsed->cur_tex.shift[0] = vec[0]; parsed->cur_tex.shift[1]=vec[1];}
+| SHIFT COLON number {parsed->cur_tex.shift[0] = $3; parsed->cur_tex.shift[1]=$3;}
 | COLOR COLON vector {parsed->cur_tex.color[0] = vec[0]; parsed->cur_tex.color[1] = vec[1]; parsed->cur_tex.color[2] = vec[2];}
 | COMMA
 ;
 
 material_obj: material_obj material_stmt | material_stmt;
 material_stmt
-: NAME COLON STRING {ADD_STRING(parsed->cur_mat.mat_name,$3);}
-| TYPE COLON MATTE {parsed->cur_mat.type = MATTE;}
-| TYPE COLON GLOSSY {parsed->cur_mat.type = GLOSSY;}
-| TYPE COLON METAL {parsed->cur_mat.type = METAL;}
-| TYPE COLON GLASS {parsed->cur_mat.type = GLASS;}
+: NAME COLON STRING {ADD_STRING(parsed->cur_mat.name,$3);}
+| TYPE COLON MATTE_TOKEN {parsed->cur_mat.type = MATTE;}
+| TYPE COLON GLOSSY_TOKEN {parsed->cur_mat.type = GLOSSY;}
+| TYPE COLON METAL_TOKEN {parsed->cur_mat.type = METAL;}
+| TYPE COLON GLASS_TOKEN {parsed->cur_mat.type = GLASS;}
 | IOR COLON number {parsed->cur_mat.ior[0] = $3; parsed->cur_mat.ior[1] = 0.f; parsed->cur_mat.ior[2] = 0.f;}
 | IOR COLON vector2 {parsed->cur_mat.ior[0] = vec[0]; parsed->cur_mat.ior[1] = vec[1]; parsed->cur_mat.ior[2] = 0.f;}
 | IOR COLON vector {parsed->cur_mat.ior[0] = vec[0]; parsed->cur_mat.ior[1] = vec[1]; parsed->cur_mat.ior[2] = vec[2];}
 | ROUGHNESS COLON number {parsed->cur_mat.rough_x = $3;}
 | ANISOTROPY COLON number {parsed->cur_mat.rough_y = $3;}
-| DISTRIBUTION COLON BLINN {parsed->cur_mat.dist = BLINN;}
-| DISTRIBUTION COLON BECKMANN {parsed->cur_mat.dist = BECKMANN;}
-| DISTRIBUTION COLON GGX {parsed->cur_mat.dist = GGX;}
+| DISTRIBUTION COLON BLINN_TOKEN {parsed->cur_mat.dist = BLINN;}
+| DISTRIBUTION COLON BECKMANN_TOKEN {parsed->cur_mat.dist = BECKMANN;}
+| DISTRIBUTION COLON GGX_TOKEN {parsed->cur_mat.dist = GGX;}
 | DIFFUSE COLON STRING {ADD_STRING(parsed->cur_mat.diffuse,$3);}
 | SPECULAR COLON STRING {ADD_STRING(parsed->cur_mat.specular,$3);}
 | NORMAL COLON STRING {ADD_STRING(parsed->cur_mat.normal,$3);}
@@ -327,7 +330,7 @@ channel
 
 vector
 :OPEN_SQ number COMMA number COMMA number CLOSE_SQ
-{vec[0] = $2; vec[1] = $4; vec[2] = $6}
+{vec[0] = $2; vec[1] = $4; vec[2] = $6;}
 ;
 
 vector2
@@ -346,7 +349,7 @@ number
 void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized)
 {
     yyin = opened_file;
-    parsed = scene;
+    parsed = scene_initialized;
     yyparse();
 }
 

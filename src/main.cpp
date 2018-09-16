@@ -8,7 +8,7 @@
 #include <conio.h>
 #endif
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
     Renderer* renderer = NULL;
     ParserConfig* parser = new ParserConfig();

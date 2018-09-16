@@ -164,7 +164,7 @@ void init_ResizableStack(struct ResizableStack* arr)
     arr->index = 0;
 }
 
-void push_ResizableParsed(struct ResizableParsed* arr, const union ParsedElement* val)
+void push_ResizableParsed(struct ResizableParsed* arr, union ParsedElement* val)
 {
     if(arr->index == arr->allocated)
         realloc_ResizableParsed(arr);

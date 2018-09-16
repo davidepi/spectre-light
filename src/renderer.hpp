@@ -15,6 +15,9 @@
 #ifndef __RENDERER_HPP__
 #define __RENDERER_HPP__
 
+extern "C"{
+    #include "parsers/parsed_structs.h"
+}
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
 #include "utility/console.hpp"

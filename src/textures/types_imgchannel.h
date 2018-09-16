@@ -8,7 +8,7 @@ enum imgchannel_t
     ALPHA = 0,
     RED = 1,
     GREEN = 2,
-    BLUE = 3,
+    BLUE = 3
 };
 #else
 /** Channel of the TextureImage. BGRA order in big endian machines */

@@ -3,7 +3,9 @@
 #ifndef __PARSER_CONFIG_HPP__
 #define __PARSER_CONFIG_HPP__
 
+extern "C"{
 #include "parsers/parsed_structs.h"
+}
 #include "renderer.hpp"
 #include "utility/scene.hpp"
 

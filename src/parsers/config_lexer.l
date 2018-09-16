@@ -2,16 +2,15 @@
 /* Last Edit  3 Apr 2018 */
 
 %{
-#include <cstdlib> //for atof and atoi. They are deprecated because of lack of
-                      //error handling, but lex ensures no errors
-#include <climits>
-#include <cerrno>
-#include <string>
-#include <cstring>
+#include <stdlib.h> /* for atof and atoi. They are deprecated because of lack of
+                       error handling, but lex ensures no errors */
+#include "config_parser.tab.h"
+#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
 long int current_pos;
 long int last_line_pos;
 long int cur_line;
 %}
+%option yylineno
 %option nounput
 %option noinput
 %option nounistd
@@ -76,24 +75,24 @@ height { UPDATE_LOC; return HEIGHT; }
 value0 { UPDATE_LOC; return VAL_0; }
 value1 { UPDATE_LOC; return VAL_1; }
 sampler { UPDATE_LOC; return SAMPLER; }
-random { UPDATE_LOC; return RANDOM; }
-stratified { UPDATE_LOC; return STRATIFIED; }
+random { UPDATE_LOC; return RANDOM_TOKEN; }
+stratified { UPDATE_LOC; return STRATIFIED_TOKEN; }
 filter { UPDATE_LOC; return FILTER; }
 type { UPDATE_LOC; return TYPE; }
-box { UPDATE_LOC; return BOX; }
-tent { UPDATE_LOC; return TENT; }
-triangle { UPDATE_LOC; return TENT; }
-gauss { UPDATE_LOC; return GAUSS; }
-gaussian { UPDATE_LOC; return GAUSS; }
-mitchell { UPDATE_LOC; return MITCHELL; }
-lanczos { UPDATE_LOC; return LANCZOS; }
-unfiltered { UPDATE_LOC; return UNFILTERED; }
-trilinear { UPDATE_LOC; return TRILINEAR; }
-ewa {UPDATE_LOC; return EWA; }
+box { UPDATE_LOC; return BOX_TOKEN; }
+tent { UPDATE_LOC; return TENT_TOKEN; }
+triangle { UPDATE_LOC; return TENT_TOKEN; }
+gauss { UPDATE_LOC; return GAUSS_TOKEN; }
+gaussian { UPDATE_LOC; return GAUSS_TOKEN; }
+mitchell { UPDATE_LOC; return MITCHELL_TOKEN; }
+lanczos { UPDATE_LOC; return LANCZOS_TOKEN; }
+unfiltered { UPDATE_LOC; return UNFILTERED_TOKEN; }
+trilinear { UPDATE_LOC; return TRILINEAR_TOKEN; }
+ewa {UPDATE_LOC; return EWA_TOKEN; }
 camera {UPDATE_LOC; return CAMERA; }
-perspective { UPDATE_LOC; return PERSPECTIVE; }
-panorama {UPDATE_LOC; return PANORAMA; }
-orthographic { UPDATE_LOC; return ORTHOGRAPHIC; }
+perspective { UPDATE_LOC; return PERSPECTIVE_TOKEN; }
+panorama {UPDATE_LOC; return PANORAMA_TOKEN; }
+orthographic { UPDATE_LOC; return ORTHOGRAPHIC_TOKEN; }
 position {UPDATE_LOC; return POSITION; }
 target {UPDATE_LOC; return TARGET; }
 up { UPDATE_LOC; return UP; }
@@ -110,10 +109,10 @@ material { UPDATE_LOC; return MATERIAL; }
 dualmaterial {UPDATE_LOC; return DUALMATERIAL;}
 texture { UPDATE_LOC; return TEXTURE; }
 src {UPDATE_LOC; return SRC; }
-matte { UPDATE_LOC; return MATTE; }
-glossy { UPDATE_LOC; return GLOSSY; }
-metal { UPDATE_LOC; return METAL; }
-glass { UPDATE_LOC; return GLASS; }
+matte { UPDATE_LOC; return MATTE_TOKEN; }
+glossy { UPDATE_LOC; return GLOSSY_TOKEN; }
+metal { UPDATE_LOC; return METAL_TOKEN; }
+glass { UPDATE_LOC; return GLASS_TOKEN; }
 ior { UPDATE_LOC; return IOR; }
 roughness { UPDATE_LOC; return ROUGHNESS; }
 anisotropy { UPDATE_LOC; return ANISOTROPY; }
@@ -122,9 +121,9 @@ diffuse { UPDATE_LOC; return DIFFUSE; }
 specular { UPDATE_LOC; return SPECULAR; }
 bump {/* UPDATE_LOC; return BUMP; */}
 normal {UPDATE_LOC; return NORMAL;}
-blinn { UPDATE_LOC; return BLINN; }
-beckmann { UPDATE_LOC; return BECKMANN; }
-ggx { UPDATE_LOC; return GGX; }
+blinn { UPDATE_LOC; return BLINN_TOKEN; }
+beckmann { UPDATE_LOC; return BECKMANN_TOKEN; }
+ggx { UPDATE_LOC; return GGX_TOKEN; }
 color {UPDATE_LOC; return COLOR;}
 element {UPDATE_LOC; return ELEM;}
 "using channel R" {UPDATE_LOC; return CHNR;}
@@ -137,9 +136,9 @@ first {UPDATE_LOC; return FIRST;}
 second {UPDATE_LOC; return SECOND;}
 radius {UPDATE_LOC; return RADIUS;}
 falloff {UPDATE_LOC; return FALLOFF;}
-omni {UPDATE_LOC; return OMNI;}
-spot {UPDATE_LOC; return SPOT;}
-area {UPDATE_LOC; return AREA;}
+omni {UPDATE_LOC; return OMNI_TOKEN;}
+spot {UPDATE_LOC; return SPOT_TOKEN;}
+area {UPDATE_LOC; return AREA_TOKEN;}
 {uint}    { UPDATE_LOC; yylval.uval = atoi(yytext); return UINT; }
 {int}    { UPDATE_LOC; yylval.ival = atoi(yytext); return INT; }
 {float} { UPDATE_LOC; yylval.fval = atof(yytext); return FLOAT; }
@@ -177,7 +176,7 @@ area {UPDATE_LOC; return AREA;}
 [ \t]+   {UPDATE_POS; EAT_COL;}
 [\r]     {UPDATE_POS; ZERO_COL;}
 [\n]     {UPDATE_POS; ZERO_COL; cur_line++; last_line_pos=current_pos; }
-.        {UPDATE_LOC; driver.unknown_char(loc,yytext[0]);}
+.        {UPDATE_LOC; /*driver.unknown_char(loc,yytext[0]);*/}
 <<EOF>>  { UPDATE_LOC; return END; }
 
 %%

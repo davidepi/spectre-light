@@ -263,7 +263,7 @@ void init_ResizableStack(struct ResizableStack* arr);
  *  \param[in,out] arr The stack where the element will be push
  *  \param[in] val The element that will be push by copy onto the stack
  */
-void push_ResizableParsed(struct ResizableParsed* arr, const union ParsedElement* val);
+void push_ResizableParsed(struct ResizableParsed* arr, union ParsedElement* val);
 
 /**
  *  \brief Push an element into a ResizableStack stack
@@ -384,6 +384,9 @@ struct ParsedScene
     
     /** C param for the Mitchell filter */
     float value1;
+    
+    /** Filter used for every texture */
+    enum texturefilter_t tex_filter;
     
     /*--------------.
     |   Containers  |
