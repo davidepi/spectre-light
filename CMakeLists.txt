@@ -30,9 +30,10 @@ FILE(GLOB spectre_core_sources
      src/integrators/*.cpp
      src/textures/*.cpp
      src/materials/*.cpp
-     src/parsers/config_parser.tab.cc
-     src/parsers/lex.yy.cc
-     src/parsers/config_driver.cpp
+     src/parsers/config_parser.tab.c
+     src/parsers/lex.yy.c
+     src/parsers/parser_config.cpp
+     src/parsers/parsed_structs.c
      src/parsers/parser_obj.cpp
      src/utility/imageio/bmp.c
      src/utility/imageio/tga.c

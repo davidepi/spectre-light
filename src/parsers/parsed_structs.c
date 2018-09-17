@@ -108,12 +108,12 @@ void init_ParsedScene(struct ParsedScene* val)
     val->filter_type = MITCHELL;
     val->value0 = 0.33f;
     val->value1 = 0.33f;
-    init_ParsedMaterial(&(val->cur_mat));
-    init_ParsedDualMaterial(&(val->cur_dualmat));
-    init_ParsedMask(&(val->cur_mask));
-    init_ParsedTexture(&(val->cur_tex));
-    init_ParsedMeshWorld(&(val->cur_mesh));
-    init_ParsedLight(&(val->cur_light));
+    init_ParsedMaterial(&(val->cur_mat.mat));
+    init_ParsedDualMaterial(&(val->cur_dualmat.dualmat));
+    init_ParsedMask(&(val->cur_mask.mask));
+    init_ParsedTexture(&(val->cur_tex.tex));
+    init_ParsedMeshWorld(&(val->cur_mesh.mesh));
+    init_ParsedLight(&(val->cur_light.light));
     init_ResizableParsed(&(val->parsed_textures));
     init_ResizableParsed(&(val->parsed_materials));
     init_ResizableParsed(&(val->parsed_dualmaterials));
@@ -135,25 +135,27 @@ void deinit_ParsedScene(struct ParsedScene* val)
 void realloc_ResizableParsed(struct ResizableParsed* arr)
 {
     union ParsedElement* tmp = arr->array;
-    arr->allocated = arr->allocated<<1;
-    arr->array = (union ParsedElement*)malloc(sizeof(union ParsedElement)*arr->allocated);
-    memcpy(arr->array,tmp,arr->index*sizeof(union ParsedElement));
+    arr->allocated = arr->allocated << 1;
+    arr->array = (union ParsedElement*)malloc(
+            sizeof(union ParsedElement)*arr->allocated);
+    memcpy(arr->array, tmp, arr->index*sizeof(union ParsedElement));
     free(tmp);
 }
 
 void realloc_ResizableStack(struct ResizableStack* arr)
 {
     void** tmp = arr->array;
-    arr->allocated = arr->allocated<<1;
+    arr->allocated = arr->allocated << 1;
     arr->array = (void**)malloc(sizeof(void*)*arr->allocated);
-    memcpy(arr->array,tmp,arr->index*sizeof(void*));
+    memcpy(arr->array, tmp, arr->index*sizeof(void*));
     free(tmp);
 }
 
 void init_ResizableParsed(struct ResizableParsed* arr)
 {
     arr->allocated = 1;
-    arr->array = (union ParsedElement*)malloc(sizeof(union ParsedElement)*arr->allocated);
+    arr->array = (union ParsedElement*)malloc(
+            sizeof(union ParsedElement)*arr->allocated);
     arr->index = 0;
 }
 
@@ -188,7 +190,8 @@ void pop_ResizableStack(struct ResizableStack* arr)
     arr->index--;
 }
 
-void top_ResizableParsed(const struct ResizableParsed* arr, union ParsedElement* val)
+void
+top_ResizableParsed(const struct ResizableParsed* arr, union ParsedElement* val)
 {
     *val = arr->array[arr->index-1];
 }

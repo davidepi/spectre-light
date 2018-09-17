@@ -14,7 +14,7 @@
     void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized);
     struct ParsedScene* parsed;
     float vec[3];
-    //add a string to the Parsed data and avoid a leak if overwriting
+    /* add a string to the Parsed data and avoid a leak if overwriting */
     #define ADD_STRING(DST,SRC) if(DST==NULL)free(DST);DST=SRC;
 %}
 
@@ -162,12 +162,16 @@ stmt
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
 | SHAPE COLON STRING {push_ResizableStack(&(parsed->parsed_mesh_object),$3);}
-| WORLD COLON OPEN_CU world_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_mesh_world),&(parsed->cur_mesh));init_ParsedMeshWorld(&(parsed->cur_mesh));}
-| LIGHT COLON OPEN_CU light_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_lights),&(parsed->cur_light));init_ParsedLight(&(parsed->cur_light));}
-| TEXTURE COLON OPEN_CU texture_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_textures),&(parsed->cur_tex));init_ParsedTexture(&(parsed->cur_tex));}
+| WORLD COLON OPEN_CU world_obj CLOSE_CU {push_ResizableParsed(&
+(parsed->parsed_mesh_world),&(parsed->cur_mesh));init_ParsedMeshWorld(&(parsed->cur_mesh.mesh));}
+| LIGHT COLON OPEN_CU light_obj CLOSE_CU {push_ResizableParsed(&
+(parsed->parsed_lights),&(parsed->cur_light));init_ParsedLight(&(parsed->cur_light.light));}
+| TEXTURE COLON OPEN_CU texture_obj CLOSE_CU {push_ResizableParsed(&
+(parsed->parsed_textures),&(parsed->cur_tex));init_ParsedTexture(&(parsed->cur_tex.tex));}
 | MATERIAL COLON STRING {push_ResizableStack(&(parsed->children),$3);}
-| MATERIAL COLON OPEN_CU material_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_materials),&(parsed->cur_mat));init_ParsedMaterial(&(parsed->cur_mat));}
-| DUALMATERIAL COLON OPEN_CU dualmaterial_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_dualmaterials),&(parsed->cur_dualmat));init_ParsedDualMaterial(&(parsed->cur_dualmat));}
+| MATERIAL COLON OPEN_CU material_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_materials),&(parsed->cur_mat));init_ParsedMaterial(&(parsed->cur_mat.mat));}
+| DUALMATERIAL COLON OPEN_CU dualmaterial_obj CLOSE_CU {push_ResizableParsed(&
+(parsed->parsed_dualmaterials),&(parsed->cur_dualmat));init_ParsedDualMaterial(&(parsed->cur_dualmat.dualmat));}
 | COMMA
 ;
 
@@ -207,75 +211,75 @@ camera_stmt
 
 world_obj: world_obj world_stmt | world_stmt
 world_stmt
-: NAME COLON STRING {ADD_STRING(parsed->cur_mesh.name,$3);}
-| POSITION COLON vector {parsed->cur_mesh.position[0] = vec[0];parsed->cur_mesh.position[1] = vec[1];parsed->cur_mesh.position[2] = vec[2];}
-| ROTATION COLON vector {parsed->cur_mesh.rotation[0] = vec[0];parsed->cur_mesh.rotation[1] = vec[1];parsed->cur_mesh.rotation[2] = vec[2];}
-| SCALE COLON vector {parsed->cur_mesh.scale[0] = vec[0];parsed->cur_mesh.scale[1] = vec[1];parsed->cur_mesh.scale[2] = vec[2];}
-| SCALE COLON number {parsed->cur_mesh.scale[0] = $3;parsed->cur_mesh.scale[1] = $3;parsed->cur_mesh.scale[2] = $3;}
-| MATERIAL COLON STRING {ADD_STRING(parsed->cur_mesh.material_name,$3);}
-| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
-| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
+: NAME COLON STRING {ADD_STRING(parsed->cur_mesh.mesh.name,$3);}
+| POSITION COLON vector {parsed->cur_mesh.mesh.position[0] = vec[0];parsed->cur_mesh.mesh.position[1] = vec[1];parsed->cur_mesh.mesh.position[2] = vec[2];}
+| ROTATION COLON vector {parsed->cur_mesh.mesh.rotation[0] = vec[0];parsed->cur_mesh.mesh.rotation[1] = vec[1];parsed->cur_mesh.mesh.rotation[2] = vec[2];}
+| SCALE COLON vector {parsed->cur_mesh.mesh.scale[0] = vec[0];parsed->cur_mesh.mesh.scale[1] = vec[1];parsed->cur_mesh.mesh.scale[2] = vec[2];}
+| SCALE COLON number {parsed->cur_mesh.mesh.scale[0] = $3;parsed->cur_mesh.mesh.scale[1] = $3;parsed->cur_mesh.mesh.scale[2] = $3;}
+| MATERIAL COLON STRING {ADD_STRING(parsed->cur_mesh.mesh.material_name,$3);}
+| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask.mask_tex,$3); parsed->cur_mesh.mesh.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
+| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask.mask_tex,$3); parsed->cur_mesh.mesh.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
 | COMMA
 ;
 
 light_obj: light_obj light_stmt | light_stmt;
 light_stmt
-: NAME COLON STRING {ADD_STRING(parsed->cur_light.name,$3);}
-| TEMPERATURE COLON UINT {parsed->cur_light.temperature = $3;}
-| COLOR COLON vector {parsed->cur_light.color[0] = vec[0];parsed->cur_light.color[1] = vec[1];parsed->cur_light.color[2] = vec[2];}
-| TYPE COLON AREA_TOKEN {parsed->cur_light.type = AREA;}
-| TYPE COLON OMNI_TOKEN {parsed->cur_light.type = OMNI;}
-| TYPE COLON SPOT_TOKEN {parsed->cur_light.type = SPOT;}
-| POSITION COLON vector {parsed->cur_light.position[0] = vec[0];parsed->cur_light.position[1] = vec[1];parsed->cur_light.position[2] = vec[2];}
-| ROTATION COLON vector {parsed->cur_mesh.rotation[0] = vec[0];parsed->cur_mesh.rotation[1] = vec[1];parsed->cur_mesh.rotation[2] = vec[2];}
-| SCALE COLON vector {parsed->cur_light.scale[0] = vec[0];parsed->cur_light.scale[1] = vec[1];parsed->cur_light.scale[2] = vec[2];}
-| SCALE COLON number {parsed->cur_light.scale[0] = $3;parsed->cur_light.scale[1] = $3;parsed->cur_light.scale[2] = $3;}
-| RADIUS COLON number {parsed->cur_light.radius = $3;}
-| FALLOFF COLON number {parsed->cur_light.falloff = $3;}
+: NAME COLON STRING {ADD_STRING(parsed->cur_light.light.name,$3);}
+| TEMPERATURE COLON UINT {parsed->cur_light.light.temperature = $3;}
+| COLOR COLON vector {parsed->cur_light.light.color[0] = vec[0];parsed->cur_light.light.color[1] = vec[1];parsed->cur_light.light.color[2] = vec[2];}
+| TYPE COLON AREA_TOKEN {parsed->cur_light.light.type = AREA;}
+| TYPE COLON OMNI_TOKEN {parsed->cur_light.light.type = OMNI;}
+| TYPE COLON SPOT_TOKEN {parsed->cur_light.light.type = SPOT;}
+| POSITION COLON vector {parsed->cur_light.light.position[0] = vec[0];parsed->cur_light.light.position[1] = vec[1];parsed->cur_light.light.position[2] = vec[2];}
+| ROTATION COLON vector {parsed->cur_mesh.mesh.rotation[0] = vec[0];parsed->cur_mesh.mesh.rotation[1] = vec[1];parsed->cur_mesh.mesh.rotation[2] = vec[2];}
+| SCALE COLON vector {parsed->cur_light.light.scale[0] = vec[0];parsed->cur_light.light.scale[1] = vec[1];parsed->cur_light.light.scale[2] = vec[2];}
+| SCALE COLON number {parsed->cur_light.light.scale[0] = $3;parsed->cur_light.light.scale[1] = $3;parsed->cur_light.light.scale[2] = $3;}
+| RADIUS COLON number {parsed->cur_light.light.radius = $3;}
+| FALLOFF COLON number {parsed->cur_light.light.falloff = $3;}
 | COMMA
 ;
 
 texture_obj: texture_obj texture_stmt|texture_stmt;
 texture_stmt
-: SRC COLON STRING {ADD_STRING(parsed->cur_tex.name,$3);}
-| NAME COLON STRING {ADD_STRING(parsed->cur_tex.src,$3);}
-| SCALE COLON vector2 {parsed->cur_tex.scale[0] = vec[0]; parsed->cur_tex.scale[1]=vec[1];}
-| SCALE COLON number {parsed->cur_tex.scale[0] = $3; parsed->cur_tex.scale[1]=$3;}
-| SHIFT COLON vector2 {parsed->cur_tex.shift[0] = vec[0]; parsed->cur_tex.shift[1]=vec[1];}
-| SHIFT COLON number {parsed->cur_tex.shift[0] = $3; parsed->cur_tex.shift[1]=$3;}
-| COLOR COLON vector {parsed->cur_tex.color[0] = vec[0]; parsed->cur_tex.color[1] = vec[1]; parsed->cur_tex.color[2] = vec[2];}
+: SRC COLON STRING {ADD_STRING(parsed->cur_tex.tex.name,$3);}
+| NAME COLON STRING {ADD_STRING(parsed->cur_tex.tex.src,$3);}
+| SCALE COLON vector2 {parsed->cur_tex.tex.scale[0] = vec[0]; parsed->cur_tex.tex.scale[1]=vec[1];}
+| SCALE COLON number {parsed->cur_tex.tex.scale[0] = $3; parsed->cur_tex.tex.scale[1]=$3;}
+| SHIFT COLON vector2 {parsed->cur_tex.tex.shift[0] = vec[0]; parsed->cur_tex.tex.shift[1]=vec[1];}
+| SHIFT COLON number {parsed->cur_tex.tex.shift[0] = $3; parsed->cur_tex.tex.shift[1]=$3;}
+| COLOR COLON vector {parsed->cur_tex.tex.color[0] = vec[0]; parsed->cur_tex.tex.color[1] = vec[1]; parsed->cur_tex.tex.color[2] = vec[2];}
 | COMMA
 ;
 
 material_obj: material_obj material_stmt | material_stmt;
 material_stmt
-: NAME COLON STRING {ADD_STRING(parsed->cur_mat.name,$3);}
-| TYPE COLON MATTE_TOKEN {parsed->cur_mat.type = MATTE;}
-| TYPE COLON GLOSSY_TOKEN {parsed->cur_mat.type = GLOSSY;}
-| TYPE COLON METAL_TOKEN {parsed->cur_mat.type = METAL;}
-| TYPE COLON GLASS_TOKEN {parsed->cur_mat.type = GLASS;}
-| IOR COLON number {parsed->cur_mat.ior[0] = $3; parsed->cur_mat.ior[1] = 0.f; parsed->cur_mat.ior[2] = 0.f;}
-| IOR COLON vector2 {parsed->cur_mat.ior[0] = vec[0]; parsed->cur_mat.ior[1] = vec[1]; parsed->cur_mat.ior[2] = 0.f;}
-| IOR COLON vector {parsed->cur_mat.ior[0] = vec[0]; parsed->cur_mat.ior[1] = vec[1]; parsed->cur_mat.ior[2] = vec[2];}
-| ROUGHNESS COLON number {parsed->cur_mat.rough_x = $3;}
-| ANISOTROPY COLON number {parsed->cur_mat.rough_y = $3;}
-| DISTRIBUTION COLON BLINN_TOKEN {parsed->cur_mat.dist = BLINN;}
-| DISTRIBUTION COLON BECKMANN_TOKEN {parsed->cur_mat.dist = BECKMANN;}
-| DISTRIBUTION COLON GGX_TOKEN {parsed->cur_mat.dist = GGX;}
-| DIFFUSE COLON STRING {ADD_STRING(parsed->cur_mat.diffuse,$3);}
-| SPECULAR COLON STRING {ADD_STRING(parsed->cur_mat.specular,$3);}
-| NORMAL COLON STRING {ADD_STRING(parsed->cur_mat.normal,$3);}
-| ELEM COLON element {parsed->cur_mat.elem = $3;}
+: NAME COLON STRING {ADD_STRING(parsed->cur_mat.mat.name,$3);}
+| TYPE COLON MATTE_TOKEN {parsed->cur_mat.mat.type = MATTE;}
+| TYPE COLON GLOSSY_TOKEN {parsed->cur_mat.mat.type = GLOSSY;}
+| TYPE COLON METAL_TOKEN {parsed->cur_mat.mat.type = METAL;}
+| TYPE COLON GLASS_TOKEN {parsed->cur_mat.mat.type = GLASS;}
+| IOR COLON number {parsed->cur_mat.mat.ior[0] = $3; parsed->cur_mat.mat.ior[1] = 0.f; parsed->cur_mat.mat.ior[2] = 0.f;}
+| IOR COLON vector2 {parsed->cur_mat.mat.ior[0] = vec[0]; parsed->cur_mat.mat.ior[1] = vec[1]; parsed->cur_mat.mat.ior[2] = 0.f;}
+| IOR COLON vector {parsed->cur_mat.mat.ior[0] = vec[0]; parsed->cur_mat.mat.ior[1] = vec[1]; parsed->cur_mat.mat.ior[2] = vec[2];}
+| ROUGHNESS COLON number {parsed->cur_mat.mat.rough_x = $3;}
+| ANISOTROPY COLON number {parsed->cur_mat.mat.rough_y = $3;}
+| DISTRIBUTION COLON BLINN_TOKEN {parsed->cur_mat.mat.dist = BLINN;}
+| DISTRIBUTION COLON BECKMANN_TOKEN {parsed->cur_mat.mat.dist = BECKMANN;}
+| DISTRIBUTION COLON GGX_TOKEN {parsed->cur_mat.mat.dist = GGX;}
+| DIFFUSE COLON STRING {ADD_STRING(parsed->cur_mat.mat.diffuse,$3);}
+| SPECULAR COLON STRING {ADD_STRING(parsed->cur_mat.mat.specular,$3);}
+| NORMAL COLON STRING {ADD_STRING(parsed->cur_mat.mat.normal,$3);}
+| ELEM COLON element {parsed->cur_mat.mat.elem = $3;}
 | COMMA
 ;
 
 dualmaterial_obj: dualmaterial_obj dualmaterial_stmt | dualmaterial_stmt;
 dualmaterial_stmt
-: NAME COLON STRING {ADD_STRING(parsed->cur_dualmat.name,$3);}
-| FIRST COLON STRING {ADD_STRING(parsed->cur_dualmat.first,$3);}
-| SECOND COLON STRING {ADD_STRING(parsed->cur_dualmat.second,$3);}
-| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
-| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
+: NAME COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.name,$3);}
+| FIRST COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.first,$3);}
+| SECOND COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.second,$3);}
+| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask.mask_tex,$3); parsed->cur_dualmat.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
+| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask.mask_tex,$3); parsed->cur_dualmat.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
 | COMMA
 ;
 
@@ -317,8 +321,8 @@ element
 attributes: attributes attribute | attribute;
 
 attribute
-: channel {parsed->cur_mask.mask_chn = $1;}
-| INV {parsed->cur_mask.mask_inv = 1;}
+: channel {parsed->cur_mask.mask.mask_chn = $1;}
+| INV {parsed->cur_mask.mask.mask_inv = 1;}
 ;
 
 channel
@@ -345,7 +349,7 @@ number
 
 %%
 
-//parse the scene, given an already opened file that will not be closed and a scene already initialized
+/* parse the scene, given an already opened file that will not be closed and a scene already initialized */
 void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized)
 {
     yyin = opened_file;
@@ -356,5 +360,5 @@ void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized)
 void yyerror (const char* msg)
 {
     printf("error");
-    //driver.error(l,m);
+    /* driver.error(l,m); */
 }

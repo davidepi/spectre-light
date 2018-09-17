@@ -194,6 +194,10 @@
 		6BA65C411F70424E00183E94 /* wellrng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B3773D71ECEE37500711829 /* wellrng.cpp */; };
 		6BA65C421F70424E00183E94 /* renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7A01F116422000943A3 /* renderer.cpp */; };
 		6BA65C431F70424E00183E94 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B8C0BB61EAE2DD9001DF9C9 /* main.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
+		6BAE0863214FAB160030711E /* config_parser.tab.c in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730B6214DC94700628E7D /* config_parser.tab.c */; };
+		6BAE0864214FAB170030711E /* config_parser.tab.c in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730B6214DC94700628E7D /* config_parser.tab.c */; };
+		6BAE0865214FAB1D0030711E /* lex.yy.c in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730B7214DC94700628E7D /* lex.yy.c */; };
+		6BAE0866214FAB1E0030711E /* lex.yy.c in Sources */ = {isa = PBXBuildFile; fileRef = 6BE730B7214DC94700628E7D /* lex.yy.c */; };
 		6BB4A47D1FE5483600A2CA9D /* color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B771A311ED3A72500EEF79B /* color.cpp */; };
 		6BBAA6741FE73E2F00C13844 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BDCB7B91F1164C4000943A3 /* scene.cpp */; };
 		6BBAA6751FE73E5300C13844 /* kdtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B6E58EB1EC2062300D22A4B /* kdtree.cpp */; };
@@ -1303,11 +1307,13 @@
 				6B06BECE213DFF3F00A857D4 /* texture_height.cpp in Sources */,
 				6BA65C201F70424E00183E94 /* vec3.cpp in Sources */,
 				6BA65C211F70424E00183E94 /* path_tracer.cpp in Sources */,
+				6BAE0863214FAB160030711E /* config_parser.tab.c in Sources */,
 				6BA65C221F70424E00183E94 /* ray_tracer.cpp in Sources */,
 				6BA65C241F70424E00183E94 /* bdf.cpp in Sources */,
 				6B2E4C31213E72B600FF69FA /* dual.cpp in Sources */,
 				6BBF23061F72EAEC00D6CBD2 /* microfacet_distributions.cpp in Sources */,
 				6BC9116721466B0100373774 /* light.cpp in Sources */,
+				6BAE0865214FAB1D0030711E /* lex.yy.c in Sources */,
 				6BA65C251F70424E00183E94 /* lambertian.cpp in Sources */,
 				6BA65C261F70424E00183E94 /* material_library.cpp in Sources */,
 				6BA65C271F70424E00183E94 /* oren_nayar.cpp in Sources */,
@@ -1416,6 +1422,7 @@
 				6B495EAA20A8E86E0075D7EE /* texture_image.cpp in Sources */,
 				6B2E4C2E213E72AB00FF69FA /* single_brdf.cpp in Sources */,
 				6BBAA6751FE73E5300C13844 /* kdtree.cpp in Sources */,
+				6BAE0866214FAB1E0030711E /* lex.yy.c in Sources */,
 				6B94261B20928D63007551AE /* parser_tests.cpp in Sources */,
 				6BBAA6741FE73E2F00C13844 /* scene.cpp in Sources */,
 				6BDCA10A2094DE43000725C3 /* sphere_tests.cpp in Sources */,
@@ -1455,6 +1462,7 @@
 				6B2FC7992118895F00DEACB3 /* array2d_tests.cpp in Sources */,
 				6B2321FB2094FA35004FBAF5 /* vec3_tests.cpp in Sources */,
 				6BE25A281FDA9DC000360147 /* matrix4.cpp in Sources */,
+				6BAE0864214FAB170030711E /* config_parser.tab.c in Sources */,
 				6BF8002320923B5900150BE3 /* microfacets_tests.cpp in Sources */,
 				6BDCA10B2094DE8C000725C3 /* texture_tests.cpp in Sources */,
 				6B02B2771FD8BD390014D6CD /* point3.cpp in Sources */,

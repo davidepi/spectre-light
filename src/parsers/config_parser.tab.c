@@ -72,7 +72,7 @@
     void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized);
     struct ParsedScene* parsed;
     float vec[3];
-    //add a string to the Parsed data and avoid a leak if overwriting
+    /* add a string to the Parsed data and avoid a leak if overwriting */
     #define ADD_STRING(DST,SRC) if(DST==NULL)free(DST);DST=SRC;
 
 #line 79 "config_parser.tab.c" /* yacc.c:339  */
@@ -579,21 +579,21 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,   151,   151,   152,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
-     174,   174,   176,   177,   178,   181,   181,   183,   184,   185,
-     186,   187,   188,   189,   190,   191,   192,   193,   196,   196,
-     198,   199,   200,   201,   202,   203,   204,   205,   208,   208,
-     210,   211,   212,   213,   214,   215,   216,   217,   218,   221,
-     221,   223,   224,   225,   226,   227,   228,   229,   230,   231,
-     232,   233,   234,   235,   238,   238,   240,   241,   242,   243,
-     244,   245,   246,   247,   250,   250,   252,   253,   254,   255,
-     256,   257,   258,   259,   260,   261,   262,   263,   264,   265,
-     266,   267,   268,   269,   272,   272,   274,   275,   276,   277,
-     278,   279,   286,   287,   288,   289,   290,   291,   292,   293,
-     294,   295,   296,   297,   298,   299,   300,   301,   302,   303,
-     304,   305,   306,   307,   308,   309,   310,   311,   312,   313,
-     314,   317,   317,   320,   321,   325,   326,   327,   328,   332,
-     337,   341,   342,   343
+     162,   163,   164,   165,   167,   169,   171,   172,   173,   175,
+     178,   178,   180,   181,   182,   185,   185,   187,   188,   189,
+     190,   191,   192,   193,   194,   195,   196,   197,   200,   200,
+     202,   203,   204,   205,   206,   207,   208,   209,   212,   212,
+     214,   215,   216,   217,   218,   219,   220,   221,   222,   225,
+     225,   227,   228,   229,   230,   231,   232,   233,   234,   235,
+     236,   237,   238,   239,   242,   242,   244,   245,   246,   247,
+     248,   249,   250,   251,   254,   254,   256,   257,   258,   259,
+     260,   261,   262,   263,   264,   265,   266,   267,   268,   269,
+     270,   271,   272,   273,   276,   276,   278,   279,   280,   281,
+     282,   283,   290,   291,   292,   293,   294,   295,   296,   297,
+     298,   299,   300,   301,   302,   303,   304,   305,   306,   307,
+     308,   309,   310,   311,   312,   313,   314,   315,   316,   317,
+     318,   321,   321,   324,   325,   329,   330,   331,   332,   336,
+     341,   345,   346,   347
 };
 #endif
 
@@ -1742,690 +1742,694 @@ yyreduce:
 
   case 13:
 #line 165 "config_parser.y" /* yacc.c:1666  */
-    {push_ResizableParsed(&(parsed->parsed_mesh_world),&(parsed->cur_mesh));init_ParsedMeshWorld(&(parsed->cur_mesh));}
-#line 1747 "config_parser.tab.c" /* yacc.c:1666  */
+    {push_ResizableParsed(&
+(parsed->parsed_mesh_world),&(parsed->cur_mesh));init_ParsedMeshWorld(&(parsed->cur_mesh.mesh));}
+#line 1748 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 14:
-#line 166 "config_parser.y" /* yacc.c:1666  */
-    {push_ResizableParsed(&(parsed->parsed_lights),&(parsed->cur_light));init_ParsedLight(&(parsed->cur_light));}
-#line 1753 "config_parser.tab.c" /* yacc.c:1666  */
+#line 167 "config_parser.y" /* yacc.c:1666  */
+    {push_ResizableParsed(&
+(parsed->parsed_lights),&(parsed->cur_light));init_ParsedLight(&(parsed->cur_light.light));}
+#line 1755 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 15:
-#line 167 "config_parser.y" /* yacc.c:1666  */
-    {push_ResizableParsed(&(parsed->parsed_textures),&(parsed->cur_tex));init_ParsedTexture(&(parsed->cur_tex));}
-#line 1759 "config_parser.tab.c" /* yacc.c:1666  */
+#line 169 "config_parser.y" /* yacc.c:1666  */
+    {push_ResizableParsed(&
+(parsed->parsed_textures),&(parsed->cur_tex));init_ParsedTexture(&(parsed->cur_tex.tex));}
+#line 1762 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 16:
-#line 168 "config_parser.y" /* yacc.c:1666  */
+#line 171 "config_parser.y" /* yacc.c:1666  */
     {push_ResizableStack(&(parsed->children),(yyvsp[0].sval));}
-#line 1765 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1768 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 17:
-#line 169 "config_parser.y" /* yacc.c:1666  */
-    {push_ResizableParsed(&(parsed->parsed_materials),&(parsed->cur_mat));init_ParsedMaterial(&(parsed->cur_mat));}
-#line 1771 "config_parser.tab.c" /* yacc.c:1666  */
+#line 172 "config_parser.y" /* yacc.c:1666  */
+    {push_ResizableParsed(&(parsed->parsed_materials),&(parsed->cur_mat));init_ParsedMaterial(&(parsed->cur_mat.mat));}
+#line 1774 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 18:
-#line 170 "config_parser.y" /* yacc.c:1666  */
-    {push_ResizableParsed(&(parsed->parsed_dualmaterials),&(parsed->cur_dualmat));init_ParsedDualMaterial(&(parsed->cur_dualmat));}
-#line 1777 "config_parser.tab.c" /* yacc.c:1666  */
+#line 173 "config_parser.y" /* yacc.c:1666  */
+    {push_ResizableParsed(&
+(parsed->parsed_dualmaterials),&(parsed->cur_dualmat));init_ParsedDualMaterial(&(parsed->cur_dualmat.dualmat));}
+#line 1781 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 22:
-#line 176 "config_parser.y" /* yacc.c:1666  */
+#line 180 "config_parser.y" /* yacc.c:1666  */
     {parsed->width = (yyvsp[0].uval);}
-#line 1783 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1787 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 23:
-#line 177 "config_parser.y" /* yacc.c:1666  */
+#line 181 "config_parser.y" /* yacc.c:1666  */
     {parsed->height = (yyvsp[0].uval);}
-#line 1789 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1793 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 27:
-#line 183 "config_parser.y" /* yacc.c:1666  */
+#line 187 "config_parser.y" /* yacc.c:1666  */
     {parsed->filter_type = BOX;}
-#line 1795 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1799 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 28:
-#line 184 "config_parser.y" /* yacc.c:1666  */
+#line 188 "config_parser.y" /* yacc.c:1666  */
     {parsed->filter_type = TENT;}
-#line 1801 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1805 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 29:
-#line 185 "config_parser.y" /* yacc.c:1666  */
+#line 189 "config_parser.y" /* yacc.c:1666  */
     {parsed->filter_type = GAUSS;}
-#line 1807 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1811 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 30:
-#line 186 "config_parser.y" /* yacc.c:1666  */
+#line 190 "config_parser.y" /* yacc.c:1666  */
     {parsed->filter_type = MITCHELL;}
-#line 1813 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1817 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 31:
-#line 187 "config_parser.y" /* yacc.c:1666  */
+#line 191 "config_parser.y" /* yacc.c:1666  */
     {parsed->filter_type = LANCZOS;}
-#line 1819 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1823 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 32:
-#line 188 "config_parser.y" /* yacc.c:1666  */
+#line 192 "config_parser.y" /* yacc.c:1666  */
     {parsed->value0 = (yyvsp[0].fval);}
-#line 1825 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1829 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 33:
-#line 189 "config_parser.y" /* yacc.c:1666  */
+#line 193 "config_parser.y" /* yacc.c:1666  */
     {parsed->value1 = (yyvsp[0].fval);}
-#line 1831 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1835 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 34:
-#line 190 "config_parser.y" /* yacc.c:1666  */
+#line 194 "config_parser.y" /* yacc.c:1666  */
     {parsed->tex_filter = UNFILTERED;}
-#line 1837 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1841 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 35:
-#line 191 "config_parser.y" /* yacc.c:1666  */
+#line 195 "config_parser.y" /* yacc.c:1666  */
     {parsed->tex_filter = TRILINEAR;}
-#line 1843 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1847 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 36:
-#line 192 "config_parser.y" /* yacc.c:1666  */
+#line 196 "config_parser.y" /* yacc.c:1666  */
     {parsed->tex_filter = EWA;}
-#line 1849 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1853 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 40:
-#line 198 "config_parser.y" /* yacc.c:1666  */
+#line 202 "config_parser.y" /* yacc.c:1666  */
     {parsed->camera_type = ORTHOGRAPHIC;}
-#line 1855 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1859 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 41:
-#line 199 "config_parser.y" /* yacc.c:1666  */
+#line 203 "config_parser.y" /* yacc.c:1666  */
     {parsed->camera_type = PERSPECTIVE;}
-#line 1861 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1865 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 42:
-#line 200 "config_parser.y" /* yacc.c:1666  */
+#line 204 "config_parser.y" /* yacc.c:1666  */
     {parsed->camera_type = PANORAMA;}
-#line 1867 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1871 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 43:
-#line 201 "config_parser.y" /* yacc.c:1666  */
+#line 205 "config_parser.y" /* yacc.c:1666  */
     {parsed->camera_pos[0] = vec[0];parsed->camera_pos[1] = vec[1];parsed->camera_pos[2] = vec[2];}
-#line 1873 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1877 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 44:
-#line 202 "config_parser.y" /* yacc.c:1666  */
+#line 206 "config_parser.y" /* yacc.c:1666  */
     {parsed->camera_tar[0] = vec[0];parsed->camera_tar[1] = vec[1];parsed->camera_tar[2] = vec[2];}
-#line 1879 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1883 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 45:
-#line 203 "config_parser.y" /* yacc.c:1666  */
+#line 207 "config_parser.y" /* yacc.c:1666  */
     {parsed->camera_up[0] = vec[0];parsed->camera_up[1] = vec[1];parsed->camera_up[2] = vec[2];}
-#line 1885 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1889 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 46:
-#line 204 "config_parser.y" /* yacc.c:1666  */
+#line 208 "config_parser.y" /* yacc.c:1666  */
     {parsed->fov = (yyvsp[0].fval);}
-#line 1891 "config_parser.tab.c" /* yacc.c:1666  */
+#line 1895 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 50:
-#line 210 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mesh.name,(yyvsp[0].sval));}
-#line 1897 "config_parser.tab.c" /* yacc.c:1666  */
+#line 214 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mesh.mesh.name,(yyvsp[0].sval));}
+#line 1901 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 51:
-#line 211 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mesh.position[0] = vec[0];parsed->cur_mesh.position[1] = vec[1];parsed->cur_mesh.position[2] = vec[2];}
-#line 1903 "config_parser.tab.c" /* yacc.c:1666  */
+#line 215 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mesh.mesh.position[0] = vec[0];parsed->cur_mesh.mesh.position[1] = vec[1];parsed->cur_mesh.mesh.position[2] = vec[2];}
+#line 1907 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 52:
-#line 212 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mesh.rotation[0] = vec[0];parsed->cur_mesh.rotation[1] = vec[1];parsed->cur_mesh.rotation[2] = vec[2];}
-#line 1909 "config_parser.tab.c" /* yacc.c:1666  */
+#line 216 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mesh.mesh.rotation[0] = vec[0];parsed->cur_mesh.mesh.rotation[1] = vec[1];parsed->cur_mesh.mesh.rotation[2] = vec[2];}
+#line 1913 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 53:
-#line 213 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mesh.scale[0] = vec[0];parsed->cur_mesh.scale[1] = vec[1];parsed->cur_mesh.scale[2] = vec[2];}
-#line 1915 "config_parser.tab.c" /* yacc.c:1666  */
+#line 217 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mesh.mesh.scale[0] = vec[0];parsed->cur_mesh.mesh.scale[1] = vec[1];parsed->cur_mesh.mesh.scale[2] = vec[2];}
+#line 1919 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 54:
-#line 214 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mesh.scale[0] = (yyvsp[0].fval);parsed->cur_mesh.scale[1] = (yyvsp[0].fval);parsed->cur_mesh.scale[2] = (yyvsp[0].fval);}
-#line 1921 "config_parser.tab.c" /* yacc.c:1666  */
+#line 218 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mesh.mesh.scale[0] = (yyvsp[0].fval);parsed->cur_mesh.mesh.scale[1] = (yyvsp[0].fval);parsed->cur_mesh.mesh.scale[2] = (yyvsp[0].fval);}
+#line 1925 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 55:
-#line 215 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mesh.material_name,(yyvsp[0].sval));}
-#line 1927 "config_parser.tab.c" /* yacc.c:1666  */
+#line 219 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mesh.mesh.material_name,(yyvsp[0].sval));}
+#line 1931 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 56:
-#line 216 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mask.mask_tex,(yyvsp[0].sval)); parsed->cur_mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
-#line 1933 "config_parser.tab.c" /* yacc.c:1666  */
+#line 220 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mask.mask.mask_tex,(yyvsp[0].sval)); parsed->cur_mesh.mesh.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
+#line 1937 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 57:
-#line 217 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mask.mask_tex,(yyvsp[-1].sval)); parsed->cur_mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
-#line 1939 "config_parser.tab.c" /* yacc.c:1666  */
+#line 221 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mask.mask.mask_tex,(yyvsp[-1].sval)); parsed->cur_mesh.mesh.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
+#line 1943 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 61:
-#line 223 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_light.name,(yyvsp[0].sval));}
-#line 1945 "config_parser.tab.c" /* yacc.c:1666  */
+#line 227 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_light.light.name,(yyvsp[0].sval));}
+#line 1949 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 62:
-#line 224 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.temperature = (yyvsp[0].uval);}
-#line 1951 "config_parser.tab.c" /* yacc.c:1666  */
+#line 228 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.temperature = (yyvsp[0].uval);}
+#line 1955 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 63:
-#line 225 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.color[0] = vec[0];parsed->cur_light.color[1] = vec[1];parsed->cur_light.color[2] = vec[2];}
-#line 1957 "config_parser.tab.c" /* yacc.c:1666  */
+#line 229 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.color[0] = vec[0];parsed->cur_light.light.color[1] = vec[1];parsed->cur_light.light.color[2] = vec[2];}
+#line 1961 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 64:
-#line 226 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.type = AREA;}
-#line 1963 "config_parser.tab.c" /* yacc.c:1666  */
+#line 230 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.type = AREA;}
+#line 1967 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 65:
-#line 227 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.type = OMNI;}
-#line 1969 "config_parser.tab.c" /* yacc.c:1666  */
+#line 231 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.type = OMNI;}
+#line 1973 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 66:
-#line 228 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.type = SPOT;}
-#line 1975 "config_parser.tab.c" /* yacc.c:1666  */
+#line 232 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.type = SPOT;}
+#line 1979 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 67:
-#line 229 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.position[0] = vec[0];parsed->cur_light.position[1] = vec[1];parsed->cur_light.position[2] = vec[2];}
-#line 1981 "config_parser.tab.c" /* yacc.c:1666  */
+#line 233 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.position[0] = vec[0];parsed->cur_light.light.position[1] = vec[1];parsed->cur_light.light.position[2] = vec[2];}
+#line 1985 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 68:
-#line 230 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mesh.rotation[0] = vec[0];parsed->cur_mesh.rotation[1] = vec[1];parsed->cur_mesh.rotation[2] = vec[2];}
-#line 1987 "config_parser.tab.c" /* yacc.c:1666  */
+#line 234 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mesh.mesh.rotation[0] = vec[0];parsed->cur_mesh.mesh.rotation[1] = vec[1];parsed->cur_mesh.mesh.rotation[2] = vec[2];}
+#line 1991 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 69:
-#line 231 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.scale[0] = vec[0];parsed->cur_light.scale[1] = vec[1];parsed->cur_light.scale[2] = vec[2];}
-#line 1993 "config_parser.tab.c" /* yacc.c:1666  */
+#line 235 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.scale[0] = vec[0];parsed->cur_light.light.scale[1] = vec[1];parsed->cur_light.light.scale[2] = vec[2];}
+#line 1997 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 70:
-#line 232 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.scale[0] = (yyvsp[0].fval);parsed->cur_light.scale[1] = (yyvsp[0].fval);parsed->cur_light.scale[2] = (yyvsp[0].fval);}
-#line 1999 "config_parser.tab.c" /* yacc.c:1666  */
+#line 236 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.scale[0] = (yyvsp[0].fval);parsed->cur_light.light.scale[1] = (yyvsp[0].fval);parsed->cur_light.light.scale[2] = (yyvsp[0].fval);}
+#line 2003 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 71:
-#line 233 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.radius = (yyvsp[0].fval);}
-#line 2005 "config_parser.tab.c" /* yacc.c:1666  */
+#line 237 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.radius = (yyvsp[0].fval);}
+#line 2009 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 72:
-#line 234 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_light.falloff = (yyvsp[0].fval);}
-#line 2011 "config_parser.tab.c" /* yacc.c:1666  */
+#line 238 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_light.light.falloff = (yyvsp[0].fval);}
+#line 2015 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 76:
-#line 240 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_tex.name,(yyvsp[0].sval));}
-#line 2017 "config_parser.tab.c" /* yacc.c:1666  */
+#line 244 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_tex.tex.name,(yyvsp[0].sval));}
+#line 2021 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 77:
-#line 241 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_tex.src,(yyvsp[0].sval));}
-#line 2023 "config_parser.tab.c" /* yacc.c:1666  */
+#line 245 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_tex.tex.src,(yyvsp[0].sval));}
+#line 2027 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 78:
-#line 242 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_tex.scale[0] = vec[0]; parsed->cur_tex.scale[1]=vec[1];}
-#line 2029 "config_parser.tab.c" /* yacc.c:1666  */
+#line 246 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_tex.tex.scale[0] = vec[0]; parsed->cur_tex.tex.scale[1]=vec[1];}
+#line 2033 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 79:
-#line 243 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_tex.scale[0] = (yyvsp[0].fval); parsed->cur_tex.scale[1]=(yyvsp[0].fval);}
-#line 2035 "config_parser.tab.c" /* yacc.c:1666  */
+#line 247 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_tex.tex.scale[0] = (yyvsp[0].fval); parsed->cur_tex.tex.scale[1]=(yyvsp[0].fval);}
+#line 2039 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 80:
-#line 244 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_tex.shift[0] = vec[0]; parsed->cur_tex.shift[1]=vec[1];}
-#line 2041 "config_parser.tab.c" /* yacc.c:1666  */
+#line 248 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_tex.tex.shift[0] = vec[0]; parsed->cur_tex.tex.shift[1]=vec[1];}
+#line 2045 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 81:
-#line 245 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_tex.shift[0] = (yyvsp[0].fval); parsed->cur_tex.shift[1]=(yyvsp[0].fval);}
-#line 2047 "config_parser.tab.c" /* yacc.c:1666  */
+#line 249 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_tex.tex.shift[0] = (yyvsp[0].fval); parsed->cur_tex.tex.shift[1]=(yyvsp[0].fval);}
+#line 2051 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 82:
-#line 246 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_tex.color[0] = vec[0]; parsed->cur_tex.color[1] = vec[1]; parsed->cur_tex.color[2] = vec[2];}
-#line 2053 "config_parser.tab.c" /* yacc.c:1666  */
+#line 250 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_tex.tex.color[0] = vec[0]; parsed->cur_tex.tex.color[1] = vec[1]; parsed->cur_tex.tex.color[2] = vec[2];}
+#line 2057 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 86:
-#line 252 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mat.name,(yyvsp[0].sval));}
-#line 2059 "config_parser.tab.c" /* yacc.c:1666  */
+#line 256 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mat.mat.name,(yyvsp[0].sval));}
+#line 2063 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 87:
-#line 253 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.type = MATTE;}
-#line 2065 "config_parser.tab.c" /* yacc.c:1666  */
+#line 257 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.type = MATTE;}
+#line 2069 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 88:
-#line 254 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.type = GLOSSY;}
-#line 2071 "config_parser.tab.c" /* yacc.c:1666  */
+#line 258 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.type = GLOSSY;}
+#line 2075 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 89:
-#line 255 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.type = METAL;}
-#line 2077 "config_parser.tab.c" /* yacc.c:1666  */
+#line 259 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.type = METAL;}
+#line 2081 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 90:
-#line 256 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.type = GLASS;}
-#line 2083 "config_parser.tab.c" /* yacc.c:1666  */
+#line 260 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.type = GLASS;}
+#line 2087 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 91:
-#line 257 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.ior[0] = (yyvsp[0].fval); parsed->cur_mat.ior[1] = 0.f; parsed->cur_mat.ior[2] = 0.f;}
-#line 2089 "config_parser.tab.c" /* yacc.c:1666  */
+#line 261 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.ior[0] = (yyvsp[0].fval); parsed->cur_mat.mat.ior[1] = 0.f; parsed->cur_mat.mat.ior[2] = 0.f;}
+#line 2093 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 92:
-#line 258 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.ior[0] = vec[0]; parsed->cur_mat.ior[1] = vec[1]; parsed->cur_mat.ior[2] = 0.f;}
-#line 2095 "config_parser.tab.c" /* yacc.c:1666  */
+#line 262 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.ior[0] = vec[0]; parsed->cur_mat.mat.ior[1] = vec[1]; parsed->cur_mat.mat.ior[2] = 0.f;}
+#line 2099 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 93:
-#line 259 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.ior[0] = vec[0]; parsed->cur_mat.ior[1] = vec[1]; parsed->cur_mat.ior[2] = vec[2];}
-#line 2101 "config_parser.tab.c" /* yacc.c:1666  */
+#line 263 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.ior[0] = vec[0]; parsed->cur_mat.mat.ior[1] = vec[1]; parsed->cur_mat.mat.ior[2] = vec[2];}
+#line 2105 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 94:
-#line 260 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.rough_x = (yyvsp[0].fval);}
-#line 2107 "config_parser.tab.c" /* yacc.c:1666  */
+#line 264 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.rough_x = (yyvsp[0].fval);}
+#line 2111 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 95:
-#line 261 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.rough_y = (yyvsp[0].fval);}
-#line 2113 "config_parser.tab.c" /* yacc.c:1666  */
+#line 265 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.rough_y = (yyvsp[0].fval);}
+#line 2117 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 96:
-#line 262 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.dist = BLINN;}
-#line 2119 "config_parser.tab.c" /* yacc.c:1666  */
+#line 266 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.dist = BLINN;}
+#line 2123 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 97:
-#line 263 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.dist = BECKMANN;}
-#line 2125 "config_parser.tab.c" /* yacc.c:1666  */
+#line 267 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.dist = BECKMANN;}
+#line 2129 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 98:
-#line 264 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.dist = GGX;}
-#line 2131 "config_parser.tab.c" /* yacc.c:1666  */
+#line 268 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.dist = GGX;}
+#line 2135 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 99:
-#line 265 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mat.diffuse,(yyvsp[0].sval));}
-#line 2137 "config_parser.tab.c" /* yacc.c:1666  */
+#line 269 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mat.mat.diffuse,(yyvsp[0].sval));}
+#line 2141 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 100:
-#line 266 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mat.specular,(yyvsp[0].sval));}
-#line 2143 "config_parser.tab.c" /* yacc.c:1666  */
+#line 270 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mat.mat.specular,(yyvsp[0].sval));}
+#line 2147 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 101:
-#line 267 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mat.normal,(yyvsp[0].sval));}
-#line 2149 "config_parser.tab.c" /* yacc.c:1666  */
+#line 271 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mat.mat.normal,(yyvsp[0].sval));}
+#line 2153 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 102:
-#line 268 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mat.elem = (yyvsp[0].ival);}
-#line 2155 "config_parser.tab.c" /* yacc.c:1666  */
+#line 272 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mat.mat.elem = (yyvsp[0].ival);}
+#line 2159 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 106:
-#line 274 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_dualmat.name,(yyvsp[0].sval));}
-#line 2161 "config_parser.tab.c" /* yacc.c:1666  */
+#line 278 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_dualmat.dualmat.name,(yyvsp[0].sval));}
+#line 2165 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 107:
-#line 275 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_dualmat.first,(yyvsp[0].sval));}
-#line 2167 "config_parser.tab.c" /* yacc.c:1666  */
+#line 279 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_dualmat.dualmat.first,(yyvsp[0].sval));}
+#line 2171 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 108:
-#line 276 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_dualmat.second,(yyvsp[0].sval));}
-#line 2173 "config_parser.tab.c" /* yacc.c:1666  */
+#line 280 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_dualmat.dualmat.second,(yyvsp[0].sval));}
+#line 2177 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 109:
-#line 277 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mask.mask_tex,(yyvsp[0].sval)); parsed->cur_dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
-#line 2179 "config_parser.tab.c" /* yacc.c:1666  */
+#line 281 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mask.mask.mask_tex,(yyvsp[0].sval)); parsed->cur_dualmat.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
+#line 2183 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 110:
-#line 278 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_mask.mask_tex,(yyvsp[-1].sval)); parsed->cur_dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
-#line 2185 "config_parser.tab.c" /* yacc.c:1666  */
+#line 282 "config_parser.y" /* yacc.c:1666  */
+    {ADD_STRING(parsed->cur_mask.mask.mask_tex,(yyvsp[-1].sval)); parsed->cur_dualmat.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
+#line 2189 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 112:
-#line 286 "config_parser.y" /* yacc.c:1666  */
+#line 290 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_SILVER; }
-#line 2191 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2195 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 113:
-#line 287 "config_parser.y" /* yacc.c:1666  */
+#line 291 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_ALUMINIUM; }
-#line 2197 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2201 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 114:
-#line 288 "config_parser.y" /* yacc.c:1666  */
+#line 292 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_GOLD; }
-#line 2203 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2207 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 115:
-#line 289 "config_parser.y" /* yacc.c:1666  */
+#line 293 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_COPPER; }
-#line 2209 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2213 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 116:
-#line 290 "config_parser.y" /* yacc.c:1666  */
+#line 294 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_IRON; }
-#line 2215 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2219 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 117:
-#line 291 "config_parser.y" /* yacc.c:1666  */
+#line 295 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_MERCURY; }
-#line 2221 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2225 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 118:
-#line 292 "config_parser.y" /* yacc.c:1666  */
+#line 296 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_LEAD; }
-#line 2227 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2231 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 119:
-#line 293 "config_parser.y" /* yacc.c:1666  */
+#line 297 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_PLATINUM; }
-#line 2233 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2237 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 120:
-#line 294 "config_parser.y" /* yacc.c:1666  */
+#line 298 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_TUNGSTEN; }
-#line 2239 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2243 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 121:
-#line 295 "config_parser.y" /* yacc.c:1666  */
+#line 299 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_BERYLLIUM; }
-#line 2245 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2249 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 122:
-#line 296 "config_parser.y" /* yacc.c:1666  */
+#line 300 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_BISMUTH; }
-#line 2251 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2255 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 123:
-#line 297 "config_parser.y" /* yacc.c:1666  */
+#line 301 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_COBALT; }
-#line 2257 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2261 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 124:
-#line 298 "config_parser.y" /* yacc.c:1666  */
+#line 302 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_CHROMIUM; }
-#line 2263 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2267 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 125:
-#line 299 "config_parser.y" /* yacc.c:1666  */
+#line 303 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_GERMANIUM; }
-#line 2269 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2273 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 126:
-#line 300 "config_parser.y" /* yacc.c:1666  */
+#line 304 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_POTASSIUM; }
-#line 2275 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2279 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 127:
-#line 301 "config_parser.y" /* yacc.c:1666  */
+#line 305 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_LITHIUM; }
-#line 2281 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2285 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 128:
-#line 302 "config_parser.y" /* yacc.c:1666  */
+#line 306 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_MAGNESIUM; }
-#line 2287 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2291 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 129:
-#line 303 "config_parser.y" /* yacc.c:1666  */
+#line 307 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_MANGANESE; }
-#line 2293 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2297 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 130:
-#line 304 "config_parser.y" /* yacc.c:1666  */
+#line 308 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_MOLYBDENUM; }
-#line 2299 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2303 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 131:
-#line 305 "config_parser.y" /* yacc.c:1666  */
+#line 309 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_SODIUM; }
-#line 2305 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2309 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 132:
-#line 306 "config_parser.y" /* yacc.c:1666  */
+#line 310 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_NIOBIUM; }
-#line 2311 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2315 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 133:
-#line 307 "config_parser.y" /* yacc.c:1666  */
+#line 311 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_NICKEL; }
-#line 2317 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2321 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 134:
-#line 308 "config_parser.y" /* yacc.c:1666  */
+#line 312 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_PALLADIUM; }
-#line 2323 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2327 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 135:
-#line 309 "config_parser.y" /* yacc.c:1666  */
+#line 313 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_RHODIUM; }
-#line 2329 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2333 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 136:
-#line 310 "config_parser.y" /* yacc.c:1666  */
+#line 314 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_TANTALUM; }
-#line 2335 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2339 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 137:
-#line 311 "config_parser.y" /* yacc.c:1666  */
+#line 315 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_TITANIUM; }
-#line 2341 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2345 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 138:
-#line 312 "config_parser.y" /* yacc.c:1666  */
+#line 316 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_VANADIUM; }
-#line 2347 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2351 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 139:
-#line 313 "config_parser.y" /* yacc.c:1666  */
+#line 317 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_ZINC; }
-#line 2353 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2357 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 140:
-#line 314 "config_parser.y" /* yacc.c:1666  */
+#line 318 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = METAL_ZIRCONIUM; }
-#line 2359 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2363 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 143:
-#line 320 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mask.mask_chn = (yyvsp[0].ival);}
-#line 2365 "config_parser.tab.c" /* yacc.c:1666  */
+#line 324 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mask.mask.mask_chn = (yyvsp[0].ival);}
+#line 2369 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 144:
-#line 321 "config_parser.y" /* yacc.c:1666  */
-    {parsed->cur_mask.mask_inv = 1;}
-#line 2371 "config_parser.tab.c" /* yacc.c:1666  */
+#line 325 "config_parser.y" /* yacc.c:1666  */
+    {parsed->cur_mask.mask.mask_inv = 1;}
+#line 2375 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 145:
-#line 325 "config_parser.y" /* yacc.c:1666  */
+#line 329 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = RED;}
-#line 2377 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2381 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 146:
-#line 326 "config_parser.y" /* yacc.c:1666  */
+#line 330 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = GREEN;}
-#line 2383 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2387 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 147:
-#line 327 "config_parser.y" /* yacc.c:1666  */
+#line 331 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = BLUE;}
-#line 2389 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2393 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 148:
-#line 328 "config_parser.y" /* yacc.c:1666  */
+#line 332 "config_parser.y" /* yacc.c:1666  */
     {(yyval.ival) = ALPHA;}
-#line 2395 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2399 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 149:
-#line 333 "config_parser.y" /* yacc.c:1666  */
+#line 337 "config_parser.y" /* yacc.c:1666  */
     {vec[0] = (yyvsp[-5].fval); vec[1] = (yyvsp[-3].fval); vec[2] = (yyvsp[-1].fval);}
-#line 2401 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2405 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 150:
-#line 337 "config_parser.y" /* yacc.c:1666  */
+#line 341 "config_parser.y" /* yacc.c:1666  */
     {vec[0] = (yyvsp[-3].fval); vec[1] = (yyvsp[-1].fval);}
-#line 2407 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2411 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 151:
-#line 341 "config_parser.y" /* yacc.c:1666  */
+#line 345 "config_parser.y" /* yacc.c:1666  */
     {(yyval.fval) = (yyvsp[0].fval);}
-#line 2413 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2417 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 152:
-#line 342 "config_parser.y" /* yacc.c:1666  */
+#line 346 "config_parser.y" /* yacc.c:1666  */
     {(yyval.fval) = (float)(yyvsp[0].uval);}
-#line 2419 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2423 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 153:
-#line 343 "config_parser.y" /* yacc.c:1666  */
+#line 347 "config_parser.y" /* yacc.c:1666  */
     {(yyval.fval) = (float)(yyvsp[0].ival);}
-#line 2425 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2429 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
 
-#line 2429 "config_parser.tab.c" /* yacc.c:1666  */
+#line 2433 "config_parser.tab.c" /* yacc.c:1666  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2659,10 +2663,10 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 346 "config_parser.y" /* yacc.c:1910  */
+#line 350 "config_parser.y" /* yacc.c:1910  */
 
 
-//parse the scene, given an already opened file that will not be closed and a scene already initialized
+/* parse the scene, given an already opened file that will not be closed and a scene already initialized */
 void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized)
 {
     yyin = opened_file;
@@ -2673,5 +2677,5 @@ void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized)
 void yyerror (const char* msg)
 {
     printf("error");
-    //driver.error(l,m);
+    /* driver.error(l,m); */
 }

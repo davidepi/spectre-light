@@ -23,40 +23,40 @@ struct ParsedMaterial
 {
     /** Name of the material */
     char* name;
-    
+
     /** Element of the material, used only if ParsedMaterial::type is METAL */
     enum metal_t elem;
-    
+
     /** Type of material */
     enum mat_t type;
-    
+
     /** Distribution of the material */
     enum microfacet_t dist;
-    
+
     /** Index of refraction of the material (if cauchy is used) */
     float ior[3];
-    
+
     /** Index of refraction of the material (if sellmeier is used) */
     float ior_sell[3];
-    
+
     /** Roughness of the materials */
     float rough_x;
-    
+
     /** Roughness of the materials in the y axis, -1 if material is isotropic */
     float rough_y;
-    
+
     /** Name of the diffuse texture, as it can be found in the TextureLibrary */
     char* diffuse;
-    
+
     /** Uniform texture if the material is going to use an uniform value */
     uint8_t diffuse_uniform[3];
-    
+
     /** Name of the specular texture, as it is found in the TextureLibrary */
     char* specular;
-    
+
     /** Uniform texture if the material is going to use an uniform value */
     uint8_t specular_uniform[3];
-    
+
     /** Name of the normal texture, as it can be found in the TextureLibrary */
     char* normal;
 };
@@ -72,10 +72,10 @@ struct ParsedMask
 {
     /** Name of the texture used as mask */
     char* mask_tex;
-    
+
     /** Channel of the texture used as mask */
     enum imgchannel_t mask_chn;
-    
+
     /** true if the texture used as mask should be inverted */
     uint8_t mask_inv;
 };
@@ -91,19 +91,19 @@ struct ParsedTexture
 {
     /** Temp val for the name of the current texture being parsed */
     char* name;
-    
+
     /** Temp val for the location on disk of the current texture being parsed */
     char* src;
-    
+
     /** Temp val, the RGB color of the TextureUniform currently being parsed */
     uint8_t color[3];
-    
+
     /** Scaling factor of the texture */
     float scale[2];
-    
+
     /** Shift factor of the texture */
     float shift[2];
-    
+
     /** Type of filtering that will be used on the textures */
     enum texturefilter_t filtering;
 };
@@ -119,28 +119,28 @@ struct ParsedLight
 {
     /** Name of the MeshObject in object space if AreaLight */
     char* name;
-    
+
     /** The light type */
     enum light_t type;
-    
+
     /** Translation of the world space light from the origin of the scene */
     float position[3];
-    
+
     /** Rotation of the world space light from the object space origin */
     float rotation[3];
-    
+
     /** Scaling of the world space light from the object space origin */
     float scale[3];
-    
+
     /** Temperature of the light if it is a blackbody */
     int temperature;
-    
+
     /** Color of the light, that will be converted to the emitted spectrum */
     uint8_t color[3];
-    
+
     /** If this class is a LightSpot, the radius of the spot */
     float radius;
-    
+
     /** If this class is a LightSpot, the radius not exhibiting falloff */
     float falloff;
 };
@@ -156,13 +156,13 @@ struct ParsedDualMaterial
 {
     /** Name of the current material */
     char* name;
-    
+
     /** Name of the first material composing the dual material */
     char* first;
-    
+
     /** Name of the second material composing the dual material */
     char* second;
-    
+
     /** Mask used in the material */
     struct ParsedMask mask;
 };
@@ -177,19 +177,19 @@ struct ParsedMeshWorld
 {
     /** Name of the MeshObject in object space */
     char* name;
-    
+
     /** Name of the material, if the object space material will be overridden */
-    const char* material_name;
-    
+    char* material_name;
+
     /** Translation of the world space mesh from the origin of the scene */
     float position[3];
-    
+
     /** Rotation of the world space mesh from the original object space */
     float rotation[3];
-    
+
     /** Scaling of the world space mesh from the original object space origin */
     float scale[3];
-    
+
     /** Mask used for the object */
     struct ParsedMask mask;
 };
@@ -207,9 +207,8 @@ union ParsedElement
     struct ParsedLight light;
     struct ParsedMask mask;
     struct ParsedDualMaterial dualmat;
-    struct ParsedTexture texture;
-    const char* mesh_o;
-    struct ParsedMeshWorld mesh_w;
+    struct ParsedTexture tex;
+    struct ParsedMeshWorld mesh;
 };
 
 /**
@@ -220,10 +219,10 @@ struct ResizableParsed
 {
     /** Actual array of elements */
     union ParsedElement* array;
-    
+
     /** Number of allocated elements */
     uint32_t allocated;
-    
+
     /** Index of the next element that will be added */
     uint32_t index;
 };
@@ -236,10 +235,10 @@ struct ResizableStack
 {
     /** Actual array of elements */
     void** array;
-    
+
     /** Number of allocated elements */
     uint32_t allocated;
-    
+
     /** Index of the next element that will be added */
     uint32_t index;
 };
@@ -263,7 +262,8 @@ void init_ResizableStack(struct ResizableStack* arr);
  *  \param[in,out] arr The stack where the element will be push
  *  \param[in] val The element that will be push by copy onto the stack
  */
-void push_ResizableParsed(struct ResizableParsed* arr, union ParsedElement* val);
+void
+push_ResizableParsed(struct ResizableParsed* arr, union ParsedElement* val);
 
 /**
  *  \brief Push an element into a ResizableStack stack
@@ -289,7 +289,8 @@ void pop_ResizableStack(struct ResizableStack* arr);
  *  \param[in] arr The stack from where the top element will be copied
  *  \param[out] val The value of the top element of the stack
  */
-void top_ResizableParsed(const struct ResizableParsed* arr, union ParsedElement* val);
+void top_ResizableParsed(const struct ResizableParsed* arr,
+                         union ParsedElement* val);
 
 /**
  *  \brief Get the element on top of the ResizableStack stack
@@ -316,103 +317,103 @@ struct ParsedScene
     /*------------------.
     |   Temp instances  |
     `------------------*/
-    
+
     /** Temp material that will be copied where needed */
-    struct ParsedMaterial cur_mat;
-    
+    union ParsedElement cur_mat;
+
     /** Temp dualmaterial that will be copied where needed */
-    struct ParsedDualMaterial cur_dualmat;
-    
+    union ParsedElement cur_dualmat;
+
     /** Temp mask that will be copied where needed */
-    struct ParsedMask cur_mask;
-    
+    union ParsedElement cur_mask;
+
     /** Temp texture that will be copied where needed */
-    struct ParsedTexture cur_tex;
-    
+    union ParsedElement cur_tex;
+
     /** Temp mesh in world space that will be copied where needed */
-    struct ParsedMeshWorld cur_mesh;
-    
+    union ParsedElement cur_mesh;
+
     /** Temp light that will be copied where needed */
-    struct ParsedLight cur_light;
-    
-     /*----------------.
-     |   Image params  |
-     `----------------*/
-    
+    union ParsedElement cur_light;
+
+    /*----------------.
+    |   Image params  |
+    `----------------*/
+
     /** The name of the output image that will be created by the renderer */
     char* output;
-    
+
     /** The width of the output image that will be created by the renderer */
     int width;
-    
+
     /** The heigth of the output image that will be created by the renderer */
     int height;
-    
+
     /** Number of samples per pixel that will be used when rendering */
     int spp;
-    
-     /*-----------.
-     |   Camera   |
-     `-----------*/
-    
+
+    /*-----------.
+    |   Camera   |
+    `-----------*/
+
     /** Position of the camera in the space */
     float camera_pos[3];
-    
+
     /** Target of the camera */
     float camera_tar[3];
-    
+
     /** Up vector of the camera */
     float camera_up[3];
-    
+
     /** Field of View of the camera */
     float fov;
-    
+
     enum camera_t camera_type;
-    
-     /*-------------------------.
-     |   Samplers and Filters   |
-     `-------------------------*/
-    
+
+    /*-------------------------.
+    |   Samplers and Filters   |
+    `-------------------------*/
+
     /** Used sampler, values are found in individual sampler files */
     enum sampler_t sampler_type;
-    
+
     /** Type of filter, possible values are found in individual filter files */
     enum filter_t filter_type;
-    
+
     /** Param for the filter: sigma(Gaussian), B(Mitchell) or tau(Lanczos) */
     float value0;
-    
+
     /** C param for the Mitchell filter */
     float value1;
-    
+
     /** Filter used for every texture */
     enum texturefilter_t tex_filter;
-    
+
     /*--------------.
     |   Containers  |
     `--------------*/
-    
+
     /** Arrat containing every parsed texture */
     struct ResizableParsed parsed_textures;
-    
+
     /** Arrat containing every parsed material */
     struct ResizableParsed parsed_materials;
-    
+
     /** Arrat containing every parsed dualmaterial */
     struct ResizableParsed parsed_dualmaterials;
-    
+
     /** Arrat containing every parsed object space model */
     struct ResizableStack parsed_mesh_object;
-    
+
     /** Arrat containing every parsed world space model */
     struct ResizableParsed parsed_mesh_world;
-    
+
     /** Arrat containing every parsed light */
     struct ResizableParsed parsed_lights;
-    
+
     /** Arrat containing every parsed children */
     struct ResizableStack children;
-    
+
 };
 
 /**

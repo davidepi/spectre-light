@@ -51,9 +51,9 @@ zirconium [Zz][Rr]
 
 %{
     #define UPDATE_LOC UPDATE_POS;UPDATE_COL
-    #define UPDATE_COL yylloc.last_column=yylloc.first_column+strlen(yytext)
-    #define UPDATE_POS current_pos+=strlen(yytext)
-    #define EAT_COL yylloc.first_column = yylloc.last_column+strlen(yytext);yylloc.last_column = yylloc.first_column
+    #define UPDATE_COL yylloc.last_column=yylloc.first_column+(int)strlen(yytext)
+    #define UPDATE_POS current_pos+=(int)strlen(yytext)
+    #define EAT_COL yylloc.first_column = yylloc.last_column+(int)strlen(yytext);yylloc.last_column = yylloc.first_column
     #define ZERO_COL yylloc.first_column = 0;yylloc.last_column=0
 %}
 
@@ -193,17 +193,20 @@ void config_scan_begin()
     last_line_pos = 0;
     cur_line = 1;
     ZERO_COL;
-//    if(!yyin)
-//        Console.critical(MESSAGE_INPUT_ERROR,file.c_str(),strerror(errno));
+/*    if(!yyin)
+        Console.critical(MESSAGE_INPUT_ERROR,file.c_str(),strerror(errno));*/
 }
 
-//get a portion of the line being parsed
+/* get a portion of the line being parsed */
 int config_get_line(char* buf, int len)
 {
     int line_offset = 0;
-    //entire line can't fit in buffer
-    //-4 because if the line is too long the last 3 chars are set to ... and
-    //I don't want to show the underline ~~~~ in these characters
+    int i = 0;
+    /*
+     * entire line can't fit in buffer
+     * -4 because if the line is too long the last 3 chars are set to ... and
+     * I don't want to show the underline ~~~~ in these characters
+     */
     if(current_pos-last_line_pos>=len-4)
     {
         line_offset = last_line_pos;
@@ -212,7 +215,6 @@ int config_get_line(char* buf, int len)
     }
     fseek(yyin,last_line_pos,SEEK_SET);
     fread(buf,sizeof(char),len,yyin);
-    int i = 0;
     while(i<len)
     {
         if(buf[i]=='\n' || buf[i]=='\r')
