@@ -55,7 +55,7 @@ Renderer::~Renderer()
     delete[] Renderer::workers;
 }
 
-void Renderer::inherit_camera(Camera* camera)
+void Renderer::inherit_camera(const Camera* camera)
 {
     Renderer::camera = camera;
 }
@@ -65,13 +65,13 @@ void Renderer::set_sampler(int sampler)
     Renderer::sampler_t = sampler;
 }
 
-void Renderer::inherit_filter(Filter* filter)
+void Renderer::inherit_filter(const Filter* filter)
 {
     Renderer::filter = filter;
     Renderer::film.set_filter(filter);
 }
 
-void Renderer::inherit_integrator(Integrator* integrator)
+void Renderer::inherit_integrator(const Integrator* integrator)
 {
     Renderer::mc_solver = integrator;
 }

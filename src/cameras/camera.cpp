@@ -3,10 +3,10 @@
 
 #include "camera.hpp"
 
-Camera::Camera(const Point3* pos, const Point3* target, const Vec3* up,
+Camera::Camera(const Point3& pos, const Point3& target, const Vec3& up,
                int, int)
 {
-    camera2world.set_lookAt_inverse(*pos, *target, *up);
+    camera2world.set_lookAt_inverse(pos, target, up);
 }
 
 void Camera::create_ray(const Sample* sample, Ray* ray) const

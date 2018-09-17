@@ -6,6 +6,11 @@
                        error handling, but lex ensures no errors */
 #include "config_parser.tab.h"
 #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
+#define DEQUOTE_AND_COPY(string,target) \
+const unsigned int LEN = strlen(string); \
+target = (uint8_t*)malloc(sizeof(uint8_t)*LEN-1);\
+string[LEN-1] = '\0'; \
+strcpy(target, string+1)
 long int current_pos;
 long int last_line_pos;
 long int cur_line;
@@ -142,7 +147,7 @@ area {UPDATE_LOC; return AREA_TOKEN;}
 {uint}    { UPDATE_LOC; yylval.uval = atoi(yytext); return UINT; }
 {int}    { UPDATE_LOC; yylval.ival = atoi(yytext); return INT; }
 {float} { UPDATE_LOC; yylval.fval = atof(yytext); return FLOAT; }
-{string} { UPDATE_LOC; yylval.sval = strdup(yytext); return STRING; }
+{string} { UPDATE_LOC; DEQUOTE_AND_COPY(yylval.sval,yytext); return STRING; }
 {silver} { UPDATE_LOC; return SILVER;}
 {aluminium} { UPDATE_LOC; return ALUMINIUM;}
 {gold} { UPDATE_LOC; return GOLD;}
@@ -177,7 +182,7 @@ area {UPDATE_LOC; return AREA_TOKEN;}
 [\r]     {UPDATE_POS; ZERO_COL;}
 [\n]     {UPDATE_POS; ZERO_COL; cur_line++; last_line_pos=current_pos; }
 .        {UPDATE_LOC; /*driver.unknown_char(loc,yytext[0]);*/}
-<<EOF>>  { UPDATE_LOC; return END; }
+<<EOF>>  {UPDATE_LOC; return END; }
 
 %%
 

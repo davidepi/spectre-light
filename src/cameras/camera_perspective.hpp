@@ -46,8 +46,8 @@ public:
      *  \param[in] height The height of the final image (resolution)
      *  \param[in] fov The angle of view in radians
      */
-    CameraPerspective(const Point3* position, const Point3* target,
-                      const Vec3* up, int width, int height, float fov);
+    CameraPerspective(const Point3& position, const Point3& target,
+                      const Vec3& up, int width, int height, float fov);
 
     /** \brief Create a ray from a sample
      *
@@ -63,12 +63,13 @@ public:
      *  \param[out] ry The output ray offsetted by 1 pixel in the y direction
      */
     void create_ray(const Sample* sample, Ray* ray, Ray* rx, Ray* ry)
-    const;
+    const override;
 
 private:
 
     ///Like create_ray but generates single <origin,direction> pairs
-    void create_single_ray(const Sample* sample, Point3* orig, Vec3* dir) const;
+    void create_single_ray(const Sample* sample, Point3* orig,
+                           Vec3* dir) const override;
 
     ///The matrix used to transform from raster space to camera space
     Matrix4 raster2camera;

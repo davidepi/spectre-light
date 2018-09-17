@@ -45,8 +45,8 @@ public:
      *  \param[in] width The width of the final image (resolution)
      *  \param[in] height The height of the final image (resolution)
      */
-    CameraOrthographic(const Point3* position, const Point3* target,
-                       const Vec3* up, int width, int height);
+    CameraOrthographic(const Point3& position, const Point3& target,
+                       const Vec3& up, int width, int height);
 
     /** \brief Create a ray from a sample
      *
@@ -61,12 +61,14 @@ public:
      *  \param[out] rx The output ray offsetted by 1 pixel in the x direction
      *  \param[out] ry The output ray offsetted by 1 pixel in the y direction
      */
-    void create_ray(const Sample* sample, Ray* ray, Ray* rx, Ray* ry) const;
+    void
+    create_ray(const Sample* sample, Ray* ray, Ray* rx, Ray* ry) const override;
 
 private:
 
     ///Like create_ray but generates single <origin,direction> pairs
-    void create_single_ray(const Sample* sample, Point3* orig, Vec3* dir) const;
+    void create_single_ray(const Sample* sample, Point3* orig,
+                           Vec3* dir) const override;
 
     //The matrix used to transform from raster space to world space
     Matrix4 raster2world;

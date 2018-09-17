@@ -139,7 +139,7 @@ void ImageFilm::add_pixel_forced(ExecutorData* secure_area)
     mtx.unlock();
 }
 
-void ImageFilm::set_filter(Filter* f)
+void ImageFilm::set_filter(const Filter* f)
 {
     ImageFilm::filter = f;
 }

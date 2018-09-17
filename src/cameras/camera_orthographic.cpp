@@ -3,8 +3,8 @@
 
 #include "camera_orthographic.hpp"
 
-CameraOrthographic::CameraOrthographic(const Point3* pos, const Point3* target,
-                                       const Vec3* up, int width, int height)
+CameraOrthographic::CameraOrthographic(const Point3& pos, const Point3& target,
+                                       const Vec3& up, int width, int height)
         :Camera(pos, target, up, width, height)
 {
     raster2world = camera2world;

@@ -127,7 +127,7 @@ public:
      *
      *  \param[in] camera A Camera that will be inherited by the renderer
      */
-    void inherit_camera(Camera* camera);
+    void inherit_camera(const Camera* camera);
     
     /** \brief Set a Sampler for this renderer
      *
@@ -152,7 +152,7 @@ public:
      *
      *  \param[in] filter A Filter that will be inherited by the renderer
      */
-    void inherit_filter(Filter* filter);
+    void inherit_filter(const Filter* filter);
     
     /** \brief Set a LightIntegrator for this renderer
      *
@@ -164,7 +164,7 @@ public:
      *  \param[in] integrator A LightIntegrator that will be inherited by the
      *  renderer
      */
-    void inherit_integrator(Integrator* integrator);
+    void inherit_integrator(const Integrator* integrator);
     
     /** \brief Render the scene
      *
@@ -180,10 +180,10 @@ public:
 private:
 
     //Camera for the renderer
-    Camera* camera;
+    const Camera* camera;
 
     //Filter for the renderer
-    Filter* filter;
+    const Filter* filter;
 
     //Actual image
     ImageFilm film;
@@ -210,7 +210,7 @@ private:
     std::thread* workers;
 
     //integrator
-    Integrator* mc_solver;
+    const Integrator* mc_solver;
 
     //sampler
     int sampler_t;

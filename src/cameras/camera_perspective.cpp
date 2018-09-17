@@ -3,8 +3,8 @@
 
 #include "camera_perspective.hpp"
 
-CameraPerspective::CameraPerspective(const Point3* pos, const Point3* target,
-                                     const Vec3* up, int width, int heigth,
+CameraPerspective::CameraPerspective(const Point3& pos, const Point3& target,
+                                     const Vec3& up, int width, int heigth,
                                      float fov)
         :Camera(pos, target, up, width, heigth)
 {

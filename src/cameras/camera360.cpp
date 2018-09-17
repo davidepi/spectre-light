@@ -3,8 +3,8 @@
 
 #include "camera360.hpp"
 
-Camera360::Camera360(const Point3* pos, const Point3* target,
-                     const Vec3* up, int width, int height)
+Camera360::Camera360(const Point3& pos, const Point3& target,
+                     const Vec3& up, int width, int height)
         :Camera(pos, target, up, width, height)
 {
     Camera360::invX = 1.f/width;

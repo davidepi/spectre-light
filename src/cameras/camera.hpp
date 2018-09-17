@@ -45,7 +45,7 @@ public:
      *  \param[in] width The width of the final image (resolution)
      *  \param[in] height The height of the final image (resolution)
      */
-    Camera(const Point3* position, const Point3* target, const Vec3* up,
+    Camera(const Point3& position, const Point3& target, const Vec3& up,
            int width, int height);
 
     ///Default destructor

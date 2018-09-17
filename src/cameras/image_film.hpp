@@ -18,6 +18,7 @@
 extern "C" {
 #include "utility/imageio/imageio.h"
 }
+
 #include "samplers/filter.hpp"
 #include "samplers/sampler.hpp"
 #include "utility/file.hpp"
@@ -190,7 +191,7 @@ public:
      *
      *  \param[in] filter A pointer to the filter that will be used
      */
-    void set_filter(Filter* filter);
+    void set_filter(const Filter* filter);
 
     /** \brief Store the image on the disk
      *
@@ -211,7 +212,7 @@ private:
     const int height;
 
     //filter
-    Filter* filter;
+    const Filter* filter;
 
     //the buffer of the image
     Array2D<Pixel> buffer;

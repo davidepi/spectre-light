@@ -47,13 +47,14 @@ public:
      *  \param[in] width The width of the final image (resolution)
      *  \param[in] height The height of the final image (resolution)
      */
-    Camera360(const Point3* position, const Point3* target, const Vec3* up,
+    Camera360(const Point3& position, const Point3& target, const Vec3& up,
               int width, int height);
 
 private:
 
     ///Like create_ray but generates single <origin,direction> pairs
-    void create_single_ray(const Sample* sample, Point3* orig, Vec3* dir) const;
+    void create_single_ray(const Sample* sample, Point3* orig,
+                           Vec3* dir) const override;
 
     //inverse width of the image
     float invX;
