@@ -65,22 +65,9 @@ public:
      *  double free error
      *
      *  \param[in] name The name of the texture
-     *  \param[in] texture The textureImage that will be added
+     *  \param[in] texture The Texture that will be added
      */
-    void inherit_texture(const std::string& name, const TextureImage* texture);
-
-    /** \brief Add a texture to the library
-     *
-     *  Inherit an anonymous texture and add it to the library. This texture
-     *  will be impossible to retrieve, but the TextureLibrary will ensure its
-     *  deallocation. (Just to keep the code clean. TexLib is a singleton
-     *  so the anonymous texture is deleted at program teardown in any case)
-     *
-     *  \warning adding the same texture twice will cause a double free error
-     *
-     *  \param[in] texture The texture that will be added
-     */
-    void inherit_texture(const Texture* texture);
+    void inherit_texture(const std::string& name, const Texture* texture);
 
     /** \brief Add an image to the library
      *
@@ -103,7 +90,7 @@ public:
      * \param[in] name The texture to retrieve
      * \return The texture, if it is stored in the library, NULL otherwise
      */
-    const TextureImage* get_texture(const std::string& name) const;
+    const Texture* get_texture(const std::string& name) const;
 
     /** \brief Retrieve a map from the library
      *
@@ -191,9 +178,8 @@ private:
 
     ~TextureLibrary();
 
-    std::unordered_map<std::string, const TextureImage*> texlib;
+    std::unordered_map<std::string, const Texture*> texlib;
     std::unordered_map<std::string, const ImageMap*> maplib;
-    std::vector<const Texture*> unreferenced;
     const Texture* default_texture;
     const TextureImage* default_teximg;
     const ImageMap* default_map;

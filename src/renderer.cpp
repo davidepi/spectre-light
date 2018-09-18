@@ -4,9 +4,10 @@
 #include "renderer.hpp"
 
 //st = sampler type
-static void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
-                     int sampler_type, std::stack<Renderer_task>* jobs,
-                     Scene* scene, Integrator* mc_solver);
+static void
+executor(const Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
+         int sampler_type, std::stack<Renderer_task>* jobs, Scene* scene,
+         const Integrator* mc_solver);
 
 
 static void progressBar(std::stack<Renderer_task>* jobs, unsigned long ts,
@@ -145,9 +146,9 @@ int Renderer::render(Scene* s)
     return 0;
 }
 
-void executor(Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
+void executor(const Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
               int sampler_type, std::stack<Renderer_task>* jobs, Scene* scene,
-              Integrator* mc_solver)
+              const Integrator* mc_solver)
 {
     //generate seed for WELLrng. Constant WELL_R is inside wellrng.h
     unsigned int WELLseed[WELL_R];

@@ -21,6 +21,7 @@ extern "C" {
 
 #include "renderer.hpp"
 #include "utility/scene.hpp"
+#include "utility/spectrum.hpp"
 #include "geometry/point3.hpp"
 #include "geometry/vec3.hpp"
 #include "cameras/camera_orthographic.hpp"
@@ -32,6 +33,8 @@ extern "C" {
 #include "samplers/filter_mitchell.hpp"
 #include "samplers/filter_lanczos.hpp"
 #include "integrators/path_tracer.hpp"
+#include "textures/texture_uniform.hpp"
+#include "textures/texture_image.hpp"
 
 /**
  *  \brief Parse an input file

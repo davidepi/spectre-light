@@ -23,14 +23,9 @@ TextureLibrary::~TextureLibrary()
 }
 
 void TextureLibrary::inherit_texture(const std::string& name,
-                                     const TextureImage* texture)
+                                     const Texture* texture)
 {
     texlib.insert(std::make_pair(name, texture));
-}
-
-void TextureLibrary::inherit_texture(const Texture* texture)
-{
-    unreferenced.push_back(texture);
 }
 
 void TextureLibrary::inherit_map(const std::string& name, const ImageMap* map)
@@ -38,9 +33,9 @@ void TextureLibrary::inherit_map(const std::string& name, const ImageMap* map)
     maplib.insert(std::make_pair(name, map));
 }
 
-const TextureImage* TextureLibrary::get_texture(const std::string& name) const
+const Texture* TextureLibrary::get_texture(const std::string& name) const
 {
-    const TextureImage* retval;
+    const Texture* retval;
     auto got = texlib.find(name);
     if(got != texlib.end())
         retval = got->second;
@@ -89,10 +84,6 @@ void TextureLibrary::clear()
     for(std::pair<std::string, const ImageMap*> element:TextureLibrary::maplib)
         delete element.second;
     TextureLibrary::maplib.clear();
-
-    for(const Texture* element:TextureLibrary::unreferenced)
-        delete element;
-    unreferenced.clear();
 }
 
 bool TextureLibrary::contains_texture(const std::string& name) const

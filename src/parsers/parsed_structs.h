@@ -311,6 +311,20 @@ void deinit_ResizableParsed(struct ResizableParsed* arr);
  */
 void deinit_ResizableStack(struct ResizableStack* arr);
 
+/**
+ *  \brief Returns true if the ResizableParsed stack is empty
+ *  \param[in] arr The stack that will be checked for emptyness
+ *  \return true if the given ResizableParsed is empty
+ */
+int empty_ResizableParsed(const struct ResizableParsed* arr);
+
+/**
+ *  \brief Returns true if the ResizableStack stack is empty
+ *  \param[in] arr The stack that will be checked for emptyness
+ *  \return true if the given ResizableStack is empty
+ */
+int empty_ResizableStack(const struct ResizableStack* arr);
+
 /** Struct containing the parsed settings for an entire scene */
 struct ParsedScene
 {

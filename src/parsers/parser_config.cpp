@@ -130,6 +130,58 @@ static const Filter* build_filter(const ParsedScene* parsed)
     return filter;
 }
 
+static void build_textures(ParsedScene* parsed, const File* current_dir)
+{
+    while(!empty_ResizableParsed(&parsed->parsed_textures))
+    {
+        ParsedElement tex_union;
+        top_ResizableParsed(&parsed->parsed_textures, &tex_union);
+        pop_ResizableParsed(&parsed->parsed_textures);
+        if(tex_union.tex.src == NULL)
+        {
+            //uniform
+            if(tex_union.tex.name != NULL)
+            {
+                //uint8_t grants that tex.color[x] is in 0-255 range
+                Spectrum color(ColorRGB(tex_union.tex.color[0],
+                                        tex_union.tex.color[1],
+                                        tex_union.tex.color[2]), false);
+                TextureUniform* val = new TextureUniform(color);
+                TexLib.inherit_texture(tex_union.tex.name, val);
+                free(tex_union.tex.name);
+            }
+            else
+                Console.notice("%s\n", MESSAGE_TEXTURE_NONAME);
+        }
+        else
+        {
+            //texture image
+            File cur_file(current_dir, tex_union.tex.src);
+            const char* tex_name;
+            if(tex_union.tex.name != NULL)
+                tex_name = tex_union.tex.name;
+            else
+                tex_name = cur_file.filename();
+            if(!TexLib.contains_texture(tex_name) && cur_file.exists() &&
+               cur_file.readable() && !cur_file.is_folder() &&
+               img_valid(cur_file.absolute_path(), cur_file.extension()))
+            {
+                Vec2 shift(tex_union.tex.shift[0], tex_union.tex.shift[1]);
+                Vec2 scale(tex_union.tex.scale[1], tex_union.tex.scale[1]);
+                TextureImage* addme = new TextureImage(cur_file, shift, scale,
+                                                       tex_union.tex.filtering);
+                TexLib.inherit_texture(tex_name, addme);
+            }
+            else
+                Console.warning(MESSAGE_TEXTURE_ERROR,
+                                cur_file.absolute_path());
+            free(tex_union.tex.src);
+            if(tex_union.tex.name != NULL)
+                free(tex_union.tex.name);
+        }
+    }
+}
+
 Renderer* ParserConfig::parse(const char* filename, Scene* scene)
 {
     ParsedScene parsed;
@@ -147,12 +199,29 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
 #else
     renderer = new Renderer(parsed.width, parsed.height, parsed.spp, parsed.output);
 #endif
-
+    const File CONFIG_DIR = File(parsed.output).get_parent();
     renderer->set_sampler(parsed.sampler_type);
     renderer->inherit_camera(build_camera(&parsed));
     renderer->inherit_filter(build_filter(&parsed));
     renderer->inherit_integrator(new PathTracer());
-    //deinit shits
-    deinit_ParsedScene(&parsed);
+
+    //handle children -> add more data in the original parsed struct
+    while(!empty_ResizableStack(&parsed.children))
+    {
+        char* child = (char*)top_ResizableStack(&parsed.children);
+        pop_ResizableStack(&parsed.children);
+        File path(&CONFIG_DIR, child);
+        //child was allocated in the bison parser. I hate decoupled malloc/free
+        free(child);
+        if(path.exists())
+            parse_rec(path.absolute_path(), &parsed);
+        else
+            Console.severe(MESSAGE_INPUT_ERROR, path.absolute_path());
+    }
+    deinit_ResizableStack(&parsed.children);
+
+    build_textures(&parsed, &CONFIG_DIR);
+    deinit_ResizableParsed(&parsed.parsed_textures);
+
     return renderer;
 }

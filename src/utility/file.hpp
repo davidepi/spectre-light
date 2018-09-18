@@ -1,12 +1,12 @@
 //Created,   4 Apr 2018
-//Last Edit  5 May 2018
+//Last Edit 18 Sep 2018
 
 /**
  *  \file file.hpp
  *  \brief Utilities involving the filesystem
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  5 May 2018
+ *  \date  18 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -57,6 +57,18 @@ public:
      *  existent or non-existent
      */
     File(const char* path);
+
+    /**
+     *  \brief Append constructor
+     *
+     *  Create this File class by appending the given filename to the folder
+     *  provided by the folder parameter. If the folder parameter is not an
+     *  actual folder but a file, the first parent folder found will be used.
+     *
+     * \param[in] folder The folder where filename will be appended
+     * \param[in] filename The file that will be appended to the folder
+     */
+    File(const File* folder, const char* filename);
 
     ///Copy constructor
     File(const File& old_obj);

@@ -210,3 +210,13 @@ void deinit_ResizableStack(struct ResizableStack* arr)
 {
     free(arr->array);
 }
+
+int empty_ResizableParsed(const struct ResizableParsed* arr)
+{
+    return arr->index==0;
+}
+
+int empty_ResizableStack(const struct ResizableStack* arr)
+{
+    return arr->index==0;
+}

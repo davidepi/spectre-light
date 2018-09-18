@@ -78,7 +78,7 @@ public:
      *
      *  \param[in] vals The values, sorted by nm, used for this spectrum
      */
-    Spectrum(const std::initializer_list<float> vals);
+    Spectrum(const std::initializer_list<float>& vals);
 
     /** \brief Attempt to convert an sRGB colour to a spectrum
      *

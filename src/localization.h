@@ -144,6 +144,9 @@
 #define MESSAGE_DUPLICATE_TEXTURE "Duplicate name for texture %s. The newest " \
 "was not inserted into the library"
 
+#define MESSAGE_TEXTURE_NONAME "An anonymous uniform texture was provided, "\
+"but it can not be referenced in any way. Skipped."
+
 #define MESSAGE_DUPLICATE_MATERIAL "Duplicate name for material %s. The newest "\
 "was not inserted into the library"
 

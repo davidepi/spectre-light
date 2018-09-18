@@ -19,7 +19,7 @@ const char* File::PATH_SEPARATOR_STRING = "/";
 //resolves the "../" and "./" and removes "//"
 static void append_relative(const char* abs, const char* relative, char* out)
 {
-    char* rel = (char*)malloc(sizeof(char)*(strlen(relative) + 1));
+    char* rel = (char*)malloc(sizeof(char)*(strlen(relative)+1));
     //always 0 on *nix because the absolute need to start with /
     //on windows this can vary, could be 0 for UNC path, 2 for C:\ paths
     int min_abs_index = 0;
@@ -50,9 +50,9 @@ static void append_relative(const char* abs, const char* relative, char* out)
     }
 #else
     //replace all \ with /
-    while (relative[i] != '\0')
+    while(relative[i] != '\0')
     {
-        if (relative[i] == '\\')
+        if(relative[i] == '\\')
             rel[i] = '/';
         else
             rel[i] = relative[i];
@@ -79,7 +79,7 @@ static void append_relative(const char* abs, const char* relative, char* out)
             relative_index = 1;
     }
     if(rel[relative_index] != File::PATH_SEPARATOR &&
-        absolute_index > min_abs_index) //to avoid starting with \\ on win abs
+       absolute_index>min_abs_index) //to avoid starting with \\ on win abs
     {
         out[absolute_index++] = File::PATH_SEPARATOR;
     }
@@ -120,9 +120,9 @@ static void append_relative(const char* abs, const char* relative, char* out)
                 //handle //
             else if(rel[relative_index+1] == File::PATH_SEPARATOR
 #ifdef _WIN32
-                    && absolute_index>0 //avoid erasing \\ in UNC paths
+                && absolute_index>0 //avoid erasing \\ in UNC paths
 #endif
-                )
+                    )
             {
                 relative_index++;
                 continue;
@@ -131,8 +131,8 @@ static void append_relative(const char* abs, const char* relative, char* out)
         out[absolute_index++] = rel[relative_index++];
     }
     //remove last trailing char, if exists and not root trailing
-    if(out[absolute_index - 1] == File::PATH_SEPARATOR &&
-        absolute_index > min_abs_index +1)
+    if(out[absolute_index-1] == File::PATH_SEPARATOR &&
+       absolute_index>min_abs_index+1)
     {
         absolute_index--;
     }
@@ -189,6 +189,20 @@ File::File(const char* path)
     //hidden file w/o extension(separate case because on windows does not hold)
     if(ext == file+1)
         ext = absolute+strlen(absolute);
+}
+
+File::File(const File* folder, const char* filename)
+{
+    if(is_absolute(filename))
+        *this = File(filename);
+    else
+    {
+        if(folder->is_folder())
+            *this = *folder;
+        else
+            *this = folder->get_parent();
+        append(filename);
+    }
 }
 
 File::File(const File& old_obj)
@@ -397,7 +411,7 @@ bool File::mkdirs()
             }
             //resume searching
             absolute[index] = File::PATH_SEPARATOR;
-            if (!res)
+            if(!res)
             {
                 //override previously created folder result, 'cause one failed
                 created = false;
