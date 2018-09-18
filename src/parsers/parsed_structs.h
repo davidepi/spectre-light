@@ -48,14 +48,8 @@ struct ParsedMaterial
     /** Name of the diffuse texture, as it can be found in the TextureLibrary */
     char* diffuse;
 
-    /** Uniform texture if the material is going to use an uniform value */
-    uint8_t diffuse_uniform[3];
-
     /** Name of the specular texture, as it is found in the TextureLibrary */
     char* specular;
-
-    /** Uniform texture if the material is going to use an uniform value */
-    uint8_t specular_uniform[3];
 
     /** Name of the normal texture, as it can be found in the TextureLibrary */
     char* normal;
@@ -105,7 +99,7 @@ struct ParsedTexture
     float shift[2];
 
     /** Type of filtering that will be used on the textures */
-    enum texturefilter_t filtering;
+    enum texturefilter_t filter;
 };
 
 /**
@@ -205,7 +199,6 @@ union ParsedElement
 {
     struct ParsedMaterial mat;
     struct ParsedLight light;
-    struct ParsedMask mask;
     struct ParsedDualMaterial dualmat;
     struct ParsedTexture tex;
     struct ParsedMeshWorld mesh;
@@ -339,7 +332,7 @@ struct ParsedScene
     union ParsedElement cur_dualmat;
 
     /** Temp mask that will be copied where needed */
-    union ParsedElement cur_mask;
+    struct ParsedMask cur_mask;
 
     /** Temp texture that will be copied where needed */
     union ParsedElement cur_tex;
@@ -399,9 +392,6 @@ struct ParsedScene
 
     /** C param for the Mitchell filter */
     float value1;
-
-    /** Filter used for every texture */
-    enum texturefilter_t tex_filter;
 
     /*--------------.
     |   Containers  |

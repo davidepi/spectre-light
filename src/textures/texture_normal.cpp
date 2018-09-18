@@ -3,7 +3,7 @@
 
 #include "texture_normal.hpp"
 
-TextureNormal::TextureNormal(const TextureImage* image)
+TextureNormal::TextureNormal(const Texture* image)
 {
     TextureNormal::image = image;
 }

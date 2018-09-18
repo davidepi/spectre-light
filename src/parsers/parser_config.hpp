@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 17 Sep 2018
+//Last Edit 18 Sep 2018
 
 /**
  *  \file      parser_config.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      16 Sep 2018
+ *  \date      18 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -35,6 +35,18 @@ extern "C" {
 #include "integrators/path_tracer.hpp"
 #include "textures/texture_uniform.hpp"
 #include "textures/texture_image.hpp"
+#include "textures/texture_normal.hpp"
+#include "materials/single_brdf.hpp"
+#include "materials/multi_bsdf.hpp"
+#include "materials/oren_nayar.hpp"
+#include "materials/lambertian.hpp"
+#include "materials/reflection.hpp"
+#include "materials/refraction.hpp"
+#include "materials/fresnel_conditions.hpp"
+#include "materials/microfacet.hpp"
+#include "materials/microfacet_distributions.hpp"
+#include "materials/metals.hpp"
+#include "materials/dual.hpp"
 
 /**
  *  \brief Parse an input file

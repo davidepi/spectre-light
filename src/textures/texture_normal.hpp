@@ -36,10 +36,7 @@ public:
      *  \param[in] image A pointer (not inherited) to the TextureImage that
      *  holds the normal map
      */
-    TextureNormal(const TextureImage* image);
-
-    /** Default destructor */
-    ~TextureNormal() override = default;
+    TextureNormal(const Texture* image);
 
     /**
      *  \brief  Calculate the shading matrix for this material
@@ -55,7 +52,7 @@ public:
 private:
 
     /** Underlying normal map */
-    const TextureImage* image;
+    const Texture* image;
 };
 
 #endif

@@ -191,9 +191,6 @@ filter_stmt
 | TYPE COLON LANCZOS_TOKEN {parsed->filter_type = LANCZOS;}
 | VAL_0 COLON number {parsed->value0 = $3;}
 | VAL_1 COLON number {parsed->value1 = $3;}
-| TEXTURE COLON UNFILTERED_TOKEN {parsed->tex_filter = UNFILTERED;} //TODO:check this
-| TEXTURE COLON TRILINEAR_TOKEN {parsed->tex_filter = TRILINEAR;}
-| TEXTURE COLON EWA_TOKEN {parsed->tex_filter = EWA;}
 | COMMA
 ;
 
@@ -217,8 +214,8 @@ world_stmt
 | SCALE COLON vector {parsed->cur_mesh.mesh.scale[0] = vec[0];parsed->cur_mesh.mesh.scale[1] = vec[1];parsed->cur_mesh.mesh.scale[2] = vec[2];}
 | SCALE COLON number {parsed->cur_mesh.mesh.scale[0] = $3;parsed->cur_mesh.mesh.scale[1] = $3;parsed->cur_mesh.mesh.scale[2] = $3;}
 | MATERIAL COLON STRING {ADD_STRING(parsed->cur_mesh.mesh.material_name,$3);}
-| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask.mask_tex,$3); parsed->cur_mesh.mesh.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
-| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask.mask_tex,$3); parsed->cur_mesh.mesh.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
+| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_mesh.mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
+| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_mesh.mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
 | COMMA
 ;
 
@@ -248,6 +245,9 @@ texture_stmt
 | SHIFT COLON vector2 {parsed->cur_tex.tex.shift[0] = vec[0]; parsed->cur_tex.tex.shift[1]=vec[1];}
 | SHIFT COLON number {parsed->cur_tex.tex.shift[0] = $3; parsed->cur_tex.tex.shift[1]=$3;}
 | COLOR COLON vector {parsed->cur_tex.tex.color[0] = vec[0]; parsed->cur_tex.tex.color[1] = vec[1]; parsed->cur_tex.tex.color[2] = vec[2];}
+| FILTER COLON UNFILTERED_TOKEN {parsed->cur_tex.tex.filter = UNFILTERED;}
+| FILTER COLON TRILINEAR_TOKEN {parsed->cur_tex.tex.filter = TRILINEAR;}
+| FILTER COLON EWA_TOKEN {parsed->cur_tex.tex.filter = EWA;}
 | COMMA
 ;
 
@@ -278,8 +278,8 @@ dualmaterial_stmt
 : NAME COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.name,$3);}
 | FIRST COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.first,$3);}
 | SECOND COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.second,$3);}
-| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask.mask_tex,$3); parsed->cur_dualmat.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
-| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask.mask_tex,$3); parsed->cur_dualmat.mask = parsed->cur_mask.mask;init_ParsedMask(&(parsed->cur_mask.mask));}
+| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask_tex,$3);parsed->cur_dualmat.dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
+| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_dualmat.dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
 | COMMA
 ;
 
@@ -321,8 +321,8 @@ element
 attributes: attributes attribute | attribute;
 
 attribute
-: channel {parsed->cur_mask.mask.mask_chn = $1;}
-| INV {parsed->cur_mask.mask.mask_inv = 1;}
+: channel {parsed->cur_mask.mask_chn = $1;}
+| INV {parsed->cur_mask.mask_inv = 1;}
 ;
 
 channel

@@ -17,6 +17,7 @@
 
 #include "primitives/hit_point.hpp"
 #include "utility/spectrum.hpp"
+#include "image_map.hpp"
 
 /**
  *  \class Texture texture.hpp textures/texture.hpp
@@ -46,6 +47,19 @@ public:
      *  coordinates (u,v)
      */
     virtual Spectrum map(const HitPoint* hp) const = 0;
+
+    /** \brief Maps an (u,v) coordinate to a texture value
+     *
+     *  Given the coordinates \p u and \p v of a point, this method finds the
+     *  RGB value associated with the point. Used mostly on the TextureImage
+     *  class, but every TextureNeeds to implements it because TextureNormal
+     *  needs it.
+     *
+     *  \param[in] hp The data of the hit point
+     *  \return The RGB value of the mesh with this texture applied at the
+     *  coordinates (u,v)
+     */
+    virtual TexelUnion map_value(const HitPoint* hp) const = 0;
 };
 
 #endif

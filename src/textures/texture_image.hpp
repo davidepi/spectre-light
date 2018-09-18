@@ -122,7 +122,7 @@ public:
      *  \return The Spectrum value of the mesh with this texture applied at the
      *  coordinates (u,v)
      */
-    TexelUnion map_value(const HitPoint* hp) const;
+    TexelUnion map_value(const HitPoint* hp) const override;
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS

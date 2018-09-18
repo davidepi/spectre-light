@@ -38,9 +38,6 @@ public:
      */
     TextureUniform(const Spectrum& value);
 
-    ///Default destructor
-    ~TextureUniform() = default;
-
     /** \brief Maps an (u,v) coordinate to a texture value
      *
      *  Given the coordinates \p u and \p v of a point, this method finds the
@@ -49,7 +46,9 @@ public:
      *
      *  \param[in] hp The data of the hit point
      */
-    Spectrum map(const HitPoint* hp) const;
+    Spectrum map(const HitPoint* hp) const override;
+
+    TexelUnion map_value(const HitPoint* hp) const override;
 
 private:
     const Spectrum value;

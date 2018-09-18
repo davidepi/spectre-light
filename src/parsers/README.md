@@ -30,7 +30,7 @@ camera: {
     up: [0,1,0]
     fov: 0.55
 }
-shape: "lamp.obj"
+shape: "lamp.obj" #this is an object space model
 shape: "scene.obj"
 light: {
     name: "normal lamp"
@@ -43,12 +43,13 @@ world: {
     mask: "Wall" using channel R inverted
 }
 
-texture:{name:'Wall',src:"folder/wall.tga"}
+texture:{name:'Wall',src:"folder/wall.tga", scale:[2,2], filter:ewa}
+texture:{name: 'Wall_uniform', color:[128,128,128]}
 material: {
   name: "Red Oren-Nayar"
   type: matte
   diffuse: "Wall"
-  specular: [255,255,255]
+  specular: "Wall_uniform"
   roughness: 0.2
 }
 material: "another_file.txt"
@@ -139,7 +140,6 @@ Key | Type | Usage | Default value
 type | enum | Defines the type of filter. The values can be `box`, `tent`, `gaussian`, `mitchell` and `lanczos` |  mitchell
 value0 | float | The parameter for the filters. Unused in box and tent filter, this value is the σ (falloff) value of the gaussian filter (a value of 2 is suggested), the B parameter of the Mitchell-Netravali and the 𝜏 parameter of the Lanczos-Sinc filter (a value of 3 is suggested) | 0.33
 value1 | float | Used only in the Mitchell-Netravali filter as the C parameter | 0.33
-texture | enum | Defines the type of filter used for texture filtering. The values can be `unfiltered`, `trilinear` or `ewa` | trilinear
 
 #### Light
 Keys for Light objects
@@ -174,9 +174,11 @@ Keys for Texture objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the texture as it will appear in the Texture Library | filename with extension
-src | quoted string | The path to the texture on the disk that will be stored in the Texture Library | Syntax error
+src | quoted string | The path to the texture on the disk that will be stored in the Texture Library |
 scale | float[2] | Scaling factor of the texture uv coordinates. Note that this factor scales the uv coordinates and not the texture itself. Thus higher numbers will visually produce a smaller texture wrapped on the object | [1,1]
 shift | float[2] | Shifting factor of the texture uv coordinates. | [0,0]
+color | float[3] | An array defining the color of the uniform texture, expressing RGB values in the range [0,255]. Note that the src value will override this one | [255, 255, 255]
+filter | enum | Defines the type of filter used for texture filtering. The values can be `unfiltered`, `trilinear` or `ewa` | trilinear
 
 #### Material
 Keys for Material objects
@@ -185,13 +187,14 @@ Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | The name of the material that will be added to the Library | Syntax error
 type | enum | The type of material that will be used. Possible values are `matte`, `glossy`, `metal` or `glass` (used for transmittive materials included water). `metal` type materials do not support textures but instead will use `element` keyword to define their appareance | matte
-ior | float or float[2] or float[3] or float[3]float[3] | Refractive index of the material. Used in `glass` typed materials. The index of refraction is wavelength dependent and can be issued with a single number, a 2-values array, a 3-values array or two 3-values array. The first will use the same value for every wavelength, the second and third will use Cauchy equation with parameters `ior:[B,C]` and `ior:[B,C,D]` respectively to calculate the values. The third one, used as `ior:[B1,B2,B3][C1,C2,C3]` will use Sellmeier equation instead. The supplied values for Cauchy's `C` and `D` parameters and for Sellmeier's `C1`, `C2` and `C3` parameters are expected in μm. Note that despite having wavelength dependent index of refractions, light dispersion is still not supported  | [1.45,0]
+ior | float or float[2] or float[3] | Refractive index of the material. Used in `glass` typed materials. The index of refraction is wavelength dependent and can be issued with a single number, a 2-values array or a 3-values array. The first will use the same value for every wavelength, the second and third will use Cauchy equation with parameters `ior:[B,C]` and `ior:[B,C,D]` respectively to calculate the values. The supplied values for Cauchy's `C` and `D` parameters are expected in μm. Note that despite having wavelength dependent index of refractions, light dispersion is still not supported  | [1.45,0,0]
 element | enum | For `metal` typed materials, this will specify a metal from the periodic table for which sampled data will be used. [More informations here](#metals) | Au
 roughness | float | single value in range [0-1] used to calculate the roughness of a material | 0
 anisotropy | float | single value in range [0-1] used to calcualte the y roughness of a material for surfaces that exhibit anisotropic reflections like hairs or brushed steel. If this equals the roughness value or is unset, the surface is assumed isotropic | roughness value
 distribution | enum | If the material has a roughness higher than 0, the distribution that will be used to simulate the roughness. Possible values are `blinn`, `beckmann`, `ggx`. If the anisotropy value is set and is different from the roughness, the distribution value will always be `ggx` since it is the only distribution implemented for anisotropic materials | beckmann
-diffuse | quoted string or float[3] | The texture map that will be used for the spectrum. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the default texture is used. If an array of values is given an uniform coloured texture is created with the given values, expected as RGB values in range [0-255]. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | default white texture
-specular | quoted string or float[3] | Same input of the diffuse component. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| default white texture
+diffuse | quoted string  | The texture map that will be used for the spectrum. The texture name is searched inside the Texture Library and if not found the default texture is used. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | default white texture
+specular | quoted string | Same input of the diffuse component. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| default white texture
+normal | quoted string | Same input of the diffuse and specular one, used to compute shading normal in tangent space. Expected to be a [x+, y+, z+] normal
 
 #### Dualmaterial
 Keys for Dualmaterial objects

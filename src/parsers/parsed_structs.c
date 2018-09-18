@@ -10,17 +10,11 @@ void init_ParsedMaterial(struct ParsedMaterial* val)
     val->ior_sell[0] = 0.f;
     val->ior_sell[1] = 0.f;
     val->ior_sell[2] = 0.f;
-    val->rough_x = 0;
-    val->rough_y = -1;
+    val->rough_x = 0.f;
+    val->rough_y = -1.f;
     val->dist = BECKMANN;
     val->diffuse = NULL;
-    val->diffuse_uniform[0] = 255;
-    val->diffuse_uniform[1] = 255;
-    val->diffuse_uniform[2] = 255;
     val->specular = NULL;
-    val->specular_uniform[0] = 255;
-    val->specular_uniform[1] = 255;
-    val->specular_uniform[2] = 255;
     val->normal = NULL;
 }
 
@@ -42,7 +36,7 @@ void init_ParsedTexture(struct ParsedTexture* val)
     val->scale[1] = 1.f;
     val->shift[0] = 0.f;
     val->shift[1] = 0.f;
-    val->filtering = TRILINEAR;
+    val->filter = TRILINEAR;
 }
 
 void init_ParsedLight(struct ParsedLight* val)
@@ -110,7 +104,7 @@ void init_ParsedScene(struct ParsedScene* val)
     val->value1 = 0.33f;
     init_ParsedMaterial(&(val->cur_mat.mat));
     init_ParsedDualMaterial(&(val->cur_dualmat.dualmat));
-    init_ParsedMask(&(val->cur_mask.mask));
+    init_ParsedMask(&(val->cur_mask));
     init_ParsedTexture(&(val->cur_tex.tex));
     init_ParsedMeshWorld(&(val->cur_mesh.mesh));
     init_ParsedLight(&(val->cur_light.light));

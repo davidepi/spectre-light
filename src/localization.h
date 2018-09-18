@@ -150,6 +150,9 @@
 #define MESSAGE_DUPLICATE_MATERIAL "Duplicate name for material %s. The newest "\
 "was not inserted into the library"
 
+#define MESSAGE_MISSING_MATERIAL "Material %s to be used in %s "\
+"not found. Using the default one"
+
 #define MESSAGE_DUPLICATE_SHAPE "Duplicate name for shape %s. Shape was not "\
 "inserted"
 
@@ -161,8 +164,6 @@
 "imported"
 
 #define MESSAGE_NOT_OBJ "Expected .obj file, but found %s extension"
-
-#define MESSAGE_MISSING_MATERIAL "Missing material %s for object %s"
 
 #define MESSAGE_MISSING_MATERIAL_OVERRIDE MESSAGE_MISSING_MATERIAL " while "\
 "overriding its materials"

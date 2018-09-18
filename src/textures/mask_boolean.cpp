@@ -6,7 +6,7 @@
 MaskBoolean::MaskBoolean():map(NULL)
 {}
 
-MaskBoolean::MaskBoolean(const TextureImage* map, imgchannel_t channel, bool
+MaskBoolean::MaskBoolean(const Texture* map, imgchannel_t channel, bool
 inverted):map(map), channel(channel), inverted(inverted)
 {}
 
