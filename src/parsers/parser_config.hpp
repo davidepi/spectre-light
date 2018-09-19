@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 18 Sep 2018
+//Last Edit 19 Sep 2018
 
 /**
  *  \file      parser_config.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      18 Sep 2018
+ *  \date      19 Sep 2018
  *  \copyright GNU GPLv3
  */
 
@@ -47,6 +47,12 @@ extern "C" {
 #include "materials/microfacet_distributions.hpp"
 #include "materials/metals.hpp"
 #include "materials/dual.hpp"
+#include "parsers/parser_obj.hpp"
+#include "primitives/mesh.hpp"
+#include "primitives/sphere.hpp"
+#include "lights/light_area.hpp"
+#include "lights/light_omni.hpp"
+#include "lights/light_spot.hpp"
 
 /**
  *  \brief Parse an input file
@@ -87,7 +93,7 @@ public:
     *  Renderer class depends on some user defined parameters for its
     *  construction
     *
-    *  \param[in] f The file that will be parsed
+    *  \param[in] filename The file that will be parsed
     *  \param[in,out] scene The scene that will be built, must be already
     *  allocated
     *  \return An heap allocated Renderer
@@ -95,5 +101,6 @@ public:
     CHECK_RETVAL_USED
     Renderer* parse(const char* filename, Scene* scene);
 };
+
 
 #endif

@@ -5,6 +5,26 @@ extern "C" { void parse_config(FILE*, struct ParsedScene*); }
 ///minimum value for ParsedMaterial::rough_x when the material is not specular
 #define MIN_ROUGH 0.001f
 
+/// Struct used to bind a mesh and its materials. A mesh in object space
+struct MeshObject
+{
+    ///The shape in object space. SDLs can also be used
+    Shape* mesh;
+
+    ///Array of materials used by this shape
+    const Bsdf** materials;
+
+    ///Length of the MeshObject::materials array
+    unsigned char materials_len;
+
+    /**
+     *  \brief Array of associations triangle-material, represented as offsets
+     *  The ith value of this array is the offset in the MeshObject::materials
+     *  array to know the material for the ith triangle
+     */
+    unsigned char* association;
+};
+
 /**
  *  \brief Performs checks on the resolution
  *
@@ -518,6 +538,317 @@ static void build_dualmaterials(ParsedScene* parsed)
     }
 }
 
+/**
+ *  \brief Parse every path to obj files contained in the raw data
+ *
+ *  This method parses every obj file contained in the raw data obtained from
+ *  the bison parser and adss them to a temporary std::unordere_map. This is
+ *  done because then it is possible to purge unreferenced shapes and delete
+ *  them before beginning the actual rendering.
+ *
+ *  \param[in,out] parsed Raw data obtained from the bison parser
+ *  \param[in] cur_dir File class representing the current directory
+ *  \param[out] shapes array of shapes that will be used to temporary store
+ *  every shape
+ */
+static void build_mesh_object(ParsedScene* parsed, const File* cur_dir,
+                              std::unordered_map<std::string, MeshObject>* shapes)
+{
+    while(!empty_ResizableStack(&parsed->parsed_mesh_object))
+    {
+        char* path;
+        path = (char*)top_ResizableStack(&parsed->parsed_mesh_object);
+        pop_ResizableStack(&parsed->parsed_mesh_object);
+        File cur_obj(cur_dir, path);
+        if(strcmp(cur_obj.extension(), "obj") != 0)
+        {
+            Console.severe(MESSAGE_OBJ_ERROR, cur_obj.absolute_path(),
+                           cur_obj.extension());
+            return;
+        }
+        ParserObj parser_obj;
+        parser_obj.start_parsing(cur_obj.absolute_path());
+        //get_next_mesh() requires the mesh to be already allocated and simply
+        //add triangles. since the mesh should survive after this function, it
+        //is heap allocated
+        Mesh* m = new Mesh(1);
+        while(parser_obj.get_next_mesh(m))
+        {
+            MeshObject insertme;
+
+            insertme.mesh = m;
+            insertme.materials_len = parser_obj.get_material_no();
+            insertme.materials = (const Bsdf**)malloc(sizeof(const Bsdf*)*
+                                                      insertme.materials_len);
+            insertme.association = (unsigned char*)malloc(
+                    parser_obj.get_face_no());
+            parser_obj.get_materials(insertme.materials);
+            parser_obj.get_material_association(insertme.association);
+            std::string name = parser_obj.get_mesh_name();
+            std::unordered_map<std::string, MeshObject>::const_iterator it;
+            it = shapes->find(name);
+            if(it == shapes->end())
+                shapes->insert({{name, insertme}});
+            else
+            {
+                Console.warning(MESSAGE_DUPLICATE_SHAPE, name.c_str());
+                delete m; //delete the mesh since it is unused
+            }
+            //create next object
+            m = new Mesh(1);
+        }
+        //allocated mesh but they were finished
+        delete m;
+        free(path);
+    }
+}
+
+/**
+ *  \brief Parse every mesh in world space contained in the raw data
+ *
+ *  After parsing the configuration file, this method can be used to place world
+ *  space meshes inside the scene. This method tracks which mesh has been used
+ *  and which not
+ *
+ *  \param[in,out] parsed The raw data obtained by parsing the config file
+ *  \param[in] shapes The object space meshes that can be positioned in world
+ *  space
+ *  \param[in] used_shapes A stack containing the shapes used in the scene
+ *  \param[out] scene The scene that will be initialized with the world space
+ *  meshes
+ */
+static void build_mesh_world(ParsedScene* parsed,
+        const std::unordered_map<std::string, MeshObject>* shapes,
+        std::stack<std::string>* used_shapes, Scene* scene)
+{
+    std::unordered_map<std::string, MeshObject>::const_iterator mesh_i;
+    while(!empty_ResizableParsed(&parsed->parsed_mesh_world))
+    {
+        ParsedElement union_m;
+        MeshObject mesh_o;
+        top_ResizableParsed(&parsed->parsed_mesh_world, &union_m);
+        pop_ResizableParsed(&parsed->parsed_mesh_world);
+        if(union_m.mesh.name == NULL)
+        {
+            //BEGONE THOT!
+            if(union_m.mesh.material_name != NULL)
+                free(union_m.mesh.material_name);
+            if(union_m.mesh.mask.mask_tex != NULL)
+                free(union_m.mesh.mask.mask_tex);
+            continue;
+        }
+        //parsed obj that will be deleted if not used
+        mesh_i = shapes->find(union_m.mesh.name);
+        if(mesh_i != shapes->end())
+        {
+            mesh_o = mesh_i->second;
+            used_shapes->push(union_m.mesh.name);
+        }
+        else
+        {
+            Console.warning(MESSAGE_SHAPE_NOT_FOUND, union_m.mesh.name);
+            free(union_m.mesh.name);
+            if(union_m.mesh.material_name != NULL)
+                free(union_m.mesh.material_name);
+            if(union_m.mesh.mask.mask_tex != NULL)
+                free(union_m.mesh.mask.mask_tex);
+            continue; //otherwise it would be an if-else nightmare
+        }
+
+        Matrix4 transform;
+        Matrix4 position_matrix;
+        Matrix4 rotation_matrix;
+        Matrix4 rotx_matrix;
+        Matrix4 roty_matrix;
+        Matrix4 rotz_matrix;
+        Matrix4 scale_matrix;
+        Vec3 position(union_m.mesh.position[0],
+                      union_m.mesh.position[1],
+                      union_m.mesh.position[2]);
+        Vec3 scale(union_m.mesh.scale[0],
+                   union_m.mesh.scale[1],
+                   union_m.mesh.scale[2]);
+        position_matrix.set_translation(position);
+        rotx_matrix.set_rotate_x(union_m.mesh.rotation[0]);
+        roty_matrix.set_rotate_y(union_m.mesh.rotation[1]);
+        rotz_matrix.set_rotate_z(union_m.mesh.rotation[2]);
+        rotation_matrix = rotz_matrix*roty_matrix*rotx_matrix;
+        scale_matrix.set_scale(scale);
+        //watchout the order!!!
+        transform = position_matrix*rotation_matrix*scale_matrix;
+        Asset* current_asset = new Asset(mesh_o.mesh, transform, 1);
+
+        //use parsed materials
+        if(union_m.mesh.material_name == NULL)
+        {
+            current_asset->set_materials(mesh_o.materials,
+                                         mesh_o.materials_len,
+                                         mesh_o.association);
+        }
+        else //override materials
+        {
+            const Bsdf* overridden_material;
+            overridden_material = MtlLib.get(union_m.mesh.material_name);
+            if(overridden_material == NULL)
+            {
+                //use default if the material is missing
+                overridden_material = MtlLib.get_default();
+                Console.warning(MESSAGE_MISSING_MATERIAL_OVERRIDE,
+                                union_m.mesh.material_name,
+                                union_m.mesh.name);
+            }
+            const Bsdf* materials[1];
+            materials[0] = overridden_material;
+            unsigned char* associations;
+            associations = (unsigned char*)malloc
+                    (mesh_o.mesh->get_faces_number());
+            memset(associations, 0, mesh_o.mesh->get_faces_number());
+            current_asset->set_materials(materials, 1, associations);
+            free(associations);
+            free(union_m.mesh.material_name);
+        }
+        //resolve the mask
+        if(union_m.mesh.mask.mask_tex != NULL)
+        {
+            const Texture* mask_tex;
+            mask_tex = TexLib.get_texture(union_m.mesh.mask.mask_tex);
+            if(mask_tex == NULL)
+            {
+                Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
+                                union_m.mesh.mask.mask_tex,
+                                union_m.mesh.name);
+                mask_tex = TexLib.get_dflt_texture();
+            }
+            free(union_m.mesh.mask.mask_tex);
+            MaskBoolean mask(mask_tex, union_m.mesh.mask.mask_chn,
+                             union_m.mesh.mask.mask_inv);
+            current_asset->set_mask(mask);
+        }
+        scene->inherit_asset(current_asset);
+        free(union_m.mesh.name);
+    }
+}
+
+/**
+ *  \brief Parse every light contained in the raw data
+ *
+ *  This method is very similar to build_mesh_world, since a light can also
+ *  inherit from the Asset class. However, in addition, this method can set
+ *  additional variables such as light temperature or other light types
+ *
+ *  \param[in,out] parsed The raw data obtained by parsing the config file
+ *  \param[in] shapes The object space meshes that can be positioned in world
+ *  space
+ *  \param[in] used_shapes A stack containing the shapes used in the scene
+ *  \param[out] scene The scene that will be initialized with the world space
+ *  meshes
+ */
+static void build_lights(ParsedScene* parsed,
+        const std::unordered_map<std::string, MeshObject>* shapes,
+        std::stack<std::string>* used_shapes, Scene* scene)
+{
+    std::unordered_map<std::string, MeshObject>::const_iterator mesh_i;
+    while(!empty_ResizableParsed(&parsed->parsed_lights))
+    {
+        ParsedElement union_l;
+        top_ResizableParsed(&parsed->parsed_lights, &union_l);
+        pop_ResizableParsed(&parsed->parsed_lights);
+
+        //set color of the light
+        Spectrum intensity;
+        //blackbody
+        if(union_l.light.temperature>=0)
+            intensity = Spectrum(union_l.light.temperature);
+        else
+        {
+            ColorRGB color(union_l.light.color[0],
+                           union_l.light.color[1],
+                           union_l.light.color[2]); // color is parsed a uint8_t
+            intensity = Spectrum(color, true);
+        }
+
+        //position the light into the scene
+        Matrix4 transform;
+        Matrix4 position_matrix;
+        Matrix4 rotation_matrix;
+        Matrix4 rotx_matrix;
+        Matrix4 roty_matrix;
+        Matrix4 rotz_matrix;
+        Matrix4 scale_matrix;
+        Matrix4 pos_rot_matrix;
+        Vec3 position(union_l.light.position[0],
+                      union_l.light.position[1],
+                      union_l.light.position[2]);
+        Vec3 scale(union_l.light.scale[0],
+                   union_l.light.scale[1],
+                   union_l.light.scale[2]);
+        position_matrix.set_translation(position);
+        rotx_matrix.set_rotate_x(union_l.light.rotation[0]);
+        roty_matrix.set_rotate_y(union_l.light.rotation[1]);
+        rotz_matrix.set_rotate_z(union_l.light.rotation[2]);
+        rotation_matrix = rotz_matrix*roty_matrix*rotx_matrix;
+        scale_matrix.set_scale(scale);
+        pos_rot_matrix = position_matrix*rotation_matrix;
+        transform = pos_rot_matrix*scale_matrix;
+
+        switch(union_l.light.type)
+        {
+            case AREA:
+            {
+                Shape* shape;
+                if(union_l.light.name != NULL)
+                {
+                    //no name?
+                    //we can't expect god to do all the work '̿'\̵͇̿̿\з=( ͠° ͟ʖ ͡°)=ε/̵͇̿̿/'̿
+                    continue;
+                }
+                //same code of build_meshed, check that one for comments
+                mesh_i = shapes->find(union_l.light.name);
+                if(mesh_i != shapes->end())
+                {
+                    shape = mesh_i->second.mesh;
+                    used_shapes->push(union_l.light.name);
+                }
+                else
+                {
+                    Console.warning(MESSAGE_SHAPE_NOT_FOUND,
+                                    union_l.light.name);
+                    break;
+                }
+                Asset* current_asset = new LightArea(shape, transform,
+                                                     intensity);
+                //create a default material for cameras
+                const Bsdf* materials[1];
+                materials[0] = MtlLib.get_default();
+                unsigned char* associations;
+                associations = (unsigned char*)malloc
+                        (shape->get_faces_number());
+                memset(associations, 0, shape->get_faces_number());
+                current_asset->set_materials(materials, 1, associations);
+                free(associations);
+                scene->inherit_arealight((LightArea*)current_asset);
+                break;
+            }
+            case OMNI:
+            {
+                Light* omni = new LightOmni(intensity, position_matrix);
+                scene->inherit_light(omni);
+                break;
+            }
+            case SPOT:
+            {
+                Light* spot = new LightSpot(intensity, pos_rot_matrix,
+                                            union_l.light.radius,
+                                            union_l.light.falloff);
+                scene->inherit_light(spot);
+                break;
+            }
+        }
+        if(union_l.light.name != NULL)
+            free(union_l.light.name);
+    }
+}
+
 Renderer* ParserConfig::parse(const char* filename, Scene* scene)
 {
     ParsedScene parsed;
@@ -565,6 +896,25 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     //handle dualmaterials
     build_dualmaterials(&parsed);
     deinit_ResizableParsed(&parsed.parsed_dualmaterials);
+    //not every shape will be used. This thing is used to purge unused shape so
+    //they don't even see the scene if not referenced at least one time
+    std::unordered_map<std::string, MeshObject> shapes;
+    std::stack<std::string> used_shapes;
+    MeshObject default_sphere;
+    default_sphere.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
+    default_sphere.materials[0] = MtlLib.get_default();
+    default_sphere.materials_len = 1;
+    default_sphere.association = (unsigned char*)malloc(1);
+    default_sphere.association[0] = 0;
+    shapes.insert({{"Sphere", default_sphere}});
+    build_mesh_object(&parsed, &CONFIG_DIR, &shapes);
+    deinit_ResizableStack(&parsed.parsed_mesh_object);
+    build_mesh_world(&parsed, &shapes, &used_shapes, scene);
+    deinit_ResizableParsed(&parsed.parsed_mesh_world);
+    build_lights(&parsed, &shapes, &used_shapes, scene);
+    deinit_ResizableParsed(&parsed.parsed_lights);
+
+    //TODO: cleanup
 
     return renderer;
 }
