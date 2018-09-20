@@ -4,16 +4,20 @@
 %{
 #include <stdlib.h> /* for atof and atoi. They are deprecated because of lack of
                        error handling, but lex ensures no errors */
+#include <string.h> //strncpy used in dequote_and_copy()
 #include "config_parser.tab.h"
 #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
-#define DEQUOTE_AND_COPY(string,target) \
-const unsigned int LEN = strlen(string); \
-target = (uint8_t*)malloc(sizeof(uint8_t)*LEN-1);\
-string[LEN-1] = '\0'; \
-strcpy(target, string+1)
 long int current_pos;
 long int last_line_pos;
 long int cur_line;
+static __inline char* dequote_and_copy(const char* old)
+{
+    const size_t LEN = strlen(old);
+    char* target = (char*)malloc(sizeof(char)*LEN-1); //-2 char +1 '/0'
+    strncpy(target, old+1, LEN-2);
+    target[LEN-2] = 0x0;
+    return target;
+}
 %}
 %option yylineno
 %option nounput
@@ -56,10 +60,10 @@ zirconium [Zz][Rr]
 
 %{
     #define UPDATE_LOC UPDATE_POS;UPDATE_COL
-    #define UPDATE_COL yylloc.last_column=yylloc.first_column+(int)strlen(yytext)
-    #define UPDATE_POS current_pos+=(int)strlen(yytext)
-    #define EAT_COL yylloc.first_column = yylloc.last_column+(int)strlen(yytext);yylloc.last_column = yylloc.first_column
-    #define ZERO_COL yylloc.first_column = 0;yylloc.last_column=0
+    #define UPDATE_COL yylloc.last_column=yylloc.first_column+yyleng;
+    #define UPDATE_POS current_pos+=yyleng;
+    #define EAT_COL yylloc.first_column = yylloc.last_column+yyleng;yylloc.last_column = yylloc.first_column
+    #define ZERO_COL yylloc.first_column = 1; yylloc.last_column=1
 %}
 
 %%
@@ -147,7 +151,7 @@ area {UPDATE_LOC; return AREA_TOKEN;}
 {uint}    { UPDATE_LOC; yylval.uval = atoi(yytext); return UINT; }
 {int}    { UPDATE_LOC; yylval.ival = atoi(yytext); return INT; }
 {float} { UPDATE_LOC; yylval.fval = atof(yytext); return FLOAT; }
-{string} { UPDATE_LOC; DEQUOTE_AND_COPY(yylval.sval,yytext); return STRING; }
+{string} { UPDATE_LOC; yylval.sval = dequote_and_copy(yytext); return STRING; }
 {silver} { UPDATE_LOC; return SILVER;}
 {aluminium} { UPDATE_LOC; return ALUMINIUM;}
 {gold} { UPDATE_LOC; return GOLD;}

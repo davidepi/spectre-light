@@ -165,7 +165,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 131 "config_parser.y" /* yacc.c:1919  */
+#line 132 "config_parser.y" /* yacc.c:1919  */
 
     float fval;
     int ival;

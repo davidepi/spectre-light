@@ -33,11 +33,8 @@ struct ParsedMaterial
     /** Distribution of the material */
     enum microfacet_t dist;
 
-    /** Index of refraction of the material (if cauchy is used) */
+    /** Index of refraction of the material */
     float ior[3];
-
-    /** Index of refraction of the material (if sellmeier is used) */
-    float ior_sell[3];
 
     /** Roughness of the materials */
     float rough_x;
@@ -321,6 +318,16 @@ int empty_ResizableStack(const struct ResizableStack* arr);
 /** Struct containing the parsed settings for an entire scene */
 struct ParsedScene
 {
+    /*------------------.
+    |   Error Handling  |
+    `------------------*/
+
+    /** 0 If the parser encountered any error, 1 otherwise */
+    char successful;
+
+    /** The error message reported by the parser */
+    char* error_msg;
+
     /*------------------.
     |   Temp instances  |
     `------------------*/

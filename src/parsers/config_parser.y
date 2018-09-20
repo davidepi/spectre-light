@@ -9,6 +9,7 @@
     #include "parsers/parsed_structs.h"
     #include <stdio.h>
     extern FILE* yyin;
+    extern int config_get_line(char* buf, int len);
     int yylex(void);
     void yyerror(char const*);
     void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized);
@@ -145,7 +146,9 @@
 
 %%
 
-%start file;
+%start config;
+
+config: file {parsed->successful = 1;}
 
 file
 : file stmt
@@ -359,6 +362,40 @@ void parse_config(FILE* opened_file, struct ParsedScene* scene_initialized)
 
 void yyerror (const char* msg)
 {
-    printf("error");
-    /* driver.error(l,m); */
+#ifndef WIN32
+#define GRN "\x1B[32m"
+#define NRM "\x1B[0m"
+#define BLD "\x1B[1m"
+#else
+#define GRN
+#define NRM
+#define BLD
+#endif
+#define BUFFER 128
+#define FINAL_MSG_BUFFER 1024
+    int i;
+    int end_col = 0<yylloc.last_column?yylloc.last_column-1:0;
+    parsed->successful = 0;
+    /* Should be enough. Really.*/
+    parsed->error_msg = (char*)malloc(FINAL_MSG_BUFFER);
+    //tested againts: token len > buffer len
+    //line len > buf len
+    //token at beginning and line len > buf len
+    //token at end and line len > buf len
+    //underline wrong token
+    if(yylloc.first_column<yylloc.last_column && yylloc.first_line == yylloc.last_line&&yylloc.last_column-yylloc.first_column<=BUFFER-5) //prev. segfault if token len >buf
+    {
+        char buf[128];
+        char under[128];
+        int offset = config_get_line(buf, 128);
+        for(i = 0; i<yylloc.first_column-1-offset; i++)
+            under[i] = ' ';
+        for(i = yylloc.first_column-1-offset; i<end_col-offset; i++)
+            under[i] = '~';
+        under[end_col-offset] = 0;
+        //snprintf(parsed->error_msg, FINAL_MSG_BUFFER, "%%s:%d.%d: " BLD "%s" NRM "\n%s\n%%" GRN "%s" NRM, yylloc.last_line, end_col, msg, buf, under);
+        printf("%d %d %d %d\n", yylloc.first_column, yylloc.last_column, yylloc.first_line, yylloc.last_line);
+    }
+    else //just print the error
+        snprintf(parsed->error_msg, FINAL_MSG_BUFFER, "%%s:%d.%d: " BLD "%s" NRM, yylloc.last_line, end_col, msg);
 }

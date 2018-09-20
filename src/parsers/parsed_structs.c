@@ -7,9 +7,6 @@ void init_ParsedMaterial(struct ParsedMaterial* val)
     val->ior[0] = 1.45f;
     val->ior[1] = 0.f;
     val->ior[2] = 0.f;
-    val->ior_sell[0] = 0.f;
-    val->ior_sell[1] = 0.f;
-    val->ior_sell[2] = 0.f;
     val->rough_x = 0.f;
     val->rough_y = -1.f;
     val->dist = BECKMANN;
@@ -83,6 +80,8 @@ void init_ParsedMeshWorld(struct ParsedMeshWorld* val)
 
 void init_ParsedScene(struct ParsedScene* val)
 {
+    val->successful = 0;
+    val->error_msg = NULL;
     val->output = NULL;
     val->width = 800;
     val->height = 600;
@@ -113,17 +112,13 @@ void init_ParsedScene(struct ParsedScene* val)
     init_ResizableParsed(&(val->parsed_dualmaterials));
     init_ResizableStack(&(val->parsed_mesh_object));
     init_ResizableParsed(&(val->parsed_mesh_world));
+    init_ResizableParsed(&(val->parsed_lights));
     init_ResizableStack(&(val->children));
 }
 
 void deinit_ParsedScene(struct ParsedScene* val)
 {
-    deinit_ResizableParsed(&(val->parsed_textures));
-    deinit_ResizableParsed(&(val->parsed_materials));
-    deinit_ResizableParsed(&(val->parsed_dualmaterials));
-    deinit_ResizableStack(&(val->parsed_mesh_object));
-    deinit_ResizableParsed(&(val->parsed_mesh_world));
-    deinit_ResizableStack(&(val->children));
+
 }
 
 void realloc_ResizableParsed(struct ResizableParsed* arr)
@@ -198,11 +193,13 @@ void* top_ResizableStack(const struct ResizableStack* arr)
 void deinit_ResizableParsed(struct ResizableParsed* arr)
 {
     free(arr->array);
+    arr->array = NULL;
 }
 
 void deinit_ResizableStack(struct ResizableStack* arr)
 {
     free(arr->array);
+    arr->array = NULL;
 }
 
 int empty_ResizableParsed(const struct ResizableParsed* arr)

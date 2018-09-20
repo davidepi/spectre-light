@@ -78,10 +78,11 @@ void check_spp(enum sampler_t sampler_type, int* spp)
  *  \brief Parse a configuration file and get the raw unprocessed data inside it
  *  \param[in] filename The configuration file that will be parsed
  *  \param[in,out] parsed The result that will hold the parsed raw data, this
+ *  \param[in] children True if this is not the main config file but a children
  *  struct is assumed to be already initialized with the init_ParsedScene()
  *  method
  */
-void parse_rec(const char* filename, ParsedScene* parsed)
+void parse_rec(const char* filename, ParsedScene* parsed, bool children)
 {
     FILE* fin = fopen(filename, "r");
     //TODO: check NULL
@@ -618,8 +619,9 @@ static void build_mesh_object(ParsedScene* parsed, const File* cur_dir,
  *  meshes
  */
 static void build_mesh_world(ParsedScene* parsed,
-        const std::unordered_map<std::string, MeshObject>* shapes,
-        std::stack<std::string>* used_shapes, Scene* scene)
+                             const std::unordered_map<std::string, MeshObject>* shapes,
+                             std::unordered_set<std::string>* used_shapes,
+                             Scene* scene)
 {
     std::unordered_map<std::string, MeshObject>::const_iterator mesh_i;
     while(!empty_ResizableParsed(&parsed->parsed_mesh_world))
@@ -642,7 +644,7 @@ static void build_mesh_world(ParsedScene* parsed,
         if(mesh_i != shapes->end())
         {
             mesh_o = mesh_i->second;
-            used_shapes->push(union_m.mesh.name);
+            used_shapes->insert(union_m.mesh.name);
         }
         else
         {
@@ -744,8 +746,9 @@ static void build_mesh_world(ParsedScene* parsed,
  *  meshes
  */
 static void build_lights(ParsedScene* parsed,
-        const std::unordered_map<std::string, MeshObject>* shapes,
-        std::stack<std::string>* used_shapes, Scene* scene)
+                         const std::unordered_map<std::string, MeshObject>* shapes,
+                         std::unordered_set<std::string>* used_shapes,
+                         Scene* scene)
 {
     std::unordered_map<std::string, MeshObject>::const_iterator mesh_i;
     while(!empty_ResizableParsed(&parsed->parsed_lights))
@@ -807,7 +810,7 @@ static void build_lights(ParsedScene* parsed,
                 if(mesh_i != shapes->end())
                 {
                     shape = mesh_i->second.mesh;
-                    used_shapes->push(union_l.light.name);
+                    used_shapes->insert(union_l.light.name);
                 }
                 else
                 {
@@ -854,12 +857,18 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     ParsedScene parsed;
     init_ParsedScene(&parsed);
     //first pass
-    parse_rec(filename, &parsed);
+    parse_rec(filename, &parsed, false);
+    Renderer* renderer;
+    if(!parsed.successful)
+    {
+        deinit_ParsedScene(&parsed);
+        printf("%s\n",parsed.error_msg);
+        return NULL;
+    }
 
     //set up everything
     check_resolution(&parsed.width, &parsed.height);
     check_spp(parsed.sampler_type, &parsed.spp);
-    Renderer* renderer;
 #ifdef DEBUG
     renderer = new Renderer(parsed.width, parsed.height, parsed.spp,
                             parsed.output, 0);
@@ -881,7 +890,7 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
         //child was allocated in the bison parser. I hate decoupled malloc/free
         free(child);
         if(path.exists())
-            parse_rec(path.absolute_path(), &parsed);
+            parse_rec(path.absolute_path(), &parsed, true);
         else
             Console.severe(MESSAGE_INPUT_ERROR, path.absolute_path());
     }
@@ -899,7 +908,7 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     //not every shape will be used. This thing is used to purge unused shape so
     //they don't even see the scene if not referenced at least one time
     std::unordered_map<std::string, MeshObject> shapes;
-    std::stack<std::string> used_shapes;
+    std::unordered_set<std::string> used_shapes;
     MeshObject default_sphere;
     default_sphere.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
     default_sphere.materials[0] = MtlLib.get_default();
@@ -914,7 +923,22 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     build_lights(&parsed, &shapes, &used_shapes, scene);
     deinit_ResizableParsed(&parsed.parsed_lights);
 
-    //TODO: cleanup
+    //cleanup
+    //delete unused shapes, the ones not inherited by Scene
+    //else add them to the scene
+    //delete also materials array, since they are copied by the asset
+    std::unordered_map<std::string, MeshObject>::iterator shape_it;
+    shape_it = shapes.begin();
+    while(shape_it != shapes.end())
+    {
+        if(used_shapes.find(shape_it->first) == used_shapes.end())
+            delete shape_it->second.mesh;
+        else
+            scene->inherit_shape(shape_it->second.mesh);
+        free(shape_it->second.materials); //every mesh copies these
+        free(shape_it->second.association);
+        shape_it++;
+    }
 
     return renderer;
 }
