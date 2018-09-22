@@ -122,6 +122,9 @@
 
 #define MESSAGE_INPUT_ERROR "Unable to open file %s: %s"
 
+#define MESSAGE_INPUT_ERROR_NO_FILE "Unable to open file %s: No such file or "\
+"directory"
+
 #define MESSAGE_TEXTURE_ERROR "Unable to load texture %s"
 
 #define MESSAGE_TEXTURE_DUPLICATE "Texture %s is already in library and won't"\

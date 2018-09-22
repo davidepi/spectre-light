@@ -10,6 +10,7 @@
 long int current_pos;
 long int last_line_pos;
 long int cur_line;
+long int line_pos;
 static __inline char* dequote_and_copy(const char* old)
 {
     const size_t LEN = strlen(old);
@@ -60,10 +61,9 @@ zirconium [Zz][Rr]
 
 %{
     #define UPDATE_LOC UPDATE_POS;UPDATE_COL
-    #define UPDATE_COL yylloc.last_column=yylloc.first_column+yyleng;
-    #define UPDATE_POS current_pos+=yyleng;
-    #define EAT_COL yylloc.first_column = yylloc.last_column+yyleng;yylloc.last_column = yylloc.first_column
-    #define ZERO_COL yylloc.first_column = 1; yylloc.last_column=1
+    #define UPDATE_COL yylloc.first_column=yylloc.last_column-yyleng;
+    #define UPDATE_POS current_pos+=yyleng;yylloc.last_column+=yyleng;
+    #define ZERO_COL yylloc.first_column=1;yylloc.last_column=1;
 %}
 
 %%
@@ -182,11 +182,11 @@ area {UPDATE_LOC; return AREA_TOKEN;}
 {zinc} {UPDATE_LOC; return ZINC;}
 {zirconium} {UPDATE_LOC; return ZIRCONIUM;}
 #[^\n\r]* {UPDATE_LOC;}
-[ \t]+   {UPDATE_POS; EAT_COL;}
+[ \t]+   {UPDATE_LOC;}
 [\r]     {UPDATE_POS; ZERO_COL;}
 [\n]     {UPDATE_POS; ZERO_COL; cur_line++; last_line_pos=current_pos; }
 .        {UPDATE_LOC; /*driver.unknown_char(loc,yytext[0]);*/}
-<<EOF>>  {UPDATE_LOC; return END; }
+<<EOF>>  {return END; }
 
 %%
 

@@ -3,8 +3,8 @@
 
 %define lr.type lalr
 %define parse.trace
-%locations
 %define parse.error verbose
+%locations
 %{
     #include "parsers/parsed_structs.h"
     #include <stdio.h>
@@ -383,7 +383,7 @@ void yyerror (const char* msg)
     //token at beginning and line len > buf len
     //token at end and line len > buf len
     //underline wrong token
-    if(yylloc.first_column<yylloc.last_column && yylloc.first_line == yylloc.last_line&&yylloc.last_column-yylloc.first_column<=BUFFER-5) //prev. segfault if token len >buf
+    if(yylloc.first_column>0 && yylloc.first_line == yylloc.last_line&&yylloc.last_column-yylloc.first_column<=BUFFER-5) //prev. segfault if token len >buf
     {
         char buf[128];
         char under[128];
@@ -393,9 +393,8 @@ void yyerror (const char* msg)
         for(i = yylloc.first_column-1-offset; i<end_col-offset; i++)
             under[i] = '~';
         under[end_col-offset] = 0;
-        //snprintf(parsed->error_msg, FINAL_MSG_BUFFER, "%%s:%d.%d: " BLD "%s" NRM "\n%s\n%%" GRN "%s" NRM, yylloc.last_line, end_col, msg, buf, under);
-        printf("%d %d %d %d\n", yylloc.first_column, yylloc.last_column, yylloc.first_line, yylloc.last_line);
+        snprintf(parsed->error_msg, FINAL_MSG_BUFFER, "%%s:%d.%d: " BLD "%s" NRM "\n%s\n%%" GRN "%s" NRM, yylloc.last_line, yylloc.first_column, msg, buf, under);
     }
     else //just print the error
-        snprintf(parsed->error_msg, FINAL_MSG_BUFFER, "%%s:%d.%d: " BLD "%s" NRM, yylloc.last_line, end_col, msg);
+        snprintf(parsed->error_msg, FINAL_MSG_BUFFER, "%%s:%d.%d: " BLD "%s" NRM, yylloc.last_line, yylloc.first_column, msg);
 }

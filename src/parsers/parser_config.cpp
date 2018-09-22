@@ -78,16 +78,19 @@ void check_spp(enum sampler_t sampler_type, int* spp)
  *  \brief Parse a configuration file and get the raw unprocessed data inside it
  *  \param[in] filename The configuration file that will be parsed
  *  \param[in,out] parsed The result that will hold the parsed raw data, this
- *  \param[in] children True if this is not the main config file but a children
  *  struct is assumed to be already initialized with the init_ParsedScene()
  *  method
  */
-void parse_rec(const char* filename, ParsedScene* parsed, bool children)
+void parse_rec(const char* filename, ParsedScene* parsed)
 {
     FILE* fin = fopen(filename, "r");
-    //TODO: check NULL
-    parse_config(fin, parsed);
-    fclose(fin);
+    if(fin!=NULL)
+    {
+        parse_config(fin, parsed);
+        fclose(fin);
+    }
+    else
+        parsed->error_msg = sprintf(MESSAGE_INPUT_ERROR, "%s", strerror(errno));
 }
 
 /**
@@ -857,12 +860,12 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     ParsedScene parsed;
     init_ParsedScene(&parsed);
     //first pass
-    parse_rec(filename, &parsed, false);
+    parse_rec(filename, &parsed);
     Renderer* renderer;
     if(!parsed.successful)
     {
+        Console.critical(parsed.error_msg, filename);
         deinit_ParsedScene(&parsed);
-        printf("%s\n",parsed.error_msg);
         return NULL;
     }
 
@@ -873,7 +876,8 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     renderer = new Renderer(parsed.width, parsed.height, parsed.spp,
                             parsed.output, 0);
 #else
-    renderer = new Renderer(parsed.width, parsed.height, parsed.spp, parsed.output);
+    renderer = new Renderer(parsed.width, parsed.height, parsed.spp,
+                            parsed.output);
 #endif
     const File CONFIG_DIR = File(parsed.output).get_parent();
     renderer->set_sampler(parsed.sampler_type);
@@ -890,9 +894,17 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
         //child was allocated in the bison parser. I hate decoupled malloc/free
         free(child);
         if(path.exists())
-            parse_rec(path.absolute_path(), &parsed, true);
+        {
+            ParsedScene parsed_child;
+            parse_rec(path.absolute_path(), &parsed_child);
+            if(parsed_child.successful)
+                merge_ParsedScene(&parsed, &parsed_child);
+            else
+                Console.severe(parsed_child.error_msg, path.absolute_path());
+            deinit_ParsedScene(&parsed_child);
+        }
         else
-            Console.severe(MESSAGE_INPUT_ERROR, path.absolute_path());
+            Console.severe(MESSAGE_INPUT_ERROR_NO_FILE, path.absolute_path());
     }
     deinit_ResizableStack(&parsed.children);
 

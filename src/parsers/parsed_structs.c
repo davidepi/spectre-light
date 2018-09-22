@@ -110,15 +110,57 @@ void init_ParsedScene(struct ParsedScene* val)
     init_ResizableParsed(&(val->parsed_textures));
     init_ResizableParsed(&(val->parsed_materials));
     init_ResizableParsed(&(val->parsed_dualmaterials));
-    init_ResizableStack(&(val->parsed_mesh_object));
     init_ResizableParsed(&(val->parsed_mesh_world));
     init_ResizableParsed(&(val->parsed_lights));
+    init_ResizableStack(&(val->parsed_mesh_object));
     init_ResizableStack(&(val->children));
 }
 
 void deinit_ParsedScene(struct ParsedScene* val)
 {
 
+}
+
+void merge_ParsedScene(struct ParsedScene* dst, struct ParsedScene* src)
+{
+    union ParsedElement element;
+    while(!empty_ResizableParsed(&src->parsed_textures))
+    {
+        top_ResizableParsed(&src->parsed_textures, &element);
+        pop_ResizableParsed(&src->parsed_textures);
+        push_ResizableParsed(&dst->parsed_textures, &element);
+    }
+    while(!empty_ResizableParsed(&src->parsed_materials))
+    {
+        top_ResizableParsed(&src->parsed_materials, &element);
+        pop_ResizableParsed(&src->parsed_materials);
+        push_ResizableParsed(&dst->parsed_materials, &element);
+    }
+    while(!empty_ResizableParsed(&src->parsed_dualmaterials))
+    {
+        top_ResizableParsed(&src->parsed_dualmaterials, &element);
+        pop_ResizableParsed(&src->parsed_dualmaterials);
+        push_ResizableParsed(&dst->parsed_dualmaterials, &element);
+    }
+    while(!empty_ResizableParsed(&src->parsed_mesh_world))
+    {
+        top_ResizableParsed(&src->parsed_mesh_world, &element);
+        pop_ResizableParsed(&src->parsed_mesh_world);
+        push_ResizableParsed(&dst->parsed_mesh_world, &element);
+    }
+    while(!empty_ResizableParsed(&src->parsed_lights))
+    {
+        top_ResizableParsed(&src->parsed_lights, &element);
+        pop_ResizableParsed(&src->parsed_lights);
+        push_ResizableParsed(&dst->parsed_lights, &element);
+    }
+    while(!empty_ResizableStack(&src->parsed_mesh_object))
+    {
+        void* val = top_ResizableStack(&src->parsed_mesh_object);
+        top_ResizableStack(&src->parsed_mesh_object);
+        push_ResizableStack(&dst->parsed_mesh_object, val);
+    }
+    /* children ignored on purpose -> no recurisve parsing */
 }
 
 void realloc_ResizableParsed(struct ResizableParsed* arr)

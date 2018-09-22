@@ -404,25 +404,25 @@ struct ParsedScene
     |   Containers  |
     `--------------*/
 
-    /** Arrat containing every parsed texture */
+    /** Array containing every parsed texture */
     struct ResizableParsed parsed_textures;
 
-    /** Arrat containing every parsed material */
+    /** Array containing every parsed material */
     struct ResizableParsed parsed_materials;
 
-    /** Arrat containing every parsed dualmaterial */
+    /** Array containing every parsed dualmaterial */
     struct ResizableParsed parsed_dualmaterials;
 
-    /** Arrat containing every parsed object space model */
+    /** Array containing every parsed object space model */
     struct ResizableStack parsed_mesh_object;
 
-    /** Arrat containing every parsed world space model */
+    /** Array containing every parsed world space model */
     struct ResizableParsed parsed_mesh_world;
 
-    /** Arrat containing every parsed light */
+    /** Array containing every parsed light */
     struct ResizableParsed parsed_lights;
 
-    /** Arrat containing every parsed children */
+    /** Array containing every parsed children */
     struct ResizableStack children;
 
 };
@@ -440,5 +440,19 @@ void init_ParsedScene(struct ParsedScene* val);
  *  \param[in,out] val The ParsedScene that will be deallocated
  */
 void deinit_ParsedScene(struct ParsedScene* val);
+
+/**
+ *  \brief Merges the content of two ParsedScene structs into a single one
+ *  Typically used to merge the value of the ParsedScene retrieved from a
+ *  children parser into the master one.
+ *
+ *  \note This method merges only the ResizableStack and ResizableParsed of the
+ *  ParsedStruct but the children array. The src ParsedScene elements will be
+ *  removed.
+ *
+ *  \param[out] dst The output ParsedScene (result of merge)
+ *  \param[in,out] src The input ParsedScene (source of merge)
+ */
+void merge_ParsedScene(struct ParsedScene* dst, struct ParsedScene* src);
 
 #endif

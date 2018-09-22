@@ -4,7 +4,7 @@
 #include "config_driver.hpp"
 
 ///minimum value for ParsedMaterial::rough_x when the material is not specular
-#define MIN_ROUGHNESS 0.001f
+#define MIN_ROUGH 0.001f
 
 ParsedMaterial::ParsedMaterial()
 {
@@ -378,8 +378,8 @@ void ConfigDriver::build_materials()
         if(mat->rough_y != -1)
         {
             //cannot be specular so avoid 0
-            mat->rough_x = clamp(mat->rough_x, MIN_ROUGHNESS, 1.f);
-            mat->rough_y = clamp(mat->rough_y, MIN_ROUGHNESS, 1.f);
+            mat->rough_x = clamp(mat->rough_x, MIN_ROUGH, 1.f);
+            mat->rough_y = clamp(mat->rough_y, MIN_ROUGH, 1.f);
         }
 
         switch(mat->type)
@@ -405,7 +405,7 @@ void ConfigDriver::build_materials()
                 multimat->inherit_bdf(new Lambertian(), diffuse);
                 //no specular in glossy, avoid division by zero
                 if(mat->rough_x == 0)
-                    mat->rough_x = MIN_ROUGHNESS;
+                    mat->rough_x = MIN_ROUGH;
                 if(mat->rough_y != -1)
                     dist = new GGXaniso(mat->rough_x, mat->rough_y);
                 else

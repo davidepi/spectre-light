@@ -781,6 +781,7 @@ char *yytext;
 long int current_pos;
 long int last_line_pos;
 long int cur_line;
+long int line_pos;
 static __inline char* dequote_and_copy(const char* old)
 {
     const size_t LEN = strlen(old);
@@ -791,12 +792,11 @@ static __inline char* dequote_and_copy(const char* old)
 }
 #define YY_NO_INPUT 1
 #define YY_NO_UNISTD_H 1
-#line 62 "config_lexer.l"
+#line 63 "config_lexer.l"
     #define UPDATE_LOC UPDATE_POS;UPDATE_COL
-    #define UPDATE_COL yylloc.last_column=yylloc.first_column+(int)strlen(yytext)
-    #define UPDATE_POS current_pos+=(int)strlen(yytext)
-    #define EAT_COL yylloc.first_column = yylloc.last_column+(int)strlen(yytext);yylloc.last_column = yylloc.first_column
-    #define ZERO_COL yylloc.first_column = 1; yylloc.last_column=1
+    #define UPDATE_COL yylloc.first_column=yylloc.last_column-yyleng;
+    #define UPDATE_POS current_pos+=yyleng;yylloc.last_column+=yyleng;
+    #define ZERO_COL yylloc.first_column=1;yylloc.last_column=1;
 #line 801 "lex.yy.c"
 
 #define INITIAL 0
@@ -1643,7 +1643,7 @@ YY_RULE_SETUP
 case 115:
 YY_RULE_SETUP
 #line 185 "config_lexer.l"
-{UPDATE_POS; EAT_COL;}
+{UPDATE_LOC;}
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
@@ -1663,7 +1663,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 189 "config_lexer.l"
-{UPDATE_LOC; return END; }
+{return END; }
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
