@@ -90,7 +90,11 @@ void parse_rec(const char* filename, ParsedScene* parsed)
         fclose(fin);
     }
     else
-        parsed->error_msg = sprintf(MESSAGE_INPUT_ERROR, "%s", strerror(errno));
+    {
+        const unsigned long int LEN = strlen(strerror(errno))+strlen(MESSAGE_INPUT_ERROR)+1;
+        parsed->error_msg = (char*)malloc(sizeof(char)*LEN);
+        sprintf(parsed->error_msg, MESSAGE_INPUT_ERROR, "%s", strerror(errno));
+    }
 }
 
 /**
@@ -870,6 +874,11 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     }
 
     //set up everything
+    if(parsed.output == NULL)
+    {
+        parsed.output = (char*)malloc(sizeof(char)*strlen("out.ppm"));
+        strcpy(parsed.output, "out.ppm");
+    }
     check_resolution(&parsed.width, &parsed.height);
     check_spp(parsed.sampler_type, &parsed.spp);
 #ifdef DEBUG
@@ -922,6 +931,7 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     std::unordered_map<std::string, MeshObject> shapes;
     std::unordered_set<std::string> used_shapes;
     MeshObject default_sphere;
+    default_sphere.mesh = new Sphere();
     default_sphere.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
     default_sphere.materials[0] = MtlLib.get_default();
     default_sphere.materials_len = 1;

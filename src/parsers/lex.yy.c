@@ -794,8 +794,8 @@ static __inline char* dequote_and_copy(const char* old)
 #define YY_NO_UNISTD_H 1
 #line 63 "config_lexer.l"
     #define UPDATE_LOC UPDATE_POS;UPDATE_COL
-    #define UPDATE_COL yylloc.first_column=yylloc.last_column-yyleng;
-    #define UPDATE_POS current_pos+=yyleng;yylloc.last_column+=yyleng;
+    #define UPDATE_COL yylloc.first_column=yylloc.last_column-(int)yyleng;
+    #define UPDATE_POS current_pos+=(int)yyleng;yylloc.last_column+=(int)yyleng;
     #define ZERO_COL yylloc.first_column=1;yylloc.last_column=1;
 #line 801 "lex.yy.c"
 

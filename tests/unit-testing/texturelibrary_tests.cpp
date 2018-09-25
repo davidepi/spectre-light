@@ -26,7 +26,7 @@ SPECTRE_TEST(TextureLibrary, add_texture)
     TextureImage* tex = new TextureImage(TEST_ASSETS "images/black.bmp", shift,
                                          scale, UNFILTERED);
     TexLib.inherit_texture("New", tex);
-    const TextureImage* got = TexLib.get_texture("New");
+    const Texture* got = TexLib.get_texture("New");
     ASSERT_PTR_EQ(got, tex);
     res = got->map(&h);
     EXPECT_TRUE(res.is_black());
@@ -35,24 +35,13 @@ SPECTRE_TEST(TextureLibrary, add_texture)
     TextureImage* tex2 = new TextureImage(TEST_ASSETS "images/correct.bmp",
                                           shift, scale, UNFILTERED);
     TexLib.inherit_texture("New", tex2);
-    const TextureImage* got2 = TexLib.get_texture("New");
+    const Texture* got2 = TexLib.get_texture("New");
     res = got2->map(&h);
     EXPECT_TRUE(res.is_black());
     EXPECT_FALSE(tex2->map(&h).is_black());
     delete tex2;
 
     TexLib.clear();
-}
-
-SPECTRE_TEST(TextureLibrary, add_texture_anonymous)
-{
-    const Spectrum color1 = SPECTRUM_WHITE;
-    Texture* tex = new TextureUniform(color1);
-    TexLib.inherit_texture(tex);
-    //no way to check this ¯\_(ツ)_/¯
-    //no problem since it is useless, anonymous textures are
-    //deallocated at program termination (when this singleton
-    //dies)
 }
 
 SPECTRE_TEST(TextureLibrary, add_map)

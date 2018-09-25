@@ -203,7 +203,9 @@ public:
      */
     bool save_image();
 
+#ifndef TESTS
 private:
+#endif
 
     //width of the image
     const int width;

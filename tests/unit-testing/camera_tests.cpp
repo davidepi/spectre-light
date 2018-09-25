@@ -32,7 +32,7 @@ SPECTRE_TEST(Camera, Orthographic_create_ray)
     Vec3 up(0.f, 1.f, 0.f);
 
     //square image
-    CameraOrthographic camera(&pos, &target, &up, 2, 2);
+    CameraOrthographic camera(pos, target, up, 2, 2);
     Sample samples[4];
     sam.get_samples(samples);
     Ray r0, r1, r2, r3;
@@ -73,7 +73,7 @@ SPECTRE_TEST(Camera, Orthographic_create_ray)
     EXPECT_NEAR(r3.direction.z, direction.z, 1e-5f);
 
     //horizontal image
-    camera = CameraOrthographic(&pos, &target, &up, 2, 1);
+    camera = CameraOrthographic(pos, target, up, 2, 1);
     ((Camera*)&camera)->create_ray(samples, &r0);
     ((Camera*)&camera)->create_ray(samples+1, &r1);
     ((Camera*)&camera)->create_ray(samples+2, &r2);
@@ -125,7 +125,7 @@ SPECTRE_TEST(Camera, Orthographic_create_ray_diff)
     Vec3 up(0.f, 1.f, 0.f);
 
     //square image
-    CameraOrthographic camera(&pos, &target, &up, 2, 2);
+    CameraOrthographic camera(pos, target, up, 2, 2);
     Sample samples[4];
     sam.get_samples(samples);
 
@@ -174,7 +174,7 @@ SPECTRE_TEST(Camera, Perspective_create_ray)
     Vec3 up(0.f, 1.f, 0.f);
 
     //square image
-    CameraPerspective camera(&pos, &target, &up, 2, 2, radians(60));
+    CameraPerspective camera(pos, target, up, 2, 2, radians(60));
     Sample samples[4];
     sam.get_samples(samples);
     Ray r0, r1, r2, r3;
@@ -215,7 +215,7 @@ SPECTRE_TEST(Camera, Perspective_create_ray)
     EXPECT_NEAR(r3.direction.z, r3direction.z, 1e-5f);
 
     //horizontal image
-    camera = CameraPerspective(&pos, &target, &up, 2, 1, radians(60));
+    camera = CameraPerspective(pos, target, up, 2, 1, radians(60));
     ((Camera*)&camera)->create_ray(samples, &r0);
     ((Camera*)&camera)->create_ray(samples+1, &r1);
     ((Camera*)&camera)->create_ray(samples+2, &r2);
@@ -267,7 +267,7 @@ SPECTRE_TEST(Camera, Perspective_create_ray_diff)
     Vec3 up(0.f, 1.f, 0.f);
 
     //square image
-    CameraPerspective camera(&pos, &target, &up, 2, 2, radians(60));
+    CameraPerspective camera(pos, target, up, 2, 2, radians(60));
     Sample samples[4];
     sam.get_samples(samples);
 
@@ -315,7 +315,7 @@ SPECTRE_TEST(Camera, Camera360_create_ray)
     Point3 target(0.f, 0.f, 100.f);
     Vec3 up(0.f, 1.f, 0.f);
 
-    Camera360 camera(&pos, &target, &up, 2, 2);
+    Camera360 camera(pos, target, up, 2, 2);
     Sample samples[4];
     sam.get_samples(samples);
     Ray r0, r1, r2, r3;
@@ -372,7 +372,7 @@ SPECTRE_TEST(Camera, Camera360_create_ray_diff)
     Vec3 up(0.f, 1.f, 0.f);
 
     //square image
-    Camera360 camera(&pos, &target, &up, 2, 2);
+    Camera360 camera(pos, target, up, 2, 2);
     Sample samples[4];
     sam.get_samples(samples);
 

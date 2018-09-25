@@ -15,9 +15,10 @@
 #ifndef __RENDERER_HPP__
 #define __RENDERER_HPP__
 
-extern "C"{
-    #include "parsers/parsed_structs.h"
+extern "C" {
+#include "parsers/parsed_structs.h"
 }
+
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
 #include "utility/console.hpp"
@@ -29,6 +30,7 @@ extern "C"{
 #include "samplers/sampler_stratified.hpp"
 #include "integrators/integrator.hpp"
 #include "settings.h"
+#include "samplers/types_sampler.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
 #include <chrono> //std::this_thread::sleep_for, platform independent
@@ -113,7 +115,8 @@ public:
      *  threads, anything below 1 to autodetect
      *  \param[in] output The desired path for the output image
      */
-    Renderer(int width,int height,int spp,const char* output,int threads=0);
+    Renderer(int width, int height, int spp, const char* output,
+             int threads = 0);
 
     ///Default destructor
     ~Renderer();
@@ -128,7 +131,7 @@ public:
      *  \param[in] camera A Camera that will be inherited by the renderer
      */
     void inherit_camera(const Camera* camera);
-    
+
     /** \brief Set a Sampler for this renderer
      *
      *  This method differs from the others like Renderer::inherit_camera or
@@ -136,13 +139,13 @@ public:
      *  deallocated by the renderer while rendering a scene. Thus this method
      *  expects an integer corresponding to the type of sampler that will be
      *  allocated internally by the renderer. The various samplers are defined
-     *  in the samplers/sampler.hpp file
+     *  in the samplers/types_sampler.h file
      *
      *  \param[in] sampler An integer defining the type of sampler that will be
      *  used by the renderer
      */
     void set_sampler(int sampler);
-    
+
     /** \brief Set a Filter for this renderer
      *
      *  Inherit the pointer of a Filter passed as input and used it as the
@@ -153,7 +156,7 @@ public:
      *  \param[in] filter A Filter that will be inherited by the renderer
      */
     void inherit_filter(const Filter* filter);
-    
+
     /** \brief Set a LightIntegrator for this renderer
      *
      *  Inherit the pointer of a LightIntegrator passed as input and used it as
@@ -165,7 +168,7 @@ public:
      *  renderer
      */
     void inherit_integrator(const Integrator* integrator);
-    
+
     /** \brief Render the scene
      *
      *  This method, given an input scene, sets up the rendering threads and
@@ -177,7 +180,10 @@ public:
      */
     int render(Scene* scene);
 
-private:
+    //need to assess that the Renderer has been built correctly after parsing
+#ifndef TESTS
+    private:
+#endif
 
     //Camera for the renderer
     const Camera* camera;
@@ -213,7 +219,7 @@ private:
     const Integrator* mc_solver;
 
     //sampler
-    int sampler_t;
+    enum sampler_t sampler_type;
 };
 
 #endif

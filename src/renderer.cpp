@@ -6,7 +6,7 @@
 //st = sampler type
 static void
 executor(const Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
-         int sampler_type, std::stack<Renderer_task>* jobs, Scene* scene,
+         enum sampler_t type_sam, std::stack<Renderer_task>* jobs, Scene* scene,
          const Integrator* mc_solver);
 
 
@@ -44,7 +44,7 @@ Renderer::Renderer(int width, int height, int spp, const char* out,
     Renderer::camera = NULL;
     Renderer::filter = NULL;
     Renderer::mc_solver = NULL;
-    Renderer::sampler_t = -1;
+    Renderer::sampler_type = STRATIFIED;
     Renderer::workers = new std::thread[numthreads];//dflt ctor won't start thread
 }
 
@@ -63,7 +63,15 @@ void Renderer::inherit_camera(const Camera* camera)
 
 void Renderer::set_sampler(int sampler)
 {
-    Renderer::sampler_t = sampler;
+    //could've been done with an assignment, since the parser guarantees no
+    //extraneous values, but let's put a double check at least here in tear up
+    //time
+    switch(sampler)
+    {
+        case RANDOM:Renderer::sampler_type = RANDOM;
+            break;
+        default:Renderer::sampler_type = STRATIFIED;
+    }
 }
 
 void Renderer::inherit_filter(const Filter* filter)
@@ -95,8 +103,6 @@ int Renderer::render(Scene* s)
         Console.critical(MESSAGE_MISSING_FILTER);
     if(Renderer::mc_solver == NULL)
         Console.critical(MESSAGE_MISSING_INTEGRATOR);
-    if(Renderer::sampler_t == -1)
-        Console.critical(MESSAGE_MISSING_SAMPLER);
 
     //add part of the image as renderer_tasks
     Renderer_task task;
@@ -118,7 +124,7 @@ int Renderer::render(Scene* s)
     {
         Renderer::workers[i] = std::thread(executor, camera, &film, &jobs_mtx,
                                            spp,
-                                           sampler_t, &jobs, s,
+                                           sampler_type, &jobs, s,
                                            Renderer::mc_solver);
     }
 
@@ -147,8 +153,8 @@ int Renderer::render(Scene* s)
 }
 
 void executor(const Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
-              int sampler_type, std::stack<Renderer_task>* jobs, Scene* scene,
-              const Integrator* mc_solver)
+              enum sampler_t type_sampler, std::stack<Renderer_task>* jobs,
+              Scene* scene, const Integrator* mc_solver)
 {
     //generate seed for WELLrng. Constant WELL_R is inside wellrng.h
     unsigned int WELLseed[WELL_R];
@@ -204,14 +210,13 @@ void executor(const Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
         for(int i = 0; i<WELL_R; i++) //alterate the seed
             WELLseed[i]++; //Predictable, but it is only a seed
 
-        switch(sampler_type)
+        switch(type_sampler)
         {
             case RANDOM:
                 sam = new SamplerRandom(todo.startx, todo.endx, todo.starty,
                                         todo.endy, spp, WELLseed);
                 break;
             case STRATIFIED:
-            default:
                 sam = new SamplerStratified(todo.startx, todo.endx, todo.starty,
                                             todo.endy, spp, WELLseed,
                                             JITTERED_SAMPLER);
