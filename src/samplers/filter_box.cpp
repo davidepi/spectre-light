@@ -15,3 +15,13 @@ float FilterBox::weight(float, float) const
 {
     return 1.0f;
 }
+
+float FilterBox::get_param0() const
+{
+    return -1.f;
+}
+
+float FilterBox::get_param1() const
+{
+    return -1.f;
+}

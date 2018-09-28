@@ -26,3 +26,13 @@ float FilterGaussian::weight(float offset_x, float offset_y) const
     return max(0.f, expf(-alpha*offset_x*offset_x)-precomputed_exp_x)*
            max(0.f, expf(-alpha*offset_y*offset_y)-precomputed_exp_y);
 }
+
+float FilterGaussian::get_param0() const
+{
+    return alpha;
+}
+
+float FilterGaussian::get_param1() const
+{
+    return -1.f;
+}

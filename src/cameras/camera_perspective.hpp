@@ -65,6 +65,12 @@ public:
     void create_ray(const Sample* sample, Ray* ray, Ray* rx, Ray* ry)
     const override;
 
+    /**
+     *  \brief Return the field of view of the camera in radians
+     *  \return The field of view of the camera in radians
+     */
+    float get_fov() const;
+
 private:
 
     ///Like create_ray but generates single <origin,direction> pairs
@@ -73,6 +79,9 @@ private:
 
     ///The matrix used to transform from raster space to camera space
     Matrix4 raster2camera;
+
+    ///this parameter is super useless in release mode, but I need it for tests
+    float fov; //btw 4 bytes for each camera is not such a big deal
 };
 
 #endif

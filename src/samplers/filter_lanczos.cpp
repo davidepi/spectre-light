@@ -44,3 +44,13 @@ float FilterLanczos::weight(float offset_x, float offset_y) const
     }
     return resx*resy;
 }
+
+float FilterLanczos::get_param0() const
+{
+    return tau;
+}
+
+float FilterLanczos::get_param1() const
+{
+    return -1.f;
+}

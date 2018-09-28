@@ -28,3 +28,8 @@ void Camera::create_ray(const Sample* sample, Ray* ray, Ray* rx, Ray* ry) const
     offsety.posy++;
     create_single_ray(&offsety, &(ry->origin), &(ry->direction));
 }
+
+void Camera::get_camera2world(Matrix4* cam2world) const
+{
+    *cam2world = camera2world;
+}

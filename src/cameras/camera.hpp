@@ -79,6 +79,15 @@ public:
     virtual void create_ray(const Sample* sample, Ray* ray, Ray* rx, Ray* ry)
     const;
 
+    /**
+     *  \brief Returns the camer2world matrix (inverse of the LookAt matrix)
+     *
+     *  This function is for debug and has no practical usage in release mode.
+     *
+     *  \param[out] cam2world The camera2world matrix
+     */
+    void get_camera2world(Matrix4* cam2world) const;
+
 protected:
 
     /**  \brief Create a ray from a sample

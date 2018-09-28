@@ -53,6 +53,28 @@ public:
      */
     virtual float weight(float offset_x, float offset_y) const = 0;
 
+    /**
+     * \brief Returns the first parameter of the filter
+     *
+     *  This function should be used only while debugging and has no
+     *  practical purpose in a release environment
+     *
+     *  \return The first parameter used to construct the filter. -1 if the
+     *  filter has no parameter
+     */
+    virtual float get_param0() const = 0;
+
+    /**
+     * \brief Returns the second parameter of the filter
+     *
+     *  This function should be used only while debugging and has no
+     *  practical purpose in a release environment
+     *
+     *  \return The second parameter used to construct the filter. -1 if the
+     *  filter has no parameter
+     */
+    virtual float get_param1() const = 0;
+
     ///The number of pixel affected by this filter in the x axis
     const float range_x;
     ///The number of pixel affected by this filter in the y axis

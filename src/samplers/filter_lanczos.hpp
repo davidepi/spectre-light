@@ -53,7 +53,27 @@ public:
      * \param[in] offset_y The \a y distance of the sample from the centre.
      * \return The weight of the sample in the final average for the pixel.
      */
-    float weight(float offset_x, float offset_y) const;
+    float weight(float offset_x, float offset_y) const override;
+
+    /**
+     * \brief Returns the first parameter of the filter
+     *
+     *  This function should be used only while debugging and has no
+     *  practical purpose in a release environment
+     *
+     *  \return The value of the tau parameter
+     */
+    float get_param0() const override;
+
+    /**
+     * \brief Returns the second parameter of the filter
+     *
+     *  This function should be used only while debugging and has no
+     *  practical purpose in a release environment
+     *
+     *  \return -1 since the filter has no parameter
+     */
+    float get_param1() const override;
 
 private:
 

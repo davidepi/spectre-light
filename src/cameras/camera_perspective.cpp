@@ -5,8 +5,8 @@
 
 CameraPerspective::CameraPerspective(const Point3& pos, const Point3& target,
                                      const Vec3& up, int width, int heigth,
-                                     float fov)
-        :Camera(pos, target, up, width, heigth)
+                                     float fov):Camera(pos, target, up, width,
+                                                       heigth), fov(fov)
 {
     float f = 1000.0f; //far plane
     float n = 0.01f; //near plane
@@ -82,4 +82,9 @@ void CameraPerspective::create_single_ray(const Sample* sample, Point3* origin,
     const Point3 dir = raster2camera*Point3(sample->posx, sample->posy, 0);
     const Vec3 v3dir = Vec3(dir.x, dir.y, dir.z);
     *direction = camera2world*normalize(v3dir);
+}
+
+float CameraPerspective::get_fov() const
+{
+    return fov;
 }

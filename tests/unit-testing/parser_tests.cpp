@@ -18,14 +18,14 @@ SPECTRE_TEST_INIT(Parser_tests)
 SPECTRE_TEST(Parser, out)
 {
     Scene s;
-    
+
     //set
     ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/out.txt", &s);
     ASSERT_PTR_NE(r0, NULL);
     EXPECT_STREQ(r0->film.output.filename(), "filename.jpg");
     delete r0;
-    
+
     //default
     ParserConfig driver1;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
@@ -183,23 +183,27 @@ SPECTRE_TEST(Parser, filter)
     ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
     ASSERT_PTR_NE(r0, NULL);
-    ASSERT_PTR_NE(dynamic_cast<const FilterMitchell*>(r0->filter),NULL);
-    EXPECT_EQ(((const FilterMitchell*)r0->filter)->b, 0.33f);
-    EXPECT_EQ(((const FilterMitchell*)r0->filter)->c, 0.33f);
+    ASSERT_PTR_NE(dynamic_cast<const FilterMitchell*>(r0->filter), NULL);
+    EXPECT_EQ(r0->filter->get_param0(), 0.33f);
+    EXPECT_EQ(r0->filter->get_param1(), 0.33f);
     delete r0;
 
     //box
     ParserConfig driver1;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/filter_box.txt", &s);
     ASSERT_PTR_NE(r1, NULL);
-    ASSERT_PTR_NE(dynamic_cast<const FilterBox*>(r1->filter),NULL);
+    ASSERT_PTR_NE(dynamic_cast<const FilterBox*>(r1->filter), NULL);
+    EXPECT_EQ(r1->filter->get_param0(), -1.f);
+    EXPECT_EQ(r1->filter->get_param1(), -1.f);
     delete r1;
 
     //tent
     ParserConfig driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/filter_tent.txt", &s);
     ASSERT_PTR_NE(r2, NULL);
-    ASSERT_PTR_NE(dynamic_cast<const FilterTent*>(r2->filter),NULL);
+    ASSERT_PTR_NE(dynamic_cast<const FilterTent*>(r2->filter), NULL);
+    EXPECT_EQ(r2->filter->get_param0(), -1.f);
+    EXPECT_EQ(r2->filter->get_param1(), -1.f);
     delete r2;
 
     //gaussian
@@ -207,8 +211,9 @@ SPECTRE_TEST(Parser, filter)
     Renderer* r3 = driver3.parse(TEST_ASSETS "parser/filter_gaussian.txt",
                                  &s);
     ASSERT_PTR_NE(r3, NULL);
-    ASSERT_PTR_NE(dynamic_cast<const FilterGaussian*>(r3->filter),NULL);
-    EXPECT_NEAR(((const FilterGaussian*)r3->filter)->alpha, 2.5f,1e-5f);
+    ASSERT_PTR_NE(dynamic_cast<const FilterGaussian*>(r3->filter), NULL);
+    EXPECT_EQ(r3->filter->get_param0(), 2.5f);
+    EXPECT_EQ(r3->filter->get_param1(), -1.f);
     delete r3;
 
     //mitchell
@@ -216,9 +221,9 @@ SPECTRE_TEST(Parser, filter)
     Renderer* r4 = driver4.parse(TEST_ASSETS "parser/filter_mitchell.txt",
                                  &s);
     ASSERT_PTR_NE(r4, NULL);
-    ASSERT_PTR_NE(dynamic_cast<const FilterMitchell*>(r4->filter),NULL);
-    EXPECT_EQ(((const FilterMitchell*)r4->filter)->b, 3.f);
-    EXPECT_EQ(((const FilterMitchell*)r4->filter)->c, 1.5f);
+    ASSERT_PTR_NE(dynamic_cast<const FilterMitchell*>(r4->filter), NULL);
+    EXPECT_EQ(r4->filter->get_param0(), 3.f);
+    EXPECT_EQ(r4->filter->get_param1(), 1.5f);
     delete r4;
 
     //lanczos
@@ -226,77 +231,73 @@ SPECTRE_TEST(Parser, filter)
     Renderer* r5 = driver5.parse(TEST_ASSETS "parser/filter_lanczos.txt",
                                  &s);
     ASSERT_PTR_NE(r5, NULL);
-    ASSERT_PTR_NE(dynamic_cast<const FilterLanczos*>(r5->filter),NULL);
-    EXPECT_NEAR(((const FilterLanczos*)r5->filter)->tau, 2.f,1e-5f);
+    ASSERT_PTR_NE(dynamic_cast<const FilterLanczos*>(r5->filter), NULL);
+    EXPECT_EQ(r5->filter->get_param0(), 2.f);
+    EXPECT_EQ(r5->filter->get_param1(), -1.f);
     delete r5;
 }
 
-/*
+
 SPECTRE_TEST(Parser, camera)
 {
+    //TODO: missing fov check for perspective camera
     Scene s;
+    Matrix4 cam2world_expected;
+    Matrix4 cam2world_actual;
     //unset
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
-    EXPECT_EQ(driver0.camera_pos.x, 0.f);
-    EXPECT_EQ(driver0.camera_pos.y, 0.f);
-    EXPECT_EQ(driver0.camera_pos.z, 0.f);
-    EXPECT_EQ(driver0.camera_tar.x, 0.f);
-    EXPECT_EQ(driver0.camera_tar.y, 0.f);
-    EXPECT_EQ(driver0.camera_tar.z, 1.f);
-    EXPECT_EQ(driver0.camera_up.x, 0.f);
-    EXPECT_EQ(driver0.camera_up.y, 1.f);
-    EXPECT_EQ(driver0.camera_up.z, 0.f);
-    EXPECT_EQ(driver0.camera_type, (char)SPECTRE_CAMERA_PERSPECTIVE);
-    EXPECT_EQ(driver0.fov, 55.f);
+    ASSERT_PTR_NE(r0, NULL);
+    ASSERT_PTR_NE(dynamic_cast<const CameraPerspective*>(r0->camera), NULL);
+    EXPECT_EQ(((CameraPerspective*)r0->camera)->get_fov(), radians(55.f));
+    cam2world_expected.set_lookAt_inverse(Point3(0.f, 0.f, 0.f),
+                                          Point3(0.f, 0.f, 1.f),
+                                          Vec3(0.f, 1.f, 0.f));
+    r0->camera->get_camera2world(&cam2world_actual);
+    EXPECT_EQ(cam2world_actual, cam2world_expected);
     delete r0;
+
     //orthographic
-    ConfigDriver driver1;
+    ParserConfig driver1;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/camera_orthographic.txt",
                                  &s);
-    EXPECT_EQ(driver1.camera_pos.x, 1.f);
-    EXPECT_EQ(driver1.camera_pos.y, 0.f);
-    EXPECT_EQ(driver1.camera_pos.z, 0.f);
-    EXPECT_EQ(driver1.camera_tar.x, 0.f);
-    EXPECT_EQ(driver1.camera_tar.y, 0.f);
-    EXPECT_EQ(driver1.camera_tar.z, -1.f);
-    EXPECT_EQ(driver1.camera_up.x, -1.f);
-    EXPECT_EQ(driver1.camera_up.y, 0.f);
-    EXPECT_EQ(driver1.camera_up.z, 0.f);
-    EXPECT_EQ(driver1.camera_type, (char)SPECTRE_CAMERA_ORTHOGRAPHIC);
+    ASSERT_PTR_NE(r1, NULL);
+    ASSERT_PTR_NE(dynamic_cast<const CameraOrthographic*>(r1->camera), NULL);
+    cam2world_expected.set_lookAt_inverse(Point3(1.f, 0.f, 0.f),
+                                          Point3(0.f, 0.f, -1.f),
+                                          Vec3(-1.f, 0.f, 0.f));
+    r1->camera->get_camera2world(&cam2world_actual);
+    EXPECT_EQ(cam2world_actual, cam2world_expected);
     delete r1;
+
+
     //perspective
-    ConfigDriver driver2;
+    ParserConfig driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/camera_perspective.txt",
                                  &s);
-    EXPECT_EQ(driver2.camera_pos.x, 1.f);
-    EXPECT_EQ(driver2.camera_pos.y, 2.f);
-    EXPECT_EQ(driver2.camera_pos.z, 3.f);
-    EXPECT_EQ(driver2.camera_tar.x, 4.f);
-    EXPECT_EQ(driver2.camera_tar.y, 5.f);
-    EXPECT_EQ(driver2.camera_tar.z, 6.f);
-    EXPECT_EQ(driver2.camera_up.x, 0.f);
-    EXPECT_EQ(driver2.camera_up.y, 0.f);
-    EXPECT_EQ(driver2.camera_up.z, 1.f);
-    EXPECT_EQ(driver2.camera_type, (char)SPECTRE_CAMERA_PERSPECTIVE);
-    EXPECT_EQ(driver2.fov, 90.f);
+    ASSERT_PTR_NE(r2, NULL);
+    ASSERT_PTR_NE(dynamic_cast<const CameraPerspective*>(r2->camera), NULL);
+    EXPECT_EQ(((CameraPerspective*)r2->camera)->get_fov(), radians(90.f));
+    cam2world_expected.set_lookAt_inverse(Point3(1.f, 2.f, 3.f),
+                                          Point3(4.f, 5.f, 6.f),
+                                          Vec3(0.f, 0.f, 1.f));
+    r2->camera->get_camera2world(&cam2world_actual);
+    EXPECT_EQ(cam2world_actual, cam2world_expected);
     delete r2;
+
     //panorama
-    ConfigDriver driver3;
+    ParserConfig driver3;
     Renderer* r3 = driver3.parse(TEST_ASSETS "parser/camera_panorama.txt", &s);
-    EXPECT_EQ(driver3.camera_pos.x, 6.f);
-    EXPECT_EQ(driver3.camera_pos.y, 5.f);
-    EXPECT_EQ(driver3.camera_pos.z, 4.f);
-    EXPECT_EQ(driver3.camera_tar.x, 3.f);
-    EXPECT_EQ(driver3.camera_tar.y, 2.f);
-    EXPECT_EQ(driver3.camera_tar.z, 1.f);
-    EXPECT_EQ(driver3.camera_up.x, 0.f);
-    EXPECT_EQ(driver3.camera_up.y, 0.f);
-    EXPECT_EQ(driver3.camera_up.z, 1.f);
-    EXPECT_EQ(driver3.camera_type, (char)SPECTRE_CAMERA_PANORAMA);
+    ASSERT_PTR_NE(r3, NULL);
+    ASSERT_PTR_NE(dynamic_cast<const Camera360*>(r3->camera), NULL);
+    cam2world_expected.set_lookAt_inverse(Point3(6.f, 5.f, 4.f),
+                                          Point3(3.f, 2.f, 1.f),
+                                          Vec3(0.f, 0.f, 1.f));
+    r3->camera->get_camera2world(&cam2world_actual);
+    EXPECT_EQ(cam2world_actual, cam2world_expected);
     delete r3;
 }
-
+/*
 SPECTRE_TEST(Parser, texture)
 {
     Scene s;

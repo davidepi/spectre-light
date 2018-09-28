@@ -54,3 +54,13 @@ float FilterMitchell::weight(float offset_x, float offset_y) const
     }
     return resx*resy;
 }
+
+float FilterMitchell::get_param0() const
+{
+    return b;
+}
+
+float FilterMitchell::get_param1() const
+{
+    return c;
+}

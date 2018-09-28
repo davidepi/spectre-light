@@ -16,3 +16,13 @@ float FilterTent::weight(float offset_x, float offset_y) const
     return max(0.f, EXTENT_FILTER_TENT_X-fabsf(offset_x))/EXTENT_FILTER_TENT_X*
            max(0.f, EXTENT_FILTER_TENT_Y-fabsf(offset_y))/EXTENT_FILTER_TENT_Y;
 }
+
+float FilterTent::get_param0() const
+{
+    return -1.f;
+}
+
+float FilterTent::get_param1() const
+{
+    return -1.f;
+}

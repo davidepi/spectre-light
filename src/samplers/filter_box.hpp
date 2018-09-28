@@ -48,7 +48,27 @@ public:
      * Which is always 1.0 in a box filter, since every sample has the same
      * weight
      */
-    float weight(float offset_x, float offset_y) const;
+    float weight(float offset_x, float offset_y) const override;
+
+    /**
+     * \brief Returns the first parameter of the filter
+     *
+     *  This function should be used only while debugging and has no
+     *  practical purpose in a release environment
+     *
+     *  \return -1 since the filter has no parameter
+     */
+    float get_param0() const override;
+
+    /**
+     * \brief Returns the second parameter of the filter
+     *
+     *  This function should be used only while debugging and has no
+     *  practical purpose in a release environment
+     *
+     *  \return -1 since the filter has no parameter
+     */
+    float get_param1() const override;
 };
 
 #endif
