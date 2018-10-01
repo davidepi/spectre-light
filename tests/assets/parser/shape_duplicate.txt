@@ -1,2 +1,3 @@
 shape: "../parser_obj/pyramid.obj"
 shape: "../parser_obj/neg_vertices.obj"
+world:{name:"Sphere"}

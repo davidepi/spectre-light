@@ -34,5 +34,5 @@ material:{
   type: glass, 
   roughness:0.3, 
   distribution:ggx, 
-  ior:[1.03961212,0.231792344,1.01046945]
+  ior:[1.5046,0.00420,0]
 }

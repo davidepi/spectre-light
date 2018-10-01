@@ -119,7 +119,23 @@ void init_ParsedScene(struct ParsedScene* val)
 
 void deinit_ParsedScene(struct ParsedScene* val)
 {
-
+    if(val->output != NULL)
+    {
+        free(val->output);
+        val->output = NULL;
+    }
+    if(val->error_msg != NULL)
+    {
+        free(val->error_msg);
+        val->error_msg = NULL;
+    }
+    deinit_ResizableParsed(&val->parsed_textures);
+    deinit_ResizableParsed(&val->parsed_materials);
+    deinit_ResizableParsed(&val->parsed_dualmaterials);
+    deinit_ResizableParsed(&val->parsed_mesh_world);
+    deinit_ResizableParsed(&val->parsed_lights);
+    deinit_ResizableStack(&val->parsed_mesh_object);
+    deinit_ResizableStack(&val->children);
 }
 
 void merge_ParsedScene(struct ParsedScene* dst, struct ParsedScene* src)
@@ -235,22 +251,28 @@ void* top_ResizableStack(const struct ResizableStack* arr)
 
 void deinit_ResizableParsed(struct ResizableParsed* arr)
 {
-    free(arr->array);
-    arr->array = NULL;
+    if(arr->array != NULL)
+    {
+        free(arr->array);
+        arr->array = NULL;
+    }
 }
 
 void deinit_ResizableStack(struct ResizableStack* arr)
 {
-    free(arr->array);
-    arr->array = NULL;
+    if(arr->array != NULL)
+    {
+        free(arr->array);
+        arr->array = NULL;
+    }
 }
 
 int empty_ResizableParsed(const struct ResizableParsed* arr)
 {
-    return arr->index==0;
+    return arr->index == 0;
 }
 
 int empty_ResizableStack(const struct ResizableStack* arr)
 {
-    return arr->index==0;
+    return arr->index == 0;
 }

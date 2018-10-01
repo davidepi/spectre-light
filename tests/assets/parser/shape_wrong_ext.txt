@@ -1,1 +1,2 @@
 shape: "../parser/shape_wrong_ext.txt"
+world: {name:"Sphere"}

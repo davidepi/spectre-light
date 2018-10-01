@@ -1,1 +1,1 @@
-out: "filename.jpg"
+out: "filename.bmp"

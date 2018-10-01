@@ -1,11 +1,13 @@
+texture:{name:"Red", color: [255,0,0]}
+texture:{name:"Blue", color: [0,0,255]}
 material: {
   name: "Red",
-  diffuse: [255,0,0]
+  diffuse: "Red"
 }
 
 material: {
   name: "Blue",
-  diffuse: [0,0,255]
+  diffuse: "Blue"
 }
 
 dualmaterial: {

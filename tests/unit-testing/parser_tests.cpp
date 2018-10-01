@@ -23,7 +23,7 @@ SPECTRE_TEST(Parser, out)
     ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/out.txt", &s);
     ASSERT_PTR_NE(r0, NULL);
-    EXPECT_STREQ(r0->film.output.filename(), "filename.jpg");
+    EXPECT_STREQ(r0->film.output.filename(), "filename.bmp");
     delete r0;
 
     //default
@@ -369,7 +369,7 @@ SPECTRE_TEST(Parser, bump)
 {
     Scene s;
     ParserConfig driver0;
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/bump.txt",&s);
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/bump.txt", &s);
     ASSERT_PTR_NE(r0, NULL);
     ASSERT_TRUE(MtlLib.contains("With normal map"));
     ASSERT_TRUE(MtlLib.contains("No bump"));
@@ -428,28 +428,28 @@ SPECTRE_TEST(Parser, material_textures)
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.303918838f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.319684714f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.319018781f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.346649765f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.318374306f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat2, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.151396676f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.159286126f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.173435494f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.159286112f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159286112f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.159286112f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat3, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.151396676f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.159286126f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.173435494f, 1e-5f);
-    
+    EXPECT_NEAR(res.w[0], 0.159286112f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.159286112f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.159286112f, 1e-5f);
+
     TexLib.clear();
     MtlLib.clear();
     delete r0;
@@ -529,7 +529,7 @@ SPECTRE_TEST(Parser, material_matte)
     EXPECT_NEAR(res.w[0], 0.0656985715f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0338758416f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.00307962182f, 1e-5f);
-    
+
     ASSERT_TRUE(MtlLib.contains("Red Lambertian"));
     const Bsdf* mat1 = MtlLib.get("Red Lambertian");
     a.set_materials((const Bsdf**)&mat1, 1, &association);
@@ -583,18 +583,18 @@ SPECTRE_TEST(Parser, material_glossy)
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.303918838f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.319684714f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.319018781f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.346649765f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.318374306f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat1, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.189456000f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.193397462f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.307217479f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.124586321f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.117517456f, 1e-5f);
 
     //TODO: these values are not convincing, but the roughness is 0.001
     //so it should be fine... need to check again visually
@@ -603,18 +603,18 @@ SPECTRE_TEST(Parser, material_glossy)
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 3025.57128f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 3183.16674f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 3465.85937f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 3183.22998f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 3183.16626f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 3183.10474f, 1e-5f);
 
     a.set_materials((const Bsdf**)&mat3, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.0604604780f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0606181398f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0261571147f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.3059570491f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.305674285f, 1e-5f);
 
     delete r0;
     MtlLib.clear();
@@ -663,9 +663,9 @@ SPECTRE_TEST(Parser, material_glass)
     res = mat0->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
                              &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0320650190f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0337359607f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0337359644f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0367327257f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0337359607f, 1e-5f);
 
     mat1->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = mat1->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
@@ -679,9 +679,9 @@ SPECTRE_TEST(Parser, material_glass)
     res = mat2->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
                              &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0180777683f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0190198198f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.0190198198f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0207093507f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0190198198f, 1e-5f);
 
     mat3->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = mat3->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
@@ -695,9 +695,9 @@ SPECTRE_TEST(Parser, material_glass)
     res = mat4->sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit, &matrix,
                              &wi,
                              &pdf, true, &spec);
-    EXPECT_NEAR(res.w[0], 0.0125553524f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.0132096251f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.0143830357f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.0132098505f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.0132098505f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.0132098505f, 1e-5f);
 
     delete r0;
     MtlLib.clear();
@@ -827,7 +827,7 @@ SPECTRE_TEST(Parser, material_metal)
     TexLib.clear();
     delete r0;
 }
-/*
+
 SPECTRE_TEST(Parser, material_dualmaterial)
 {
     Scene s;
@@ -846,14 +846,15 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     wi = Vec3(0.f, 1.f, 0.f);
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
-    
-    ConfigDriver driver0;
+
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/dualmat.txt", &s);
+    ASSERT_PTR_NE(r0, NULL);
     ASSERT_TRUE(MtlLib.contains("Red"));
     ASSERT_TRUE(MtlLib.contains("Blue"));
     ASSERT_TRUE(MtlLib.contains("Inverted"));
     ASSERT_TRUE(MtlLib.contains("Non-inverted"));
-    
+
     const Bsdf* mat0 = MtlLib.get("Inverted");
     a.set_materials((const Bsdf**)&mat0, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
@@ -863,7 +864,7 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     EXPECT_NEAR(res.w[0], 0.131289f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.067696f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.006154f, 1e-5f);
-    
+
     const Bsdf* mat1 = MtlLib.get("Non-inverted");
     a.set_materials((const Bsdf**)&mat1, 1, &association);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
@@ -873,34 +874,40 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     EXPECT_NEAR(res.w[0], 0.057435f, 1e-5f);
     EXPECT_NEAR(res.w[1], 0.022974f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.302491f, 1e-5f);
-    
+
+    MtlLib.clear();
+    TexLib.clear();
     delete r0;
 }
 
 SPECTRE_TEST(Parser, children)
 {
     Scene s;
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/children.txt", &s);
+    ASSERT_PTR_NE(r0, NULL);
     EXPECT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     MtlLib.clear();
     delete r0;
     //children not existent
-    ConfigDriver driver1;
+    ParserConfig driver1;
     errors_count[ERROR_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/children_absolute.txt",
                                  &s);
+    ASSERT_PTR_NE(r1, NULL);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
     delete r1;
     //not recursive children
-    ConfigDriver driver2;
+    ParserConfig driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/children_recursive.txt",
                                  &s);
+    ASSERT_PTR_NE(r2, NULL);
     EXPECT_TRUE(MtlLib.contains("Red mat")); //directly parsed
     EXPECT_FALSE(MtlLib.contains("Red Oren-Nayar")); //recursively parsed
     delete r2;
     MtlLib.clear();
+    TexLib.clear();
 }
 
 SPECTRE_TEST(Parser, shape)
@@ -909,31 +916,33 @@ SPECTRE_TEST(Parser, shape)
     Scene s1;
     Scene s2;
     //existing relative path + non existing absolute path
-    ConfigDriver driver0;
+    ParserConfig driver0;
     EXPECT_EQ(s0.size_shapes(), 0U);
     errors_count[ERROR_INDEX] = 0; //for the non-existing root folder obj
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/shape.txt", &s0);
+    ASSERT_PTR_NE(r0, NULL);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     EXPECT_EQ(s0.size_shapes(), 1U); //only sphere should be added
     errors_count[ERROR_INDEX] = 0;
     delete r0;
 
     //wrong extension
-    ConfigDriver driver1;
+    ParserConfig driver1;
     errors_count[ERROR_INDEX] = 0;
     EXPECT_EQ(s1.size_shapes(), 0U);
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/shape_wrong_ext.txt", &s1);
+    ASSERT_PTR_NE(r1, NULL);
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
-    EXPECT_TRUE(driver1.shapes.find("SquarePyr") == driver1.shapes.end());
     EXPECT_EQ(s1.size_shapes(), 1U); //only sphere should be added
     delete r1;
 
     //duplicate
-    ConfigDriver driver2;
+    ParserConfig driver2;
     errors_count[WARNING_INDEX] = 0;
     EXPECT_EQ(s2.size_shapes(), 0U);
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/shape_duplicate.txt", &s2);
+    ASSERT_PTR_NE(r2, NULL);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_EQ(s2.size_shapes(), 1U); //only sphere should be added
@@ -949,14 +958,15 @@ SPECTRE_TEST(Parser, world)
     const Bsdf* material;
 
     Scene s0;
-    ConfigDriver driver0;
+    ParserConfig driver0;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/world.txt", &s0);
+    ASSERT_PTR_NE(r0, NULL);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);//material not found
     errors_count[WARNING_INDEX] = 0;
     EXPECT_EQ(s0.size_shapes(), 2U);
     EXPECT_EQ(s0.size_assets(), 5U);
-    EXPECT_EQ(driver0.deferred_meshes.size(), (size_t)0);
+//    EXPECT_EQ(driver0.deferred_meshes.size(), (size_t)0);
     s0.k.buildTree();
 
     //test position changed for last sphere
@@ -1003,9 +1013,10 @@ SPECTRE_TEST(Parser, world)
 
     //not found
     Scene s1;
-    ConfigDriver driver1;
+    ParserConfig driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/world_not_found.txt", &s1);
+    ASSERT_PTR_NE(r1, NULL);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     delete r1;
@@ -1019,11 +1030,12 @@ SPECTRE_TEST(Parser, light)
     Spectrum emitted;
 
     Scene s0;
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/light.txt", &s0);
+    ASSERT_PTR_NE(r0, NULL);
     EXPECT_EQ(s0.size_shapes(), 2U);
     EXPECT_EQ(s0.size_assets(), 4U);
-    EXPECT_EQ(driver0.deferred_meshes.size(), (size_t)0);
+//    EXPECT_EQ(driver0.deferred_meshes.size(), (size_t)0);
     s0.k.buildTree();
 
     //test position changed for last sphere
@@ -1057,12 +1069,13 @@ SPECTRE_TEST(Parser, light)
 
     //not found
     Scene s1;
-    ConfigDriver driver1;
+    ParserConfig driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/light_not_found.txt", &s1);
+    ASSERT_PTR_NE(r1, NULL);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     delete r1;
 }
-*/
+
 SPECTRE_TEST_END(Parser_tests)

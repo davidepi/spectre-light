@@ -1,12 +1,6 @@
 texture: {name:"Red", color:[255,0,0]}
 texture: {name:"Green", color:[0,255,0]}
 #with texture, oren nayar
-material: {
-  name: "Red Oren-Nayar"
-  type: matte
-  diffuse: "Red"
-  roughness: 0.2
-}
 
 material: {
   name: "Red Oren-Nayar"
@@ -14,3 +8,9 @@ material: {
   diffuse: "Green"
 }
 
+material: {
+  name: "Red Oren-Nayar"
+  type: matte
+  diffuse: "Red"
+  roughness: 0.2
+}

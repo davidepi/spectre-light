@@ -84,14 +84,15 @@ void check_spp(enum sampler_t sampler_type, int* spp)
 void parse_rec(const char* filename, ParsedScene* parsed)
 {
     FILE* fin = fopen(filename, "r");
-    if(fin!=NULL)
+    if(fin != NULL)
     {
         parse_config(fin, parsed);
         fclose(fin);
     }
     else
     {
-        const unsigned long int LEN = strlen(strerror(errno))+strlen(MESSAGE_INPUT_ERROR)+1;
+        const unsigned long int LEN =
+                strlen(strerror(errno))+strlen(MESSAGE_INPUT_ERROR)+1;
         parsed->error_msg = (char*)malloc(sizeof(char)*LEN);
         sprintf(parsed->error_msg, MESSAGE_INPUT_ERROR, "%s", strerror(errno));
     }
@@ -236,7 +237,6 @@ static void build_materials(ParsedScene* parsed)
     Bsdf* bsdf;
     const Texture* diffuse;
     const Texture* specular;
-    const Bump* normal;
     float rough_x;
     float rough_y;
     while(!empty_ResizableParsed(&parsed->parsed_materials))
@@ -246,7 +246,8 @@ static void build_materials(ParsedScene* parsed)
         pop_ResizableParsed(&parsed->parsed_materials);
 
         //free everything and continue if materials is unnamed or already exists
-        if(union_m.mat.name == NULL || MtlLib.contains(union_m.mat.name))
+        bool already_existing = MtlLib.contains(union_m.mat.name);
+        if(union_m.mat.name == NULL || already_existing)
         {
             if(union_m.mat.name != NULL)
                 free(union_m.mat.name);
@@ -256,6 +257,8 @@ static void build_materials(ParsedScene* parsed)
                 free(union_m.mat.specular);
             if(union_m.mat.normal != NULL)
                 free(union_m.mat.normal);
+            if(already_existing)
+                Console.warning(MESSAGE_DUPLICATE_MATERIAL, union_m.mat.name);
             continue;
         }
 
@@ -570,7 +573,8 @@ static void build_mesh_object(ParsedScene* parsed, const File* cur_dir,
         {
             Console.severe(MESSAGE_OBJ_ERROR, cur_obj.absolute_path(),
                            cur_obj.extension());
-            return;
+            free(path);
+            continue;
         }
         ParserObj parser_obj;
         parser_obj.start_parsing(cur_obj.absolute_path());
@@ -599,6 +603,8 @@ static void build_mesh_object(ParsedScene* parsed, const File* cur_dir,
             {
                 Console.warning(MESSAGE_DUPLICATE_SHAPE, name.c_str());
                 delete m; //delete the mesh since it is unused
+                free(insertme.materials);
+                free(insertme.association);
             }
             //create next object
             m = new Mesh(1);
@@ -606,6 +612,7 @@ static void build_mesh_object(ParsedScene* parsed, const File* cur_dir,
         //allocated mesh but they were finished
         delete m;
         free(path);
+        parser_obj.end_parsing();
     }
 }
 
@@ -804,7 +811,7 @@ static void build_lights(ParsedScene* parsed,
             case AREA:
             {
                 Shape* shape;
-                if(union_l.light.name != NULL)
+                if(union_l.light.name == NULL)
                 {
                     //no name?
                     //we can't expect god to do all the work '̿'\̵͇̿̿\з=( ͠° ͟ʖ ͡°)=ε/̵͇̿̿/'̿
@@ -873,10 +880,7 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
 
     //set up everything
     if(parsed.output == NULL)
-    {
-        parsed.output = (char*)malloc(sizeof(char)*strlen("out.ppm"));
-        strcpy(parsed.output, "out.ppm");
-    }
+        parsed.output = strdup("out.ppm");
     check_resolution(&parsed.width, &parsed.height);
     check_spp(parsed.sampler_type, &parsed.spp);
 #ifdef DEBUG
@@ -886,6 +890,8 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     renderer = new Renderer(parsed.width, parsed.height, parsed.spp,
                             parsed.output);
 #endif
+    free(parsed.output);
+    parsed.output = NULL;
     const File CONFIG_DIR = File(filename).get_parent();
     renderer->set_sampler(parsed.sampler_type);
     renderer->inherit_camera(build_camera(&parsed));
@@ -903,6 +909,7 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
         if(path.exists())
         {
             ParsedScene parsed_child;
+            init_ParsedScene(&parsed_child);
             parse_rec(path.absolute_path(), &parsed_child);
             if(parsed_child.successful)
                 merge_ParsedScene(&parsed, &parsed_child);
@@ -959,6 +966,6 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
         free(shape_it->second.association);
         shape_it++;
     }
-
+    deinit_ParsedScene(&parsed);
     return renderer;
 }

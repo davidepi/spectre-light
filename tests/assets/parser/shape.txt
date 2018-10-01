@@ -1,2 +1,3 @@
 shape: "../parser_obj/pyramid.obj"
+world: {name: "Sphere"}
 shape: "/i/do/not/exists.obj"
