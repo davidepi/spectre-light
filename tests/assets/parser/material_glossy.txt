@@ -1,9 +1,12 @@
+texture: {name:"Red", color:[255,0,0]}
+texture: {name:"Green", color:[0,255,0]}
+texture: {name:"Blue", color:[0,0,255]}
 material: {
   name: "Anisotropic"
   type: glossy
   roughness: 0.2
   anisotropy: 0.3
-  specular: [255,0,0]
+  specular: "Red"
 }
 
 material: {
@@ -11,14 +14,14 @@ material: {
   type: glossy
   distribution: blinn
   roughness: 0.2
-  diffuse: [0,255,0]
+  diffuse: "Green"
 }
 
 material: {
   name: "Beckmann"
   distribution: beckmann
   type: glossy
-  diffuse: [255,0,0]
+  diffuse: "Red"
 }
 
 material: {
@@ -26,6 +29,6 @@ material: {
   distribution: ggx
   type: glossy,
   roughness: 1.0
-  diffuse: [0,0,255]
+  diffuse: "Blue"
 }
 

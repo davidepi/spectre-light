@@ -241,8 +241,8 @@ light_stmt
 
 texture_obj: texture_obj texture_stmt|texture_stmt;
 texture_stmt
-: SRC COLON STRING {ADD_STRING(parsed->cur_tex.tex.name,$3);}
-| NAME COLON STRING {ADD_STRING(parsed->cur_tex.tex.src,$3);}
+: SRC COLON STRING {ADD_STRING(parsed->cur_tex.tex.src,$3);}
+| NAME COLON STRING {ADD_STRING(parsed->cur_tex.tex.name,$3);}
 | SCALE COLON vector2 {parsed->cur_tex.tex.scale[0] = vec[0]; parsed->cur_tex.tex.scale[1]=vec[1];}
 | SCALE COLON number {parsed->cur_tex.tex.scale[0] = $3; parsed->cur_tex.tex.scale[1]=$3;}
 | SHIFT COLON vector2 {parsed->cur_tex.tex.shift[0] = vec[0]; parsed->cur_tex.tex.shift[1]=vec[1];}

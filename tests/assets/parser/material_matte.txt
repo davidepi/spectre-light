@@ -1,13 +1,14 @@
+texture:{name:"Red", color:[255,0,0]}
 #with texture, oren nayar
 material: {
   name: "Red Oren-Nayar"
   type: matte
-  diffuse: [255,0,0]
+  diffuse: "Red"
   roughness: 0.2
 }
 
 material: {
   name: "Red Lambertian"
   type: matte
-  diffuse: [255,0,0]
+  diffuse: "Red"
 }

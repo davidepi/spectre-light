@@ -371,6 +371,10 @@ File File::get_parent() const
             /* do nothing, already catched in the max_decrement==-1 */;
         }
     }
+#ifndef _WIN32
+    //recalculate stat, to know if the file is a directory or not
+    retval.statres = stat(retval.absolute, &(retval.fileinfo)) == 0;
+#endif
     return retval;
 }
 

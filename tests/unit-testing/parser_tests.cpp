@@ -237,7 +237,6 @@ SPECTRE_TEST(Parser, filter)
     delete r5;
 }
 
-
 SPECTRE_TEST(Parser, camera)
 {
     //TODO: missing fov check for perspective camera
@@ -297,13 +296,16 @@ SPECTRE_TEST(Parser, camera)
     EXPECT_EQ(cam2world_actual, cam2world_expected);
     delete r3;
 }
-/*
+
 SPECTRE_TEST(Parser, texture)
 {
     Scene s;
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/texture.txt", &s);
+    ASSERT_PTR_NE(r0, NULL);
     HitPoint h;
+    const Texture* got;
+    const TextureImage* img;
 
     //check that contains is not broken and returning always true
     EXPECT_FALSE(TexLib.contains_texture("bogus"));
@@ -313,10 +315,10 @@ SPECTRE_TEST(Parser, texture)
     //check that the map is actually added
     EXPECT_TRUE(TexLib.contains_map(TEST_ASSETS
                         "images/correct.bmp"));
-    const Texture* got = TexLib.get_texture("Manually written name");
-    const TextureImage* img = dynamic_cast<const TextureImage*>(got);
+    got = TexLib.get_texture("Manually written name");
+    img = dynamic_cast<const TextureImage*>(got);
+    ASSERT_PTR_NE(img, NULL);
     //check default values
-    EXPECT_STREQ(driver0.tex_name.c_str(), "");
     EXPECT_EQ(img->get_shift().x, 0.f);
     EXPECT_EQ(img->get_shift().y, 0.f);
     EXPECT_EQ(img->get_scale().x, 1.f);
@@ -325,12 +327,14 @@ SPECTRE_TEST(Parser, texture)
     //check additional values
     got = TexLib.get_texture("Additional values");
     img = dynamic_cast<const TextureImage*>(got);
+    ASSERT_PTR_NE(img, NULL);
     EXPECT_EQ(img->get_shift().x, 1.f);
     EXPECT_EQ(img->get_shift().y, 1.4f);
     EXPECT_EQ(img->get_scale().x, .5f);
     EXPECT_EQ(img->get_scale().y, .5f);
     got = TexLib.get_texture("Uniform scale");
     img = dynamic_cast<const TextureImage*>(got);
+    ASSERT_PTR_NE(img, NULL);
     EXPECT_EQ(img->get_shift().x, 0.f);
     EXPECT_EQ(img->get_shift().y, 0.f);
     EXPECT_EQ(img->get_scale().x, 4.f);
@@ -338,10 +342,11 @@ SPECTRE_TEST(Parser, texture)
     delete r0;
 
     //non existent
-    ConfigDriver driver1;
+    ParserConfig driver1;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/texture_non_existent.txt",
                                  &s);
+    ASSERT_PTR_NE(r1, NULL);
     EXPECT_EQ(errors_count[WARNING_INDEX], 2);
     errors_count[WARNING_INDEX] = 0;
     EXPECT_FALSE(TexLib.contains_texture("I do not exist"));
@@ -349,22 +354,23 @@ SPECTRE_TEST(Parser, texture)
 
     //already existing name
     ASSERT_TRUE(TexLib.contains_texture("Manually written name"));
-    ConfigDriver driver2;
-    const TextureImage* img0 = TexLib.get_texture("Manually written name");
+    ParserConfig driver2;
+    const Texture* img0 = TexLib.get_texture("Manually written name");
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture.txt",
                                  &s);
-    const TextureImage* img1 = TexLib.get_texture("Manually written name");
+    const Texture* img1 = TexLib.get_texture("Manually written name");
     EXPECT_PTR_EQ(img0, img1);
     delete r2;
-    
+
     TexLib.clear();
 }
 
 SPECTRE_TEST(Parser, bump)
 {
     Scene s;
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/bump.txt",&s);
+    ASSERT_PTR_NE(r0, NULL);
     ASSERT_TRUE(MtlLib.contains("With normal map"));
     ASSERT_TRUE(MtlLib.contains("No bump"));
     delete r0;
@@ -391,11 +397,12 @@ SPECTRE_TEST(Parser, material_textures)
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    ConfigDriver driver0;
+    ParserConfig driver0;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r0 = driver0.parse(TEST_ASSETS
                                  "parser/material_texture.txt",
                                  &s);
+    ASSERT_PTR_NE(r0, NULL);
     EXPECT_EQ(errors_count[WARNING_INDEX], 2);
     errors_count[WARNING_INDEX] = 0;
     ASSERT_TRUE(MtlLib.contains("Diffuse color"));
@@ -443,6 +450,8 @@ SPECTRE_TEST(Parser, material_textures)
     EXPECT_NEAR(res.w[1], 0.159286126f, 1e-5f);
     EXPECT_NEAR(res.w[2], 0.173435494f, 1e-5f);
     
+    TexLib.clear();
+    MtlLib.clear();
     delete r0;
 }
 
@@ -465,10 +474,11 @@ SPECTRE_TEST(Parser, material_duplicate)
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    ConfigDriver driver0;
+    ParserConfig driver0;
     errors_count[WARNING_INDEX] = 0;
     Renderer* r0 = driver0.parse(TEST_ASSETS
                                  "parser/material_duplicate.txt", &s);
+    ASSERT_PTR_NE(r0, NULL);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
@@ -506,8 +516,9 @@ SPECTRE_TEST(Parser, material_matte)
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_matte.txt", &s);
+    ASSERT_PTR_NE(r0, NULL);
     ASSERT_TRUE(MtlLib.contains("Red Oren-Nayar"));
     const Bsdf* mat0 = MtlLib.get("Red Oren-Nayar");
     a.set_materials((const Bsdf**)&mat0, 1, &association);
@@ -554,8 +565,9 @@ SPECTRE_TEST(Parser, material_glossy)
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glossy.txt", &s);
+    ASSERT_PTR_NE(r0, NULL);
     ASSERT_TRUE(MtlLib.contains("Anisotropic"));
     ASSERT_TRUE(MtlLib.contains("Blinn"));
     ASSERT_TRUE(MtlLib.contains("Beckmann"));
@@ -630,8 +642,9 @@ SPECTRE_TEST(Parser, material_glass)
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_glass.txt", &s);
+    ASSERT_PTR_NE(r0, NULL);
     ASSERT_TRUE(MtlLib.contains("spec"));
     ASSERT_TRUE(MtlLib.contains("aniso"));
     ASSERT_TRUE(MtlLib.contains("blinn"));
@@ -712,8 +725,9 @@ SPECTRE_TEST(Parser, material_metal)
     wi.normalize();
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    ConfigDriver driver0;
+    ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/material_metal.txt", &s);
+    ASSERT_PTR_NE(r0, NULL);
     errors_count[WARNING_INDEX] = 0;
     ASSERT_TRUE(MtlLib.contains("Silver"));
     ASSERT_TRUE(MtlLib.contains("Aluminium"));
@@ -813,7 +827,7 @@ SPECTRE_TEST(Parser, material_metal)
     TexLib.clear();
     delete r0;
 }
-
+/*
 SPECTRE_TEST(Parser, material_dualmaterial)
 {
     Scene s;

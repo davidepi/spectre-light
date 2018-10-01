@@ -2003,13 +2003,13 @@ yyreduce:
 
   case 74:
 #line 244 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_tex.tex.name,(yyvsp[0].sval));}
+    {ADD_STRING(parsed->cur_tex.tex.src,(yyvsp[0].sval));}
 #line 2008 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 
   case 75:
 #line 245 "config_parser.y" /* yacc.c:1666  */
-    {ADD_STRING(parsed->cur_tex.tex.src,(yyvsp[0].sval));}
+    {ADD_STRING(parsed->cur_tex.tex.name,(yyvsp[0].sval));}
 #line 2014 "config_parser.tab.c" /* yacc.c:1666  */
     break;
 

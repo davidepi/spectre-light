@@ -289,21 +289,7 @@ static void build_materials(ParsedScene* parsed)
         else
             specular = TexLib.get_dflt_texture();
 
-        //resolve normal map
-        if(union_m.mat.specular != NULL)
-        {
-            const Texture* bumptex = TexLib.get_texture(union_m.mat.normal);
-            if(bumptex == NULL)
-            {
-                bumptex = TexLib.get_dflt_texture();
-                Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
-                                union_m.mat.normal, union_m.mat.name);
-            }
-            free(union_m.mat.normal);
-            normal = new TextureNormal(bumptex);
-        }
-        else
-            normal = new Bump();
+        //resolve normal map at the end of the function!!!
 
         //resolve anisotropy. If isotropic -> rough_x = val, rough_y = -1
         rough_x = clamp(union_m.mat.rough_x, 0.f, 1.f);
@@ -455,7 +441,19 @@ static void build_materials(ParsedScene* parsed)
                 break;
             }
         }
-        bsdf->inherit_bump(normal);
+        //resolve normalmap now that the material has been allocated
+        if(union_m.mat.normal != NULL)
+        {
+            const Texture* bumptex = TexLib.get_texture(union_m.mat.normal);
+            if(bumptex == NULL)
+            {
+                bumptex = TexLib.get_dflt_texture();
+                Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
+                                union_m.mat.normal, union_m.mat.name);
+            }
+            free(union_m.mat.normal);
+            bsdf->inherit_bump(new TextureNormal(bumptex));
+        }
         MtlLib.add_inherit(union_m.mat.name, bsdf);
         free(union_m.mat.name);
     }
@@ -888,7 +886,7 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     renderer = new Renderer(parsed.width, parsed.height, parsed.spp,
                             parsed.output);
 #endif
-    const File CONFIG_DIR = File(parsed.output).get_parent();
+    const File CONFIG_DIR = File(filename).get_parent();
     renderer->set_sampler(parsed.sampler_type);
     renderer->inherit_camera(build_camera(&parsed));
     renderer->inherit_filter(build_filter(&parsed));

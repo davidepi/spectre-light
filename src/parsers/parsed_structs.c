@@ -3,6 +3,7 @@
 void init_ParsedMaterial(struct ParsedMaterial* val)
 {
     val->name = NULL;
+    val->type = MATTE;
     val->elem = METAL_GOLD;
     val->ior[0] = 1.45f;
     val->ior[1] = 0.f;
