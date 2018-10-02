@@ -130,7 +130,7 @@ static const Camera* build_camera(const ParsedScene* parsed)
         case PERSPECTIVE:
             camera = new CameraPerspective(position, target, up,
                                            parsed->width, parsed->height,
-                                           parsed->fov);
+                                           radians(parsed->fov));
             break;
     }
     return camera;

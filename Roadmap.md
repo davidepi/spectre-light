@@ -20,7 +20,7 @@
 - [x] extended image support (.jpg/.tiff support)
 - [x] lex/yacc parser
 - [x] diffuse texture mapping
-- [x] bump/normal textures
+- [x] normal textures
 - [ ] **-> new light system (sunlight + environment) <-**
 - [ ] real cameras (and depth of field)
 

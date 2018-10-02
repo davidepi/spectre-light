@@ -4,7 +4,7 @@
 %{
 #include <stdlib.h> /* for atof and atoi. They are deprecated because of lack of
                        error handling, but lex ensures no errors */
-#include <string.h> //strncpy used in dequote_and_copy()
+#include <string.h> /* strncpy used in dequote_and_copy() */
 #include "config_parser.tab.h"
 #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
 long int current_pos;
@@ -14,7 +14,7 @@ long int line_pos;
 static __inline char* dequote_and_copy(const char* old)
 {
     const size_t LEN = strlen(old);
-    char* target = (char*)malloc(sizeof(char)*LEN-1); //-2 char +1 '/0'
+    char* target = (char*)malloc(sizeof(char)*LEN-1); /* -2 char +1 '/0' */
     strncpy(target, old+1, LEN-2);
     target[LEN-2] = 0x0;
     return target;
@@ -202,8 +202,6 @@ void config_scan_begin()
     last_line_pos = 0;
     cur_line = 1;
     ZERO_COL;
-/*    if(!yyin)
-        Console.critical(MESSAGE_INPUT_ERROR,file.c_str(),strerror(errno));*/
 }
 
 /* get a portion of the line being parsed */

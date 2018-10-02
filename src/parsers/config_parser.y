@@ -376,14 +376,17 @@ void yyerror (const char* msg)
     int i;
     int end_col = 0<yylloc.last_column?yylloc.last_column-1:0;
     parsed->successful = 0;
-    /* Should be enough. Really.*/
+    /* Should be enough. Really. */
     parsed->error_msg = (char*)malloc(FINAL_MSG_BUFFER);
-    //tested againts: token len > buffer len
-    //line len > buf len
-    //token at beginning and line len > buf len
-    //token at end and line len > buf len
-    //underline wrong token
-    if(yylloc.first_column>0 && yylloc.first_line == yylloc.last_line&&yylloc.last_column-yylloc.first_column<=BUFFER-5) //prev. segfault if token len >buf
+    /*
+     tested againts:
+     - token len > buffer len
+     - line len > buf len
+     - token at beginning and line len > buf len
+     - token at end and line len > buf len
+     - underline wrong token
+     */
+    if(yylloc.first_column>0 && yylloc.first_line == yylloc.last_line&&yylloc.last_column-yylloc.first_column<=BUFFER-5) /* prev. segfault if token len >buf */
     {
         char buf[128];
         char under[128];
@@ -395,6 +398,6 @@ void yyerror (const char* msg)
         under[end_col-offset] = 0;
         snprintf(parsed->error_msg, FINAL_MSG_BUFFER, "%%s:%d.%d: " BLD "%s" NRM "\n%s\n%%" GRN "%s" NRM, yylloc.last_line, yylloc.first_column, msg, buf, under);
     }
-    else //just print the error
+    else /* just print the error */
         snprintf(parsed->error_msg, FINAL_MSG_BUFFER, "%%s:%d.%d: " BLD "%s" NRM, yylloc.last_line, yylloc.first_column, msg);
 }
