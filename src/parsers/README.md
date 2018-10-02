@@ -153,8 +153,8 @@ color | float[3] | The spectrum emitted by this light. The spectrum is represent
 position | float[3] | The position of the light in the scene | [0,0,0]
 rotation | float[3] | The rotation of the light in the scene, in degrees | [0,0,0]
 scale | float[3] or float | The scaling applied to the light in the scene. The single float value applies uniform scaling to every dimension | 1
-radius | float | The radius of the `spot` light | 1
-falloff | float | The radius of the `spot` light after which the falloff kicks in | 0.75
+radius | float | The total radius of the `spot` light, including the falloff | 1
+falloff | float | The inner radius of the `spot` light after which the falloff kicks in | 0.75
 
 #### World
 Keys for World objects

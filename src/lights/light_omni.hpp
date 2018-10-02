@@ -72,9 +72,9 @@ public:
      *
      *  \param[in] r0 UNUSED
      *  \param[in] r1 UNUSED
-     *  \param[in] position The current position of the viewer, in other words
-     *  the point receiving radiance from this light
-     *  \param[out] wi The computed incident direction
+     *  \param[in] positionW The current position of the viewer, in other words
+     *  the point receiving radiance from this light. In world space
+     *  \param[out] wiW The computed incident direction in world space
      *  \param[out] pdf 1.f, since this method generates the only vector
      *  pointing to the light
      *  \param[out] distance The distance of the light from the position
@@ -83,7 +83,7 @@ public:
      *  \sa pdf(const Point3* p, const Vec3* wi)const
      */
     Spectrum
-    sample_visible_surface(float r0, float r1, const Point3* position, Vec3* wi,
+    sample_visible_surface(float r0, float r1, const Point3* positionW, Vec3* wiW,
                            float* pdf, float* distance) const override;
 
     /** \brief Return the probability density function for this light
@@ -123,7 +123,7 @@ public:
 private:
 
     ///Position of the omni light
-    Point3 light_position;
+    Point3 light_positionW;
 };
 
 #endif
