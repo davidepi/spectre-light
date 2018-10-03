@@ -5,6 +5,7 @@
 
 #include <stdlib.h> /* NULL */
 #include <string.h> /* memcpy */
+#include <stdint.h>
 #include "lights/types_light.h"
 #include "materials/types_metal.h"
 #include "materials/types_microfacet.h"
