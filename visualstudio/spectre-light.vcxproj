@@ -56,9 +56,10 @@
     <ClCompile Include="..\src\materials\refraction.cpp" />
     <ClCompile Include="..\src\materials\shading_space.cpp" />
     <ClCompile Include="..\src\materials\single_brdf.cpp" />
-    <ClCompile Include="..\src\parsers\config_driver.cpp" />
-    <ClCompile Include="..\src\parsers\config_parser.tab.cc" />
-    <ClCompile Include="..\src\parsers\lex.yy.cc" />
+    <ClCompile Include="..\src\parsers\config_parser.tab.c" />
+    <ClCompile Include="..\src\parsers\lex.yy.c" />
+    <ClCompile Include="..\src\parsers\parsed_structs.c" />
+    <ClCompile Include="..\src\parsers\parser_config.cpp" />
     <ClCompile Include="..\src\parsers\parser_obj.cpp" />
     <ClCompile Include="..\src\primitives\asset.cpp" />
     <ClCompile Include="..\src\primitives\box.cpp" />
@@ -84,6 +85,7 @@
     <ClCompile Include="..\src\textures\texture_uniform.cpp" />
     <ClCompile Include="..\src\utility\color.cpp" />
     <ClCompile Include="..\src\utility\console.cpp" />
+    <ClCompile Include="..\src\utility\date.cpp" />
     <ClCompile Include="..\src\utility\file.cpp" />
     <ClCompile Include="..\src\utility\imageio\bmp.c" />
     <ClCompile Include="..\src\utility\imageio\imageio.c" />
@@ -134,12 +136,10 @@
     <ClInclude Include="..\src\materials\refraction.hpp" />
     <ClInclude Include="..\src\materials\shading_space.hpp" />
     <ClInclude Include="..\src\materials\single_brdf.hpp" />
-    <ClInclude Include="..\src\parsers\config_driver.hpp" />
-    <ClInclude Include="..\src\parsers\config_parser.tab.hh" />
-    <ClInclude Include="..\src\parsers\location.hh" />
+    <ClInclude Include="..\src\parsers\config_parser.tab.h" />
+    <ClInclude Include="..\src\parsers\parsed_structs.h" />
+    <ClInclude Include="..\src\parsers\parser_config.hpp" />
     <ClInclude Include="..\src\parsers\parser_obj.hpp" />
-    <ClInclude Include="..\src\parsers\position.hh" />
-    <ClInclude Include="..\src\parsers\stack.hh" />
     <ClInclude Include="..\src\primitives\asset.hpp" />
     <ClInclude Include="..\src\primitives\box.hpp" />
     <ClInclude Include="..\src\primitives\hit_point.hpp" />
@@ -167,6 +167,7 @@
     <ClInclude Include="..\src\textures\texture_uniform.hpp" />
     <ClInclude Include="..\src\utility\color.hpp" />
     <ClInclude Include="..\src\utility\console.hpp" />
+    <ClInclude Include="..\src\utility\date.hpp" />
     <ClInclude Include="..\src\utility\file.hpp" />
     <ClInclude Include="..\src\utility\imageio\bmp.h" />
     <ClInclude Include="..\src\utility\imageio\endianness.h" />

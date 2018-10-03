@@ -6,9 +6,13 @@ const uint8_t MDAYS[12] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 Date::Date()
 {
     time_t now = time(NULL);
-    //TODO: check this thing on windows. should be gmtime_s
     struct tm utc_time;
+#ifdef _WIN32
+    //Inverted parameters, _s instead of _r. Seriously windows?
+    gmtime_s(&utc_time, &now);
+#else
     gmtime_r(&now, &utc_time);
+#endif
     year = (int16_t)(utc_time.tm_year+1900);
     month = (uint8_t)utc_time.tm_mon;
     day = (uint8_t)utc_time.tm_mday;
@@ -59,7 +63,11 @@ time_t Date::unix_timestamp() const
         utc.tm_hour = hour;
         utc.tm_min = min;
         utc.tm_sec = sec;
+#ifdef _WIN32
+        retval = _mkgmtime(&utc);
+#else
         retval = timegm(&utc);
+#endif
     }
     else
         retval = 0;

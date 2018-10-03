@@ -243,14 +243,8 @@
     <ClCompile Include="..\tests\unit-testing\parser_obj_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\parsers\config_driver.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\tests\unit-testing\parser_tests.cpp">
       <Filter>tests</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\parsers\config_parser.tab.cc">
-      <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\src\renderer.cpp">
       <Filter>sources</Filter>
@@ -259,9 +253,6 @@
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\src\integrators\ray_tracer.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\parsers\lex.yy.cc">
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\src\textures\image_map.cpp">
@@ -329,6 +320,24 @@
     </ClCompile>
     <ClCompile Include="..\src\lights\light_spot.cpp">
       <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\config_parser.tab.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\lex.yy.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\parsed_structs.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\parser_config.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\date.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\date_tests.cpp">
+      <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -485,9 +494,6 @@
     <ClInclude Include="..\src\parsers\parser_obj.hpp">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\parsers\config_driver.hpp">
-      <Filter>sources</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\parsers\location.hh">
       <Filter>sources</Filter>
     </ClInclude>
@@ -558,6 +564,12 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lights\light_spot.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\parser_config.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\date.hpp">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>
