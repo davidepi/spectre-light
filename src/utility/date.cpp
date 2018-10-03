@@ -35,7 +35,7 @@ Date::Date(int16_t year, uint8_t month, uint8_t day, uint8_t hours,
     if(day>MDAYS[month])
         day = MDAYS[month];
     //leap year
-    if(month==1 && day==29 && year%4!=0)
+    if(month == 1 && day == 29 && year%4 != 0)
         day--;
     if(year<-4712)
         year = -4712;
@@ -47,7 +47,7 @@ Date::Date(int16_t year, uint8_t month, uint8_t day, uint8_t hours,
     Date::sec = seconds;
 }
 
-time_t Date::unix_timestamp()
+time_t Date::unix_timestamp() const
 {
     time_t retval;
     if(year>=1970)
@@ -64,4 +64,31 @@ time_t Date::unix_timestamp()
     else
         retval = 0;
     return retval;
+}
+
+double Date::get_julian_date() const
+{
+    constexpr const double INV24 = 1.f/24.f;
+    constexpr const double INV60 = 1.f/60.f;
+    const double DEC_DAY = day+hour*INV24+min*INV24*INV60+sec*INV24*INV60*INV60;
+    uint8_t month1 = (uint8_t)(month+1);
+    int16_t year1;
+    if(month1<=2)
+    {
+        year1 = (int16_t)(year-1);
+        month1 += 12;
+    }
+    else
+        year1 = year;
+    double jd = (int)(365.25*(year1+4716))+(int)(30.6001*(month1+1))+DEC_DAY;
+    jd -= 1524.5;
+    if(jd>2299160)
+    {
+        //conversion coefficient from gregorian calendar (account leap years)
+        const int Y100 = year1/100;
+        jd += (2-Y100+(Y100 >> 2));
+    }
+    if(jd<0)
+        jd = 0; //for a corner case like Jan 1, 00:00:00 -4712
+    return jd;
 }

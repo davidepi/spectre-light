@@ -64,7 +64,17 @@ public:
      *
      *  \return The unix timestamp for this date, 0 if prior to Jan 1, 1970
      */
-    time_t unix_timestamp();
+    time_t unix_timestamp() const;
+
+    /**
+     *  \brief Calculate the Julian date for the current date
+     *
+     *  Calculate the number of days since Jan 1, -4712 at noon. A fraction
+     *  is added to the number to take into account hours, minutes and seconds
+     *
+     *  \return The julian date (JD) for the current date
+     */
+    double get_julian_date() const;
 
 private:
     int16_t year;
