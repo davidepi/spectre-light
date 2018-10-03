@@ -75,15 +75,6 @@
     <ClCompile Include="..\src\materials\refraction.cpp">
       <Filter>src\materials</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\parsers\config_driver.cpp">
-      <Filter>src\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\parsers\config_parser.tab.cc">
-      <Filter>src\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\parsers\lex.yy.cc">
-      <Filter>src\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\parsers\parser_obj.cpp">
       <Filter>src\parsers</Filter>
     </ClCompile>
@@ -216,6 +207,21 @@
     <ClCompile Include="..\src\lights\light_spot.cpp">
       <Filter>src\lights</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\parsers\config_parser.tab.c">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\lex.yy.c">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\parsed_structs.c">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\parser_config.cpp">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\date.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\renderer.hpp" />
@@ -302,22 +308,7 @@
     <ClInclude Include="..\src\materials\refraction.hpp">
       <Filter>src\materials</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\parsers\config_driver.hpp">
-      <Filter>src\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\parsers\config_parser.tab.hh">
-      <Filter>src\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\parsers\location.hh">
-      <Filter>src\parsers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\parsers\parser_obj.hpp">
-      <Filter>src\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\parsers\position.hh">
-      <Filter>src\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\parsers\stack.hh">
       <Filter>src\parsers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\primitives\asset.hpp">
@@ -461,6 +452,18 @@
     </ClInclude>
     <ClInclude Include="..\src\lights\light_spot.hpp">
       <Filter>src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\config_parser.tab.h">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\parsed_structs.h">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\parser_config.hpp">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\date.hpp">
+      <Filter>src\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

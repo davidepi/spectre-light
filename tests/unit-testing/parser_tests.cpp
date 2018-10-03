@@ -101,7 +101,7 @@ SPECTRE_TEST(Parser, sampler)
     ParserConfig driver0;
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/resolution_ok.txt", &s);
     ASSERT_PTR_NE(r0, NULL);
-    EXPECT_EQ(r0->sampler_type, STRATIFIED);
+    EXPECT_EQ((int)r0->sampler_type, (int)STRATIFIED);
     delete r0;
 
     //stratified
@@ -109,14 +109,14 @@ SPECTRE_TEST(Parser, sampler)
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/sampler_stratified.txt",
                                  &s);
     ASSERT_PTR_NE(r1, NULL);
-    EXPECT_EQ(r1->sampler_type, STRATIFIED);
+    EXPECT_EQ((int)r1->sampler_type, (int)STRATIFIED);
     delete r1;
 
     //random
     ParserConfig driver2;
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/sampler_random.txt", &s);
     ASSERT_PTR_NE(r2, NULL);
-    EXPECT_EQ(r2->sampler_type, RANDOM);
+    EXPECT_EQ((int)r2->sampler_type, (int)RANDOM);
     delete r2;
 }
 
@@ -253,7 +253,22 @@ SPECTRE_TEST(Parser, camera)
                                           Point3(0.f, 0.f, 1.f),
                                           Vec3(0.f, 1.f, 0.f));
     r0->camera->get_camera2world(&cam2world_actual);
-    EXPECT_EQ(cam2world_actual, cam2world_expected);
+    EXPECT_EQ(cam2world_actual.m00, cam2world_expected.m00);
+    EXPECT_EQ(cam2world_actual.m01, cam2world_expected.m01);
+    EXPECT_EQ(cam2world_actual.m02, cam2world_expected.m02);
+    EXPECT_EQ(cam2world_actual.m03, cam2world_expected.m03);
+    EXPECT_EQ(cam2world_actual.m10, cam2world_expected.m10);
+    EXPECT_EQ(cam2world_actual.m11, cam2world_expected.m11);
+    EXPECT_EQ(cam2world_actual.m12, cam2world_expected.m12);
+    EXPECT_EQ(cam2world_actual.m13, cam2world_expected.m13);
+    EXPECT_EQ(cam2world_actual.m20, cam2world_expected.m20);
+    EXPECT_EQ(cam2world_actual.m21, cam2world_expected.m21);
+    EXPECT_EQ(cam2world_actual.m22, cam2world_expected.m22);
+    EXPECT_EQ(cam2world_actual.m23, cam2world_expected.m23);
+    EXPECT_EQ(cam2world_actual.m30, cam2world_expected.m30);
+    EXPECT_EQ(cam2world_actual.m31, cam2world_expected.m31);
+    EXPECT_EQ(cam2world_actual.m32, cam2world_expected.m32);
+    EXPECT_EQ(cam2world_actual.m33, cam2world_expected.m33);
     delete r0;
 
     //orthographic
@@ -266,7 +281,22 @@ SPECTRE_TEST(Parser, camera)
                                           Point3(0.f, 0.f, -1.f),
                                           Vec3(-1.f, 0.f, 0.f));
     r1->camera->get_camera2world(&cam2world_actual);
-    EXPECT_EQ(cam2world_actual, cam2world_expected);
+    EXPECT_EQ(cam2world_actual.m00, cam2world_expected.m00);
+    EXPECT_EQ(cam2world_actual.m01, cam2world_expected.m01);
+    EXPECT_EQ(cam2world_actual.m02, cam2world_expected.m02);
+    EXPECT_EQ(cam2world_actual.m03, cam2world_expected.m03);
+    EXPECT_EQ(cam2world_actual.m10, cam2world_expected.m10);
+    EXPECT_EQ(cam2world_actual.m11, cam2world_expected.m11);
+    EXPECT_EQ(cam2world_actual.m12, cam2world_expected.m12);
+    EXPECT_EQ(cam2world_actual.m13, cam2world_expected.m13);
+    EXPECT_EQ(cam2world_actual.m20, cam2world_expected.m20);
+    EXPECT_EQ(cam2world_actual.m21, cam2world_expected.m21);
+    EXPECT_EQ(cam2world_actual.m22, cam2world_expected.m22);
+    EXPECT_EQ(cam2world_actual.m23, cam2world_expected.m23);
+    EXPECT_EQ(cam2world_actual.m30, cam2world_expected.m30);
+    EXPECT_EQ(cam2world_actual.m31, cam2world_expected.m31);
+    EXPECT_EQ(cam2world_actual.m32, cam2world_expected.m32);
+    EXPECT_EQ(cam2world_actual.m33, cam2world_expected.m33);
     delete r1;
 
 
@@ -281,7 +311,22 @@ SPECTRE_TEST(Parser, camera)
                                           Point3(4.f, 5.f, 6.f),
                                           Vec3(0.f, 0.f, 1.f));
     r2->camera->get_camera2world(&cam2world_actual);
-    EXPECT_EQ(cam2world_actual, cam2world_expected);
+    EXPECT_EQ(cam2world_actual.m00, cam2world_expected.m00);
+    EXPECT_EQ(cam2world_actual.m01, cam2world_expected.m01);
+    EXPECT_EQ(cam2world_actual.m02, cam2world_expected.m02);
+    EXPECT_EQ(cam2world_actual.m03, cam2world_expected.m03);
+    EXPECT_EQ(cam2world_actual.m10, cam2world_expected.m10);
+    EXPECT_EQ(cam2world_actual.m11, cam2world_expected.m11);
+    EXPECT_EQ(cam2world_actual.m12, cam2world_expected.m12);
+    EXPECT_EQ(cam2world_actual.m13, cam2world_expected.m13);
+    EXPECT_EQ(cam2world_actual.m20, cam2world_expected.m20);
+    EXPECT_EQ(cam2world_actual.m21, cam2world_expected.m21);
+    EXPECT_EQ(cam2world_actual.m22, cam2world_expected.m22);
+    EXPECT_EQ(cam2world_actual.m23, cam2world_expected.m23);
+    EXPECT_EQ(cam2world_actual.m30, cam2world_expected.m30);
+    EXPECT_EQ(cam2world_actual.m31, cam2world_expected.m31);
+    EXPECT_EQ(cam2world_actual.m32, cam2world_expected.m32);
+    EXPECT_EQ(cam2world_actual.m33, cam2world_expected.m33);
     delete r2;
 
     //panorama
@@ -293,7 +338,22 @@ SPECTRE_TEST(Parser, camera)
                                           Point3(3.f, 2.f, 1.f),
                                           Vec3(0.f, 0.f, 1.f));
     r3->camera->get_camera2world(&cam2world_actual);
-    EXPECT_EQ(cam2world_actual, cam2world_expected);
+    EXPECT_EQ(cam2world_actual.m00, cam2world_expected.m00);
+    EXPECT_EQ(cam2world_actual.m01, cam2world_expected.m01);
+    EXPECT_EQ(cam2world_actual.m02, cam2world_expected.m02);
+    EXPECT_EQ(cam2world_actual.m03, cam2world_expected.m03);
+    EXPECT_EQ(cam2world_actual.m10, cam2world_expected.m10);
+    EXPECT_EQ(cam2world_actual.m11, cam2world_expected.m11);
+    EXPECT_EQ(cam2world_actual.m12, cam2world_expected.m12);
+    EXPECT_EQ(cam2world_actual.m13, cam2world_expected.m13);
+    EXPECT_EQ(cam2world_actual.m20, cam2world_expected.m20);
+    EXPECT_EQ(cam2world_actual.m21, cam2world_expected.m21);
+    EXPECT_EQ(cam2world_actual.m22, cam2world_expected.m22);
+    EXPECT_EQ(cam2world_actual.m23, cam2world_expected.m23);
+    EXPECT_EQ(cam2world_actual.m30, cam2world_expected.m30);
+    EXPECT_EQ(cam2world_actual.m31, cam2world_expected.m31);
+    EXPECT_EQ(cam2world_actual.m32, cam2world_expected.m32);
+    EXPECT_EQ(cam2world_actual.m33, cam2world_expected.m33);
     delete r3;
 }
 
