@@ -75,7 +75,7 @@ inline void swap(uint8_t* u1, uint8_t* u2)
     *u2 = tmp;
 }
 
-/** \brief Convert degrees to radians
+/** \brief Convert degrees to radians (float)
  *
  *  Convert a value representing an angle measured in sexagesimal arc degrees to
  *  a value representing an angle measured in radians
@@ -87,6 +87,21 @@ inline void swap(uint8_t* u1, uint8_t* u2)
 inline float radians(const float deg)
 {
     return (ONE_PI/180.f)*deg;
+}
+
+/**
+ * \brief Convert degrees to radians (double)
+ *
+ *  Convert a value representing an angle measured in sexagesimal arc degrees to
+ *  a value representing an angle measured in radians
+ *
+ *  \param[in] deg The value to convert
+ *  \return The input value in radians
+ *  \sa degrees(const double rad)
+ */
+inline double radians(const double deg)
+{
+    return (M_PI/180)*deg;
 }
 
 /** \brief Convert radians to degrees
@@ -101,6 +116,20 @@ inline float radians(const float deg)
 inline float degrees(const float rad)
 {
     return (180.f/ONE_PI)*rad;
+}
+
+/** \brief Convert radians to degrees (double)
+ *
+ *  Convert a value representing an angle measured in radians to a value
+ *  representing an angle measured in sexagesimal arc degrees
+ *
+ *  \param[in] rad The value to convert
+ *  \return The input value in degrees
+ *  \sa radians(const double deg)
+ */
+inline double degrees(const double rad)
+{
+    return (180/M_PI)*rad;
 }
 
 /**

@@ -63,25 +63,46 @@ SPECTRE_TEST(Utility, swap_uint8)
     EXPECT_EQ(f2, f1_original);
 }
 
-SPECTRE_TEST(Utility, radians_inline)
+SPECTRE_TEST(Utility, radians_inline_float)
 {
-    EXPECT_NEAR(radians(0), 0.f, 1e-5f);
-    EXPECT_NEAR(radians(90), ONE_PI/2.f, 1e-5f);
-    EXPECT_NEAR(radians(180), ONE_PI, 1e-5f);
-    EXPECT_NEAR(radians(270), ONE_PI*3.f/2.f, 1e-5f);
-    EXPECT_NEAR(radians(360), TWO_PI, 1e-5f);
-    EXPECT_NEAR(radians(450), TWO_PI+ONE_PI/2.f, 1e-5f);
+    EXPECT_NEAR(radians(0.f), 0.f, 1e-5f);
+    EXPECT_NEAR(radians(90.f), ONE_PI/2.f, 1e-5f);
+    EXPECT_NEAR(radians(180.f), ONE_PI, 1e-5f);
+    EXPECT_NEAR(radians(270.f), ONE_PI*3.f/2.f, 1e-5f);
+    EXPECT_NEAR(radians(360.f), TWO_PI, 1e-5f);
+    EXPECT_NEAR(radians(450.f), TWO_PI+ONE_PI/2.f, 1e-5f);
 }
 
-SPECTRE_TEST(Utility, degrees_inline)
+SPECTRE_TEST(Utility, radians_inline_double)
 {
-    EXPECT_NEAR(degrees(0), 0.f, 1e-5f);
+    EXPECT_NEAR(radians(0.0), 0.0, 1e-5);
+    EXPECT_NEAR(radians(90.0), M_PI/2.0, 1e-5);
+    EXPECT_NEAR(radians(180.0), M_PI, 1e-5);
+    EXPECT_NEAR(radians(270.0), M_PI*3.0/2.0, 1e-5);
+    EXPECT_NEAR(radians(360.0), 2*M_PI, 1e-5f);
+    EXPECT_NEAR(radians(450.0), 2*M_PI+M_PI/2.0, 1e-5);
+}
+
+SPECTRE_TEST(Utility, degrees_inline_float)
+{
+    EXPECT_NEAR(degrees(0.f), 0.f, 1e-5f);
     EXPECT_NEAR(degrees(ONE_PI/2.f), 90.f, 1e-5f);
     EXPECT_NEAR(degrees(ONE_PI), 180.f, 1e-5f);
     EXPECT_NEAR(degrees(ONE_PI*3.f/2.f), 270.f, 1e-5f);
     EXPECT_NEAR(degrees(TWO_PI), 360.f, 1e-5f);
     EXPECT_NEAR(degrees(TWO_PI+ONE_PI/2.f), 450.f, 1e-5f);
 }
+
+SPECTRE_TEST(Utility, degrees_inline_double)
+{
+    EXPECT_NEAR(degrees(0.0), 0.0, 1e-5);
+    EXPECT_NEAR(degrees(M_PI/2.0), 90.0, 1e-5);
+    EXPECT_NEAR(degrees(M_PI), 180.0, 1e-5);
+    EXPECT_NEAR(degrees(M_PI*3.0/2.0), 270.0, 1e-5);
+    EXPECT_NEAR(degrees(2*M_PI), 360.0, 1e-5);
+    EXPECT_NEAR(degrees(2*M_PI+M_PI/2.0), 450.0, 1e-5);
+}
+
 
 SPECTRE_TEST(Utility, min_float)
 {
