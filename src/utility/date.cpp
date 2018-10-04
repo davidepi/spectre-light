@@ -100,3 +100,89 @@ double Date::get_julian_date() const
         jd = 0; //for a corner case like Jan 1, 00:00:00 -4712
     return jd;
 }
+
+double Date::get_delta_t() const
+{
+    //source: http://www.eclipsewise.com/help/deltatpoly2014.html
+    double retval;
+    if(year>=2015) //expected to be the most common one
+    {
+        const float T = year-2015;
+        retval = 67.62+0.3645*T+0.0039755*T*T;
+    }
+    else if(year<-500)
+    {
+        const float U = (year-1820)/100;
+        retval = -20+32*U*U;
+    }
+    else if(year<500)
+    {
+        const float U = year/100;
+        retval =
+                10583.6-1014.41*U+33.78311*U*U-5.952053*U*U*U-0.1798452*U*U*U*U+
+                0.022174192*U*U*U*U*U+0.0090316521*U*U*U*U*U*U;
+    }
+    else if(year<1600)
+    {
+        const float U = (year-1000)/100;
+        retval = 1574.2-556.01*U+71.23472*U*U+0.319781*U*U*U-0.8503463*U*U*U*U-
+                 0.005050998*U*U*U*U*U+0.0083572073*U*U*U*U*U*U;
+    }
+    else if(year<1700)
+    {
+        const float T = year-1600;
+        retval = 120-0.9808*T-0.01532*T*T+T*T*T/7129;
+    }
+    else if(year<1800)
+    {
+        const float T = year-1700;
+        retval = 8.83+0.1603*T-0.0059285*T*T+0.00013336*T*T*T-T*T*T*T/1174000;
+    }
+    else if(year<1860)
+    {
+        const float T = year-1800;
+        retval = 13.72-0.332447*T+0.0068612*T*T+0.0041116*T*T*T-
+                 0.00037436*T*T*T*T+0.0000121272*T*T*T*T*T-
+                 0.0000001699*T*T*T*T*T*T+0.000000000875*T*T*T*T*T*T*T;
+    }
+    else if(year<1900)
+    {
+        const float T = year-1860;
+        retval = 7.62+0.5737*T-0.251754*T*T+0.01680668*T*T*T-
+                 0.0004473624*T*T*T*T+T*T*T*T*T/233174;
+    }
+    else if(year<1920)
+    {
+        const float T = year-1900;
+        retval =
+                -2.79+1.494119*T-0.0598939*T*T+0.0061966*T*T*T-0.000197*T*T*T*T;
+    }
+    else if(year<1941)
+    {
+        const float T = year-1920;
+        retval = 21.20+0.84493*T-0.076100*T*T+0.0020936*T*T*T;
+    }
+    else if(year<1961)
+    {
+        const float T = year-1950;
+        retval = 29.07+0.407*T-T*T/233+T*T*T/2547;
+    }
+    else if(year<1986)
+    {
+        const float T = year-1975;
+        retval = 45.45+1.067*T-T*T/260-T*T*T/718;
+    }
+    else if(year<2005)
+    {
+        const float T = year-2000;
+        retval =
+                63.86+0.3345*T-0.060374*T*T+0.0017275*T*T*T+0.000651814*T*T*T*T+
+                0.00002373599*T*T*T*T*T;
+    }
+    else //year < 2015
+    {
+        const float T = year-2000;
+        retval = 64.69+0.2930*T;
+    }
+    return retval;
+}

@@ -1,12 +1,12 @@
 //Created,   3 Oct 2018
-//Last Edit  3 Oct 2018
+//Last Edit  4 Oct 2018
 
 /**
  *  \file date.hpp
- *  \brief     class representing a given instant of time
+ *  \brief     Class representing a given instant of time
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      3 Oct 2018
+ *  \date      4 Oct 2018
  *  \copyright GNU GPLv3
  */
 
@@ -75,6 +75,20 @@ public:
      *  \return The julian date (JD) for the current date
      */
     double get_julian_date() const;
+
+    /**
+     *  \brief Returns the difference between UT1 and TT for the given date
+     *
+     *  This class uses UTC time (TT) for measurement. TT time is corrected
+     *  to account for earth variation by adding a term ΔT to the atomic time
+     *  UT1. This function is used to retrieve this value.
+     *  Note that the value is calculated and not measured, thus it is not
+     *  precise. Note also that historical values (before 1955) are deducted
+     *  and thus even less precise.
+     *
+     *  \return The difference between UT1 and TT for the given date
+     */
+    double get_delta_t()const;
 
 private:
     int16_t year;
