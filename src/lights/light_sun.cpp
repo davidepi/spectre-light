@@ -15,6 +15,7 @@
 #define R2SIZE 6
 #define R3SIZE 2
 #define R4SIZE 1
+#define YSIZE 63
 
 static const uint32_t L0A[L0SIZE] = {
         175347046, 3341656, 34894, 3497, 3418, 3136, 2676, 2343, 1324, 1273,
@@ -143,6 +144,54 @@ static const double R3C[R3SIZE] = {6283.076, 12566.15};
 static const uint8_t R4A[R4SIZE] = {4};
 static const double R4B[R4SIZE] = {2.56};
 static const double R4C[R4SIZE] = {6283.08};
+static const int8_t Y0[YSIZE] = {
+        0, -2, 0, 0, 0, 0, -2, 0, 0, -2, -2, -2, 0, 2, 0, 2, 0, 0, -2, 0, 2, 0,
+        0, -2, 0, -2, 0, 0, 2, -2, 0, -2, 0, 0, 2, 2, 0, -2, 0, 2, 2, -2, -2, 2,
+        2, 0, -2, -2, 0, -2, -2, 0, -1, -2, 1, 0, 0, -1, 0, 0, 2, 0, 2
+};
+static const int8_t Y1[YSIZE] = {
+        0, 0, 0, 0, 1, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 2, 0, 2, 1, 0, -1, 0, 0, 0, 1, 1, -1, 0, 0, 0, 0, 0, 0, -1, -1,
+        0, 0, 0, 1, 0, 0, 1, 0, 0, 0, -1, 1, -1, -1, 0, -1
+};
+static const int8_t Y2[YSIZE] = {
+        0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, -1, 0, 1, -1, -1, 1, 2, -2, 0, 2, 2,
+        1, 0, 0, -1, 0, -1, 0, 0, 1, 0, 2, -1, 1, 0, 1, 0, 0, 1, 2, 1, -2, 0, 1,
+        0, 0, 2, 2, 0, 1, 1, 0, 0, 1, -2, 1, 1, 1, -1, 3, 0
+};
+static const int8_t Y3[YSIZE] = {
+        0, 2, 2, 0, 0, 0, 2, 2, 2, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 2, 2, 2, 0, 2,
+        2, 2, 2, 0, 0, 2, 0, 0, 0, -2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 0, 0, 0, 2, 0,
+        2, 0, 2, -2, 0, 0, 0, 2, 2, 0, 0, 2, 2, 2, 2
+};
+static const int8_t Y4[YSIZE] = {
+        1, 2, 2, 2, 0, 0, 2, 1, 2, 2, 0, 1, 2, 0, 1, 2, 1, 1, 0, 1, 2, 2, 0, 2,
+        0, 0, 1, 0, 1, 2, 1, 1, 1, 0, 1, 2, 2, 0, 2, 1, 0, 2, 1, 1, 1, 0, 1, 1,
+        1, 1, 1, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 2, 2,
+};
+static const int32_t NUT_A[YSIZE] = {
+        -171996, -13187, -2274, 2062, 1426, 712, -517, -386, -301, 217, -158,
+        129, 123, 63, 63, -59, -58, -51, 48, 46, -38, -31, 29, 29, 26, -22, 21,
+        17, 16, -16, -15, -13, -12, 11, -10, -8, 7, -7, -7, -7, 6, 6, 6, -6, -6,
+        5, -5, -5, -5, 4, 4, 4, -4, -4, -4, 3, -3, -3, -3, -3, -3, -3, -3
+};
+static const double NUT_B[YSIZE] = {
+        -174.2, -1.6, -0.2, 0.2, -3.4, 0.1, 1.2, -0.4, 0, -0.5, 0, 0.1, 0, 0,
+        0.1, 0, -0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.1, 0, 0.1, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0
+};
+static const int32_t NUT_C[YSIZE] = {
+        92025, 5736, 977, -895, 54, -7, 224, 200, 129, -95, 0, -70, -53, 0, -33,
+        26, 32, 27, 0, -24, 16, 13, 0, -12, 0, 0, -10, 0, -8, 7, 9, 7, 6, 0, 5,
+        3, -3, 0, 3, 3, 0, -3, -3, 3, 3, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0
+};
+static const double NUT_D[YSIZE] = {
+        8.9, -3.1, -0.5, 0.5, -0.1, 0, -0.6, 0, -0.1, 0.3, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
 
 LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
                    float longitude):Light(intensity)
@@ -184,10 +233,9 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
             (l0+l1*JME+l2*JME*JME+l3*JME*JME*JME+l4*JME*JME*JME*JME+
              l5*JME*JME*JME*JME*JME)*INV10_8;
     double l_deg = degrees(L_RAD);
-    if(l_deg>0)
-        l_deg = 360.0*fmod(l_deg, 360.0);
-    else
-        l_deg = 360-360*fmod(l_deg, 360.0);
+    l_deg /= 360.0;
+    l_deg = 360.0*(l_deg-floor(l_deg));
+    if(l_deg<0) l_deg += 360.0;
     //Earth Heliocentric Latitude (B_RAD, b_deg)
     double b0 = 0.f;
     double b1 = 0.f;
@@ -197,10 +245,6 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
         b1 += B1A[i]*cos(B1B[i]+B1C[i]*JME);
     const double B_RAD = (b0+b1*JME)*INV10_8;
     double b_deg = degrees(B_RAD);
-    if(b_deg>0)
-        b_deg = 360.0*fmod(b_deg, 360.0);
-    else
-        b_deg = 360-360*fmod(b_deg, 360.0);
     //Earth Radius Vector R (measured in AU)
     double r0 = 0.f;
     double r1 = 0.f;
@@ -219,6 +263,52 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
         r4 += R4A[i]*cos(R4B[i]+R4C[i]*JME);
     const double R =
             (r0+r1*JME+r2*JME*JME+r3*JME*JME*JME+r4*JME*JME*JME*JME)*INV10_8;
+    //Earth Geocentric Longitude
+    double theta_deg = l_deg+180;
+    theta_deg /= 360.0;
+    theta_deg = 360.0*(theta_deg-floor(theta_deg));
+    if(theta_deg<0) theta_deg += 360.0;
+    //Earth Geocentric Latitude
+    const double beta_deg = -b_deg;
+    //Nutation in longitude and obliquity
+    const double JCE2 = JCE*JCE;
+    const double JCE3 = JCE2*JCE;
+    constexpr const double INV189474 = 1.0/189474.0;
+    constexpr const double INV300000 = 1.0/300000.0;
+    constexpr const double INV56250 = 1.0/56250.0;
+    constexpr const double INV327270 = 1.0/327270.0;
+    constexpr const double INV450000 = 1.0/450000.0;
+    double x[5] = {
+            297.85036+445267.111480*JCE-0.0019142*JCE2+JCE3*INV189474,
+            357.52772+35999.050340*JCE-0.0001603*JCE2-JCE3*INV300000,
+            134.96298+477198.867398*JCE+0.0086972*JCE2+JCE3*INV56250,
+            93.27191+483202.017538*JCE-0.0036825*JCE2+JCE3*INV327270,
+            125.04452-1934.136261*JCE+0.0020708*JCE2+JCE3*INV450000
+    };
+    double delta_phi = 0.f;
+    double delta_epsilon = 0.f;
+    constexpr const double INV36000000 = 1.0/36000000.0;
+    for(int i = 0; i<YSIZE; i++)
+    {
+        double s_term = x[0]*Y0[i]+x[1]*Y1[i]+x[2]*Y2[i]+x[3]*Y3[i]+x[4]*Y4[i];
+        delta_phi += (NUT_A[i]+NUT_B[i]*JCE)*sin(s_term);
+        delta_epsilon += (NUT_C[i]+NUT_D[i]*JCE)*cos(s_term);
+    }
+    delta_phi *= INV36000000;
+    delta_epsilon *= INV36000000;
+    //True Obliquity
+    constexpr const double INV3600 = 1.0/3600.0;
+    const double U = JME*0.1;
+    double epsilon = 84381.448-4680.93*U-1.55*U*U+1999.25*U*U*U-51.38*U*U*U*U-
+                     249.67*U*U*U*U*U-39.05*U*U*U*U*U*U+7.12*U*U*U*U*U*U*U+
+                     27.87*U*U*U*U*U*U*U*U+5.79*U*U*U*U*U*U*U*U*U+
+                     2.45*U*U*U*U*U*U*U*U*U*U;
+    epsilon *= INV3600;
+    epsilon += delta_epsilon;
+    //Aberration correction
+    const double DELTA_TAU = (-20.4898)*INV3600/R;
+    //Apparent sun longitude
+    const double LAMBDA = theta_deg+delta_phi+DELTA_TAU;
 }
 
 Spectrum
