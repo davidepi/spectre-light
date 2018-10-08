@@ -126,10 +126,10 @@ static void gen_data_nocos(const char* out_path, const char* filename,
         float res;
         for(int i=-90;i<=90;i++)
         {
-            wo.z = cosf(radians(i));
+            wo.z = cosf(radians((float)i));
             for(int j=-90;j<=90;j++)
             {
-                wi.z = cosf(radians(j));
+                wi.z = cosf(radians((float)j));
                 res = md->G(&wo,&wi);
                 fprintf(f,"%d,%d,%f\n",i,j,res);
             }

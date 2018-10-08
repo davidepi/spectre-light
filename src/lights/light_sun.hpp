@@ -9,8 +9,8 @@
 class LightSun : public Light
 {
 public:
-    LightSun(Spectrum& intensity, Date time, float latitude, float longitude,
-             float elevation = 0.01);
+    LightSun(const Spectrum& intensity, Date time, float latitude,
+             float longitude, float elevation = 0.01);
 
     Spectrum sample_surface(float r0, float r1, float r2, float r3, Ray* out,
                             float* pdf) const override;

@@ -193,7 +193,23 @@ static const double NUT_D[YSIZE] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
+static inline double zero_to_2pi(double radians)
+{
+    radians = fmod(radians, 2*M_PI);
+    if(radians<0)
+        radians += 2*M_PI;
+    return radians;
+}
+
+static inline double zero_to_360(double degrees)
+{
+    degrees = fmod(degrees, 360);
+    if(degrees<0)
+        degrees += 360.0;
+    return degrees;
+}
+
+LightSun::LightSun(const Spectrum& intensity, Date time, float latitude,
                    float longitude, float elevation):Light(intensity)
 {
     /*
@@ -239,12 +255,9 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
     for(int i = 0; i<L5SIZE; i++)
         l5 += L5A[i]*cos(L5B[i]+L5C[i]*JME);
     const double L_RAD =
-            (l0+l1*JME+l2*JME*JME+l3*JME*JME*JME+l4*JME*JME*JME*JME+
-             l5*JME*JME*JME*JME*JME)*INV10_8;
-    double l_deg = degrees(L_RAD);
-    l_deg /= 360.0;
-    l_deg = 360.0*(l_deg-floor(l_deg));
-    if(l_deg<0) l_deg += 360.0;
+            zero_to_2pi((l0+l1*JME+l2*JME*JME+l3*JME*JME*JME+l4*JME*JME*JME*JME+
+                         l5*JME*JME*JME*JME*JME)*INV10_8);
+
     //Earth Heliocentric Latitude (B_RAD, b_deg)
     double b0 = 0.f;
     double b1 = 0.f;
@@ -253,7 +266,6 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
     for(int i = 0; i<B1SIZE; i++)
         b1 += B1A[i]*cos(B1B[i]+B1C[i]*JME);
     const double B_RAD = (b0+b1*JME)*INV10_8;
-    double b_deg = degrees(B_RAD);
     //Earth Radius Vector R (measured in AU)
     double r0 = 0.f;
     double r1 = 0.f;
@@ -273,12 +285,9 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
     const double R =
             (r0+r1*JME+r2*JME*JME+r3*JME*JME*JME+r4*JME*JME*JME*JME)*INV10_8;
     //Earth Geocentric Longitude
-    double theta_deg = l_deg+180;
-    theta_deg /= 360.0;
-    theta_deg = 360.0*(theta_deg-floor(theta_deg));
-    if(theta_deg<0) theta_deg += 360.0;
+    const double THETA_RAD = zero_to_2pi(L_RAD+M_PI);
     //Earth Geocentric Latitude
-    const double beta_deg = -b_deg;
+    const double BETA_RAD = -B_RAD;
     //Nutation in longitude and obliquity
     const double JCE2 = JCE*JCE;
     const double JCE3 = JCE2*JCE;
@@ -294,17 +303,18 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
             93.27191+483202.017538*JCE-0.0036825*JCE2+JCE3*INV327270,
             125.04452-1934.136261*JCE+0.0020708*JCE2+JCE3*INV450000
     };
-    double delta_psi = 0.f;
-    double delta_epsilon = 0.f;
+    double delta_psi_deg = 0.f;
+    double delta_epsilon_deg = 0.f;
     constexpr const double INV36000000 = 1.0/36000000.0;
     for(int i = 0; i<YSIZE; i++)
     {
         double s_term = x[0]*Y0[i]+x[1]*Y1[i]+x[2]*Y2[i]+x[3]*Y3[i]+x[4]*Y4[i];
-        delta_psi += (NUT_A[i]+NUT_B[i]*JCE)*sin(s_term);
-        delta_epsilon += (NUT_C[i]+NUT_D[i]*JCE)*cos(s_term);
+        s_term = radians(s_term);
+        delta_psi_deg += (NUT_A[i]+NUT_B[i]*JCE)*sin(s_term);
+        delta_epsilon_deg += (NUT_C[i]+NUT_D[i]*JCE)*cos(s_term);
     }
-    delta_psi *= INV36000000;
-    delta_epsilon *= INV36000000;
+    delta_psi_deg *= INV36000000;
+    delta_epsilon_deg *= INV36000000;
     //True Obliquity
     constexpr const double INV3600 = 1.0/3600.0;
     const double U = JME*0.1;
@@ -314,39 +324,33 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
             27.87*U*U*U*U*U*U*U*U+5.79*U*U*U*U*U*U*U*U*U+
             2.45*U*U*U*U*U*U*U*U*U*U;
     epsilon_deg *= INV3600;
-    epsilon_deg += delta_epsilon;
+    epsilon_deg += delta_epsilon_deg;
     //Aberration correction
     const double INV_R = 1.0/R;
-    const double DELTA_TAU = -20.4898*INV3600*INV_R;
+    const double DELTA_TAU_DEG = -20.4898*INV3600*INV_R;
     //Apparent sun longitude
-    const double LAMBDA_DEG = theta_deg+delta_psi+DELTA_TAU;
+    const double THETA_DEG = degrees(THETA_RAD);
+    const double LAMBDA_DEG = THETA_DEG+delta_psi_deg+DELTA_TAU_DEG;
     //Mean Sidereal Time at Greenwich
     constexpr const double INV38710000 = 1.0/38710000.0;
-    double v_deg = 280.46061837+360.98564736629*(JD-2451545)+0.000387933*JD*JD-
+    double v_deg = 280.46061837+360.98564736629*(JD-2451545)+0.000387933*JC*JC-
                    JC*JC*JC*INV38710000;
-    v_deg /= 360.0;
-    v_deg = 360.0*(v_deg-floor(v_deg));
-    if(v_deg<0) v_deg += 360.0;
+    v_deg = zero_to_360(v_deg);
     //Apparent Sidereal Time at Greenwich
-    v_deg += delta_psi*cos(epsilon_deg);
+    const double EPSILON_RAD = radians(epsilon_deg);
+    v_deg += delta_psi_deg*cos(EPSILON_RAD);
     //Geocentric Sun Right Ascension
     const double LAMBDA_RAD = radians(LAMBDA_DEG);
-    const double EPSILON_RAD = radians(epsilon_deg);
-    const double BETA_RAD = radians(beta_deg);
-    const double ALPHA_RAD = atan2(
+    const double ALPHA_RAD = zero_to_2pi(atan2(
             sin(LAMBDA_RAD)*cos(EPSILON_RAD)-tan(BETA_RAD)*sin(EPSILON_RAD),
-            cos(LAMBDA_RAD));
-    double alpha_deg = degrees(ALPHA_RAD);
-    alpha_deg /= 360.0;
-    alpha_deg = 360.0*(alpha_deg-floor(alpha_deg));
-    if(alpha_deg<0) alpha_deg += 360.0;
+            cos(LAMBDA_RAD)));
+    const double ALPHA_DEG = degrees(ALPHA_RAD);
     //Geocentric Sun Declination
     const double DELTA_RAD = asin(sin(BETA_RAD)*cos(EPSILON_RAD)+
                                   cos(BETA_RAD)*sin(EPSILON_RAD)*
                                   sin(LAMBDA_RAD));
-    const double DELTA_DEG = degrees(DELTA_RAD);
-    //Observer Local Hour Angle
-    const double H_DEG = v_deg+longitude-alpha_deg;
+    //Observer Local Hour Angle (westward from south)
+    const double H_DEG = zero_to_360(v_deg+longitude-ALPHA_DEG);
     //Equatorial Horizontal Parallax
     const double XI_DEG = 8.794*INV3600*INV_R;
     //Topocentric sun right ascension
@@ -361,20 +365,22 @@ LightSun::LightSun(Spectrum& intensity, Date time, float latitude,
     const double DELTA_ALPHA_RAD = atan2(-X_RAD*sin(XI_RAD)*sin(H_RAD),
                                          cos(DELTA_RAD)-
                                          X_RAD*sin(XI_RAD)*cos(H_RAD));
-    const double ALPHA1_DEG = degrees(DELTA_ALPHA_RAD)+alpha_deg;
     //Topocentric sun declination
-    const double T_DECL_RAD = atan2((sin(DELTA_RAD)-Y_RAD*sin(XI_RAD))*cos
+    const double DELTA1_RAD = atan2((sin(DELTA_RAD)-Y_RAD*sin(XI_RAD))*cos
             (DELTA_ALPHA_RAD), cos(DELTA_RAD)-X_RAD*sin(XI_RAD)*cos(H_RAD));
     //Topocentric local hour angle
     const double H1_RAD = H_RAD-DELTA_ALPHA_RAD;
     //Topocentric elevation angle (without atmospheric correction)
-    const double E0_RAD = asin(sin(LAT_RAD)*sin(T_DECL_RAD)+
-                               cos(LAT_RAD)*cos(T_DECL_RAD)*cos(H1_RAD));
+    const double E0_RAD = asin(sin(LAT_RAD)*sin(DELTA1_RAD)+
+                               cos(LAT_RAD)*cos(DELTA1_RAD)*cos(H1_RAD));
     //Topocentric zenith angle
-    const double THETA_RAD = M_PI/2-E0_RAD;
-    //Topocentric azimuth angle
-    const double T_AZI_RAD = atan2(sin(H1_RAD), cos(H1_RAD)*sin(LAT_RAD)-
-                                                tan(T_DECL_RAD)*cos(LAT_RAD));
+    const double LOWERCASE_THETA_RAD = M_PI/2-E0_RAD;
+    //Topocentric azimuth angle (westward from south)
+    const double GAMMA_RAD = zero_to_2pi(atan2(sin(H1_RAD),
+                                               cos(H1_RAD)*sin(LAT_RAD)-
+                                               tan(DELTA1_RAD)*cos(LAT_RAD)));
+    //Topocentric azimuth angle (eastward from north)
+    const double PHI_RAD = GAMMA_RAD+M_PI;
 }
 
 Spectrum

@@ -11,10 +11,11 @@
 #include "lights/light_area.hpp"
 #include "primitives/sphere.hpp"
 #include <random>
+#include "lights/light_sun.hpp"
 
 SPECTRE_TEST_INIT(Light_tests)
 
-SPECTRE_TEST(Light, AreaLight_is_light)
+SPECTRE_TEST(Light, LightArea_is_light)
 {
     Sphere s;
     Matrix4 m;
@@ -23,7 +24,7 @@ SPECTRE_TEST(Light, AreaLight_is_light)
     EXPECT_TRUE(light.is_light());
 }
 
-SPECTRE_TEST(Light, AreaLight_emissive_spectrum)
+SPECTRE_TEST(Light, LightArea_emissive_spectrum)
 {
     Sphere s;
     Matrix4 m;
@@ -35,7 +36,7 @@ SPECTRE_TEST(Light, AreaLight_emissive_spectrum)
     EXPECT_NEAR(res.w[2], 1.f, 1e-5f);
 }
 
-SPECTRE_TEST(Light, AreaLight_sample_surface)
+SPECTRE_TEST(Light, LightArea_sample_surface)
 {
     Sphere s;
     Matrix4 m;
@@ -60,7 +61,7 @@ SPECTRE_TEST(Light, AreaLight_sample_surface)
     EXPECT_NEAR(pdf, 0.012665147f, 1e-5f);
 }
 
-SPECTRE_TEST(Light, AreaLight_pdf_surface)
+SPECTRE_TEST(Light, LightArea_pdf_surface)
 {
     Sphere s;
     Matrix4 m;
@@ -71,7 +72,7 @@ SPECTRE_TEST(Light, AreaLight_pdf_surface)
     EXPECT_NEAR(pdf, 0.012665147f, 1e-5f);
 }
 
-SPECTRE_TEST(Light, AreaLight_sample_visible_surface)
+SPECTRE_TEST(Light, LightArea_sample_visible_surface)
 {
     Sphere s;
     Matrix4 m;
@@ -113,7 +114,7 @@ SPECTRE_TEST(Light, AreaLight_sample_visible_surface)
     EXPECT_NEAR(pdf, 0.80584496f, 1e-5f);
 }
 
-SPECTRE_TEST(Light, AreaLight_pdf_surface_visible)
+SPECTRE_TEST(Light, LightArea_pdf_surface_visible)
 {
     Sphere s;
     Matrix4 m;
@@ -134,6 +135,12 @@ SPECTRE_TEST(Light, AreaLight_pdf_surface_visible)
     wi = Vec3(-1.f, 0.f, 0.f);
     pdf = light.pdf(&pos, &wi);
     EXPECT_NEAR(pdf, 0.f, 1e-5f);
+}
+
+SPECTRE_TEST(Light, LightSun_sun_position)
+{
+    Date time(2003,10,17,19,30,30);
+    LightSun ls(SPECTRUM_ONE, time, 39.742476f, -105.1786f, 1830.14f);
 }
 
 SPECTRE_TEST_END(Light)

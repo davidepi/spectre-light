@@ -16,6 +16,7 @@
 
 #include <cstdint>
 #include <cstdlib>
+#include <ctime>
 
 /**
  *  \brief Class representing an instant of time
