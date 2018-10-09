@@ -140,7 +140,7 @@ SPECTRE_TEST(Light, LightArea_pdf_surface_visible)
 SPECTRE_TEST(Light, LightSun_sun_position)
 {
     Date time(2003,10,17,19,30,30);
-    LightSun ls(SPECTRUM_ONE, time, 39.742476f, -105.1786f, 1830.14f);
+//    LightSun ls(SPECTRUM_ONE, time, 39.742476f, -105.1786f, 1830.14f);
 }
 
 SPECTRE_TEST_END(Light)
