@@ -1,4 +1,5 @@
 #include "light_sun.hpp"
+#include <cmath>
 
 //various table used for the sun position algorithm
 
@@ -209,8 +210,9 @@ static inline double zero_to_360(double degrees)
     return degrees;
 }
 
-LightSun::LightSun(const Spectrum& intensity, Date time, float latitude,
-                   float longitude, float elevation):Light(intensity)
+LightSun::LightSun(const Spectrum& intensity, const Point3* world_centre, float world_rad, Date time, float latitude,
+                   float longitude, float elevation)
+:Light(intensity), radius_w(world_rad)
 {
     /*
      * Solar Position Algorithm, implemented following the paper:
@@ -374,37 +376,53 @@ LightSun::LightSun(const Spectrum& intensity, Date time, float latitude,
     const double E0_RAD = asin(sin(LAT_RAD)*sin(DELTA1_RAD)+
                                cos(LAT_RAD)*cos(DELTA1_RAD)*cos(H1_RAD));
     //Topocentric zenith angle
-    const double LOWERCASE_THETA_RAD = M_PI/2-E0_RAD;
+//    const double LOWERCASE_THETA_RAD = M_PI/2-E0_RAD;
     //Topocentric azimuth angle (westward from south)
     const double GAMMA_RAD = zero_to_2pi(atan2(sin(H1_RAD),
                                                cos(H1_RAD)*sin(LAT_RAD)-
                                                tan(DELTA1_RAD)*cos(LAT_RAD)));
     //Topocentric azimuth angle (eastward from north)
     const double PHI_RAD = GAMMA_RAD+M_PI;
+
+
+    //finally set up directions
+    //sun position with world_rad 1
+    Point3 sunpos((float)cos(PHI_RAD), (float)sin(E0_RAD), (float)sin(PHI_RAD));
+    //find the opposite of the direction
+    Vec3 reverse_dir = (sunpos - Point3(0,0,0)).normalize();
+    Ray reverse_ray(*world_centre, reverse_dir);
+    //find a position for the sun outside of the world
+    lray.origin = reverse_ray.apply(2*world_rad+1);
+    lray.direction = -reverse_dir;
 }
 
 Spectrum
-LightSun::sample_surface(float r0, float r1, float r2, float r3, Ray* out,
+LightSun::sample_surface(float, float, float, float, Ray* out,
                          float* pdf) const
 {
-    return Spectrum();
+    *out = LightSun::lray;
+    *pdf = 1.f;
+    return LightSun::c;
 }
 
 Spectrum
-LightSun::sample_visible_surface(float r0, float r1, const Point3* position,
+LightSun::sample_visible_surface(float, float, const Point3*,
                                  Vec3* wi, float* pdf, float* distance) const
 {
-    return Spectrum();
+    *wi = -LightSun::lray.direction;
+    *pdf = 1.f;
+    *distance = 2*LightSun::radius_w+1;
+    return LightSun::c;
 }
 
-float LightSun::pdf(const Ray* ray) const
+float LightSun::pdf(const Ray*) const
 {
-    return 0;
+    return 1.f;
 }
 
-float LightSun::pdf(const Point3* p, const Vec3* wi) const
+float LightSun::pdf(const Point3*, const Vec3*) const
 {
-    return 0;
+    return 0.f;
 }
 
 bool LightSun::renderable() const
