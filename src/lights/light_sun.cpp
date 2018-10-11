@@ -18,6 +18,12 @@
 #define R4SIZE 1
 #define YSIZE 63
 
+LightSun::LightSun(const Spectrum& intensity, const Ray& sunray, float world_r)
+        :Light(intensity), lray(sunray), radius_w(world_r)
+{
+
+}
+
 static const uint32_t L0A[L0SIZE] = {
         175347046, 3341656, 34894, 3497, 3418, 3136, 2676, 2343, 1324, 1273,
         1199, 990, 902, 857, 780, 753, 505, 492, 357, 317, 284, 271, 243, 206,
@@ -210,9 +216,10 @@ static inline double zero_to_360(double degrees)
     return degrees;
 }
 
-LightSun::LightSun(const Spectrum& intensity, const Point3* world_centre, float world_rad, Date time, float latitude,
+LightSun::LightSun(const Spectrum& intensity, const Point3* world_centre,
+                   float world_rad, Date time, float latitude,
                    float longitude, float elevation)
-:Light(intensity), radius_w(world_rad)
+        :Light(intensity), radius_w(world_rad)
 {
     /*
      * Solar Position Algorithm, implemented following the paper:
@@ -389,7 +396,7 @@ LightSun::LightSun(const Spectrum& intensity, const Point3* world_centre, float 
     //sun position with world_rad 1
     Point3 sunpos((float)cos(PHI_RAD), (float)sin(E0_RAD), (float)sin(PHI_RAD));
     //find the opposite of the direction
-    Vec3 reverse_dir = (sunpos - Point3(0,0,0)).normalize();
+    Vec3 reverse_dir = (sunpos-Point3(0, 0, 0)).normalize();
     Ray reverse_ray(*world_centre, reverse_dir);
     //find a position for the sun outside of the world
     lray.origin = reverse_ray.apply(2*world_rad+1);

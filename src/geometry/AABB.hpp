@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  8 Dec 2017
+//Last Edit 11 Oct 2018
 
 /**
  *  \file aabb.hpp
@@ -7,7 +7,7 @@
  *  \details   An Axis Aligned Bounding Box, used to enclose some points
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 Dec 2017
+ *  \date      11 Oct 2018
  *  \copyright GNU GPLv3
  */
 
@@ -160,6 +160,20 @@ public:
      *  the \a y axis or 2 if it is the \a z axis
      */
     char longest_axis() const;
+
+    /**
+     *  \brief Calculate the radius of the AABB
+     *
+     *  Although an AABB does not have an actual "radius", this method computes
+     *  the distance between the center and a corner of the AABB.
+     *
+     *  \note No checks are performed to ensure that the bounding box is not
+     *  degenerate.
+     *
+     *  \return the distance between the center of the AABB and one of its
+     *  corners
+     */
+    float radius() const;
 
     /** \brief Calculate the centroid of this AABB
      *

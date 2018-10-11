@@ -77,7 +77,7 @@ public:
     bool intersect_AABB(const Ray* r, const RayProperties* rp,
                         float* entry_point, float* exit_point) const;
 
-    /** \brief Return a pointer to the AABB
+    /** \brief Return a pointer to the AABB (world space)
      *
      *  Return a constant pointer to the axis aligned bounding box surrounding
      *  this asset. This AABB is in world space.

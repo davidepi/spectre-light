@@ -87,6 +87,11 @@ char AABB::longest_axis() const
         return 2;
 }
 
+float AABB::radius() const
+{
+    return (AABB::center()-AABB::bounds[1]).length();
+}
+
 Point3 AABB::center() const
 {
     return Point3((bounds[0].x+bounds[1].x)*0.5f,

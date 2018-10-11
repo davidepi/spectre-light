@@ -40,6 +40,7 @@ void Scene::inherit_asset(const Asset* addme)
 {
     //unordered map to check in O(1) if the asset is duplicate upon addition
     assets.insert(std::make_pair(addme->get_id(), addme));
+    bound.engulf(addme->get_AABB());
     k.addAsset(addme);
 }
 
@@ -83,4 +84,9 @@ unsigned int Scene::size_lights() const
 const Light* Scene::get_light(int index) const
 {
     return lights[index];
+}
+
+float Scene::radius() const
+{
+    return bound.radius();
 }

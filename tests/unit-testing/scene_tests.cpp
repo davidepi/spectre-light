@@ -48,6 +48,24 @@ SPECTRE_TEST(Scene, inherit_asset)
     EXPECT_EQ(scene.size_assets(), (unsigned int)1);
 }
 
+SPECTRE_TEST(Scene, radius)
+{
+    Scene scene;
+    Sphere* sphere = new Sphere();
+    Matrix4 transform;
+    transform.set_identity();
+    scene.inherit_shape(sphere);
+
+    Asset* addme = new Asset(sphere, transform, 1);
+    scene.inherit_asset(addme);
+    EXPECT_EQ(scene.radius(), sqrtf(1+1+1));
+
+    transform.set_scale(Vec3(-10.f,0,0));
+    addme = new Asset(sphere, transform, 1);
+    scene.inherit_asset(addme);
+    EXPECT_EQ(scene.radius(), sqrtf(-10.f*-10.f+(-1.f*-1.f)+(-1.f*-1.f)));
+}
+
 SPECTRE_TEST(Scene, inherit_light)
 {
     Scene scene;

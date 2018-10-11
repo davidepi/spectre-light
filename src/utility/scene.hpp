@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit  9 Sep 2018
+//Last Edit 11 Oct 2018
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      9 Sep 2018
+ *  \date      11 Oct 2018
  *  \copyright GNU GPLv3
  */
 
@@ -129,19 +129,30 @@ public:
      */
     const Light* get_light(int index) const;
 
+    /**
+     *  \brief Returns the radius of the scene
+     *
+     *  \return A float representing the radius of the sphere enclosing the
+     *  scene
+     */
+    float radius() const;
+
 private:
 
-    ///map of shapes
+    /** map of shapes */
     std::unordered_map<unsigned int, const Shape*> shapes;
 
-    ///map of assets and lights
+    /** map of assets and lights */
     std::unordered_map<unsigned int, const Asset*> assets;
 
-    ///array of lights that should be deleted. (Every light but AreaLights)
+    /** array of lights that should be deleted. (Every light but AreaLights) */
     std::vector<const Light*> to_delete;
 
-    ///array of lights, allocated version is stored inside Scene::assets
+    /** array of lights, allocated version is stored inside Scene::assets */
     std::vector<const Light*> lights;
+
+    /** Scene AABB */
+    AABB bound;
 
 };
 

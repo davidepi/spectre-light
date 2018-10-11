@@ -420,6 +420,16 @@ SPECTRE_TEST(AABB, longest_axis)
     EXPECT_EQ(box.longest_axis(), (char)0);
 }
 
+SPECTRE_TEST(AABB, radius)
+{
+    AABB bound;
+    EXPECT_TRUE(std::isnan(bound.radius()));
+    bound.engulf(Point3(0,0,0));
+    EXPECT_EQ(bound.radius(), 0.f);
+    bound.engulf(Point3(0,1,0));
+    EXPECT_EQ(bound.radius(), .5f);
+}
+
 SPECTRE_TEST(AABB, center)
 {
     AABB box;
