@@ -1,5 +1,9 @@
 #include "date.hpp"
 #include <ctime>
+#include <cctype>
+#include <cstdlib>
+#include <regex>
+#include <iostream>
 
 const uint8_t MDAYS[12] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -21,28 +25,61 @@ Date::Date()
     sec = (uint8_t)utc_time.tm_sec;
 }
 
+static inline void sanitize(int16_t* year, uint8_t* month, uint8_t* day,
+                            uint8_t* hours, uint8_t* minutes, uint8_t* seconds)
+{
+    if(*seconds>59)
+        *seconds = 59;
+    if(*minutes>59)
+        *minutes = 59;
+    if(*hours>23)
+        *hours = 23;
+    *month = *month-1;
+    if(*day == 0)
+        *day=*day+1;
+    if(*month>11)
+        *month = 11;
+    if(*day>MDAYS[*month])
+        *day = MDAYS[*month];
+    //leap year
+    if(*month == 1 && *day == 29 && *year%4 != 0)
+        *day = *day-1;
+    if(*year<-4712)
+        *year = -4712;
+}
+
+Date::Date(const char* string)
+{
+    const char* regexp = "\\s*(-?[0-9]+)[-/]([0-9][0-9]?)[-/]([0-9][0-9]?)\\s+"\
+                         "([0-9][0-9]):([0-9][0-9]):([0-9][0-9])\\s*";
+    std::regex regex_engine(regexp, std::regex::ECMAScript);
+    std::match_results<const char*> matched;
+    std::regex_match(string, matched, regex_engine);
+    if(matched.size() == 7)
+    {
+        year = strtol(matched[1].str().c_str(), NULL, 10);
+        month = strtol(matched[2].str().c_str(), NULL, 10)-1;
+        day = strtol(matched[3].str().c_str(), NULL, 10);
+        hour = strtol(matched[4].str().c_str(), NULL, 10);
+        min = strtol(matched[5].str().c_str(), NULL, 10);
+        sec = strtol(matched[6].str().c_str(), NULL, 10);
+    }
+    else
+    {
+        year = 2000;
+        month = 0;
+        day = 1;
+        hour = 0;
+        min = 0;
+        sec = 0;
+    }
+}
+
 Date::Date(int16_t year, uint8_t month, uint8_t day, uint8_t hours,
            uint8_t minutes, uint8_t seconds)
 {
     //clamp everything out of range
-    if(seconds>59)
-        seconds = 59;
-    if(minutes>59)
-        minutes = 59;
-    if(hours>23)
-        hours = 23;
-    month--;
-    if(day == 0)
-        day++;
-    if(month>11)
-        month = 11;
-    if(day>MDAYS[month])
-        day = MDAYS[month];
-    //leap year
-    if(month == 1 && day == 29 && year%4 != 0)
-        day--;
-    if(year<-4712)
-        year = -4712;
+    sanitize(&year, &month, &day, &hours, &minutes, &seconds);
     Date::year = year;
     Date::month = month;
     Date::day = day;

@@ -1,12 +1,12 @@
 //Created,   3 Oct 2018
-//Last Edit  4 Oct 2018
+//Last Edit 11 Oct 2018
 
 /**
  *  \file date.hpp
  *  \brief     Class representing a given instant of time
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      4 Oct 2018
+ *  \date      11 Oct 2018
  *  \copyright GNU GPLv3
  */
 
@@ -48,6 +48,20 @@ public:
      */
     Date(int16_t year, uint8_t month, uint8_t day, uint8_t hours,
          uint8_t minutes, uint8_t seconds);
+
+    /**
+     *  \brief Construct a Date object given a yyyy/MM/dd HH:mm:ss string
+     *
+     *  Given a string in the format yyyy/MM/dd HH:mm:ss or yyyy-mm-dd HH:mm:ss
+     *  the Date object is constructed.
+     *  If the string is not parsable, the date will be set as Jan 1, 2000 at
+     *  00:00:00.
+     *  Exceptionally, months and days only, can be written with a single digit.
+     *
+     *  \param[in] string A string formatted as yyyy/MM/dd HH:mm:ss or
+     *  yyyy-MM-dd HH:mm:ss
+     */
+    Date(const char* string);
 
     /**
      *  \brief Construct a Date object representing the current time
@@ -92,11 +106,17 @@ public:
     double get_delta_t()const;
 
 private:
+    /** year [-4712, +32768] */
     int16_t year;
+    /** month [0, 11] */
     uint8_t month;
+    /** day [0, 31] */
     uint8_t day;
+    /** hour [0, 24] */
     uint8_t hour;
+    /** minutes [0, 59] */
     uint8_t min;
+    /** seconds [0, 59] */
     uint8_t sec;
 };
 
