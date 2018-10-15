@@ -147,14 +147,18 @@ Keys for Light objects
 Key | Type | Usage | Default value
 ---|---|---|---
 name | quoted string | Used only by `area` lights, the name of the light model. This is the name of a mesh previously parsed with the `shape` keyword | none, if missing and the light is of type`area` the light is skipped
-type | enum | The type of the light. Possible values are `omni` for omnidirectional lights, `spot` for a light projecting a cone of light beneath it, `area` for an area light | area
+type | enum | The type of the light. Possible values are `omni` for omnidirectional lights, `spot` for a light projecting a cone of light beneath it, `area` for an area light, `sun` for a light simulating the sun | area
 temperature | int+ | The temperature in kelvin of the light. This value will set the light color based on its temperature and thus should not be used in conjunction with the `color` keyword | This value is mutually exclusive with the `color` one. The latter is the one used as default
 color | float[3] | The spectrum emitted by this light. The spectrum is represented as a 3 values RGB number in range [0-255] |  [255,255,255]
-position | float[3] | The position of the light in the scene | [0,0,0]
-rotation | float[3] | The rotation of the light in the scene, in degrees | [0,0,0]
-scale | float[3] or float | The scaling applied to the light in the scene. The single float value applies uniform scaling to every dimension | 1
+position | float[3] | The position of the light in the scene. Does not work for `sun` lights, use time/latitude/longitude/elevation to compute the sun position instead | [0,0,0]
+rotation | float[3] | The rotation of the light in the scene, in degrees. Does not work for `omni` and `sun` lights. | [0,0,0]
+scale | float[3] or float | The scaling applied to the light in the scene. The single float value applies uniform scaling to every dimension. Does not work for `omni`,`spot` and `sun` lights. | 1
 radius | float | The total radius of the `spot` light, including the falloff | 1
 falloff | float | The inner radius of the `spot` light after which the falloff kicks in | 0.75
+time | quoted string | A string in the format `"yyyy-mm-dd hh:MM:ss"` or `"yyyy/mm/dd hh:MM:ss"` used by `sun` typed lights in order to specify the sun position | The current hour
+latitude | float | Latitude of the observer, in degrees, used to determine the sun position in `sun` typed light| 0
+longitude | float | Longitude of the observer, in degrees, used to determine the sun position in `sun` typed light | 0
+elevation | float | Altitude of the observer, in metres, used to the determine the sun postition in `sun` typed light | 0
 
 #### World
 Keys for World objects

@@ -1,4 +1,37 @@
 #include "parser_config.hpp"
+#include "utility/spectrum.hpp"
+#include "geometry/point3.hpp"
+#include "geometry/vec3.hpp"
+#include "cameras/camera_orthographic.hpp"
+#include "cameras/camera_perspective.hpp"
+#include "cameras/camera360.hpp"
+#include "samplers/filter_box.hpp"
+#include "samplers/filter_tent.hpp"
+#include "samplers/filter_gaussian.hpp"
+#include "samplers/filter_mitchell.hpp"
+#include "samplers/filter_lanczos.hpp"
+#include "integrators/path_tracer.hpp"
+#include "textures/texture_uniform.hpp"
+#include "textures/texture_image.hpp"
+#include "textures/texture_normal.hpp"
+#include "materials/single_brdf.hpp"
+#include "materials/multi_bsdf.hpp"
+#include "materials/oren_nayar.hpp"
+#include "materials/lambertian.hpp"
+#include "materials/reflection.hpp"
+#include "materials/refraction.hpp"
+#include "materials/fresnel_conditions.hpp"
+#include "materials/microfacet.hpp"
+#include "materials/microfacet_distributions.hpp"
+#include "materials/metals.hpp"
+#include "materials/dual.hpp"
+#include "parsers/parser_obj.hpp"
+#include "primitives/mesh.hpp"
+#include "primitives/sphere.hpp"
+#include "lights/light_area.hpp"
+#include "lights/light_omni.hpp"
+#include "lights/light_spot.hpp"
+#include "lights/light_sun.hpp"
 
 extern "C" { void parse_config(FILE*, struct ParsedScene*); }
 
@@ -857,6 +890,21 @@ static void build_lights(ParsedScene* parsed,
                                             union_l.light.falloff);
                 scene->inherit_light(spot);
                 break;
+            }
+            case SUN:
+            {
+                Date time;
+                if(union_l.light.time != NULL)
+                {
+                    time = Date(union_l.light.time);
+                    free(union_l.light.time);
+                    union_l.light.time = NULL;
+                }
+                Point3 camera_pos; //TODO: <- REPLACE THIS
+                Light* sun = new LightSun(intensity, &camera_pos,
+                                          scene->radius(), time, position[0],
+                                          position[1], position[2]);
+                scene->inherit_light(sun);
             }
         }
         if(union_l.light.name != NULL)

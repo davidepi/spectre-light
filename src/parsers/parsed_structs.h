@@ -1,4 +1,5 @@
-/** Created 13-9-2018 */
+/* Created,  13 Sep 2018 */
+/* Last Edit 15 Oct 2018 */
 
 #ifndef __PARSED_STRUCTS_H__
 #define __PARSED_STRUCTS_H__
@@ -111,6 +112,9 @@ struct ParsedLight
 {
     /** Name of the MeshObject in object space if AreaLight */
     char* name;
+
+    /** Time of the day string, used by the sunlight */
+    char* time;
 
     /** The light type */
     enum light_t type;

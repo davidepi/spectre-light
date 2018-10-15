@@ -148,6 +148,11 @@ falloff {UPDATE_LOC; return FALLOFF;}
 omni {UPDATE_LOC; return OMNI_TOKEN;}
 spot {UPDATE_LOC; return SPOT_TOKEN;}
 area {UPDATE_LOC; return AREA_TOKEN;}
+sun {UPDATE_LOC; return SUN_TOKEN;}
+time {UPDATE_LOC; return TIME;}
+latitude {UPDATE_LOC; return LATITUDE;}
+longitude {UPDATE_LOC; return LONGITUDE;}
+elevation {UPDATE_LOC; return ELEVATION;}
 {uint}    { UPDATE_LOC; yylval.uval = atoi(yytext); return UINT; }
 {int}    { UPDATE_LOC; yylval.ival = atoi(yytext); return INT; }
 {float} { UPDATE_LOC; yylval.fval = atof(yytext); return FLOAT; }

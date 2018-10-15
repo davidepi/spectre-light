@@ -124,39 +124,44 @@ extern int yydebug;
     OMNI_TOKEN = 333,
     SPOT_TOKEN = 334,
     AREA_TOKEN = 335,
-    SILVER = 336,
-    ALUMINIUM = 337,
-    GOLD = 338,
-    COPPER = 339,
-    IRON = 340,
-    MERCURY = 341,
-    LEAD = 342,
-    PLATINUM = 343,
-    TUNGSTEN = 344,
-    BERYLLIUM = 345,
-    BISMUTH = 346,
-    COBALT = 347,
-    CHROMIUM = 348,
-    GERMANIUM = 349,
-    POTASSIUM = 350,
-    LITHIUM = 351,
-    MAGNESIUM = 352,
-    MANGANESE = 353,
-    MOLYBDENUM = 354,
-    SODIUM = 355,
-    NIOBIUM = 356,
-    NICKEL = 357,
-    PALLADIUM = 358,
-    RHODIUM = 359,
-    TANTALUM = 360,
-    TITANIUM = 361,
-    VANADIUM = 362,
-    ZINC = 363,
-    ZIRCONIUM = 364,
-    UINT = 365,
-    INT = 366,
-    FLOAT = 367,
-    STRING = 368
+    SUN_TOKEN = 336,
+    TIME = 337,
+    LATITUDE = 338,
+    LONGITUDE = 339,
+    ELEVATION = 340,
+    SILVER = 341,
+    ALUMINIUM = 342,
+    GOLD = 343,
+    COPPER = 344,
+    IRON = 345,
+    MERCURY = 346,
+    LEAD = 347,
+    PLATINUM = 348,
+    TUNGSTEN = 349,
+    BERYLLIUM = 350,
+    BISMUTH = 351,
+    COBALT = 352,
+    CHROMIUM = 353,
+    GERMANIUM = 354,
+    POTASSIUM = 355,
+    LITHIUM = 356,
+    MAGNESIUM = 357,
+    MANGANESE = 358,
+    MOLYBDENUM = 359,
+    SODIUM = 360,
+    NIOBIUM = 361,
+    NICKEL = 362,
+    PALLADIUM = 363,
+    RHODIUM = 364,
+    TANTALUM = 365,
+    TITANIUM = 366,
+    VANADIUM = 367,
+    ZINC = 368,
+    ZIRCONIUM = 369,
+    UINT = 370,
+    INT = 371,
+    FLOAT = 372,
+    STRING = 373
   };
 #endif
 
@@ -165,14 +170,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 132 "config_parser.y" /* yacc.c:1919  */
+#line 137 "config_parser.y" /* yacc.c:1919  */
 
     float fval;
     int ival;
     unsigned int uval;
     char* sval;
 
-#line 176 "config_parser.tab.h" /* yacc.c:1919  */
+#line 181 "config_parser.tab.h" /* yacc.c:1919  */
 };
 
 typedef union YYSTYPE YYSTYPE;

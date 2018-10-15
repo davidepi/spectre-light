@@ -99,6 +99,11 @@
 %token OMNI_TOKEN "`omni` keyword"
 %token SPOT_TOKEN "`spot` keyword"
 %token AREA_TOKEN "`area` keyword"
+%token SUN_TOKEN "`sun` keyword"
+%token TIME "`time` keyword"
+%token LATITUDE "`latitude` keyword"
+%token LONGITUDE "`longitude` keyword"
+%token ELEVATION "`elevation` keyword"
 %token SILVER "`Ag`"
 %token ALUMINIUM "`Al`"
 %token GOLD "`Au`"
@@ -230,6 +235,11 @@ light_stmt
 | TYPE COLON AREA_TOKEN {parsed->cur_light.light.type = AREA;}
 | TYPE COLON OMNI_TOKEN {parsed->cur_light.light.type = OMNI;}
 | TYPE COLON SPOT_TOKEN {parsed->cur_light.light.type = SPOT;}
+| TYPE COLON SUN_TOKEN {parsed->cur_light.light.type = SUN;}
+| TIME COLON STRING {ADD_STRING(parsed->cur_light.light.time,$3);}
+| LATITUDE COLON number {parsed->cur_light.light.position[0] = $3;}
+| LONGITUDE COLON number {parsed->cur_light.light.position[1] = $3;}
+| ELEVATION COLON number {parsed->cur_light.light.position[2] = $3;}
 | POSITION COLON vector {parsed->cur_light.light.position[0] = vec[0];parsed->cur_light.light.position[1] = vec[1];parsed->cur_light.light.position[2] = vec[2];}
 | ROTATION COLON vector {parsed->cur_mesh.mesh.rotation[0] = vec[0];parsed->cur_mesh.mesh.rotation[1] = vec[1];parsed->cur_mesh.mesh.rotation[2] = vec[2];}
 | SCALE COLON vector {parsed->cur_light.light.scale[0] = vec[0];parsed->cur_light.light.scale[1] = vec[1];parsed->cur_light.light.scale[2] = vec[2];}

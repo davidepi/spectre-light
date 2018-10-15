@@ -39,6 +39,8 @@ void init_ParsedTexture(struct ParsedTexture* val)
 
 void init_ParsedLight(struct ParsedLight* val)
 {
+    val->name = NULL;
+    val->time = NULL;
     val->type = AREA;
     val->position[0] = 0.f;
     val->position[1] = 0.f;

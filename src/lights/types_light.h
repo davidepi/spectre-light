@@ -6,7 +6,8 @@ enum light_t
 {
     OMNI,
     SPOT,
-    AREA
+    AREA,
+    SUN
 };
 
 #endif
