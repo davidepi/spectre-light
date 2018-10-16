@@ -16,24 +16,24 @@
 #ifndef __IMAGEIO_H__
 #define __IMAGEIO_H__
 
-#include "bmp.h"
-#include "ppm.h"
-#include "tga.h"
+#include "io_bmp.h"
+#include "io_ppm.h"
+#include "io_tga.h"
 #include <stdlib.h>
 
 #ifdef JPEG_FOUND
 
-#include "jpg.h"
+#include "io_jpg.h"
 
 #endif
 #ifdef PNG_FOUND
 
-#include "png.h"
+#include "io_png.h"
 
 #endif
 #ifdef TIFF_FOUND
 
-#include "tiff.h"
+#include "io_tiff.h"
 
 #endif
 

@@ -1,7 +1,9 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
-#include "tiff.h"
+#include "io_tiff.h"
+#include <memory.h>
+#include <tiffio.h>
 
 char tiff_write(const char* name, int width, int height, const uint32_t* data)
 {

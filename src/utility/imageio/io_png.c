@@ -1,7 +1,11 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
-#include "png.h"
+#include "io_png.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+#include <png.h>
 
 char png_write(const char* name, int width, int height, const uint32_t* data)
 {

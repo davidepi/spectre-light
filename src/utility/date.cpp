@@ -1,4 +1,5 @@
 #include "date.hpp"
+#include "utility/console.hpp"
 #include <ctime>
 #include <cctype>
 #include <cstdlib>
@@ -66,12 +67,8 @@ Date::Date(const char* string)
     }
     else
     {
-        year = 2000;
-        month = 0;
-        day = 1;
-        hour = 0;
-        min = 0;
-        sec = 0;
+        Console.notice(MESSAGE_WRONG_DATA_FORMAT);
+        *this = Date();
     }
 }
 

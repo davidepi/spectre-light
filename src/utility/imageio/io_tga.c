@@ -1,7 +1,11 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
-#include "tga.h"
+#include "io_tga.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "endianness.h"
 
 enum tga_datatype
 {

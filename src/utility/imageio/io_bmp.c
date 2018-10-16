@@ -1,7 +1,11 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
-#include "bmp.h"
+#include "io_bmp.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "endianness.h"
 
 #define BMP_MAGIC 19778
 

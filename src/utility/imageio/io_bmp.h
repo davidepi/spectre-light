@@ -16,10 +16,6 @@
 #define __BMP_H__
 
 #include <stdint.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "endianness.h"
 #include "packed_struct.h"
 
 /** Structure holding the bmp header. Must be 14 bytes */

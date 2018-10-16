@@ -793,9 +793,10 @@ static void build_mesh_world(ParsedScene* parsed,
 static void build_lights(ParsedScene* parsed,
                          const std::unordered_map<std::string, MeshObject>* shapes,
                          std::unordered_set<std::string>* used_shapes,
-                         Scene* scene)
+                         Scene* scene, const Point3* cam_pos)
 {
     std::unordered_map<std::string, MeshObject>::const_iterator mesh_i;
+    std::vector<ParsedLight> sunlights;
     while(!empty_ResizableParsed(&parsed->parsed_lights))
     {
         ParsedElement union_l;
@@ -893,22 +894,39 @@ static void build_lights(ParsedScene* parsed,
             }
             case SUN:
             {
-                Date time;
-                if(union_l.light.time != NULL)
-                {
-                    time = Date(union_l.light.time);
-                    free(union_l.light.time);
-                    union_l.light.time = NULL;
-                }
-                Point3 camera_pos; //TODO: <- REPLACE THIS
-                Light* sun = new LightSun(intensity, &camera_pos,
-                                          scene->radius(), time, position[0],
-                                          position[1], position[2]);
-                scene->inherit_light(sun);
+                //delay this, because the sunlight needs to have scene size
+                sunlights.push_back(union_l.light);
             }
         }
         if(union_l.light.name != NULL)
             free(union_l.light.name);
+    }
+    //at this point the scene size should be known
+    for(ParsedLight& light : sunlights)
+    {
+        Date time;
+        if(light.time != NULL)
+        {
+            time = Date(light.time);
+            free(light.time);
+            light.time = NULL;
+        }
+        //this is repeated in this single case, but likeley there will be
+        //just a single sunlight
+        Spectrum intensity;
+        if(light.temperature>=0)
+            intensity = Spectrum(light.temperature);
+        else
+        {
+            ColorRGB color(light.color[0],
+                           light.color[1],
+                           light.color[2]); // color is parsed a uint8_t
+            intensity = Spectrum(color, true);
+        }
+        Light* sun = new LightSun(intensity, cam_pos,
+                                  scene->radius(), time, light.position[0],
+                                  light.position[1], light.position[2]);
+        scene->inherit_light(sun);
     }
 }
 
@@ -995,7 +1013,9 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     deinit_ResizableStack(&parsed.parsed_mesh_object);
     build_mesh_world(&parsed, &shapes, &used_shapes, scene);
     deinit_ResizableParsed(&parsed.parsed_mesh_world);
-    build_lights(&parsed, &shapes, &used_shapes, scene);
+    Point3 cam_pos(parsed.camera_pos[0], parsed.camera_pos[1],
+                   parsed.camera_pos[2]);
+    build_lights(&parsed, &shapes, &used_shapes, scene, &cam_pos);
     deinit_ResizableParsed(&parsed.parsed_lights);
 
     //cleanup

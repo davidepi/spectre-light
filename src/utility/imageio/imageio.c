@@ -2,6 +2,7 @@
 /*  license: MIT                */
 
 #include "imageio.h"
+#include <string.h>
 
 #define UNUSED(x) (void)(x)
 

@@ -16,10 +16,6 @@
 #define __PPM_H__
 
 #include <stdint.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "endianness.h"
 
 /**
  *  \brief Writes an image in the PPM format

@@ -1,7 +1,11 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
-#include "ppm.h"
+#include "io_ppm.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "endianness.h"
 
 #define CLAMP(x, y, z) ((x)<0)?0:(x)>(z)?(z):(x)
 

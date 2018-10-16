@@ -1,7 +1,11 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
-#include "jpg.h"
+#include "io_jpg.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+#include <jpeglib.h>
 
 #define UNUSED(x) (void)(x)
 

@@ -16,10 +16,6 @@
 #define __TGA_H__
 
 #include <stdint.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "endianness.h"
 #include "packed_struct.h"
 
 /** Structure holding the tga header, must be 18 bytes */

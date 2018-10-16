@@ -17,10 +17,6 @@
 #define __PNG_H__
 
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <memory.h>
-#include <png.h>
 
 /**
  *  \brief Writes a png image

@@ -35,9 +35,9 @@ FILE(GLOB spectre_core_sources
      src/parsers/parser_config.cpp
      src/parsers/parsed_structs.c
      src/parsers/parser_obj.cpp
-     src/utility/imageio/bmp.c
-     src/utility/imageio/tga.c
-     src/utility/imageio/ppm.c
+     src/utility/imageio/io_bmp.c
+     src/utility/imageio/io_tga.c
+     src/utility/imageio/io_ppm.c
      src/utility/imageio/imageio.c)
 FILE(GLOB spectre_test_sources
      tests/unit-testing/*.cpp
@@ -129,8 +129,9 @@ ENDIF(GNUPLOT_FOUND)
 #ADD SUPPORT FOR JPEG IMAGES, ALSO TO THE TESTS
 FIND_PACKAGE(JPEG)
 IF(JPEG_FOUND)
-    TARGET_SOURCES(spectre-full PUBLIC src/utility/imageio/jpg.c)
-    TARGET_SOURCES(spectre-rgb PUBLIC src/utility/imageio/jpg.c)
+    INCLUDE_DIRECTORIES(${JPEG_INCLUDE_DIR})
+    TARGET_SOURCES(spectre-full PUBLIC src/utility/imageio/io_jpg.c)
+    TARGET_SOURCES(spectre-rgb PUBLIC src/utility/imageio/io_jpg.c)
     SET_PROPERTY(SOURCE src/utility/imageio/imageio.c APPEND_STRING PROPERTY
                  COMPILE_FLAGS " -DJPEG_FOUND ")
     TARGET_LINK_LIBRARIES(spectre-full ${JPEG_LIBRARIES})
@@ -140,11 +141,11 @@ IF(JPEG_FOUND)
                      PROPERTY COMPILE_FLAGS " -DJPEG_FOUND ")
         SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DJPEG_FOUND ")
-        TARGET_SOURCES(runTests PUBLIC src/utility/imageio/jpg.c)
+        TARGET_SOURCES(runTests PUBLIC src/utility/imageio/io_jpg.c)
         TARGET_LINK_LIBRARIES(runTests ${JPEG_LIBRARIES})
     ENDIF(GTEST_FOUND)
     IF(GNUPLOT_FOUND)
-        TARGET_SOURCES(distributions_data PUBLIC src/utility/imageio/jpg.c)
+        TARGET_SOURCES(distributions_data PUBLIC src/utility/imageio/io_jpg.c)
         TARGET_LINK_LIBRARIES(distributions_data ${JPEG_LIBRARIES})
     ENDIF(GNUPLOT_FOUND)
 ENDIF(JPEG_FOUND)
@@ -152,8 +153,9 @@ ENDIF(JPEG_FOUND)
 #ADD SUPPORT FOR PNG IMAGES, ALSO TO THE TESTS. THIS IS COPIED FROM ABOVE
 FIND_PACKAGE(PNG)
 IF(PNG_FOUND)
-    TARGET_SOURCES(spectre-full PUBLIC src/utility/imageio/png.c)
-    TARGET_SOURCES(spectre-rgb PUBLIC src/utility/imageio/png.c)
+    INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
+    TARGET_SOURCES(spectre-full PUBLIC src/utility/imageio/io_png.c)
+    TARGET_SOURCES(spectre-rgb PUBLIC src/utility/imageio/io_png.c)
     SET_PROPERTY(SOURCE src/utility/imageio/imageio.c APPEND_STRING PROPERTY
                  COMPILE_FLAGS " -DPNG_FOUND ")
     TARGET_LINK_LIBRARIES(spectre-full ${PNG_LIBRARIES})
@@ -163,11 +165,11 @@ IF(PNG_FOUND)
                      PROPERTY COMPILE_FLAGS " -DPNG_FOUND ")
         SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DPNG_FOUND ")
-        TARGET_SOURCES(runTests PUBLIC src/utility/imageio/png.c)
+        TARGET_SOURCES(runTests PUBLIC src/utility/imageio/io_png.c)
         TARGET_LINK_LIBRARIES(runTests ${PNG_LIBRARIES})
     ENDIF(GTEST_FOUND)
     IF(GNUPLOT_FOUND)
-        TARGET_SOURCES(distributions_data PUBLIC src/utility/imageio/png.c)
+        TARGET_SOURCES(distributions_data PUBLIC src/utility/imageio/io_png.c)
         TARGET_LINK_LIBRARIES(distributions_data ${PNG_LIBRARIES})
     ENDIF(GNUPLOT_FOUND)
 ENDIF(PNG_FOUND)
@@ -175,8 +177,9 @@ ENDIF(PNG_FOUND)
 #ADD SUPPORT FOR TIFF IMAGES, ALSO TO THE TESTS. THIS IS COPIED FROM ABOVE
 FIND_PACKAGE(TIFF)
 IF(TIFF_FOUND)
-    TARGET_SOURCES(spectre-full PUBLIC src/utility/imageio/tiff.c)
-    TARGET_SOURCES(spectre-rgb PUBLIC src/utility/imageio/tiff.c)
+    INCLUDE_DIRECTORIES(${TIFF_INCLUDE_DIR})
+    TARGET_SOURCES(spectre-full PUBLIC src/utility/imageio/io_tiff.c)
+    TARGET_SOURCES(spectre-rgb PUBLIC src/utility/imageio/io_tiff.c)
     SET_PROPERTY(SOURCE src/utility/imageio/imageio.c APPEND_STRING PROPERTY
                  COMPILE_FLAGS " -DTIFF_FOUND ")
     TARGET_LINK_LIBRARIES(spectre-full ${TIFF_LIBRARIES})
@@ -186,11 +189,11 @@ IF(TIFF_FOUND)
                      PROPERTY COMPILE_FLAGS " -DTIFF_FOUND ")
         SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DTIFF_FOUND ")
-        TARGET_SOURCES(runTests PUBLIC src/utility/imageio/tiff.c)
+        TARGET_SOURCES(runTests PUBLIC src/utility/imageio/io_tiff.c)
         TARGET_LINK_LIBRARIES(runTests ${TIFF_LIBRARIES})
     ENDIF(GTEST_FOUND)
     IF(GNUPLOT_FOUND)
-        TARGET_SOURCES(distributions_data PUBLIC src/utility/imageio/tiff.c)
+        TARGET_SOURCES(distributions_data PUBLIC src/utility/imageio/io_tiff.c)
         TARGET_LINK_LIBRARIES(distributions_data ${TIFF_LIBRARIES})
     ENDIF(GNUPLOT_FOUND)
 ENDIF(TIFF_FOUND)
