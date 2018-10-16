@@ -146,19 +146,19 @@ double Date::get_delta_t() const
     }
     else if(year<-500)
     {
-        const float U = (year-1820)/100;
+        const float U = (year-1820)/100.f;
         retval = -20+32*U*U;
     }
     else if(year<500)
     {
-        const float U = year/100;
+        const float U = year/100.f;
         retval =
                 10583.6-1014.41*U+33.78311*U*U-5.952053*U*U*U-0.1798452*U*U*U*U+
                 0.022174192*U*U*U*U*U+0.0090316521*U*U*U*U*U*U;
     }
     else if(year<1600)
     {
-        const float U = (year-1000)/100;
+        const float U = (year-1000)/100.f;
         retval = 1574.2-556.01*U+71.23472*U*U+0.319781*U*U*U-0.8503463*U*U*U*U-
                  0.005050998*U*U*U*U*U+0.0083572073*U*U*U*U*U*U;
     }

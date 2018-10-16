@@ -11,7 +11,15 @@
 #endif
 
 #include "parsers/parser_config.hpp"
-#include <typeinfo>
+#include "samplers/filter_box.hpp"
+#include "samplers/filter_tent.hpp"
+#include "samplers/filter_mitchell.hpp"
+#include "samplers/filter_gaussian.hpp"
+#include "samplers/filter_lanczos.hpp"
+#include "cameras/camera_orthographic.hpp"
+#include "cameras/camera_perspective.hpp"
+#include "cameras/camera360.hpp"
+#include "primitives/sphere.hpp"
 
 SPECTRE_TEST_INIT(Parser_tests)
 

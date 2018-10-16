@@ -53,6 +53,10 @@ Spectrum ConductorReflection::sample_value(const Vec3* wo, Vec3* wi,
     wi->x = -wo->x;
     wi->y = -wo->y;
     wi->z = wo->z;
+    if(wo->z==0.f)
+    {
+        ;//TODO:this IS a problem
+    }
     float cosinsq = wo->z*wo->z;
     Spectrum eval;
     Spectrum etacosin2 = ior*(wo->z*2.f);

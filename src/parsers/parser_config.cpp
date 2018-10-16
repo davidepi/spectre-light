@@ -951,7 +951,7 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     check_spp(parsed.sampler_type, &parsed.spp);
 #ifdef DEBUG
     renderer = new Renderer(parsed.width, parsed.height, parsed.spp,
-                            parsed.output, 0);
+                            parsed.output, 1);
 #else
     renderer = new Renderer(parsed.width, parsed.height, parsed.spp,
                             parsed.output);
