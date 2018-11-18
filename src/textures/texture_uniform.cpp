@@ -24,3 +24,17 @@ TexelUnion TextureUniform::map_value(const HitPoint*) const
     result.bgra_texel.a = 0xFF;
     return result;
 }
+
+uint16_t TextureUniform::get_side() const
+{
+    return 1;
+}
+
+void TextureUniform::to_array(TexelUnion* array) const
+{
+    ColorRGB col = TextureUniform::value.to_xyz().to_sRGB();
+    array[0].bgra_texel.r = (uint8_t)(col.r*255);
+    array[0].bgra_texel.g = (uint8_t)(col.g*255);
+    array[0].bgra_texel.b = (uint8_t)(col.b*255);
+    array[0].bgra_texel.a = 0xFF;
+}

@@ -57,6 +57,10 @@ struct Texel
 
 /**
  * \brief Union between an uint32_t texel and the Texel struct
+ *
+ *  This union is used to have both access to single components in an endiannes
+ *  indipendent way (by using the bgra_texel member) or to get the uint32_t
+ *  representing the entire value (by using the bgra_value member)
  */
 union TexelUnion
 {
@@ -136,6 +140,27 @@ public:
      */
     virtual TexelUnion filter(float u, float v, float dudx, float dvdx,
                               float dudy, float dvdy) const = 0;
+
+    /**
+     *  \brief Returns the side of the ImageMap
+     *
+     *  The returned value refers to the top level of the pyramid
+     *
+     *  \return An int specifying the side of the texture
+     */
+    uint16_t get_side() const;
+
+    /**
+     *  \brief Returns the underlying ImageMap in form of array
+     *
+     *  The returned array will be unidimensional, ordered from top to bottom
+     *  and form left to right and will be a copy of the original one.
+     *  The input array is expected to be at least of size side*side, where side
+     *  ca be retrieved by calling the get_side() memeber
+     *
+     *  \param[in] array The array that will hold the copied values
+     */
+    void to_array(TexelUnion* array) const;
 
 protected:
 

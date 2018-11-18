@@ -50,6 +50,29 @@ public:
 
     TexelUnion map_value(const HitPoint* hp) const override;
 
+    /**
+     *  \brief Returns the side of the Texture
+     *
+     *  Since this texture is procedurally generated and mostly implrtant is is
+     *  uniform, it can be viewed as a 1x1 TextureImage with the constant color.
+     *  Thus, this function returns 1.
+     *
+     *  \return 1
+     */
+    uint16_t get_side() const override;
+
+    /**
+     *  \brief Returns an array representation of this Texture
+     *
+     *  Copy the values of this texture inside the array passed as parameter.
+     *  The array is expected to be of length 1, for this particular type of
+     *  Texture. Alternatively, an array should be allocated of size side*side
+     *  with side equals to the value returned by the function get_side()
+     *
+     *  \param[in] array The array where the value will be copied
+     */
+    void to_array(TexelUnion* array) const override;
+
 private:
     const Spectrum value;
 };

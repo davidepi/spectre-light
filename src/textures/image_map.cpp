@@ -95,6 +95,18 @@ ImageMap::ImageMap(const pixBGRA* values, uint16_t side)
     free(reduced);
 }
 
+uint16_t ImageMap::get_side() const
+{
+    return side[0];
+};
+
+void ImageMap::to_array(TexelUnion* array) const
+{
+    for(int y=0;y<side[0];y++)
+        for(int x=0;x<side[0];x++)
+            array[y*side[0]+x] = MIPmap[0]->get(x, y);
+}
+
 ImageMap::~ImageMap()
 {
     for(int i = 0; i<maps_no; i++)

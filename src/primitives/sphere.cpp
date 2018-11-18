@@ -3,6 +3,11 @@
 
 #include "sphere.hpp"
 
+Sphere::Sphere(bool inverted) : inverted(inverted)
+{
+
+}
+
 static inline void compute_uvs(const Point3* hit, HitPoint* ret)
 {
     float phi = atan2f(hit->y, hit->x);
@@ -144,6 +149,8 @@ bool Sphere::intersect(const Ray* r, float* distance, HitPoint* hit,
         Vec3 normal(hitp.x, hitp.y, hitp.z);
         hit->normal_h = Normal(normal);
         hit->index = 0;
+        if(inverted)
+            hit->normal_h = -hit->normal_h;
         return true;
     }
     else

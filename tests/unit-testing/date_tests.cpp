@@ -48,6 +48,12 @@ SPECTRE_TEST(Date, string_given)
     //correct with /, single digit
     Date d5("  1996/9/9    09:09:09  ");
     EXPECT_EQ((uint64_t)d5.unix_timestamp(), (uint64_t)842260149);
+    Date d6("1996-9-9 9:09:09");
+    EXPECT_EQ((uint64_t)d6.unix_timestamp(), (uint64_t)842260149);
+    Date d7("1996-9-9 09:9:09");
+    EXPECT_EQ((uint64_t)d7.unix_timestamp(), (uint64_t)842260149);
+    Date d8("1996-9-9 09:09:9");
+    EXPECT_EQ((uint64_t)d8.unix_timestamp(), (uint64_t)842260149);
     //wrong
     errors_count[NOTICE_INDEX] = 0;
     Date d1("ciao");

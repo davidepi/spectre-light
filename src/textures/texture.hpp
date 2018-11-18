@@ -60,6 +60,25 @@ public:
      *  coordinates (u,v)
      */
     virtual TexelUnion map_value(const HitPoint* hp) const = 0;
+
+    /**
+     *  \brief Returns the side of the Texture
+     *
+     *  \return An unsigned int specifying the side of the texture
+     */
+    virtual uint16_t get_side() const = 0;
+
+    /**
+     *  \brief Returns an array representation of this Texture
+     *
+     *  Copy the values of this texture inside the array passed as parameter.
+     *  The array is expected to be at least side*side size, where side can be
+     *  obtained by callidn the Texture::get_side() function.
+     *  The array will be ordererd top to bottom, left to right.
+     *
+     *  \param[in] array The array where the value will be copied
+     */
+    virtual void to_array(TexelUnion* array) const = 0;
 };
 
 #endif

@@ -664,7 +664,8 @@ static void build_mesh_object(ParsedScene* parsed, const File* cur_dir,
  *  meshes
  */
 static void build_mesh_world(ParsedScene* parsed,
-                             const std::unordered_map<std::string, MeshObject>* shapes,
+                             const std::unordered_map<std::string, MeshObject>*
+                             shapes,
                              std::unordered_set<std::string>* used_shapes,
                              Scene* scene)
 {
@@ -791,7 +792,8 @@ static void build_mesh_world(ParsedScene* parsed,
  *  meshes
  */
 static void build_lights(ParsedScene* parsed,
-                         const std::unordered_map<std::string, MeshObject>* shapes,
+                         const std::unordered_map<std::string, MeshObject>*
+                         shapes,
                          std::unordered_set<std::string>* used_shapes,
                          Scene* scene, const Point3* cam_pos)
 {

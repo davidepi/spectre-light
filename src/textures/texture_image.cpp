@@ -108,3 +108,13 @@ Vec2 TextureImage::get_scale() const
 {
     return TextureImage::scale;
 }
+
+uint16_t TextureImage::get_side() const
+{
+    return imagemap->get_side();
+}
+
+void TextureImage::to_array(TexelUnion* array) const
+{
+    imagemap->to_array(array);
+}

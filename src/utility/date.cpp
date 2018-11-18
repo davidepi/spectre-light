@@ -52,7 +52,7 @@ static inline void sanitize(int16_t* year, uint8_t* month, uint8_t* day,
 Date::Date(const char* string)
 {
     const char* regexp = "\\s*(-?[0-9]+)[-/]([0-9][0-9]?)[-/]([0-9][0-9]?)\\s+"\
-                         "([0-9][0-9]):([0-9][0-9]):([0-9][0-9])\\s*";
+                         "([0-9][0-9]?):([0-9][0-9]?):([0-9][0-9]?)\\s*";
     std::regex regex_engine(regexp, std::regex::ECMAScript);
     std::match_results<const char*> matched;
     std::regex_match(string, matched, regex_engine);

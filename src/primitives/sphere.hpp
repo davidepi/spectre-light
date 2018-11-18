@@ -39,8 +39,11 @@ public:
     /** \brief Default constructor
      *
      *  Construct a sphere centered in (0,0,0) with radius 1
+     *
+     *  \param[in] inverted True if the sphere is inverted, so the texture is
+     *  applied on the inside (useful for the skydome)
      */
-    Sphere() = default;
+    explicit Sphere(bool inverted = false);
 
     /** \brief Intersection of a Ray and this sphere
      *
@@ -117,6 +120,8 @@ public:
      */
     virtual void sample_point(float r0, float r1, const float* densities,
                               Point3* p, Normal* n) const;
+private:
+    bool inverted;
 };
 
 #endif

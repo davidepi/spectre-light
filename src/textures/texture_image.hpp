@@ -103,7 +103,8 @@ public:
      *
      *  Given the coordinates \p u and \p v of a point, this method finds the
      *  Spectrum value associated with these coordinates by looking at the
-     *  underlying ImageMap
+     *  underlying ImageMap. The value is returned as a spectrum NOT to be used
+     *  for lights
      *
      *  \param[in] hp The data of the hit point
      *  \return The Spectrum value of the mesh with this texture applied at the
@@ -123,6 +124,25 @@ public:
      *  coordinates (u,v)
      */
     TexelUnion map_value(const HitPoint* hp) const override;
+
+    /**
+     *  \brief Returns the side of the Texture
+     *
+     *  \return An int specifying the side of the texture
+     */
+    uint16_t get_side() const override;
+
+    /**
+     *  \brief Returns an array representation of this Texture
+     *
+     *  Copy the values of this texture inside the array passed as parameter.
+     *  The array is expected to be at least side*side size, where side can be
+     *  obtained by callidn the TextureImage::get_side() function
+     *  The array will be ordererd top to bottom, left to right.
+     *
+     *  \param[in] array The array where the value will be copied
+     */
+    void to_array(TexelUnion* array) const override;
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS
