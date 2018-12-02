@@ -2,6 +2,8 @@
 #ifndef __LIGHT_SKY_HPP__
 #define __LIGHT_SKY_HPP__
 
+#include "samplers/distributions.hpp"
+#include "textures/texture_image.hpp"
 #include "lights/light.hpp"
 #include "textures/texture.hpp"
 #include "geometry/matrix4.hpp"
@@ -9,7 +11,6 @@
 #include "geometry/ray.hpp"
 #include "geometry/vec3.hpp"
 #include "utility/spectrum.hpp"
-#include "primitives/sphere.hpp"
 
 class LightSky : public Light
 {
@@ -23,9 +24,12 @@ public:
      *  horizon will be ignored)
      *  \param[in] world_rad The radius of the scene
      */
-    LightSky(const TextureImage* tex, const Point3& scene_centre, float world_rad);
+    LightSky(const TextureImage* tex, const Point3& scene_centre,
+             float world_rad);
 
-    ~LightSky() = default;
+    ~LightSky();
+
+    LightSky(LightSky&) = delete;
 
     Spectrum sample_surface(float r0, float r1, float r2, float r3, Ray* out,
                             float* pdf) const override;
@@ -52,11 +56,11 @@ public:
      *  \param[in] ray The ray that will be used to deterimine the radiance
      *  \return The Spectrum of the radiance for the escaped ray
      */
-    Spectrum radiance_escaped(const Ray* ray)const;
+    Spectrum radiance_escaped(const Ray* ray) const;
 
 private:
     const TextureImage* skytexture;
-    Array2D<float> distribution;
+    Distribution2D* distribution;
     Matrix4 world2light;
 };
 
