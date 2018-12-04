@@ -47,6 +47,11 @@ float Distribution1D::get_integral_value() const
     return integral_value;
 }
 
+float Distribution1D::get_piecewise_value(int index) const
+{
+    return Distribution1D::values[index];
+}
+
 Distribution2D::Distribution2D(const float* data, size_t len_x, size_t len_y)
 {
     Distribution2D::marginal_len = len_y;
@@ -79,4 +84,12 @@ Point2 Distribution2D::sample_continuous(float u0, float u1, float* pdf) const
     if(pdf != NULL)
         *pdf = pdf0*pdf1;
     return res;
+}
+
+float Distribution2D::pdf(const Point2* value) const
+{
+    int u = (int)clamp((int)(value->x*marginal_len), 0, marginal_len-1);
+    int v = (int)clamp((int)(value->y*marginal_len), 0, marginal_len-1);
+    return conditional[v]->get_piecewise_value(u)/
+           marginal->get_integral_value();
 }

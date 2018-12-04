@@ -69,7 +69,7 @@ public:
      *  \param[in] r1 A random number in the interval (0.0,1.0)
      *  \param[in] position The current position of the viewer, in other words
      *  the point receiving radiance from this light
-     *  \param[out] wi The computed incident direction
+     *  \param[out] wiW The computed incident direction in world space
      *  \param[out] pdf The probability density function of the chosen point
      *  over the light
      *  \param[out] distance The distance of the light from the position
@@ -78,8 +78,8 @@ public:
      *  \sa pdf(const Point3* p, const Vec3* wi)const
      */
     virtual Spectrum
-    sample_visible_surface(float r0, float r1, const Point3* position, Vec3* wi,
-                           float* pdf, float* distance) const = 0;
+    sample_visible_surface(float r0, float r1, const Point3* position,
+            Vec3* wiW, float* pdf, float* distance) const = 0;
 
     /** \brief Return the emitted light spectrum
      *  \return The emitted light spectrum
@@ -103,13 +103,13 @@ public:
      *  sample_visible_surface method
      *
      *  \param[in] p The origin point
-     *  \param[in] wi The incident vector generated with the
+     *  \param[in] wiW The incident vector generated with the
      *  sample_visible_surface method and representing the vector pointing
-     *  towards the light, originating from the origin point
+     *  towards the light, originating from the origin point. In world space
      *  \return The pdf for this light
      *  \sa sample_visible_surface()
      */
-    virtual float pdf(const Point3* p, const Vec3* wi) const = 0;
+    virtual float pdf(const Point3* p, const Vec3* wiW) const = 0;
 
     /**
      *  \brief Returns true if the light can be rendered

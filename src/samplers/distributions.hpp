@@ -67,6 +67,13 @@ public:
      */
     float get_integral_value() const;
 
+    /**
+     * \brief Returns the original value at the ith index
+     * \param[in] index The index of the original sampled value
+     * \return The value of the original piecewise distribution at given index
+     */
+    float get_piecewise_value(int index) const;
+
 private:
 
     //values
@@ -122,6 +129,13 @@ public:
      * \return A continuous sample in two dimensions.
      */
     Point2 sample_continuous(float u, float v, float* pdf = NULL) const;
+
+    /**
+     * \brief Retrieve the pdf given a sampled value
+     * \param[in] value The value that has been previously sampled
+     * \return The pdf for the given value
+     */
+    float pdf(const Point2* value) const;
 
 private:
 

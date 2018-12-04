@@ -51,7 +51,7 @@ Spectrum LightArea::sample_surface(float r0, float r1, float r2, float r3,
 
 Spectrum
 LightArea::sample_visible_surface(float r0, float r1, const Point3* pos,
-                                  Vec3* wi, float* pdf, float* distance) const
+                                  Vec3* wiW, float* pdf, float* distance) const
 {
     Normal normal;
     Point3 light_point; //object space
@@ -84,11 +84,11 @@ LightArea::sample_visible_surface(float r0, float r1, const Point3* pos,
 //    }
     light_point = ray.apply(*distance);
     normal = hit.normal_h; //object space
-    *wi = ray.direction;
+    *wiW = ray.direction; //note that wiW here is in object space!
     *pdf = (ray.origin.x-light_point.x)*(ray.origin.x-light_point.x)+
            (ray.origin.y-light_point.y)*(ray.origin.y-light_point.y)+
            (ray.origin.z-light_point.z)*(ray.origin.z-light_point.z);
-    *pdf /= (absdot(normal, -(*wi))*LightArea::area);
+    *pdf /= (absdot(normal, -(*wiW))*LightArea::area);
     if(std::isinf(*pdf))
     {
         *pdf = 0;
@@ -98,21 +98,21 @@ LightArea::sample_visible_surface(float r0, float r1, const Point3* pos,
 
     //convert wi to world space
     Spectrum retval;
-    if(dot(normal, -(*wi))>0) //cos between ray and hit point normal > 0
+    if(dot(normal, -(*wiW))>0) //cos between ray and hit point normal > 0
         retval = c;
     else
         retval = SPECTRUM_BLACK;
 
-    *wi = LightArea::obj2world**wi;
-    wi->normalize();
+    *wiW = LightArea::obj2world**wiW;
+    wiW->normalize();
     return retval;
 }
 
-float LightArea::pdf(const Point3* p, const Vec3* wi) const
+float LightArea::pdf(const Point3* p, const Vec3* wiW) const
 {
     Ray ray;
     ray.origin = LightArea::world2obj**p;
-    ray.direction = LightArea::world2obj**wi;
+    ray.direction = LightArea::world2obj**wiW;
     HitPoint hit;
     float distance = FLT_MAX;
     //here success is not guaranteed, maybe the wi vector is random

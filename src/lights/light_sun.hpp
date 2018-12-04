@@ -142,7 +142,7 @@ public:
      *  \param[in] p UNUSED
      *  \param[in] wi UNUSED
      */
-    float pdf(const Point3* p, const Vec3* wi) const override;
+    float pdf(const Point3* p, const Vec3* wiW) const override;
 
     /**
      *  \brief Returns true if the light can be rendered

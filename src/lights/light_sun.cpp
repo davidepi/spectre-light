@@ -414,9 +414,9 @@ LightSun::sample_surface(float, float, float, float, Ray* out,
 
 Spectrum
 LightSun::sample_visible_surface(float, float, const Point3*,
-                                 Vec3* wi, float* pdf, float* distance) const
+                                 Vec3* wiW, float* pdf, float* distance) const
 {
-    *wi = -LightSun::lray.direction;
+    *wiW = -LightSun::lray.direction;
     *pdf = 1.f;
     *distance = 2*LightSun::radius_w+1;
     return LightSun::c;

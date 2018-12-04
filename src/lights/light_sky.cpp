@@ -4,14 +4,36 @@ Spectrum
 LightSky::sample_surface(float r0, float r1, float r2, float r3, Ray* out,
                          float* pdf) const
 {
-    return Spectrum();
+    return {};
 }
 
 Spectrum
 LightSky::sample_visible_surface(float r0, float r1, const Point3* position,
                                  Vec3* wi, float* pdf, float* distance) const
 {
-    return Spectrum();
+    //sample texture
+    float texture_pdf;
+    HitPoint sample;
+    sample.uv = distribution->sample_continuous(r0, r1, &texture_pdf);
+    if(texture_pdf == 0)
+        return {};
+
+    //convert the sample to spherical coords
+    const float THETA = sample.uv.y*ONE_PI;
+    const float PHI = sample.uv.x*2.f*ONE_PI;
+    const float COST = cosf(THETA);
+    const float SINT = sinf(THETA);
+    const float COSP = cosf(PHI);
+    const float SINP = sinf(PHI);
+    *wi = light2world*Vec3(SINT*COSP, SINT*SINP, COST);
+
+    //pdf
+    if(SINT == 0)
+        *pdf = 0.f;
+    *pdf = texture_pdf/(2*ONE_PI*ONE_PI*SINT);
+
+    Texel value = skytexture->map_value(&sample).bgra_texel;
+    return {ColorRGB(value.r, value.g, value.b), true};
 }
 
 float LightSky::pdf(const Ray* ray) const
@@ -19,9 +41,21 @@ float LightSky::pdf(const Ray* ray) const
     return 0;
 }
 
-float LightSky::pdf(const Point3* p, const Vec3* wi) const
+float LightSky::pdf(const Point3*, const Vec3* wiW) const
 {
-    return 0;
+    Vec3 wiL = world2light**wiW;
+    const float THETA = acosf(clamp(wiL.z, -1.f, 1.f));
+    const float SINT = sinf(THETA);
+    if(SINT == 0)
+        return 0.f;
+    float phi = atan2f(wiL.y, wiL.x);
+    phi = phi<0?phi+2.f*ONE_PI:phi;
+    Point2 sample(phi*INV_TWOPI, THETA*INV_PI);
+    const float INV_TERM = 1.f/(2.f*ONE_PI*ONE_PI*SINT);
+    sample.x *= INV_TERM;
+    sample.y *= INV_TERM;
+    return distribution->pdf(&sample);
+
 }
 
 bool LightSky::renderable() const
@@ -36,7 +70,6 @@ LightSky::LightSky(const TextureImage* tex, const Point3& scene_centre,
 {
 
     //create the light2world matrix
-    Matrix4 light2world;
     light2world.set_rotate_z(tex->get_shift().x);
     //TODO: assert that the texture is not shifted vertically
     Matrix4 scale_dome;
@@ -78,5 +111,10 @@ Spectrum LightSky::radiance_escaped(const Ray* ray) const
     hp.uv.x = phi*INV_TWOPI;
     hp.uv.y = THETA*INV_PI;
     Texel tex = skytexture->map_value(&hp).bgra_texel;
-    return Spectrum(ColorRGB(tex.r, tex.g, tex.b), true);
+    return {ColorRGB(tex.r, tex.g, tex.b), true};
+}
+
+LightSky::~LightSky()
+{
+    delete distribution;
 }

@@ -40,7 +40,7 @@ public:
 
     float pdf(const Ray* ray) const override;
 
-    float pdf(const Point3* p, const Vec3* wi) const override;
+    float pdf(const Point3* p, const Vec3* wiW) const override;
 
     bool renderable() const override;
 
@@ -62,6 +62,7 @@ private:
     const TextureImage* skytexture;
     Distribution2D* distribution;
     Matrix4 world2light;
+    Matrix4 light2world;
 };
 
 #endif
