@@ -323,6 +323,10 @@ int empty_ResizableStack(const struct ResizableStack* arr);
 /** Struct containing the parsed settings for an entire scene */
 struct ParsedScene
 {
+
+    /** Texture used for the sky*/
+    char* sky;
+
     /*------------------.
     |   Error Handling  |
     `------------------*/

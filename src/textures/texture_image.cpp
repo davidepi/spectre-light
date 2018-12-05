@@ -94,11 +94,6 @@ TexelUnion TextureImage::map_value(const HitPoint* hit) const
     return res;
 }
 
-Spectrum TextureImage::map(const HitPoint* hit) const
-{
-    return Spectrum(map_value(hit).bgra_value, false);
-}
-
 Vec2 TextureImage::get_shift() const
 {
     return TextureImage::shift;
@@ -112,9 +107,4 @@ Vec2 TextureImage::get_scale() const
 uint16_t TextureImage::get_side() const
 {
     return imagemap->get_side();
-}
-
-void TextureImage::to_array(TexelUnion* array) const
-{
-    imagemap->to_array(array);
 }

@@ -63,8 +63,7 @@ bool LightSky::renderable() const
     return true;
 }
 
-LightSky::LightSky(const TextureImage* tex, const Point3& scene_centre,
-                   float world_rad)
+LightSky::LightSky(const Texture* tex, float world_rad)
         :Light(0), //skydome does not use the intensity, so it is set to 0
          skytexture(tex)
 {
@@ -91,8 +90,7 @@ LightSky::LightSky(const TextureImage* tex, const Point3& scene_centre,
             HitPoint hp;
             hp.uv.x = XPART;
             hp.uv.y = YPART;
-            Texel value = skytexture->map_value(&hp).bgra_texel;
-            Spectrum spectrum(ColorRGB(value.r, value.g, value.b), true);
+            Spectrum spectrum(skytexture->map_color(&hp), true);
             distr_array[y*SIDE+x] = spectrum.luminance()*SINT;
         }
     }
@@ -110,8 +108,7 @@ Spectrum LightSky::radiance_escaped(const Ray* ray) const
     HitPoint hp;
     hp.uv.x = phi*INV_TWOPI;
     hp.uv.y = THETA*INV_PI;
-    Texel tex = skytexture->map_value(&hp).bgra_texel;
-    return {ColorRGB(tex.r, tex.g, tex.b), true};
+    return {skytexture->map_color(&hp), true};
 }
 
 LightSky::~LightSky()

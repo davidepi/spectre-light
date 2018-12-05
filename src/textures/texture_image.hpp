@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit  7 Sep 2018
+//Last Edit  5 Dec 2018
 
 /**
  *  \file texture_image.hpp
@@ -7,7 +7,7 @@
  *  \details   Class holding an image map that can be shifted and scaled
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      7 Sep 2018
+ *  \date      5 Dec 2018
  *  \copyright GNU GPLv3
  */
 
@@ -86,7 +86,7 @@ public:
      *
      *  \return The shift component applied to the underlying ImageMap
      */
-    Vec2 get_shift() const;
+    Vec2 get_shift() const override;
 
     /**
      *  \brief Returns the scale component
@@ -97,20 +97,7 @@ public:
      *
      *  \return The scale component applied to the underlying ImageMap
      */
-    Vec2 get_scale() const;
-
-    /** \brief Maps an (u,v) coordinate to a texture value
-     *
-     *  Given the coordinates \p u and \p v of a point, this method finds the
-     *  Spectrum value associated with these coordinates by looking at the
-     *  underlying ImageMap. The value is returned as a spectrum NOT to be used
-     *  for lights
-     *
-     *  \param[in] hp The data of the hit point
-     *  \return The Spectrum value of the mesh with this texture applied at the
-     *  coordinates (u,v)
-     */
-    Spectrum map(const HitPoint* hp) const override;
+    Vec2 get_scale() const override;
 
     /** \brief Maps an (u,v) coordinate to a texture value
      *
@@ -131,18 +118,6 @@ public:
      *  \return An int specifying the side of the texture
      */
     uint16_t get_side() const override;
-
-    /**
-     *  \brief Returns an array representation of this Texture
-     *
-     *  Copy the values of this texture inside the array passed as parameter.
-     *  The array is expected to be at least side*side size, where side can be
-     *  obtained by callidn the TextureImage::get_side() function
-     *  The array will be ordererd top to bottom, left to right.
-     *
-     *  \param[in] array The array where the value will be copied
-     */
-    void to_array(TexelUnion* array) const override;
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS

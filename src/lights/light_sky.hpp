@@ -20,14 +20,11 @@ public:
      *  \brief Creates the skydome
      *
      *  \param[in] tex The texture that will be used by the dome
-     *  \param[in] scene_centre The central point of the scene (height from
-     *  horizon will be ignored)
      *  \param[in] world_rad The radius of the scene
      */
-    LightSky(const TextureImage* tex, const Point3& scene_centre,
-             float world_rad);
+    LightSky(const Texture* tex, float world_rad);
 
-    ~LightSky();
+    ~LightSky() override;
 
     LightSky(LightSky&) = delete;
 
@@ -59,7 +56,7 @@ public:
     Spectrum radiance_escaped(const Ray* ray) const;
 
 private:
-    const TextureImage* skytexture;
+    const Texture* skytexture;
     Distribution2D* distribution;
     Matrix4 world2light;
     Matrix4 light2world;

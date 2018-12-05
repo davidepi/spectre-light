@@ -105,6 +105,7 @@ sampler | enum | The type of sampler used to gather samples. Possible values are
 camera | [object](#camera) | A description of the camera used to render the current scene | [Check object description](#camera)
 shape | quoted string | A path to an obj file containing mesh descriptions. The actual mesh/es are not used in the scene until positioned with the `world` keyword | -
 light | [object](#light) | Description of a light positioned into the scene | -
+sky | quoted string | The texture name that will be used as skybox for the scene | -
 world | [object](#world) | Description of a shape positioned into the scene | -
 texture | [object](#texture) | Texture that will be loaded into the library | -
 material | [object](#material) or quoted string | Description of a material that will be put in the Material Library. The quoted string will chain another file to this one to be parsed, see section [Chained Files](#chained-children-files) for more information | -

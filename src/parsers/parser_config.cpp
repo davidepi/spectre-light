@@ -930,6 +930,19 @@ static void build_lights(ParsedScene* parsed,
                                   light.position[1], light.position[2]);
         scene->inherit_light(sun);
     }
+
+    //additionally build the sky if it can be found
+    if(parsed->sky != NULL)
+    {
+        const Texture* sky = TexLib.get_texture(parsed->sky);
+        if(sky == NULL)
+        {
+            sky = TexLib.get_dflt_texture();
+            Console.warning(MESSAGE_TEXTURE_ERROR, parsed->sky);
+        }
+        free(parsed->sky);
+        parsed->sky = NULL;
+    }
 }
 
 Renderer* ParserConfig::parse(const char* filename, Scene* scene)

@@ -1,5 +1,5 @@
 //Created,  14 Mar 2018
-//Last Edit 14 Mar 2018
+//Last Edit  5 Dec 2018
 
 /**
  *  \file texture_uniform.hpp
@@ -7,7 +7,7 @@
  *  \details   A texture mapping evey u,v coordinate to the same Spectrum value
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      14 Mar 2018
+ *  \date      5 Dec 2018
  *  \copyright GNU GPLv3
  */
 
@@ -48,6 +48,15 @@ public:
      */
     Spectrum map(const HitPoint* hp) const override;
 
+    /** \brief Maps an (u,v) coordinate to a texture value
+     *
+     *  Given the coordinates \p u and \p v of a point, this method finds the
+     *  Texel associated with the point.
+     *
+     *  \param[in] hp The data of the hit point
+     *  \return The texel of the mesh with this texture applied at the
+     *  coordinates (u,v)
+     */
     TexelUnion map_value(const HitPoint* hp) const override;
 
     /**
@@ -60,18 +69,6 @@ public:
      *  \return 1
      */
     uint16_t get_side() const override;
-
-    /**
-     *  \brief Returns an array representation of this Texture
-     *
-     *  Copy the values of this texture inside the array passed as parameter.
-     *  The array is expected to be of length 1, for this particular type of
-     *  Texture. Alternatively, an array should be allocated of size side*side
-     *  with side equals to the value returned by the function get_side()
-     *
-     *  \param[in] array The array where the value will be copied
-     */
-    void to_array(TexelUnion* array) const override;
 
 private:
     const Spectrum value;

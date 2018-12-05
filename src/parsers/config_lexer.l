@@ -109,6 +109,7 @@ fov { UPDATE_LOC; return FOV; }
 shape { UPDATE_LOC; return SHAPE; }
 world { UPDATE_LOC; return WORLD; }
 light { UPDATE_LOC; return LIGHT; }
+sky { UPDATE_LOC; return SKY_TOKEN;}
 name { UPDATE_LOC; return NAME; }
 rotation { UPDATE_LOC; return ROTATION; }
 scale { UPDATE_LOC; return SCALE; }

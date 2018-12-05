@@ -1,5 +1,5 @@
 //Created,  29 Jun 2017
-//Last Edit 11 Oct 2018
+//Last Edit  5 Dec 2018
 
 /**
  *  \file scene.hpp
@@ -8,7 +8,7 @@
  *             intersect them
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      11 Oct 2018
+ *  \date      5 Dec 2018
  *  \copyright GNU GPLv3
  */
 
@@ -23,6 +23,7 @@
 #include "utility/console.hpp"
 #include "lights/light_area.hpp"
 #include <unordered_map>
+#include "lights/light_sky.hpp"
 
 /**
  *  \class Scene scene.hpp "utility/scene.hpp"
@@ -47,7 +48,8 @@ class Scene
 public:
 
     ///Default constructor
-    Scene() = default;
+    Scene()
+    { sky = NULL; };
 
     ///Default destructor
     ~Scene();
@@ -117,6 +119,20 @@ public:
      */
     void inherit_light(const Light* addme);
 
+    /**
+     *  \brief Adds a Sky to the scene
+     *
+     *  This method is similar to the inherit_arealight() one, but does not
+     *  add the light to the interesectable objects. Moreover, the sky is added
+     *  as the sky for the scene to ensure that only one sky is available.
+     *
+     *  \warning Use inherit_arealight() method to add an AreaLight,
+     *  otherwise a double free and a wrong rendering will occur
+     *
+     *  \param[in] addme The LightSky that will be added
+     */
+    void inherit_sky(const LightSky* addme);
+
     /** \brief Return the number of lights in the scene
      * \return The number of lights in the scene
      */
@@ -137,6 +153,17 @@ public:
      */
     float radius() const;
 
+    /**
+     *  \brief Returns the radiance of a ray that didn't hit any asset
+     *
+     *  If there is no sky, this methods return a black spectrum.
+     *
+     *  \param[in] ray The ray that will be used to deterimine the radiance
+     *
+     *  \return The Spectrum of the radiance for the escaped ray
+     */
+    Spectrum get_escaped_radiance(const Ray* ray) const;
+
 private:
 
     /** map of shapes */
@@ -150,6 +177,9 @@ private:
 
     /** array of lights, allocated version is stored inside Scene::assets */
     std::vector<const Light*> lights;
+
+    //sky of the scene
+    const LightSky* sky;
 
     /** Scene AABB */
     AABB bound;

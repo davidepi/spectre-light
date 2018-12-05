@@ -64,11 +64,16 @@ Spectrum PathTracer::l_rec(const Scene* sc, const HitPoint* hp, const Ray* r,
     r2.ricochet = (unsigned char)(r->ricochet+1);
     HitPoint h2;
     h2.differentials = false;
-    if(!sc->k.intersect(&r2, &h2))
-        return retval; //ray out of scene, return now
 
     //recursive step
-    Spectrum rec = l_rec(sc, &h2, &r2, sam, power, matchedSpec, ot);
+    Spectrum rec;
+    //TODO: check this one, not sure if it is correct or should be multiplied
+    // by the *power value
+    if(!sc->k.intersect(&r2, &h2))
+        rec = sc->get_escaped_radiance(&r2); //ray out of scene, return now
+    else
+        rec = l_rec(sc, &h2, &r2, sam, power, matchedSpec, ot);
+
     retval += rec;
     return retval;
 }

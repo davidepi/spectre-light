@@ -7,7 +7,8 @@ enum light_t
     OMNI,
     SPOT,
     AREA,
-    SUN
+    SUN,
+    SKY
 };
 
 #endif

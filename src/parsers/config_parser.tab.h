@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.1.  */
+/* A Bison parser, made by GNU Bison 3.2.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -30,6 +30,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_YY_CONFIG_PARSER_TAB_H_INCLUDED
 # define YY_YY_CONFIG_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
@@ -43,8 +46,8 @@ extern int yydebug;
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
+enum yytokentype
+{
     END = 0,
     INVALID = 258,
     COLON = 259,
@@ -85,84 +88,85 @@ extern int yydebug;
     SHAPE = 294,
     WORLD = 295,
     LIGHT = 296,
-    TEMPERATURE = 297,
-    NAME = 298,
-    ROTATION = 299,
-    SCALE = 300,
-    SHIFT = 301,
-    COLOR = 302,
-    MATERIAL = 303,
-    DUALMATERIAL = 304,
-    TEXTURE = 305,
-    ANISOTROPY = 306,
-    BECKMANN_TOKEN = 307,
-    BLINN_TOKEN = 308,
-    DIFFUSE = 309,
-    DISTRIBUTION = 310,
-    ELEM = 311,
-    GGX_TOKEN = 312,
-    GLASS_TOKEN = 313,
-    GLOSSY_TOKEN = 314,
-    IOR = 315,
-    MATTE_TOKEN = 316,
-    METAL_TOKEN = 317,
-    ROUGHNESS = 318,
-    SPECULAR = 319,
-    NORMAL = 320,
-    SRC = 321,
-    PATH_TRACE = 322,
-    CHNR = 323,
-    CHNG = 324,
-    CHNB = 325,
-    CHNA = 326,
-    INV = 327,
-    MASK = 328,
-    FIRST = 329,
-    SECOND = 330,
-    RADIUS = 331,
-    FALLOFF = 332,
-    OMNI_TOKEN = 333,
-    SPOT_TOKEN = 334,
-    AREA_TOKEN = 335,
-    SUN_TOKEN = 336,
-    TIME = 337,
-    LATITUDE = 338,
-    LONGITUDE = 339,
-    ELEVATION = 340,
-    SILVER = 341,
-    ALUMINIUM = 342,
-    GOLD = 343,
-    COPPER = 344,
-    IRON = 345,
-    MERCURY = 346,
-    LEAD = 347,
-    PLATINUM = 348,
-    TUNGSTEN = 349,
-    BERYLLIUM = 350,
-    BISMUTH = 351,
-    COBALT = 352,
-    CHROMIUM = 353,
-    GERMANIUM = 354,
-    POTASSIUM = 355,
-    LITHIUM = 356,
-    MAGNESIUM = 357,
-    MANGANESE = 358,
-    MOLYBDENUM = 359,
-    SODIUM = 360,
-    NIOBIUM = 361,
-    NICKEL = 362,
-    PALLADIUM = 363,
-    RHODIUM = 364,
-    TANTALUM = 365,
-    TITANIUM = 366,
-    VANADIUM = 367,
-    ZINC = 368,
-    ZIRCONIUM = 369,
-    UINT = 370,
-    INT = 371,
-    FLOAT = 372,
-    STRING = 373
-  };
+    SKY_TOKEN = 297,
+    TEMPERATURE = 298,
+    NAME = 299,
+    ROTATION = 300,
+    SCALE = 301,
+    SHIFT = 302,
+    COLOR = 303,
+    MATERIAL = 304,
+    DUALMATERIAL = 305,
+    TEXTURE = 306,
+    ANISOTROPY = 307,
+    BECKMANN_TOKEN = 308,
+    BLINN_TOKEN = 309,
+    DIFFUSE = 310,
+    DISTRIBUTION = 311,
+    ELEM = 312,
+    GGX_TOKEN = 313,
+    GLASS_TOKEN = 314,
+    GLOSSY_TOKEN = 315,
+    IOR = 316,
+    MATTE_TOKEN = 317,
+    METAL_TOKEN = 318,
+    ROUGHNESS = 319,
+    SPECULAR = 320,
+    NORMAL = 321,
+    SRC = 322,
+    PATH_TRACE = 323,
+    CHNR = 324,
+    CHNG = 325,
+    CHNB = 326,
+    CHNA = 327,
+    INV = 328,
+    MASK = 329,
+    FIRST = 330,
+    SECOND = 331,
+    RADIUS = 332,
+    FALLOFF = 333,
+    OMNI_TOKEN = 334,
+    SPOT_TOKEN = 335,
+    AREA_TOKEN = 336,
+    SUN_TOKEN = 337,
+    TIME = 338,
+    LATITUDE = 339,
+    LONGITUDE = 340,
+    ELEVATION = 341,
+    SILVER = 342,
+    ALUMINIUM = 343,
+    GOLD = 344,
+    COPPER = 345,
+    IRON = 346,
+    MERCURY = 347,
+    LEAD = 348,
+    PLATINUM = 349,
+    TUNGSTEN = 350,
+    BERYLLIUM = 351,
+    BISMUTH = 352,
+    COBALT = 353,
+    CHROMIUM = 354,
+    GERMANIUM = 355,
+    POTASSIUM = 356,
+    LITHIUM = 357,
+    MAGNESIUM = 358,
+    MANGANESE = 359,
+    MOLYBDENUM = 360,
+    SODIUM = 361,
+    NIOBIUM = 362,
+    NICKEL = 363,
+    PALLADIUM = 364,
+    RHODIUM = 365,
+    TANTALUM = 366,
+    TITANIUM = 367,
+    VANADIUM = 368,
+    ZINC = 369,
+    ZIRCONIUM = 370,
+    UINT = 371,
+    INT = 372,
+    FLOAT = 373,
+    STRING = 374
+};
 #endif
 
 /* Value type.  */
@@ -170,14 +174,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 137 "config_parser.y" /* yacc.c:1919  */
+#line 138 "config_parser.y" /* yacc.c:1912  */
 
     float fval;
     int ival;
     unsigned int uval;
     char* sval;
 
-#line 181 "config_parser.tab.h" /* yacc.c:1919  */
+#line 185 "config_parser.tab.h" /* yacc.c:1912  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -190,10 +194,10 @@ typedef union YYSTYPE YYSTYPE;
 typedef struct YYLTYPE YYLTYPE;
 struct YYLTYPE
 {
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
+    int first_line;
+    int first_column;
+    int last_line;
+    int last_column;
 };
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1

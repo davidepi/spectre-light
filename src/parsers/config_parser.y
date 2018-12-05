@@ -59,6 +59,7 @@
 %token SHAPE "`shape` keyword"
 %token WORLD "`world` keyword"
 %token LIGHT "`light` keyword"
+%token SKY_TOKEN "`sky` keyword"
 %token TEMPERATURE "`temperature` keyword"
 %token NAME "`name` keyword"
 %token ROTATION "`rotation` keyword"
@@ -174,6 +175,7 @@ stmt
 (parsed->parsed_mesh_world),&(parsed->cur_mesh));init_ParsedMeshWorld(&(parsed->cur_mesh.mesh));}
 | LIGHT COLON OPEN_CU light_obj CLOSE_CU {push_ResizableParsed(&
 (parsed->parsed_lights),&(parsed->cur_light));init_ParsedLight(&(parsed->cur_light.light));}
+| SKY_TOKEN COLON STRING {ADD_STRING(parsed->sky,$3);}
 | TEXTURE COLON OPEN_CU texture_obj CLOSE_CU {push_ResizableParsed(&
 (parsed->parsed_textures),&(parsed->cur_tex));init_ParsedTexture(&(parsed->cur_tex.tex));}
 | MATERIAL COLON STRING {push_ResizableStack(&(parsed->children),$3);}

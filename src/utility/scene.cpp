@@ -90,3 +90,17 @@ float Scene::radius() const
 {
     return bound.radius();
 }
+
+void Scene::inherit_sky(const LightSky* addme)
+{
+    inherit_light(addme);
+    sky = addme;
+}
+
+Spectrum Scene::get_escaped_radiance(const Ray* ray) const
+{
+    if(sky != NULL)
+        return sky->radiance_escaped(ray);
+    else
+        return {};
+}
