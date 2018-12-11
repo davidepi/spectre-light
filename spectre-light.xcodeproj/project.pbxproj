@@ -238,6 +238,8 @@
 		6BCEE5F520A1C5DC00E3B530 /* texture_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */; };
 		6BCEE5F620A1C5DC00E3B530 /* texture_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BCEE5F320A1C5DC00E3B530 /* texture_image.cpp */; };
 		6BD56E5621B90BFF001BE10E /* distributions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD56E5521B90BFF001BE10E /* distributions.cpp */; };
+		6BD56E7F21BFD742001BE10E /* distributions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD56E5521B90BFF001BE10E /* distributions.cpp */; };
+		6BD56E8021BFD742001BE10E /* distributions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD56E5521B90BFF001BE10E /* distributions.cpp */; };
 		6BD89FC220599D8800CE5B05 /* texture_uniform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */; };
 		6BD89FC320599D8800CE5B05 /* texture_uniform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */; };
 		6BD89FC420599D8800CE5B05 /* texture_uniform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BD89FBF20599D8800CE5B05 /* texture_uniform.cpp */; };
@@ -1362,6 +1364,7 @@
 				6B09101B20A0AEFC008BB048 /* image_map.cpp in Sources */,
 				6BD89FCE2059A8EF00CE5B05 /* texture_library.cpp in Sources */,
 				6BA65C361F70424E00183E94 /* filter_mitchell.cpp in Sources */,
+				6BD56E7F21BFD742001BE10E /* distributions.cpp in Sources */,
 				6BA65C371F70424E00183E94 /* sampler_random.cpp in Sources */,
 				6B2E4C2D213E72AA00FF69FA /* single_brdf.cpp in Sources */,
 				6BE730BE214DC98C00628E7D /* parser_config.cpp in Sources */,
@@ -1485,6 +1488,7 @@
 				6BD89FCF2059A8EF00CE5B05 /* texture_library.cpp in Sources */,
 				6BDCA1092094DCF8000725C3 /* spectrum_tests.cpp in Sources */,
 				6B9015D220FDE6060032845E /* io_ppm.c in Sources */,
+				6BD56E8021BFD742001BE10E /* distributions.cpp in Sources */,
 				6BDCA10C2094DF47000725C3 /* texturelibrary_tests.cpp in Sources */,
 				6BCDDF6E1FE09B6E007536FF /* triangle.cpp in Sources */,
 				6BE25A271FDA9DC000360147 /* AABB.cpp in Sources */,

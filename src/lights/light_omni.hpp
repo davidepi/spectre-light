@@ -39,7 +39,7 @@ public:
      *  \param[in] transform Transform Matrix used to place the light, which
      *  origin is (0,0,0) into the scene in world space.
      */
-    LightOmni(Spectrum intensity, const Matrix4& transform);
+    LightOmni(const Spectrum& intensity, const Matrix4& transform);
 
     /** \brief Return the radiance for a random ray
      *
@@ -84,7 +84,8 @@ public:
      */
     Spectrum
     sample_visible_surface(float r0, float r1, const Point3* positionW,
-             Vec3* wiW, float* pdf, float* distance) const override;
+                           Vec3* wiW, float* pdf,
+                           float* distance) const override;
 
     /** \brief Return the probability density function for this light
      *

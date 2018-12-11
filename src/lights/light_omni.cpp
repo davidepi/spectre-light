@@ -3,7 +3,7 @@
 
 #include "light_omni.hpp"
 
-LightOmni::LightOmni(Spectrum intensity, const Matrix4& transform)
+LightOmni::LightOmni(const Spectrum& intensity, const Matrix4& transform)
         :Light(intensity)
 {
     light_positionW = transform*Point3(0.f);

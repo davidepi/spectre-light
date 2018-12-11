@@ -5,13 +5,16 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "lights/light_area.hpp"
 #include "primitives/sphere.hpp"
 #include <random>
 #include "lights/light_sun.hpp"
+#include "lights/light_omni.hpp"
 
 SPECTRE_TEST_INIT(Light_tests)
 
@@ -137,9 +140,100 @@ SPECTRE_TEST(Light, LightArea_pdf_surface_visible)
     EXPECT_NEAR(pdf, 0.f, 1e-5f);
 }
 
+SPECTRE_TEST(Light, LightArea_renderable)
+{
+    Sphere s;
+    Matrix4 m;
+    m.set_identity();
+    LightArea light(&s, m, SPECTRUM_ONE);
+    EXPECT_TRUE(light.renderable());
+}
+
+SPECTRE_TEST(Light, LightOmni_sample_surface)
+{
+    Vec3 position(1, 2, 3);
+    Matrix4 translation;
+    translation.set_translation(position);
+    LightOmni light(SPECTRUM_WHITE, translation);
+
+    Ray r;
+    float pdf;
+    Spectrum res = light.sample_surface(0.f, 0.5f, 1.f, 0.f, &r, &pdf);
+
+    EXPECT_NEAR(res.w[0], SPECTRUM_WHITE.w[0], 1e-5f);
+    EXPECT_NEAR(res.w[1], SPECTRUM_WHITE.w[1], 1e-5f);
+    EXPECT_NEAR(res.w[2], SPECTRUM_WHITE.w[2], 1e-5f);
+    EXPECT_EQ(r.origin.x, 1.f);
+    EXPECT_EQ(r.origin.y, 2.f);
+    EXPECT_EQ(r.origin.z, 3.f);
+    EXPECT_NEAR(r.direction.x, 0.f, 1e-5f);
+    EXPECT_NEAR(r.direction.y, 0.f, 1e-5f);
+    EXPECT_NEAR(r.direction.z, 1.f, 1e-5f);
+    EXPECT_EQ(pdf, INV_FOURPI);
+}
+
+SPECTRE_TEST(Light, LightOmni_pdf_surface)
+{
+    Vec3 position(1, 1, 1);
+    Matrix4 translation;
+    translation.set_translation(position);
+    LightOmni light(SPECTRUM_WHITE, translation);
+    Ray r(Point3(2, 2, 2), Vec3(0, 0, 1));
+
+    EXPECT_EQ(light.pdf(&r), INV_FOURPI);
+}
+
+SPECTRE_TEST(Light, LightOmni_sample_visible_surface)
+{
+    Vec3 position(1, 2, 3);
+    Matrix4 translation;
+    translation.set_translation(position);
+    LightOmni light(SPECTRUM_WHITE, translation);
+
+    Point3 pos(0, 1, 0);
+    Vec3 wi;
+    float pdf;
+    float distance = FLT_MAX;
+    Spectrum res = light.sample_visible_surface(0.f, 0.5f, &pos, &wi, &pdf,
+                                                &distance);
+
+    Spectrum check = SPECTRUM_WHITE/(distance*distance);
+    Vec3 wi_check = Vec3(1.f, 1.f, 3.f).normalize();
+    EXPECT_NEAR(distance, 3.31662488f, 1e-5f);
+    EXPECT_NEAR(res.w[0], check.w[0], 1e-5f);
+    EXPECT_NEAR(res.w[1], check.w[1], 1e-5f);
+    EXPECT_NEAR(res.w[2], check.w[2], 1e-5f);
+    EXPECT_NEAR(wi.x, wi_check.x, 1e-5f);
+    EXPECT_NEAR(wi.y, wi_check.y, 1e-5f);
+    EXPECT_NEAR(wi.z, wi_check.z, 1e-5f);
+    EXPECT_EQ(pdf, 1.f);
+}
+
+SPECTRE_TEST(Light, LightOmni_pdf_surface_visible)
+{
+    Vec3 position(1, 1, 1);
+    Matrix4 translation;
+    translation.set_translation(position);
+    LightOmni light(SPECTRUM_WHITE, translation);
+
+    Point3 origin(2, 2, 2);
+    Vec3 direction(0, 0, 1);
+
+    EXPECT_EQ(light.pdf(&origin, &direction), 0.f);
+}
+
+SPECTRE_TEST(Light, LightOmni_renderable)
+{
+    Vec3 position(1, 1, 1);
+    Matrix4 translation;
+    translation.set_translation(position);
+    LightOmni light(SPECTRUM_WHITE, translation);
+    EXPECT_FALSE(light.renderable());
+}
+
 SPECTRE_TEST(Light, LightSun_sun_position)
 {
-    Date time(2003,10,17,19,30,30);
+    Date time(2003, 10, 17, 19, 30, 30);
 //    LightSun ls(SPECTRUM_ONE, time, 39.742476f, -105.1786f, 1830.14f);
 }
 

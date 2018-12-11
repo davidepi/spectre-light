@@ -86,6 +86,7 @@ void init_ParsedScene(struct ParsedScene* val)
     val->successful = 0;
     val->error_msg = NULL;
     val->output = NULL;
+    val->sky = NULL;
     val->width = 800;
     val->height = 600;
     val->spp = 121;
@@ -130,6 +131,11 @@ void deinit_ParsedScene(struct ParsedScene* val)
     {
         free(val->error_msg);
         val->error_msg = NULL;
+    }
+    if(val->sky != NULL)
+    {
+        free(val->sky);
+        val->sky = NULL;
     }
     deinit_ResizableParsed(&val->parsed_textures);
     deinit_ResizableParsed(&val->parsed_materials);
