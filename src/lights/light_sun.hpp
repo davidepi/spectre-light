@@ -140,7 +140,7 @@ public:
      *  sample_visible_surface is 0.
      *
      *  \param[in] p UNUSED
-     *  \param[in] wi UNUSED
+     *  \param[in] wiW UNUSED
      */
     float pdf(const Point3* p, const Vec3* wiW) const override;
 

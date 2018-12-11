@@ -113,7 +113,7 @@ public:
      *  sample_visible_surface method
      *
      *  \param[in] p The origin point
-     *  \param[in] wi The incident vector generated with the
+     *  \param[in] wiW The incident vector generated with the
      *  sample_visible_surface method and representing the vector pointing
      *  towards the light, originating from the origin point. In world space.
      *  \return The pdf for this light

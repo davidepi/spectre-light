@@ -934,14 +934,16 @@ static void build_lights(ParsedScene* parsed,
     //additionally build the sky if it can be found
     if(parsed->sky != NULL)
     {
-        const Texture* sky = TexLib.get_texture(parsed->sky);
-        if(sky == NULL)
+        const Texture* sky_tex = TexLib.get_texture(parsed->sky);
+        if(sky_tex == NULL)
         {
-            sky = TexLib.get_dflt_texture();
+            sky_tex = TexLib.get_dflt_texture();
             Console.warning(MESSAGE_TEXTURE_ERROR, parsed->sky);
         }
         free(parsed->sky);
         parsed->sky = NULL;
+        LightSky* sky = new LightSky(sky_tex, scene->radius());
+        scene->inherit_sky(sky);
     }
 }
 

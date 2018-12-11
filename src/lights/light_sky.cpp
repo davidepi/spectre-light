@@ -70,13 +70,13 @@ LightSky::LightSky(const Texture* tex, float world_rad)
 
     //create the light2world matrix
     light2world.set_rotate_z(tex->get_shift().x);
-    //TODO: assert that the texture is not shifted vertically
+    //ignore vertical shift
     Matrix4 scale_dome;
     scale_dome.set_scale(world_rad);
     light2world *= scale_dome;
     light2world.inverse(&world2light);
 
-    //create the distribution array (used for importance sample the dome)
+    //create the distribution array (used for importance sampling the dome)
     const uint16_t SIDE = tex->get_side();
     float* distr_array = (float*)malloc(sizeof(float)*SIDE*SIDE);
     const float INV_SIDE = 1.f/SIDE;

@@ -71,6 +71,7 @@ Spectrum PathTracer::l_rec(const Scene* sc, const HitPoint* hp, const Ray* r,
     // by the *power value
     if(!sc->k.intersect(&r2, &h2))
         rec = sc->get_escaped_radiance(&r2); //ray out of scene, return now
+//        return retval;
     else
         rec = l_rec(sc, &h2, &r2, sam, power, matchedSpec, ot);
 

@@ -8,7 +8,6 @@ enum light_t
     SPOT,
     AREA,
     SUN,
-    SKY
 };
 
 #endif

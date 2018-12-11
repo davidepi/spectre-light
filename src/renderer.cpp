@@ -237,7 +237,7 @@ void executor(const Camera* camera, ImageFilm* film, std::mutex* lock, int spp,
                     radiance = mc_solver->radiance(scene, &h, &r, sam, &ot);
                 }
                 else
-                    radiance = SPECTRUM_BLACK;
+                    radiance = scene->get_escaped_radiance(&r);
 
                 ColorXYZ cx = radiance.to_xyz();
                 film->add_pixel(&(samples[i]), cx, &ex);
