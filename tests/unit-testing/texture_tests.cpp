@@ -35,6 +35,23 @@ SPECTRE_TEST(Texture, TextureUniform_map)
     EXPECT_EQ(res.w[2], SPECTRUM_WHITE.w[2]);
 }
 
+SPECTRE_TEST(Texture, TextureUniform_get_side)
+{
+    TextureUniform tex(SPECTRUM_WHITE);
+    EXPECT_EQ(tex.get_side(), 1);
+}
+
+SPECTRE_TEST(Texture, TextureUniform_scale_shift)
+{
+    TextureUniform tex(SPECTRUM_WHITE);
+    Vec2 shift = tex.get_shift();
+    Vec2 scale = tex.get_scale();
+    EXPECT_EQ(shift.x, 0.f);
+    EXPECT_EQ(shift.y, 0.f);
+    EXPECT_EQ(scale.x, 1.f);
+    EXPECT_EQ(scale.y, 1.f);
+}
+
 SPECTRE_TEST(Texture, TextureImage_constructor)
 {
     Vec2 zero(0.f);
@@ -354,6 +371,15 @@ SPECTRE_TEST(Texture, TextureImage_map_channel)
     EXPECT_EQ(res.bgra_texel.g, (uint8_t)0U);
     EXPECT_EQ(res.bgra_texel.b, (uint8_t)0U);
     EXPECT_EQ(res.bgra_texel.a, (uint8_t)255U);
+}
+
+SPECTRE_TEST(Texture, TextureImage_get_side)
+{
+    Vec2 scale(1.f, 1.f);
+    Vec2 shift(0.f, 0.f);
+    TextureImage tex(TEST_ASSETS "images/correct.bmp", shift, scale,
+                     UNFILTERED);
+    EXPECT_EQ(tex.get_side(), 2);
 }
 
 SPECTRE_TEST(Mask, MaskBoolean_dflt)

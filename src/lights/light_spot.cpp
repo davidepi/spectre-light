@@ -6,16 +6,9 @@
 static inline float falloff(float cost, float cosinner, float costotal)
 {
     float retval;
-    /* The following case is impossible. Given that:
-     * cost = 1-r0+r0*costotal
-     * cost < costotal
-     * means that 1-r0+r0*costotal < costotal, true only if
-     * r0 < 1 && costotal > 1 || costotal < 1 && r0 > 1. But both value can be
-     * only between 0 and 1. So the following case is proven impossible
-     */
-    //if(cost<costotal)
-    //    retval = 0.f;
-    if(cost>cosinner)
+    if(cost<costotal)
+        retval = 0.f;
+    else if(cost>cosinner)
         retval = 1.f;
     else
     {
@@ -31,7 +24,9 @@ LightSpot::LightSpot(const Spectrum& intensity, const Matrix4& transform,
 {
     light_position = transform*Point3(0.f);
     transform.inverse(&world2light);
-    if(radius_outer<radius_inner)
+    if(radius_inner == radius_outer) //same radius could generate inf values
+        radius_outer += 1e-5f;
+    else if(radius_outer<radius_inner)
         swap(&radius_outer, &radius_inner);
     //if radius is the tan, then the found cos is only half of the required one
     const float TAN2H_OUTER = radius_outer*radius_outer;

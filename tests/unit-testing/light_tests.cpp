@@ -290,20 +290,6 @@ SPECTRE_TEST(Light, LightSpot_sample_visible_surface)
     EXPECT_NEAR(wi.y, wi_check.y, 1e-5f);
     EXPECT_NEAR(wi.z, wi_check.z, 1e-5f);
     EXPECT_EQ(pdf, 1.f);
-
-    //should work also with wrong order of outer/inner
-    LightSpot light2(SPECTRUM_WHITE, translation, 0.5f, 0.25f);
-
-    res = light2.sample_visible_surface(0.f, 0.5f, &pos, &wi, &pdf,
-                                        &distance);
-    EXPECT_NEAR(distance, sqrtf(2), 1e-5f);
-    EXPECT_NEAR(res.w[0], check.w[0], 1e-5f);
-    EXPECT_NEAR(res.w[1], check.w[1], 1e-5f);
-    EXPECT_NEAR(res.w[2], check.w[2], 1e-5f);
-    EXPECT_NEAR(wi.x, wi_check.x, 1e-5f);
-    EXPECT_NEAR(wi.y, wi_check.y, 1e-5f);
-    EXPECT_NEAR(wi.z, wi_check.z, 1e-5f);
-    EXPECT_EQ(pdf, 1.f);
 }
 
 SPECTRE_TEST(Light, LightSpot_pdf_surface_visible)
@@ -326,6 +312,50 @@ SPECTRE_TEST(Light, LightSpot_renderable)
     translation.set_translation(position);
     LightSpot light(SPECTRUM_WHITE, translation, 0.f, 0.f);
     EXPECT_FALSE(light.renderable());
+}
+
+SPECTRE_TEST(Light, LightSpot_corner_cases)
+{
+    Vec3 position(1, 1, 1);
+    Matrix4 translation;
+    translation.set_translation(position);
+
+    Point3 pos(0, 1, 0);
+    Vec3 wi;
+    float pdf;
+    float distance = FLT_MAX;
+
+    //wrong order of outer/inner
+    LightSpot light2(SPECTRUM_WHITE, translation, 0.5f, 0.25f);
+
+    Spectrum res = light2.sample_visible_surface(0.f, 0.5f, &pos, &wi, &pdf,
+                                                 &distance);
+    Spectrum check = SPECTRUM_WHITE*0.020706f/2.f;
+    Vec3 wi_check = Vec3(1, 0, 1).normalize();
+    EXPECT_NEAR(distance, sqrtf(2), 1e-5f);
+    EXPECT_NEAR(res.w[0], check.w[0], 1e-5f);
+    EXPECT_NEAR(res.w[1], check.w[1], 1e-5f);
+    EXPECT_NEAR(res.w[2], check.w[2], 1e-5f);
+    EXPECT_NEAR(wi.x, wi_check.x, 1e-5f);
+    EXPECT_NEAR(wi.y, wi_check.y, 1e-5f);
+    EXPECT_NEAR(wi.z, wi_check.z, 1e-5f);
+    EXPECT_EQ(pdf, 1.f);
+
+    //cost < cos_outer
+    LightSpot light3(SPECTRUM_WHITE, translation, 0.f, 1e-5f);
+
+    res = light3.sample_visible_surface(0.f, 0.5f, &pos, &wi, &pdf,
+                                        &distance);
+    EXPECT_TRUE(res.is_black());
+    EXPECT_EQ(pdf, 1.f);
+
+    //inner = outer
+    LightSpot light4(SPECTRUM_WHITE, translation, 1e-5f, 1e-5f);
+
+    res = light4.sample_visible_surface(0.f, 0.5f, &pos, &wi, &pdf,
+                                        &distance);
+    EXPECT_TRUE(res.is_black());
+    EXPECT_EQ(pdf, 1.f);
 }
 
 SPECTRE_TEST(Light, LightSun_sun_position)
