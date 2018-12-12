@@ -90,7 +90,8 @@ public:
      *  \sa pdf(const Point3* p, const Vec3* wi)const
      */
     Spectrum
-    sample_visible_surface(float r0, float r1, const Point3* positionW, Vec3* wiW,
+    sample_visible_surface(float r0, float r1, const Point3* positionW,
+                           Vec3* wiW,
                            float* pdf, float* distance) const override;
 
     /** \brief Return the probability density function for this light

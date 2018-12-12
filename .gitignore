@@ -1,3 +1,8 @@
+loc.sh
+TODO.txt
+/output.bmp
+visualstudio/Debug*
+visualstudio/Release*
 
 # Created by https://www.gitignore.io/api/c++,clion,cmake,linux,xcode,macos,windows,visualstudio
 
@@ -549,9 +554,3 @@ ASALocalRun/
 
 
 # End of https://www.gitignore.io/api/c++,clion,cmake,linux,xcode,macos,windows,visualstudio
-
-loc.sh
-TODO.txt
-/output.bmp
-visualstudio/Debug*
-visualstudio/Release*
