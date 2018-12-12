@@ -36,7 +36,10 @@ float Distribution1D::sample_continuous(float u, float* pdf) const
 {
     float* ptr = std::lower_bound(cdf, cdf+num+1, u);
     int offset = std::max(0, (int)(ptr-cdf-1));
-    float du = (u-cdf[offset])/(cdf[offset+1]-cdf[offset]);
+    float du = (u-cdf[offset]);
+    float du_den = cdf[offset+1]-cdf[offset];
+    if(du_den>0)
+        du /= du_den;
     if(pdf != NULL)
         *pdf = values[offset]/integral_value;
     return (offset+du)/num;
@@ -86,10 +89,10 @@ Point2 Distribution2D::sample_continuous(float u0, float u1, float* pdf) const
     return res;
 }
 
-float Distribution2D::pdf(const Point2* value) const
+float Distribution2D::pdf(Point2 value) const
 {
-    int u = (int)clamp((int)(value->x*marginal_len), 0, marginal_len-1);
-    int v = (int)clamp((int)(value->y*marginal_len), 0, marginal_len-1);
+    int u = (int)clamp((int)(value.x*marginal_len), 0, marginal_len-1);
+    int v = (int)clamp((int)(value.y*marginal_len), 0, marginal_len-1);
     return conditional[v]->get_piecewise_value(u)/
            marginal->get_integral_value();
 }

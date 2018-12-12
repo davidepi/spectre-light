@@ -150,18 +150,6 @@ public:
      */
     uint16_t get_side() const;
 
-    /**
-     *  \brief Returns the underlying ImageMap in form of array
-     *
-     *  The returned array will be unidimensional, ordered from top to bottom
-     *  and form left to right and will be a copy of the original one.
-     *  The input array is expected to be at least of size side*side, where side
-     *  ca be retrieved by calling the get_side() memeber
-     *
-     *  \param[in] array The array that will hold the copied values
-     */
-    void to_array(TexelUnion* array) const;
-
 protected:
 
     /**

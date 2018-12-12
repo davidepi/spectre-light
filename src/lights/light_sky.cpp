@@ -54,7 +54,7 @@ float LightSky::pdf(const Point3*, const Vec3* wiW) const
     const float INV_TERM = 1.f/(2.f*ONE_PI*ONE_PI*SINT);
     sample.x *= INV_TERM;
     sample.y *= INV_TERM;
-    return distribution->pdf(&sample);
+    return distribution->pdf(sample);
 
 }
 

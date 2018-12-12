@@ -150,6 +150,8 @@ SPECTRE_TEST(Date, get_julian_day)
 
 SPECTRE_TEST(Date, get_delta_t)
 {
+    Date d0(-600, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d0.get_delta_t(), 18720.4, 1e-1);
     Date d1(-500, 1, 1, 0, 0, 0);
     EXPECT_NEAR(d1.get_delta_t(), 17203.6, 1e-1);
     Date d2(-400, 1, 1, 0, 0, 0);
@@ -202,40 +204,44 @@ SPECTRE_TEST(Date, get_delta_t)
     EXPECT_NEAR(d25.get_delta_t(), 13.7, 1e-1);
     Date d26(1850, 1, 1, 0, 0, 0);
     EXPECT_NEAR(d26.get_delta_t(), 7.1, 1e-1);
-    Date d27(1900, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d27.get_delta_t(), -2.79, 1e-1);
-    Date d28(1950, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d28.get_delta_t(), 29.0, 1e-1);
-    Date d29(1955, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d29.get_delta_t(), 31.1, 1e-1);
-    Date d30(1960, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d30.get_delta_t(), 33.2, 1e-1);
-    Date d31(1965, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d31.get_delta_t(), 35.7, 1e-1);
-    Date d32(1970, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d32.get_delta_t(), 40.2, 1e-1);
-    Date d33(1975, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d33.get_delta_t(), 45.5, 1e-1);
-    Date d34(1980, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d34.get_delta_t(), 50.5, 1e-1);
-    Date d35(1985, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d35.get_delta_t(), 54.3, 1e-1);
-    Date d36(1990, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d36.get_delta_t(), 56.9, 1e-1);
-    Date d37(1995, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d37.get_delta_t(), 60.8, 1e-1);
-    Date d38(2000, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d38.get_delta_t(), 63.8, 1e-1);
-    Date d39(2005, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d39.get_delta_t(), 66.1, 1e-1);
-    Date d40(2010, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d40.get_delta_t(), 67.6, 1e-1);
-    Date d41(2014, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d41.get_delta_t(), 68.7, 1e-1);
-    Date d42(2016, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d42.get_delta_t(), 67.9, 1e-1);
-    Date d43(2018, 1, 1, 0, 0, 0);
+    Date d27(1890, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d27.get_delta_t(), -6.11, 1e-1);
+    Date d28(1900, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d28.get_delta_t(), -2.79, 1e-1);
+    Date d29(1940, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d29.get_delta_t(), 24.33, 1e-1);
+    Date d30(1950, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d30.get_delta_t(), 29.0, 1e-1);
+    Date d31(1955, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d31.get_delta_t(), 31.1, 1e-1);
+    Date d32(1960, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d32.get_delta_t(), 33.2, 1e-1);
+    Date d33(1965, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d33.get_delta_t(), 35.7, 1e-1);
+    Date d34(1970, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d34.get_delta_t(), 40.2, 1e-1);
+    Date d35(1975, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d35.get_delta_t(), 45.5, 1e-1);
+    Date d36(1980, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d36.get_delta_t(), 50.5, 1e-1);
+    Date d37(1985, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d37.get_delta_t(), 54.3, 1e-1);
+    Date d38(1990, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d38.get_delta_t(), 56.9, 1e-1);
+    Date d39(1995, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d39.get_delta_t(), 60.8, 1e-1);
+    Date d40(2000, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d40.get_delta_t(), 63.8, 1e-1);
+    Date d41(2005, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d41.get_delta_t(), 66.1, 1e-1);
+    Date d42(2010, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d42.get_delta_t(), 67.6, 1e-1);
+    Date d43(2014, 1, 1, 0, 0, 0);
     EXPECT_NEAR(d43.get_delta_t(), 68.7, 1e-1);
+    Date d44(2016, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d44.get_delta_t(), 67.9, 1e-1);
+    Date d45(2018, 1, 1, 0, 0, 0);
+    EXPECT_NEAR(d45.get_delta_t(), 68.7, 1e-1);
 }
 
 SPECTRE_TEST_END(Date_tests)

@@ -929,9 +929,9 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.131289f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.067696f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.006154f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.318310f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.318310f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.318310f, 1e-5f);
 
     const Bsdf* mat1 = MtlLib.get("Non-inverted");
     a.set_materials((const Bsdf**)&mat1, 1, &association);
@@ -939,9 +939,9 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     a.get_material(0)->gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = a.get_material(0)->value(&r.direction, &hit, &wi, &matrix, false);
     EXPECT_FALSE(res.is_black());
-    EXPECT_NEAR(res.w[0], 0.057435f, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.022974f, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.302491f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.318310f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.318310f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.318310f, 1e-5f);
 
     MtlLib.clear();
     TexLib.clear();

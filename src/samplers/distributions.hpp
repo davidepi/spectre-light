@@ -135,7 +135,7 @@ public:
      * \param[in] value The value that has been previously sampled
      * \return The pdf for the given value
      */
-    float pdf(const Point2* value) const;
+    float pdf(Point2 value) const;
 
 private:
 

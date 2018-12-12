@@ -23,6 +23,9 @@ Scene::~Scene()
         delete lights_it;
     }
     to_delete.clear();
+
+    if(sky != NULL)
+        delete sky;
 }
 
 void Scene::inherit_shape(const Shape* addme)
