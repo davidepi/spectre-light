@@ -120,4 +120,24 @@ SPECTRE_TEST(Asset, is_light)
     EXPECT_FALSE(a.is_light());
 }
 
+SPECTRE_TEST(Asset, mask_setting)
+{
+    Sphere s;
+    Matrix4 m;
+    m.set_translation(Vec3(-2, 0, 0));
+    Asset a(&s, m, 1);
+    TextureUniform black(Spectrum(0));
+    MaskBoolean mask(&black, RED, false);
+
+    Ray ray;
+    ray = Ray(Point3(-2, -10, 0), Vec3(0, 1, 0));
+    float distance = FLT_MAX;
+    HitPoint h;
+    RayProperties properties_success(ray);
+    ASSERT_TRUE(a.intersect(&ray, &distance, &h));
+    distance = FLT_MAX;
+    a.set_mask(mask);
+    EXPECT_FALSE(a.intersect(&ray, &distance, &h));
+}
+
 SPECTRE_TEST_END(Asset_tests)

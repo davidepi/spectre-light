@@ -358,10 +358,96 @@ SPECTRE_TEST(Light, LightSpot_corner_cases)
     EXPECT_EQ(pdf, 1.f);
 }
 
-SPECTRE_TEST(Light, LightSun_sun_position)
+SPECTRE_TEST(Light, LightSun_sample_surface)
 {
-    Date time(2003, 10, 17, 19, 30, 30);
-//    LightSun ls(SPECTRUM_ONE, time, 39.742476f, -105.1786f, 1830.14f);
+    LightSun light(SPECTRUM_WHITE, Ray(Point3(10, 11, 12), Vec3(0, -1, 0)), 5);
+    Ray r;
+    float pdf;
+    Spectrum res = light.sample_surface(0., 0., 0., 0., &r, &pdf);
+    EXPECT_EQ(pdf, 1.f);
+    EXPECT_EQ(res.w[0], SPECTRUM_WHITE.w[0]);
+    EXPECT_EQ(res.w[1], SPECTRUM_WHITE.w[1]);
+    EXPECT_EQ(res.w[2], SPECTRUM_WHITE.w[2]);
+    EXPECT_EQ(r.origin.x, 10.f);
+    EXPECT_EQ(r.origin.y, 11.f);
+    EXPECT_EQ(r.origin.z, 12.f);
+    EXPECT_EQ(r.direction.x, 0.f);
+    EXPECT_EQ(r.direction.y, -1.f);
+    EXPECT_EQ(r.direction.z, 0.f);
+}
+
+SPECTRE_TEST(Light, LightSun_pdf_surface)
+{
+    LightSun light(SPECTRUM_WHITE, Ray(Point3(10, 10, 10), Vec3(0, -1, 0)), 5);
+    Ray r(Point3(2, 2, 2), Vec3(0, 0, 1));
+    EXPECT_EQ(light.pdf(&r), 1.f);
+}
+
+SPECTRE_TEST(Light, LightSun_sample_visible_surface)
+{
+    LightSun light(SPECTRUM_WHITE, Ray(Point3(10, 11, 12), Vec3(0, -1, 0)), 5);
+    Point3 pos(10, 0, 12);
+    Vec3 wi;
+    float pdf;
+    float distance;
+    Spectrum res = light.sample_visible_surface(0.f, 0.f, &pos, &wi, &pdf,
+                                                &distance);
+    EXPECT_EQ(wi.x, 0.f);
+    EXPECT_EQ(wi.y, 1.f);
+    EXPECT_EQ(wi.z, 0.f);
+    EXPECT_EQ(res.w[0], SPECTRUM_WHITE.w[0]);
+    EXPECT_EQ(res.w[1], SPECTRUM_WHITE.w[1]);
+    EXPECT_EQ(res.w[2], SPECTRUM_WHITE.w[2]);
+    EXPECT_EQ(pdf, 1.f);
+    EXPECT_NEAR(distance, 11.f, 1e-5f);
+}
+
+SPECTRE_TEST(Light, LightSun_pdf_surface_visible)
+{
+    LightSun light(SPECTRUM_WHITE, Ray(Point3(10, 10, 10), Vec3(0, -1, 0)), 5);
+    Point3 origin(2, 2, 2);
+    Vec3 direction(0, 0, 1);
+    EXPECT_EQ(light.pdf(&origin, &direction), 0.f);
+}
+
+SPECTRE_TEST(Light, LightSun_renderable)
+{
+    LightSun light(SPECTRUM_WHITE, Ray(Point3(10, 10, 10), Vec3(0, -1, 0)), 5);
+    EXPECT_FALSE(light.renderable());
+}
+
+SPECTRE_TEST(Light, LightSun_sunpos)
+{
+    //azimuth and elevation checked against NOAA data
+    Date d(2018, 12, 13, 11, 47, 46);
+    Point3 centre(0, 0, 0);
+    LightSun light(SPECTRUM_WHITE, &centre, 1, d, 41.54f, -12.29f, 13.f);
+    Ray r;
+    float pdf;
+    light.sample_surface(0., 0.f, 0.f, 0.f, &r, &pdf);
+    EXPECT_NEAR(r.direction.x, 0.898704, 1e-5f);
+    EXPECT_NEAR(r.direction.y, -0.37717, 1e-5f);
+    EXPECT_NEAR(r.direction.z, -0.22376, 1e-5f);
+
+    //day, north
+    LightSun north(SPECTRUM_WHITE, &centre, 1, d, 64.12f, -21.92f, 0.f);
+    north.sample_surface(0.f, 0.f, 0.f, 0.f, &r, &pdf);
+    EXPECT_TRUE(r.direction.y<0);
+
+    //day, south
+    LightSun south(SPECTRUM_WHITE, &centre, 1, d, -33.91f, 18.09f, 1.f);
+    south.sample_surface(0.f, 0.f, 0.f, 0.f, &r, &pdf);
+    EXPECT_TRUE(r.direction.y<0);
+
+    //night, north
+    LightSun north_night(SPECTRUM_WHITE, &centre, 1, d, 36.84f, 139.30f, 1269);
+    north_night.sample_surface(0.f, 0.f, 0.f, 0.f, &r, &pdf);
+    EXPECT_TRUE(r.direction.y>0);
+
+    //night, south
+    LightSun south_night(SPECTRUM_WHITE, &centre, 1, d, -36.86f, 174.58f, 0.f);
+    south_night.sample_surface(0.f, 0.f, 0.f, 0.f, &r, &pdf);
+    EXPECT_TRUE(r.direction.y>0);
 }
 
 SPECTRE_TEST_END(Light)

@@ -1,12 +1,12 @@
 //Created,   4 Oct 2018
-//Last Edit 11 Oct 2018
+//Last Edit 13 Dec 2018
 
 /**
  *  \file light_sun.hpp
  *  \brief     Directional light at infinity, like the sun
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      11 Oct 2018
+ *  \date      13 Dec 2018
  *  \copyright GNU GPLv3
  */
 
@@ -48,12 +48,12 @@ public:
      *  position
      *  \param[in] longitude The longitude (+ East, - West) of the camera
      *  position
-     *  \param[in] elevation The altitude at which the user is
+     *  \param[in] altitude The altitude at which the user is
      *  \sa Scene::radius()
      */
     LightSun(const Spectrum& intensity, const Point3* position,
              float world_rad, Date time, float latitude,
-             float longitude, float elevation = 0.01);
+             float longitude, float altitude = 0.01f);
 
     /**
      *  \brief Constructor for the sun, given ray direction

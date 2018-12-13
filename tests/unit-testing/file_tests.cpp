@@ -442,6 +442,10 @@ SPECTRE_TEST(File, append)
     fwin.append(".bashrc");
     EXPECT_STREQ(fwin.extension(), "");
 
+    File f3(TEST_ASSETS "images/flipped.bmp");
+    File f4(&f3, "correct.bmp");
+    EXPECT_TRUE(f4.exists());
+
 }
 
 SPECTRE_TEST(File, list_files)
@@ -483,6 +487,22 @@ SPECTRE_TEST(File, is_absolute_inline)
     EXPECT_FALSE(is_absolute("\\\\path"));
     EXPECT_FALSE(is_absolute("../path"));
 #endif
+}
+
+SPECTRE_TEST(File, append_to_folder)
+{
+    File reference_file(TEST_ASSETS "images/correct.bmp");
+    File reference_folder(TEST_ASSETS "images");
+
+    //absolute given
+    File f1(&reference_folder, TEST_ASSETS "images/flipped.bmp");
+    EXPECT_TRUE(f1.exists());
+    //append to folder
+    File f2(&reference_folder, "3by3.bmp");
+    EXPECT_TRUE(f2.exists());
+    //append to filename
+    File f3(&reference_file, "32bit.bmp");
+    EXPECT_TRUE(f3.exists());
 }
 
 SPECTRE_TEST_END(File_tests)

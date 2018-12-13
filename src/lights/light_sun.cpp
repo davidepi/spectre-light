@@ -1,7 +1,7 @@
 #include "light_sun.hpp"
 #include <cmath>
 
-//various table used for the sun position algorithm
+//various tables used for the sun position algorithm
 
 #define L0SIZE 64
 #define L1SIZE 34
@@ -200,6 +200,9 @@ static const double NUT_D[YSIZE] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
+/**
+ *  \brief Convert any angle to the (0, 2π) interval
+ */
 static inline double zero_to_2pi(double radians)
 {
     radians = fmod(radians, 2*M_PI);
@@ -208,6 +211,9 @@ static inline double zero_to_2pi(double radians)
     return radians;
 }
 
+/**
+ *  \brief Convert any angle to the (0, 360) interval
+ */
 static inline double zero_to_360(double degrees)
 {
     degrees = fmod(degrees, 360);
@@ -218,7 +224,7 @@ static inline double zero_to_360(double degrees)
 
 LightSun::LightSun(const Spectrum& intensity, const Point3* world_centre,
                    float world_rad, Date time, float latitude,
-                   float longitude, float elevation)
+                   float longitude, float altitude)
         :Light(intensity), radius_w(world_rad)
 {
     /*
@@ -366,9 +372,9 @@ LightSun::LightSun(const Spectrum& intensity, const Point3* world_centre,
     constexpr const double INV6378140 = 1.0/6378140.0;
     const double LAT_RAD = radians(latitude);
     const double U_RAD = atan(0.99664719*tan(LAT_RAD));
-    const double X_RAD = cos(U_RAD)+elevation*INV6378140*cos(LAT_RAD);
+    const double X_RAD = cos(U_RAD)+altitude*INV6378140*cos(LAT_RAD);
     const double Y_RAD =
-            0.99664719*sin(U_RAD)+elevation*INV6378140*sin(LAT_RAD);
+            0.99664719*sin(U_RAD)+altitude*INV6378140*sin(LAT_RAD);
     const double XI_RAD = radians(XI_DEG);
     const double H_RAD = radians(H_DEG);
     const double DELTA_ALPHA_RAD = atan2(-X_RAD*sin(XI_RAD)*sin(H_RAD),
@@ -383,7 +389,6 @@ LightSun::LightSun(const Spectrum& intensity, const Point3* world_centre,
     const double E0_RAD = asin(sin(LAT_RAD)*sin(DELTA1_RAD)+
                                cos(LAT_RAD)*cos(DELTA1_RAD)*cos(H1_RAD));
     //Topocentric zenith angle
-//    const double LOWERCASE_THETA_RAD = M_PI/2-E0_RAD;
     //Topocentric azimuth angle (westward from south)
     const double GAMMA_RAD = zero_to_2pi(atan2(sin(H1_RAD),
                                                cos(H1_RAD)*sin(LAT_RAD)-
@@ -394,7 +399,11 @@ LightSun::LightSun(const Spectrum& intensity, const Point3* world_centre,
 
     //finally set up directions
     //sun position with world_rad 1
-    Point3 sunpos((float)cos(PHI_RAD), (float)sin(E0_RAD), (float)sin(PHI_RAD));
+    float azimuth = zero_to_2pi(PHI_RAD);
+    float elevation = zero_to_2pi(E0_RAD);
+    Point3 sunpos((float)cos(azimuth)*world_rad,
+                  (float)sin(elevation)*world_rad,
+                  (float)sin(azimuth)*world_rad);
     //find the opposite of the direction
     Vec3 reverse_dir = (sunpos-Point3(0, 0, 0)).normalize();
     Ray reverse_ray(*world_centre, reverse_dir);
