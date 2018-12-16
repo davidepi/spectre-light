@@ -60,6 +60,7 @@ private:
     Distribution2D* distribution;
     Matrix4 world2light;
     Matrix4 light2world;
+    float world_r;
 };
 
 #endif
