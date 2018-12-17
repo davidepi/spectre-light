@@ -52,7 +52,7 @@ public:
      *  \param[in] filter The type of filter that will be used to filter this
      *  texture
      */
-    TextureImage(const File& src, Vec2& shift, Vec2& scale,
+    TextureImage(const File& src, const Vec2& shift, const Vec2& scale,
                  texturefilter_t filter);
 
     /**

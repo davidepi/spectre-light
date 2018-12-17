@@ -34,8 +34,24 @@ Distribution1D::~Distribution1D()
 
 float Distribution1D::sample_continuous(float u, float* pdf) const
 {
-    float* ptr = std::lower_bound(cdf, cdf+num+1, u);
-    int offset = std::max(0, (int)(ptr-cdf-1));
+    int start = 0;
+    int end = (int)num;
+    int current = 0;
+    //find lower_bound
+    while(current<end)
+    {
+        int half = end >> 1;
+        int middle = start+half;
+        if(cdf[middle]<=u)
+        {
+            start = middle+1;
+            end -= half+1;
+        }
+        else
+            end = half;
+    }
+    int offset = (int)clamp(start-1, 0, num-2);
+
     float du = (u-cdf[offset]);
     float du_den = cdf[offset+1]-cdf[offset];
     if(du_den>0)

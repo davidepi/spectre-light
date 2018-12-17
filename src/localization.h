@@ -173,7 +173,11 @@
 
 #define MESSAGE_WRONG_DATA_FORMAT "Unsupported data format, using the current "\
 "time"
+#define MESSAGE_SKY_SCALE "The sky texture has a scale component and thus"\
+                          " artifacts may appear"
 
+#define MESSAGE_SKY_SHIFT "The sky texture has an y shift component and thus"\
+                          " artifacts may appear"
 #ifdef _WIN32
 #define MESSAGE_WRONG_ABS_FILE_ARCH "Expected an absolute path for " \
 "Windows but found an absolute path for Linux/MacOS (%s)"

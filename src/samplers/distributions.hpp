@@ -1,12 +1,12 @@
 //Created,   2 Dec 2018
-//Last Edit  2 Dec 2018
+//Last Edit 16 Dec 2018
 
 /**
  *  \file distributions.hpp
  *  \brief     Provides the definition of piecewise-constant functions
  *  \author    Davide Pizzolotto (taken from pbrt)
  *  \version   0.2
- *  \date      2 Dec 2018
+ *  \date      16 Dec 2018
  *  \copyright GNU GPLv3
  */
 

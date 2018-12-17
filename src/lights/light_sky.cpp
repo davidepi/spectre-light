@@ -7,7 +7,8 @@ LightSky::sample_surface(float, float, float, float, Ray*, float*) const
 }
 
 Spectrum
-LightSky::sample_visible_surface(float r0, float r1, const Point3* position, Vec3* wi, float* pdf, float* distance) const
+LightSky::sample_visible_surface(float r0, float r1, const Point3* position,
+                                 Vec3* wi, float* pdf, float* distance) const
 {
     //sample texture
     float texture_pdf;
@@ -28,9 +29,8 @@ LightSky::sample_visible_surface(float r0, float r1, const Point3* position, Vec
     //pdf
     if(SINT == 0)
         *pdf = 0.f;
-    *pdf = texture_pdf/(2*ONE_PI*ONE_PI*SINT);
-    float distance_from_origin = (*position-Point3(0,0,0)).length();
-    *distance = world_r*distance_from_origin; //* sinf(90);
+    else
+        *pdf = texture_pdf/(2*ONE_PI*ONE_PI*SINT);
     Texel value = skytexture->map_value(&sample).bgra_texel;
     return {ColorRGB(value.r, value.g, value.b), true};
 }
@@ -66,7 +66,11 @@ LightSky::LightSky(const Texture* tex, float world_rad)
         :Light(0), //skydome does not use the intensity, so it is set to 0
          skytexture(tex), world_r(world_rad)
 {
-
+    //checks that no y-shift/scale can be found
+    if(tex->get_scale().x != 1 || tex->get_scale().y != 1)
+        Console.warning(MESSAGE_SKY_SCALE);
+    if(tex->get_shift().y != 0)
+        Console.warning(MESSAGE_SKY_SHIFT);
     //create the light2world matrix
     light2world.set_rotate_x(ONE_PI*3.f/2.f);
     //ignore vertical shift

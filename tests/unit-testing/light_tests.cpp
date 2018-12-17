@@ -12,10 +12,10 @@
 
 #include "lights/light_area.hpp"
 #include "primitives/sphere.hpp"
-#include <random>
 #include "lights/light_sun.hpp"
 #include "lights/light_omni.hpp"
 #include "lights/light_spot.hpp"
+#include "lights/light_sky.hpp"
 
 SPECTRE_TEST_INIT(Light_tests)
 
@@ -448,6 +448,149 @@ SPECTRE_TEST(Light, LightSun_sunpos)
     LightSun south_night(SPECTRUM_WHITE, &centre, 1, d, -36.86f, 174.58f, 0.f);
     south_night.sample_surface(0.f, 0.f, 0.f, 0.f, &r, &pdf);
     EXPECT_TRUE(r.direction.y>0);
+}
+
+SPECTRE_TEST(Light, LightSky_sample_surface)
+{
+    const Texture* tex = new TextureUniform(SPECTRUM_WHITE);
+    LightSky sky(tex, 1.f);
+    Spectrum res = sky.sample_surface(0.f, 0.f, 0.f, 0.f, NULL, NULL);
+    EXPECT_TRUE(res.is_black());
+    delete tex;
+}
+
+SPECTRE_TEST(Light, LightSky_pdf_surface)
+{
+    const Texture* tex = new TextureUniform(SPECTRUM_WHITE);
+    LightSky sky(tex, 1.f);
+    float pdf = sky.pdf(NULL);
+    EXPECT_EQ(pdf, 0.f);
+    delete tex;
+}
+
+SPECTRE_TEST(Light, LightSky_sample_visible_surface)
+{
+    Vec2 zero(0.f);
+    Vec2 one(1.f);
+    errors_count[WARNING_INDEX] = 0;
+    const Texture* tex = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                          zero, one, UNFILTERED);
+    ASSERT_EQ(errors_count[WARNING_INDEX], 0);
+    LightSky sky(tex, 1.f);
+    Point3 pos(0, 0, 0);
+    Vec3 wi;
+    float pdf;
+    float distance;
+
+    Spectrum res = sky.sample_visible_surface(0.5f, 0.2f, &pos, &wi, &pdf,
+                                              &distance);
+    EXPECT_NEAR(pdf, 0.06101f, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.41245f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.21267f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.01933f, 1e-5f);
+
+    //pdf = 0
+    res = res = sky.sample_visible_surface(1.f, 0.f, &pos, &wi, &pdf,
+                                           &distance);
+    EXPECT_EQ(pdf, 0.f);
+    EXPECT_NEAR(res.w[0], 0.35757f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.71515f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.11919f, 1e-5f);
+
+    //TODO: couldn't reproduce the texture pdf == 0
+
+    delete tex;
+}
+
+SPECTRE_TEST(Light, LightSky_pdf_surface_visible)
+{
+    Vec2 zero(0.f);
+    Vec2 one(1.f);
+    errors_count[WARNING_INDEX] = 0;
+    const Texture* tex = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                          zero, one, UNFILTERED);
+    ASSERT_EQ(errors_count[WARNING_INDEX], 0);
+    LightSky sky(tex, 1.f);
+    Point3 pos(0, 0, 0);
+
+    //phi > 0
+    Vec3 wi = Vec3(1, 1, 0).normalize();
+    float pdf = sky.pdf(&pos, &wi);
+    EXPECT_NEAR(pdf, 0.82842f, 1e-5f);
+    //phi <0
+    wi = Vec3(1, -1, 0).normalize();
+    pdf = sky.pdf(&pos, &wi);
+    EXPECT_NEAR(pdf, 0.82842f, 1e-5f);
+    //pdf=0
+    wi = Vec3(0, 1, 0).normalize();
+    pdf = sky.pdf(&pos, &wi);
+    EXPECT_EQ(pdf, 0.f);
+    delete tex;
+}
+
+SPECTRE_TEST(Light, LightSky_renderable)
+{
+    const Texture* tex = new TextureUniform(SPECTRUM_WHITE);
+    LightSky sky(tex, 1.f);
+    EXPECT_TRUE(sky.renderable());
+    delete tex;
+}
+
+SPECTRE_TEST(Light, LightSky_radiance_escaped)
+{
+    Vec2 zero(0.f);
+    Vec2 one(1.f);
+    const Texture* tex = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                          zero, one, UNFILTERED);
+    LightSky sky(tex, 1.f);
+    //generate rays pointing in two different quadrants in the sky.
+    //per correct.bmp texture, one should be red, the other should be green.
+    Ray north_east(Point3(0, 0, 0), Vec3(1, 1, 1).normalize());
+    Ray north_west(Point3(0, 0, 0), Vec3(-1, 1, 1).normalize());
+    Spectrum res = sky.radiance_escaped(&north_east);
+    EXPECT_NEAR(res.w[0], 0.35757, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.71515, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.11919, 1e-5f);
+    res = sky.radiance_escaped(&north_west);
+    EXPECT_NEAR(res.w[0], 0.41245, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.21267, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.01933, 1e-5f);
+    delete tex;
+}
+
+SPECTRE_TEST(Light, LightSky_constructor_warnings)
+{
+    Vec2 zero(0.f);
+    Vec2 one(1.f);
+    Texture* tex_ok = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                       zero, one, UNFILTERED);
+    Texture* tex_sc_x = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                         zero, Vec2(2.f, 1.f), UNFILTERED);
+    Texture* tex_sc_y = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                         zero, Vec2(1.f, 2.f), UNFILTERED);
+    Texture* tex_sh_x = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                         Vec2(1.f, 0.f), one, UNFILTERED);
+    Texture* tex_sh_y = new TextureImage(TEST_ASSETS "images/correct.bmp",
+                                         Vec2(0.f, 1.f), one, UNFILTERED);
+    ASSERT_EQ(errors_count[WARNING_INDEX], 0);
+    LightSky sky0(tex_ok, 1.f);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    LightSky sky1(tex_sc_x, 1.f);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    LightSky sky2(tex_sc_y, 1.f);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+    LightSky sky3(tex_sh_x, 1.f);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 0);
+    LightSky sky4(tex_sh_y, 1.f);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    errors_count[WARNING_INDEX] = 0;
+
+    delete tex_sc_x;
+    delete tex_sc_y;
+    delete tex_sh_x;
+    delete tex_sh_y;
 }
 
 SPECTRE_TEST_END(Light)

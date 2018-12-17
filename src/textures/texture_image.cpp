@@ -3,7 +3,7 @@
 
 #include "texture_image.hpp"
 
-TextureImage::TextureImage(const File& src, Vec2& shift, Vec2& scale,
+TextureImage::TextureImage(const File& src, const Vec2& shift, const Vec2& scale,
                            texturefilter_t filter):scale(scale), shift(shift)
 {
     unfiltered = filter == UNFILTERED;

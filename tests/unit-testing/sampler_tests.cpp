@@ -131,7 +131,7 @@ SPECTRE_TEST(Sampler, Distribution2D_sample_continuous)
     Distribution2D dist(vals, 4, 4);
     float pdf;
     Point2 res;
-    Point2 check(0.f, 0.f);
+    Point2 check(0.25f, 0.25f);
     res = dist.sample_continuous(0.f, 0.f);
     EXPECT_EQ(res.x, check.x);
     EXPECT_EQ(res.y, check.y);
