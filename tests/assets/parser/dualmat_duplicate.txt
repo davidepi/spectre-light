@@ -1,0 +1,26 @@
+texture:{name:"Red", color: [255,0,0]}
+texture:{name:"Blue", color: [0,0,255]}
+material: {
+  name: "Red",
+  diffuse: "Red"
+}
+
+material: {
+  name: "Blue",
+  diffuse: "Blue"
+}
+
+dualmaterial: {
+  name: "Duplicate",
+  first: "Red
+  second: "Blue",
+  mask: "../images/correct.bmp" using channel R
+}
+
+dualmaterial: {
+  name: "Duplicate",
+  first: "Red
+  second: "Blue",
+  mask: "../images/correct.bmp" using channel R
+}
+

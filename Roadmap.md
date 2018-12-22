@@ -25,17 +25,19 @@
 - [ ] real cameras (and depth of field)
 
 ### V0.3 ###
-- a lot of new integrators (bdpt, mlt, photon mapping, etc...)
-- 3DS max exporter
-- fog system
-- subsurface scattering
+- [ ] serialization
+- [ ] binary parser
+- [ ] blender integration
+- [ ] memory manager
+- [ ] giant datasets
+- [ ] bidirectional integrators
+- [ ] distributed rendering
 
 ### More ###
 - bvh exporter/importer/generator
+- fog system
+- subsurface scattering
 - texture caching
-- memory checks
-- memory manager
-- load and unload models from memory
 - better occlusion testing
 - ad hoc intersection methods for occlusion testing
 - tessellation and displacement mapping

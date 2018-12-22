@@ -1,5 +1,5 @@
 //Created,   7 Jul 2017
-//Last Edit 14 Apr 2018
+//Last Edit 18 Dec 2018
 
 /**
  *  \file material_library.hpp
@@ -30,8 +30,9 @@
  *  the various shape at creation time. The library must be unique and
  *  accessible everywhere.
  *
- *  The library contains a default material called "Default" that represents a
- *  white matte surface
+ *  The default material that represents a white matte surface
+ *  is not contained by this library, but can be accessed separately with the
+ *  specific method
  *
  *  A define grants access to this singleton just by writing "MtlLib"
  *
@@ -104,16 +105,23 @@ public:
      */
     bool contains(const std::string& name) const;
 
-    /** \brief Returns the "Default" material
+    /** \brief Returns the default material
      *
-     *  This method returns the "Default" material. It performs the same action
-     *  as calling MaterialLibrary::get() with "Default" as parameter. However,
-     *  since "Default" is a system material, it is cached inside this class
-     *  and by using this method a call to the underlying hash map is avoided
+     *  This method returns the default material. A white, matte, lambertian,
+     *  uniform surfaces
      *
-     *  \return The "Default" material
+     *  \return The default material
      */
     const Bsdf* get_default() const;
+
+    /**
+     *  \brief Returns the number of materials in the MaterialLibrary
+     *
+     *  The default material is not counted, since it always exists.
+     *
+     *  \return The number of Bsdf elements contained in this MaterialLibrary
+     */
+    int size() const;
 
 private:
 

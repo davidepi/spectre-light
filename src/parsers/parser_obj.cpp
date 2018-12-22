@@ -400,7 +400,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
             }
         }
     }
-    finalize_mesh(obj);;
+    finalize_mesh(obj);
     return retval;
 }
 

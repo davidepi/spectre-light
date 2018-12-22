@@ -9,16 +9,12 @@ TextureLibrary::TextureLibrary()
     default_texture = new TextureUniform(SPECTRUM_ONE);
     pixBGRA value = 0xFFFFFFFF;
     default_map = new ImageMapUnfiltered(&value, 1);
-    Vec2 shift(0.f);
-    Vec2 scale(1.f);
-    default_teximg = new TextureImage(default_map, shift, scale, true);
 }
 
 TextureLibrary::~TextureLibrary()
 {
     TextureLibrary::clear();
     delete default_map;
-    delete default_teximg;
     delete default_texture;
 }
 
@@ -103,12 +99,17 @@ const Texture* TextureLibrary::get_dflt_texture() const
     return TextureLibrary::default_texture;
 }
 
-const TextureImage* TextureLibrary::get_dflt_teximage() const
-{
-    return TextureLibrary::default_teximg;
-}
-
 const ImageMap* TextureLibrary::get_dflt_map() const
 {
     return TextureLibrary::default_map;
+}
+
+int TextureLibrary::size_texture() const
+{
+    return (int)texlib.size();
+}
+
+int TextureLibrary::size_map() const
+{
+    return (int)maplib.size();
 }

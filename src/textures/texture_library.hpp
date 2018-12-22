@@ -151,16 +151,6 @@ public:
      */
     const Texture* get_dflt_texture() const;
 
-    /** \brief Returns the default TextureImage
-     *
-     *  Similar to the get_dflt_texture() method, this one instead returns
-     *  the default TextureImage. The default TextureImage is not shifted or
-     *  scaled and maps to the default ImageMap.
-     *
-     *  \return The default TextureImage
-     */
-    const TextureImage* get_dflt_teximage() const;
-
     /**
      *  \brief Returns the default ImageMap
      *
@@ -172,6 +162,24 @@ public:
      */
     const ImageMap* get_dflt_map() const;
 
+    /**
+     *  \brief Returns the number of Texture elements in the TextureLibrary
+     *
+     *  The default texture is not counted, since it always exists.
+     *
+     *  \return The number of Texture elements contained in this TextureLibrary
+     */
+    int size_texture() const;
+
+    /**
+     *  \brief Returns the number of ImageMap elements in the TextureLibrary
+     *
+     *  The default map is not counted, since it always exists.
+     *
+     *  \return The number of ImageMap elements contained in this TextureLibrary
+     */
+    int size_map() const;
+
 private:
 
     TextureLibrary();
@@ -181,7 +189,6 @@ private:
     std::unordered_map<std::string, const Texture*> texlib;
     std::unordered_map<std::string, const ImageMap*> maplib;
     const Texture* default_texture;
-    const TextureImage* default_teximg;
     const ImageMap* default_map;
 };
 

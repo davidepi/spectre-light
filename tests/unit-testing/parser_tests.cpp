@@ -54,6 +54,19 @@ SPECTRE_TEST(Parser, errors)
     delete r0;
 }
 
+SPECTRE_TEST(Parser, ParsedScene_deinit)
+{
+    ParsedScene parsed;
+    init_ParsedScene(&parsed);
+    parsed.output = strdup("test");
+    parsed.error_msg = strdup("error_msg");
+    parsed.sky = strdup("sky texture path");
+    deinit_ParsedScene(&parsed);
+    EXPECT_PTR_NULL(parsed.output);
+    EXPECT_PTR_NULL(parsed.error_msg);
+    EXPECT_PTR_NULL(parsed.sky);
+}
+
 SPECTRE_TEST(Parser, resolution)
 {
     Scene s;
@@ -424,12 +437,21 @@ SPECTRE_TEST(Parser, texture)
     ASSERT_TRUE(TexLib.contains_texture("Manually written name"));
     ParserConfig driver2;
     const Texture* img0 = TexLib.get_texture("Manually written name");
-    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture.txt",
-                                 &s);
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/texture.txt", &s);
     const Texture* img1 = TexLib.get_texture("Manually written name");
     EXPECT_PTR_EQ(img0, img1);
     delete r2;
 
+    TexLib.clear();
+
+    //anonymous textures
+    ASSERT_FALSE(TexLib.contains_texture("Blue"));
+    errors_count[NOTICE_INDEX] = 0;
+    ParserConfig driver3;
+    Renderer* r3 = driver3.parse(TEST_ASSETS "parser/texture_anon.txt", &s);
+    EXPECT_TRUE(TexLib.contains_texture("Blue"));
+    EXPECT_EQ(errors_count[NOTICE_INDEX], 1);
+    delete r3;
     TexLib.clear();
 }
 
@@ -946,6 +968,17 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     MtlLib.clear();
     TexLib.clear();
     delete r0;
+
+    //duplicate materials
+    ASSERT_EQ(MtlLib.size(), 0);
+    //TODO: check with valgrind
+//    ParserConfig driver1;
+//    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/dualmat_duplicate.txt",
+//    &s);
+//    EXPECT_EQ(MtlLib.size(),1);
+//    TexLib.clear();
+//    MtlLib.clear();
+
 }
 
 SPECTRE_TEST(Parser, children)

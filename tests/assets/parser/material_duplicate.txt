@@ -6,6 +6,8 @@ material: {
   name: "Red Oren-Nayar"
   type: matte
   diffuse: "Green"
+  normal: "Green"
+  specular: "Green"
 }
 
 material: {

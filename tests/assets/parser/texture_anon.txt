@@ -1,0 +1,9 @@
+texture: {
+  name: "Blue"
+  color: [0,0,255]
+}
+
+texture: {
+  color: [255,255,255]
+}
+

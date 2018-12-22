@@ -69,6 +69,7 @@ SPECTRE_TEST(TextureLibrary, add_map)
     TexLib.inherit_map("test map1", map1);
     got = TexLib.get_map("test map1");
     EXPECT_PTR_EQ(got, map1);
+    TexLib.clear();
 }
 
 SPECTRE_TEST(TextureLibrary, remove_texture)
@@ -90,6 +91,7 @@ SPECTRE_TEST(TextureLibrary, remove_texture)
     TexLib.erase_texture("Removeme");
     got = TexLib.get_texture("Removeme");
     EXPECT_PTR_NULL(got);
+    TexLib.clear();
 }
 
 SPECTRE_TEST(TextureLibrary, remove_map)
@@ -108,6 +110,7 @@ SPECTRE_TEST(TextureLibrary, remove_map)
     TexLib.erase_map("Removeme");
     got = TexLib.get_map("Removeme");
     EXPECT_PTR_NULL(got);
+    TexLib.clear();
 }
 
 SPECTRE_TEST(TextureLibrary, contains_texture)
@@ -122,6 +125,7 @@ SPECTRE_TEST(TextureLibrary, contains_texture)
     TexLib.erase_texture("Contained");
     res = TexLib.contains_texture("Contained");
     EXPECT_FALSE(res);
+    TexLib.clear();
 }
 
 SPECTRE_TEST(TextureLibrary, contains_map)
@@ -134,6 +138,7 @@ SPECTRE_TEST(TextureLibrary, contains_map)
     TexLib.erase_map("ContainedM");
     res = TexLib.contains_map("ContainedM");
     EXPECT_FALSE(res);
+    TexLib.clear();
 }
 
 SPECTRE_TEST(TextureLibrary, clear)
@@ -200,15 +205,18 @@ SPECTRE_TEST(TextureLibrary, get_default_texture)
     EXPECT_NEAR(res.b, 1.f, 1e-1f);
 }
 
-SPECTRE_TEST(TextureLibrary, get_default_image)
+SPECTRE_TEST(TextureLibrary, size)
 {
-    HitPoint hp;
-    ColorRGB res;
-    const TextureImage* img0 = TexLib.get_dflt_teximage();
-    res = img0->map(&hp).to_xyz().to_sRGB();
-    EXPECT_NEAR(res.r, 1.f, 1e-2f);
-    EXPECT_NEAR(res.g, 1.f, 1e-2f);
-    EXPECT_NEAR(res.b, 1.f, 1e-2f);
+    ASSERT_EQ(TexLib.size_map(), 0);
+    ASSERT_EQ(TexLib.size_texture(), 0);
+    TextureImage* tex = new TextureImage(TEST_ASSETS "images/black.bmp",
+                                         Vec2(0.f), Vec2(1.f), UNFILTERED);
+    TexLib.inherit_texture("Texture", tex);
+    EXPECT_TRUE(TexLib.contains_texture("Texture"));
+    EXPECT_TRUE(TexLib.contains_map(TEST_ASSETS
+                        "images/black.bmp"));
+    EXPECT_EQ(TexLib.size_texture(), 1);
+    EXPECT_EQ(TexLib.size_map(), 1);
 }
 
 SPECTRE_TEST_END(TextureLibrary)
