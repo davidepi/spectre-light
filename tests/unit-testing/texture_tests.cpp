@@ -38,7 +38,8 @@ SPECTRE_TEST(Texture, TextureUniform_map)
 SPECTRE_TEST(Texture, TextureUniform_get_side)
 {
     TextureUniform tex(SPECTRUM_WHITE);
-    EXPECT_EQ(tex.get_side(), 1);
+    int side = tex.get_side();
+    EXPECT_EQ(side, 1);
 }
 
 SPECTRE_TEST(Texture, TextureUniform_scale_shift)
@@ -379,7 +380,7 @@ SPECTRE_TEST(Texture, TextureImage_get_side)
     Vec2 shift(0.f, 0.f);
     TextureImage tex(TEST_ASSETS "images/correct.bmp", shift, scale,
                      UNFILTERED);
-    EXPECT_EQ(tex.get_side(), 2);
+    EXPECT_EQ((int)tex.get_side(), 2);
 }
 
 SPECTRE_TEST(Mask, MaskBoolean_dflt)

@@ -77,7 +77,7 @@ SPECTRE_TEST(Scene, inherit_light)
     LightOmni* addme = new LightOmni(SPECTRUM_WHITE, transform);
     Scene scene;
     scene.inherit_light(addme);
-    EXPECT_EQ(scene.size_lights(), 1);
+    EXPECT_EQ(scene.size_lights(), (unsigned int)1);
 
     //fill up
     for(int i = scene.size_lights(); i<_MAX_LIGHTS_; i++)
@@ -161,9 +161,9 @@ SPECTRE_TEST(Scene, inherit_sky)
 
     //assert the radiance is changed -> there is the sky
     Spectrum res = scene.get_escaped_radiance(&r);
-    EXPECT_NEAR(res.w[0], 0.95, 1e-2f);
-    EXPECT_NEAR(res.w[1], 1.0, 1e-2f);
-    EXPECT_NEAR(res.w[2], 1.08, 1e-2f);
+    EXPECT_NEAR(res.w[0], 0.95f, 1e-2f);
+    EXPECT_NEAR(res.w[1], 1.f, 1e-2f);
+    EXPECT_NEAR(res.w[2], 1.08f, 1e-2f);
 }
 
 SPECTRE_TEST_END(Scene_tests)

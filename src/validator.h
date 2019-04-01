@@ -29,47 +29,7 @@
 #define _MAX_ASSETS_ 4096
 #endif
 
-///The number π, defined as a floating point
-#define ONE_PI 3.14159265358979323846264338327950288419716939937510582097494459f
-///define the inverse of the pi
-#define INV_PI 0.318309886183790671537767526745028724068919291480912897495f
-///define 2 * π, used extensively in sphere computations
-#define TWO_PI 6.283185307179586476925286766559005768394338798750211641949f
-///define the inverse of 2 * π
-#define INV_TWOPI 0.159154943091895335768883763372514362034459645740456448747f
-///define 4 * π
-#define FOUR_PI 12.56637061435917295385057353311801153678867759750042328389f
-///define the inverse of 4 * π
-#define INV_FOURPI 0.079577471545947667884441881686257181017229822870228224373f
-//define Planck's constant
-#define PLANCK_H 6.62606957E-34f
-//define Boltzmann constant
-#define BOLTZMANN_K 1.38064852E-23f
-//deprecated function, compatible with vs
-#ifdef _MSC_VER
-///Tells the compiler about a deprecated function (Visual Studio style)
-#define DEPRECATED __declspec(deprecated)
-#else
-///Tells the compiler about a deprecated function (GCC style)
-#define DEPRECATED __attribute__((deprecated))
-#endif
 
-#ifdef _MSC_VER
-#if _MSC_VER >= 1700
-///Checks that the return value is used
-#define CHECK_RETVAL_USED _Check_return_
-#else
-///Checks that the return value is used
-#define CHECK_RETVAL_USED
-#endif
-#else
-///Checks that the return value is used
-#define CHECK_RETVAL_USED __attribute__((warn_unused_result))
-#endif
-
-#define UNUSED(X) (void)X
-
-#endif
 
 /**
  *  \endcond

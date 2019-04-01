@@ -1,6 +1,8 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
+#ifdef JPEG_FOUND
+
 #include "io_jpg.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -172,3 +174,5 @@ char jpg_read(const char* name, uint32_t* values)
     }
     return retval;
 }
+
+#endif JPEG_FOUND

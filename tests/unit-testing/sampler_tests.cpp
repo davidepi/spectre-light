@@ -94,7 +94,7 @@ SPECTRE_TEST(Sampler, Distribution1D_sample_continuous)
     Distribution1D dist(vals, 6);
     float pdf;
     EXPECT_EQ(dist.sample_continuous(0.f), 0.f);
-    EXPECT_NEAR(dist.sample_continuous(0.5f, &pdf), 0.68333, 1e-2f);
+    EXPECT_NEAR(dist.sample_continuous(0.5f, &pdf), 0.68333f, 1e-2f);
     EXPECT_NEAR(pdf, 1.428f, 1e-3f);
 }
 

@@ -159,18 +159,6 @@
     <ClCompile Include="..\src\textures\texture_uniform.cpp">
       <Filter>src\textures</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\utility\imageio\bmp.c">
-      <Filter>src\utility\imageio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\utility\imageio\imageio.c">
-      <Filter>src\utility\imageio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\utility\imageio\ppm.c">
-      <Filter>src\utility\imageio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\utility\imageio\tga.c">
-      <Filter>src\utility\imageio</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\materials\bump.cpp">
       <Filter>src\materials</Filter>
     </ClCompile>
@@ -222,11 +210,40 @@
     <ClCompile Include="..\src\utility\date.cpp">
       <Filter>src\utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\imageio.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_bmp.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_jpg.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_png.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_ppm.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_tga.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_tiff.c">
+      <Filter>src\utility\imageio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\light_sky.cpp">
+      <Filter>src\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\light_sun.cpp">
+      <Filter>src\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\distributions.cpp">
+      <Filter>src\samplers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\renderer.hpp" />
     <ClInclude Include="..\src\settings.h" />
-    <ClInclude Include="..\src\validator.h" />
     <ClInclude Include="..\src\accelerators\kdtree.hpp">
       <Filter>src\accelerators</Filter>
     </ClInclude>
@@ -396,24 +413,6 @@
     <ClInclude Include="..\src\textures\texture_uniform.hpp">
       <Filter>src\textures</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\bmp.h">
-      <Filter>src\utility\imageio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\endianness.h">
-      <Filter>src\utility\imageio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\imageio.h">
-      <Filter>src\utility\imageio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\packed_struct.h">
-      <Filter>src\utility\imageio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\ppm.h">
-      <Filter>src\utility\imageio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\tga.h">
-      <Filter>src\utility\imageio</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\materials\bump.hpp">
       <Filter>src\materials</Filter>
     </ClInclude>
@@ -464,6 +463,54 @@
     </ClInclude>
     <ClInclude Include="..\src\utility\date.hpp">
       <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\endianness.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\imageio.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_bmp.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_jpg.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_png.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_ppm.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_tga.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_tiff.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\packed_struct.h">
+      <Filter>src\utility\imageio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\light_sky.hpp">
+      <Filter>src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\light_sun.hpp">
+      <Filter>src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\types_light.h">
+      <Filter>src\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\types_sampler.h">
+      <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\types_metal.h">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\materials\types_microfacet.h">
+      <Filter>src\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\distributions.hpp">
+      <Filter>src\samplers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -153,9 +153,6 @@
     <ClCompile Include="..\src\primitives\asset.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\primitives\box.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\primitives\mesh.cpp">
       <Filter>sources</Filter>
     </ClCompile>
@@ -169,9 +166,6 @@
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\tests\unit-testing\asset_tests.cpp">
-      <Filter>tests</Filter>
-    </ClCompile>
-    <ClCompile Include="..\tests\unit-testing\box_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="..\tests\unit-testing\light_tests.cpp">
@@ -270,16 +264,7 @@
     <ClCompile Include="..\tests\unit-testing\texture_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\utility\imageio\bmp.c">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\utility\imageio\imageio.c">
-      <Filter>sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\utility\imageio\ppm.c">
-      <Filter>sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\utility\imageio\tga.c">
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\tests\unit-testing\array2d_tests.cpp">
@@ -337,6 +322,30 @@
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\tests\unit-testing\date_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_bmp.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_tga.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\light_sky.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lights\light_sun.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\samplers\distributions.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\imageio\io_ppm.c">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\primitives\box.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\box_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>
@@ -452,9 +461,6 @@
     <ClInclude Include="..\src\primitives\asset.hpp">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\primitives\box.hpp">
-      <Filter>sources</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\primitives\mesh.hpp">
       <Filter>sources</Filter>
     </ClInclude>
@@ -506,9 +512,6 @@
     <ClInclude Include="..\src\textures\texture_uniform.hpp">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\bmp.h">
-      <Filter>sources</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\utility\imageio\endianness.h">
       <Filter>sources</Filter>
     </ClInclude>
@@ -516,12 +519,6 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utility\imageio\packed_struct.h">
-      <Filter>sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\ppm.h">
-      <Filter>sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\imageio\tga.h">
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utility\array2D.hpp">
@@ -570,6 +567,27 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utility\date.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_bmp.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_tga.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\light_sky.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lights\light_sun.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\samplers\distributions.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\imageio\io_png.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\primitives\box.hpp">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>

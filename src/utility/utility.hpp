@@ -14,7 +14,7 @@
 #ifndef __UTILITY_HPP__
 #define __UTILITY_HPP__
 
-#include "settings.h" //ONE_PI
+#include "settings.h" //ONE_PI, M_PI
 #include "utility/console.hpp"
 #include "localization.h"
 #include <cstdio> //sprintf

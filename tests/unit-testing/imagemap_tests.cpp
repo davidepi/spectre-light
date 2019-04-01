@@ -342,7 +342,7 @@ SPECTRE_TEST(ImageMap, get_side_fun)
     const pixBGRA data[4] = {0xF94E47AFU, 0x2B196B67U, 0xECA970F6U,
                              0x12CDBB6BU};
     ImageMapUnfiltered map0(data, 2);
-    EXPECT_EQ(map0.get_side(), 2);
+    EXPECT_EQ((int)map0.get_side(), 2);
 }
 
 SPECTRE_TEST_END(ImageMap_tests)

@@ -73,7 +73,9 @@
     <ClCompile Include="..\src\lights\light.cpp" />
     <ClCompile Include="..\src\lights\light_area.cpp" />
     <ClCompile Include="..\src\lights\light_omni.cpp" />
+    <ClCompile Include="..\src\lights\light_sky.cpp" />
     <ClCompile Include="..\src\lights\light_spot.cpp" />
+    <ClCompile Include="..\src\lights\light_sun.cpp" />
     <ClCompile Include="..\src\materials\bdf.cpp" />
     <ClCompile Include="..\src\materials\bump.cpp" />
     <ClCompile Include="..\src\materials\dual.cpp" />
@@ -101,6 +103,7 @@
     <ClCompile Include="..\src\primitives\sphere.cpp" />
     <ClCompile Include="..\src\primitives\triangle.cpp" />
     <ClCompile Include="..\src\renderer.cpp" />
+    <ClCompile Include="..\src\samplers\distributions.cpp" />
     <ClCompile Include="..\src\samplers\filter_box.cpp" />
     <ClCompile Include="..\src\samplers\filter_gaussian.cpp" />
     <ClCompile Include="..\src\samplers\filter_lanczos.cpp" />
@@ -119,10 +122,10 @@
     <ClCompile Include="..\src\utility\console.cpp" />
     <ClCompile Include="..\src\utility\date.cpp" />
     <ClCompile Include="..\src\utility\file.cpp" />
-    <ClCompile Include="..\src\utility\imageio\bmp.c" />
     <ClCompile Include="..\src\utility\imageio\imageio.c" />
-    <ClCompile Include="..\src\utility\imageio\ppm.c" />
-    <ClCompile Include="..\src\utility\imageio\tga.c" />
+    <ClCompile Include="..\src\utility\imageio\io_bmp.c" />
+    <ClCompile Include="..\src\utility\imageio\io_ppm.c" />
+    <ClCompile Include="..\src\utility\imageio\io_tga.c" />
     <ClCompile Include="..\src\utility\occlusion_tester.cpp" />
     <ClCompile Include="..\src\utility\scene.cpp" />
     <ClCompile Include="..\src\utility\spectrum.cpp" />
@@ -183,7 +186,9 @@
     <ClInclude Include="..\src\lights\light.hpp" />
     <ClInclude Include="..\src\lights\light_area.hpp" />
     <ClInclude Include="..\src\lights\light_omni.hpp" />
+    <ClInclude Include="..\src\lights\light_sky.hpp" />
     <ClInclude Include="..\src\lights\light_spot.hpp" />
+    <ClInclude Include="..\src\lights\light_sun.hpp" />
     <ClInclude Include="..\src\materials\bdf.hpp" />
     <ClInclude Include="..\src\materials\bsdf.hpp" />
     <ClInclude Include="..\src\materials\bump.hpp" />
@@ -210,6 +215,7 @@
     <ClInclude Include="..\src\primitives\shape.hpp" />
     <ClInclude Include="..\src\primitives\sphere.hpp" />
     <ClInclude Include="..\src\primitives\triangle.hpp" />
+    <ClInclude Include="..\src\samplers\distributions.hpp" />
     <ClInclude Include="..\src\samplers\filter.hpp" />
     <ClInclude Include="..\src\samplers\filter_box.hpp" />
     <ClInclude Include="..\src\samplers\filter_gaussian.hpp" />
@@ -231,12 +237,12 @@
     <ClInclude Include="..\src\utility\console.hpp" />
     <ClInclude Include="..\src\utility\date.hpp" />
     <ClInclude Include="..\src\utility\file.hpp" />
-    <ClInclude Include="..\src\utility\imageio\bmp.h" />
     <ClInclude Include="..\src\utility\imageio\endianness.h" />
     <ClInclude Include="..\src\utility\imageio\imageio.h" />
+    <ClInclude Include="..\src\utility\imageio\io_bmp.h" />
+    <ClInclude Include="..\src\utility\imageio\io_png.h" />
+    <ClInclude Include="..\src\utility\imageio\io_tga.h" />
     <ClInclude Include="..\src\utility\imageio\packed_struct.h" />
-    <ClInclude Include="..\src\utility\imageio\ppm.h" />
-    <ClInclude Include="..\src\utility\imageio\tga.h" />
     <ClInclude Include="..\src\utility\occlusion_tester.hpp" />
     <ClInclude Include="..\src\utility\scene.hpp" />
     <ClInclude Include="..\src\utility\spectrum.hpp" />

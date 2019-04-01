@@ -1,6 +1,8 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
+#ifdef PNG_FOUND
+
 #include "io_png.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -166,3 +168,5 @@ char png_read(const char* name, uint32_t* values)
     }
     return retval;
 }
+
+#endif PNG_FOUND

@@ -115,7 +115,7 @@ public:
     /**
      *  \brief Returns the side of the Texture
      *
-     *  \return An int specifying the side of the texture
+     *  \return An integer specifying the side of the texture
      */
     uint16_t get_side() const override;
 

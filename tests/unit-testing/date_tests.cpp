@@ -113,39 +113,39 @@ SPECTRE_TEST(Date, constructor_given)
 SPECTRE_TEST(Date, get_julian_day)
 {
     Date d1(2000, 1, 1, 12, 0, 0);
-    EXPECT_NEAR(d1.get_julian_date(), 2451545.0, 1e-5f);
+    EXPECT_NEAR(d1.get_julian_date(), 2451545.0, 1e-5);
     Date d2(1999, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d2.get_julian_date(), 2451179.5, 1e-5f);
+    EXPECT_NEAR(d2.get_julian_date(), 2451179.5, 1e-5);
     Date d3(1987, 1, 27, 0, 0, 0);
-    EXPECT_NEAR(d3.get_julian_date(), 2446822.5, 1e-5f);
+    EXPECT_NEAR(d3.get_julian_date(), 2446822.5, 1e-5);
     Date d4(1987, 6, 19, 12, 0, 0);
-    EXPECT_NEAR(d4.get_julian_date(), 2446966.0, 1e-5f);
+    EXPECT_NEAR(d4.get_julian_date(), 2446966.0, 1e-5);
     Date d5(1988, 1, 27, 0, 0, 0);
-    EXPECT_NEAR(d5.get_julian_date(), 2447187.5, 1e-5f);
+    EXPECT_NEAR(d5.get_julian_date(), 2447187.5, 1e-5);
     Date d6(1988, 6, 19, 12, 0, 0);
-    EXPECT_NEAR(d6.get_julian_date(), 2447332.0, 1e-5f);
+    EXPECT_NEAR(d6.get_julian_date(), 2447332.0, 1e-5);
     Date d7(1900, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d7.get_julian_date(), 2415020.5, 1e-5f);
+    EXPECT_NEAR(d7.get_julian_date(), 2415020.5, 1e-5);
     Date d8(1600, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d8.get_julian_date(), 2305447.5, 1e-5f);
+    EXPECT_NEAR(d8.get_julian_date(), 2305447.5, 1e-5);
     Date d9(1600, 12, 31, 0, 0, 0);
-    EXPECT_NEAR(d9.get_julian_date(), 2305812.5, 1e-5f);
+    EXPECT_NEAR(d9.get_julian_date(), 2305812.5, 1e-5);
     Date d10(837, 4, 10, 7, 12, 0);
-    EXPECT_NEAR(d10.get_julian_date(), 2026871.8, 1e-5f);
+    EXPECT_NEAR(d10.get_julian_date(), 2026871.8, 1e-5);
     Date d11(-123, 12, 31, 0, 0, 0);
-    EXPECT_NEAR(d11.get_julian_date(), 1676496.5, 1e-5f);
+    EXPECT_NEAR(d11.get_julian_date(), 1676496.5, 1e-5);
     Date d12(-122, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d12.get_julian_date(), 1676497.5, 1e-5f);
+    EXPECT_NEAR(d12.get_julian_date(), 1676497.5, 1e-5);
     Date d13(-1000, 7, 12, 12, 0, 0);
-    EXPECT_NEAR(d13.get_julian_date(), 1356001.0, 1e-5f);
+    EXPECT_NEAR(d13.get_julian_date(), 1356001.0, 1e-5);
     Date d14(-1000, 2, 29, 0, 0, 0);
-    EXPECT_NEAR(d14.get_julian_date(), 1355866.5, 1e-5f);
+    EXPECT_NEAR(d14.get_julian_date(), 1355866.5, 1e-5);
     Date d15(-1001, 8, 17, 21, 36, 0);
-    EXPECT_NEAR(d15.get_julian_date(), 1355671.4, 1e-5f);
+    EXPECT_NEAR(d15.get_julian_date(), 1355671.4, 1e-5);
     Date d16(-4712, 1, 1, 12, 0, 0);
-    EXPECT_NEAR(d16.get_julian_date(), 0.0, 1e-5f);
+    EXPECT_NEAR(d16.get_julian_date(), 0.0, 1e-5);
     Date d17(-4712, 1, 1, 0, 0, 0);
-    EXPECT_NEAR(d17.get_julian_date(), 0.0, 1e-5f);
+    EXPECT_NEAR(d17.get_julian_date(), 0.0, 1e-5);
 }
 
 SPECTRE_TEST(Date, get_delta_t)

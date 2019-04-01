@@ -1,6 +1,8 @@
 /*  author: Davide Pizzolotto   */
 /*  license: MIT                */
 
+#ifdef TIFF_FOUND
+
 #include "io_tiff.h"
 #include <memory.h>
 #include <tiffio.h>
@@ -125,3 +127,5 @@ char tiff_read(const char* name, uint32_t* values)
     }
     return retval;
 }
+
+#endif TIFF_FOUND

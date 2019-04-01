@@ -79,7 +79,7 @@ SPECTRE_TEST(Utility, radians_inline_double)
     EXPECT_NEAR(radians(90.0), M_PI/2.0, 1e-5);
     EXPECT_NEAR(radians(180.0), M_PI, 1e-5);
     EXPECT_NEAR(radians(270.0), M_PI*3.0/2.0, 1e-5);
-    EXPECT_NEAR(radians(360.0), 2*M_PI, 1e-5f);
+    EXPECT_NEAR(radians(360.0), 2*M_PI, 1e-5);
     EXPECT_NEAR(radians(450.0), 2*M_PI+M_PI/2.0, 1e-5);
 }
 

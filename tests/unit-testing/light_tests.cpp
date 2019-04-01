@@ -425,9 +425,9 @@ SPECTRE_TEST(Light, LightSun_sunpos)
     Ray r;
     float pdf;
     light.sample_surface(0., 0.f, 0.f, 0.f, &r, &pdf);
-    EXPECT_NEAR(r.direction.x, 0.898704, 1e-5f);
-    EXPECT_NEAR(r.direction.y, -0.37717, 1e-5f);
-    EXPECT_NEAR(r.direction.z, -0.22376, 1e-5f);
+    EXPECT_NEAR(r.direction.x, 0.898704f, 1e-5f);
+    EXPECT_NEAR(r.direction.y, -0.37717f, 1e-5f);
+    EXPECT_NEAR(r.direction.z, -0.22376f, 1e-5f);
 
     //day, north
     LightSun north(SPECTRUM_WHITE, &centre, 1, d, 64.12f, -21.92f, 0.f);
@@ -548,13 +548,13 @@ SPECTRE_TEST(Light, LightSky_radiance_escaped)
     Ray north_east(Point3(0, 0, 0), Vec3(1, 1, 1).normalize());
     Ray north_west(Point3(0, 0, 0), Vec3(-1, 1, 1).normalize());
     Spectrum res = sky.radiance_escaped(&north_east);
-    EXPECT_NEAR(res.w[0], 0.35757, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.71515, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.11919, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.35757f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.71515f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.11919f, 1e-5f);
     res = sky.radiance_escaped(&north_west);
-    EXPECT_NEAR(res.w[0], 0.41245, 1e-5f);
-    EXPECT_NEAR(res.w[1], 0.21267, 1e-5f);
-    EXPECT_NEAR(res.w[2], 0.01933, 1e-5f);
+    EXPECT_NEAR(res.w[0], 0.41245f, 1e-5f);
+    EXPECT_NEAR(res.w[1], 0.21267f, 1e-5f);
+    EXPECT_NEAR(res.w[2], 0.01933f, 1e-5f);
     delete tex;
 }
 
