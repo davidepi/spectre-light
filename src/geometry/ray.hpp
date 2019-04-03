@@ -15,9 +15,8 @@
 #ifndef __RAY_HPP__
 #define __RAY_HPP__
 
+
 #include "geometry/point3.hpp"
-#include "geometry/vec3.hpp"
-#include "settings.h"
 
 /**
  *  \class Ray ray.hpp "geometry/ray.hpp"
@@ -128,14 +127,19 @@ public:
 
     ///The inverse of the \a x component of the ray's direction
     float inverseX;
+
     ///The inverse of the \a y component of the ray's direction
     float inverseY;
+
     ///The inverse of the \a z component of the ray's direction
     float inverseZ;
+
     ///true if the sign of the inverse of the \a x component is negative
     bool isXInvNeg;
+
     ///true if the sign of the inverse of the \a y component is negative
     bool isYInvNeg;
+
     ///true if the sign of the inverse of the \a z component is negative
     bool isZInvNeg;
 };

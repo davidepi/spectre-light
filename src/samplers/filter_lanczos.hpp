@@ -15,9 +15,7 @@
 #ifndef __FILTER_LANCZOS_HPP__
 #define __FILTER_LANCZOS_HPP__
 
-#include <cmath>
 #include "samplers/filter.hpp"
-#include "settings.h" //ONE_PI
 
 /**
  *  \class FilterLanczos filter_lanczos.hpp "samplers/filter_lanczos.hpp"

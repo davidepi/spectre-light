@@ -18,16 +18,16 @@
 ### V0.2  - OVERCAST ###
 - [x] unit testing
 - [x] extended image support (.jpg/.tiff support)
-- [x] lex/yacc parser
+- [x] ASCII parser (flex/bison)
 - [x] diffuse texture mapping
 - [x] normal textures
 - [ ] **-> new light system (sunlight + environment) <-**
+- [ ] objects serialization
+- [ ] binary parser (same system exchange format only)
+- [ ] blender integration
 - [ ] real cameras (and depth of field)
 
 ### V0.3 ###
-- [ ] serialization
-- [ ] binary parser
-- [ ] blender integration
 - [ ] memory manager
 - [ ] giant datasets
 - [ ] bidirectional integrators

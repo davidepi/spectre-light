@@ -12,6 +12,8 @@
 
 #include "materials/material_library.hpp"
 #include "primitives/sphere.hpp"
+#include "materials/single_brdf.hpp"
+#include "materials/lambertian.hpp"
 
 SPECTRE_TEST_INIT(MaterialLibrary_tests)
 

@@ -2,6 +2,8 @@
 //license: GNU GPLv3
 
 #include "material_library.hpp"
+#include "single_brdf.hpp"
+#include "lambertian.hpp"
 
 MaterialLibrary::MaterialLibrary()
 {
@@ -22,8 +24,7 @@ void MaterialLibrary::add_inherit(const std::string& name, Bsdf* material)
 const Bsdf* MaterialLibrary::get(const std::string& name) const
 {
     const Bsdf* retval;
-    std::unordered_map<std::string, const Bsdf*>::const_iterator got =
-            lib.find(name);
+    auto got = lib.find(name);
     if(got != lib.end())
         retval = got->second;
     else
@@ -50,8 +51,7 @@ void MaterialLibrary::clear()
 
 bool MaterialLibrary::contains(const std::string& name) const
 {
-    std::unordered_map<std::string, const Bsdf*>::const_iterator got =
-            lib.find(name);
+    auto got = lib.find(name);
     return got != lib.end();
 }
 

@@ -15,12 +15,8 @@
 #define __TEXTURE_LIBRARY_HPP__
 
 #include "textures/texture.hpp"
-#include "textures/texture_uniform.hpp"
 #include "textures/image_map.hpp"
-#include "materials/bump.hpp"
-#include "texture_image.hpp"
 #include <unordered_map>
-#include <vector>
 #include <string>
 
 //Forward declaration, since TextureImage needs TexLib

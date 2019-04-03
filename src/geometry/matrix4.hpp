@@ -16,15 +16,10 @@
 #ifndef __MATRIX4_H__
 #define __MATRIX4_H__
 
-#include "utility/utility.hpp"
+
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
 #include "geometry/ray.hpp"
-#include "utility/console.hpp"
-#include <cmath>
-#include <string>
-#include <sstream> //to_string
-#include <cstdio>
 
 /**
  *  \class Matrix4 matrix4.hpp "geometry/matrix4.hpp"

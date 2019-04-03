@@ -15,15 +15,6 @@
 #define __PATH_TRACER_HPP__
 
 #include "integrators/integrator.hpp"
-#include "samplers/sampler.hpp"
-#include "utility/scene.hpp"
-#include "utility/color.hpp"
-#include "utility/spectrum.hpp"
-#include "primitives/shape.hpp"
-#include "lights/light_area.hpp"
-#include "utility/occlusion_tester.hpp"
-#include "settings.h"
-#include "integrators/ray_tracer.hpp"
 
 /**
  * \class PathTracer path_tracer.hpp

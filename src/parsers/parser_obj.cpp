@@ -1,4 +1,10 @@
 #include "parser_obj.hpp"
+#include "materials/material_library.hpp"
+#include "primitives/triangle.hpp"
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <cstdlib>
 
 #ifdef TESTS
 //extreme value to test every case

@@ -35,10 +35,7 @@ FILE(GLOB spectre_core_sources
      src/parsers/parser_config.cpp
      src/parsers/parsed_structs.c
      src/parsers/parser_obj.cpp
-     src/utility/imageio/io_bmp.c
-     src/utility/imageio/io_tga.c
-     src/utility/imageio/io_ppm.c
-     src/utility/imageio/imageio.c)
+     src/utility/imageio/*.c)
 FILE(GLOB spectre_test_sources
      tests/unit-testing/*.cpp
      )
@@ -130,9 +127,9 @@ ENDIF(GNUPLOT_FOUND)
 FIND_PACKAGE(JPEG)
 IF(JPEG_FOUND)
     INCLUDE_DIRECTORIES(${JPEG_INCLUDE_DIR})
-    TARGET_SOURCES(spectre-full PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_jpg.c)
-    TARGET_SOURCES(spectre-rgb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_jpg.c)
     SET_PROPERTY(SOURCE src/utility/imageio/imageio.c APPEND_STRING PROPERTY
+                 COMPILE_FLAGS " -DJPEG_FOUND ")
+    SET_PROPERTY(SOURCE src/utility/imageio/io_jpg.c APPEND_STRING PROPERTY
                  COMPILE_FLAGS " -DJPEG_FOUND ")
     TARGET_LINK_LIBRARIES(spectre-full ${JPEG_LIBRARIES})
     TARGET_LINK_LIBRARIES(spectre-rgb ${JPEG_LIBRARIES})
@@ -141,11 +138,13 @@ IF(JPEG_FOUND)
                      PROPERTY COMPILE_FLAGS " -DJPEG_FOUND ")
         SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DJPEG_FOUND ")
-                   TARGET_SOURCES(runTests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_jpg.c)
+        SET_PROPERTY(SOURCE tests/unit-testing/io_jpg.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DJPEG_FOUND ")
+        SET_PROPERTY(SOURCE tests/unit-testing/io_jpg_tests.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DJPEG_FOUND ")
         TARGET_LINK_LIBRARIES(runTests ${JPEG_LIBRARIES})
     ENDIF(GTEST_FOUND)
     IF(GNUPLOT_FOUND)
-      TARGET_SOURCES(distributions_data PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_jpg.c)
         TARGET_LINK_LIBRARIES(distributions_data ${JPEG_LIBRARIES})
     ENDIF(GNUPLOT_FOUND)
 ENDIF(JPEG_FOUND)
@@ -154,9 +153,9 @@ ENDIF(JPEG_FOUND)
 FIND_PACKAGE(PNG)
 IF(PNG_FOUND)
     INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
-    TARGET_SOURCES(spectre-full PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_png.c)
-    TARGET_SOURCES(spectre-rgb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_png.c)
     SET_PROPERTY(SOURCE src/utility/imageio/imageio.c APPEND_STRING PROPERTY
+                 COMPILE_FLAGS " -DPNG_FOUND ")
+    SET_PROPERTY(SOURCE src/utility/imageio/io_png.c APPEND_STRING PROPERTY
                  COMPILE_FLAGS " -DPNG_FOUND ")
     TARGET_LINK_LIBRARIES(spectre-full ${PNG_LIBRARIES})
     TARGET_LINK_LIBRARIES(spectre-rgb ${PNG_LIBRARIES})
@@ -165,11 +164,13 @@ IF(PNG_FOUND)
                      PROPERTY COMPILE_FLAGS " -DPNG_FOUND ")
         SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DPNG_FOUND ")
-                   TARGET_SOURCES(runTests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_png.c)
+        SET_PROPERTY(SOURCE tests/unit-testing/io_png.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DPNG_FOUND ")
+        SET_PROPERTY(SOURCE tests/unit-testing/io_png.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DPNG_FOUND ")
         TARGET_LINK_LIBRARIES(runTests ${PNG_LIBRARIES})
     ENDIF(GTEST_FOUND)
     IF(GNUPLOT_FOUND)
-      TARGET_SOURCES(distributions_data PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_png.c)
         TARGET_LINK_LIBRARIES(distributions_data ${PNG_LIBRARIES})
     ENDIF(GNUPLOT_FOUND)
 ENDIF(PNG_FOUND)
@@ -178,9 +179,9 @@ ENDIF(PNG_FOUND)
 FIND_PACKAGE(TIFF)
 IF(TIFF_FOUND)
     INCLUDE_DIRECTORIES(${TIFF_INCLUDE_DIR})
-    TARGET_SOURCES(spectre-full PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_tiff.c)
-    TARGET_SOURCES(spectre-rgb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_tiff.c)
     SET_PROPERTY(SOURCE src/utility/imageio/imageio.c APPEND_STRING PROPERTY
+                 COMPILE_FLAGS " -DTIFF_FOUND ")
+    SET_PROPERTY(SOURCE src/utility/imageio/io_tiff.c APPEND_STRING PROPERTY
                  COMPILE_FLAGS " -DTIFF_FOUND ")
     TARGET_LINK_LIBRARIES(spectre-full ${TIFF_LIBRARIES})
     TARGET_LINK_LIBRARIES(spectre-rgb ${TIFF_LIBRARIES})
@@ -189,11 +190,13 @@ IF(TIFF_FOUND)
                      PROPERTY COMPILE_FLAGS " -DTIFF_FOUND ")
         SET_PROPERTY(SOURCE tests/unit-testing/imagefilm_tests.cpp APPEND_STRING
                      PROPERTY COMPILE_FLAGS " -DTIFF_FOUND ")
-                   TARGET_SOURCES(runTests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_tiff.c)
+        SET_PROPERTY(SOURCE tests/unit-testing/io_tiff.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DTIFF_FOUND ")
+        SET_PROPERTY(SOURCE tests/unit-testing/io_tiff.cpp APPEND_STRING
+                     PROPERTY COMPILE_FLAGS " -DTIFF_FOUND ")
         TARGET_LINK_LIBRARIES(runTests ${TIFF_LIBRARIES})
     ENDIF(GTEST_FOUND)
     IF(GNUPLOT_FOUND)
-      TARGET_SOURCES(distributions_data PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/imageio/io_tiff.c)
         TARGET_LINK_LIBRARIES(distributions_data ${TIFF_LIBRARIES})
     ENDIF(GNUPLOT_FOUND)
 ENDIF(TIFF_FOUND)

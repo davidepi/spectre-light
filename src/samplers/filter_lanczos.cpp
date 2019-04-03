@@ -2,6 +2,8 @@
 //license: GNU GPLv3
 
 #include "filter_lanczos.hpp"
+#include "settings.h" //ONE_PI
+#include <cmath>
 
 ///Number of pixels affected by the lanczos filter on the x axis
 #define EXTENT_FILTER_LANCZOS_X 4

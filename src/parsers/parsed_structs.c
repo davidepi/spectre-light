@@ -1,4 +1,6 @@
 #include "parsed_structs.h"
+#include <stdlib.h> /* NULL */
+#include <string.h> /* memcpy */
 
 void init_ParsedMaterial(struct ParsedMaterial* val)
 {

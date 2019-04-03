@@ -2,6 +2,9 @@
 //license: GNU GPLv3
 
 #include "triangle.hpp"
+#include "utility/console.hpp"
+#include "utility/utility.hpp"
+#include <cmath>
 
 Triangle::Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)
         :a(v0), b(v1), c(v2)

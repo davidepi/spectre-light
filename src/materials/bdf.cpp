@@ -3,6 +3,12 @@
 
 #include "bdf.hpp"
 #include "materials/lambertian.hpp"
+#include "primitives/shape.hpp"
+#include "utility/console.hpp"
+#include "textures/texture.hpp"
+#include "textures/texture_library.hpp"
+#include <cstring> //error msg
+#include <cstdlib> //malloc error msg
 
 Bdf::Bdf(char flags)
 {

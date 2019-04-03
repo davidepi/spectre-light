@@ -14,6 +14,9 @@
 #include "primitives/sphere.hpp"
 #include "primitives/box.hpp"
 #include "utility/utility.hpp"
+#include "materials/single_brdf.hpp"
+#include "materials/lambertian.hpp"
+#include "textures/texture_uniform.hpp"
 #include <climits>
 
 SPECTRE_TEST_INIT(Asset_tests)

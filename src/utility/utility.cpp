@@ -1,6 +1,8 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
+#include <cstring>
+#include <cstdio>
 #include "utility.hpp"
 
 void format_seconds(unsigned int secs, char* out)

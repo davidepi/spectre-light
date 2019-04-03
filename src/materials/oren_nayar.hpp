@@ -15,9 +15,7 @@
 #define __OREN_NAYAR_HPP__
 
 #include "materials/bdf.hpp"
-#include "utility/color.hpp"
-#include "utility/spectrum.hpp"
-#include "geometry/vec3.hpp"
+
 
 /**
  *  \class OrenNayar oren_nayar.hpp "materials/oren_nayar.hpp"
@@ -50,7 +48,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the BxDF
      */
-    Spectrum value(const Vec3* wo, const Vec3* wi) const;
+    Spectrum value(const Vec3* wo, const Vec3* wi) const override;
 
 private:
 

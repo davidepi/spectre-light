@@ -12,6 +12,9 @@
 
 #include "parsers/parser_obj.hpp"
 #include "primitives/mesh.hpp"
+#include "materials/single_brdf.hpp"
+#include "materials/lambertian.hpp"
+#include "materials/material_library.hpp"
 
 SPECTRE_TEST_INIT(ParserObj_tests)
 

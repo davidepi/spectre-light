@@ -15,13 +15,7 @@
 #ifndef __BSDF_HPP__
 #define __BSDF_HPP__
 
-#include "utility/spectrum.hpp"
-#include "geometry/vec3.hpp"
-#include "utility/console.hpp"
-#include "textures/texture.hpp"
-#include "textures/texture_library.hpp"
-#include <cstring> //error msg
-#include <cstdlib> //malloc error msg
+#include "bump.hpp"
 
 /**
  *  \class Bsdf bdf.hpp "materials/bdf.hpp"

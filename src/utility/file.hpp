@@ -14,20 +14,10 @@
 #ifndef __FILE_HPP__
 #define __FILE_HPP__
 
-#include <cstring> //strcpy
-#include <cstdlib> //malloc free
 #include <vector>
-#include <string>
-// -- *nix only
-#ifdef _WIN32
-#include <io.h>
-//windows.h include moved in the .cpp
-#else
-#include <unistd.h> //access
-#include <sys/stat.h> //ISDIR mkdir
-#include <dirent.h> //opendir & co
+#ifndef _WIN32
+#include <sys/stat.h>
 #endif
-//
 
 /**
  * \class File file.hpp "utility/file.hpp"

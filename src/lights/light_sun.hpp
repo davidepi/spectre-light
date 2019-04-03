@@ -16,9 +16,6 @@
 
 #include "lights/light.hpp"
 #include "utility/date.hpp"
-#include "utility/spectrum.hpp"
-#include "geometry/point3.hpp"
-#include "geometry/ray.hpp"
 
 
 /**

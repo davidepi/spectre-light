@@ -14,11 +14,8 @@
 #ifndef __LIGHT_AREA_HPP__
 #define __LIGHT_AREA_HPP__
 
-#include "utility/spectrum.hpp"
-#include "primitives/asset.hpp"
-#include "primitives/shape.hpp"
 #include "lights/light.hpp"
-#include <cmath> //isinf
+#include "primitives/asset.hpp"
 
 /**
  * \class LightArea light_area.hpp "lights/light_area.hpp"

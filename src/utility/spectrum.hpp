@@ -16,7 +16,6 @@
 
 #include "utility/color.hpp"
 #include "settings.h"
-#include <cmath>
 #include <initializer_list>
 
 ///The wavelenght of the first sample in nanometers

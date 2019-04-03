@@ -16,10 +16,7 @@
 
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
-#include "materials/single_brdf.hpp"
-#include "materials/lambertian.hpp"
 #include <unordered_map>
-#include <string>
 
 /**
  * \class MaterialLibrary material_library.hpp "materials/material_library.hpp"

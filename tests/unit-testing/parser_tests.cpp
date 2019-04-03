@@ -20,6 +20,7 @@
 #include "cameras/camera_perspective.hpp"
 #include "cameras/camera360.hpp"
 #include "primitives/sphere.hpp"
+#include "textures/texture_library.hpp"
 
 SPECTRE_TEST_INIT(Parser_tests)
 
@@ -972,12 +973,13 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     //duplicate materials
     ASSERT_EQ(MtlLib.size(), 0);
     //TODO: check with valgrind
-//    ParserConfig driver1;
-//    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/dualmat_duplicate.txt",
-//    &s);
+    ParserConfig driver1;
+    Renderer* r1 = driver1.parse(TEST_ASSETS "parser/dualmat_duplicate.txt",
+                                 &s);
+    delete r1;
 //    EXPECT_EQ(MtlLib.size(),1);
-//    TexLib.clear();
-//    MtlLib.clear();
+    TexLib.clear();
+    MtlLib.clear();
 
 }
 

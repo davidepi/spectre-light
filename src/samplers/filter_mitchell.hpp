@@ -15,7 +15,6 @@
 #ifndef __FILTER_MITCHELL_HPP__
 #define __FILTER_MITCHELL_HPP__
 
-#include <cmath>
 #include "samplers/filter.hpp"
 
 /**

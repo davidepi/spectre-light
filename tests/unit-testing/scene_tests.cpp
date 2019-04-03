@@ -16,6 +16,7 @@
 #include "utility/utility.hpp"
 #include "lights/light_omni.hpp"
 #include "lights/light_sky.hpp"
+#include "textures/texture_uniform.hpp"
 #include <climits>
 
 SPECTRE_TEST_INIT(Scene_tests)

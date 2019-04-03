@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "filter_mitchell.hpp"
+#include <cmath>
 
 ///Number of pixels affected by the mitchell filter on the x axis
 #define EXTENT_FILTER_MITCHELL_X 2

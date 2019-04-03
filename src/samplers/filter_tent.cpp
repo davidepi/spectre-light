@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "filter_tent.hpp"
+#include "utility/utility.hpp"
 
 ///Number of pixels affected by the tent filter on the x axis
 #define EXTENT_FILTER_TENT_X 2

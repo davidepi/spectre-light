@@ -5,8 +5,8 @@
  *  \file image_map.hpp
  *  \brief     Helper classes used to handle Images used as textures
  *  \details   ImageMap class, a square, power of 2, image used inside
- *             TextureImage as a MIPMap.
- *             Several other classes are provided to cope with varying filtering methods
+ *             TextureImage as a MIPMap. Several other classes are provided
+ *             to cope with varying filtering methods
  *  \author    Davide Pizzolotto
  *  \version   0.2
  *  \date      9 Aug 2018
@@ -17,14 +17,8 @@
 #ifndef __IMAGE_MAP_HPP__
 #define __IMAGE_MAP_HPP__
 
-#include "utility/file.hpp"
 #include "utility/imageio/imageio.h"
-#include "samplers/filter_box.hpp"
-#include "samplers/filter_lanczos.hpp"
 #include "utility/utility.hpp" //swap
-#include <cstdlib> //malloc/free
-#include <cmath> //sqrtf
-#include <array> //EWA weights allocation
 #include "utility/array2D.hpp"
 
 //forward declaration to be used in TexelMap

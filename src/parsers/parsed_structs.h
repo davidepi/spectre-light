@@ -4,15 +4,13 @@
 #ifndef __PARSED_STRUCTS_H__
 #define __PARSED_STRUCTS_H__
 
-#include <stdlib.h> /* NULL */
-#include <string.h> /* memcpy */
-#include <stdint.h>
 #include "lights/types_light.h"
 #include "materials/types_metal.h"
 #include "materials/types_microfacet.h"
 #include "textures/types_imgchannel.h"
 #include "samplers/types_sampler.h"
 #include "cameras/types_camera.h"
+#include <stdint.h>
 
 /** Type of materials that can be created */
 enum mat_t

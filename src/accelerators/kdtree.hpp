@@ -15,11 +15,6 @@
 #define __KDTREE_H__
 
 #include "primitives/asset.hpp"
-#include "utility/console.hpp"
-#include <vector>
-#include <algorithm>
-#include <cstdint>
-#include <cstdlib>
 
 ///Defines the minimum number of assests in a leaf
 #define _LEAF_ASSETS_ 3

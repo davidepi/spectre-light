@@ -2,17 +2,21 @@
 //license: GNU GPLv3
 
 #include "file.hpp"
-
+#include <cstring>
+#include <cstdlib>
 #ifdef _WIN32
 //THIS MUST STAY HERE!
 //Windows.h adds #define interface struct and breaks vec3.hpp
 //seriously???
 #include <Windows.h>
+#include <io.h>
 const char File::PATH_SEPARATOR = '\\';
 const char* File::PATH_SEPARATOR_STRING = "\\";
 #else
 const char File::PATH_SEPARATOR = '/';
 const char* File::PATH_SEPARATOR_STRING = "/";
+#include <unistd.h> //access
+#include <dirent.h> //opendir & co
 #endif
 
 //given an absolute path like "/root" and a relative like "../home/User/./"

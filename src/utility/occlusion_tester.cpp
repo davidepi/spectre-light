@@ -1,6 +1,7 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
+#include <cfloat>
 #include "occlusion_tester.hpp"
 
 OcclusionTester::OcclusionTester(const Scene* scene)

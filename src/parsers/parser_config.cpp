@@ -14,6 +14,7 @@
 #include "textures/texture_uniform.hpp"
 #include "textures/texture_image.hpp"
 #include "textures/texture_normal.hpp"
+#include "textures/texture_library.hpp"
 #include "materials/single_brdf.hpp"
 #include "materials/multi_bsdf.hpp"
 #include "materials/oren_nayar.hpp"
@@ -32,6 +33,7 @@
 #include "lights/light_omni.hpp"
 #include "lights/light_spot.hpp"
 #include "lights/light_sun.hpp"
+#include <unordered_set>
 
 extern "C" { void parse_config(FILE*, struct ParsedScene*); }
 

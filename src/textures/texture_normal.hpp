@@ -16,6 +16,7 @@
 #define __TEXTURENORMAL_HPP__
 
 #include "textures/texture_image.hpp"
+#include "materials/bump.hpp"
 
 /**
  *  \brief Provides an implementation of the normal maps

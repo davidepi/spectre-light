@@ -19,18 +19,13 @@ extern "C" {
 #include "utility/imageio/imageio.h"
 }
 
-#include "samplers/filter.hpp"
 #include "samplers/sampler.hpp"
-#include "utility/file.hpp"
 #include "utility/color.hpp"
-#include "utility/console.hpp"
-#include "utility/utility.hpp"
+#include "samplers/filter.hpp"
 #include "utility/array2D.hpp"
-#include <cstring>
-#include <cmath>
-#include <mutex>
+#include "utility/file.hpp"
 #include <stack>
-#include <cstdio>
+#include <mutex>
 
 ///Used to store the weighted average for every pixel
 struct Pixel
@@ -204,7 +199,7 @@ public:
     bool save_image();
 
 #ifndef TESTS
-private:
+    private:
 #endif
 
     //width of the image

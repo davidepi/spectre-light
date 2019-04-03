@@ -19,6 +19,7 @@
 #include "textures/texture_normal.hpp"
 #include "samplers/sampler_stratified.hpp"
 #include "cameras/camera_orthographic.hpp"
+#include "textures/texture_library.hpp"
 #include <typeinfo>
 
 SPECTRE_TEST_INIT(Texture_tests)

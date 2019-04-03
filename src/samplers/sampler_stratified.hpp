@@ -15,7 +15,6 @@
 #ifndef __SAMPLER_STRATIFIED_HPP__
 #define __SAMPLER_STRATIFIED_HPP__
 
-#include <cmath>
 #include "samplers/sampler.hpp"
 
 /**

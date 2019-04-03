@@ -15,9 +15,7 @@
 #ifndef __FILTER_GAUSSIAN_HPP__
 #define __FILTER_GAUSSIAN_HPP__
 
-#include <cmath>
 #include "samplers/filter.hpp"
-#include "utility/utility.hpp"
 
 /**
  *  \class FilterGaussian filter_gaussian.hpp "samplers/filter_gaussian.hpp"

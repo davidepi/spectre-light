@@ -15,14 +15,8 @@
 #ifndef __BDF_HPP__
 #define __BDF_HPP__
 
-#include "primitives/shape.hpp"
 #include "utility/spectrum.hpp"
 #include "geometry/vec3.hpp"
-#include "utility/console.hpp"
-#include "textures/texture.hpp"
-#include "textures/texture_library.hpp"
-#include <cstring> //error msg
-#include <cstdlib> //malloc error msg
 
 #define FLAG_BRDF 0x1
 #define FLAG_BTDF 0x2

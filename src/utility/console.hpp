@@ -15,15 +15,6 @@
 #define __CONSOLE_HPP__
 
 #include "localization.h"
-#include <cstdio> //fprintf
-#include <cstdlib> //exit
-#include <string> //std::wstring, std::string
-#include <iostream> //std::wcout, std::cout
-#include <cstdarg> //va_start, va_end
-
-#ifdef _WIN32
-#include <conio.h> //_getch()
-#endif
 
 ///Version of the software
 #define SPECTRE_VERSION_MAJOR "0.2.0"

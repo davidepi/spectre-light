@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "sampler_stratified.hpp"
+#include <cmath>
 
 SamplerStratified::SamplerStratified(int startx, int endx, int starty, int endy,
                                      int spp, const unsigned int* seed,

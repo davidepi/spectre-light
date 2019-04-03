@@ -15,16 +15,11 @@
 #define __OBJ_PARSER_HPP__
 
 #include "primitives/mesh.hpp"
-#include "primitives/triangle.hpp"
 #include "geometry/point3.hpp"
 #include "geometry/vec3.hpp"
 #include "materials/bdf.hpp"
-#include "materials/material_library.hpp"
+#include "materials/bsdf.hpp"
 #include <vector>
-#include <cstdio>
-#include <cstring>
-#include <string>
-#include <cstdlib>
 
 /**
  *  \class ParserObj parser_obj.hpp "parsers/parser_obj.hpp"

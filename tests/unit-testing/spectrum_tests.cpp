@@ -10,6 +10,7 @@
 
 #include "utility/spectrum.hpp"
 #include <climits>
+#include <cmath>
 
 SPECTRE_TEST_INIT(Spectrum_tests)
 

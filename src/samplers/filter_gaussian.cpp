@@ -2,6 +2,8 @@
 //license: GNU GPLv3
 
 #include "filter_gaussian.hpp"
+#include "utility/utility.hpp"
+#include <cmath>
 
 ///Number of pixels affected by the gaussian filter on the x axis
 #define EXTENT_FILTER_GAUSSIAN_X 2

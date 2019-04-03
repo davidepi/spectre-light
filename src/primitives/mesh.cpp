@@ -2,6 +2,9 @@
 //license: GNU GPLv3
 
 #include "mesh.hpp"
+#include "localization.h"
+#include "utility/console.hpp"
+#include "materials/material_library.hpp"
 
 Mesh::Mesh(unsigned int size)
 {

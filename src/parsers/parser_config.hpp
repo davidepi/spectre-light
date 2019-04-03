@@ -19,7 +19,6 @@ extern "C" {
 #include "parsers/parsed_structs.h"
 }
 
-#include <unordered_set>
 #include "renderer.hpp"
 #include "utility/scene.hpp"
 

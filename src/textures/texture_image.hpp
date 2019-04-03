@@ -20,15 +20,14 @@ extern "C" {
 #include "utility/imageio/imageio.h"
 }
 
+#include "utility/file.hpp"
 #include "textures/texture.hpp"
 #include "textures/image_map.hpp"
-#include "textures/texture_library.hpp"
-#include "primitives/hit_point.hpp"
 #include "textures/types_imgchannel.h"
 
 /**
  *  \brief Wrapper containing an ImageMap shifted and scaled
- *  This class contains a refeerence to an ImageMap. This image is used as
+ *  This class contains a reference to an ImageMap. This image is used as
  *  texture that will be applied over an object. This class in particular, is
  *  the bridge between the Texture interface and the ImageMap class containing
  *  the actual stored data, and provides additional information such as scaling

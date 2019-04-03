@@ -16,14 +16,10 @@
 #define __BOX_HPP__
 
 
-#include "utility/utility.hpp"
 #include "geometry/vec3.hpp"
 #include "primitives/shape.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/AABB.hpp"
-#include "utility/console.hpp"
-#include <cstdio> //sprintf
-#include <cstring> //strcpy,strcat
 
 /**
  *  \class Box box.hpp "primitives/box.hpp"

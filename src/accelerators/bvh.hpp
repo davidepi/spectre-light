@@ -16,8 +16,6 @@
 
 #include "primitives/triangle.hpp"
 #include "textures/mask_boolean.hpp"
-#include <algorithm>
-#include <vector>
 
 ///Alpha parameter for AAC. 0.4 for high quality trees, 0.3 for fast buildup
 #define AAC_ALPHA 0.3f

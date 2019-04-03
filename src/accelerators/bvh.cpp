@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include <cmath>
+#include <algorithm>
 #include "bvh.hpp"
 
 #ifdef __BMI2__

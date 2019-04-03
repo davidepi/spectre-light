@@ -14,15 +14,10 @@
 #ifndef __UTILITY_HPP__
 #define __UTILITY_HPP__
 
-#include "settings.h" //ONE_PI, M_PI
-#include "utility/console.hpp"
-#include "localization.h"
-#include <cstdio> //sprintf
-#include <climits>
+#include <cstdint>
 #include <cmath>
-#include <cfloat>
-#include <cstdlib> //EXIT_FAILURE
-#include <cstring> //strcpy
+#include "utility/console.hpp"
+#include "settings.h"
 
 ///Maximum amount of error that can be found in a float comparison
 #define EPSILON 1E-5f
@@ -362,7 +357,7 @@ inline uint32_t swap_endianness(uint32_t num)
  */
 inline uint16_t swap_endianness(uint16_t num)
 {
-    return ((num & 0x00FF) << 8) | ((num & 0xFF00) >> 8);
+    return (uint16_t)(((num & 0x00FF) << 8) | ((num & 0xFF00) >> 8));
 }
 
 //define some structures useful to check if the program fired any kind of errors

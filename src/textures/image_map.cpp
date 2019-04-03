@@ -2,6 +2,12 @@
 //license: GNU GPLv3
 
 #include "textures/image_map.hpp"
+#include "utility/file.hpp"
+#include "samplers/filter_box.hpp"
+#include "samplers/filter_lanczos.hpp"
+#include <cstdlib> //malloc/free
+#include <cmath> //sqrtf
+#include <array> //EWA weights allocation
 
 static void downsample(const TexelUnion* in, TexelUnion* out,
                        uint16_t input_side);

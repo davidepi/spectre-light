@@ -15,13 +15,9 @@
 #ifndef __SPHERE_HPP__
 #define __SPHERE_HPP__
 
-#include "utility/console.hpp"
-#include "utility/utility.hpp"
 #include "primitives/shape.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/AABB.hpp"
-#include "geometry/AABB.hpp"
-#include <cmath>
 
 /**
  *  \class Sphere sphere.hpp "primitives/sphere.hpp"

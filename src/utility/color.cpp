@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "color.hpp"
+#include <cmath>
 
 Color::Color()
 {
@@ -225,9 +226,9 @@ ColorRGB::ColorRGB(unsigned char r, unsigned char g, unsigned char b)
 ColorRGB::ColorRGB(pixBGRA bgra)
 {
     constexpr const float INV = 1.f/255.f;
-    ColorRGB::r = BGRA_RED(bgra) * INV;
-    ColorRGB::g = BGRA_GREEN(bgra) * INV;
-    ColorRGB::b = BGRA_BLUE(bgra) * INV;
+    ColorRGB::r = BGRA_RED(bgra)*INV;
+    ColorRGB::g = BGRA_GREEN(bgra)*INV;
+    ColorRGB::b = BGRA_BLUE(bgra)*INV;
 }
 
 ColorXYZ ColorRGB::to_XYZ() const

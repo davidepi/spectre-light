@@ -17,12 +17,7 @@
 
 #include "utility/utility.hpp"
 #include "utility/console.hpp"
-#include <cmath> //std::sqrt
-#include <cfloat> //FLT_EPSILON
 #include <string>
-#include <sstream> //to_string
-#include <cstdio> //snprintf
-
 
 /**
  *  \class Vec2 vec2.hpp "geometry/vec2.hpp"
@@ -35,7 +30,6 @@
  */
 class Vec2
 {
-private:
 public:
 
     /** \brief x component

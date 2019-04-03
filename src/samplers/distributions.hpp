@@ -120,6 +120,11 @@ public:
     Distribution2D(const Distribution2D&) = delete;
 
     /**
+     * \brief Delete copy operator
+     */
+    void operator=(const Distribution2D&) = delete;
+
+    /**
      * \brief Perform continous sampling over the distribution
      * \param[in] u A random value in the interval [0-1] used to sample the
      * first dimension of the distribution

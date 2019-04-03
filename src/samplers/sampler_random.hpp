@@ -16,7 +16,6 @@
 #define __SAMPLER_RANDOM_HPP__
 
 #include "samplers/sampler.hpp"
-#include <cmath>
 
 /**
  * \class SamplerRandom sampler_random.hpp

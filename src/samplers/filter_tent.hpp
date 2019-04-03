@@ -16,7 +16,6 @@
 #define __FILTER_TENT_HPP__
 
 #include "samplers/filter.hpp"
-#include "utility/utility.hpp"
 
 /**
  *  \class FilterTent filter_tent.hpp "samplers/filter_tent.hpp"

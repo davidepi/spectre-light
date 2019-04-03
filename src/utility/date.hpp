@@ -15,7 +15,6 @@
 #define __DATE_HPP__
 
 #include <cstdint>
-#include <cstdlib>
 #include <ctime>
 
 /**

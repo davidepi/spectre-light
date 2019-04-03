@@ -21,6 +21,7 @@
 #include "cameras/image_film.hpp"
 #include "samplers/filter_box.hpp"
 #include "samplers/filter_lanczos.hpp"
+#include "utility/console.hpp"
 
 SPECTRE_TEST_INIT(ImageFilm_tests)
 

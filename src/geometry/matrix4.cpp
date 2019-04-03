@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "matrix4.hpp"
+#include <sstream>
 
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 

@@ -15,16 +15,12 @@
 #ifndef __TRIANGLE_HPP__
 #define __TRIANGLE_HPP__
 
-#include "utility/console.hpp"
-#include "utility/utility.hpp"
 #include "primitives/shape.hpp"
 #include "geometry/point3.hpp"
 #include "geometry/point2.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/AABB.hpp"
-#include "geometry/AABB.hpp"
-#include <cmath>
 
 
 ///Struct for representing a vertex of the triangle in the space

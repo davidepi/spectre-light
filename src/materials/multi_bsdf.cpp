@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "multi_bsdf.hpp"
+#include "textures/texture_library.hpp"
 
 MultiBSDF::MultiBSDF()
 {

@@ -19,11 +19,9 @@
 #include "accelerators/kdtree.hpp"
 #include "primitives/asset.hpp"
 #include "geometry/matrix4.hpp"
-#include "utility/utility.hpp"
-#include "utility/console.hpp"
 #include "lights/light_area.hpp"
-#include <unordered_map>
 #include "lights/light_sky.hpp"
+#include <unordered_map>
 
 /**
  *  \class Scene scene.hpp "utility/scene.hpp"

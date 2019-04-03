@@ -6,7 +6,7 @@
 
 #include <stdint.h>
 
-/*gcc should generate rol and bswap with these templates in big endian sistems*/
+/*gcc should generate rol and bswap with these templates in big endian systems*/
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ || defined(_WIN32) || \
 !defined(IS_BIG_ENDIAN)
 #define ENDIANNESS_LITTLE16(value) value

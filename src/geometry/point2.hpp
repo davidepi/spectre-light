@@ -16,10 +16,7 @@
 #ifndef __POINT2_HPP__
 #define __POINT2_HPP__
 
-#include "utility/console.hpp"
-#include "utility/utility.hpp"
-#include "geometry/vec3.hpp"
-#include <cmath>
+#include "geometry/vec2.hpp"
 
 /**
  *  \class Point2 point2.hpp "geometry/point2.hpp"

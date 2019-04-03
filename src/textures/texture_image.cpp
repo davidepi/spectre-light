@@ -2,6 +2,8 @@
 //license: GNU GPLv3
 
 #include "texture_image.hpp"
+#include "textures/texture_library.hpp"
+#include "primitives/hit_point.hpp"
 
 TextureImage::TextureImage(const File& src, const Vec2& shift, const Vec2& scale,
                            texturefilter_t filter):scale(scale), shift(shift)

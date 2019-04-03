@@ -2,6 +2,11 @@
 //license: GNU GPLv3
 
 #include "spectrum.hpp"
+#include "console.hpp"
+#include "utility.hpp"
+#include <cfloat>
+#include <cmath>
+#include <cstring>
 
 //lookup tables for spectrum to XYZ
 //taken from http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html

@@ -2,15 +2,10 @@
 #ifndef __LIGHT_SKY_HPP__
 #define __LIGHT_SKY_HPP__
 
-#include "samplers/distributions.hpp"
-#include "textures/texture_image.hpp"
 #include "lights/light.hpp"
 #include "textures/texture.hpp"
+#include "samplers/distributions.hpp"
 #include "geometry/matrix4.hpp"
-#include "geometry/point3.hpp"
-#include "geometry/ray.hpp"
-#include "geometry/vec3.hpp"
-#include "utility/spectrum.hpp"
 
 class LightSky : public Light
 {

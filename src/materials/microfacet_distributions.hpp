@@ -14,9 +14,6 @@
 #define __MICROFACET_DISTRIBUTION_HPP__
 
 #include "geometry/vec3.hpp"
-#include "utility/utility.hpp"
-#include "settings.h" //ONE_PI
-#include <cmath> //isinf
 
 /**
  *  \class MicrofacetDist microfacet_distributions.hpp
@@ -112,7 +109,7 @@ public:
     Blinn(float exponent);
 
     ///Default destructor
-    ~Blinn() = default;
+    ~Blinn() override = default;
 
     /** \brief The distribution term
      *
@@ -126,7 +123,7 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    float D(const Vec3* h) const;
+    float D(const Vec3* h) const override;
 
     /** \brief The geometric attenuation G
      *
@@ -141,7 +138,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi) const;
+    float G(const Vec3* wo, const Vec3* wi) const override;
 
     /** \brief Find a random half vector
      *
@@ -154,7 +151,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const;
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const override;
 
     /** \brief Find the pdf of two pairs of directions
      *
@@ -165,7 +162,7 @@ public:
      *  \param[in] wh The half vector between wi and wo
      *  \return The pdf
      */
-    float pdf(const Vec3* wo, const Vec3* wh) const;
+    float pdf(const Vec3* wo, const Vec3* wh) const override;
 
 private:
 
@@ -195,7 +192,7 @@ public:
     Beckmann(float roughness);
 
     ///Default destructor
-    ~Beckmann() = default;
+    ~Beckmann() override = default;
 
     /** \brief The distribution term
      *
@@ -209,7 +206,7 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    float D(const Vec3* h) const;
+    float D(const Vec3* h) const override;
 
     /** \brief The geometric attenuation G
      *
@@ -220,7 +217,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi) const;
+    float G(const Vec3* wo, const Vec3* wi) const override;
 
     /** \brief Find a random half vector
      *
@@ -233,7 +230,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const;
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const override;
 
 private:
 
@@ -264,7 +261,7 @@ public:
     GGXiso(float roughness);
 
     ///Default destructor
-    ~GGXiso() = default;
+    ~GGXiso() override = default;
 
     /** \brief The distribution term
      *
@@ -278,7 +275,7 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    float D(const Vec3* h) const;
+    float D(const Vec3* h) const override;
 
     /** \brief The geometric attenuation G
      *
@@ -289,7 +286,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi) const;
+    float G(const Vec3* wo, const Vec3* wi) const override;
 
     /** \brief Find a random half vector
      *
@@ -302,7 +299,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const;
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const override;
 
 private:
 
@@ -330,7 +327,7 @@ public:
     GGXaniso(float ax, float ay);
 
     ///Default destructor
-    ~GGXaniso() = default;
+    ~GGXaniso() override = default;
 
     /** \brief The distribution term
      *
@@ -344,7 +341,7 @@ public:
      *  vectors
      *  \return The value of the distribution term
      */
-    float D(const Vec3* h) const;
+    float D(const Vec3* h) const override;
 
     /** \brief The geometric attenuation G
      *
@@ -352,7 +349,7 @@ public:
      *  \param[in] wi The incident direction
      *  \return The value of the geometric attenuation term
      */
-    float G(const Vec3* wo, const Vec3* wi) const;
+    float G(const Vec3* wo, const Vec3* wi) const override;
 
     /** \brief Find a random half vector
      *
@@ -365,7 +362,7 @@ public:
      *  \param[in] r1 A random number in the interval [0.0,1.0]
      *  \param[out] wh The randomly chosen half vector
      */
-    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const;
+    void sample_wh(const Vec3* wo, float r0, float r1, Vec3* wh) const override;
 
 private:
 

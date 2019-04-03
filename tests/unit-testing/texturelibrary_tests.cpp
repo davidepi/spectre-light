@@ -12,6 +12,7 @@
 
 #include "textures/texture_library.hpp"
 #include "textures/texture_uniform.hpp"
+#include "textures/texture_image.hpp"
 #include "utility/spectrum.hpp"
 
 SPECTRE_TEST_INIT(TextureLibrary_tests)

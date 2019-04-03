@@ -1,6 +1,7 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
+#include <cfloat>
 #include "point2.hpp"
 
 Point2::Point2()

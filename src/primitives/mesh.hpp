@@ -15,17 +15,14 @@
 #ifndef __MESH_HPP__
 #define __MESH_HPP__
 
-#include "localization.h"
 #include "primitives/shape.hpp"
 #include "primitives/triangle.hpp"
 #include "geometry/matrix4.hpp"
 #include "geometry/point3.hpp"
 #include "geometry/vec3.hpp"
 #include "geometry/AABB.hpp"
-#include "utility/console.hpp"
 #include "accelerators/bvh.hpp"
 #include "materials/bdf.hpp"
-#include "materials/material_library.hpp"
 
 
 /**

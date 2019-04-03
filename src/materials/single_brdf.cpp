@@ -1,7 +1,9 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
+#include "textures/texture_library.hpp"
 #include "single_brdf.hpp"
+#include "lambertian.hpp"
 
 SingleBRDF::SingleBRDF(const Bdf* bdf, const Texture* texture)
 {

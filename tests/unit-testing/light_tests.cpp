@@ -16,6 +16,7 @@
 #include "lights/light_omni.hpp"
 #include "lights/light_spot.hpp"
 #include "lights/light_sky.hpp"
+#include "textures/texture_uniform.hpp"
 
 SPECTRE_TEST_INIT(Light_tests)
 

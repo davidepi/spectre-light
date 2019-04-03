@@ -1,6 +1,9 @@
 //author: Davide Pizzolotto
 //license: GNU GPLv3
 
+#include <cmath>
+#include "utility/utility.hpp"
+#include "utility/console.hpp"
 #include "image_film.hpp"
 
 ImageFilm::ImageFilm(int width, int height, const char* fullpath)

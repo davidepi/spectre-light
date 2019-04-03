@@ -17,7 +17,6 @@
 
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
-#include "textures/texture_image.hpp"
 #include "textures/mask_boolean.hpp"
 
 /**

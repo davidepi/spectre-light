@@ -2,6 +2,9 @@
 //license: GNU GPLv3
 
 #include "sphere.hpp"
+#include "utility/console.hpp"
+#include "utility/utility.hpp"
+#include <cmath>
 
 Sphere::Sphere(bool inverted) : inverted(inverted)
 {

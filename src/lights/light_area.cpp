@@ -2,6 +2,7 @@
 //license: GNU GPLv3
 
 #include "light_area.hpp"
+#include <cfloat>
 
 LightArea::LightArea(const Shape* sp, const Matrix4& obj2World,
                      const Spectrum& c)

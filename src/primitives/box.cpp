@@ -2,6 +2,10 @@
 //license: GNU GPLv3
 
 #include "box.hpp"
+#include "utility/console.hpp"
+#include "utility/utility.hpp"
+#include <cstdio> //sprintf
+#include <cstring> //strcpy,strcat
 
 AABB Box::compute_AABB() const
 {

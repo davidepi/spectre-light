@@ -17,10 +17,8 @@
 #ifndef __POINT3_HPP__
 #define __POINT3_HPP__
 
-#include "utility/console.hpp"
-#include "utility/utility.hpp"
+
 #include "geometry/vec3.hpp"
-#include <cmath>
 
 /**
  *  \class Point3 point3.hpp "geometry/point3.hpp"

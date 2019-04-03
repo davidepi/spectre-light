@@ -3,6 +3,10 @@
 
 #include "texture_library.hpp"
 #include "texture_image.hpp"
+#include "textures/texture_uniform.hpp"
+#include "materials/bump.hpp"
+#include "texture_image.hpp"
+#include <vector>
 
 TextureLibrary::TextureLibrary()
 {

@@ -2,6 +2,8 @@
 //license: GNU GPLv3
 
 #include "vec3.hpp"
+#include <sstream>
+#include <cfloat>
 
 #define CHAR_ARRAY_SIZE_PER_FLOAT 10
 

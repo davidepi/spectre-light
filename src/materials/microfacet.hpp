@@ -15,9 +15,9 @@
 #define __MICROFACET_HPP__
 
 #include "materials/bdf.hpp"
-#include "materials/microfacet_distributions.hpp"
-#include "materials/fresnel_conditions.hpp"
-#include "utility/spectrum.hpp"
+#include "microfacet_distributions.hpp"
+#include "fresnel_conditions.hpp"
+
 
 /**
  *  \class MicrofacetR microfacet.hpp
@@ -43,7 +43,7 @@ public:
     MicrofacetR(const MicrofacetDist* distribution, const Fresnel* fresnel);
 
     ///Default destructor
-    ~MicrofacetR();
+    ~MicrofacetR() override;
 
     /** \brief Return the value of the Bdf
      *
@@ -55,7 +55,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The value of the BRDF
      */
-    Spectrum value(const Vec3* woS, const Vec3* wiS) const;
+    Spectrum value(const Vec3* woS, const Vec3* wiS) const override;
 
     /** \brief Returns the value of the BRDF
      *
@@ -73,7 +73,7 @@ public:
      *  \return The value of the BRDF
      */
     Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                          float* pdf) const;
+                          float* pdf) const override;
 
     /** \brief Return the probability density function for this BRDF
      *
@@ -85,7 +85,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* woS, const Vec3* wiS) const;
+    float pdf(const Vec3* woS, const Vec3* wiS) const override;
 
 private:
 
@@ -126,7 +126,7 @@ public:
                 const Spectrum& etai, const Spectrum& etat);
 
     ///Default destructor
-    ~MicrofacetT();
+    ~MicrofacetT() override;
 
     /** \brief Return the value of the Bdf
      *
@@ -138,7 +138,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The value of the BTDF
      */
-    Spectrum value(const Vec3* woS, const Vec3* wiS) const;
+    Spectrum value(const Vec3* woS, const Vec3* wiS) const override;
 
     /** \brief Returns the value of the BTDF
      *
@@ -156,7 +156,7 @@ public:
      *  \return The value of the BTDF
      */
     Spectrum sample_value(const Vec3* woS, Vec3* wiS, float r0, float r1,
-                          float* pdf) const;
+                          float* pdf) const override;
 
     /** \brief Return the probability density function for this BRDF
      *
@@ -168,7 +168,7 @@ public:
      *  \param[in] wiS The incident direction, in shading space
      *  \return The pdf for this set of values
      */
-    float pdf(const Vec3* woS, const Vec3* wiS) const;
+    float pdf(const Vec3* woS, const Vec3* wiS) const override;
 
 private:
 

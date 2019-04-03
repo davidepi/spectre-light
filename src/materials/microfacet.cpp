@@ -185,4 +185,3 @@ float MicrofacetT::pdf(const Vec3* woS, const Vec3* wiS) const
     jacobian /= jacobian_denom*jacobian_denom;
     return MicrofacetT::distribution->pdf(woS, &wh)*jacobian;
 }
-

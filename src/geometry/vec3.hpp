@@ -16,15 +16,8 @@
 #ifndef __VEC3_HPP__
 #define __VEC3_HPP__
 
-#include "utility/utility.hpp"
-#include "geometry/vec2.hpp"
-#include "utility/console.hpp"
-#include <cstdio> //snprintf
-#include <cmath> //std::sqrt
-#include <string> //to_string
-#include <sstream> //to_string
-#include <cfloat> //FLT_EPSILON
 
+#include "geometry/vec2.hpp"
 
 //class Normal is defined after class Vec3. Since they are very similar, they
 //share the same vec3.hpp and vec3.cpp files
