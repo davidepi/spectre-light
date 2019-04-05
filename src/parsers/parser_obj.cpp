@@ -5,6 +5,7 @@
 #include <cstring>
 #include <string>
 #include <cstdlib>
+#include <cerrno>
 
 #ifdef TESTS
 //extreme value to test every case

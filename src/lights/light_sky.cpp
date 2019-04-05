@@ -3,11 +3,12 @@
 Spectrum
 LightSky::sample_surface(float, float, float, float, Ray*, float*) const
 {
+    Console.severe("Unimplemented method LightSky::sample_surface");
     return {};
 }
 
 Spectrum
-LightSky::sample_visible_surface(float r0, float r1, const Point3* position,
+LightSky::sample_visible_surface(float r0, float r1, const Point3*,
                                  Vec3* wi, float* pdf, float* distance) const
 {
     //sample texture
@@ -32,11 +33,13 @@ LightSky::sample_visible_surface(float r0, float r1, const Point3* position,
     else
         *pdf = texture_pdf/(2*ONE_PI*ONE_PI*SINT);
     Texel value = skytexture->map_value(&sample).bgra_texel;
+    *distance = INFINITY;
     return {ColorRGB(value.r, value.g, value.b), true};
 }
 
 float LightSky::pdf(const Ray*) const
 {
+    Console.severe("Unimplemented method LightSky::pdf");
     return 0;
 }
 
