@@ -21,8 +21,8 @@
 - [x] ASCII parser (flex/bison)
 - [x] diffuse texture mapping
 - [x] normal textures
-- [ ] **-> new light system (sunlight + environment) <-**
-- [ ] objects serialization
+- [x] new light system (sunlight + environment)
+- [ ] **-> objects serialization <-**
 - [ ] binary parser (same system exchange format only)
 - [ ] blender integration
 - [ ] real cameras (and depth of field)

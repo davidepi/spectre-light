@@ -1268,6 +1268,7 @@ SPECTRE_TEST(Vec3, refract_vector_inline)
     EXPECT_TRUE(flt_equal(refracted.z, -0.493051767f));
 
     n = Vec3(1, 1, 1);
+    errors_count[WARNING_INDEX] = 0;
     refracted = refract(v, n, eta);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
@@ -1294,6 +1295,7 @@ SPECTRE_TEST(Vec3, refract_normal_inline)
     EXPECT_TRUE(flt_equal(refracted.z, -0.493051767f));
 
     n = Normal(1, 1, 1);
+    errors_count[WARNING_INDEX] = 0;
     refracted = refract(v, n, eta);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
