@@ -32,9 +32,8 @@ FILE(GLOB spectre_core_sources
      src/materials/*.cpp
      src/parsers/config_parser.tab.c
      src/parsers/lex.yy.c
-     src/parsers/parser_config.cpp
      src/parsers/parsed_structs.c
-     src/parsers/parser_obj.cpp
+     src/parsers/*.cpp
      src/utility/imageio/*.c)
 FILE(GLOB spectre_test_sources
      tests/unit-testing/*.cpp
