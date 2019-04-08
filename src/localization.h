@@ -70,7 +70,7 @@
 
 #define MESSAGE_OUTPUT_ISFOLDER "Output file %s exists and is a folder"
 
-#define MESSAGE_W_DENIED "The folder \"%s\" is not writable or does not exists"
+#define MESSAGE_W_DENIED "The output \"%s\" is not writable or does not exists"
 
 #define MESSAGE_W_DENIED_RC "The output file was writable at startup, but now "\
                             "it is not anymore."

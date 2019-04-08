@@ -15,6 +15,8 @@
 #include "utility/utility.hpp"
 #include <climits>
 #include "parsers/chunk.hpp"
+#include "parsers/chunk_wrapper.hpp"
+#include <cstdio> //mktemp
 
 SPECTRE_TEST_INIT(Serialization_tests)
 
@@ -97,4 +99,77 @@ SPECTRE_TEST(Serialization, chunk_string)
     chunk.push_string("output.ppm");
     EXPECT_STREQ(chunk.pop_string().c_str(), "/root/vmlinuz");
     EXPECT_STREQ(chunk.pop_string().c_str(), "output.ppm");
+}
+
+SPECTRE_TEST(Serialization, chunk_all_types)
+{
+    Chunk chunk(0);
+    chunk.push_int8(250);
+    chunk.push_float(3.14f);
+    chunk.push_string("test string!!!");
+    chunk.push_int32(21476543);
+    chunk.push_string("another string");
+    chunk.push_int16(-3);
+
+    EXPECT_EQ(chunk.pop_int8(), (uint8_t)250);
+    EXPECT_EQ(chunk.pop_float(), 3.14f);
+    EXPECT_STREQ(chunk.pop_string().c_str(), "test string!!!");
+    EXPECT_EQ(chunk.pop_int32(), 21476543);
+    EXPECT_STREQ(chunk.pop_string().c_str(), "another string");
+    EXPECT_EQ((int16_t)chunk.pop_int16(), (int16_t)-3);
+}
+
+SPECTRE_TEST(Serialization, wrapper_add_remove_chunks)
+{
+    Chunk chunk0(0);
+    chunk0.push_string("test string for chunk 0");
+    chunk0.push_string("another one");
+    Chunk chunk1(1);
+    chunk1.push_string("test string for chunk 1");
+    chunk1.push_float(3.14f);
+    chunk1.push_string("another one for chunk 1");
+    ChunkWrapper wrapper;
+    EXPECT_TRUE(wrapper.empty());
+    wrapper.push_chunk(chunk0);
+    EXPECT_FALSE(wrapper.empty());
+    wrapper.push_chunk(chunk1);
+
+    Chunk retrieved0 = wrapper.pop_chunk();
+    Chunk retrieved1 = wrapper.pop_chunk();
+    EXPECT_TRUE(wrapper.empty());
+    EXPECT_STREQ(retrieved0.pop_string().c_str(), "test string for chunk 0");
+    EXPECT_STREQ(retrieved0.pop_string().c_str(), "another one");
+    EXPECT_STREQ(retrieved1.pop_string().c_str(), "test string for chunk 1");
+    EXPECT_EQ(retrieved1.pop_float(), 3.14f);
+    EXPECT_STREQ(retrieved1.pop_string().c_str(), "another one for chunk 1");
+}
+
+SPECTRE_TEST(Serialization, wrapper_to_file)
+{
+//    Chunk chunk0(0);
+//    chunk0.push_string("test string for chunk 0");
+//    chunk0.push_string("another one");
+//    Chunk chunk1(1);
+//    chunk1.push_string("test string for chunk 1");
+//    chunk1.push_float(3.14f);
+//    chunk1.push_string("another one for chunk 1");
+//    ChunkWrapper wrapper;
+//    wrapper.push_chunk(chunk0);
+//    wrapper.push_chunk(chunk1);
+//
+//    //there is a security risk in mktemp due to data race, but this is testing
+//    //so who cares
+//    char file_template[] = "wrapped_file_XXXXXXXXXX";
+//    const char* tmp_file = mktemp(file_template);
+//
+//    wrapper.write(tmp_file);
+//
+//    Chunk retrieved0 = wrapper.pop_chunk();
+//    Chunk retrieved1 = wrapper.pop_chunk();
+//    EXPECT_TRUE(wrapper.empty());
+//    EXPECT_STREQ(retrieved0.pop_string().c_str(), "test string for chunk 0");
+//    EXPECT_STREQ(retrieved0.pop_string().c_str(), "another one");
+//    EXPECT_STREQ(retrieved1.pop_string().c_str(), "test string for chunk 1");
+//    EXPECT_EQ(retrieved1.pop_float(), 3.14f);
+//    EXPECT_STREQ(retrieved1.pop_string().c_str(), "another one for chunk 1");
 }

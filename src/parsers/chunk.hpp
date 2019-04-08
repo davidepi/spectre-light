@@ -10,8 +10,10 @@
 #include <queue>
 #include <string>
 
+class ChunkWrapper;
 class Chunk
 {
+    friend ChunkWrapper;
 public:
     Chunk(int id);
     ~Chunk() = default;
@@ -29,6 +31,7 @@ public:
     double pop_double();
     void push_string(const std::string& value);
     std::string pop_string();
+
 private:
     uint16_t id;
     std::queue<uint8_t> data;
