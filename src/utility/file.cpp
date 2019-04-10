@@ -4,6 +4,7 @@
 #include "file.hpp"
 #include <cstring>
 #include <cstdlib>
+
 #ifdef _WIN32
 //THIS MUST STAY HERE!
 //Windows.h adds #define interface struct and breaks vec3.hpp
@@ -15,8 +16,10 @@ const char* File::PATH_SEPARATOR_STRING = "\\";
 #else
 const char File::PATH_SEPARATOR = '/';
 const char* File::PATH_SEPARATOR_STRING = "/";
+
 #include <unistd.h> //access
 #include <dirent.h> //opendir & co
+
 #endif
 
 //given an absolute path like "/root" and a relative like "../home/User/./"
@@ -391,6 +394,17 @@ bool File::mkdir()
     //refresh info about this folder
     File::statres = stat(absolute, &(File::fileinfo)) == 0;
     return retval;
+#endif
+}
+
+File File::get_temp_file()
+{
+#ifdef _WIN32
+    //TODO: implement me
+#else
+    char path[20] = "/tmp/tmpfile_XXXXXX";
+    char* tmp_path = mktemp(path);
+    return File(tmp_path);
 #endif
 }
 

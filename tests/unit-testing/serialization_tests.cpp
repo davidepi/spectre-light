@@ -17,6 +17,8 @@
 #include "parsers/chunk.hpp"
 #include "parsers/chunk_wrapper.hpp"
 #include <cstdio> //mktemp
+#include <cstdlib>
+#include "utility/file.hpp"
 
 SPECTRE_TEST_INIT(Serialization_tests)
 
@@ -146,30 +148,33 @@ SPECTRE_TEST(Serialization, wrapper_add_remove_chunks)
 
 SPECTRE_TEST(Serialization, wrapper_to_file)
 {
-//    Chunk chunk0(0);
-//    chunk0.push_string("test string for chunk 0");
-//    chunk0.push_string("another one");
-//    Chunk chunk1(1);
-//    chunk1.push_string("test string for chunk 1");
-//    chunk1.push_float(3.14f);
-//    chunk1.push_string("another one for chunk 1");
-//    ChunkWrapper wrapper;
-//    wrapper.push_chunk(chunk0);
-//    wrapper.push_chunk(chunk1);
-//
-//    //there is a security risk in mktemp due to data race, but this is testing
-//    //so who cares
-//    char file_template[] = "wrapped_file_XXXXXXXXXX";
-//    const char* tmp_file = mktemp(file_template);
-//
-//    wrapper.write(tmp_file);
-//
-//    Chunk retrieved0 = wrapper.pop_chunk();
-//    Chunk retrieved1 = wrapper.pop_chunk();
-//    EXPECT_TRUE(wrapper.empty());
-//    EXPECT_STREQ(retrieved0.pop_string().c_str(), "test string for chunk 0");
-//    EXPECT_STREQ(retrieved0.pop_string().c_str(), "another one");
-//    EXPECT_STREQ(retrieved1.pop_string().c_str(), "test string for chunk 1");
-//    EXPECT_EQ(retrieved1.pop_float(), 3.14f);
-//    EXPECT_STREQ(retrieved1.pop_string().c_str(), "another one for chunk 1");
+    Chunk chunk0(0);
+    chunk0.push_string("test string for chunk 0");
+    chunk0.push_string("another one");
+    Chunk chunk1(1);
+    chunk1.push_string("test string for chunk 1");
+    chunk1.push_float(3.14f);
+    chunk1.push_string("another one for chunk 1");
+    ChunkWrapper wrapper;
+    wrapper.push_chunk(chunk0);
+    wrapper.push_chunk(chunk1);
+
+    //there is a security risk in mktemp due to data race, but this is testing
+    //so who cares
+    File tmp = File::get_temp_file();
+    const char* tmp_file = tmp.absolute_path();
+
+    wrapper.write(tmp_file);
+    ChunkWrapper retrieved_wrapper;
+    retrieved_wrapper.read(tmp_file);
+
+    Chunk retrieved0 = retrieved_wrapper.pop_chunk();
+    Chunk retrieved1 = retrieved_wrapper.pop_chunk();
+    EXPECT_STREQ(retrieved0.pop_string().c_str(), "test string for chunk 0");
+    EXPECT_STREQ(retrieved0.pop_string().c_str(), "another one");
+    EXPECT_STREQ(retrieved1.pop_string().c_str(), "test string for chunk 1");
+    EXPECT_EQ(retrieved1.pop_float(), 3.14f);
+    EXPECT_STREQ(retrieved1.pop_string().c_str(), "another one for chunk 1");
+
+    unlink(tmp_file);
 }

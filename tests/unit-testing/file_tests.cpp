@@ -13,6 +13,7 @@
 
 #include "utility/file.hpp"
 #include <cstring>
+#include <string>
 
 SPECTRE_TEST_INIT(File_tests)
 
@@ -503,6 +504,19 @@ SPECTRE_TEST(File, append_to_folder)
     //append to filename
     File f3(&reference_file, "32bit.bmp");
     EXPECT_TRUE(f3.exists());
+}
+
+SPECTRE_TEST(File, get_temp)
+{
+    File tmpfile = File::get_temp_file();
+#ifdef _WIN32
+    //TODO:
+#else
+    const char* tmp = tmpfile.absolute_path();
+    std::string compare(tmp);
+    compare = compare.substr(0, 13);
+    EXPECT_STREQ(compare.c_str(), "/tmp/tmpfile_");
+#endif
 }
 
 SPECTRE_TEST_END(File_tests)

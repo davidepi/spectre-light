@@ -15,6 +15,7 @@
 #define __FILE_HPP__
 
 #include <vector>
+#include <string>
 #ifndef _WIN32
 #include <sys/stat.h>
 #endif
@@ -182,6 +183,17 @@ public:
      *  \sa mkdir()
      */
     bool mkdirs();
+
+    /**
+     * \brief Generates an unique temporary file path, without creating the file
+     *
+     * \warning Consider that a possible data race exists in the case where
+     * someone opens the file between the path name generation and the actual
+     * opening
+     *
+     * \return a File object representing the generated path
+     */
+    static File get_temp_file();
 
     /** \brief List directory contents
      *

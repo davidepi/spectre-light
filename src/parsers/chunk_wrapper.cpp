@@ -57,9 +57,11 @@ void ChunkWrapper::write(const char* path) const
             fwrite(data, sizeof(uint8_t), len, fout);
         }
         free(data);
+        fclose(fout);
     }
     else
         Console.severe(MESSAGE_W_DENIED, path);
+
 }
 
 void ChunkWrapper::read(const char* path)
@@ -90,8 +92,10 @@ void ChunkWrapper::read(const char* path)
             fread(data, sizeof(uint8_t), len, fin);
             for(uint32_t j = 0; j<len; j++)
                 tmp.push_int8(data[j]);
+            ChunkWrapper::push_chunk(tmp);
         }
         free(data);
+        fclose(fin);
     }
     else
         Console.severe(MESSAGE_INPUT_ERROR, path);
