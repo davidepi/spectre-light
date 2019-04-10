@@ -6,9 +6,6 @@
 #include <cstdlib>
 
 #ifdef _WIN32
-//THIS MUST STAY HERE!
-//Windows.h adds #define interface struct and breaks vec3.hpp
-//seriously???
 #include <Windows.h>
 #include <io.h>
 const char File::PATH_SEPARATOR = '\\';
@@ -400,12 +397,14 @@ bool File::mkdir()
 File File::get_temp_file()
 {
 #ifdef _WIN32
-    //TODO: implement me
+    char path[MAX_PATH];
+    GetTempPathA(MAX_PATH, path);
+    strncat(path, "tmpfile_XXXXXX", MAX_PATH);
 #else
     char path[20] = "/tmp/tmpfile_XXXXXX";
+#endif
     char* tmp_path = mktemp(path);
     return File(tmp_path);
-#endif
 }
 
 bool File::mkdirs()

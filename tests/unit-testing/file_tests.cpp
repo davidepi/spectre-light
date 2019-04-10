@@ -510,7 +510,10 @@ SPECTRE_TEST(File, get_temp)
 {
     File tmpfile = File::get_temp_file();
 #ifdef _WIN32
-    //TODO:
+    //this is untestable for windows because it depends on the users
+    //just assert that the file does not exists and the parent is writable
+    EXPECT_FALSE(tmpfile.exists());
+    EXPECT_TRUE(tmpfile.get_parent().writable());
 #else
     const char* tmp = tmpfile.absolute_path();
     std::string compare(tmp);

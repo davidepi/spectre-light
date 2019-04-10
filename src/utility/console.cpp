@@ -182,7 +182,8 @@ void Console::progress_bar(float done, float eta) const
         i++;
     }
 #ifdef _WIN32
-    std::cout<<"("<<progress<<") "<<(int)(done*5)<<"%\tETA:"<<eta<<" s\r";
+    std::cout << "(" << progress.c_str() << ") " << (int)(done*5) << "%\tETA:"
+              << eta << " s\r";
 #else
     std::cout << "\33[2K\r(" << progress << ") " << (int)(done*5) << "%\tETA:"
               << eta << " s";

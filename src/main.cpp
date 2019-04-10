@@ -6,6 +6,7 @@
 #include "renderer.hpp"
 
 #ifdef _WIN32
+#include <iostream>
 #include <conio.h>
 #endif
 

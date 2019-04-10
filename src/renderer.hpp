@@ -21,20 +21,14 @@ extern "C" {
 
 #include "geometry/vec3.hpp"
 #include "geometry/point3.hpp"
-#include "utility/console.hpp"
-#include "cameras/image_film.hpp"
 #include "utility/scene.hpp"
+#include "cameras/image_film.hpp"
 #include "cameras/camera.hpp"
 #include "samplers/sampler.hpp"
-#include "samplers/sampler_random.hpp"
-#include "samplers/sampler_stratified.hpp"
 #include "integrators/integrator.hpp"
-#include "settings.h"
 #include "samplers/types_sampler.h"
 #include <thread> //std::thread
 #include <stack> //std::stack
-#include <chrono> //std::this_thread::sleep_for, platform independent
-#include <ctime> //time for srand
 
 /**  \brief Struct containing the coordinates of a sub-image to be rendered
  *

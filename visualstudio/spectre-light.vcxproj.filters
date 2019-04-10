@@ -240,6 +240,12 @@
     <ClCompile Include="..\src\samplers\distributions.cpp">
       <Filter>src\samplers</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\parsers\chunk.cpp">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\chunk_wrapper.cpp">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\renderer.hpp" />
@@ -511,6 +517,12 @@
     </ClInclude>
     <ClInclude Include="..\src\samplers\distributions.hpp">
       <Filter>src\samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\chunk.hpp">
+      <Filter>src\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\chunk_wrapper.hpp">
+      <Filter>src\parsers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

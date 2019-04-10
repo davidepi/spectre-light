@@ -394,9 +394,10 @@ SPECTRE_TEST(Parser, texture)
     //check the single texture was added
     ASSERT_TRUE(TexLib.contains_texture("Manually written name"));
     EXPECT_TRUE(TexLib.contains_texture("correct.bmp"));
+    //this trick is used to remove a .. from the TEST_ASSETS macro on vs.
+    File src(TEST_ASSETS "images/correct.bmp");
     //check that the map is actually added
-    EXPECT_TRUE(TexLib.contains_map(TEST_ASSETS
-                        "images/correct.bmp"));
+    EXPECT_TRUE(TexLib.contains_map(src.absolute_path()));
     got = TexLib.get_texture("Manually written name");
     img = dynamic_cast<const TextureImage*>(got);
     ASSERT_PTR_NE(img, NULL);

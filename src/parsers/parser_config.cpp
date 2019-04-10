@@ -34,7 +34,6 @@
 #include "lights/light_spot.hpp"
 #include "lights/light_sun.hpp"
 #include <unordered_set>
-
 extern "C" { void parse_config(FILE*, struct ParsedScene*); }
 
 ///minimum value for ParsedMaterial::rough_x when the material is not specular

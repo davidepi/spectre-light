@@ -90,6 +90,8 @@
     <ClCompile Include="..\src\materials\refraction.cpp" />
     <ClCompile Include="..\src\materials\shading_space.cpp" />
     <ClCompile Include="..\src\materials\single_brdf.cpp" />
+    <ClCompile Include="..\src\parsers\chunk.cpp" />
+    <ClCompile Include="..\src\parsers\chunk_wrapper.cpp" />
     <ClCompile Include="..\src\parsers\config_parser.tab.c" />
     <ClCompile Include="..\src\parsers\lex.yy.c" />
     <ClCompile Include="..\src\parsers\parsed_structs.c" />
@@ -159,6 +161,7 @@
     <ClCompile Include="..\tests\unit-testing\ray_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\sampler_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\scene_tests.cpp" />
+    <ClCompile Include="..\tests\unit-testing\serialization_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\spectrum_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\sphere_tests.cpp" />
     <ClCompile Include="..\tests\unit-testing\texturelibrary_tests.cpp" />
@@ -205,6 +208,8 @@
     <ClInclude Include="..\src\materials\refraction.hpp" />
     <ClInclude Include="..\src\materials\shading_space.hpp" />
     <ClInclude Include="..\src\materials\single_brdf.hpp" />
+    <ClInclude Include="..\src\parsers\chunk.hpp" />
+    <ClInclude Include="..\src\parsers\chunk_wrapper.hpp" />
     <ClInclude Include="..\src\parsers\location.hh" />
     <ClInclude Include="..\src\parsers\parser_config.hpp" />
     <ClInclude Include="..\src\parsers\parser_obj.hpp" />
