@@ -1,23 +1,13 @@
 #include "chunk.hpp"
 
-struct reinterpret
-{
-    union
-    {
-        uint32_t val_int32;
-        float val_float;
-    };
-
-    union
-    {
-        uint64_t val_int64;
-        double val_double;
-    };
-};
-
-Chunk::Chunk(int id)
+Chunk::Chunk(uint16_t id)
 {
     Chunk::id = id;
+}
+
+uint16_t Chunk::get_id() const
+{
+    return Chunk::id;
 }
 
 void Chunk::push_int8(uint8_t value)
@@ -35,7 +25,7 @@ uint8_t Chunk::pop_int8()
 void Chunk::push_int16(uint16_t value)
 {
     data.push(value & 0x00FFU);
-    data.push((value & 0xFF00U)>>8U);
+    data.push((value & 0xFF00U) >> 8U);
 }
 
 uint16_t Chunk::pop_int16()
@@ -49,8 +39,8 @@ uint16_t Chunk::pop_int16()
 
 void Chunk::push_int32(uint32_t value)
 {
-    data.push((value >>  0U) & 0xFFU);
-    data.push((value >>  8U) & 0xFFU);
+    data.push((value >> 0U) & 0xFFU);
+    data.push((value >> 8U) & 0xFFU);
     data.push((value >> 16U) & 0xFFU);
     data.push((value >> 24U) & 0xFFU);
 }
@@ -70,8 +60,8 @@ uint32_t Chunk::pop_int32()
 
 void Chunk::push_int64(uint64_t value)
 {
-    data.push((value >>  0U) & 0xFFU);
-    data.push((value >>  8U) & 0xFFU);
+    data.push((value >> 0U) & 0xFFU);
+    data.push((value >> 8U) & 0xFFU);
     data.push((value >> 16U) & 0xFFU);
     data.push((value >> 24U) & 0xFFU);
     data.push((value >> 32U) & 0xFFU);
@@ -103,38 +93,34 @@ uint64_t Chunk::pop_int64()
 
 void Chunk::push_float(float value)
 {
-    struct reinterpret tmp;
-    tmp.val_float = value;
-    Chunk::push_int32(tmp.val_int32);
+    uint32_t float_as_int = reinterpret_cast<uint32_t&>(value);
+    Chunk::push_int64(float_as_int);
 }
 
 float Chunk::pop_float()
 {
-    struct reinterpret tmp;
-    tmp.val_int32 = Chunk::pop_int32();
-    return tmp.val_float;
+    uint32_t float_as_int = Chunk::pop_int64();
+    return reinterpret_cast<float&>(float_as_int);
 }
 
 void Chunk::push_double(double value)
 {
-    struct reinterpret tmp;
-    tmp.val_double = value;
-    Chunk::push_int64(tmp.val_int64);
+    uint64_t double_as_int = reinterpret_cast<uint64_t&>(value);
+    Chunk::push_int64(double_as_int);
 }
 
 double Chunk::pop_double()
 {
-    struct reinterpret tmp;
-    tmp.val_int64 = Chunk::pop_int64();
-    return tmp.val_double;
+    uint64_t double_as_int = Chunk::pop_int64();
+    return reinterpret_cast<double&>(double_as_int);
 }
 
 void Chunk::push_string(const std::string& value)
 {
     uint16_t len = value.length();
     Chunk::push_int16(len);
-    int i=0;
-    while(i<len && value[i]!=0)
+    int i = 0;
+    while(i<len && value[i] != 0)
         Chunk::push_int8(value[i++]);
 }
 
@@ -142,7 +128,7 @@ std::string Chunk::pop_string()
 {
     uint16_t len = Chunk::pop_int16();
     std::string retval(len, 0);
-    int i=0;
+    int i = 0;
     while(i<len)
         retval[i++] = Chunk::pop_int8();
     return retval;

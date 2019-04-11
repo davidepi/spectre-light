@@ -1,6 +1,3 @@
-//
-// Created by Davide Pizzolotto on 2019-04-08.
-//
 
 #include "chunk_wrapper.hpp"
 #include "utility/console.hpp"

@@ -1,6 +1,16 @@
 /* Created,  13 Sep 2018 */
 /* Last Edit 15 Oct 2018 */
 
+/**
+ *  \file      parser_structs.h
+ *  \brief     Various structs to be filled by the lex/bison parser
+ *  \author    Davide Pizzolotto
+ *  \version   0.2
+ *  \date      15 Oct 2018
+ *  \copyright GNU GPLv3
+ */
+
+
 #ifndef __PARSED_STRUCTS_H__
 #define __PARSED_STRUCTS_H__
 
