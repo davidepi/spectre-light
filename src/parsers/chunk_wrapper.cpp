@@ -1,3 +1,5 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
 
 #include "chunk_wrapper.hpp"
 #include "utility/console.hpp"
@@ -5,16 +7,16 @@
 
 #define MAGIC_NUMBER 0xAB7E0CBB
 
-void ChunkWrapper::push_chunk(const Chunk& chunk)
+void ChunkWrapper::push_chunk(ChunkNamed& chunk)
 {
-    ChunkWrapper::chunks.push_back(chunk);
+    //the order is: id(2 bytes), size(8 bytes), data
+    ChunkWrapper::chunks.push_back(std::move(chunk));
 }
 
-Chunk ChunkWrapper::pop_chunk()
+void ChunkWrapper::pop_chunk(ChunkNamed* chunk)
 {
-    Chunk retval = ChunkWrapper::chunks.front();
+    *chunk = ChunkWrapper::chunks.front();
     ChunkWrapper::chunks.pop_front();
-    return retval;
 }
 
 bool ChunkWrapper::empty()
@@ -36,8 +38,8 @@ void ChunkWrapper::write(const char* path) const
         for(auto copy : ChunkWrapper::chunks)
         {
             fwrite(&(copy.id), sizeof(copy.id), 1, fout);
-            auto len = (uint32_t)copy.data.size();
-            fwrite(&len, sizeof(uint32_t), 1, fout);
+            auto len = (uint64_t)copy.data.size();
+            fwrite(&len, sizeof(uint64_t), 1, fout);
             if(len>allocated_len)
             {
                 while(len<allocated_len)
@@ -45,11 +47,10 @@ void ChunkWrapper::write(const char* path) const
                 free(data);
                 data = (uint8_t*)malloc(sizeof(uint8_t)*allocated_len);
             }
-            uint32_t data_index = 0;
-            while(!copy.data.empty())
+            uint64_t data_index = 0;
+            for(uint8_t value : copy.data)
             {
-                data[data_index++] = copy.data.front();
-                copy.data.pop();
+                data[data_index++] = value;
             }
             fwrite(data, sizeof(uint8_t), len, fout);
         }
@@ -75,9 +76,9 @@ void ChunkWrapper::read(const char* path)
         for(uint16_t i = 0; i<size; i++)
         {
             uint16_t chunk_id;
-            uint32_t len;
+            uint64_t len;
             fread(&chunk_id, sizeof(uint16_t), 1, fin);
-            fread(&len, sizeof(uint32_t), 1, fin);
+            fread(&len, sizeof(uint64_t), 1, fin);
             if(len>allocated_len)
             {
                 while(len<allocated_len)
@@ -85,7 +86,8 @@ void ChunkWrapper::read(const char* path)
                 free(data);
                 data = (uint8_t*)malloc(sizeof(data)*allocated_len);
             }
-            Chunk tmp(chunk_id);
+            ChunkNamed tmp;
+            tmp.set_id(chunk_id);
             fread(data, sizeof(uint8_t), len, fin);
             for(uint32_t j = 0; j<len; j++)
                 tmp.push_int8(data[j]);

@@ -1,93 +1,86 @@
+//author: Davide Pizzolotto
+//license: GNU GPLv3
+
 #include "chunk.hpp"
-
-Chunk::Chunk(uint16_t id)
-{
-    Chunk::id = id;
-}
-
-uint16_t Chunk::get_id() const
-{
-    return Chunk::id;
-}
 
 void Chunk::push_int8(uint8_t value)
 {
-    data.push(value);
+    data.push_back(value);
 }
 
 uint8_t Chunk::pop_int8()
 {
-    uint8_t retval = data.front();
-    data.pop();
+    uint8_t retval = data[head];
+    head++;
     return retval;
 }
 
 void Chunk::push_int16(uint16_t value)
 {
-    data.push(value & 0x00FFU);
-    data.push((value & 0xFF00U) >> 8U);
+    data.push_back(value & 0x00FFU);
+    data.push_back((value & 0xFF00U) >> 8U);
 }
 
 uint16_t Chunk::pop_int16()
 {
-    uint16_t retval = data.front();
-    data.pop();
-    retval |= (uint32_t)data.front() << 8U;
-    data.pop();
+    uint16_t retval = data[head];
+    head++;
+    retval |= (uint32_t)data[head] << 8U;
+    head++;
     return retval;
 }
 
 void Chunk::push_int32(uint32_t value)
 {
-    data.push((value >> 0U) & 0xFFU);
-    data.push((value >> 8U) & 0xFFU);
-    data.push((value >> 16U) & 0xFFU);
-    data.push((value >> 24U) & 0xFFU);
+    data.push_back((value >> 0U) & 0xFFU);
+    data.push_back((value >> 8U) & 0xFFU);
+    data.push_back((value >> 16U) & 0xFFU);
+    data.push_back((value >> 24U) & 0xFFU);
 }
 
 uint32_t Chunk::pop_int32()
 {
-    uint32_t retval = data.front();
-    data.pop();
-    retval |= (uint32_t)data.front() << 8U;
-    data.pop();
-    retval |= (uint32_t)data.front() << 16U;
-    data.pop();
-    retval |= (uint32_t)data.front() << 24U;
-    data.pop();
+    uint32_t retval = data[head];
+    head++;
+    retval |= (uint32_t)data[head] << 8U;
+    head++;
+    retval |= (uint32_t)data[head] << 16U;
+    head++;
+    retval |= (uint32_t)data[head] << 24U;
+    head++;
     return retval;
 }
 
 void Chunk::push_int64(uint64_t value)
 {
-    data.push((value >> 0U) & 0xFFU);
-    data.push((value >> 8U) & 0xFFU);
-    data.push((value >> 16U) & 0xFFU);
-    data.push((value >> 24U) & 0xFFU);
-    data.push((value >> 32U) & 0xFFU);
-    data.push((value >> 40U) & 0xFFU);
-    data.push((value >> 48U) & 0xFFU);
-    data.push((value >> 56U) & 0xFFU);
+    data.push_back((value >> 0U) & 0xFFU);
+    data.push_back((value >> 8U) & 0xFFU);
+    data.push_back((value >> 16U) & 0xFFU);
+    data.push_back((value >> 24U) & 0xFFU);
+    data.push_back((value >> 32U) & 0xFFU);
+    data.push_back((value >> 40U) & 0xFFU);
+    data.push_back((value >> 48U) & 0xFFU);
+    data.push_back((value >> 56U) & 0xFFU);
 }
 
 uint64_t Chunk::pop_int64()
 {
-    uint64_t retval = (uint32_t)data.front();
-    data.pop();
-    retval |= (uint32_t)data.front() << 8U;
-    data.pop();
-    retval |= (uint32_t)data.front() << 16U;
-    data.pop();
-    retval |= (uint32_t)data.front() << 24U;
-    data.pop();
-    retval |= (uint64_t)data.front() << 32U;
-    data.pop();
-    retval |= (uint64_t)data.front() << 40U;
-    data.pop();
-    retval |= (uint64_t)data.front() << 48U;
-    data.pop();
-    retval |= (uint64_t)data.front() << 56U;
-    data.pop();
+    uint64_t retval = (uint32_t)data[head];
+    head++;
+    retval |= (uint32_t)data[head] << 8U;
+    head++;
+    retval |= (uint32_t)data[head] << 16U;
+    head++;
+    retval |= (uint32_t)data[head] << 24U;
+    head++;
+    retval |= (uint64_t)data[head] << 32U;
+    head++;
+    retval |= (uint64_t)data[head] << 40U;
+    head++;
+    retval |= (uint64_t)data[head] << 48U;
+    head++;
+    retval |= (uint64_t)data[head] << 56U;
+    head++;
     return retval;
 }
 
@@ -132,4 +125,36 @@ std::string Chunk::pop_string()
     while(i<len)
         retval[i++] = Chunk::pop_int8();
     return retval;
+}
+
+uint64_t Chunk::size() const
+{
+    return (uint64_t)data.size()-head;
+}
+
+uint16_t ChunkNamed::get_id() const
+{
+    return ChunkNamed::id;
+}
+
+void ChunkNamed::set_id(uint16_t in_id)
+{
+    ChunkNamed::id = in_id;
+}
+
+void ChunkNamed::push_chunk(const Chunk* chunk)
+{
+    for(uint8_t value : chunk->data)
+    {
+        ChunkNamed::data.push_back(value);
+    }
+}
+
+void ChunkNamed::pop_chunk(Chunk* chunk, uint64_t size)
+{
+    for(uint64_t i = 0; i<size; i++)
+    {
+        chunk->push_int8(ChunkNamed::data[head]);
+        ChunkNamed::head++;
+    }
 }

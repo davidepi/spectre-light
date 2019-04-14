@@ -1,12 +1,12 @@
 //Created,   7 Apr 2019
-//Last Edit 11 Apr 2019
+//Last Edit 14 Apr 2019
 
 /**
  *  \file      chunk.hpp
  *  \brief     Class containing arbitrary binary data
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      11 Apr 2019
+ *  \date      14 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -15,43 +15,47 @@
 #define __CHUNK_HPP__
 
 #include <cstdint>
-#include <queue>
+#include <vector>
 #include <string>
 
-//Forward declaration for the ChunkWrapper, because it is needed as friend
+//Forward declarations, both these classes needs to read the Chunk data
 class ChunkWrapper;
+
+class ChunkNamed;
 
 /**
  * \brief Class containing data in binary form.
  *
- * This is a generic class that should be used by factories in order to
- * reconstruct an object. The class consist of methods that can be used to push
- * or pop values inside the chunk and an id used to give an identity to the
- * chunk. Ideally this will be wrapped alongisde other chunk in a ChunkWrapper.
- *
- * \warning The endianness of the data inside the chunk IS NOT checked!!!
+ * This is a generic class embedding some binary data. It can be seen as an
+ * array that can handle multiple types and endianness. The class consist of
+ * methods that can be used to push or pop values inside the chunk. The
+ * underlying data structure is vector for the following reasons:
+ * <ul>
+ *      <li>push has to be done at back</li>
+ *      <li>pop has to be done at front</li>
+ *      <li>it needs to be iterable</li>
+ * </ul>
+ * The queue is not iterable, and a list wasted too much data on pointers
+ * (given that the structure encloses single bytes means 1600% overhead). For
+ * this reason, a vector is used and values are never actually removed, a
+ * pointer to the head is moved. Usually once all the values are popped, the
+ * chunk can be thrown away
  */
 class Chunk
 {
     friend ChunkWrapper;
+    friend ChunkNamed;
 public:
+
     /**
      * \brief Default constructor
-     * \param[in] id An integer representing the ID of the chunk. Ideally an
-     * ID should be unique to a specific class stored inside the chunk.
      */
-    Chunk(uint16_t id);
+    Chunk() = default;
 
     /**
      * \brief Default destructor
      */
     ~Chunk() = default;
-
-    /**
-     * \brief Getter for the chunk ID
-     * \return the ID of the chunk
-     */
-    uint16_t get_id() const;
 
     /**
      * \brief Insert an 8 bit integer into the chunk
@@ -166,11 +170,115 @@ public:
      */
     std::string pop_string();
 
+    /**
+     * \brief Returns the size in bytes of the data contained by this chunk
+     * \return The amount of data of this chunk
+     */
+    uint64_t size() const;
+
+protected:
+
+    /**
+     * \brief Vector containing the chunk data.
+     *
+     * An explanation of why not a list is written in the class documentation
+     */
+    std::vector<uint8_t> data;
+
+    /**
+     * \brief Head of the vector
+     *
+     * An index to the next member that will be popped
+     */
+    uint64_t head = 0;
+};
+
+/**
+ * \brief A Chunk with an ID
+ *
+ * This chunk is essentially identical to the Chunk one, except for the fact
+ * that it contains an ID. Despite this simple difference this class exists only
+ * because of overheads.
+ *
+ * <ul>
+ * <li>Having an ID that can be used to ``name`` a class, implies adding 2
+ * bytes of overhead to every instance of ChunkNamed, over the raw data
+ * provided by Chunk. Although this seeming negligible, the smallest class that
+ * can be serialized in this project is Vec3 (or Normal) which is composed by
+ * 3 floats for a total of 12 bytes. Then, Vec3 can be wrapped inside a
+ * Triangle class, which contains 3 Vec3 and 3 Normal, for a total of 72 bytes.
+ * Adding a tiny 2 bytes of overhead for every Vec3 and Normal means that
+ * every Triangle will have 12 extra bytes of overhead, that could be used
+ * to store something else, given that having an ID on those classes is
+ * really unnecessary. This number grows linearly but it is still an
+ * additional 15% of space required. Imagine having to store a lot of
+ * primitives with million of triangles. For this reason, simple classes like
+ * Vec3 or Matrix should use the normal Chunk without ID, where more complex
+ * classes like Camera or Material should use the version with ID, so a
+ * parser can entirely skip classes that it does not understand (or are not
+ * yet implemented/version dependent/whatever).</li>
+ *
+ * <li>Additionally, this class has the ability to wrap a single Chunk, like a
+ * normal array of bytes, although the size must be explicitly provided.
+ * Again this is because of overheads and the fact that usually a chunk size
+ * should be known at compile time (for example, Matrix4 will always be 16*4
+ * bytes). In case the size is dynamic, it can be manually inserted as a
+ * number before the actual data, thus only when needed and only of the
+ * needed size.</li>
+ * </ul>
+ */
+class ChunkNamed : public Chunk
+{
+    friend ChunkWrapper;
+public:
+
+    /**
+     * \brief Default constructor
+     */
+    ChunkNamed() = default;
+
+    /**
+     * \brief Default destructor
+     */
+    ~ChunkNamed() = default;
+
+    /**
+     * \brief Sets the ID for the current chunk
+     * \param id
+     */
+    void set_id(uint16_t id);
+
+    /**
+     * \brief Returns the ID of the current chunk
+     * \return the ID of the current chunk
+     */
+    uint16_t get_id() const;
+
+    /**
+     * \brief Push a chunk inside this class
+     *
+     * Recall that the chunk size will NOT be pushed and it is required to
+     * retrieve the chunk
+     *
+     * \warning do not attempt to push ChunkNamed inside this class! Ok, you
+     * can do it but the ID will be ignored and it will be impossible to
+     * retrieve the class as a ChunkNamed
+     *
+     * \param[in] chunk The chunk that will be pushed inside this one
+     */
+    void push_chunk(const Chunk* chunk);
+
+    /**
+     * \brief Retrieves a chunk from this one
+     * \param[out] chunk The chunk that will be filled
+     * \param[in] size The size of the retrieved chunk. You should take care
+     * of this value.
+     */
+    void pop_chunk(Chunk* chunk, uint64_t size);
+
 private:
     //ID of the chunk
-    uint16_t id;
-    //Queue containing the chunk data
-    std::queue<uint8_t> data;
+    uint16_t id = 0;
 };
 
 

@@ -27,6 +27,7 @@ extern "C" {
 
 /**
  *  \brief Wrapper containing an ImageMap shifted and scaled
+ *
  *  This class contains a reference to an ImageMap. This image is used as
  *  texture that will be applied over an object. This class in particular, is
  *  the bridge between the Texture interface and the ImageMap class containing

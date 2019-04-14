@@ -23,7 +23,7 @@
  *  The ShadingSpace class is an orthonormal basis, composed of three
  *  orthogonal unit vectors that is used to represent the shading space. This
  *  space is extensively used to simplify calculation of sin and cos in BxDF
- *  computations. The class exposes methods to tranform a vector from world
+ *  computations. The class exposes methods to transform a vector from world
  *  space to shading space and vice versa.
  *
  *  Note that the three vector must be manually set.
