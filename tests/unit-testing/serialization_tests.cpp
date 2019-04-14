@@ -42,10 +42,11 @@ SPECTRE_TEST(Serialization, chunk_int16)
     chunk.push_int16(25500);
     chunk.push_int16(-3000);
     chunk.push_int16(32);
-    EXPECT_EQ((uint16_t)chunk.pop_int16(), (uint16_t)10);
-    EXPECT_EQ((uint16_t)chunk.pop_int16(), (uint16_t)25500);
+    //expect true because vs does not support uint16_t comparisons. W O W
+    EXPECT_EQ((int16_t)chunk.pop_int16(), (int16_t)10);
+    EXPECT_TRUE((uint16_t)chunk.pop_int16()==(uint16_t)25500);
     EXPECT_EQ((int16_t)chunk.pop_int16(), (int16_t)-3000);
-    EXPECT_EQ((uint16_t)chunk.pop_int16(), (uint16_t)32);
+    EXPECT_EQ((int16_t)chunk.pop_int16(), (int16_t)32);
 }
 
 SPECTRE_TEST(Serialization, chunk_int32)
@@ -68,9 +69,10 @@ SPECTRE_TEST(Serialization, chunk_int64)
     chunk.push_int64((uint64_t)2567898765445656786);
     chunk.push_int64((int64_t)-53456758659876547);
     chunk.push_int64(32);
+    //vs does not support also int64_t comparisons...
     EXPECT_EQ((uint64_t)chunk.pop_int64(), (uint64_t)10);
     EXPECT_EQ((uint64_t)chunk.pop_int64(), (uint64_t)2567898765445656786);
-    EXPECT_EQ((int64_t)chunk.pop_int64(), (int64_t)-53456758659876547);
+    EXPECT_TRUE((int64_t)chunk.pop_int64()==(int64_t)-53456758659876547);
     EXPECT_EQ((uint64_t)chunk.pop_int64(), (uint64_t)32);
 }
 
@@ -86,11 +88,11 @@ SPECTRE_TEST(Serialization, chunk_float)
 SPECTRE_TEST(Serialization, chunk_double)
 {
     Chunk chunk;
-    chunk.push_double(3.14f);
-    chunk.push_double(354.34f);
+    chunk.push_double(3.14);
+    chunk.push_double(354.34);
     chunk.push_double(-6437.876469766);
-    EXPECT_EQ(chunk.pop_double(), 3.14f);
-    EXPECT_EQ(chunk.pop_double(), 354.34f);
+    EXPECT_EQ(chunk.pop_double(), 3.14);
+    EXPECT_EQ(chunk.pop_double(), 354.34);
     EXPECT_EQ(chunk.pop_double(), -6437.876469766);
 }
 
@@ -116,7 +118,7 @@ SPECTRE_TEST(Serialization, chunk_all_types)
     EXPECT_EQ(chunk.pop_int8(), (uint8_t)250);
     EXPECT_EQ(chunk.pop_float(), 3.14f);
     EXPECT_STREQ(chunk.pop_string().c_str(), "test string!!!");
-    EXPECT_EQ(chunk.pop_int32(), 21476543);
+    EXPECT_EQ(chunk.pop_int32(), (uint32_t)21476543);
     EXPECT_STREQ(chunk.pop_string().c_str(), "another string");
     EXPECT_EQ((int16_t)chunk.pop_int16(), (int16_t)-3);
 }
@@ -124,7 +126,7 @@ SPECTRE_TEST(Serialization, chunk_all_types)
 SPECTRE_TEST(Serialization, chunknamed_id)
 {
     ChunkNamed chunk;
-    EXPECT_EQ(chunk.get_id(), 0);
+    EXPECT_TRUE(chunk.get_id()==(uint16_t)0);
     chunk.set_id(35530);
     EXPECT_TRUE(chunk.get_id() == 35530);
 }
@@ -218,3 +220,5 @@ SPECTRE_TEST(Serialization, wrapper_to_file)
 
     unlink(tmp_file);
 }
+
+SPECTRE_TEST_END(Serialization)
