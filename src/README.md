@@ -40,6 +40,5 @@ When every sub-image has been processed the image is saved onto the disk
 ### Other files
 Here is an explanation of the other files not mentioned in the previous sections
 - [localization.h](./localization.h) contains the strings for every message that will be printed by the console
-- [settings.h](./settings.h) contains several defines and global settings used throughout the whole project
-- [validator.h](./validator.h) this file is automatically included by the file settings.h and contains the definition of
-several constants and some security checks
+- [settings.h](./settings.h) contains several defines and global settings 
+used throughout the whole project, several constants and some security checks
