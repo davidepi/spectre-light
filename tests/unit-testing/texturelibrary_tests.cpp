@@ -210,12 +210,16 @@ SPECTRE_TEST(TextureLibrary, size)
 {
     ASSERT_EQ(TexLib.size_map(), 0);
     ASSERT_EQ(TexLib.size_texture(), 0);
-    TextureImage* tex = new TextureImage(TEST_ASSETS "images/black.bmp",
-                                         Vec2(0.f), Vec2(1.f), UNFILTERED);
+    //this line is used to remove .. from the path
+    //otherwise the assert is done on a path containing .., whereas the actual
+    //storage ALWAYS removes them
+    File src(TEST_ASSETS "images/black.bmp");
+    TextureImage* tex = new TextureImage(src, Vec2(0.f), Vec2(1.f), UNFILTERED);
     TexLib.inherit_texture("Texture", tex);
-    EXPECT_TRUE(TexLib.contains_texture("Texture"));
-    EXPECT_TRUE(TexLib.contains_map(TEST_ASSETS
-                        "images/black.bmp"));
+    bool res = TexLib.contains_texture("Texture");
+    EXPECT_TRUE(res);
+    res = TexLib.contains_map(src.absolute_path());
+    EXPECT_TRUE(res);
     EXPECT_EQ(TexLib.size_texture(), 1);
     EXPECT_EQ(TexLib.size_map(), 1);
 }

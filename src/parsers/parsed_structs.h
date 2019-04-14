@@ -21,6 +21,10 @@
 #include "samplers/types_sampler.h"
 #include "cameras/types_camera.h"
 #include <stdint.h>
+/* If this include is removed, MSVC uses C++ linking for the malloc and free
+functions inside the bison generated files. And the build fails
+*/
+#include <stdlib.h> 
 
 /** Type of materials that can be created */
 enum mat_t

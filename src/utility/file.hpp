@@ -1,5 +1,5 @@
 //Created,   4 Apr 2018
-//Last Edit 18 Sep 2018
+//Last Edit 10 Apr 2019
 
 /**
  *  \file file.hpp
@@ -188,7 +188,7 @@ public:
      * \brief Generates an unique temporary file path, without creating the file
      *
      * \warning Consider that a possible data race exists in the case where
-     * someone opens the file between the path name generation and the actual
+     * someone creates the file between the path name generation and the actual
      * opening
      *
      * \return a File object representing the generated path

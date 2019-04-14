@@ -16,7 +16,7 @@
 
 //This magnificent bastard must come first, otherwise C++ linking is used anyway
 extern "C" {
-#include "parsers/parsed_structs.h"
+    #include "parsers/parsed_structs.h" 
 }
 
 #include "renderer.hpp"

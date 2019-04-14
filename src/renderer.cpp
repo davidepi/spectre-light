@@ -2,6 +2,12 @@
 //license: GNU GPLv3
 
 #include "renderer.hpp"
+#include "samplers/sampler_random.hpp"
+#include "samplers/sampler_stratified.hpp"
+#include "utility/console.hpp"
+#include "settings.h"
+#include <ctime> //time for srand
+#include <chrono> //std::this_thread::sleep_for, platform independent
 
 //st = sampler type
 static void

@@ -348,6 +348,15 @@
     <ClCompile Include="..\tests\unit-testing\box_tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\tests\unit-testing\serialization_tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\chunk.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\chunk_wrapper.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\unit-testing\spectre_tests.h">
@@ -588,6 +597,12 @@
       <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="..\src\primitives\box.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\chunk.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parsers\chunk_wrapper.hpp">
       <Filter>sources</Filter>
     </ClInclude>
   </ItemGroup>
