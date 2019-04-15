@@ -127,6 +127,23 @@ std::string Chunk::pop_string()
     return retval;
 }
 
+void Chunk::push_chunk(const Chunk* chunk)
+{
+    for(uint8_t value : chunk->data)
+    {
+        Chunk::data.push_back(value);
+    }
+}
+
+void Chunk::pop_chunk(Chunk* chunk, uint64_t size)
+{
+    for(uint64_t i = 0; i<size; i++)
+    {
+        chunk->push_int8(Chunk::data[head]);
+        Chunk::head++;
+    }
+}
+
 uint64_t Chunk::size() const
 {
     return (uint64_t)data.size()-head;
@@ -140,21 +157,4 @@ uint16_t ChunkNamed::get_id() const
 void ChunkNamed::set_id(uint16_t in_id)
 {
     ChunkNamed::id = in_id;
-}
-
-void ChunkNamed::push_chunk(const Chunk* chunk)
-{
-    for(uint8_t value : chunk->data)
-    {
-        ChunkNamed::data.push_back(value);
-    }
-}
-
-void ChunkNamed::pop_chunk(Chunk* chunk, uint64_t size)
-{
-    for(uint64_t i = 0; i<size; i++)
-    {
-        chunk->push_int8(ChunkNamed::data[head]);
-        ChunkNamed::head++;
-    }
 }

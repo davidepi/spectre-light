@@ -35,11 +35,11 @@ Point3::Point3(float x, float y, float z)
 
 float Point3::distance(const Point3& p) const
 {
-    float x = p.x-Point3::x;
-    float y = p.y-Point3::y;
-    float z = p.z-Point3::z;
+    float xx = p.x-Point3::x;
+    float yy = p.y-Point3::y;
+    float zz = p.z-Point3::z;
 
-    return std::sqrt((x*x)+(y*y)+(z*z));
+    return std::sqrt((xx*xx)+(yy*yy)+(zz*zz));
 }
 
 void Point3::max(const Point3& p)
@@ -60,6 +60,20 @@ void Point3::min(const Point3& p)
         Point3::y = p.y;
     if(p.z<Point3::z)
         Point3::z = p.z;
+}
+
+Point3::Point3(Chunk* data)
+{
+    Point3::x = data->pop_float();
+    Point3::y = data->pop_float();
+    Point3::z = data->pop_float();
+}
+
+void Point3::serialize(Chunk* data) const
+{
+    data->push_float(Point3::x);
+    data->push_float(Point3::y);
+    data->push_float(Point3::z);
 }
 
 //------ Operators -------------------------------------------------------------

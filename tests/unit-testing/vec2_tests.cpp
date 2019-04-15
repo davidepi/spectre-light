@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "geometry/vec2.hpp"
@@ -548,6 +550,17 @@ SPECTRE_TEST(Vec2, min_noinline)
     compare = Vec2(0.f, 10.f);
     value.min(compare);
     EXPECT_EQ(value.y, sample.y);
+}
+
+SPECTRE_TEST(Vec2, serialization)
+{
+    Vec2 v(128.7f, -34.f);
+    Chunk serialized;
+    v.serialize(&serialized);
+
+    Vec2 deserialized(&serialized);
+    EXPECT_EQ(v.x, deserialized.x);
+    EXPECT_EQ(v.y, deserialized.y);
 }
 
 // ------

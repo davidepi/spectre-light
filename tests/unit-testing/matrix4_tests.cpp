@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "geometry/matrix4.hpp"
@@ -801,7 +803,7 @@ SPECTRE_TEST(Matrix4, trasnform_ray)
     Ray r(p, v);
     Matrix4 m;
     m.set_translation(Vec3(0, -1, 2.5));
-    
+
     p = m*p;
     v = m*v;
     r = m*r;
@@ -809,6 +811,34 @@ SPECTRE_TEST(Matrix4, trasnform_ray)
     //direction separately
     EXPECT_TRUE(r.origin == p);
     EXPECT_TRUE(r.direction == v);
+}
+
+SPECTRE_TEST(Matrix4, serialization)
+{
+    float vals[] = {46.3f, 6.5f, -84.39f, 6.06f, 91.72f, 78.04f, -64.94f,
+                    32.07f, -59.33f, -78.26f, 54.08f, -73.42f, -27.12f, 4.49f,
+                    69.9f, 91.19f};
+    Matrix4 m(vals);
+    Chunk serialized;
+    m.serialize(&serialized);
+
+    Matrix4 deserialized(&serialized);
+    EXPECT_EQ(m.m00, deserialized.m00);
+    EXPECT_EQ(m.m01, deserialized.m01);
+    EXPECT_EQ(m.m02, deserialized.m02);
+    EXPECT_EQ(m.m03, deserialized.m03);
+    EXPECT_EQ(m.m10, deserialized.m10);
+    EXPECT_EQ(m.m11, deserialized.m11);
+    EXPECT_EQ(m.m12, deserialized.m12);
+    EXPECT_EQ(m.m13, deserialized.m13);
+    EXPECT_EQ(m.m20, deserialized.m20);
+    EXPECT_EQ(m.m21, deserialized.m21);
+    EXPECT_EQ(m.m22, deserialized.m22);
+    EXPECT_EQ(m.m23, deserialized.m23);
+    EXPECT_EQ(m.m30, deserialized.m30);
+    EXPECT_EQ(m.m31, deserialized.m31);
+    EXPECT_EQ(m.m32, deserialized.m32);
+    EXPECT_EQ(m.m33, deserialized.m33);
 }
 
 SPECTRE_TEST(Matrix4, transform_normal_inline)

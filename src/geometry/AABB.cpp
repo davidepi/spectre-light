@@ -186,6 +186,26 @@ const
     return true;
 }
 
+AABB::AABB(Chunk* data)
+{
+    bounds[0].x = data->pop_float();
+    bounds[0].y = data->pop_float();
+    bounds[0].z = data->pop_float();
+    bounds[1].x = data->pop_float();
+    bounds[1].y = data->pop_float();
+    bounds[1].z = data->pop_float();
+}
+
+void AABB::serialize(Chunk* data) const
+{
+    data->push_float(bounds[0].x);
+    data->push_float(bounds[0].y);
+    data->push_float(bounds[0].z);
+    data->push_float(bounds[1].x);
+    data->push_float(bounds[1].y);
+    data->push_float(bounds[1].z);
+}
+
 
 //------ Operators -------------------------------------------------------------
 

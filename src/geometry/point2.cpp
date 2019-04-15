@@ -32,10 +32,10 @@ Point2::Point2(float x, float y)
 
 float Point2::distance(const Point2& p) const
 {
-    float x = p.x-Point2::x;
-    float y = p.y-Point2::y;
+    float xx = p.x-Point2::x;
+    float yy = p.y-Point2::y;
 
-    return std::sqrt((x*x)+(y*y));
+    return std::sqrt((xx*xx)+(yy*yy));
 }
 
 void Point2::max(const Point2& p)
@@ -52,6 +52,18 @@ void Point2::min(const Point2& p)
         Point2::x = p.x;
     if(p.y<Point2::y)
         Point2::y = p.y;
+}
+
+Point2::Point2(Chunk* data)
+{
+    Point2::x = data->pop_float();
+    Point2::y = data->pop_float();
+}
+
+void Point2::serialize(Chunk* data) const
+{
+    data->push_float(Point2::x);
+    data->push_float(Point2::y);
 }
 
 //------ Operators -------------------------------------------------------------

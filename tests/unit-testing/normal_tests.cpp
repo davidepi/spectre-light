@@ -815,6 +815,18 @@ SPECTRE_TEST(Normal, min_noinline)
     EXPECT_EQ(value.z, sample.z);
 }
 
+SPECTRE_TEST(Normal, serialization)
+{
+    Normal n(128.7f, 435.4f, -34.f);
+    Chunk serialized;
+    n.serialize(&serialized);
+
+    Normal deserialized(&serialized);
+    EXPECT_EQ(n.x, deserialized.x);
+    EXPECT_EQ(n.y, deserialized.y);
+    EXPECT_EQ(n.z, deserialized.z);
+}
+
 SPECTRE_TEST(Normal, normalize_inline)
 {
     errors_count[CRITICAL_INDEX] = 0;

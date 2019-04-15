@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 14 May 2018
+//Last Edit 14 Apr 2019
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      14 May 2018
+ *  \date      14 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -88,6 +88,12 @@ public:
      * \param[in] values An array of float containing the values of the matrix
      */
     Matrix4(const float* values);
+
+    /**
+     * \brief Construct a Matrix4 by deserializing a Chunk
+     * \param[in] data The chunk containing the data.
+     */
+    Matrix4(Chunk* data);
 
     ///Default destructor
     ~Matrix4() = default;
@@ -254,6 +260,12 @@ public:
      *  \return A Vec3 representing the scale component of the matrix
      */
     Vec3 get_scale() const;
+
+    /**
+     * \brief Serialize this class to a Chunk
+     * \param[out] data The chunk that will contain the data
+     */
+    void serialize(Chunk* data) const;
 
 
     //------ Operators ---------------------------------------------------------

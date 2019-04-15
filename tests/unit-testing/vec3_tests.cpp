@@ -914,6 +914,18 @@ SPECTRE_TEST(Vec3, refract_normal_noinline)
     errors_count[WARNING_INDEX] = 0;
 }
 
+SPECTRE_TEST(Vec3, serialization)
+{
+    Vec3 v(128.7f, 435.4f, -34.f);
+    Chunk serialized;
+    v.serialize(&serialized);
+
+    Vec3 deserialized(&serialized);
+    EXPECT_EQ(v.x, deserialized.x);
+    EXPECT_EQ(v.y, deserialized.y);
+    EXPECT_EQ(v.z, deserialized.z);
+}
+
 // ------
 
 SPECTRE_TEST(Vec3, dotvecvec_inline)

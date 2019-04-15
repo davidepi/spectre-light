@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit  3 May 2018
+//Last Edit 14 Apr 2019
 
 /**
  *  \file vec3.hpp
@@ -8,7 +8,7 @@
  *  \details   A three components vector or normal class
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      3 May 2018
+ *  \date      14 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -114,6 +114,12 @@ public:
      *        explicit
      */
     explicit Vec3(Normal n);
+
+    /**
+     * \brief Construct a Vec3 by deserializing a Chunk
+     * \param[in] data The chunk containing the data.
+     */
+    Vec3(Chunk* data);
 
     ///Default destructor
     ~Vec3() = default;
@@ -334,6 +340,12 @@ public:
      */
     bool refract(const Normal& interface, float eta);
 
+    /**
+     * \brief Serialize this class to a Chunk
+     * \param[out] data The chunk that will contain the data
+     */
+    void serialize(Chunk* data) const;
+
     //------ Operators ---------------------------------------------------------
 
     ///The addition operation between two vectors
@@ -499,6 +511,12 @@ public:
      */
     explicit Normal(const Vec3 v);
 
+    /**
+     * \brief Construct a Normal by deserializing a Chunk
+     * \param[in] data The chunk containing the data.
+     */
+    Normal(Chunk* data);
+
     ///Default destructor
     ~Normal() = default;
 
@@ -624,6 +642,12 @@ public:
      *  \sa max(const Normal n)
      */
     void min(const Normal& n);
+
+    /**
+     * \brief Serialize this class to a Chunk
+     * \param[out] data The chunk that will contain the data
+     */
+    void serialize(Chunk* data) const;
 
 
     //------ Operators ---------------------------------------------------------

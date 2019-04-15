@@ -374,6 +374,18 @@ SPECTRE_TEST(Point3, const_access)
     EXPECT_EQ(v2.z, v2[2]);
 }
 
+SPECTRE_TEST(Point3, serialization)
+{
+    Point3 p(128.7f, 435.4f, -34.f);
+    Chunk serialized;
+    p.serialize(&serialized);
+
+    Point3 deserialized(&serialized);
+    EXPECT_EQ(p.x, deserialized.x);
+    EXPECT_EQ(p.y, deserialized.y);
+    EXPECT_EQ(p.z, deserialized.z);
+}
+
 SPECTRE_TEST(Point3, distance_inline)
 {
     Point3 p0(1, 2, 3);

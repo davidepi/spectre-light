@@ -1,5 +1,5 @@
 //Created,  24 Feb 2016
-//Last Edit  7 Dec 2017
+//Last Edit 14 Apr 2019
 
 /**
  *  \file point3.hpp
@@ -9,7 +9,7 @@
  *             space and its interaction with the Vec3 class
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      7 Dec 2017
+ *  \date      14 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -19,6 +19,7 @@
 
 
 #include "geometry/vec3.hpp"
+#include "parsers/chunk.hpp"
 
 /**
  *  \class Point3 point3.hpp "geometry/point3.hpp"
@@ -63,6 +64,13 @@ public:
      *  coordinate (0,0,0)
      */
     Point3();
+
+    /**
+     * \brief Construct a Point3 by deserializing a Chunk
+     * \param[in] data The chunk containing the data. This chunk will be
+     * destroyed
+     */
+    Point3(Chunk* data);
 
     ///Default destructor
     ~Point3() = default;
@@ -117,6 +125,12 @@ public:
      *  \sa max(const Point3& p)
      */
     void min(const Point3& p);
+
+    /**
+     * \brief Serialize this class to a Chunk
+     * \param[out] data The chunk that will contain the data
+     */
+    void serialize(Chunk* data) const;
 
     //------ Operators ---------------------------------------------------------
 

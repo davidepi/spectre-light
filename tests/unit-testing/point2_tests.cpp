@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "geometry/point2.hpp"
@@ -279,6 +281,17 @@ SPECTRE_TEST(Point2, const_access)
     const Point2 v2(-72.74395f, -6.04488f);
     EXPECT_EQ(v2.x, v2[0]);
     EXPECT_EQ(v2.y, v2[1]);
+}
+
+SPECTRE_TEST(Point2, serialization)
+{
+    Point2 v(128.7f, -34.f);
+    Chunk serialized;
+    v.serialize(&serialized);
+
+    Point2 deserialized(&serialized);
+    EXPECT_EQ(v.x, deserialized.x);
+    EXPECT_EQ(v.y, deserialized.y);
 }
 
 SPECTRE_TEST(Point2, distance_inline)

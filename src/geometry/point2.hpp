@@ -1,5 +1,5 @@
 //Created,  15 Apr 2018
-//Last Edit 15 Apr 2018
+//Last Edit 14 Apr 2019
 
 /**
  *  \file point2.hpp
@@ -8,7 +8,7 @@
  *  \details   Definition and implementation of point in two dimensional space
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      15 Apr 2017
+ *  \date      14 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 #define __POINT2_HPP__
 
 #include "geometry/vec2.hpp"
+#include "parsers/chunk.hpp"
 
 /**
  *  \class Point2 point2.hpp "geometry/point2.hpp"
@@ -54,6 +55,12 @@ public:
      *  coordinates (0,0)
      */
     Point2();
+
+    /**
+     * \brief Construct a Point2 by deserializing a Chunk
+     * \param[in] data The chunk containing the data.
+     */
+    Point2(Chunk* data);
 
     ///Default destructor
     ~Point2() = default;
@@ -106,6 +113,12 @@ public:
      *  \sa max(const Point2& p)
      */
     void min(const Point2& p);
+
+    /**
+     * \brief Serialize this class to a Chunk
+     * \param[out] data The chunk that will contain the data
+     */
+    void serialize(Chunk* data) const;
 
     //------ Operators ---------------------------------------------------------
 

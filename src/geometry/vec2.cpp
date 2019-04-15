@@ -5,8 +5,6 @@
 #include "vec2.hpp"
 #include <sstream>
 
-#define CHAR_ARRAY_SIZE_PER_FLOAT 10
-
 Vec2::Vec2()
 {
     Vec2::x = 0;
@@ -124,10 +122,10 @@ void Vec2::saturate()
 
 float Vec2::distance(const Vec2& target) const
 {
-    float x = target.x-Vec2::x;
-    float y = target.y-Vec2::y;
+    float xx = target.x-Vec2::x;
+    float yy = target.y-Vec2::y;
 
-    return std::sqrt((x*x)+(y*y));
+    return std::sqrt((xx*xx)+(yy*yy));
 }
 
 float Vec2::dot(const Vec2& target) const
@@ -137,34 +135,46 @@ float Vec2::dot(const Vec2& target) const
 
 void Vec2::max(const Vec2& vector2)
 {
-    float x, y;
+    float xx, yy;
     if(Vec2::x>vector2.x)
-        x = Vec2::x;
+        xx = Vec2::x;
     else
-        x = vector2.x;
+        xx = vector2.x;
     if(Vec2::y>vector2.y)
-        y = Vec2::y;
+        yy = Vec2::y;
     else
-        y = vector2.y;
+        yy = vector2.y;
 
-    Vec2::x = x;
-    Vec2::y = y;
+    Vec2::x = xx;
+    Vec2::y = yy;
 }
 
 void Vec2::min(const Vec2& vector2)
 {
-    float x, y;
+    float xx, yy;
     if(Vec2::x<vector2.x)
-        x = Vec2::x;
+        xx = Vec2::x;
     else
-        x = vector2.x;
+        xx = vector2.x;
     if(Vec2::y<vector2.y)
-        y = Vec2::y;
+        yy = Vec2::y;
     else
-        y = vector2.y;
+        yy = vector2.y;
 
-    Vec2::x = x;
-    Vec2::y = y;
+    Vec2::x = xx;
+    Vec2::y = yy;
+}
+
+Vec2::Vec2(Chunk* data)
+{
+    Vec2::x = data->pop_float();
+    Vec2::y = data->pop_float();
+}
+
+void Vec2::serialize(Chunk* data) const
+{
+    data->push_float(Vec2::x);
+    data->push_float(Vec2::y);
 }
 
 //------ Operators -------------------------------------------------------------

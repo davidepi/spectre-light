@@ -5,8 +5,6 @@
 #include <sstream>
 #include <cfloat>
 
-#define CHAR_ARRAY_SIZE_PER_FLOAT 10
-
 Vec3::Vec3()
 {
     Vec3::x = 0;
@@ -113,11 +111,11 @@ float Vec3::length2() const
 
 float Vec3::distance(const Vec3& target) const
 {
-    float x = target.x-Vec3::x;
-    float y = target.y-Vec3::y;
-    float z = target.z-Vec3::z;
+    float xx = target.x-Vec3::x;
+    float yy = target.y-Vec3::y;
+    float zz = target.z-Vec3::z;
 
-    return sqrtf((x*x)+(y*y)+(z*z));
+    return sqrtf((xx*xx)+(yy*yy)+(zz*zz));
 }
 
 void Vec3::cross(const Vec3& target, Vec3* output) const
@@ -211,48 +209,52 @@ void Vec3::saturate()
 
 void Vec3::max(const Vec3& vector2)
 {
-    float x, y, z;
+    float xx;
+    float yy;
+    float zz;
     if(Vec3::x>vector2.x)
-        x = Vec3::x;
+        xx = Vec3::x;
     else
-        x = vector2.x;
+        xx = vector2.x;
 
     if(Vec3::y>vector2.y)
-        y = Vec3::y;
+        yy = Vec3::y;
     else
-        y = vector2.y;
+        yy = vector2.y;
 
     if(Vec3::z>vector2.z)
-        z = Vec3::z;
+        zz = Vec3::z;
     else
-        z = vector2.z;
+        zz = vector2.z;
 
-    Vec3::x = x;
-    Vec3::y = y;
-    Vec3::z = z;
+    Vec3::x = xx;
+    Vec3::y = yy;
+    Vec3::z = zz;
 }
 
 void Vec3::min(const Vec3& vector2)
 {
-    float x, y, z;
+    float xx;
+    float yy;
+    float zz;
     if(Vec3::x<vector2.x)
-        x = Vec3::x;
+        xx = Vec3::x;
     else
-        x = vector2.x;
+        xx = vector2.x;
 
     if(Vec3::y<vector2.y)
-        y = Vec3::y;
+        yy = Vec3::y;
     else
-        y = vector2.y;
+        yy = vector2.y;
 
     if(Vec3::z<vector2.z)
-        z = Vec3::z;
+        zz = Vec3::z;
     else
-        z = vector2.z;
+        zz = vector2.z;
 
-    Vec3::x = x;
-    Vec3::y = y;
-    Vec3::z = z;
+    Vec3::x = xx;
+    Vec3::y = yy;
+    Vec3::z = zz;
 }
 
 void Vec3::reflect(const Vec3& centre)
@@ -321,6 +323,20 @@ bool Vec3::refract(const Normal& interface, float eta)
         Vec3::operator+=((Vec3)(interface*(cosi*eta-cost)));
         return true;
     }
+}
+
+Vec3::Vec3(Chunk* data)
+{
+    Vec3::x = data->pop_float();
+    Vec3::y = data->pop_float();
+    Vec3::z = data->pop_float();
+}
+
+void Vec3::serialize(Chunk* data) const
+{
+    data->push_float(x);
+    data->push_float(y);
+    data->push_float(z);
 }
 
 //------ Operators -------------------------------------------------------------
@@ -596,11 +612,11 @@ float Normal::length2() const
 
 float Normal::distance(const Normal& target) const
 {
-    float x = target.x-Normal::x;
-    float y = target.y-Normal::y;
-    float z = target.z-Normal::z;
+    float xx = target.x-Normal::x;
+    float yy = target.y-Normal::y;
+    float zz = target.z-Normal::z;
 
-    return sqrtf((x*x)+(y*y)+(z*z));
+    return sqrtf((xx*xx)+(yy*yy)+(zz*zz));
 }
 
 Normal& Normal::normalize()
@@ -673,48 +689,66 @@ void Normal::saturate()
 
 void Normal::max(const Normal& n)
 {
-    float x, y, z;
+    float xx;
+    float yy;
+    float zz;
     if(Normal::x>n.x)
-        x = Normal::x;
+        xx = Normal::x;
     else
-        x = n.x;
+        xx = n.x;
 
     if(Normal::y>n.y)
-        y = Normal::y;
+        yy = Normal::y;
     else
-        y = n.y;
+        yy = n.y;
 
     if(Normal::z>n.z)
-        z = Normal::z;
+        zz = Normal::z;
     else
-        z = n.z;
+        zz = n.z;
 
-    Normal::x = x;
-    Normal::y = y;
-    Normal::z = z;
+    Normal::x = xx;
+    Normal::y = yy;
+    Normal::z = zz;
 }
 
 void Normal::min(const Normal& n)
 {
-    float x, y, z;
+    float xx;
+    float yy;
+    float zz;
     if(Normal::x<n.x)
-        x = Normal::x;
+        xx = Normal::x;
     else
-        x = n.x;
+        xx = n.x;
 
     if(Normal::y<n.y)
-        y = Normal::y;
+        yy = Normal::y;
     else
-        y = n.y;
+        yy = n.y;
 
     if(Normal::z<n.z)
-        z = Normal::z;
+        zz = Normal::z;
     else
-        z = n.z;
+        zz = n.z;
 
-    Normal::x = x;
-    Normal::y = y;
-    Normal::z = z;
+    Normal::x = xx;
+    Normal::y = yy;
+    Normal::z = zz;
+}
+
+Normal::Normal(Chunk* data)
+{
+    Normal::x = data->pop_float();
+    Normal::y = data->pop_float();
+    Normal::z = data->pop_float();
+}
+
+void Normal::serialize(Chunk* data) const
+{
+    data->push_float(x);
+    data->push_float(y);
+    data->push_float(z);
 }
 
 //------ Operators -------------------------------------------------------------

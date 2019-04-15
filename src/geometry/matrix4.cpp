@@ -796,6 +796,46 @@ Ray Matrix4::operator*(const Ray& r) const
     return Ray(origin, direction);
 }
 
+Matrix4::Matrix4(Chunk* data)
+{
+    Matrix4::m00 = data->pop_float();
+    Matrix4::m01 = data->pop_float();
+    Matrix4::m02 = data->pop_float();
+    Matrix4::m03 = data->pop_float();
+    Matrix4::m10 = data->pop_float();
+    Matrix4::m11 = data->pop_float();
+    Matrix4::m12 = data->pop_float();
+    Matrix4::m13 = data->pop_float();
+    Matrix4::m20 = data->pop_float();
+    Matrix4::m21 = data->pop_float();
+    Matrix4::m22 = data->pop_float();
+    Matrix4::m23 = data->pop_float();
+    Matrix4::m30 = data->pop_float();
+    Matrix4::m31 = data->pop_float();
+    Matrix4::m32 = data->pop_float();
+    Matrix4::m33 = data->pop_float();
+}
+
+void Matrix4::serialize(Chunk* data) const
+{
+    data->push_float(Matrix4::m00);
+    data->push_float(Matrix4::m01);
+    data->push_float(Matrix4::m02);
+    data->push_float(Matrix4::m03);
+    data->push_float(Matrix4::m10);
+    data->push_float(Matrix4::m11);
+    data->push_float(Matrix4::m12);
+    data->push_float(Matrix4::m13);
+    data->push_float(Matrix4::m20);
+    data->push_float(Matrix4::m21);
+    data->push_float(Matrix4::m22);
+    data->push_float(Matrix4::m23);
+    data->push_float(Matrix4::m30);
+    data->push_float(Matrix4::m31);
+    data->push_float(Matrix4::m32);
+    data->push_float(Matrix4::m33);
+}
+
 //------------------------------------------------------------------------------
 
 Normal transform_normal(const Normal& n, const Matrix4* inv)

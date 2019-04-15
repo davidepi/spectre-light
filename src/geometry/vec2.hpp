@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit  3 May 2018
+//Last Edit 14 Apr 2019
 
 /**
  *  \file vec2.hpp
@@ -7,7 +7,7 @@
  *  \details   A two components vector class
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      3 May 2018
+ *  \date      14 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -17,6 +17,7 @@
 
 #include "utility/utility.hpp"
 #include "utility/console.hpp"
+#include "parsers/chunk.hpp"
 #include <string>
 
 /**
@@ -82,6 +83,12 @@ public:
      *  \warning It is not checked if \p xy is a valid pointer
      */
     Vec2(const float* xy);
+
+    /**
+     * \brief Construct a Vec2 by deserializing a Chunk
+     * \param[in] data The chunk containing the data.
+     */
+    Vec2(Chunk* data);
 
     ///Default destructor
     ~Vec2() = default;
@@ -201,6 +208,12 @@ public:
      *  \sa max(const Vec2 vector2)
      */
     void min(const Vec2& vector2);
+
+    /**
+     * \brief Serialize this class to a Chunk
+     * \param[out] data The chunk that will contain the data
+     */
+    void serialize(Chunk* data) const;
 
     //------ Operators ---------------------------------------------------------
 

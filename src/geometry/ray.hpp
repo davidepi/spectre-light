@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit  9 Dec 2017
+//Last Edit 14 Apr 2019
 
 /**
  *  \file ray.hpp
@@ -7,7 +7,7 @@
  *  \details A class representing a Ray in a three-dimensional space
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date 9 Dec 2017
+ *  \date 14 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -87,6 +87,12 @@ public:
      */
     Ray(float ox, float oy, float oz, float dx, float dy, float dz);
 
+    /**
+     * \brief Construct a Ray by deserializing a Chunk
+     * \param[in] data The chunk containing the data.
+     */
+    Ray(Chunk* data);
+
     /** \brief Find a point along a ray
      *
      *  Find a point at a particular position along a ray, at distance \a t from
@@ -95,6 +101,12 @@ public:
      *  \param[in] t the distance of the point from the origin
      */
     Point3 apply(float t) const;
+
+    /**
+     * \brief Serialize this class to a Chunk
+     * \param[out] data The chunk that will contain the data
+     */
+    void serialize(Chunk* data) const;
 };
 
 /**
@@ -120,9 +132,12 @@ public:
         RayProperties::inverseX = 1.f/v.direction.x;
         RayProperties::inverseY = 1.f/v.direction.y;
         RayProperties::inverseZ = 1.f/v.direction.z;
-        RayProperties::isXInvNeg = RayProperties::inverseX<0;
-        RayProperties::isYInvNeg = RayProperties::inverseY<0;
-        RayProperties::isZInvNeg = RayProperties::inverseZ<0;
+        RayProperties::isXInvNeg = RayProperties::inverseX<
+        0;
+        RayProperties::isYInvNeg = RayProperties::inverseY<
+        0;
+        RayProperties::isZInvNeg = RayProperties::inverseZ<
+        0;
     }
 
     ///The inverse of the \a x component of the ray's direction

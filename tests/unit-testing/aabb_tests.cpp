@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "geometry/AABB.hpp"
@@ -424,9 +426,9 @@ SPECTRE_TEST(AABB, radius)
 {
     AABB bound;
     EXPECT_TRUE(std::isnan(bound.radius()));
-    bound.engulf(Point3(0,0,0));
+    bound.engulf(Point3(0, 0, 0));
     EXPECT_EQ(bound.radius(), 0.f);
-    bound.engulf(Point3(0,1,0));
+    bound.engulf(Point3(0, 1, 0));
     EXPECT_EQ(bound.radius(), .5f);
 }
 
@@ -1360,6 +1362,22 @@ SPECTRE_TEST(AABB, not_equal)
     EXPECT_FALSE(small != small);
     EXPECT_FALSE(small != small_again);
     EXPECT_TRUE(small != big);
+}
+
+SPECTRE_TEST(AABB, serialization)
+{
+    AABB box(Point3(-0.53123f, -0.29362f, -0.26433f),
+             Point3(0.14842f, 0.6715f, 0.59818f));
+    Chunk serialized;
+    box.serialize(&serialized);
+
+    AABB deserialized(&serialized);
+    EXPECT_EQ(box.bounds[0].x, deserialized.bounds[0].x);
+    EXPECT_EQ(box.bounds[0].y, deserialized.bounds[0].y);
+    EXPECT_EQ(box.bounds[0].z, deserialized.bounds[0].z);
+    EXPECT_EQ(box.bounds[1].x, deserialized.bounds[1].x);
+    EXPECT_EQ(box.bounds[1].y, deserialized.bounds[1].y);
+    EXPECT_EQ(box.bounds[1].z, deserialized.bounds[1].z);
 }
 
 SPECTRE_TEST_END(AABB_tests)

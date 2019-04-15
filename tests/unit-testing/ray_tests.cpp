@@ -5,7 +5,9 @@
 #elif defined(__VS__)
 #include "CppUnitTest.h"
 #else
+
 #include <gtest/gtest.h>
+
 #endif
 
 #include "geometry/vec3.hpp"
@@ -130,11 +132,11 @@ SPECTRE_TEST(Ray, RayProperties_constructor)
     EXPECT_TRUE(rp.isZInvNeg);
 }
 
-SPECTRE_TEST(Ray,constructor)
+SPECTRE_TEST(Ray, constructor)
 {
     Point3 origin(-1.f, 2.4, 5.f);
     Vec3 direction(-8.f, -3.5f, 0.1f);
-    Ray r(origin,direction);
+    Ray r(origin, direction);
     EXPECT_EQ(r.origin.x, origin.x);
     EXPECT_EQ(r.origin.y, origin.y);
     EXPECT_EQ(r.origin.z, origin.z);
@@ -142,6 +144,23 @@ SPECTRE_TEST(Ray,constructor)
     EXPECT_EQ(r.direction.y, direction.y);
     EXPECT_EQ(r.direction.z, direction.z);
     EXPECT_EQ(r.ricochet, (unsigned char)0);
+}
+
+SPECTRE_TEST(Ray, serialization)
+{
+    Point3 origin(-1.f, 2.4, 5.f);
+    Vec3 direction(-8.f, -3.5f, 0.1f);
+    Ray r(origin, direction);
+    Chunk serialized;
+    r.serialize(&serialized);
+
+    Ray deserialized(&serialized);
+    EXPECT_EQ(r.origin.x, deserialized.origin.x);
+    EXPECT_EQ(r.origin.y, deserialized.origin.y);
+    EXPECT_EQ(r.origin.z, deserialized.origin.z);
+    EXPECT_EQ(r.direction.x, deserialized.direction.x);
+    EXPECT_EQ(r.direction.y, deserialized.direction.y);
+    EXPECT_EQ(r.direction.z, deserialized.direction.z);
 }
 
 SPECTRE_TEST_END(Ray_tests)

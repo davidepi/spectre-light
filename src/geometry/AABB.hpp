@@ -1,5 +1,5 @@
 //Created,  25 Feb 2016
-//Last Edit 11 Oct 2018
+//Last Edit 14 Apr 2019
 
 /**
  *  \file aabb.hpp
@@ -7,7 +7,7 @@
  *  \details   An Axis Aligned Bounding Box, used to enclose some points
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      11 Oct 2018
+ *  \date      14 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -46,6 +46,13 @@ public:
      */
     AABB();
 
+    /**
+     * \brief Construct an AABB by deserializing a Chunk
+     * \param[in] data The chunk containing the data. This chunk will be
+     * destroyed
+     */
+    AABB(Chunk* data);
+
     /** \brief Constructor, given a Point
      *
      *  Construct a bounding box surrounding exactly one point
@@ -83,6 +90,12 @@ public:
      *                 of the box
      */
     AABB(const Point3& min, const Point3& max);
+
+    /**
+     * \brief Serialize this class to a Chunk
+     * \param[out] data The chunk that will contain the data
+     */
+    void serialize(Chunk* data) const;
 
     /** \brief Expand the bounding box by a fixed amount
      *
