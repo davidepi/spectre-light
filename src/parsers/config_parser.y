@@ -87,11 +87,14 @@
 %token NORMAL "`normal` keyword"
 %token SRC "`src` keyword"
 %token PATH_TRACE "`path` keyword"
-%token CHNR "Red channel attribute"
-%token CHNG "Green channel attribute"
-%token CHNB "Blue channel attribute"
-%token CHNA "Alpha channel attribute"
-%token INV "inverted attribute"
+%token CHANNEL_TOKEN "`channel` keyword"
+%token CHNR "`R` keyword"
+%token CHNG "`G` keyword"
+%token CHNB "`B` keyword"
+%token CHNA "`A` keyword"
+%token INV "`inverted` keyword"
+%token TRUE "`true` keyword"
+%token FALSE "`false` keyword"
 %token MASK "`mask` keyword"
 %token FIRST "`first` keyword"
 %token SECOND "`second` keyword"
@@ -146,6 +149,7 @@
 %token <ival> INT "integer value"
 %token <fval> FLOAT "floating point value"
 %token <sval> STRING "quoted string"
+%type <ival> boolean
 %type <fval> number
 %type <ival> channel
 %type <ival> element
@@ -154,7 +158,10 @@
 
 %start config;
 
-config: file {parsed->successful = 1;}
+config
+: file {parsed->successful = 1;}
+| OPEN_CU file CLOSE_CU {parsed->successful = 1;}
+;
 
 file
 : file stmt
@@ -171,17 +178,13 @@ stmt
 | INTEGRATOR COLON PATH_TRACE {/* path_trace is the only available and dflt */}
 | CAMERA COLON OPEN_CU camera_obj CLOSE_CU {/* camera depends on resolution */}
 | SHAPE COLON STRING {push_ResizableStack(&(parsed->parsed_mesh_object),$3);}
-| WORLD COLON OPEN_CU world_obj CLOSE_CU {push_ResizableParsed(&
-(parsed->parsed_mesh_world),&(parsed->cur_mesh));init_ParsedMeshWorld(&(parsed->cur_mesh.mesh));}
-| LIGHT COLON OPEN_CU light_obj CLOSE_CU {push_ResizableParsed(&
-(parsed->parsed_lights),&(parsed->cur_light));init_ParsedLight(&(parsed->cur_light.light));}
+| WORLD COLON OPEN_CU world_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_mesh_world),&(parsed->cur_mesh));init_ParsedMeshWorld(&(parsed->cur_mesh.mesh));}
+| LIGHT COLON OPEN_CU light_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_lights),&(parsed->cur_light));init_ParsedLight(&(parsed->cur_light.light));}
 | SKY_TOKEN COLON STRING {ADD_STRING(parsed->sky,$3);}
-| TEXTURE COLON OPEN_CU texture_obj CLOSE_CU {push_ResizableParsed(&
-(parsed->parsed_textures),&(parsed->cur_tex));init_ParsedTexture(&(parsed->cur_tex.tex));}
+| TEXTURE COLON OPEN_CU texture_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_textures),&(parsed->cur_tex));init_ParsedTexture(&(parsed->cur_tex.tex));}
 | MATERIAL COLON STRING {push_ResizableStack(&(parsed->children),$3);}
 | MATERIAL COLON OPEN_CU material_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_materials),&(parsed->cur_mat));init_ParsedMaterial(&(parsed->cur_mat.mat));}
-| DUALMATERIAL COLON OPEN_CU dualmaterial_obj CLOSE_CU {push_ResizableParsed(&
-(parsed->parsed_dualmaterials),&(parsed->cur_dualmat));init_ParsedDualMaterial(&(parsed->cur_dualmat.dualmat));}
+| DUALMATERIAL COLON OPEN_CU dualmaterial_obj CLOSE_CU {push_ResizableParsed(&(parsed->parsed_dualmaterials),&(parsed->cur_dualmat));init_ParsedDualMaterial(&(parsed->cur_dualmat.dualmat));}
 | COMMA
 ;
 
@@ -224,8 +227,7 @@ world_stmt
 | SCALE COLON vector {parsed->cur_mesh.mesh.scale[0] = vec[0];parsed->cur_mesh.mesh.scale[1] = vec[1];parsed->cur_mesh.mesh.scale[2] = vec[2];}
 | SCALE COLON number {parsed->cur_mesh.mesh.scale[0] = $3;parsed->cur_mesh.mesh.scale[1] = $3;parsed->cur_mesh.mesh.scale[2] = $3;}
 | MATERIAL COLON STRING {ADD_STRING(parsed->cur_mesh.mesh.material_name,$3);}
-| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_mesh.mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
-| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_mesh.mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
+| MASK COLON OPEN_CU mask_obj CLOSE_CU {parsed->cur_mesh.mesh.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
 | COMMA
 ;
 
@@ -293,8 +295,15 @@ dualmaterial_stmt
 : NAME COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.name,$3);}
 | FIRST COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.first,$3);}
 | SECOND COLON STRING {ADD_STRING(parsed->cur_dualmat.dualmat.second,$3);}
-| MASK COLON STRING {ADD_STRING(parsed->cur_mask.mask_tex,$3);parsed->cur_dualmat.dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
-| MASK COLON STRING attributes {ADD_STRING(parsed->cur_mask.mask_tex,$3); parsed->cur_dualmat.dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
+| MASK COLON OPEN_CU mask_obj CLOSE_CU {parsed->cur_dualmat.dualmat.mask = parsed->cur_mask;init_ParsedMask(&(parsed->cur_mask));}
+| COMMA
+;
+
+mask_obj: mask_obj mask_stmt | mask_stmt;
+mask_stmt
+: NAME COLON STRING {ADD_STRING(parsed->cur_mask.mask_tex,$3);}
+| INV COLON boolean {parsed->cur_mask.mask_inv = $3;}
+| CHANNEL_TOKEN COLON channel {parsed->cur_mask.mask_chn = $3;}
 | COMMA
 ;
 
@@ -333,13 +342,6 @@ element
 | ZIRCONIUM {$$ = METAL_ZIRCONIUM; }
 ;
 
-attributes: attributes attribute | attribute;
-
-attribute
-: channel {parsed->cur_mask.mask_chn = $1;}
-| INV {parsed->cur_mask.mask_inv = 1;}
-;
-
 channel
 : CHNR  {$$ = RED;}
 | CHNG  {$$ = GREEN;}
@@ -360,6 +362,13 @@ number
 : FLOAT {$$ = $1;}
 | UINT {$$ = (float)$1;}
 | INT {$$ = (float)$1;}
+;
+
+boolean
+: FALSE {$$ = 0;}
+| TRUE {$$ = 1 ;}
+| INT {$$ = $1;}
+| UINT {$$ = $1;}
 ;
 
 %%

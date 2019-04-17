@@ -22,12 +22,12 @@
 - [x] diffuse texture mapping
 - [x] normal textures
 - [x] new light system (sunlight + environment)
-- [ ] **-> objects serialization <-**
-- [ ] binary parser (same system exchange format only)
-- [ ] blender integration
 - [ ] real cameras (and depth of field)
+- [ ] blender integration
 
 ### V0.3 ###
+- [ ] objects serialization (every class, for the memory manager)
+- [ ] binary parser (cross-os compatible)
 - [ ] memory manager
 - [ ] giant datasets
 - [ ] bidirectional integrators

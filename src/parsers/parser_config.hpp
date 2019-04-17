@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 19 Sep 2018
+//Last Edit 18 Apr 2019
 
 /**
  *  \file      parser_config.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      19 Sep 2018
+ *  \date      18 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -16,7 +16,7 @@
 
 //This magnificent bastard must come first, otherwise C++ linking is used anyway
 extern "C" {
-    #include "parsers/parsed_structs.h" 
+#include "parsers/parsed_structs.h"
 }
 
 #include "renderer.hpp"

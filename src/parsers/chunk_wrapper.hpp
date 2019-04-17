@@ -1,12 +1,12 @@
 //Created,   8 Apr 2019
-//Last Edit 14 Apr 2019
+//Last Edit 18 Apr 2019
 
 /**
  *  \file      chunk_wrapper.hpp
  *  \brief     Wrapper containing several instances of Chunk
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      14 Apr 2019
+ *  \date      18 Apr 2019
  *  \copyright GNU GPLv3
  */
 

@@ -14,13 +14,19 @@ dualmaterial: {
   name: "Duplicate",
   first: "Red
   second: "Blue",
-  mask: "../images/correct.bmp" using channel R
+  mask: {
+  name: "../images/correct.bmp",
+  channel: R
+  }
 }
 
 dualmaterial: {
   name: "Duplicate",
   first: "Red
   second: "Blue",
-  mask: "../images/correct.bmp" using channel R
+  mask: {
+    name: "../images/correct.bmp",
+    channel: R
+  }
 }
 

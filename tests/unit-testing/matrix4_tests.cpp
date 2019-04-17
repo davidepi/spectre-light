@@ -324,6 +324,22 @@ SPECTRE_TEST(Matrix4, transpose)
     EXPECT_EQ(vals[15], out.m33);
 }
 
+SPECTRE_TEST(Matrix4, transform)
+{
+//    Point3 p(1.f,0.f,0.f);
+//    Vec3 translate(0.f, 0.f, 0.f);
+//    Vec3 rotate(0.f, radians(90.f), 0.f);
+//    Vec3 scale(1.f);
+//
+//    Matrix4 transform;
+//    transform.set_transform(translate,rotate,scale);
+//
+//    Point3 res = transform*p;
+//    EXPECT_NEAR(res.x, 0.f, 1e-5f);
+//    EXPECT_NEAR(res.y, 3.5f, 1e-5f);
+//    EXPECT_NEAR(res.z, 0.f, 1e-5f);
+}
+
 SPECTRE_TEST(Matrix4, inverse)
 {
     //invertible

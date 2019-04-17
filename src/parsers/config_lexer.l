@@ -136,11 +136,14 @@ beckmann { UPDATE_LOC; return BECKMANN_TOKEN; }
 ggx { UPDATE_LOC; return GGX_TOKEN; }
 color {UPDATE_LOC; return COLOR;}
 element {UPDATE_LOC; return ELEM;}
-"using channel R" {UPDATE_LOC; return CHNR;}
-"using channel G" {UPDATE_LOC; return CHNG;}
-"using channel B" {UPDATE_LOC; return CHNB;}
-"using channel A" {UPDATE_LOC; return CHNA;}
+channel {UPDATE_LOC; return CHANNEL_TOKEN;}
+"R" {UPDATE_LOC; return CHNR;}
+"G" {UPDATE_LOC; return CHNG;}
+"B" {UPDATE_LOC; return CHNB;}
+"A" {UPDATE_LOC; return CHNA;}
 inverted {UPDATE_LOC; return INV;}
+true {UPDATE_LOC; return TRUE;}
+false {UPDATE_LOC; return FALSE;}
 mask {UPDATE_LOC; return MASK;}
 first {UPDATE_LOC; return FIRST;}
 second {UPDATE_LOC; return SECOND;}

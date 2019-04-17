@@ -271,6 +271,25 @@ void Matrix4::set_lookAt_inverse(const Point3& pos, const Point3& eye,
     Matrix4::m33 = 1.0f;
 }
 
+void Matrix4::set_transform(const Vec3& pos, const Vec3& rot, const Vec3& scale)
+{
+    Matrix4 position_matrix;
+    Matrix4 rotation_matrix;
+    Matrix4 rotx_matrix;
+    Matrix4 roty_matrix;
+    Matrix4 rotz_matrix;
+    Matrix4 scale_matrix;
+    Matrix4 pos_rot_matrix;
+    position_matrix.set_translation(pos);
+    rotx_matrix.set_rotate_x(rot.x);
+    roty_matrix.set_rotate_y(rot.y);
+    rotz_matrix.set_rotate_z(rot.z);
+    rotation_matrix = rotz_matrix*roty_matrix*rotx_matrix;
+    scale_matrix.set_scale(scale);
+    pos_rot_matrix = position_matrix*rotation_matrix;
+    *this = pos_rot_matrix*scale_matrix;
+}
+
 void Matrix4::transpose(Matrix4* output) const
 {
     output->m00 = Matrix4::m00;
@@ -446,6 +465,46 @@ Vec3 Matrix4::get_scale() const
     const Vec3 y(Matrix4::m01, Matrix4::m11, Matrix4::m21);
     const Vec3 z(Matrix4::m02, Matrix4::m12, Matrix4::m22);
     return Vec3(x.length(), y.length(), z.length());
+}
+
+Matrix4::Matrix4(Chunk* data)
+{
+    Matrix4::m00 = data->pop_float();
+    Matrix4::m01 = data->pop_float();
+    Matrix4::m02 = data->pop_float();
+    Matrix4::m03 = data->pop_float();
+    Matrix4::m10 = data->pop_float();
+    Matrix4::m11 = data->pop_float();
+    Matrix4::m12 = data->pop_float();
+    Matrix4::m13 = data->pop_float();
+    Matrix4::m20 = data->pop_float();
+    Matrix4::m21 = data->pop_float();
+    Matrix4::m22 = data->pop_float();
+    Matrix4::m23 = data->pop_float();
+    Matrix4::m30 = data->pop_float();
+    Matrix4::m31 = data->pop_float();
+    Matrix4::m32 = data->pop_float();
+    Matrix4::m33 = data->pop_float();
+}
+
+void Matrix4::serialize(Chunk* data) const
+{
+    data->push_float(Matrix4::m00);
+    data->push_float(Matrix4::m01);
+    data->push_float(Matrix4::m02);
+    data->push_float(Matrix4::m03);
+    data->push_float(Matrix4::m10);
+    data->push_float(Matrix4::m11);
+    data->push_float(Matrix4::m12);
+    data->push_float(Matrix4::m13);
+    data->push_float(Matrix4::m20);
+    data->push_float(Matrix4::m21);
+    data->push_float(Matrix4::m22);
+    data->push_float(Matrix4::m23);
+    data->push_float(Matrix4::m30);
+    data->push_float(Matrix4::m31);
+    data->push_float(Matrix4::m32);
+    data->push_float(Matrix4::m33);
 }
 
 //------ Operators -------------------------------------------------------------
@@ -794,46 +853,6 @@ Ray Matrix4::operator*(const Ray& r) const
     Point3 origin = (*this)*r.origin;
     Vec3 direction = (*this)*r.direction;
     return Ray(origin, direction);
-}
-
-Matrix4::Matrix4(Chunk* data)
-{
-    Matrix4::m00 = data->pop_float();
-    Matrix4::m01 = data->pop_float();
-    Matrix4::m02 = data->pop_float();
-    Matrix4::m03 = data->pop_float();
-    Matrix4::m10 = data->pop_float();
-    Matrix4::m11 = data->pop_float();
-    Matrix4::m12 = data->pop_float();
-    Matrix4::m13 = data->pop_float();
-    Matrix4::m20 = data->pop_float();
-    Matrix4::m21 = data->pop_float();
-    Matrix4::m22 = data->pop_float();
-    Matrix4::m23 = data->pop_float();
-    Matrix4::m30 = data->pop_float();
-    Matrix4::m31 = data->pop_float();
-    Matrix4::m32 = data->pop_float();
-    Matrix4::m33 = data->pop_float();
-}
-
-void Matrix4::serialize(Chunk* data) const
-{
-    data->push_float(Matrix4::m00);
-    data->push_float(Matrix4::m01);
-    data->push_float(Matrix4::m02);
-    data->push_float(Matrix4::m03);
-    data->push_float(Matrix4::m10);
-    data->push_float(Matrix4::m11);
-    data->push_float(Matrix4::m12);
-    data->push_float(Matrix4::m13);
-    data->push_float(Matrix4::m20);
-    data->push_float(Matrix4::m21);
-    data->push_float(Matrix4::m22);
-    data->push_float(Matrix4::m23);
-    data->push_float(Matrix4::m30);
-    data->push_float(Matrix4::m31);
-    data->push_float(Matrix4::m32);
-    data->push_float(Matrix4::m33);
 }
 
 //------------------------------------------------------------------------------

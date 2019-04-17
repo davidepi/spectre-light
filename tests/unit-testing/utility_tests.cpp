@@ -12,6 +12,7 @@
 
 #include "utility/utility.hpp"
 #include "utility/array2D.hpp"
+#include "utility/bit_hacks.h"
 #include <climits>
 
 SPECTRE_TEST_INIT(Utility_tests)
@@ -262,6 +263,19 @@ SPECTRE_TEST(Utility, swap_endianness_16_bit)
     uint16_t res = swap_endianness(a);
     //this does not work with EXPECT_EQ under windows
     EXPECT_TRUE(res == (uint16_t)11170);
+}
+
+SPECTRE_TEST(BitHacks, power2)
+{
+    uint32_t a = 12;
+    uint32_t b = 127;
+    uint32_t c = 129;
+    uint32_t d = 0;
+
+    EXPECT_EQ(next_power_of_2(a), 16);
+    EXPECT_EQ(next_power_of_2(b), 128);
+    EXPECT_EQ(next_power_of_2(c), 256);
+    EXPECT_EQ(next_power_of_2(d), 0);
 }
 
 SPECTRE_TEST_END(Utility_tests)

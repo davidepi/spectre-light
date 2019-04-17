@@ -3,7 +3,15 @@
 
 #include "chunk_wrapper.hpp"
 #include "utility/console.hpp"
+#include "utility/bit_hacks.h"
 #include <cstdio>
+
+//use a small buffer to test reallocation during tests
+#ifdef TESTS
+#define BUF_LEN 16
+#else
+#define BUF_LEN 4096
+#endif
 
 #define MAGIC_NUMBER 0xAB7E0CBB
 
@@ -30,7 +38,7 @@ void ChunkWrapper::write(const char* path) const
     if(fout != NULL)
     {
         uint32_t magic_number = MAGIC_NUMBER;
-        size_t allocated_len = 4096;
+        size_t allocated_len = BUF_LEN;
         auto size = (uint16_t)chunks.size();
         auto data = (uint8_t*)malloc(sizeof(uint8_t)*allocated_len);
         fwrite(&magic_number, sizeof(uint32_t), 1, fout);
@@ -42,8 +50,7 @@ void ChunkWrapper::write(const char* path) const
             fwrite(&len, sizeof(uint64_t), 1, fout);
             if(len>allocated_len)
             {
-                while(len<allocated_len)
-                    allocated_len <<= 1U;
+                allocated_len = next_power_of_2(len);
                 free(data);
                 data = (uint8_t*)malloc(sizeof(uint8_t)*allocated_len);
             }
@@ -67,7 +74,7 @@ void ChunkWrapper::read(const char* path)
     FILE* fin = fopen(path, "rb");
     if(fin != NULL)
     {
-        size_t allocated_len = 4096;
+        size_t allocated_len = BUF_LEN;
         uint32_t magic_number;
         uint16_t size;
         fread(&magic_number, sizeof(uint32_t), 1, fin);
@@ -81,8 +88,7 @@ void ChunkWrapper::read(const char* path)
             fread(&len, sizeof(uint64_t), 1, fin);
             if(len>allocated_len)
             {
-                while(len<allocated_len)
-                    allocated_len <<= 1U;
+                allocated_len = next_power_of_2(len);
                 free(data);
                 data = (uint8_t*)malloc(sizeof(data)*allocated_len);
             }

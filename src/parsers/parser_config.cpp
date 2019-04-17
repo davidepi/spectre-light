@@ -34,6 +34,7 @@
 #include "lights/light_spot.hpp"
 #include "lights/light_sun.hpp"
 #include <unordered_set>
+
 extern "C" { void parse_config(FILE*, struct ParsedScene*); }
 
 ///minimum value for ParsedMaterial::rough_x when the material is not specular
@@ -82,6 +83,51 @@ static void check_resolution(int* width, int* height)
             (*height)++;
         Console.notice(MESSAGE_RESOLUTION_CHANGED, SPLIT_SIZE, width, height);
     }
+}
+
+/**
+ * \brief Extract the intensity of a light from its parsed structure.
+ *
+ * This code is used multiple times while parsing, so a single function is
+ * hereby provided
+ *
+ * \param[in] light The structure holding the light information
+ * \return The intensity (color) of the light
+ */
+static Spectrum get_light_intensity(const ParsedLight* light)
+{
+    if(light->temperature>=0)
+    {
+        return Spectrum(light->temperature);
+    }
+    else
+    {
+        ColorRGB color(light->color[0],
+                       light->color[1],
+                       light->color[2]); // color is parsed a uint8_t
+        return Spectrum(color, true);
+    }
+}
+
+/**
+ * \brief Generates the transform matrix.
+ *
+ * This code is used multiple times while parsing, so a single function is
+ * hereby provided in order to avoid clones
+ *
+ * \param[in] pos An array representing the x,y,z translation values
+ * \param[in] rot An array representing the x,y,z rotation values (in degrees)
+ * \param[in] scale An array representing the x,y,z scale values
+ * \param[out] transform The matrix that will be set as transform matrix
+ */
+static void get_transform_matrix(const float* pos, const float* rot,
+                                 const float* scale, Matrix4* transform)
+{
+    Vec3 pos_v(pos);
+    //parsed values are in degrees, converts them to radians
+    Vec3 rot_v(radians(rot[0]), radians(rot[1]), radians(rot[2]));
+    Vec3 scale_v(scale);
+    transform->set_transform(pos_v, rot_v, scale_v);
 }
 
 /**
@@ -376,10 +422,10 @@ static void build_materials(ParsedScene* parsed)
                             //I don't recall which one though
                             dist = new Blinn(2.f/(rough_x*rough_x)-2.f);
                             break;
-                        case BECKMANN:dist = new Beckmann(rough_x);
-                            break;
                         case GGX:dist = new GGXiso(rough_x);
                             break;
+                        case BECKMANN:
+                        default:dist = new Beckmann(rough_x);
                     }
                 }
                 else
@@ -416,18 +462,15 @@ static void build_materials(ParsedScene* parsed)
                                 dist_t = new Blinn(2.f/(rough_x*rough_x)-2.f);
                                 break;
                             }
-                            case BECKMANN:
-                            {
-                                dist_r = new Beckmann(rough_x);
-                                dist_t = new Beckmann(rough_x);
-                                break;
-                            }
                             case GGX:
                             {
                                 dist_r = new GGXiso(rough_x);
                                 dist_t = new GGXiso(rough_x);
                                 break;
                             }
+                            case BECKMANN:
+                            default:dist_r = new Beckmann(rough_x);
+                                dist_t = new Beckmann(rough_x);
                         }
                     }
                     else
@@ -705,26 +748,10 @@ static void build_mesh_world(ParsedScene* parsed,
         }
 
         Matrix4 transform;
-        Matrix4 position_matrix;
-        Matrix4 rotation_matrix;
-        Matrix4 rotx_matrix;
-        Matrix4 roty_matrix;
-        Matrix4 rotz_matrix;
-        Matrix4 scale_matrix;
-        Vec3 position(union_m.mesh.position[0],
-                      union_m.mesh.position[1],
-                      union_m.mesh.position[2]);
-        Vec3 scale(union_m.mesh.scale[0],
-                   union_m.mesh.scale[1],
-                   union_m.mesh.scale[2]);
-        position_matrix.set_translation(position);
-        rotx_matrix.set_rotate_x(union_m.mesh.rotation[0]);
-        roty_matrix.set_rotate_y(union_m.mesh.rotation[1]);
-        rotz_matrix.set_rotate_z(union_m.mesh.rotation[2]);
-        rotation_matrix = rotz_matrix*roty_matrix*rotx_matrix;
-        scale_matrix.set_scale(scale);
-        //watchout the order!!!
-        transform = position_matrix*rotation_matrix*scale_matrix;
+        get_transform_matrix(union_m.mesh.position,
+                             union_m.mesh.rotation,
+                             union_m.mesh.scale,
+                             &transform);
         Asset* current_asset = new Asset(mesh_o.mesh, transform, 1);
 
         //use parsed materials
@@ -807,41 +834,14 @@ static void build_lights(ParsedScene* parsed,
         pop_ResizableParsed(&parsed->parsed_lights);
 
         //set color of the light
-        Spectrum intensity;
-        //blackbody
-        if(union_l.light.temperature>=0)
-            intensity = Spectrum(union_l.light.temperature);
-        else
-        {
-            ColorRGB color(union_l.light.color[0],
-                           union_l.light.color[1],
-                           union_l.light.color[2]); // color is parsed a uint8_t
-            intensity = Spectrum(color, true);
-        }
+        Spectrum intensity = get_light_intensity(&(union_l.light));
 
         //position the light into the scene
         Matrix4 transform;
-        Matrix4 position_matrix;
-        Matrix4 rotation_matrix;
-        Matrix4 rotx_matrix;
-        Matrix4 roty_matrix;
-        Matrix4 rotz_matrix;
-        Matrix4 scale_matrix;
-        Matrix4 pos_rot_matrix;
-        Vec3 position(union_l.light.position[0],
-                      union_l.light.position[1],
-                      union_l.light.position[2]);
-        Vec3 scale(union_l.light.scale[0],
-                   union_l.light.scale[1],
-                   union_l.light.scale[2]);
-        position_matrix.set_translation(position);
-        rotx_matrix.set_rotate_x(union_l.light.rotation[0]);
-        roty_matrix.set_rotate_y(union_l.light.rotation[1]);
-        rotz_matrix.set_rotate_z(union_l.light.rotation[2]);
-        rotation_matrix = rotz_matrix*roty_matrix*rotx_matrix;
-        scale_matrix.set_scale(scale);
-        pos_rot_matrix = position_matrix*rotation_matrix;
-        transform = pos_rot_matrix*scale_matrix;
+        get_transform_matrix(union_l.light.position,
+                             union_l.light.rotation,
+                             union_l.light.scale,
+                             &transform);
 
         switch(union_l.light.type)
         {
@@ -883,13 +883,16 @@ static void build_lights(ParsedScene* parsed,
             }
             case OMNI:
             {
-                Light* omni = new LightOmni(intensity, position_matrix);
+                //rotate and scale is not needed, but the matrix is computed
+                // in any case
+                Light* omni = new LightOmni(intensity, transform);
                 scene->inherit_light(omni);
                 break;
             }
             case SPOT:
             {
-                Light* spot = new LightSpot(intensity, pos_rot_matrix,
+                //scale is not needed, but the matrix is computed anyway
+                Light* spot = new LightSpot(intensity, transform,
                                             union_l.light.radius,
                                             union_l.light.falloff);
                 scene->inherit_light(spot);
@@ -914,18 +917,7 @@ static void build_lights(ParsedScene* parsed,
             free(light.time);
             light.time = NULL;
         }
-        //this is repeated in this single case, but likeley there will be
-        //just a single sunlight
-        Spectrum intensity;
-        if(light.temperature>=0)
-            intensity = Spectrum(light.temperature);
-        else
-        {
-            ColorRGB color(light.color[0],
-                           light.color[1],
-                           light.color[2]); // color is parsed a uint8_t
-            intensity = Spectrum(color, true);
-        }
+        Spectrum intensity = get_light_intensity(&light);
         Light* sun = new LightSun(intensity, cam_pos,
                                   scene->radius(), time, light.position[0],
                                   light.position[1], light.position[2]);

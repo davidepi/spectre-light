@@ -13,12 +13,19 @@ material: {
 dualmaterial: {
   name: "Non-inverted",
   second: "Blue",
-  mask: "../images/black.bmp" using channel R
+  mask: {
+    name: "../images/black.bmp",
+    channel: R
+  }
 }
 
 dualmaterial: {
   name: "Inverted",
   first: "Red",
-  mask: "../images/black.bmp" using channel R inverted
+  mask: {
+    name: "../images/black.bmp",
+    channel: R
+    inverted: true
+  }
 }
 

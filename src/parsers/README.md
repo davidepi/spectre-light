@@ -5,14 +5,13 @@ with the following differences:
 
 - Keys are reserved keywords and thus cannot be neither user-defined nor quoted
 - A comma is not required between each `key:value` pair, a whitespace is sufficient
-- After a value additional attributes can be issued. This is currently used only to specify the mask channel that will be used
 - The toplevel object can not be enclosed in curly braces
 - The `#` character can be used to ignore the rest of the line
 
 Recall that every relative path declared inside the input file is resolved from the position of the input file itself, instead of the current working directory. This was done in order to depend just by the initial position of the input file.
 Relative paths are OS independent: a `folder\file` path can be used on Linux/MacOS and a `folder/file` path can be used on Windows aswell
 
-Here is an example of the file structure
+Here is an example of the file structure. The bad indentation is on purpose.
 ```
 out: "output.tga"
 resolution: {
@@ -40,7 +39,11 @@ world: {
     name: "box001"
     position: [-1,0,0]
     scale: 1.5
-    mask: "Wall" using channel R inverted
+    mask: { 
+        name: "Wall", 
+        channel: R, 
+        inverted: true
+    }
 }
 
 texture:{name:'Wall',src:"folder/wall.tga", scale:[2,2], filter:ewa}
@@ -79,6 +82,7 @@ Value | Description | Examples
 ---|---|---
 int | An integer number, negative or non-negative | -2147483647
 int+ | A positive integer number | 2147483647
+boolean | A boolean value. Possible values are `true`, `false`, or any integer number where 0 will be considered false and everything else true | true
 float | A floating point number | 1.5   .5  1e18    .1E-3  E10
 quoted string | A string delimited by a pair of " or '. Escaping is not supported | "Hello world"   'Hello world'
 float[n] | An array of n floats delimited by [ ] | [1.5,0.5,0]
@@ -171,7 +175,7 @@ material | quoted string | The name of the material that will be applied to the 
 position | float[3] | The position of the model in the scene | [0,0,0]
 rotation | float[3] | The rotation of the model in the scene, in degrees | [0,0,0]
 scale | float[3] or float | The scaling applied to the model in the scene. The single float value applies uniform scaling to every dimension | 1
-mask | quoted string + [mask attributes](#attributes) | The texture used as alpha mask for this object. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the mask is disabled. Attributes can specify which channel will be used and if the mask should be inverted | White mask
+mask | [object](#mask) | The alpha mask for this object. Values mapped to point of the texture with a value higher than 127 will be rendered. Remember to set the channel of the mask! | No mask, everything will be rendered
 
 #### Texture
 Keys for Texture objects
@@ -209,7 +213,17 @@ Key | Type | Usage | Default value
 name | quoted string | The name of the material that will be added to the Library | Syntax error
 first | quoted string | The name of the first material composing the dual material, the one on the visible part of the mask | Default
 second | quoted string | The name of the second material composing the dual material, the one on the hidden part of the mask | Default
-mask | quoted string + [mask attributes](#attributes) | The texture used as alpha mask for this object. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the mask is disabled. Attributes can specify which channel will be used and if the mask should be inverted | White mask
+mask |  [object](#mask) | The object that will be used as mask. Values less than 127 will be considered as first material, the others as second material | No mask, only the first material will be used
+
+#### Mask
+Keys for Mask object
+
+Key | Type | Usage | Default value
+---|---|---|---
+name | quoted string | The texture used as alpha mask for this object. If a string is given, the texture name is searched inside the Texture Library and if not found the same string is used as a path to directly load the texture from disk. If also this can't be found, the mask is disabled | -
+channel | enum | An uppercase letter indicating the channel, respectively `R`,`G`,`B`,`A` for red, green blue and alpha | `A`
+inverted | boolean | `true` if the mask should be inverted, `false` otherwise | `false`
+
 
 ##### Metals
 Possible values for materials with the `metal` keyword. These should be passed as keywords (case insensitive) to the `element` key of the material object. Note that these will override the `diffuse` and `specular`  parameters which are not supported for metals. Roughness, distribution and anisotropy can still be used
@@ -245,15 +259,3 @@ V | Vanadium
 W | Tungsten
 Zn | Zinc
 Zr | Zirconium
-
-### Attributes
-
-Attributes can be added after a value to specify additional informations. These are the one currently supported
-
-Attribute | Type | Action
----|---|---
-`using channel R`| Texture | Selects the Red channel
-`using channel G`| Texture | Selects the Green channel
-`using channel B`| Texture | Selects the Blue channel
-`using channel A`| Texture | Selects the Alpha channel
-`inverted` | Texture | Inverts the texture map

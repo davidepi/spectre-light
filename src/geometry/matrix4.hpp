@@ -1,5 +1,5 @@
 //Created, October 2013
-//Last Edit 14 Apr 2019
+//Last Edit 18 Apr 2019
 
 /**
  *  \file matrix4.hpp
@@ -8,7 +8,7 @@
  *             functions to perform addition, subtraction and multiplication
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      14 Apr 2019
+ *  \date      18 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -222,6 +222,23 @@ public:
      */
     void set_lookAt_inverse(const Point3& pos, const Point3& target,
                             const Vec3& up);
+
+    /**
+     * \brief Set this matrix to a complete transform matrix
+     *
+     * This method combines the use of a translation matrix, rotation matrix
+     * and scale matrix into a single matrix performing all these
+     * transformations. The operations are applied in the following order:
+     * scale, rotation, translation.
+     *
+     * \param[in] pos A vector representing the translation magnitude for x,
+     * y and z respectively
+     * \param[in] rot A vector representing the rotation over the x, y and z
+     * axis respectively. The values are expressed in radians
+     * \param[in] scale A vector representing the scale magnitude of the x, y
+     * and z component respectively
+     */
+    void set_transform(const Vec3& pos, const Vec3& rot, const Vec3& scale);
 
     /**  \brief Returns a new matrix that is the transpose of the current matrix
      *
