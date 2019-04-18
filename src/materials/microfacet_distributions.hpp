@@ -104,7 +104,9 @@ public:
 
     /** Default constructor
      *  
-     *  \param[in] exponent Exponential falloff of the blinn microfacet model
+     *  \param[in] exponent Exponential falloff of the blinn microfacet model.
+     *  Sometimes called `alpha`
+     *  \sa roughness_to_alpha
      */
     Blinn(float exponent);
 
@@ -171,6 +173,23 @@ private:
     //exponent for the specular highlight
     float exponent;
 };
+
+/**
+ * \brief Converts the roughness of a material as alpha value
+ *
+ * The Beckmann and GGX functions uses a value ranging from 0.0 (completely
+ * specular) to 1.0 (completely rough). However, the Blinn distribution
+ * requires an exponent called `alpha` as parameter. This function can be
+ * used to convert a value expressed in roughness to an alpha value producing
+ * the same visual effect.
+ *
+ * \param[in] roughness The roughness value in range 0.0-1.0
+ * \return The equivalent alpha value
+ */
+inline float roughness_to_alpha(float roughness)
+{
+    return 2.f/(roughness*roughness)-2.f;
+}
 
 /**
  *  \class Beckmann microfacet_distributions.hpp

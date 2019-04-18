@@ -588,6 +588,7 @@ SPECTRE_TEST(Light, LightSky_constructor_warnings)
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
 
+    delete tex_ok;
     delete tex_sc_x;
     delete tex_sc_y;
     delete tex_sh_x;

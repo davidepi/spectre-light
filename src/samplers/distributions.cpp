@@ -90,6 +90,7 @@ Distribution2D::~Distribution2D()
     for(size_t i = 0; i<marginal_len; i++)
         delete conditional[i];
     delete[] conditional;
+    delete marginal;
 }
 
 Point2 Distribution2D::sample_continuous(float u0, float u1, float* pdf) const

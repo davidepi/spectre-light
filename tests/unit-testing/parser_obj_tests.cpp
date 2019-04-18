@@ -23,6 +23,7 @@ SPECTRE_TEST(ParserObj, input_error)
     ParserObj parser;
     errors_count[ERROR_INDEX] = 0;
     parser.start_parsing(TEST_ASSETS "parser_obj/nonexistent.obj");
+    parser.end_parsing();
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
 }
@@ -349,6 +350,7 @@ SPECTRE_TEST(ParserObj, get_material_association)
     EXPECT_EQ(assoc[4], (unsigned char)0);
     EXPECT_EQ(assoc[5], (unsigned char)2);
     EXPECT_TRUE(res);
+    delete[] assoc;
 
     //no dflt
     parser.start_parsing(TEST_ASSETS "parser_obj/multimat_nodflt.obj");
@@ -366,6 +368,7 @@ SPECTRE_TEST(ParserObj, get_material_association)
     EXPECT_EQ(assoc2[4], (unsigned char)0);
     EXPECT_EQ(assoc2[5], (unsigned char)1);
     EXPECT_TRUE(res);
+    delete[] assoc2;
 
     MtlLib.clear();
 }

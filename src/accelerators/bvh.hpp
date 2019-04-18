@@ -73,6 +73,9 @@ class Bvh
 {
 public:
 
+    ///Default constructor
+    Bvh();
+
     ///Default destructor
     ~Bvh();
 

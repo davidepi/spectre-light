@@ -197,6 +197,8 @@ File::File(const char* path)
 
 File::File(const File* folder, const char* filename)
 {
+    //this is needed to avoid invalid free in the assignment operator
+    File::absolute = NULL;
     if(is_absolute(filename))
         *this = File(filename);
     else
@@ -293,6 +295,13 @@ bool File::is_file() const
 
 File& File::operator=(const File& old)
 {
+    //self assignment check
+    if(this == &old)
+        return *this;
+    //free up already allocated data
+    if(File::absolute != NULL)
+        free(File::absolute);
+
     File::absolute = (char*)malloc(sizeof(char)*(strlen(old.absolute)+1));
     strcpy(absolute, old.absolute);
     //recalculate offsets(since I cannot blindly copy pointers of other classes)

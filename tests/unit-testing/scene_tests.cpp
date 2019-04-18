@@ -96,6 +96,7 @@ SPECTRE_TEST(Scene, inherit_area_light)
 {
     Scene scene;
     Sphere* sphere = new Sphere();
+    scene.inherit_shape(sphere);
     Matrix4 transform;
     transform.set_identity();
     Asset* addme1 = new LightArea(sphere, transform, Spectrum(1500));
@@ -129,12 +130,14 @@ SPECTRE_TEST(Scene, inherit_area_light)
     scene.inherit_arealight(last_light);
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
+    delete last_light;
 }
 
 SPECTRE_TEST(Scene, get_lights)
 {
     Scene scene;
     Sphere* sphere = new Sphere();
+    scene.inherit_shape(sphere);
     Matrix4 transform;
     transform.set_identity();
     const LightArea* values[_MAX_LIGHTS_];

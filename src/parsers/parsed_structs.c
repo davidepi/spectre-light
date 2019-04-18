@@ -187,7 +187,7 @@ void merge_ParsedScene(struct ParsedScene* dst, struct ParsedScene* src)
         top_ResizableStack(&src->parsed_mesh_object);
         push_ResizableStack(&dst->parsed_mesh_object, val);
     }
-    /* children ignored on purpose -> no recurisve parsing */
+    /* children ignored on purpose -> no recursive parsing */
 }
 
 void realloc_ResizableParsed(struct ResizableParsed* arr)

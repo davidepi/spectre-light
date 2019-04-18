@@ -60,7 +60,7 @@ void ParserObj::end_parsing()
 {
     if(buffer_ro != NULL)
     {
-        delete buffer_ro;
+        free(buffer_ro);
         buffer_ro = NULL;
     }
     if(fin != NULL)

@@ -1,5 +1,17 @@
 shape: "shape.txt"
 world:{
-  name: "not found"
+  name: "I like to play hide n seek >:~"
+  material: "But then I will be deallocated :'(",
+  mask: { name: "Still better than becoming a leaked zombie! :^)" }
 }
+#ok seriously, the `name` element is non-existent, the other two should be
+#deallocated
+
+
+world: {
+   material: "ANARCHY!",
+   mask: { name: "RIP world..." }
+}
+# In this case, I must ensure the deallocation of material and mask if there is
+# no shape referenceda
 

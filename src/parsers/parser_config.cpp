@@ -131,6 +131,27 @@ static void get_transform_matrix(const float* pos, const float* rot,
 }
 
 /**
+ * \brief Retrieves a texture from the library and handles errors
+ * \param[in] texture_name The name of the texture to be used
+ * \param[in] caller_name The name of the object requiring the texture (for
+ * error printing)
+ * \return The actual texture if found, the default texture if not found
+ */
+static const Texture* get_texture(const char* texture_name,
+                                  const char* caller_name)
+{
+    const Texture* found = TexLib.get_texture(texture_name);
+    if(found == NULL)
+    {
+        Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
+                        texture_name,
+                        caller_name);
+        found = TexLib.get_dflt_texture();
+    }
+    return found;
+}
+
+/**
  *  \brief Performs checks on the spps, depending on the used sampler
  *
  *  This function checks if the spp is a perfect square if the stratified
@@ -140,7 +161,7 @@ static void get_transform_matrix(const float* pos, const float* rot,
  *  \param[in] sampler_type The type of sampler used
  *  \param[in,out] spp The spp value
  */
-void check_spp(enum sampler_t sampler_type, int* spp)
+static void check_spp(enum sampler_t sampler_type, int* spp)
 {
     if(sampler_type == STRATIFIED)
     {
@@ -161,7 +182,7 @@ void check_spp(enum sampler_t sampler_type, int* spp)
  *  struct is assumed to be already initialized with the init_ParsedScene()
  *  method
  */
-void parse_rec(const char* filename, ParsedScene* parsed)
+static void parse_rec(const char* filename, ParsedScene* parsed)
 {
     FILE* fin = fopen(filename, "r");
     if(fin != NULL)
@@ -345,28 +366,17 @@ static void build_materials(ParsedScene* parsed)
         //resolve diffuse texture
         if(union_m.mat.diffuse != NULL)
         {
-            diffuse = TexLib.get_texture(union_m.mat.diffuse);
-            if(diffuse == NULL)
-            {
-                diffuse = TexLib.get_dflt_texture();
-                Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
-                                union_m.mat.diffuse, union_m.mat.name);
-            }
+            diffuse = get_texture(union_m.mat.diffuse, union_m.mat.name);
             free(union_m.mat.diffuse);
         }
         else
-            diffuse = TexLib.get_dflt_texture();
+            diffuse = TexLib.get_dflt_texture(); //this is the same as above
+        // but without error printing
 
         //resolve specular texture
         if(union_m.mat.specular != NULL)
         {
-            specular = TexLib.get_texture(union_m.mat.specular);
-            if(specular == NULL)
-            {
-                specular = TexLib.get_dflt_texture();
-                Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
-                                union_m.mat.specular, union_m.mat.name);
-            }
+            specular = get_texture(union_m.mat.specular, union_m.mat.name);
             free(union_m.mat.specular);
         }
         else
@@ -418,9 +428,7 @@ static void build_materials(ParsedScene* parsed)
                     switch(union_m.mat.dist)
                     {
                         case BLINN:
-                            //In a paper this was the formula roughness to alpha
-                            //I don't recall which one though
-                            dist = new Blinn(2.f/(rough_x*rough_x)-2.f);
+                            dist = new Blinn(roughness_to_alpha(rough_x));
                             break;
                         case GGX:dist = new GGXiso(rough_x);
                             break;
@@ -458,8 +466,8 @@ static void build_materials(ParsedScene* parsed)
                         {
                             case BLINN:
                             {
-                                dist_r = new Blinn(2.f/(rough_x*rough_x)-2.f);
-                                dist_t = new Blinn(2.f/(rough_x*rough_x)-2.f);
+                                dist_r = new Blinn(roughness_to_alpha(rough_x));
+                                dist_t = new Blinn(roughness_to_alpha(rough_x));
                                 break;
                             }
                             case GGX:
@@ -504,12 +512,12 @@ static void build_materials(ParsedScene* parsed)
                         switch(union_m.mat.dist)
                         {
                             case BLINN:
-                                dist = new Blinn(2.f/(rough_x*rough_x)-2.f);
-                                break;
-                            case BECKMANN:dist = new Beckmann(rough_x);
+                                dist = new Blinn(roughness_to_alpha(rough_x));
                                 break;
                             case GGX:dist = new GGXiso(rough_x);
                                 break;
+                            case BECKMANN:
+                            default:dist = new Beckmann(rough_x);
                         }
                     }
                     else
@@ -524,13 +532,8 @@ static void build_materials(ParsedScene* parsed)
         //resolve normalmap now that the material has been allocated
         if(union_m.mat.normal != NULL)
         {
-            const Texture* bumptex = TexLib.get_texture(union_m.mat.normal);
-            if(bumptex == NULL)
-            {
-                bumptex = TexLib.get_dflt_texture();
-                Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
-                                union_m.mat.normal, union_m.mat.name);
-            }
+            const Texture* bumptex = get_texture(union_m.mat.normal,
+                                                 union_m.mat.name);
             free(union_m.mat.normal);
             bsdf->inherit_bump(new TextureNormal(bumptex));
         }
@@ -604,14 +607,8 @@ static void build_dualmaterials(ParsedScene* parsed)
         //resolve mask
         if(union_m.dualmat.mask.mask_tex != NULL)
         {
-            mask_tex = TexLib.get_texture(union_m.dualmat.mask.mask_tex);
-            if(mask_tex == NULL)
-            {
-                Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
-                                union_m.dualmat.mask.mask_tex,
-                                union_m.dualmat.name);
-                mask_tex = TexLib.get_dflt_texture();
-            }
+            mask_tex = get_texture(union_m.dualmat.mask.mask_tex,
+                                   union_m.dualmat.name);
             free(union_m.dualmat.mask.mask_tex);
         }
         else
@@ -786,15 +783,8 @@ static void build_mesh_world(ParsedScene* parsed,
         //resolve the mask
         if(union_m.mesh.mask.mask_tex != NULL)
         {
-            const Texture* mask_tex;
-            mask_tex = TexLib.get_texture(union_m.mesh.mask.mask_tex);
-            if(mask_tex == NULL)
-            {
-                Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
-                                union_m.mesh.mask.mask_tex,
-                                union_m.mesh.name);
-                mask_tex = TexLib.get_dflt_texture();
-            }
+            const Texture* mask_tex = get_texture(union_m.mesh.mask.mask_tex,
+                                                  union_m.mesh.name);
             free(union_m.mesh.mask.mask_tex);
             MaskBoolean mask(mask_tex, union_m.mesh.mask.mask_chn,
                              union_m.mesh.mask.mask_inv);

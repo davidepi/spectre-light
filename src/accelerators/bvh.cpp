@@ -299,13 +299,23 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
 
 // <><><><><><><><> Bvh methods <><><><><><><><><><><><><><><><><><><><><><><><>
 
+Bvh::Bvh()
+{
+    nodesList = NULL;
+}
+
 Bvh::~Bvh()
 {
-    free(nodesList);
+    if(nodesList!=NULL)
+        free(nodesList);
 }
 
 void Bvh::buildTree(Triangle* tris, int len)
 {
+    //avoid the uncommon case where the same mesh is being overwrited
+    if(nodesList!=NULL)
+        free(nodesList);
+
     Bvh::tris = tris;
     if(len<AAC_DELTA) //small mesh
     {
