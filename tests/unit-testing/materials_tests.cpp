@@ -26,6 +26,7 @@
 #include "primitives/shape.hpp"
 #include "primitives/sphere.hpp"
 #include "textures/texture_uniform.hpp"
+#include "textures/texture_library.hpp"
 #include "utility/spectrum.hpp"
 
 SPECTRE_TEST_INIT(Material_tests)
@@ -696,17 +697,18 @@ SPECTRE_TEST(Material, FresnelConditions_Dielectric_eval)
 
 SPECTRE_TEST(Material, MultiBSDF_inherit_bdf)
 {
+    TextureLibrary texlib;
     MultiBSDF material;
-    material.inherit_bdf(new Lambertian());
+    material.inherit_bdf(new Lambertian(), texlib.get_dflt_texture());
     for(int i = 1; i<_MAX_BDF_; i++)
-        material.inherit_bdf(new Lambertian());
+        material.inherit_bdf(new Lambertian(), texlib.get_dflt_texture());
     Bdf* lambertian = new Lambertian();
     errors_count[ERROR_INDEX] = 0;
-    material.inherit_bdf(lambertian);
+    material.inherit_bdf(lambertian, texlib.get_dflt_texture());
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
     errors_count[ERROR_INDEX] = 0;
-    material.inherit_bdf(lambertian);
+    material.inherit_bdf(lambertian, texlib.get_dflt_texture());
     EXPECT_EQ(errors_count[ERROR_INDEX], 1);
     errors_count[ERROR_INDEX] = 0;
     delete lambertian;
@@ -714,6 +716,7 @@ SPECTRE_TEST(Material, MultiBSDF_inherit_bdf)
 
 SPECTRE_TEST(Material, MultiBSDF_value)
 {
+    TextureLibrary texlib;
     const Bsdf* materials[1];
     MultiBSDF material_r;
     MultiBSDF metal;
@@ -732,10 +735,11 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     HitPoint hit;
     ShadingSpace matrix;
     float distance = FLT_MAX;
-    material_r.inherit_bdf(new Lambertian());
+    material_r.inherit_bdf(new Lambertian(), texlib.get_dflt_texture());
     materialWtexture.inherit_bdf(new Lambertian(), ut);
     metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,
-                                              METALS[METAL_GOLD].k));
+                                              METALS[METAL_GOLD].k),
+                      texlib.get_dflt_texture());
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
     //reflected ray spec ok
@@ -772,7 +776,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     EXPECT_TRUE(res.is_black());
 
     //multi material, pick only non specular
-    metal.inherit_bdf(new Lambertian());
+    metal.inherit_bdf(new Lambertian(), texlib.get_dflt_texture());
     materials[0] = &metal;
     a.set_materials(materials, 1, &associations);
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
@@ -796,8 +800,10 @@ SPECTRE_TEST(Material, MultiBSDF_value)
     MultiBSDF mat_glass;
     Spectrum ior_i = cauchy(1.f, 0.f);
     Spectrum ior_t = cauchy(1.33f, 0.f);
-    mat_glass.inherit_bdf(new DielectricReflection(ior_i, ior_t));
-    mat_glass.inherit_bdf(new Refraction(ior_i, ior_t));
+    mat_glass.inherit_bdf(new DielectricReflection(ior_i, ior_t),
+                          texlib.get_dflt_texture());
+    mat_glass.inherit_bdf(new Refraction(ior_i, ior_t),
+                          texlib.get_dflt_texture());
     //multi material specular, choose first (reflection)
     mat_glass.gen_shading_matrix(&hit, &matrix, &shading_normal);
     wi = Vec3(0.f, -1.f, 0.f);
@@ -810,6 +816,7 @@ SPECTRE_TEST(Material, MultiBSDF_value)
 
 SPECTRE_TEST(Material, MultiBSDF_sample_value)
 {
+    TextureLibrary texlib;
     bool matched_spec;
     Sphere s;
     Matrix4 m;
@@ -826,7 +833,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
     MultiBSDF material_r;
-    material_r.inherit_bdf(new Lambertian());
+    material_r.inherit_bdf(new Lambertian(), texlib.get_dflt_texture());
 
     //brdf diffuse match spec ok
     material_r.gen_shading_matrix(&hit, &matrix, &shading_normal);
@@ -879,8 +886,10 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     MultiBSDF mat_glass;
     Spectrum ior_i = cauchy(1.f, 0.f);
     Spectrum ior_t = cauchy(1.33f, 0.f);
-    mat_glass.inherit_bdf(new DielectricReflection(ior_i, ior_t));
-    mat_glass.inherit_bdf(new Refraction(ior_i, ior_t));
+    mat_glass.inherit_bdf(new DielectricReflection(ior_i, ior_t),
+                          texlib.get_dflt_texture());
+    mat_glass.inherit_bdf(new Refraction(ior_i, ior_t),
+                          texlib.get_dflt_texture());
     //multi material specular, choose first (reflection)
     mat_glass.gen_shading_matrix(&hit, &matrix, &shading_normal);
     res = mat_glass.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit,
@@ -923,7 +932,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     EXPECT_EQ(pdf, 0.f);
 
     //multi material specular + non specular, non specular not allowed
-    mat_glass.inherit_bdf((Bdf*)new Lambertian());
+    mat_glass.inherit_bdf((Bdf*)new Lambertian(), texlib.get_dflt_texture());
     res = material_r.sample_value(0.5f, 0.5f, 0.5f, &(r.direction), &hit,
                                   &matrix, &wi,
                                   &pdf, false, &matched_spec);
@@ -941,8 +950,10 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
     MicrofacetDist* ggx1 = new GGXiso(0.2f);
     MicrofacetDist* ggx2 = new GGXiso(0.2f);
     mat_glossy.inherit_bdf(new MicrofacetR(ggx1,
-                                           new Dielectric(ior_i, ior_t)));
-    mat_glossy.inherit_bdf(new MicrofacetT(ggx2, ior_i, ior_t));
+                                           new Dielectric(ior_i, ior_t)),
+                           texlib.get_dflt_texture());
+    mat_glossy.inherit_bdf(new MicrofacetT(ggx2, ior_i, ior_t),
+                           texlib.get_dflt_texture());
     mat_glossy.gen_shading_matrix(&hit, &matrix, &shading_normal);
     //multi material glossy, choose first (reflection)
     res = mat_glossy.sample_value(0.1f, 0.5f, 0.5f, &(r.direction), &hit,
@@ -975,6 +986,7 @@ SPECTRE_TEST(Material, MultiBSDF_sample_value)
 
 SPECTRE_TEST(Material, MultiBSDF_pdf)
 {
+    TextureLibrary texlib;
     Sphere s;
     Matrix4 m;
     Normal shading_normal;
@@ -998,20 +1010,21 @@ SPECTRE_TEST(Material, MultiBSDF_pdf)
 
     //non matching
     metal.inherit_bdf(new ConductorReflection(METALS[METAL_GOLD].n,
-                                              METALS[METAL_GOLD].k));
+                                              METALS[METAL_GOLD].k),
+                      texlib.get_dflt_texture());
     pdf = metal.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_EQ(pdf, 0.f);
 
     //matching
-    material.inherit_bdf(new Lambertian());
+    material.inherit_bdf(new Lambertian(), texlib.get_dflt_texture());
     pdf = material.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_NEAR(pdf, 0.318309873f, 1e-5f);
 
     //multiple values
     MultiBSDF material2;
     float pdf2;
-    material2.inherit_bdf(new Lambertian());
-    material2.inherit_bdf(new Lambertian());
+    material2.inherit_bdf(new Lambertian(), texlib.get_dflt_texture());
+    material2.inherit_bdf(new Lambertian(), texlib.get_dflt_texture());
     material2.gen_shading_matrix(&hit, &matrix, &shading_normal);
     pdf2 = material2.pdf(&(r.direction), &hit, &matrix, &wi, false);
     EXPECT_NEAR(pdf2, pdf, 1e-5f);
@@ -1019,19 +1032,22 @@ SPECTRE_TEST(Material, MultiBSDF_pdf)
 
 SPECTRE_TEST(Material, SingleBRDF_inherit_bdf)
 {
+    TextureLibrary texlib;
     //add single reflective material
     errors_count[WARNING_INDEX] = 0;
-    SingleBRDF material(new Lambertian());
+    SingleBRDF material(new Lambertian(), texlib.get_dflt_texture());
     EXPECT_EQ(errors_count[WARNING_INDEX], 0);
     //fail to add transmittive material
     errors_count[WARNING_INDEX] = 0;
-    SingleBRDF material2(new Refraction(cauchy(1.0, 0.f), cauchy(1.33f, 0.f)));
+    SingleBRDF material2(new Refraction(cauchy(1.0, 0.f), cauchy(1.33f, 0.f)),
+                         texlib.get_dflt_texture());
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
 }
 
 SPECTRE_TEST(Material, SingleBRDF_value)
 {
+    TextureLibrary texlib;
     const Bsdf* materials[1];
     unsigned char associations = 0;
     ColorRGB red((unsigned char)255, 0, 0);
@@ -1047,10 +1063,11 @@ SPECTRE_TEST(Material, SingleBRDF_value)
     HitPoint hit;
     ShadingSpace matrix;
     float distance = FLT_MAX;
-    SingleBRDF material_r(new Lambertian());
+    SingleBRDF material_r(new Lambertian(), texlib.get_dflt_texture());
     SingleBRDF materialWtexture(new Lambertian(), ut);
     SingleBRDF metal(new ConductorReflection(METALS[METAL_GOLD].n,
-                                             METALS[METAL_GOLD].k));
+                                             METALS[METAL_GOLD].k),
+                     texlib.get_dflt_texture());
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
     //matching brdf no-spec
@@ -1110,6 +1127,7 @@ SPECTRE_TEST(Material, SingleBRDF_value)
 
 SPECTRE_TEST(Material, SingleBRDF_sample_value)
 {
+    TextureLibrary texlib;
     const Bsdf* materials[1];
     unsigned char association = 0;
     bool matched_spec;
@@ -1127,9 +1145,10 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    SingleBRDF material_r(new Lambertian());
+    SingleBRDF material_r(new Lambertian(), texlib.get_dflt_texture());
     SingleBRDF metal(new ConductorReflection(METALS[METAL_GOLD].n,
-                                             METALS[METAL_GOLD].k));
+                                             METALS[METAL_GOLD].k),
+                     texlib.get_dflt_texture());
     materials[0] = &metal;
     a.set_materials(materials, 1, &association);
     //brdf specular no match
@@ -1204,6 +1223,7 @@ SPECTRE_TEST(Material, SingleBRDF_sample_value)
 
 SPECTRE_TEST(Material, SingleBRDF_pdf)
 {
+    TextureLibrary texlib;
     Sphere s;
     Matrix4 m;
     Vec3 wi;
@@ -1217,9 +1237,10 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
     float distance = FLT_MAX;
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
-    SingleBRDF material_r(new Lambertian());
+    SingleBRDF material_r(new Lambertian(), texlib.get_dflt_texture());
     SingleBRDF metal(new ConductorReflection(METALS[METAL_GOLD].n,
-                                             METALS[METAL_GOLD].k));
+                                             METALS[METAL_GOLD].k),
+                     texlib.get_dflt_texture());
     wi = Vec3(0.f, 1.f, 0.f);
 
     //non matching spec
@@ -1243,6 +1264,7 @@ SPECTRE_TEST(Material, SingleBRDF_pdf)
 
 SPECTRE_TEST(Material, DualBsdf_value)
 {
+    TextureLibrary texlib;
     const Bsdf* materials[1];
     unsigned char associations = 0;
     Sphere s;
@@ -1263,7 +1285,9 @@ SPECTRE_TEST(Material, DualBsdf_value)
     TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
     Vec2 scale(1.f);
     Vec2 shift(0.f);
-    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
+    File src0(TEST_ASSETS "images/correct.bmp");
+    const ImageMap* map0 = resolve_map(&src0, &texlib, UNFILTERED);
+    TextureImage tx(map0, shift, scale);
     SingleBRDF mat0(new Lambertian(), &red);
     SingleBRDF mat1(new Lambertian(), &blue);
     MaskBoolean mask(&tx, RED, false);
@@ -1295,6 +1319,7 @@ SPECTRE_TEST(Material, DualBsdf_value)
 
 SPECTRE_TEST(Material, DualBsdf_sample_value)
 {
+    TextureLibrary texlib;
     const Bsdf* materials[1];
     unsigned char associations = 0;
     Sphere s;
@@ -1319,7 +1344,9 @@ SPECTRE_TEST(Material, DualBsdf_sample_value)
     TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
     Vec2 scale(1.f);
     Vec2 shift(0.f);
-    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
+    File src0(TEST_ASSETS "images/correct.bmp");
+    const ImageMap* map0 = resolve_map(&src0, &texlib, UNFILTERED);
+    TextureImage tx(map0, shift, scale);
     SingleBRDF mat0(new Lambertian(), &red);
     SingleBRDF mat1(new Lambertian(), &blue);
     MaskBoolean mask(&tx, RED, false);
@@ -1363,6 +1390,7 @@ SPECTRE_TEST(Material, DualBsdf_sample_value)
 
 SPECTRE_TEST(Material, DualBsdf_pdf)
 {
+    TextureLibrary texlib;
     const Bsdf* materials[1];
     unsigned char associations = 0;
     Sphere s;
@@ -1383,7 +1411,9 @@ SPECTRE_TEST(Material, DualBsdf_pdf)
     TextureUniform blue(Spectrum(ColorRGB(0.f, 0.f, 1.f), false));
     Vec2 scale(1.f);
     Vec2 shift(0.f);
-    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
+    File src0(TEST_ASSETS "images/correct.bmp");
+    const ImageMap* map0 = resolve_map(&src0, &texlib, UNFILTERED);
+    TextureImage tx(map0, shift, scale);
     SingleBRDF mat0(new Lambertian(), &red);
     SingleBRDF mat1(new Lambertian(), &blue);
     MaskBoolean mask(&tx, RED, false);

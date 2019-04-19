@@ -57,13 +57,12 @@ public:
      *
      *  \param[in] addme The Bdf that will be added
      *  \param[in] spectrum The texture that will be used to compute the
-     *  spectrum of the BSDF. If left empty, the default White texture will be
-     *  used
+     *  spectrum of the BSDF.
      *
      *  \warning The Bump will be deleted by this BSDF constructor. (The idea
      *  is that Bump are constructed by the Parses and managed by BxDFs)
      */
-    void inherit_bdf(Bdf* addme, const Texture* spectrum = NULL);
+    void inherit_bdf(Bdf* addme, const Texture* spectrum);
 
     /** \brief Return the value of the BSDF
      *

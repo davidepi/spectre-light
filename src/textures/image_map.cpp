@@ -122,6 +122,11 @@ TexelUnion ImageMapUnfiltered::filter(float u, float v, float, float,
     return MIPmap[0]->get(x, y);
 }
 
+bool ImageMapUnfiltered::filtered() const
+{
+    return false;
+}
+
 TexelUnion ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
                                      float dudy, float dvdy) const
 {
@@ -145,20 +150,25 @@ TexelUnion ImageMapTrilinear::filter(float u, float v, float dudx, float dvdx,
         p0 = bilinear(u, v, chosen_below);
         p1 = bilinear(u, v, chosen_below+1);
         const float other_decimal = 1.f-decimal;
-        p0.bgra_texel.r *= other_decimal;
-        p0.bgra_texel.g *= other_decimal;
-        p0.bgra_texel.b *= other_decimal;
-        p0.bgra_texel.a *= other_decimal;
-        p1.bgra_texel.r *= decimal;
-        p1.bgra_texel.g *= decimal;
-        p1.bgra_texel.b *= decimal;
-        p1.bgra_texel.a *= decimal;
+        p0.bgra_texel.r = (uint8_t)(p0.bgra_texel.r*other_decimal);
+        p0.bgra_texel.g = (uint8_t)(p0.bgra_texel.g*other_decimal);
+        p0.bgra_texel.b = (uint8_t)(p0.bgra_texel.b*other_decimal);
+        p0.bgra_texel.a = (uint8_t)(p0.bgra_texel.a*other_decimal);
+        p1.bgra_texel.r = (uint8_t)(p1.bgra_texel.r*decimal);
+        p1.bgra_texel.g = (uint8_t)(p1.bgra_texel.g*decimal);
+        p1.bgra_texel.b = (uint8_t)(p1.bgra_texel.b*decimal);
+        p1.bgra_texel.a = (uint8_t)(p1.bgra_texel.a*decimal);
         p0.bgra_texel.r += p1.bgra_texel.r;
         p0.bgra_texel.g += p1.bgra_texel.g;
         p0.bgra_texel.b += p1.bgra_texel.b;
         p0.bgra_texel.a += p1.bgra_texel.a;
     }
     return p0;
+}
+
+bool ImageMapTrilinear::filtered() const
+{
+    return true;
 }
 
 TexelUnion ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
@@ -199,14 +209,14 @@ TexelUnion ImageMapEWA::filter(float u, float v, float dudx, float dvdx,
         p0 = ewa(u, v, dudx, dvdx, dudy, dvdy, chosen_below);
         TexelUnion p1 = ewa(u, v, dudx, dvdx, dudy, dvdy, chosen_below+1);
         const float other_decimal = 1.f-decimal;
-        p0.bgra_texel.r *= other_decimal;
-        p0.bgra_texel.g *= other_decimal;
-        p0.bgra_texel.b *= other_decimal;
-        p0.bgra_texel.a *= other_decimal;
-        p1.bgra_texel.r *= decimal;
-        p1.bgra_texel.g *= decimal;
-        p1.bgra_texel.b *= decimal;
-        p1.bgra_texel.a *= decimal;
+        p0.bgra_texel.r = (uint8_t)(p0.bgra_texel.r*other_decimal);
+        p0.bgra_texel.g = (uint8_t)(p0.bgra_texel.g*other_decimal);
+        p0.bgra_texel.b = (uint8_t)(p0.bgra_texel.b*other_decimal);
+        p0.bgra_texel.a = (uint8_t)(p0.bgra_texel.a*other_decimal);
+        p1.bgra_texel.r = (uint8_t)(p1.bgra_texel.r*decimal);
+        p1.bgra_texel.g = (uint8_t)(p1.bgra_texel.g*decimal);
+        p1.bgra_texel.b = (uint8_t)(p1.bgra_texel.b*decimal);
+        p1.bgra_texel.a = (uint8_t)(p1.bgra_texel.a*decimal);
         p0.bgra_texel.r += p1.bgra_texel.r;
         p0.bgra_texel.g += p1.bgra_texel.g;
         p0.bgra_texel.b += p1.bgra_texel.b;
@@ -316,6 +326,11 @@ ImageMapEWA::ewa(float u, float v, float dudx, float dvdx, float dudy,
     retval.bgra_texel.b = resb*invweigth;
     retval.bgra_texel.a = resa*invweigth;
     return retval;
+}
+
+bool ImageMapEWA::filtered() const
+{
+    return true;
 }
 
 static void

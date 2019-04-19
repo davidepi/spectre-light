@@ -21,10 +21,11 @@ static inline void get_next_token(char** source, char* buffer, int max_size,
 
 static inline void feed_buffer(int* read_bytes, char* buffer_ro, FILE* input);
 
-ParserObj::ParserObj()
+ParserObj::ParserObj(const MaterialLibrary* matLib)
 {
     buffer_ro = NULL;
     fin = NULL;
+    mtllib = matLib;
 }
 
 ParserObj::~ParserObj()
@@ -88,7 +89,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
     //start clear
     materials.clear();
     //used as a boolean. Described in the 'o' and 'g' switch
-    materials.push_back(MtlLib.get_default());
+    materials.push_back(mtllib->get_default());
     material_association.clear();
     used_materials.insert({{"Default", 0}});
     object_name = "";
@@ -166,7 +167,7 @@ bool ParserObj::get_next_mesh(Mesh* obj)
                     char>::const_iterator it = used_materials.find(token);
                     if(it == used_materials.end())
                     {
-                        const Bsdf* cur_mat = MtlLib.get(token);
+                        const Bsdf* cur_mat = mtllib->get(token);
                         if(cur_mat == NULL)
                         {
                             //insert as default material

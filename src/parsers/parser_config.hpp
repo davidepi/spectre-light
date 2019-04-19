@@ -1,12 +1,12 @@
 //Created,  31 Mar 2018
-//Last Edit 18 Apr 2019
+//Last Edit 19 Apr 2019
 
 /**
  *  \file      parser_config.hpp
  *  \brief     Bridge between bison parser and the application
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      18 Apr 2019
+ *  \date      19 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -20,6 +20,8 @@ extern "C" {
 }
 
 #include "renderer.hpp"
+#include "textures/texture_library.hpp"
+#include "materials/material_library.hpp"
 #include "utility/scene.hpp"
 
 /**
@@ -43,7 +45,7 @@ class ParserConfig
 public:
 
     ///Default constructor
-    ParserConfig() = default;
+    ParserConfig(MaterialLibrary* matLib, TextureLibrary* texLib);
 
     ///Default destructor
     ~ParserConfig() = default;
@@ -68,6 +70,10 @@ public:
     */
     CHECK_RETVAL_USED
     Renderer* parse(const char* filename, Scene* scene);
+
+private:
+    MaterialLibrary* mtllib;
+    TextureLibrary* texlib;
 };
 
 

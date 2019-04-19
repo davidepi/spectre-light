@@ -6,6 +6,7 @@
 #include "materials/bump.hpp"
 #include "textures/texture_image.hpp"
 #include "textures/image_map.hpp"
+#include "textures/types_imgchannel.h"
 
 class TextureHeight : public Bump
 {

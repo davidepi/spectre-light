@@ -1,12 +1,12 @@
 //Created,   7 Jul 2017
-//Last Edit 18 Dec 2018
+//Last Edit 19 Apr 2019
 
 /**
  *  \file material_library.hpp
  *  \brief MaterialLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  14 Apr 2018
+ *  \date  19 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -16,16 +16,15 @@
 
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
+#include "textures/texture.hpp"
 #include <unordered_map>
 
 /**
  * \class MaterialLibrary material_library.hpp "materials/material_library.hpp"
  * \brief Container for every material used
  *
- *  This class is used to store every material used in the renderer. It is a
- *  singleton, since this class stores constant values that will be assigned to
- *  the various shape at creation time. The library must be unique and
- *  accessible everywhere.
+ *  This class is used to store every material used in the renderer.
+ *  The library must be unique and thus cannot be copied or assigned.
  *
  *  The default material that represents a white matte surface
  *  is not contained by this library, but can be accessed separately with the
@@ -39,12 +38,17 @@ class MaterialLibrary
 {
 public:
 
-    ///Get an instance of the material library
-    static MaterialLibrary& instance()
-    {
-        static MaterialLibrary instance;
-        return instance;
-    }
+    /**
+     * \brief Default constructor
+     * \param[in] dflt The texture that will be used as default (likely a
+     * white texture) for the default material
+     */
+    MaterialLibrary(const Texture* dflt);
+
+    /**
+     * \brief Default destructor
+     */
+    ~MaterialLibrary();
 
     ///Avoid a copy of the object
     MaterialLibrary(MaterialLibrary const&) = delete;
@@ -122,15 +126,10 @@ public:
 
 private:
 
-    MaterialLibrary();
-
-    ~MaterialLibrary();
-
+    //map {name:material}
     std::unordered_map<std::string, const Bsdf*> lib;
+    //default material (white lambertian)
     Bsdf* default_material;
 };
-
-///Access the material library just by writing "MtlLib"
-#define MtlLib MaterialLibrary::instance()
 
 #endif

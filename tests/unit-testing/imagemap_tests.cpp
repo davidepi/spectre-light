@@ -67,6 +67,14 @@ SPECTRE_TEST(ImageMap, unfiltered_mapping_low)
     EXPECT_EQ(res.bgra_texel.a, data_texel[3].bgra_texel.a);
 }
 
+SPECTRE_TEST(ImageMap, unfiltered_filter_method)
+{
+    const pixBGRA data[4] = {0xF94E47AFU, 0x2B196B67U, 0xECA970F6U,
+                             0x12CDBB6BU};
+    ImageMapUnfiltered map0(data, 2);
+    EXPECT_FALSE(map0.filtered());
+}
+
 SPECTRE_TEST(ImageMap, trilinear_mapping)
 {
     const int LEN = 4;
@@ -194,6 +202,14 @@ SPECTRE_TEST(ImageMap, trilinear_mapping)
     EXPECT_EQ(res.bgra_texel.g, (uint8_t)avgg);
     EXPECT_EQ(res.bgra_texel.b, (uint8_t)avgb);
     EXPECT_EQ(res.bgra_texel.a, (uint8_t)avga);
+}
+
+SPECTRE_TEST(ImageMap, trilinear_filter_method)
+{
+    const pixBGRA data[4] = {0xF94E47AFU, 0x2B196B67U, 0xECA970F6U,
+                             0x12CDBB6BU};
+    ImageMapTrilinear map0(data, 2);
+    EXPECT_TRUE(map0.filtered());
 }
 
 SPECTRE_TEST(ImageMap, ewa_mapping)
@@ -335,6 +351,14 @@ SPECTRE_TEST(ImageMap, ewa_mapping)
     EXPECT_EQ(res.bgra_texel.g, (uint8_t)avgg);
     EXPECT_EQ(res.bgra_texel.b, (uint8_t)avgb);
     EXPECT_EQ(res.bgra_texel.a, (uint8_t)avga);
+}
+
+SPECTRE_TEST(ImageMap, ewa_filter_method)
+{
+    const pixBGRA data[4] = {0xF94E47AFU, 0x2B196B67U, 0xECA970F6U,
+                             0x12CDBB6BU};
+    ImageMapEWA map0(data, 2);
+    EXPECT_TRUE(map0.filtered());
 }
 
 SPECTRE_TEST(ImageMap, get_side_fun)

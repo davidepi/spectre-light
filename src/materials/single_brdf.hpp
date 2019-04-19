@@ -45,13 +45,12 @@ public:
      *
      *  \param[in] inherited The Bdf that will be added
      *  \param[in] diffuse The texture that will be used to compute the
-     *  spectrum of the Bsdf (otherwise every Bdf uses a white spectrum). If
-     *  left empty, the default White texture will be used
+     *  spectrum of the Bsdf (otherwise every Bdf uses a white spectrum)
      *
      *  \warning The Bump will be deleted by this BSDF constructor. (The idea
      *  is that Bump are constructed by the Parser and managed by BxDFs)
      */
-    SingleBRDF(const Bdf* inherited, const Texture* diffuse = NULL);
+    SingleBRDF(const Bdf* inherited, const Texture* diffuse);
 
     ///Default destructor
     ~SingleBRDF() override;

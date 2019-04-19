@@ -117,3 +117,53 @@ int TextureLibrary::size_map() const
 {
     return (int)maplib.size();
 }
+
+const ImageMap* resolve_map(const File* src, TextureLibrary* texlib,
+                            texturefilter_t filter)
+{
+    const ImageMap* imagemap;
+    if(texlib->contains_map(src->absolute_path())) //imagemap already parsed
+    {
+        imagemap = texlib->get_map(src->absolute_path());
+    }
+    else //create imagemap
+    {
+        if(src->readable())
+        {
+            int width;
+            int height;
+            img_dimensions(src->absolute_path(), src->extension(),
+                           &width, &height);
+            if(width == height && (height & (height-1)) == 0) //power of 2
+            {
+                uint32_t* bgra_data = (uint32_t*)malloc(width*height*sizeof
+                        (uint32_t));
+                img_read8(src->absolute_path(), src->extension(), bgra_data);
+                switch(filter)
+                {
+                    case TRILINEAR:
+                        imagemap = new ImageMapTrilinear(bgra_data, width);
+                        break;
+                    case EWA:imagemap = new ImageMapEWA(bgra_data, width);
+                        break;
+                    case UNFILTERED:
+                    default:imagemap = new ImageMapUnfiltered(bgra_data, width);
+                }
+                free(bgra_data);
+                texlib->inherit_map(src->absolute_path(), imagemap);
+            }
+            else
+            {
+                Console.warning(MESSAGE_TEXTURE_POWER2, src->absolute_path());
+                imagemap = texlib->get_dflt_map();
+            }
+        }
+        else
+        {
+            //should be checked by parser
+            Console.warning(MESSAGE_TEXTURE_ERROR, src->absolute_path());
+            imagemap = texlib->get_dflt_map();
+        }
+    }
+    return imagemap;
+}

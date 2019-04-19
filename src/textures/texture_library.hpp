@@ -1,12 +1,12 @@
 //Created,  14 Mar 2018
-//Last Edit  7 Sep 2018
+//Last Edit 19 Apr 2019
 
 /**
  *  \file texture_library.hpp
  *  \brief TextureLibrary class
  *  \author Davide Pizzolotto
  *  \version 0.2
- *  \date  7 Sep 2018
+ *  \date  19 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -16,6 +16,8 @@
 
 #include "textures/texture.hpp"
 #include "textures/image_map.hpp"
+#include "textures/types_imgchannel.h"
+#include "utility/file.hpp"
 #include <unordered_map>
 #include <string>
 
@@ -26,12 +28,8 @@ class TextureImage;
  * \class TextureLibrary texture_library.hpp "textures/texture_library.hpp"
  * \brief Container for every texture used
  *
- *  This class is used to store every texture used in the renderer. It is a
- *  singleton, since this class stores constant values that will be assigned to
- *  the various shape at creation time. The library must be unique and
- *  accessible everywhere.
- *
- *  A define grants access to this singleton just by writing "TexLib"
+ *  This class is used to store every texture used in the renderer. The library
+ *  must be unique and thus cannot be copied or assigned.
  *
  *  \warning This class is NOT thread-safe
  */
@@ -39,12 +37,15 @@ class TextureLibrary
 {
 public:
 
-    ///Get an instance of the texture library
-    static TextureLibrary& instance()
-    {
-        static TextureLibrary instance;
-        return instance;
-    }
+    /**
+     * \brief Default constructor
+     */
+    TextureLibrary();
+
+    /**
+     * \brief Default destructor
+     */
+    ~TextureLibrary();
 
     ///Avoid a copy of the object
     TextureLibrary(TextureLibrary const&) = delete;
@@ -178,17 +179,27 @@ public:
 
 private:
 
-    TextureLibrary();
-
-    ~TextureLibrary();
-
     std::unordered_map<std::string, const Texture*> texlib;
     std::unordered_map<std::string, const ImageMap*> maplib;
     const Texture* default_texture;
     const ImageMap* default_map;
 };
 
-///Access the texture library just by writing "TexLib"
-#define TexLib TextureLibrary::instance()
+/**
+ * \brief Retrieves a map from the library or the default map if not found
+ *
+ * Some tests or parsing routines requires a map to be built. This is not an
+ * easy task because it requires retrieving an array of pixel and allocate a
+ * map that will be then inherited by the TextureLibrary. Although this being
+ * a parsing task, some checks are required by the TextureLibrary and thus
+ * this function is declared here
+ *
+ * \param[in] src The full path of the map on the disk
+ * \param[in] texlib The texture library. The map will be added to this library
+ * \param[in] filter The filter that will be applied to the map
+ * \return The newly allocated imagemap or the default one if not found
+ */
+const ImageMap* resolve_map(const File* src, TextureLibrary* texlib,
+                            texturefilter_t filter);
 
 #endif

@@ -5,9 +5,9 @@
 #include "single_brdf.hpp"
 #include "lambertian.hpp"
 
-MaterialLibrary::MaterialLibrary()
+MaterialLibrary::MaterialLibrary(const Texture* dflt)
 {
-    MaterialLibrary::default_material = new SingleBRDF(new Lambertian());
+    MaterialLibrary::default_material = new SingleBRDF(new Lambertian(), dflt);
 }
 
 MaterialLibrary::~MaterialLibrary()

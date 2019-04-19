@@ -11,6 +11,7 @@
 #endif
 
 #include "primitives/triangle.hpp"
+#include "textures/texture_library.hpp"
 
 SPECTRE_TEST_INIT(Triangle_tests)
 
@@ -205,6 +206,7 @@ SPECTRE_TEST(Triangle, intersection)
 
 SPECTRE_TEST(Triangle, masked_hit)
 {
+    TextureLibrary texlib;
     Vertex v0;
     Vertex v1;
     Vertex v2;
@@ -224,7 +226,9 @@ SPECTRE_TEST(Triangle, masked_hit)
     HitPoint hit;
     Vec2 shift(0.f);
     Vec2 scale(1.f);
-    TextureImage tx(TEST_ASSETS "images/black.bmp", shift, scale, UNFILTERED);
+    File src(TEST_ASSETS "images/black.bmp");
+    const ImageMap* map = resolve_map(&src, &texlib, UNFILTERED);
+    TextureImage tx(map, shift, scale);
     MaskBoolean mask;
 
     r = Ray(Point3(0.5, 0.5, 1.f), Vec3(0, 0, -1));

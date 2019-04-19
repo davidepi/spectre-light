@@ -1,5 +1,5 @@
 //Created,   7 May 2018
-//Last Edit  9 Aug 2018
+//Last Edit 19 Apr 2019
 
 /**
  *  \file image_map.hpp
@@ -9,7 +9,7 @@
  *             to cope with varying filtering methods
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      9 Aug 2018
+ *  \date      19 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -144,6 +144,18 @@ public:
      */
     uint16_t get_side() const;
 
+    /**
+     * \brief Returns true if the map is filtered
+     *
+     * This method is used to know if the map performs any kind of filtering
+     * on the value. In order to filter a value the differentials of the Ray
+     * needs to be calculated, if a map does not require filtering these
+     * values are useless and their computation can be skipped
+     *
+     * \return true if the map performs lookup and then filters the value
+     */
+    virtual bool filtered() const = 0;
+
 protected:
 
     /**
@@ -208,6 +220,18 @@ public:
      */
     TexelUnion filter(float u, float v, float dudx, float dvdx,
                       float dudy, float dvdy) const override;
+
+    /**
+     * \brief Returns true if the map is filtered
+     *
+     * This method is used to know if the map performs any kind of filtering
+     * on the value. In order to filter a value the differentials of the Ray
+     * needs to be calculated, if a map does not require filtering these
+     * values are useless and their computation can be skipped
+     *
+     * \return true if the map performs lookup and then filters the value
+     */
+    bool filtered() const override;
 };
 
 /**
@@ -250,6 +274,18 @@ public:
      */
     TexelUnion filter(float u, float v, float dudx, float dvdx,
                       float dudy, float dvdy) const override;
+
+    /**
+     * \brief Returns true if the map is filtered
+     *
+     * This method is used to know if the map performs any kind of filtering
+     * on the value. In order to filter a value the differentials of the Ray
+     * needs to be calculated, if a map does not require filtering these
+     * values are useless and their computation can be skipped
+     *
+     * \return true if the map performs lookup and then filters the value
+     */
+    bool filtered() const override;
 };
 
 /**
@@ -288,6 +324,18 @@ public:
      */
     TexelUnion filter(float u, float v, float dudx, float dvdx,
                       float dudy, float dvdy) const override;
+
+    /**
+     * \brief Returns true if the map is filtered
+     *
+     * This method is used to know if the map performs any kind of filtering
+     * on the value. In order to filter a value the differentials of the Ray
+     * needs to be calculated, if a map does not require filtering these
+     * values are useless and their computation can be skipped
+     *
+     * \return true if the map performs lookup and then filters the value
+     */
+    bool filtered() const override;
 
 private:
 

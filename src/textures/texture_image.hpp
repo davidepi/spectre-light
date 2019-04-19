@@ -1,5 +1,5 @@
 //Created,   8 May 2018
-//Last Edit  5 Dec 2018
+//Last Edit 19 Apr 2019
 
 /**
  *  \file texture_image.hpp
@@ -7,7 +7,7 @@
  *  \details   Class holding an image map that can be shifted and scaled
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      5 Dec 2018
+ *  \date      19 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -20,10 +20,8 @@ extern "C" {
 #include "utility/imageio/imageio.h"
 }
 
-#include "utility/file.hpp"
 #include "textures/texture.hpp"
 #include "textures/image_map.hpp"
-#include "textures/types_imgchannel.h"
 
 /**
  *  \brief Wrapper containing an ImageMap shifted and scaled
@@ -44,23 +42,6 @@ public:
      *  Given the underlying ImageMap and its shift and scale values, construct
      *  this class
      *
-     *  \param[in] src The path to the underlying ImageMap
-     *  \param[in] shift The value used to shift the UV values before performing
-     *  texture mapping
-     *  \param[in] scale The value used to scale the UV values before performing
-     *  texture mapping
-     *  \param[in] filter The type of filter that will be used to filter this
-     *  texture
-     */
-    TextureImage(const File& src, const Vec2& shift, const Vec2& scale,
-                 texturefilter_t filter);
-
-    /**
-     *  \brief Constructor
-     *
-     *  Given the underlying ImageMap and its shift and scale values, construct
-     *  this class
-     *
      *  \param[in] map A pointer to the underlying ImageMap
      *  \param[in] scale The value used to scale the UV values before performing
      *  texture mapping
@@ -71,8 +52,7 @@ public:
      *  unfiltered causes only a small performance degradation, passing true
      *  if the image is NOT unfiltered leads to completely wrong results.
      */
-    TextureImage(const ImageMap* map, Vec2& shift, Vec2& scale,
-                 bool unfiltered = false);
+    TextureImage(const ImageMap* map, const Vec2& shift, const Vec2& scale);
 
     ///Default destructor
     ~TextureImage() override = default;
@@ -121,7 +101,7 @@ public:
 
     //used to ensure ImageMap is allocated of the correct type
 #ifndef TESTS
-    protected:
+protected:
 #endif
 
     ///scale component
@@ -129,9 +109,6 @@ public:
 
     ///shift component
     Vec2 shift;
-
-    ///Filter used by the underlying imageMap
-    bool unfiltered;
 
     ///The underlying ImageMap
     const ImageMap* imagemap;

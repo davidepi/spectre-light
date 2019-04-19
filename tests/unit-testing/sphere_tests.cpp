@@ -11,7 +11,9 @@
 #endif
 
 #include "primitives/sphere.hpp"
+#include "textures/texture_library.hpp"
 #include "utility/utility.hpp"
+#include "utility/file.hpp"
 #include <climits>
 
 SPECTRE_TEST_INIT(Sphere_tests)
@@ -177,6 +179,7 @@ SPECTRE_TEST(Sphere, intersect)
 
 SPECTRE_TEST(Sphere, masked_hit)
 {
+    TextureLibrary texlib;
     Sphere s;
     bool res;
     float distance;
@@ -184,7 +187,9 @@ SPECTRE_TEST(Sphere, masked_hit)
     HitPoint h;
     Vec2 shift(0.f);
     Vec2 scale(1.f);
-    TextureImage tx(TEST_ASSETS "images/correct.bmp", shift, scale, UNFILTERED);
+    File src(TEST_ASSETS "images/correct.bmp");
+    const ImageMap* map = resolve_map(&src, &texlib, UNFILTERED);
+    TextureImage tx(map, shift, scale);
     MaskBoolean mask(&tx, RED, false);
 
     //point invalidated but second one is ok (with fixed point_h)
@@ -200,7 +205,9 @@ SPECTRE_TEST(Sphere, masked_hit)
 
     //both points invalidated
     distance = INFINITY;
-    tx = TextureImage(TEST_ASSETS "images/black.bmp", shift, scale, UNFILTERED);
+    File src_black(TEST_ASSETS "images/black.bmp");
+    const ImageMap* map_black = resolve_map(&src_black, &texlib, UNFILTERED);
+    tx = TextureImage(map_black, shift, scale);
     mask = MaskBoolean(&tx, RED, false);
     r = Ray(Point3(0.f, -10.f, 0.f), Vec3(0, 1, 0));
     res = s.intersect(&r, &distance, &h, &mask);
@@ -208,7 +215,7 @@ SPECTRE_TEST(Sphere, masked_hit)
 
     //starting from inside, only viable point invalidated
     distance = INFINITY;
-    tx = TextureImage(TEST_ASSETS "images/black.bmp", shift, scale, UNFILTERED);
+    tx = TextureImage(map_black, shift, scale);
     mask = MaskBoolean(&tx, RED, false);
     r = Ray(Point3(0.f, 0.f, 0.f), Vec3(0, 1, 0));
     res = s.intersect(&r, &distance, &h, &mask);

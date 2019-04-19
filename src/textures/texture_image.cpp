@@ -5,60 +5,9 @@
 #include "textures/texture_library.hpp"
 #include "primitives/hit_point.hpp"
 
-TextureImage::TextureImage(const File& src, const Vec2& shift, const Vec2& scale,
-                           texturefilter_t filter):scale(scale), shift(shift)
-{
-    unfiltered = filter == UNFILTERED;
-    if(TexLib.contains_map(src.absolute_path())) //imagemap already parsed
-    {
-        imagemap = TexLib.get_map(src.absolute_path());
-    }
-    else //create imagemap
-    {
-        if(src.readable())
-        {
-            int width;
-            int height;
-            img_dimensions(src.absolute_path(), src.extension(),
-                           &width, &height);
-            if(width == height && (height & (height-1)) == 0) //power of 2
-            {
-                uint32_t* bgra_data = (uint32_t*)malloc(width*height*sizeof
-                        (uint32_t));
-                img_read8(src.absolute_path(), src.extension(), bgra_data);
-                switch(filter)
-                {
-                    case UNFILTERED:
-                        imagemap = new ImageMapUnfiltered(bgra_data, width);
-                        break;
-                    case TRILINEAR:
-                        imagemap = new ImageMapTrilinear(bgra_data, width);
-                        break;
-                    case EWA:imagemap = new ImageMapEWA(bgra_data, width);
-                        break;
-                }
-                free(bgra_data);
-                TexLib.inherit_map(src.absolute_path(), imagemap);
-            }
-            else
-            {
-                Console.warning(MESSAGE_TEXTURE_POWER2, src.absolute_path());
-                imagemap = TexLib.get_dflt_map();
-            }
-        }
-        else
-        {
-            //should be checked by parser
-            Console.warning(MESSAGE_TEXTURE_ERROR, src.absolute_path());
-            imagemap = TexLib.get_dflt_map();
-        }
-    }
-}
-
-TextureImage::TextureImage(const ImageMap* map, Vec2& shift, Vec2& scale,
-                           bool unfiltered):scale(scale), shift(shift),
-                                            unfiltered(unfiltered),
-                                            imagemap(map)
+TextureImage::TextureImage(const ImageMap* map, const Vec2& shift,
+                           const Vec2& scale):scale(scale), shift(shift),
+                                              imagemap(map)
 {}
 
 TexelUnion TextureImage::map_value(const HitPoint* hit) const
@@ -73,7 +22,7 @@ TexelUnion TextureImage::map_value(const HitPoint* hit) const
         v = v-(int)v;
 
     TexelUnion res;
-    if(unfiltered)
+    if(!imagemap->filtered())
     {
         res = imagemap->filter(u, v, 0, 0, 0, 0);
     }

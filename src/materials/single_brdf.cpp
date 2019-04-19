@@ -21,10 +21,8 @@ SingleBRDF::SingleBRDF(const Bdf* bdf, const Texture* texture)
         delete bdf;
         SingleBRDF::bdf = new Lambertian();
     }
-    if(texture != NULL)
-        SingleBRDF::diffuse = texture;
-    else
-        SingleBRDF::diffuse = TexLib.get_dflt_texture();
+    SingleBRDF::diffuse = texture;
+
 }
 
 SingleBRDF::~SingleBRDF()

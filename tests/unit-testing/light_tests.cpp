@@ -17,6 +17,7 @@
 #include "lights/light_spot.hpp"
 #include "lights/light_sky.hpp"
 #include "textures/texture_uniform.hpp"
+#include "textures/texture_library.hpp"
 
 SPECTRE_TEST_INIT(Light_tests)
 
@@ -471,11 +472,13 @@ SPECTRE_TEST(Light, LightSky_pdf_surface)
 
 SPECTRE_TEST(Light, LightSky_sample_visible_surface)
 {
+    TextureLibrary texlib;
     Vec2 zero(0.f);
     Vec2 one(1.f);
     errors_count[WARNING_INDEX] = 0;
-    const Texture* tex = new TextureImage(TEST_ASSETS "images/correct.bmp",
-                                          zero, one, UNFILTERED);
+    File src(TEST_ASSETS "images/correct.bmp");
+    const ImageMap* map = resolve_map(&src, &texlib, UNFILTERED);
+    const Texture* tex = new TextureImage(map, zero, one);
     ASSERT_EQ(errors_count[WARNING_INDEX], 0);
     LightSky sky(tex, 1.f);
     Point3 pos(0, 0, 0);
@@ -505,11 +508,13 @@ SPECTRE_TEST(Light, LightSky_sample_visible_surface)
 
 SPECTRE_TEST(Light, LightSky_pdf_surface_visible)
 {
+    TextureLibrary texlib;
     Vec2 zero(0.f);
     Vec2 one(1.f);
     errors_count[WARNING_INDEX] = 0;
-    const Texture* tex = new TextureImage(TEST_ASSETS "images/correct.bmp",
-                                          zero, one, UNFILTERED);
+    File src(TEST_ASSETS "images/correct.bmp");
+    const ImageMap* map = resolve_map(&src, &texlib, UNFILTERED);
+    const Texture* tex = new TextureImage(map, zero, one);
     ASSERT_EQ(errors_count[WARNING_INDEX], 0);
     LightSky sky(tex, 1.f);
     Point3 pos(0, 0, 0);
@@ -539,10 +544,12 @@ SPECTRE_TEST(Light, LightSky_renderable)
 
 SPECTRE_TEST(Light, LightSky_radiance_escaped)
 {
+    TextureLibrary texlib;
     Vec2 zero(0.f);
     Vec2 one(1.f);
-    const Texture* tex = new TextureImage(TEST_ASSETS "images/correct.bmp",
-                                          zero, one, UNFILTERED);
+    File src(TEST_ASSETS "images/correct.bmp");
+    const ImageMap* map = resolve_map(&src, &texlib, UNFILTERED);
+    const Texture* tex = new TextureImage(map, zero, one);
     LightSky sky(tex, 1.f);
     //generate rays pointing in two different quadrants in the sky.
     //per correct.bmp texture, one should be red, the other should be green.
@@ -561,18 +568,16 @@ SPECTRE_TEST(Light, LightSky_radiance_escaped)
 
 SPECTRE_TEST(Light, LightSky_constructor_warnings)
 {
+    TextureLibrary texlib;
     Vec2 zero(0.f);
     Vec2 one(1.f);
-    Texture* tex_ok = new TextureImage(TEST_ASSETS "images/correct.bmp",
-                                       zero, one, UNFILTERED);
-    Texture* tex_sc_x = new TextureImage(TEST_ASSETS "images/correct.bmp",
-                                         zero, Vec2(2.f, 1.f), UNFILTERED);
-    Texture* tex_sc_y = new TextureImage(TEST_ASSETS "images/correct.bmp",
-                                         zero, Vec2(1.f, 2.f), UNFILTERED);
-    Texture* tex_sh_x = new TextureImage(TEST_ASSETS "images/correct.bmp",
-                                         Vec2(1.f, 0.f), one, UNFILTERED);
-    Texture* tex_sh_y = new TextureImage(TEST_ASSETS "images/correct.bmp",
-                                         Vec2(0.f, 1.f), one, UNFILTERED);
+    File src(TEST_ASSETS "images/correct.bmp");
+    const ImageMap* map = resolve_map(&src, &texlib, UNFILTERED);
+    Texture* tex_ok = new TextureImage(map, zero, one);
+    Texture* tex_sc_x = new TextureImage(map, zero, Vec2(2.f, 1.f));
+    Texture* tex_sc_y = new TextureImage(map, zero, Vec2(1.f, 2.f));
+    Texture* tex_sh_x = new TextureImage(map, Vec2(1.f, 0.f), one);
+    Texture* tex_sh_y = new TextureImage(map, Vec2(0.f, 1.f), one);
     ASSERT_EQ(errors_count[WARNING_INDEX], 0);
     LightSky sky0(tex_ok, 1.f);
     EXPECT_EQ(errors_count[WARNING_INDEX], 0);

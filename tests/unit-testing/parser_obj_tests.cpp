@@ -12,6 +12,8 @@
 
 #include "parsers/parser_obj.hpp"
 #include "primitives/mesh.hpp"
+#include "textures/texture_library.hpp"
+#include "materials/material_library.hpp"
 #include "materials/single_brdf.hpp"
 #include "materials/lambertian.hpp"
 #include "materials/material_library.hpp"
@@ -20,7 +22,9 @@ SPECTRE_TEST_INIT(ParserObj_tests)
 
 SPECTRE_TEST(ParserObj, input_error)
 {
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     errors_count[ERROR_INDEX] = 0;
     parser.start_parsing(TEST_ASSETS "parser_obj/nonexistent.obj");
     parser.end_parsing();
@@ -30,7 +34,9 @@ SPECTRE_TEST(ParserObj, input_error)
 
 SPECTRE_TEST(ParserObj, close_unopened_input)
 {
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.end_parsing();
     parser.start_parsing(TEST_ASSETS "parser_obj/pyramid.obj");
     parser.end_parsing();
@@ -41,7 +47,9 @@ SPECTRE_TEST(ParserObj, close_unopened_input)
 SPECTRE_TEST(ParserObj, get_next_mesh_unopened)
 {
     //unopened
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     Mesh m(1);
     EXPECT_FALSE(parser.get_next_mesh(&m));
     parser.start_parsing(TEST_ASSETS "parser_obj/nonexistent.obj");
@@ -52,7 +60,9 @@ SPECTRE_TEST(ParserObj, get_next_mesh_unopened)
 SPECTRE_TEST(ParserObj, get_next_mesh_retval)
 {
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/pyramid.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
@@ -81,7 +91,9 @@ SPECTRE_TEST(ParserObj, two_vertices_face)
     //but both VS and Xcode will flag this as an error and break testing
 #if !defined(__VS__) && !defined(__XCODE__)
     Mesh m(1);
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     bool res;
     parser.start_parsing(TEST_ASSETS "parser_obj/2vertface.obj");
     errors_count[ERROR_INDEX] = 0;
@@ -96,7 +108,9 @@ SPECTRE_TEST(ParserObj, out_of_index)
     Mesh m0(1);
     Mesh m1(1);
     Mesh m2(1);
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     bool res;
 
     //vertices
@@ -128,7 +142,9 @@ SPECTRE_TEST(ParserObj, out_of_index)
 SPECTRE_TEST(ParserObj, get_next_obj_tris)
 {
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/pyramid.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
@@ -140,7 +156,9 @@ SPECTRE_TEST(ParserObj, get_next_obj_tris)
 SPECTRE_TEST(ParserObj, triangulate)
 {
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/ngon.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
@@ -153,7 +171,9 @@ SPECTRE_TEST(ParserObj, triangulate)
 SPECTRE_TEST(ParserObj, negative_tris_index)
 {
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/neg_vertices.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
@@ -165,7 +185,9 @@ SPECTRE_TEST(ParserObj, negative_tris_index)
 SPECTRE_TEST(ParserObj, multiple_meshes)
 {
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/multi.obj");
     Mesh m0(1);
     Mesh m1(1);
@@ -184,7 +206,9 @@ SPECTRE_TEST(ParserObj, textures)
     //same file. If textures are parsed wrongly the second object will have
     //wrong vertices
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/textures.obj");
     Mesh m0(1);
     Mesh m1(1);
@@ -199,7 +223,9 @@ SPECTRE_TEST(ParserObj, textures)
 SPECTRE_TEST(ParserObj, normal_reconstruction)
 {
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/nonormal.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
@@ -221,7 +247,9 @@ SPECTRE_TEST(ParserObj, get_object_name)
 {
     //object name with g
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/multi.obj");
     Mesh m(6);
     Mesh m1(6);
@@ -245,7 +273,9 @@ SPECTRE_TEST(ParserObj, get_face_number)
 {
     //object name with g
     bool res;
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     parser.start_parsing(TEST_ASSETS "parser_obj/pyramid.obj");
     Mesh m(6);
     res = parser.get_next_mesh(&m);
@@ -256,14 +286,16 @@ SPECTRE_TEST(ParserObj, get_face_number)
 
 SPECTRE_TEST(ParserObj, get_material_no)
 {
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     //push some materials used in the file into the library
-    Bsdf* mat0 = new SingleBRDF(new Lambertian());
-    Bsdf* mat1 = new SingleBRDF(new Lambertian());
-    Bsdf* mat2 = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Red", mat0);
-    MtlLib.add_inherit("Green", mat1);
-    MtlLib.add_inherit("Blue", mat2);
-    ParserObj parser;
+    Bsdf* mat0 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    Bsdf* mat1 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    Bsdf* mat2 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    matlib.add_inherit("Red", mat0);
+    matlib.add_inherit("Green", mat1);
+    matlib.add_inherit("Blue", mat2);
     bool res;
 
     //with default material and unused, should be shrinked to have only 1 entry
@@ -281,20 +313,20 @@ SPECTRE_TEST(ParserObj, get_material_no)
     EXPECT_EQ(parser.get_material_no(), (unsigned char)3);
     EXPECT_TRUE(res);
     parser.end_parsing();
-
-    MtlLib.clear();
 }
 
 SPECTRE_TEST(ParserObj, get_materials)
 {
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     //push some materials used in the file into the library
-    Bsdf* mat0 = new SingleBRDF(new Lambertian());
-    Bsdf* mat1 = new SingleBRDF(new Lambertian());
-    Bsdf* mat2 = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Red", mat0);
-    MtlLib.add_inherit("Green", mat1);
-    MtlLib.add_inherit("Blue", mat2);
-    ParserObj parser;
+    Bsdf* mat0 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    Bsdf* mat1 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    Bsdf* mat2 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    matlib.add_inherit("Red", mat0);
+    matlib.add_inherit("Green", mat1);
+    matlib.add_inherit("Blue", mat2);
     bool res;
 
     parser.start_parsing(TEST_ASSETS "parser_obj/multimat.obj");
@@ -302,9 +334,9 @@ SPECTRE_TEST(ParserObj, get_materials)
     res = parser.get_next_mesh(&m);
     const Bsdf** mats = new const Bsdf* [parser.get_material_no()];
     parser.get_materials(mats);
-    EXPECT_PTR_EQ(mats[0], MtlLib.get_default());
-    EXPECT_PTR_EQ(mats[1], MtlLib.get("Red"));
-    EXPECT_PTR_EQ(mats[2], MtlLib.get("Green"));
+    EXPECT_PTR_EQ(mats[0], matlib.get_default());
+    EXPECT_PTR_EQ(mats[1], matlib.get("Red"));
+    EXPECT_PTR_EQ(mats[2], matlib.get("Green"));
     EXPECT_TRUE(res);
     delete[] mats;
     parser.end_parsing();
@@ -314,26 +346,26 @@ SPECTRE_TEST(ParserObj, get_materials)
     res = parser.get_next_mesh(&m1);
     const Bsdf** mats2 = new const Bsdf* [parser.get_material_no()];
     parser.get_materials(mats2);
-    EXPECT_PTR_EQ(mats2[0], MtlLib.get("Blue"));
-    EXPECT_PTR_EQ(mats2[1], MtlLib.get("Green"));
-    EXPECT_PTR_EQ(mats2[2], MtlLib.get("Red"));
+    EXPECT_PTR_EQ(mats2[0], matlib.get("Blue"));
+    EXPECT_PTR_EQ(mats2[1], matlib.get("Green"));
+    EXPECT_PTR_EQ(mats2[2], matlib.get("Red"));
     EXPECT_TRUE(res);
     delete[] mats2;
     parser.end_parsing();
-
-    MtlLib.clear();
 }
 
 SPECTRE_TEST(ParserObj, get_material_association)
 {
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     //push some materials used in the file into the library
-    Bsdf* mat0 = new SingleBRDF(new Lambertian());
-    Bsdf* mat1 = new SingleBRDF(new Lambertian());
-    Bsdf* mat2 = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Red", mat0);
-    MtlLib.add_inherit("Green", mat1);
-    MtlLib.add_inherit("Blue", mat2);
-    ParserObj parser;
+    Bsdf* mat0 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    Bsdf* mat1 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    Bsdf* mat2 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    matlib.add_inherit("Red", mat0);
+    matlib.add_inherit("Green", mat1);
+    matlib.add_inherit("Blue", mat2);
     bool res;
 
     //dflt
@@ -369,14 +401,14 @@ SPECTRE_TEST(ParserObj, get_material_association)
     EXPECT_EQ(assoc2[5], (unsigned char)1);
     EXPECT_TRUE(res);
     delete[] assoc2;
-
-    MtlLib.clear();
 }
 
 SPECTRE_TEST(ParserObj, no_name)
 {
     Mesh m0(1);
-    ParserObj parser;
+    TextureLibrary texlib;
+    MaterialLibrary matlib(texlib.get_dflt_texture());
+    ParserObj parser(&matlib);
     bool res;
     parser.start_parsing(TEST_ASSETS "parser_obj/noname.obj");
     res = parser.get_next_mesh(&m0);

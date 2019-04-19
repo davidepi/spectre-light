@@ -10,8 +10,9 @@
 
 #endif
 
-#include "materials/material_library.hpp"
 #include "primitives/sphere.hpp"
+#include "textures/texture_library.hpp"
+#include "materials/material_library.hpp"
 #include "materials/single_brdf.hpp"
 #include "materials/lambertian.hpp"
 
@@ -19,83 +20,91 @@ SPECTRE_TEST_INIT(MaterialLibrary_tests)
 
 SPECTRE_TEST(MaterialLibrary, add)
 {
-    Bsdf* mat = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("New", mat);
-    const Bsdf* got = MtlLib.get("New");
+    TextureLibrary texlib;
+    MaterialLibrary mtllib(texlib.get_dflt_texture());
+    Bsdf* mat = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    mtllib.add_inherit("New", mat);
+    const Bsdf* got = mtllib.get("New");
     EXPECT_PTR_EQ((const Bsdf*)mat, got);
 
     //add different with same name
-    Bsdf* mat3 = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("New", mat3);
-    const Bsdf* got3 = MtlLib.get("New");
+    Bsdf* mat3 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    mtllib.add_inherit("New", mat3);
+    const Bsdf* got3 = mtllib.get("New");
     EXPECT_PTR_NE(got3, mat3);
     delete mat3;
-    MtlLib.clear();
 }
 
 SPECTRE_TEST(MaterialLibrary, remove)
 {
-    Bsdf* mat = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Removeme", mat);
-    const Bsdf* got = MtlLib.get("Removeme");
+    TextureLibrary texlib;
+    MaterialLibrary mtllib(texlib.get_dflt_texture());
+    Bsdf* mat = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    mtllib.add_inherit("Removeme", mat);
+    const Bsdf* got = mtllib.get("Removeme");
     ASSERT_PTR_EQ(mat, got);
 
-    MtlLib.erase("Removeme");
-    got = MtlLib.get("Removeme");
+    mtllib.erase("Removeme");
+    got = mtllib.get("Removeme");
     EXPECT_PTR_NULL(got);
 
     //this should do nothing, material already removed
     got = mat;
-    MtlLib.erase("Removeme");
-    got = MtlLib.get("Removeme");
+    mtllib.erase("Removeme");
+    got = mtllib.get("Removeme");
     EXPECT_PTR_NULL(got);
-    MtlLib.clear();
+    mtllib.clear();
 }
 
 SPECTRE_TEST(MaterialLibrary, contains)
 {
-    Bsdf* mat = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Contained", mat);
-    bool res = MtlLib.contains("Contained");
+    TextureLibrary texlib;
+    MaterialLibrary mtllib(texlib.get_dflt_texture());
+    Bsdf* mat = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    mtllib.add_inherit("Contained", mat);
+    bool res = mtllib.contains("Contained");
     EXPECT_TRUE(res);
-    MtlLib.erase("Contained");
-    res = MtlLib.contains("Contained");
+    mtllib.erase("Contained");
+    res = mtllib.contains("Contained");
     EXPECT_FALSE(res);
-    MtlLib.clear();
 }
 
 SPECTRE_TEST(MaterialLibrary, clear)
 {
-    Bsdf* mat = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Removeme", mat);
-    Bsdf* mat2 = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Removeme2", mat2);
-    Bsdf* mat3 = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Removeme3", mat3);
+    TextureLibrary texlib;
+    MaterialLibrary mtllib(texlib.get_dflt_texture());
+    Bsdf* mat = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    mtllib.add_inherit("Removeme", mat);
+    Bsdf* mat2 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    mtllib.add_inherit("Removeme2", mat2);
+    Bsdf* mat3 = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    mtllib.add_inherit("Removeme3", mat3);
 
     const Bsdf* got;
-    got = MtlLib.get("Removeme");
+    got = mtllib.get("Removeme");
     EXPECT_PTR_NOTNULL(got);
-    got = MtlLib.get("Removeme2");
+    got = mtllib.get("Removeme2");
     EXPECT_PTR_NOTNULL(got);
-    got = MtlLib.get("Removeme3");
+    got = mtllib.get("Removeme3");
     EXPECT_PTR_NOTNULL(got);
 
-    MtlLib.clear();
+    mtllib.clear();
 
-    got = MtlLib.get("Removeme");
+    got = mtllib.get("Removeme");
     EXPECT_PTR_NULL(got);
-    got = MtlLib.get("Removeme2");
+    got = mtllib.get("Removeme2");
     EXPECT_PTR_NULL(got);
-    got = MtlLib.get("Removeme3");
+    got = mtllib.get("Removeme3");
     EXPECT_PTR_NULL(got);
 }
 
 SPECTRE_TEST(MaterialLibrary, get_default)
 {
+    TextureLibrary texlib;
+    MaterialLibrary mtllib(texlib.get_dflt_texture());
     Sphere s;
     MaskBoolean mask;
-    const Bsdf* mat0 = MtlLib.get_default();
+    const Bsdf* mat0 = mtllib.get_default();
     Ray r(Point3(0, -10, 0), Vec3(0, 1, 0));
     float distance = FLT_MAX;
     HitPoint hp;
@@ -114,11 +123,14 @@ SPECTRE_TEST(MaterialLibrary, get_default)
 
 SPECTRE_TEST(MaterialLibrary, size_fun)
 {
-    ASSERT_EQ(MtlLib.size(), 0);
-    Bsdf* mat = new SingleBRDF(new Lambertian());
-    MtlLib.add_inherit("Removeme", mat);
-    EXPECT_EQ(MtlLib.size(), 1);
-    MtlLib.clear();
+    TextureLibrary texlib;
+    MaterialLibrary mtllib(texlib.get_dflt_texture());
+    ASSERT_EQ(mtllib.size(), 0);
+    Bsdf* mat = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
+    mtllib.add_inherit("Removeme", mat);
+    EXPECT_EQ(mtllib.size(), 1);
+    mtllib.clear();
+    EXPECT_EQ(mtllib.size(), 0);
 }
 
 SPECTRE_TEST_END(MaterialLibrary)

@@ -1,12 +1,12 @@
 //Created,  18 Aug 2017
-//Last Edit  8 Jun 2018
+//Last Edit 19 Apr 2019
 
 /**
  *  \file      parser_obj.hpp
  *  \brief     Class definition of a .obj parser
  *  \author    Davide Pizzolotto
  *  \version   0.2
- *  \date      8 Jun 2018
+ *  \date      19 Apr 2019
  *  \copyright GNU GPLv3
  */
 
@@ -19,6 +19,7 @@
 #include "geometry/vec3.hpp"
 #include "materials/bdf.hpp"
 #include "materials/bsdf.hpp"
+#include "materials/material_library.hpp"
 #include <vector>
 
 /**
@@ -48,7 +49,7 @@ class ParserObj
 public:
 
     ///Default constructor
-    ParserObj();
+    ParserObj(const MaterialLibrary* matLib);
 
     ///Default destructor
     ~ParserObj();
@@ -175,6 +176,8 @@ private:
     std::vector<Point2> textures;
     //normal of every mesh contained in the file
     std::vector<Normal> normals;
+    //material library
+    const MaterialLibrary* mtllib;
 };
 
 #endif

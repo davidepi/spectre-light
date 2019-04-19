@@ -201,7 +201,7 @@ element | enum | For `metal` typed materials, this will specify a metal from the
 roughness | float | single value in range [0-1] used to calculate the roughness of a material | 0
 anisotropy | float | single value in range [0-1] used to calcualte the y roughness of a material for surfaces that exhibit anisotropic reflections like hairs or brushed steel. If this equals the roughness value or is unset, the surface is assumed isotropic | roughness value
 distribution | enum | If the material has a roughness higher than 0, the distribution that will be used to simulate the roughness. Possible values are `blinn`, `beckmann`, `ggx`. If the anisotropy value is set and is different from the roughness, the distribution value will always be `ggx` since it is the only distribution implemented for anisotropic materials | beckmann
-diffuse | quoted string  | The texture map that will be used for the spectrum. The texture name is searched inside the Texture Library and if not found the default texture is used. Not supported for `metal` typed materials. In `glass` typed materials the diffuse component is the transmitted one | default white texture
+diffuse | quoted string  | The texture map that will be used for the spectrum. The texture name is searched inside the Texture Library and if not found the default texture is used. Not supported for `metal` typed materials, this is explained in section [Metals](#metals). In `glass` typed materials the diffuse component is the transmitted one | default white texture
 specular | quoted string | Same input of the diffuse component. Not supported for `metal` typed materials. In `glass` typed materials the specular component is the reflected one| default white texture
 normal | quoted string | Same input of the diffuse and specular one, used to compute shading normal in tangent space. Expected to be a [x+, y+, z+] normal
 
@@ -228,6 +228,10 @@ inverted | boolean | `true` if the mask should be inverted, `false` otherwise | 
 ##### Metals
 Possible values for materials with the `metal` keyword. These should be passed as keywords (case insensitive) to the `element` key of the material object. Note that these will override the `diffuse` and `specular`  parameters which are not supported for metals. Roughness, distribution and anisotropy can still be used
 
+The metal materials does not support a diffuse texture: this because the "color"
+of a metal is computed by correctly calculating the reflected and absorbed light
+given a particular material. Having a texture alters these values and thus 
+nullifies the purpose of this material.
 Value | Element
 ---|---
 Ag | Silver

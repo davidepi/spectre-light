@@ -16,6 +16,7 @@
 #define __MASK_BOOLEAN_HPP__
 
 #include "textures/texture_image.hpp"
+#include "textures/types_imgchannel.h"
 
 ///Values under the threshold are considered false when applying masking
 #define MASK_BINARY_THRESHOLD 128
@@ -54,7 +55,7 @@ public:
 
     ///Default destructor
     ~MaskBoolean() = default;
-    
+
     /**
      *  \brief Returns the value for this mask
      *

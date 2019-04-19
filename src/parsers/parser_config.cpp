@@ -138,15 +138,16 @@ static void get_transform_matrix(const float* pos, const float* rot,
  * \return The actual texture if found, the default texture if not found
  */
 static const Texture* get_texture(const char* texture_name,
-                                  const char* caller_name)
+                                  const char* caller_name,
+                                  const TextureLibrary* texlib)
 {
-    const Texture* found = TexLib.get_texture(texture_name);
+    const Texture* found = texlib->get_texture(texture_name);
     if(found == NULL)
     {
         Console.warning(MESSAGE_TEXTURE_NOT_FOUND_MTL,
                         texture_name,
                         caller_name);
-        found = TexLib.get_dflt_texture();
+        found = texlib->get_dflt_texture();
     }
     return found;
 }
@@ -272,7 +273,8 @@ static const Filter* build_filter(const ParsedScene* parsed)
  *
  *  \param[in] parsed The struct containing parsed raw values
  */
-static void build_textures(ParsedScene* parsed, const File* current_dir)
+static void build_textures(ParsedScene* parsed, const File* current_dir,
+                           TextureLibrary* texlib)
 {
     while(!empty_ResizableParsed(&parsed->parsed_textures))
     {
@@ -289,7 +291,7 @@ static void build_textures(ParsedScene* parsed, const File* current_dir)
                                         tex_union.tex.color[1],
                                         tex_union.tex.color[2]), false);
                 TextureUniform* val = new TextureUniform(color);
-                TexLib.inherit_texture(tex_union.tex.name, val);
+                texlib->inherit_texture(tex_union.tex.name, val);
                 free(tex_union.tex.name);
             }
             else
@@ -304,15 +306,16 @@ static void build_textures(ParsedScene* parsed, const File* current_dir)
                 tex_name = tex_union.tex.name;
             else
                 tex_name = cur_file.filename();
-            if(!TexLib.contains_texture(tex_name) && cur_file.exists() &&
+            if(!texlib->contains_texture(tex_name) && cur_file.exists() &&
                cur_file.readable() && !cur_file.is_folder() &&
                img_valid(cur_file.absolute_path(), cur_file.extension()))
             {
                 Vec2 shift(tex_union.tex.shift[0], tex_union.tex.shift[1]);
                 Vec2 scale(tex_union.tex.scale[1], tex_union.tex.scale[1]);
-                TextureImage* addme = new TextureImage(cur_file, shift, scale,
-                                                       tex_union.tex.filter);
-                TexLib.inherit_texture(tex_name, addme);
+                const ImageMap* map = resolve_map(&cur_file, texlib,
+                                                  tex_union.tex.filter);
+                TextureImage* addme = new TextureImage(map, shift, scale);
+                texlib->inherit_texture(tex_name, addme);
             }
             else
                 Console.warning(MESSAGE_TEXTURE_ERROR,
@@ -333,11 +336,12 @@ static void build_textures(ParsedScene* parsed, const File* current_dir)
  *
  *  \param[in] parsed The struct containing parsed raw values
  */
-static void build_materials(ParsedScene* parsed)
+static void build_materials(ParsedScene* parsed, MaterialLibrary* mtllib,
+                            const TextureLibrary* texlib)
 {
     Bsdf* bsdf;
-    const Texture* diffuse;
-    const Texture* specular;
+    const Texture* diff;
+    const Texture* spec;
     float rough_x;
     float rough_y;
     while(!empty_ResizableParsed(&parsed->parsed_materials))
@@ -347,7 +351,7 @@ static void build_materials(ParsedScene* parsed)
         pop_ResizableParsed(&parsed->parsed_materials);
 
         //free everything and continue if materials is unnamed or already exists
-        bool already_existing = MtlLib.contains(union_m.mat.name);
+        bool already_existing = mtllib->contains(union_m.mat.name);
         if(union_m.mat.name == NULL || already_existing)
         {
             if(union_m.mat.name != NULL)
@@ -366,21 +370,21 @@ static void build_materials(ParsedScene* parsed)
         //resolve diffuse texture
         if(union_m.mat.diffuse != NULL)
         {
-            diffuse = get_texture(union_m.mat.diffuse, union_m.mat.name);
+            diff = get_texture(union_m.mat.diffuse, union_m.mat.name, texlib);
             free(union_m.mat.diffuse);
         }
         else
-            diffuse = TexLib.get_dflt_texture(); //this is the same as above
+            diff = texlib->get_dflt_texture(); //this is the same as above
         // but without error printing
 
         //resolve specular texture
         if(union_m.mat.specular != NULL)
         {
-            specular = get_texture(union_m.mat.specular, union_m.mat.name);
+            spec = get_texture(union_m.mat.specular, union_m.mat.name, texlib);
             free(union_m.mat.specular);
         }
         else
-            specular = TexLib.get_dflt_texture();
+            spec = texlib->get_dflt_texture();
 
         //resolve normal map at the end of the function!!!
 
@@ -406,10 +410,10 @@ static void build_materials(ParsedScene* parsed)
                 {
                     //convert roughness from 0-1 scale to 0-100 scale;
                     float roughness = lerp(rough_x, 0.f, 100.f);
-                    bsdf = new SingleBRDF(new OrenNayar(roughness), diffuse);
+                    bsdf = new SingleBRDF(new OrenNayar(roughness), diff);
                 }
                 else
-                    bsdf = new SingleBRDF(new Lambertian, diffuse);
+                    bsdf = new SingleBRDF(new Lambertian, diff);
                 break;
             }
             case GLOSSY:
@@ -418,7 +422,7 @@ static void build_materials(ParsedScene* parsed)
                 Fresnel* fresnel = new Dielectric(cauchy(1.f, 0.f),
                                                   cauchy(1.5f, 0.f));
                 MicrofacetDist* dist;
-                multimat->inherit_bdf(new Lambertian, diffuse);
+                multimat->inherit_bdf(new Lambertian, diff);
                 //in glossy in particular, specular cannot exist
                 //but in other it can, so this check is performed only here
                 if(rough_x == 0)
@@ -438,7 +442,7 @@ static void build_materials(ParsedScene* parsed)
                 }
                 else
                     dist = new GGXaniso(rough_x, rough_y);
-                multimat->inherit_bdf(new MicrofacetR(dist, fresnel), specular);
+                multimat->inherit_bdf(new MicrofacetR(dist, fresnel), spec);
                 bsdf = (Bsdf*)multimat;
                 break;
             }
@@ -489,8 +493,8 @@ static void build_materials(ParsedScene* parsed)
                     reflective = new MicrofacetR(dist_r, fresnel_r);
                     refractive = new MicrofacetT(dist_t, etai, ior);
                 }
-                multimat->inherit_bdf(refractive, diffuse);
-                multimat->inherit_bdf(reflective, specular);
+                multimat->inherit_bdf(refractive, diff);
+                multimat->inherit_bdf(reflective, spec);
                 bsdf = (Bsdf*)multimat;
                 break;
             }
@@ -525,7 +529,9 @@ static void build_materials(ParsedScene* parsed)
                     fresnel = new Conductor(ior, absorption);
                     bdf = new MicrofacetR(dist, fresnel);
                 }
-                bsdf = new SingleBRDF(bdf);
+                //always the default texture here, Having a texture nullifies
+                // the advantage of the physically correct metal wavelenghts.
+                bsdf = new SingleBRDF(bdf, texlib->get_dflt_texture());
                 break;
             }
         }
@@ -533,11 +539,12 @@ static void build_materials(ParsedScene* parsed)
         if(union_m.mat.normal != NULL)
         {
             const Texture* bumptex = get_texture(union_m.mat.normal,
-                                                 union_m.mat.name);
+                                                 union_m.mat.name,
+                                                 texlib);
             free(union_m.mat.normal);
             bsdf->inherit_bump(new TextureNormal(bumptex));
         }
-        MtlLib.add_inherit(union_m.mat.name, bsdf);
+        mtllib->add_inherit(union_m.mat.name, bsdf);
         free(union_m.mat.name);
     }
 }
@@ -551,7 +558,8 @@ static void build_materials(ParsedScene* parsed)
  *
  *  \param[in] parsed The struct containing parsed raw values
  */
-static void build_dualmaterials(ParsedScene* parsed)
+static void build_dualmaterials(ParsedScene* parsed, MaterialLibrary* mtllib,
+                                const TextureLibrary* texlib)
 {
     const Bsdf* first;
     const Bsdf* second;
@@ -562,7 +570,7 @@ static void build_dualmaterials(ParsedScene* parsed)
         top_ResizableParsed(&parsed->parsed_dualmaterials, &union_m);
         pop_ResizableParsed(&parsed->parsed_dualmaterials);
         if(union_m.dualmat.name == NULL ||
-           MtlLib.contains(union_m.dualmat.name))
+           mtllib->contains(union_m.dualmat.name))
         {
             //no name -> to the trash we go!
             if(union_m.dualmat.first != NULL)
@@ -577,46 +585,46 @@ static void build_dualmaterials(ParsedScene* parsed)
         //resolve first material
         if(union_m.dualmat.first != NULL)
         {
-            first = MtlLib.get(union_m.dualmat.first);
+            first = mtllib->get(union_m.dualmat.first);
             if(first == NULL)
             {
                 Console.warning(MESSAGE_MISSING_MATERIAL, union_m.dualmat.first,
                                 union_m.dualmat.name);
-                first = MtlLib.get_default();
+                first = mtllib->get_default();
             }
             free(union_m.dualmat.first);
         }
         else
-            first = MtlLib.get_default();
+            first = mtllib->get_default();
 
         //resolve second material
         if(union_m.dualmat.second != NULL)
         {
-            second = MtlLib.get(union_m.dualmat.second);
+            second = mtllib->get(union_m.dualmat.second);
             if(second == NULL)
             {
                 Console.warning(MESSAGE_MISSING_MATERIAL,
                                 union_m.dualmat.second, union_m.dualmat.name);
-                second = MtlLib.get_default();
+                second = mtllib->get_default();
             }
             free(union_m.dualmat.second);
         }
         else
-            second = MtlLib.get_default();
+            second = mtllib->get_default();
 
         //resolve mask
         if(union_m.dualmat.mask.mask_tex != NULL)
         {
             mask_tex = get_texture(union_m.dualmat.mask.mask_tex,
-                                   union_m.dualmat.name);
+                                   union_m.dualmat.name, texlib);
             free(union_m.dualmat.mask.mask_tex);
         }
         else
-            mask_tex = TexLib.get_dflt_texture();
+            mask_tex = texlib->get_dflt_texture();
         MaskBoolean mask(mask_tex, union_m.dualmat.mask.mask_chn,
                          union_m.dualmat.mask.mask_inv);
-        MtlLib.add_inherit(union_m.dualmat.name,
-                           new DualBsdf(first, second, mask));
+        mtllib->add_inherit(union_m.dualmat.name,
+                            new DualBsdf(first, second, mask));
         free(union_m.dualmat.name);
     }
 }
@@ -635,7 +643,8 @@ static void build_dualmaterials(ParsedScene* parsed)
  *  every shape
  */
 static void build_mesh_object(ParsedScene* parsed, const File* cur_dir,
-                              std::unordered_map<std::string, MeshObject>* shapes)
+                              std::unordered_map<std::string, MeshObject>*
+                              shapes, const MaterialLibrary* mtllib)
 {
     while(!empty_ResizableStack(&parsed->parsed_mesh_object))
     {
@@ -650,7 +659,7 @@ static void build_mesh_object(ParsedScene* parsed, const File* cur_dir,
             free(path);
             continue;
         }
-        ParserObj parser_obj;
+        ParserObj parser_obj(mtllib);
         parser_obj.start_parsing(cur_obj.absolute_path());
         //get_next_mesh() requires the mesh to be already allocated and simply
         //add triangles. since the mesh should survive after this function, it
@@ -708,7 +717,8 @@ static void build_mesh_world(ParsedScene* parsed,
                              const std::unordered_map<std::string, MeshObject>*
                              shapes,
                              std::unordered_set<std::string>* used_shapes,
-                             Scene* scene)
+                             Scene* scene, const MaterialLibrary* mtllib,
+                             const TextureLibrary* texlib)
 {
     std::unordered_map<std::string, MeshObject>::const_iterator mesh_i;
     while(!empty_ResizableParsed(&parsed->parsed_mesh_world))
@@ -761,11 +771,11 @@ static void build_mesh_world(ParsedScene* parsed,
         else //override materials
         {
             const Bsdf* overridden_material;
-            overridden_material = MtlLib.get(union_m.mesh.material_name);
+            overridden_material = mtllib->get(union_m.mesh.material_name);
             if(overridden_material == NULL)
             {
                 //use default if the material is missing
-                overridden_material = MtlLib.get_default();
+                overridden_material = mtllib->get_default();
                 Console.warning(MESSAGE_MISSING_MATERIAL_OVERRIDE,
                                 union_m.mesh.material_name,
                                 union_m.mesh.name);
@@ -784,7 +794,7 @@ static void build_mesh_world(ParsedScene* parsed,
         if(union_m.mesh.mask.mask_tex != NULL)
         {
             const Texture* mask_tex = get_texture(union_m.mesh.mask.mask_tex,
-                                                  union_m.mesh.name);
+                                                  union_m.mesh.name, texlib);
             free(union_m.mesh.mask.mask_tex);
             MaskBoolean mask(mask_tex, union_m.mesh.mask.mask_chn,
                              union_m.mesh.mask.mask_inv);
@@ -813,7 +823,9 @@ static void build_lights(ParsedScene* parsed,
                          const std::unordered_map<std::string, MeshObject>*
                          shapes,
                          std::unordered_set<std::string>* used_shapes,
-                         Scene* scene, const Point3* cam_pos)
+                         Scene* scene, const Point3* cam_pos,
+                         const MaterialLibrary* mtllib,
+                         const TextureLibrary* texlib)
 {
     std::unordered_map<std::string, MeshObject>::const_iterator mesh_i;
     std::vector<ParsedLight> sunlights;
@@ -861,7 +873,7 @@ static void build_lights(ParsedScene* parsed,
                                                      intensity);
                 //create a default material for cameras
                 const Bsdf* materials[1];
-                materials[0] = MtlLib.get_default();
+                materials[0] = mtllib->get_default();
                 unsigned char* associations;
                 associations = (unsigned char*)malloc
                         (shape->get_faces_number());
@@ -917,10 +929,10 @@ static void build_lights(ParsedScene* parsed,
     //additionally build the sky if it can be found
     if(parsed->sky != NULL)
     {
-        const Texture* sky_tex = TexLib.get_texture(parsed->sky);
+        const Texture* sky_tex = texlib->get_texture(parsed->sky);
         if(sky_tex == NULL)
         {
-            sky_tex = TexLib.get_dflt_texture();
+            sky_tex = texlib->get_dflt_texture();
             Console.warning(MESSAGE_TEXTURE_ERROR, parsed->sky);
         }
         free(parsed->sky);
@@ -989,13 +1001,13 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     deinit_ResizableStack(&parsed.children);
 
     //handle textures
-    build_textures(&parsed, &CONFIG_DIR);
+    build_textures(&parsed, &CONFIG_DIR, texlib);
     deinit_ResizableParsed(&parsed.parsed_textures);
     //handle materials
-    build_materials(&parsed);
+    build_materials(&parsed, mtllib, texlib);
     deinit_ResizableParsed(&parsed.parsed_materials);
     //handle dualmaterials
-    build_dualmaterials(&parsed);
+    build_dualmaterials(&parsed, mtllib, texlib);
     deinit_ResizableParsed(&parsed.parsed_dualmaterials);
     //not every shape will be used. This thing is used to purge unused shape so
     //they don't even see the scene if not referenced at least one time
@@ -1004,18 +1016,19 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     MeshObject default_sphere;
     default_sphere.mesh = new Sphere();
     default_sphere.materials = (const Bsdf**)malloc(sizeof(const Bsdf*));
-    default_sphere.materials[0] = MtlLib.get_default();
+    default_sphere.materials[0] = mtllib->get_default();
     default_sphere.materials_len = 1;
     default_sphere.association = (unsigned char*)malloc(1);
     default_sphere.association[0] = 0;
     shapes.insert({{"Sphere", default_sphere}});
-    build_mesh_object(&parsed, &CONFIG_DIR, &shapes);
+    build_mesh_object(&parsed, &CONFIG_DIR, &shapes, mtllib);
     deinit_ResizableStack(&parsed.parsed_mesh_object);
-    build_mesh_world(&parsed, &shapes, &used_shapes, scene);
+    build_mesh_world(&parsed, &shapes, &used_shapes, scene, mtllib, texlib);
     deinit_ResizableParsed(&parsed.parsed_mesh_world);
     Point3 cam_pos(parsed.camera_pos[0], parsed.camera_pos[1],
                    parsed.camera_pos[2]);
-    build_lights(&parsed, &shapes, &used_shapes, scene, &cam_pos);
+    build_lights(&parsed, &shapes, &used_shapes, scene, &cam_pos, mtllib,
+                 texlib);
     deinit_ResizableParsed(&parsed.parsed_lights);
 
     //cleanup
@@ -1036,4 +1049,10 @@ Renderer* ParserConfig::parse(const char* filename, Scene* scene)
     }
     deinit_ParsedScene(&parsed);
     return renderer;
+}
+
+ParserConfig::ParserConfig(MaterialLibrary* matLib, TextureLibrary* texLib)
+{
+    ParserConfig::mtllib = matLib;
+    ParserConfig::texlib = texLib;
 }

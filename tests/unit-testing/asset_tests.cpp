@@ -17,6 +17,7 @@
 #include "materials/single_brdf.hpp"
 #include "materials/lambertian.hpp"
 #include "textures/texture_uniform.hpp"
+#include "textures/texture_library.hpp"
 #include <climits>
 
 SPECTRE_TEST_INIT(Asset_tests)
@@ -92,16 +93,17 @@ SPECTRE_TEST(Asset, intersect_AABB)
 
 SPECTRE_TEST(Asset, material_setter_getter)
 {
-    SingleBRDF material(new Lambertian());
+    TextureLibrary texlib;
+    SingleBRDF material(new Lambertian(), texlib.get_dflt_texture());
     Box s;
     Matrix4 m;
     m.set_translation(Vec3(-2, 0, 0));
 
     //set materials
-    SingleBRDF material1(new Lambertian());
-    SingleBRDF material2(new Lambertian());
-    SingleBRDF material3(new Lambertian());
-    SingleBRDF material4(new Lambertian());
+    SingleBRDF material1(new Lambertian(), texlib.get_dflt_texture());
+    SingleBRDF material2(new Lambertian(), texlib.get_dflt_texture());
+    SingleBRDF material3(new Lambertian(), texlib.get_dflt_texture());
+    SingleBRDF material4(new Lambertian(), texlib.get_dflt_texture());
     const Bsdf* array[] = {&material1, &material2, &material3, &material4};
     const unsigned char indexes[] = {0, 1, 2, 3, 0, 2};
     Asset b(&s, m, 1);
