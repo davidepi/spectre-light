@@ -229,7 +229,7 @@ SPECTRE_TEST(TextureLibrary, size)
     EXPECT_EQ(texlib.size_map(), 1);
 }
 
-SPECTRE_TEST(TextureLibrary, resolve_map)
+SPECTRE_TEST(TextureLibrary, resolve_map_function)
 {
     TextureLibrary texlib;
     Vec2 zero(0.f);
