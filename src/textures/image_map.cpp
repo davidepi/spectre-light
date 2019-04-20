@@ -104,7 +104,7 @@ ImageMap::ImageMap(const pixBGRA* values, uint16_t side)
 uint16_t ImageMap::get_side() const
 {
     return side[0];
-};
+}
 
 ImageMap::~ImageMap()
 {

@@ -29,3 +29,13 @@ dualmaterial: {
   }
 }
 
+dualmaterial: {
+    first: "Red",
+    second: "Blue"
+    mask: {
+        name: "../images/black.bmp",
+        channel: R
+        inverted: true
+      }
+}
+

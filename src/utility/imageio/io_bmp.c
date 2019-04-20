@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "endianness.h"
 
-///BMP Magic number
+/** BMP Magic number */
 #define BMP_MAGIC 19778
 
 uint32_t bmp_size(int width, int height, short bpp)

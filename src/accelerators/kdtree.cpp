@@ -442,7 +442,7 @@ bool KdTree::intersect(const Ray* r, HitPoint* h) const
             char axis = n->getAxis();
             //get plane distance
             float planet = (n->getSplit()-r->origin[axis]);
-            planet *= *(&(rp.inverseX)+axis);
+            planet *= *(&(rp.invx)+axis);
             const KdTreeNode* left;
             const KdTreeNode* right;
 

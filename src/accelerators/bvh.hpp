@@ -79,6 +79,11 @@ public:
     ///Default destructor
     ~Bvh();
 
+    /**
+     * \brief No copy allowed
+     */
+    Bvh(const Bvh&) = delete;
+
     /** \brief Build the bvh
      *
      *  Build the Bvh using the Approximate Agglomerative Clustering technique.
@@ -104,6 +109,12 @@ public:
      */
     bool intersect(const Ray* r, float* distance, HitPoint* h,
                    const MaskBoolean* mask) const;
+
+    /**
+     * \brief No copy allowed
+     * \return
+     */
+    Bvh& operator=(const Bvh&) = delete;
 
 private:
 

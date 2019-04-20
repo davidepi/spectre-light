@@ -127,36 +127,34 @@ public:
      *
      *  \param[in] v The ray for which this helper class must be created
      */
-    RayProperties(const Ray& v)
+    RayProperties(const Ray& v):
+            invx(1.f/v.direction.x),
+            invy(1.f/v.direction.y),
+            invz(1.f/v.direction.z),
+            is_invx_neg(invx<0),
+            is_invy_neg(invy<0),
+            is_invz_neg(invz<0)
     {
-        RayProperties::inverseX = 1.f/v.direction.x;
-        RayProperties::inverseY = 1.f/v.direction.y;
-        RayProperties::inverseZ = 1.f/v.direction.z;
-        RayProperties::isXInvNeg = RayProperties::inverseX<
-        0;
-        RayProperties::isYInvNeg = RayProperties::inverseY<
-        0;
-        RayProperties::isZInvNeg = RayProperties::inverseZ<
-        0;
+
     }
 
     ///The inverse of the \a x component of the ray's direction
-    float inverseX;
+    float invx;
 
     ///The inverse of the \a y component of the ray's direction
-    float inverseY;
+    float invy;
 
     ///The inverse of the \a z component of the ray's direction
-    float inverseZ;
+    float invz;
 
     ///true if the sign of the inverse of the \a x component is negative
-    bool isXInvNeg;
+    bool is_invx_neg;
 
     ///true if the sign of the inverse of the \a y component is negative
-    bool isYInvNeg;
+    bool is_invy_neg;
 
     ///true if the sign of the inverse of the \a z component is negative
-    bool isZInvNeg;
+    bool is_invz_neg;
 };
 
 #endif

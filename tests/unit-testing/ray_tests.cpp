@@ -74,62 +74,62 @@ SPECTRE_TEST(Ray, RayProperties_constructor)
     //dir x+
     Ray r(Point3(0, 0, 0), Vec3(2, 0, 0));
     RayProperties rp(r);
-    EXPECT_EQ(rp.inverseX, 0.5f);
-    EXPECT_EQ(rp.inverseY, INFINITY);
-    EXPECT_EQ(rp.inverseZ, INFINITY);
-    EXPECT_FALSE(rp.isXInvNeg);
-    EXPECT_FALSE(rp.isYInvNeg);
-    EXPECT_FALSE(rp.isZInvNeg);
+    EXPECT_EQ(rp.invx, 0.5f);
+    EXPECT_EQ(rp.invy, INFINITY);
+    EXPECT_EQ(rp.invz, INFINITY);
+    EXPECT_FALSE(rp.is_invx_neg);
+    EXPECT_FALSE(rp.is_invy_neg);
+    EXPECT_FALSE(rp.is_invz_neg);
 
     //dir x-
     r = Ray(Point3(0, 0, 0), Vec3(-2, 0, 0));
     rp = RayProperties(r);
-    EXPECT_EQ(rp.inverseX, -0.5f);
-    EXPECT_EQ(rp.inverseY, INFINITY);
-    EXPECT_EQ(rp.inverseZ, INFINITY);
-    EXPECT_TRUE(rp.isXInvNeg);
-    EXPECT_FALSE(rp.isYInvNeg);
-    EXPECT_FALSE(rp.isZInvNeg);
+    EXPECT_EQ(rp.invx, -0.5f);
+    EXPECT_EQ(rp.invy, INFINITY);
+    EXPECT_EQ(rp.invz, INFINITY);
+    EXPECT_TRUE(rp.is_invx_neg);
+    EXPECT_FALSE(rp.is_invy_neg);
+    EXPECT_FALSE(rp.is_invz_neg);
 
     //dir y+
     r = Ray(Point3(0, 0, 0), Vec3(0, 2, 0));
     rp = RayProperties(r);
-    EXPECT_EQ(rp.inverseX, INFINITY);
-    EXPECT_EQ(rp.inverseY, 0.5f);
-    EXPECT_EQ(rp.inverseZ, INFINITY);
-    EXPECT_FALSE(rp.isXInvNeg);
-    EXPECT_FALSE(rp.isYInvNeg);
-    EXPECT_FALSE(rp.isZInvNeg);
+    EXPECT_EQ(rp.invx, INFINITY);
+    EXPECT_EQ(rp.invy, 0.5f);
+    EXPECT_EQ(rp.invz, INFINITY);
+    EXPECT_FALSE(rp.is_invx_neg);
+    EXPECT_FALSE(rp.is_invy_neg);
+    EXPECT_FALSE(rp.is_invz_neg);
 
     //dir y-
     r = Ray(Point3(0, 0, 0), Vec3(0, -2, 0));
     rp = RayProperties(r);
-    EXPECT_EQ(rp.inverseX, INFINITY);
-    EXPECT_EQ(rp.inverseY, -0.5f);
-    EXPECT_EQ(rp.inverseZ, INFINITY);
-    EXPECT_FALSE(rp.isXInvNeg);
-    EXPECT_TRUE(rp.isYInvNeg);
-    EXPECT_FALSE(rp.isZInvNeg);
+    EXPECT_EQ(rp.invx, INFINITY);
+    EXPECT_EQ(rp.invy, -0.5f);
+    EXPECT_EQ(rp.invz, INFINITY);
+    EXPECT_FALSE(rp.is_invx_neg);
+    EXPECT_TRUE(rp.is_invy_neg);
+    EXPECT_FALSE(rp.is_invz_neg);
 
     //dir z+
     r = Ray(Point3(0, 0, 0), Vec3(0, 0, 2));
     rp = RayProperties(r);
-    EXPECT_EQ(rp.inverseX, INFINITY);
-    EXPECT_EQ(rp.inverseY, INFINITY);
-    EXPECT_EQ(rp.inverseZ, 0.5f);
-    EXPECT_FALSE(rp.isXInvNeg);
-    EXPECT_FALSE(rp.isYInvNeg);
-    EXPECT_FALSE(rp.isZInvNeg);
+    EXPECT_EQ(rp.invx, INFINITY);
+    EXPECT_EQ(rp.invy, INFINITY);
+    EXPECT_EQ(rp.invz, 0.5f);
+    EXPECT_FALSE(rp.is_invx_neg);
+    EXPECT_FALSE(rp.is_invy_neg);
+    EXPECT_FALSE(rp.is_invz_neg);
 
     //dir y-
     r = Ray(Point3(0, 0, 0), Vec3(0, 0, -2));
     rp = RayProperties(r);
-    EXPECT_EQ(rp.inverseX, INFINITY);
-    EXPECT_EQ(rp.inverseY, INFINITY);
-    EXPECT_EQ(rp.inverseZ, -0.5f);
-    EXPECT_FALSE(rp.isXInvNeg);
-    EXPECT_FALSE(rp.isYInvNeg);
-    EXPECT_TRUE(rp.isZInvNeg);
+    EXPECT_EQ(rp.invx, INFINITY);
+    EXPECT_EQ(rp.invy, INFINITY);
+    EXPECT_EQ(rp.invz, -0.5f);
+    EXPECT_FALSE(rp.is_invx_neg);
+    EXPECT_FALSE(rp.is_invy_neg);
+    EXPECT_TRUE(rp.is_invz_neg);
 }
 
 SPECTRE_TEST(Ray, constructor)

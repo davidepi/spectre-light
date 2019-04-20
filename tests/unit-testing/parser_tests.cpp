@@ -21,6 +21,9 @@
 #include "cameras/camera360.hpp"
 #include "primitives/sphere.hpp"
 #include "textures/texture_library.hpp"
+#include "lights/light_omni.hpp"
+#include "lights/light_spot.hpp"
+#include "lights/light_sun.hpp"
 
 SPECTRE_TEST_INIT(Parser_tests)
 
@@ -943,7 +946,9 @@ SPECTRE_TEST(Parser, material_dualmaterial)
 {
     TextureLibrary texlib;
     MaterialLibrary mtllib(texlib.get_dflt_texture());
-    Scene s;
+    Scene s0;
+    Scene s1;
+    Scene s2;
     Sphere sphere;
     Matrix4 m;
     Vec3 wi;
@@ -961,8 +966,9 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     EXPECT_TRUE(a.intersect(&r, &distance, &hit));
 
     ParserConfig driver0(&mtllib, &texlib);
-    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/dualmat.txt", &s);
+    Renderer* r0 = driver0.parse(TEST_ASSETS "parser/dualmat.txt", &s0);
     ASSERT_PTR_NE(r0, NULL);
+    ASSERT_EQ(mtllib.size(), 4U);
     ASSERT_TRUE(mtllib.contains("Red"));
     ASSERT_TRUE(mtllib.contains("Blue"));
     ASSERT_TRUE(mtllib.contains("Inverted"));
@@ -997,9 +1003,21 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     //TODO: check with valgrind
     ParserConfig driver1(&mtllib, &texlib);
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/dualmat_duplicate.txt",
-                                 &s);
+                                 &s1);
+    ASSERT_PTR_NE(r1, NULL);
+    EXPECT_EQ(mtllib.size(), 3U);
     delete r1;
-//    EXPECT_EQ(mtllib.size(),1);
+
+    //not found
+    mtllib.clear();
+    errors_count[WARNING_INDEX] = 0;
+    ParserConfig driver2(&mtllib, &texlib);
+    Renderer* r2 = driver2.parse(TEST_ASSETS "parser/dualmat_not_found.txt",
+                                 &s2);
+    ASSERT_PTR_NE(r2, NULL);
+    EXPECT_EQ(mtllib.size(), 1U);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 2);
+    delete r2;
 
 }
 
@@ -1092,7 +1110,7 @@ SPECTRE_TEST(Parser, world)
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);//material not found
     errors_count[WARNING_INDEX] = 0;
     EXPECT_EQ(s0.size_shapes(), 2U);
-    EXPECT_EQ(s0.size_assets(), 5U);
+    EXPECT_EQ(s0.size_assets(), 7U);
 //    EXPECT_EQ(driver0.deferred_meshes.size(), (size_t)0);
     s0.k.buildTree();
 
@@ -1136,6 +1154,17 @@ SPECTRE_TEST(Parser, world)
     material = hp.asset_h->get_material(hp.index);
     EXPECT_PTR_NE(material, mtllib.get("Blue"));
     EXPECT_PTR_EQ(material, mtllib.get_default());
+
+    //mask black
+    ray = Ray(Point3(30, 30, 30), Vec3(0, 0, 1));
+    res = s0.k.intersect(&ray, &hp);
+    ASSERT_FALSE(res);
+
+    //mask white
+    ray = Ray(Point3(-30, -30, -30), Vec3(0, 0, 1));
+    res = s0.k.intersect(&ray, &hp);
+    ASSERT_TRUE(res);
+
     delete r0;
 
     //not found
@@ -1147,6 +1176,7 @@ SPECTRE_TEST(Parser, world)
     EXPECT_EQ(errors_count[WARNING_INDEX], 1);
     errors_count[WARNING_INDEX] = 0;
     delete r1;
+
 }
 
 SPECTRE_TEST(Parser, light)
@@ -1162,6 +1192,7 @@ SPECTRE_TEST(Parser, light)
     ParserConfig driver0(&mtllib, &texlib);
     Renderer* r0 = driver0.parse(TEST_ASSETS "parser/light.txt", &s0);
     ASSERT_PTR_NE(r0, NULL);
+    EXPECT_EQ(s0.size_lights(), 7U);
     EXPECT_EQ(s0.size_shapes(), 2U);
     EXPECT_EQ(s0.size_assets(), 4U);
 //    EXPECT_EQ(driver0.deferred_meshes.size(), (size_t)0);
@@ -1194,6 +1225,25 @@ SPECTRE_TEST(Parser, light)
     EXPECT_NEAR(emitted.w[0], 0.359375685f, 1e-5f);
     EXPECT_NEAR(emitted.w[1], 0.716016769f, 1e-5f);
     EXPECT_NEAR(emitted.w[2], 0.12213511f, 1e-5f);
+
+    //assert that sun is created
+    const Light* sun = s0.get_light(6);
+    EXPECT_EQ(typeid(*(sun)).hash_code(),
+              typeid(LightSun).hash_code());
+
+    //assert that omni is created
+    const Light* omni = s0.get_light(1);
+    EXPECT_EQ(typeid(*(omni)).hash_code(),
+              typeid(LightOmni).hash_code());
+
+    //assert that spot is created
+    const Light* spot = s0.get_light(0);
+    EXPECT_EQ(typeid(*(spot)).hash_code(),
+              typeid(LightSpot).hash_code());
+
+    //assert that no sky is created
+    EXPECT_TRUE(s0.get_escaped_radiance(&ray).is_black());
+
     delete r0;
 
     //not found
@@ -1202,8 +1252,11 @@ SPECTRE_TEST(Parser, light)
     errors_count[WARNING_INDEX] = 0;
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/light_not_found.txt", &s1);
     ASSERT_PTR_NE(r1, NULL);
-    EXPECT_EQ(errors_count[WARNING_INDEX], 1);
+    EXPECT_EQ(errors_count[WARNING_INDEX], 2);
     errors_count[WARNING_INDEX] = 0;
+
+    //assert that the sky is created even if the texture was not found
+    EXPECT_FALSE(s1.get_escaped_radiance(&ray).is_black());
     delete r1;
 }
 

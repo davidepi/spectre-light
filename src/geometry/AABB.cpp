@@ -160,10 +160,10 @@ const
 {
     float mint, maxt, minyt, maxyt;
 
-    mint = (bounds[p->isXInvNeg].x-r->origin.x)*p->inverseX;
-    maxt = (bounds[1-p->isXInvNeg].x-r->origin.x)*p->inverseX;
-    minyt = (bounds[p->isYInvNeg].y-r->origin.y)*p->inverseY;
-    maxyt = (bounds[1-p->isYInvNeg].y-r->origin.y)*p->inverseY;
+    mint = (bounds[p->is_invx_neg].x-r->origin.x)*p->invx;
+    maxt = (bounds[1-p->is_invx_neg].x-r->origin.x)*p->invx;
+    minyt = (bounds[p->is_invy_neg].y-r->origin.y)*p->invy;
+    maxyt = (bounds[1-p->is_invy_neg].y-r->origin.y)*p->invy;
 
     if(mint>maxyt || minyt>maxt)
         return false;
@@ -172,8 +172,8 @@ const
     if(maxyt<maxt)
         maxt = maxyt;
 
-    minyt = (bounds[p->isZInvNeg].z-r->origin.z)*p->inverseZ;
-    maxyt = (bounds[1-p->isZInvNeg].z-r->origin.z)*p->inverseZ;
+    minyt = (bounds[p->is_invz_neg].z-r->origin.z)*p->invz;
+    maxyt = (bounds[1-p->is_invz_neg].z-r->origin.z)*p->invz;
 
     if(mint>maxyt || minyt>maxt)
         return false;

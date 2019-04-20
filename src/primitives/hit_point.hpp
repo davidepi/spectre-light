@@ -26,6 +26,16 @@ class Asset;
 ///Struct containing the data of the intersection between a Ray and a Shape
 struct HitPoint
 {
+    /**
+     * \brief Default constructor, to keep the class as a POD
+     */
+    HitPoint() = default;
+
+    /**
+     * \brief Default destructor, to keep the class as a POD
+     */
+    ~HitPoint() = default;
+
     ///The hit point in world space
     Point3 point_h;
 

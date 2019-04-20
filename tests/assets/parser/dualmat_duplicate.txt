@@ -12,7 +12,7 @@ material: {
 
 dualmaterial: {
   name: "Duplicate",
-  first: "Red
+  first: "Red"
   second: "Blue",
   mask: {
   name: "../images/correct.bmp",
@@ -22,7 +22,7 @@ dualmaterial: {
 
 dualmaterial: {
   name: "Duplicate",
-  first: "Red
+  first: "Red"
   second: "Blue",
   mask: {
     name: "../images/correct.bmp",

@@ -122,6 +122,11 @@ public:
     ///Default destructor
     ~ImageFilm() = default;
 
+    /**
+     * \brief No copy allowed
+     */
+    ImageFilm(const ImageFilm&) = delete;
+
     /** \brief Add a sample to this image
      *
      *  After rendering the image for every Sample there will be a resulting
@@ -197,6 +202,12 @@ public:
      *  \return true if the image has been stored, false otherwise
      */
     bool save_image();
+
+    /**
+     * \brief No copy allowed
+     * \return
+     */
+    ImageFilm& operator=(const ImageFilm&) = delete;
 
 #ifndef TESTS
     private:

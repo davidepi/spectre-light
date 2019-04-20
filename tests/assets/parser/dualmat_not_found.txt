@@ -1,0 +1,6 @@
+dualmaterial: {
+  name: "Non-inverted",
+  first: "Red",
+  second: "Blue",
+}
+

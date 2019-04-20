@@ -107,7 +107,10 @@ public:
      */
     ImageMap(const pixBGRA* values, uint16_t side);
 
-    ///No copy allowed
+    /**
+     * \brief No copy allowed
+     * \param[in] old deleted method :(
+     */
     ImageMap(const ImageMap& old) = delete;
 
     ///Default destructor
@@ -155,6 +158,12 @@ public:
      * \return true if the map performs lookup and then filters the value
      */
     virtual bool filtered() const = 0;
+
+    /**
+     * \brief No copy allowed
+     * \return Nothing :D
+     */
+    ImageMap& operator=(const ImageMap&) = delete;
 
 protected:
 

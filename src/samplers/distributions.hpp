@@ -74,6 +74,12 @@ public:
      */
     float get_piecewise_value(int index) const;
 
+    /**
+     * \brief No copy allowed
+     * \return
+     */
+    Distribution1D& operator=(const Distribution1D&) = delete;
+
 private:
 
     //values

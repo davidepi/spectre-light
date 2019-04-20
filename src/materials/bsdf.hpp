@@ -35,12 +35,18 @@ class Bsdf
 public:
 
     /** Default constructor */
-    Bsdf()
-    { bump = new Bump(); }
+    Bsdf():bump(new Bump())
+    {}
 
     ///Default destructor
     virtual ~Bsdf()
     { delete bump; }
+
+    /**
+     * \brief No copy allowed
+     */
+    Bsdf(const Bsdf&) = delete;
+
 
     /**
      * \brief Inherit a Bump map that will be used by this class
@@ -130,6 +136,12 @@ public:
     {
         bump->bump(hp, matrix, normal);
     }
+
+    /**
+     * \brief No copy allowed
+     * \return
+     */
+    Bsdf& operator=(const Bsdf&) = delete;
 
 protected:
 

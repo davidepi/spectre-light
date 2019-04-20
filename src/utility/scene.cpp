@@ -97,6 +97,7 @@ float Scene::radius() const
 void Scene::inherit_sky(const LightSky* addme)
 {
 //    inherit_light(addme);
+    delete sky;
     sky = addme;
 }
 

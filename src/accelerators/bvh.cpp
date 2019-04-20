@@ -40,6 +40,11 @@ namespace bvhhelpers
     class BvhBuildNode
     {
     public:
+
+        BvhBuildNode() = default;
+
+        ~BvhBuildNode() = default;
+
         AABB bounding;
         BvhBuildNode* left;
         BvhBuildNode* right;
@@ -299,21 +304,21 @@ static uint32_t traverseTree(Triangle* tris, Primitive* p, uint32_t offs,
 
 // <><><><><><><><> Bvh methods <><><><><><><><><><><><><><><><><><><><><><><><>
 
-Bvh::Bvh()
+Bvh::Bvh():nodesList(NULL)
 {
-    nodesList = NULL;
+
 }
 
 Bvh::~Bvh()
 {
-    if(nodesList!=NULL)
+    if(nodesList != NULL)
         free(nodesList);
 }
 
 void Bvh::buildTree(Triangle* tris, int len)
 {
     //avoid the uncommon case where the same mesh is being overwrited
-    if(nodesList!=NULL)
+    if(nodesList != NULL)
         free(nodesList);
 
     Bvh::tris = tris;
@@ -450,7 +455,8 @@ bool Bvh::intersect(const Ray* r, float* distance, HitPoint* h,
             }
             else //interior node
             {
-                if(*(&rp.isXInvNeg+node->axis))//better try the other side first
+                if(*(&rp.is_invx_neg+
+                     node->axis))//better try the other side first
                 {
                     jobs[jobs_stack_top++] = node+1;
                     node = nodesList+node->sibling;

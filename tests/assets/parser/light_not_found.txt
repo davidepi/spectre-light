@@ -3,3 +3,5 @@ light:{
   name: "not found"
 }
 
+sky: "not found"
+

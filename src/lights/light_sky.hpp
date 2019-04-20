@@ -142,6 +142,12 @@ public:
      */
     Spectrum radiance_escaped(const Ray* ray) const;
 
+    /**
+     * \brief No copy allowed
+     * \return
+     */
+    LightSky& operator=(const LightSky&) = delete;
+
 private:
     /** Texture of the sky */
     const Texture* skytexture;
