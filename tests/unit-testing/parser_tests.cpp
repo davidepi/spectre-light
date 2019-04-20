@@ -1005,7 +1005,7 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     Renderer* r1 = driver1.parse(TEST_ASSETS "parser/dualmat_duplicate.txt",
                                  &s1);
     ASSERT_PTR_NE(r1, NULL);
-    EXPECT_EQ(mtllib.size(), 3U);
+    EXPECT_EQ(mtllib.size(), (size_t)3);
     delete r1;
 
     //not found
@@ -1015,7 +1015,7 @@ SPECTRE_TEST(Parser, material_dualmaterial)
     Renderer* r2 = driver2.parse(TEST_ASSETS "parser/dualmat_not_found.txt",
                                  &s2);
     ASSERT_PTR_NE(r2, NULL);
-    EXPECT_EQ(mtllib.size(), 1U);
+    EXPECT_EQ(mtllib.size(), (size_t)1);
     EXPECT_EQ(errors_count[WARNING_INDEX], 2);
     delete r2;
 

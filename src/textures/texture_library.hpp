@@ -166,7 +166,7 @@ public:
      *
      *  \return The number of Texture elements contained in this TextureLibrary
      */
-    int size_texture() const;
+    size_t size_texture() const;
 
     /**
      *  \brief Returns the number of ImageMap elements in the TextureLibrary
@@ -175,7 +175,7 @@ public:
      *
      *  \return The number of ImageMap elements contained in this TextureLibrary
      */
-    int size_map() const;
+    size_t size_map() const;
 
 private:
 

@@ -225,8 +225,8 @@ SPECTRE_TEST(TextureLibrary, size)
     EXPECT_TRUE(res);
     res = texlib.contains_map(src.absolute_path());
     EXPECT_TRUE(res);
-    EXPECT_EQ(texlib.size_texture(), 1);
-    EXPECT_EQ(texlib.size_map(), 1);
+    EXPECT_EQ(texlib.size_texture(), (size_t)1);
+    EXPECT_EQ(texlib.size_map(), (size_t)1);
 }
 
 SPECTRE_TEST(TextureLibrary, resolve_map_function)

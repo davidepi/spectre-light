@@ -60,7 +60,7 @@ const Bsdf* MaterialLibrary::get_default() const
     return MaterialLibrary::default_material;
 }
 
-int MaterialLibrary::size() const
+size_t MaterialLibrary::size() const
 {
-    return (int)lib.size();
+    return lib.size();
 }

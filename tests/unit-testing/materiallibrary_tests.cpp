@@ -128,9 +128,9 @@ SPECTRE_TEST(MaterialLibrary, size_fun)
     ASSERT_EQ(mtllib.size(), 0);
     Bsdf* mat = new SingleBRDF(new Lambertian(), texlib.get_dflt_texture());
     mtllib.add_inherit("Removeme", mat);
-    EXPECT_EQ(mtllib.size(), 1);
+    EXPECT_EQ(mtllib.size(), (size_t)1);
     mtllib.clear();
-    EXPECT_EQ(mtllib.size(), 0);
+    EXPECT_EQ(mtllib.size(), (size_t)0);
 }
 
 SPECTRE_TEST_END(MaterialLibrary)

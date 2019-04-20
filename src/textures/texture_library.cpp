@@ -108,14 +108,14 @@ const ImageMap* TextureLibrary::get_dflt_map() const
     return TextureLibrary::default_map;
 }
 
-int TextureLibrary::size_texture() const
+size_t TextureLibrary::size_texture() const
 {
-    return (int)texlib.size();
+    return texlib.size();
 }
 
-int TextureLibrary::size_map() const
+size_t TextureLibrary::size_map() const
 {
-    return (int)maplib.size();
+    return maplib.size();
 }
 
 const ImageMap* resolve_map(const File* src, TextureLibrary* texlib,

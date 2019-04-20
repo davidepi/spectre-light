@@ -122,7 +122,7 @@ public:
      *
      *  \return The number of Bsdf elements contained in this MaterialLibrary
      */
-    int size() const;
+    size_t size() const;
 
 private:
 
